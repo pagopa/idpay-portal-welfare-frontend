@@ -202,29 +202,29 @@ stages:
             artifact: Bundle
 
   # Deploy bundle
-  - stage: 'Deploy_to_${{ variables.environment }}'
+#  - stage: 'Deploy_to_${{ variables.environment }}'
     # condition: or(eq(variables['environment'], 'DEV'), succeeded())
-    condition: false
-    jobs:
-      - job: 'Deploy_to_${{ variables.environment }}'
-        steps:
-          - checkout: none
+#    condition: false
+#    jobs:
+#      - job: 'Deploy_to_${{ variables.environment }}'
+#        steps:
+#          - checkout: none
+#
+#          - download: current
+#            artifact: Bundle
 
-          - download: current
-            artifact: Bundle
+#          - task: AzureCLI@1 #Risultato Build
+#            displayName: 'Sync checkout storage'
+#            inputs:
+#              azureSubscription: '$(AZURE_SUBSCRIPTION)'
+#              scriptLocation: inlineScript
+#              inlineScript: |
+#                az storage blob sync --container '$(blob_container_name)' --account-name $(storage_account) -s "$(Pipeline.Workspace)/Bundle" --destination '$(basePath)/'
 
-          - task: AzureCLI@1 #Risultato Build
-            displayName: 'Sync checkout storage'
-            inputs:
-              azureSubscription: '$(AZURE_SUBSCRIPTION)'
-              scriptLocation: inlineScript
-              inlineScript: |
-                az storage blob sync --container '$(blob_container_name)' --account-name $(storage_account) -s "$(Pipeline.Workspace)/Bundle" --destination '$(basePath)/'
-
-          - task: AzureCLI@1
-            displayName: 'Purge CDN endpoint'
-            inputs:
-              azureSubscription: '$(AZURE_SUBSCRIPTION)'
-              scriptLocation: inlineScript
-              inlineScript: |
-                az cdn endpoint purge -g $(resource_group) -n $(cdn_endpoint) --profile-name $(cdn_profile) --content-paths "/$(basePath)" "/$(basePath)/*"
+#          - task: AzureCLI@1
+#            displayName: 'Purge CDN endpoint'
+#            inputs:
+#              azureSubscription: '$(AZURE_SUBSCRIPTION)'
+#              scriptLocation: inlineScript
+#              inlineScript: |
+#                az cdn endpoint purge -g $(resource_group) -n $(cdn_endpoint) --profile-name $(cdn_profile) --content-paths "/$(basePath)" "/$(basePath)/*"
