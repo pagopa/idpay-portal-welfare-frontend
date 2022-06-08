@@ -16,7 +16,7 @@ variables:
   # Execute agents (jobs) on latest Ubuntu version.
   vmImageNameDefault: 'ubuntu-latest'
 
-  basePath: assistenza
+  basePath: portal
 
   # global variables
   react_app_pagopa_help_email: '$(REACT_APP_ASSISTANCE_EMAIL)'
@@ -31,14 +31,14 @@ variables:
 
     react_app_url_cdn: '$(UAT_REACT_APP_URL_CDN)'
 
-    react_app_url_fe_auth: '$(UAT_REACT_APP_URL_FE_LOGIN)'
-    react_app_url_fe_dashboard: '$(UAT_REACT_APP_URL_FE_DASHBOARD)'
-    react_app_url_fe_landing: '$(UAT_REACT_APP_URL_FE_LANDING)'
+    # react_app_url_fe_auth: '$(UAT_REACT_APP_URL_FE_LOGIN)'
+    # react_app_url_fe_dashboard: '$(UAT_REACT_APP_URL_FE_DASHBOARD)'
+    # react_app_url_fe_landing: '$(UAT_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(UAT_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_assistance: '$(UAT_REACT_APP_URL_API_NOTIFICATION)'
 
-    react_app_enable_assistance: 'true'
+    # react_app_enable_assistance: 'true'
 
     react_app_one_trust_base_url: '$(UAT_REACT_APP_URL_CDN)/ot'
     react_app_analytics_enabled: '$(UAT_ANALYTICS_ENABLED)'
@@ -56,14 +56,14 @@ variables:
 
     react_app_url_cdn: '$(PROD_REACT_APP_URL_CDN)'
 
-    react_app_url_fe_auth: '$(PROD_REACT_APP_URL_FE_LOGIN)'
-    react_app_url_fe_dashboard: '$(PROD_REACT_APP_URL_FE_DASHBOARD)'
-    react_app_url_fe_landing: '$(PROD_REACT_APP_URL_FE_LANDING)'
-    react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)'
+    # react_app_url_fe_auth: '$(PROD_REACT_APP_URL_FE_LOGIN)'
+    # react_app_url_fe_dashboard: '$(PROD_REACT_APP_URL_FE_DASHBOARD)'
+    # react_app_url_fe_landing: '$(PROD_REACT_APP_URL_FE_LANDING)'
+    react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)' ##TODO
 
-    react_app_url_api_assistance: '$(PROD_REACT_APP_URL_API_NOTIFICATION)'
+    react_app_url_api_assistance: '$(PROD_REACT_APP_URL_API_NOTIFICATION)' #per WELFARE
 
-    react_app_enable_assistance: 'true'
+    # react_app_enable_assistance: 'true'
 
     react_app_one_trust_base_url: '$(PROD_REACT_APP_URL_CDN)/ot'
     react_app_analytics_enabled: '$(PROD_ANALYTICS_ENABLED)'
@@ -89,7 +89,7 @@ variables:
     react_app_url_fe_assistance: '$(DEV_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_assistance: '$(DEV_REACT_APP_URL_API_NOTIFICATION)'
-    react_app_enable_assistance: 'true'
+    # react_app_enable_assistance: 'true'
 
     react_app_one_trust_base_url: '$(DEV_REACT_APP_URL_CDN)/ot/test'
     react_app_analytics_enabled: '$(DEV_ANALYTICS_ENABLED)'
@@ -128,35 +128,35 @@ stages:
   # Activated when ONE OF these are met:
   # - is on branch $(DEFAULT_BRANCH)
   # - is a tag in the form v{version}-RELEASE
-  - stage: Release
-    condition: or(
-      startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat')
-      , startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix')
-      , eq(variables['Build.SourceBranch'], 'refs/heads/main')
-      )
-    pool:
-      vmImage: 'ubuntu-latest'
-    jobs:
-      - job: make_release
-        condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
-        steps:
-          - template: templates/node-job-setup/template.yaml@pagopaCommons
-            parameters:
-              persistCredentials: true
-          - template: templates/node-github-release/template.yaml@pagopaCommons
-            parameters:
-              release_branch: '$(DEFAULT_BRANCH)'
-              semver: '${{ parameters.RELEASE_SEMVER }}'
-              gitEmail: '$(GIT_EMAIL)'
-              gitUsername: '$(GIT_USERNAME)'
-              gitHubConnection: '$(GITHUB_CONNECTION)'
+  # - stage: Release
+  #   condition: or(
+  #     startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat')
+  #     , startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix')
+  #     , eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  #     )
+  #   pool:
+  #     vmImage: 'ubuntu-latest'
+  #   jobs:
+  #     - job: make_release
+  #       condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
+  #       steps:
+  #         - template: templates/node-job-setup/template.yaml@pagopaCommons
+  #           parameters:
+  #             persistCredentials: true
+  #         - template: templates/node-github-release/template.yaml@pagopaCommons
+  #           parameters:
+  #             release_branch: '$(DEFAULT_BRANCH)'
+  #             semver: '${{ parameters.RELEASE_SEMVER }}'
+  #             gitEmail: '$(GIT_EMAIL)'
+  #             gitUsername: '$(GIT_USERNAME)'
+  #             gitHubConnection: '$(GITHUB_CONNECTION)'
 
-      - job: skip_release
-        condition: ne(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
-        steps:
-          - script: |
-              echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
-            displayName: 'Skip release bundle'
+  #     - job: skip_release
+  #       condition: ne(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
+  #       steps:
+  #         - script: |
+  #             echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
+  #           displayName: 'Skip release bundle'
 
   # Prepare Artifact with application bundle
   - stage: Prepare_artifact
@@ -185,14 +185,14 @@ stages:
               REACT_APP_URL_API_PARTY_PROCESS: '$(react_app_url_api_party_process)'
               REACT_APP_URL_API_DASHBOARD: '$(react_app_url_api_dashboard)'
 
-              REACT_APP_ENABLE_ASSISTANCE: '$(react_app_enable_assistance)'
+              # REACT_APP_ENABLE_ASSISTANCE: '$(react_app_enable_assistance)'
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
 
-              REACT_APP_ANALYTICS_ENABLE: '$(react_app_analytics_enabled)'
-              REACT_APP_ANALYTICS_MOCK: '$(react_app_analytics_mocked)'
-              REACT_APP_MIXPANEL_TOKEN: '$(react_app_mixpanel_token)'
-              REACT_APP_ONE_TRUST_BASE_URL: '$(react_app_one_trust_base_url)'
-              REACT_APP_ONETRUST_DOMAIN_ID: '$(react_app_onetrust_domain_id)'
+              # REACT_APP_ANALYTICS_ENABLE: '$(react_app_analytics_enabled)' TODO
+              # REACT_APP_ANALYTICS_MOCK: '$(react_app_analytics_mocked)' TODO
+              # REACT_APP_MIXPANEL_TOKEN: '$(react_app_mixpanel_token)' TODO
+              # REACT_APP_ONE_TRUST_BASE_URL: '$(react_app_one_trust_base_url)' TODO
+              # REACT_APP_ONETRUST_DOMAIN_ID: '$(react_app_onetrust_domain_id)' TODO
           - bash: |
               printf "$EXECUTION_ID\n$(git name-rev --name-only FETCH_HEAD) $(git rev-parse HEAD)" > $(System.DefaultWorkingDirectory)/build/build.info
             env:
@@ -203,7 +203,8 @@ stages:
 
   # Deploy bundle
   - stage: 'Deploy_to_${{ variables.environment }}'
-    condition: or(eq(variables['environment'], 'DEV'), succeeded())
+    # condition: or(eq(variables['environment'], 'DEV'), succeeded())
+    condition: false
     jobs:
       - job: 'Deploy_to_${{ variables.environment }}'
         steps:
@@ -212,7 +213,7 @@ stages:
           - download: current
             artifact: Bundle
 
-          - task: AzureCLI@1
+          - task: AzureCLI@1 #Risultato Build
             displayName: 'Sync checkout storage'
             inputs:
               azureSubscription: '$(AZURE_SUBSCRIPTION)'
