@@ -3,7 +3,7 @@ import * as env from 'env-var';
 const PUBLIC_URL_INNER: string | undefined = env.get('PUBLIC_URL').asString();
 export const ENV = {
   ENV: env.get('REACT_APP_ENV').required().asString(),
-  PUBLIC_URL: PUBLIC_URL_INNER ? PUBLIC_URL_INNER : '/assistenza',
+  PUBLIC_URL: PUBLIC_URL_INNER ? PUBLIC_URL_INNER : '/portale-enti',
 
   ASSISTANCE: {
     ENABLE: env.get('REACT_APP_ENABLE_ASSISTANCE').required().asBool(),
