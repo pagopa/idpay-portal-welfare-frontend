@@ -7,7 +7,7 @@ import {
 import { uniqueId } from 'lodash';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { useTranslation } from 'react-i18next';
-import withLogin from '@pagopa/selfcare-common-frontend/decorators/withLogin';
+// import withLogin from '@pagopa/selfcare-common-frontend/decorators/withLogin';
 import ThankyouPage from './ThankyouPage';
 
 export type InitiativeRequest = {
@@ -69,4 +69,5 @@ const Initiative = () => {
   );
 };
 
-export default withLogin(Initiative);
+// export default withLogin(Initiative);
+export default Initiative;
