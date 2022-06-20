@@ -1,16 +1,34 @@
-import { ErrorBoundary, LoadingOverlay } from '@pagopa/selfcare-common-frontend';
-import UnloadEventHandler from '@pagopa/selfcare-common-frontend/components/UnloadEventHandler';
+import {
+  ErrorBoundary,
+  LoadingOverlay,
+  UnloadEventHandler,
+  UserNotifyHandle,
+} from '@pagopa/selfcare-common-frontend';
+import { Redirect, Route, Switch } from 'react-router';
+import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
-import Initiative from './pages/Initiative/Initiative';
+import routes from './routes';
+import withSelectedParty from './decorators/withSelectedParty';
+import Home from './pages/home/Home';
 
 const App = () => (
   <ErrorBoundary>
     <Layout>
       <LoadingOverlay />
+      <UserNotifyHandle />
       <UnloadEventHandler />
-      <Initiative />
+
+      <Switch>
+        <Route path={routes.HOME}>
+          <Home />
+        </Route>
+
+        <Route path="*">
+          <Redirect to={routes.HOME} />
+        </Route>
+      </Switch>
     </Layout>
   </ErrorBoundary>
 );
 
-export default App;
+export default withLogin(withSelectedParty(App));

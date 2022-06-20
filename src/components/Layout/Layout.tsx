@@ -1,18 +1,20 @@
-import { Grid } from '@mui/material';
-import { Box } from '@mui/system';
-import { Footer, Header } from '@pagopa/selfcare-common-frontend';
+import { Grid, Box } from '@mui/material';
+import { Footer } from '@pagopa/selfcare-common-frontend';
+import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import React from 'react';
-import { useUnloadEventLogout, useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import { ENV } from '../../utils/env';
-
+import { useSelector } from 'react-redux';
+import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
+import DashboardHeader from '../DashboardHeader';
+import withParties from '../../decorators/withParties';
 
 type Props = {
   children?: React.ReactNode;
 };
 
-export default function Layout({ children }: Props) {
-  const onLogout = useUnloadEventLogout() ;
+const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
+  const loggedUser = useSelector(userSelectors.selectLoggedUser);
+
   return (
     <Box
       sx={{
@@ -21,11 +23,28 @@ export default function Layout({ children }: Props) {
         minHeight: '100vh',
       }}
     >
-      <Header withSecondHeader={false} onExitAction={onLogout} />
-      <Grid container>
+      <Header onExit={onExit} loggedUser={loggedUser} />
+      <Grid container direction="row" flexGrow={1}>
+      <Grid container item pl={{ xs: 3, md: 4 }} xs={12} sx={{ backgroundColor: 'background.paper' }}>
+      <Grid item xs={2}>
+        <Box>
+          <SideMenu products={products} party={party} />
+        </Box>
+      </Grid>
+      <Grid
+        item
+        xs={10}
+        sx={{ backgroundColor: '#F5F6F7' }}
+        display="flex"
+        justifyContent="center"
+        pb={16}
+      >
         {children}
       </Grid>
-      <Footer assistanceEmail={ENV.ASSISTANCE.ENABLE ? ENV.ASSISTANCE.EMAIL : undefined} onExit={onExit} />
+    </Grid>
+      </Grid>
+      <Footer onExit={onExit} loggedUser={!!loggedUser} />
     </Box>
   );
-}
+};
+export default withParties(Layout);
