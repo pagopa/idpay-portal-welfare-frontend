@@ -30,5 +30,7 @@ test('Test', async () => {
 
   renderApp(store);
 
+  await waitFor(() => verifyFetchPartiesMockExecution(store.getState().parties.list));
+
   expect(fetchPartiesSpy).toBeCalledTimes(1);
 });

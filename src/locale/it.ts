@@ -5,10 +5,16 @@ export default {
       message: 'Stai per essere rediretto alla pagina di login...',
     },
   },
+  roles: {
+    // TODO put product roles keys and their description here
+    'incaricato-ente-creditore': 'Incaricato Ente Creditore',
+    'referente-legale': 'Referente Legale',
+    'referente-dei-pagamenti': 'Referente Dei Pagamenti',
+  },
   sideMenu: {
     home: {
-      title: 'Home'
-    }
+      title: 'Home',
+    },
   },
   subHeader: {
     partySelectionSearch: {

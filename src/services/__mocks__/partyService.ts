@@ -2,7 +2,12 @@ import { Party } from '../../model/Party';
 
 export const mockedParties: Array<Party> = [
   {
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     description: 'Comune di Bari',
     urlLogo: 'image',
     status: 'ACTIVE',
@@ -17,8 +22,14 @@ export const mockedParties: Array<Party> = [
     origin: 'IPA',
     institutionType: 'PA',
   },
+  // useCase for PENDING party
   {
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     description: 'Comune di Milano',
     urlLogo: 'image',
     status: 'PENDING',
@@ -34,7 +45,12 @@ export const mockedParties: Array<Party> = [
     institutionType: 'PA',
   },
   {
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     description: 'Comune di Roma',
     urlLogo: 'image',
     status: 'ACTIVE',
@@ -50,7 +66,12 @@ export const mockedParties: Array<Party> = [
     institutionType: 'PA',
   },
   {
-    userRole: 'LIMITED',
+    roles: [
+      {
+        partyRole: 'OPERATOR',
+        roleKey: 'referente-dei-pagamenti', // TODO use real product role
+      },
+    ],
     description: 'Comune di Napoli',
     urlLogo: 'image',
     status: 'ACTIVE',
@@ -65,8 +86,15 @@ export const mockedParties: Array<Party> = [
     origin: 'IPA',
     institutionType: 'PA',
   },
+  // useCase of testToken
   {
-    userRole: 'ADMIN',
+    // if change these roles, change them also in testToken
+    roles: [
+      {
+        partyRole: 'MANAGER',
+        roleKey: 'referente-legale', // TODO use real product role
+      },
+    ],
     description: 'AGENCY ONBOARDED',
     urlLogo: 'https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png',
     status: 'ACTIVE',
@@ -82,7 +110,12 @@ export const mockedParties: Array<Party> = [
     institutionType: 'GSP',
   },
   {
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     description: `Commissario straordinario per la realizzazione di
     approdi temporanei e di interventi complementari per la
     salvaguardia di Venezia e della sua laguna e ulteriori
@@ -110,7 +143,12 @@ export const mockedParties: Array<Party> = [
     description: 'Comune di Genova',
     category: 'Comuni e loro Consorzi e Associazioni',
     fiscalCode: '00856930102',
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     status: 'ACTIVE',
     digitalAddress: 'comunegenova@postemailcertificata.it',
     urlLogo:
@@ -128,7 +166,12 @@ export const mockedParties: Array<Party> = [
     description: 'Comune di Varese',
     category: 'Comuni e loro Consorzi e Associazioni',
     fiscalCode: '00441340122',
-    userRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     status: 'ACTIVE',
     digitalAddress: 'protocollo@comune.varese.legalmail.it',
     urlLogo:

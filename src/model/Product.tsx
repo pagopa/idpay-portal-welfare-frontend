@@ -1,5 +1,5 @@
 import { ProductsResource } from '../api/generated/b4f-dashboard/ProductsResource';
-import { UserRole } from './Party';
+import { PartyRole, SelfcareRole, UserRole } from './Party';
 
 export type ProductStatus = 'ACTIVE' | 'INACTIVE' | 'PENDING';
 
@@ -11,8 +11,8 @@ export type Product = {
   title: string;
   urlBO: string;
   urlPublic?: string;
-  tag?: string;
-  userRole?: UserRole;
+  selfcareRole?: SelfcareRole;
+  roles: Array<UserRole>;
   authorized?: boolean;
   status: ProductStatus;
   imageUrl: string;
@@ -34,8 +34,13 @@ export const productResource2Product = (resource: ProductsResource): Product => 
   title: resource.title,
   urlBO: resource.urlBO,
   urlPublic: resource.urlPublic,
-  tag: undefined,
-  userRole: resource.userRole as UserRole,
+  selfcareRole: (resource as any).selfcareRole as SelfcareRole, // TODO maybe it will be added to the API?
+  roles: [
+    {
+      partyRole: (resource as any).partyRole as PartyRole, // TODO maybe it will be added to the API?
+      roleKey: resource.userRole as string,
+    },
+  ],
   authorized: resource.authorized,
   status: resource.status,
   imageUrl: resource.imageUrl,

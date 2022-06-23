@@ -1,5 +1,4 @@
 import { Product } from '../../model/Product';
-import { ProductRole } from '../../model/ProductRole';
 
 export const mockedPartyProducts: Array<Product> = [
   {
@@ -9,7 +8,13 @@ export const mockedPartyProducts: Array<Product> = [
     id: 'prod-io',
     authorized: true,
     status: 'ACTIVE',
-    userRole: 'ADMIN',
+    selfcareRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'MANAGER',
+        roleKey: 'referente-legale', // TODO use real product role
+      },
+    ],
     activationDateTime: new Date(2021, 1, 1),
     urlPublic: 'https://io.italia.it/ ',
     urlBO: 'https://io.selfcare.pagopa.it/path/acs?token=<IdentityToken>',
@@ -24,6 +29,13 @@ export const mockedPartyProducts: Array<Product> = [
     description: 'Piattaforma Notifiche description',
     authorized: false,
     status: 'ACTIVE',
+    selfcareRole: 'LIMITED',
+    roles: [
+      {
+        partyRole: 'OPERATOR',
+        roleKey: 'referente-dei-pagamenti', // TODO use real product role
+      },
+    ],
     urlBO: 'http://notifiche/bo?token=<IdentityToken>',
     activationDateTime: new Date(2021, 1, 2),
     urlPublic: 'http://notifiche/public',
@@ -37,8 +49,14 @@ export const mockedPartyProducts: Array<Product> = [
     title: 'Pagamenti pagoPA',
     description: 'Pagamenti pagoPA description',
     authorized: true,
-    tag: 'Vecchio Portale',
     status: 'ACTIVE',
+    selfcareRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     urlBO: 'http://pagopa/bo#token=<IdentityToken>',
     activationDateTime: new Date(2021, 1, 3),
     urlPublic: 'http://pagopa/public',
@@ -53,6 +71,13 @@ export const mockedPartyProducts: Array<Product> = [
     id: 'prod-ciban',
     authorized: false,
     status: 'PENDING',
+    selfcareRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     urlBO: 'http://checkiban/bo#token=<IdentityToken>',
     urlPublic: 'http://www.google.it',
     imageUrl:
@@ -67,6 +92,13 @@ export const mockedPartyProducts: Array<Product> = [
     urlBO: 'http://cgn/bo#token=<IdentityToken>',
     authorized: false,
     status: 'INACTIVE',
+    selfcareRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     urlPublic: undefined,
     imageUrl:
       'https://selcdcheckoutsa.z6.web.core.windows.net/resources/products/default/depict-image.jpeg',
@@ -79,7 +111,13 @@ export const mockedPartyProducts: Array<Product> = [
     description: 'Condividi dati con altri Enti in maniera semplice, sicura ed economica.',
     urlBO: 'http://PDND/bo#token=<IdentityToken>',
     authorized: true,
-    userRole: 'ADMIN',
+    selfcareRole: 'ADMIN',
+    roles: [
+      {
+        partyRole: 'SUB_DELEGATE',
+        roleKey: 'incaricato-ente-creditore', // TODO use real product role
+      },
+    ],
     status: 'ACTIVE',
     urlPublic: undefined,
     imageUrl:
@@ -93,4 +131,3 @@ export const verifyFetchPartyProductsMockExecution = (partyProducts: Array<Produ
 };
 
 export const fetchProducts = () => new Promise((resolve) => resolve(mockedPartyProducts));
-

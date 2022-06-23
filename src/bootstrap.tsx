@@ -10,10 +10,11 @@ import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './redux/store';
-import { MOCK_USER } from './utils/constants';
+import { MOCK_USER, testToken } from './utils/constants';
 import { ENV } from './utils/env';
 import './consentAndAnalyticsConfiguration.ts';
 import './locale';
+import ROUTES from './routes';
 
 // eslint-disable-next-line functional/immutable-data
 CONFIG.MOCKS.MOCK_USER = MOCK_USER;
@@ -23,6 +24,11 @@ CONFIG.URL_FE.LOGIN = `${ENV.URL_FE.LOGIN}?onSuccess=portale-enti`;
 CONFIG.URL_FE.LOGOUT = ENV.URL_FE.LOGOUT;
 // eslint-disable-next-line functional/immutable-data
 CONFIG.URL_FE.ASSISTANCE = ENV.URL_FE.ASSISTANCE;
+// eslint-disable-next-line functional/immutable-data
+CONFIG.TEST.JWT = testToken;
+
+// eslint-disable-next-line functional/immutable-data
+CONFIG.HEADER.LINK.PRODUCTURL = ROUTES.HOME;
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import useLoading from '../hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLogin } from '../hooks/useLogin';
-import { userSelectors } from '../redux/slices/userSlice';
 import { LOADING_TASK_LOGIN_CHECK } from '../utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/ban-types

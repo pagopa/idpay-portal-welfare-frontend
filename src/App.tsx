@@ -8,8 +8,23 @@ import { Redirect, Route, Switch } from 'react-router';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
-import withSelectedParty from './decorators/withSelectedParty';
 import Home from './pages/home/Home';
+import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
+import Auth from './pages/auth/Auth';
+
+const SecuredRoutes = withLogin(
+  withSelectedPartyProducts(() => (
+    <Switch>
+      <Route path={routes.HOME}>
+        <Home />
+      </Route>
+
+      <Route path="*">
+        <Redirect to={routes.HOME} />
+      </Route>
+    </Switch>
+  ))
+);
 
 const App = () => (
   <ErrorBoundary>
@@ -19,16 +34,16 @@ const App = () => (
       <UnloadEventHandler />
 
       <Switch>
-        <Route path={routes.HOME}>
-          <Home />
+        <Route path={routes.AUTH}>
+          <Auth />
         </Route>
 
         <Route path="*">
-          <Redirect to={routes.HOME} />
+          <SecuredRoutes />
         </Route>
       </Switch>
     </Layout>
   </ErrorBoundary>
 );
 
-export default withLogin(withSelectedParty(App));
+export default App;

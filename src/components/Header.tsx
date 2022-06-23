@@ -1,19 +1,15 @@
+import { ProductEntity } from '@pagopa/mui-italia';
 import { PartySwitchItem } from '@pagopa/mui-italia/dist/components/PartySwitch';
 import { Header as CommonHeader } from '@pagopa/selfcare-common-frontend';
 import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { resolvePathVariables } from '@pagopa/selfcare-common-frontend/utils/routes-utils';
+import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
 import { useMemo } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { roleLabels } from '@pagopa/selfcare-common-frontend/utils/constants';
 import withParties, { WithPartiesProps } from '../decorators/withParties';
-import { useTokenExchange } from '../hooks/useTokenExchange';
 import { Product } from '../model/Product';
-import { Party } from '../model/Party';
 import { useAppSelector } from '../redux/hooks';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
-import ROUTES from '../routes';
 import { ENV } from './../utils/env';
 
 type Props = WithPartiesProps & {
@@ -21,25 +17,43 @@ type Props = WithPartiesProps & {
   loggedUser?: User;
 };
 
+const welfareProduct: ProductEntity = {
+  // TODO check if correct
+  id: 'prod-welfare',
+  title: 'Welfare',
+  productUrl: CONFIG.HEADER.LINK.PRODUCTURL,
+  linkType: 'internal',
+};
+
 const Header = ({ onExit, loggedUser, parties }: Props) => {
   const { t } = useTranslation();
-  const history = useHistory();
   const party = useAppSelector(partiesSelectors.selectPartySelected);
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
   const parties2Show = parties.filter((party) => party.status === 'ACTIVE');
   const activeProducts: Array<Product> = useMemo(
-    () => products?.filter((p) => p.status === 'ACTIVE' && p.authorized) ?? [],
+    () =>
+      [
+        {
+          id: welfareProduct.id,
+          title: welfareProduct.title,
+          publicUrl: welfareProduct.productUrl,
+        } as unknown as Product,
+      ].concat(
+        products?.filter(
+          (p) => p.id !== welfareProduct.id && p.status === 'ACTIVE' && p.authorized
+        ) ?? []
+      ),
     [products]
   );
-
-  const { invokeProductBo } = useTokenExchange();
 
   return (
     <CommonHeader
       onExit={onExit}
       withSecondHeader={!!party}
       selectedPartyId={selectedParty?.partyId}
+      selectedProductId={welfareProduct.id}
+      addSelfcareProduct={true} // TODO verify if returned from API
       productsList={activeProducts.map((p) => ({
         id: p.id,
         title: p.title,
@@ -49,7 +63,7 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
       partyList={parties2Show.map((party) => ({
         id: party.partyId,
         name: party.description,
-        productRole: t(roleLabels[party.userRole].longLabelKey),
+        productRole: party.roles.map((r) => t(`roles.${r.roleKey}`)).join(','),
         logoUrl: party.urlLogo,
       }))}
       loggedUser={
@@ -65,9 +79,7 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
       assistanceEmail={ENV.ASSISTANCE.EMAIL}
       enableLogin={true}
       onSelectedProduct={(p) =>
-        onExit(() =>
-          invokeProductBo(activeProducts.find((ap) => ap.id === p.id) as Product, party as Party)
-        )
+        onExit(() => console.log(`TODO: perform token exchange to change Product and set ${p}`))
       }
       onSelectedParty={(selectedParty: PartySwitchItem) => {
         if (selectedParty) {
@@ -75,11 +87,7 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
             party_id: selectedParty.id,
           });
           onExit(() =>
-            history.push(
-              resolvePathVariables(ROUTES.PARTY_DASHBOARD.path, {
-                partyId: selectedParty.id,
-              })
-            )
+            console.log(`TODO: perform token exchange to change Party and set ${selectedParty}`)
           );
         }
       }}

@@ -5,8 +5,8 @@ import {
   userSelectors,
 } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useSelector } from 'react-redux';
-import { useAppDispatch } from '../../../../redux/hooks';
-import { RootState } from '../../../../redux/store';
+import { useAppDispatch } from '../../redux/hooks';
+import { RootState } from '../../redux/store';
 
 export const mockedUser: User = {
   name: 'NAME',

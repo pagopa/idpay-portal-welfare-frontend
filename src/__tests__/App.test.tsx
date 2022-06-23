@@ -2,18 +2,24 @@ import { render, screen, waitFor } from '@testing-library/react';
 import App from '../App';
 import { Provider } from 'react-redux';
 import { createStore } from '../redux/store';
-import { verifyMockExecution as verifyLoginMockExecution } from '../__mocks__/@pagopa/selfcare-common-frontend/decorators/withLogin';
+import { verifyMockExecution as verifyLoginMockExecution } from '../decorators/__mocks__/withLogin';
 import { verifyMockExecution as verifyPartiesMockExecution } from '../decorators/__mocks__/withParties';
-import { verifyMockExecution as verifySelectedPartyMockExecution } from '../decorators/__mocks__/withSelectedParty';
+import { verifyMockExecution as verifySelectedPartyProductsMockExecution } from '../decorators/__mocks__/withSelectedPartyProducts';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
 import { mockedParties } from '../services/__mocks__/partyService';
 import { ThemeProvider } from '@mui/material';
 import { theme } from '@pagopa/mui-italia';
+import '../locale';
+
+jest.mock('@pagopa/mui-italia/dist/components/Footer/Footer', () => ({
+  Footer: () => <></>,
+}));
 
 jest.mock('../decorators/withLogin');
 jest.mock('../decorators/withParties');
 jest.mock('../decorators/withSelectedParty');
+jest.mock('../decorators/withSelectedPartyProducts');
 
 const renderApp = (
   injectedStore?: ReturnType<typeof createStore>,
@@ -35,8 +41,13 @@ const renderApp = (
 
 test('Test rendering', () => {
   const { store } = renderApp();
-  verifyLoginMockExecution(store.getState());
+
+  // Header component decoration will load parties
   verifyPartiesMockExecution(store.getState());
+
+  // Secured Routes in App will load User Party e Products
+  verifyLoginMockExecution(store.getState());
+  verifySelectedPartyProductsMockExecution(store.getState());
 });
 
 test('Test rendering dashboard parties loaded', () => {
@@ -50,13 +61,6 @@ test('Test rendering dashboard parties loaded', () => {
 });
 
 test('Test routing ', async () => {
-  const { history, store } = renderApp();
-  await waitFor(() => expect(history.location.pathname).toBe('/dashboard'));
-
-  history.push('/dashboard/1');
-  expect(history.location.pathname).toBe('/dashboard/1');
-
-  history.push('/dashboard/13/2');
-  await waitFor(() => expect(history.location.pathname).toBe('/dashboard/13'));
-  verifySelectedPartyMockExecution(store.getState());
+  const { history } = renderApp();
+  await waitFor(() => expect(history.location.pathname).toBe('/portale-enti'));
 });

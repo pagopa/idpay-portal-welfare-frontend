@@ -1,8 +1,6 @@
 import { PortalApi } from '../api/PortalApiClient';
 import { Product, productResource2Product } from '../model/Product';
-import {
-  mockedPartyProducts,
-} from './__mocks__/productService';
+import { mockedPartyProducts } from './__mocks__/productService';
 
 export const fetchProducts = (partyId: string): Promise<Array<Product>> => {
   /* istanbul ignore if */

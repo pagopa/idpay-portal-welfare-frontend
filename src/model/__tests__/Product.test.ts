@@ -31,8 +31,13 @@ test('Test institutionInfo2Party', () => {
     urlBO: 'http://pagopa/bo',
     activationDateTime: date,
     urlPublic: 'http://pagopa/public',
-    tag: undefined,
-    userRole: 'LIMITED',
+    roles: [
+      {
+        partyRole: undefined,
+        roleKey: 'LIMITED',
+      },
+    ],
+    selfcareRole: undefined,
     subProducts: [{ id: 'subProductId', title: 'Premium', status: 'ACTIVE' }],
     imageUrl:
       'https://selcdcheckoutsa.z6.web.core.windows.net/resources/products/default/depict-image.jpeg',

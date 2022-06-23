@@ -22,7 +22,12 @@ test('Test institutionResource2Party', () => {
 
   const party = institutionResource2Party(institutionResource);
   expect(party).toStrictEqual({
-    userRole: 'LIMITED',
+    roles: [
+      {
+        partyRole: undefined,
+        roleKey: 'LIMITED',
+      },
+    ],
     description: 'Comune di Bari',
     status: 'PENDING',
     partyId: '1',

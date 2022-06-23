@@ -1,7 +1,7 @@
 import { InstitutionResource } from '../api/generated/b4f-dashboard/InstitutionResource';
 import { ENV } from '../utils/env';
 
-export type UserRole = 'ADMIN' | 'LIMITED';
+export type SelfcareRole = 'ADMIN' | 'LIMITED';
 export type PartyRole = 'DELEGATE' | 'MANAGER' | 'OPERATOR' | 'SUB_DELEGATE';
 export type UserStatus = 'PENDING' | 'ACTIVE' | 'SUSPENDED';
 
@@ -13,13 +13,18 @@ export type Party = {
   description: string;
   digitalAddress: string;
   status: UserStatus;
-  userRole: UserRole;
+  roles: Array<UserRole>;
   category?: string;
   urlLogo?: string;
   fiscalCode: string;
   registeredOffice: string;
   typology: string;
   institutionType?: string;
+};
+
+export type UserRole = {
+  partyRole: PartyRole;
+  roleKey: string;
 };
 
 const buildUrlLog = (partyId: string) =>
@@ -35,7 +40,12 @@ export const institutionResource2Party = (institutionResource: InstitutionResour
     description: institutionResource.name,
     digitalAddress: institutionResource.mailAddress,
     status: institutionResource.status as 'ACTIVE' | 'PENDING',
-    userRole: institutionResource.userRole as UserRole,
+    roles: [
+      {
+        partyRole: (institutionResource as any).partyRole, // TODO maybe it will be added
+        roleKey: institutionResource.userRole,
+      },
+    ],
     category: institutionResource.category,
     urlLogo,
     fiscalCode: institutionResource.fiscalCode,

@@ -1,16 +1,16 @@
 import { fetchParties, fetchPartyDetails } from '../partyService';
 import { institutionResource2Party, Party } from '../../model/Party';
-import { DashboardApi } from '../../api/DashboardApiClient';
-import { mockedInstitutionResources } from '../../api/__mocks__/DashboardApiClient';
+import { PortalApi } from '../../api/PortalApiClient';
+import { mockedInstitutionResources } from '../../api/__mocks__/PortalApiClient';
 
-jest.mock('../../api/DashboardApiClient');
+jest.mock('../../api/PortalApiClient');
 
-let dashboardApiGetInstitutionSpy;
-let dashboardApiGetInstitutionsSpy;
+let portalApiGetInstitutionSpy;
+let portalApiGetInstitutionsSpy;
 
 beforeEach(() => {
-  dashboardApiGetInstitutionSpy = jest.spyOn(DashboardApi, 'getInstitution');
-  dashboardApiGetInstitutionsSpy = jest.spyOn(DashboardApi, 'getInstitutions');
+  portalApiGetInstitutionSpy = jest.spyOn(PortalApi, 'getInstitution');
+  portalApiGetInstitutionsSpy = jest.spyOn(PortalApi, 'getInstitutions');
 });
 
 test('Test fetchParties', async () => {
@@ -22,22 +22,25 @@ test('Test fetchParties', async () => {
     expect(p.urlLogo).toBe(`http://checkout.selfcare/institutions/${p.partyId}/logo.png`)
   );
 
-  expect(dashboardApiGetInstitutionsSpy).toBeCalledTimes(1);
+  expect(portalApiGetInstitutionsSpy).toBeCalledTimes(1);
 });
 
 describe('Test fetchPartyDetails', () => {
   const expectedPartyId: string = '1';
 
-  const checkSelectedParty = (party: Party) => {
+  const checkSelectedParty = (party: Party | null) => {
+    expect(party).not.toBeNull();
     expect(party).toMatchObject(institutionResource2Party(mockedInstitutionResources[0]));
 
-    expect(party.urlLogo).toBe(`http://checkout.selfcare/institutions/${expectedPartyId}/logo.png`);
+    expect(party!.urlLogo).toBe(
+      `http://checkout.selfcare/institutions/${expectedPartyId}/logo.png`
+    );
   };
 
-  const checkDashboardInvocation = (expectedCallsNumber: number) => {
-    expect(DashboardApi.getInstitution).toBeCalledTimes(expectedCallsNumber);
+  const checkPortalApiInvocation = (expectedCallsNumber: number) => {
+    expect(PortalApi.getInstitution).toBeCalledTimes(expectedCallsNumber);
     if (expectedCallsNumber > 0) {
-      expect(DashboardApi.getInstitution).toBeCalledWith(expectedPartyId);
+      expect(PortalApi.getInstitution).toBeCalledWith(expectedPartyId);
     }
   };
 
@@ -45,7 +48,7 @@ describe('Test fetchPartyDetails', () => {
     const party = await fetchPartyDetails(expectedPartyId);
     checkSelectedParty(party);
 
-    checkDashboardInvocation(1);
+    checkPortalApiInvocation(1);
   });
 
   test('Test parties as cache', async () => {
@@ -53,12 +56,12 @@ describe('Test fetchPartyDetails', () => {
     const party = await fetchPartyDetails(expectedPartyId, parties);
     checkSelectedParty(party);
 
-    checkDashboardInvocation(0);
+    checkPortalApiInvocation(0);
 
     const partialParties = parties.filter((p) => p.partyId !== expectedPartyId);
     const party2 = await fetchPartyDetails(expectedPartyId, partialParties);
     expect(party2).toStrictEqual(party);
 
-    checkDashboardInvocation(1);
+    checkPortalApiInvocation(1);
   });
 });

@@ -1,10 +1,10 @@
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { storageDelete, storageWrite } from '../../utils/storage-utils';
-import { storageUserOps } from '../../utils/storage';
-import { User } from '../../model/User';
-import { createStore } from '../../../examples/redux/store';
+import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { User } from '@pagopa/selfcare-common-frontend/model/User';
+import { createStore } from '../../redux/store';
 import withLogin from '../withLogin';
+import { testToken } from '../../utils/constants';
 
 const oldWindowLocation = global.window.location;
 const mockedLocation = {
@@ -50,6 +50,7 @@ const mockUser = (): User => {
   };
 
   storageUserOps.write(user);
+  storageTokenOps.write(testToken);
 
   return user;
 };
