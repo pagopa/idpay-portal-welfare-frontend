@@ -1,4 +1,4 @@
-import { List, Grid } from '@mui/material';
+import { List, Box } from '@mui/material';
 import { useHistory } from 'react-router';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import { useTranslation } from 'react-i18next';
@@ -12,8 +12,8 @@ export default function SideMenu() {
   const onExit = useUnloadEventOnExit();
 
   return (
-    <Grid container item mt={1}>
-      <Grid item xs={12}>
+    <Box display="grid" mt={1}>
+      <Box gridColumn="auto">
         <List>
           <SidenavItem
             title={t('sideMenu.home.title')}
@@ -22,7 +22,7 @@ export default function SideMenu() {
             icon={DashboardCustomize}
           />
         </List>
-      </Grid>
-    </Grid>
+      </Box>
+    </Box>
   );
 }

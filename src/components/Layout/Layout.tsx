@@ -1,4 +1,4 @@
-import { Grid, Box } from '@mui/material';
+import { Box } from '@mui/material';
 import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import React from 'react';
@@ -25,32 +25,28 @@ const Layout = ({ children }: Props) => {
       }}
     >
       <Header onExit={onExit} loggedUser={loggedUser} />
-      <Grid container direction="row" flexGrow={1}>
-        <Grid
-          container
-          item
-          pl={{ xs: 3, md: 4 }}
-          xs={12}
+      <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" flex={1}>
+        <Box
+          gridColumn="span 12"
           sx={{ backgroundColor: 'background.paper' }}
+          display="grid"
+          gridTemplateColumns="repeat(12, 1fr)"
         >
-          <Grid item xs={2}>
-            <Box>
-              <SideMenu />
-            </Box>
-          </Grid>
-          <Grid
-            item
-            xs={10}
+          <Box gridColumn="span 2">
+            <SideMenu />
+          </Box>
+          <Box
+            gridColumn="span 10"
             sx={{ backgroundColor: '#F5F6F7' }}
-            display="flex"
+            display="grid"
             justifyContent="center"
             pb={16}
           >
             {children}
-          </Grid>
-        </Grid>
-      </Grid>
-      <Footer onExit={onExit} loggedUser={!!loggedUser} />
+          </Box>
+        </Box>
+      </Box>
+      <Footer onExit={onExit} loggedUser={true} />
     </Box>
   );
 };
