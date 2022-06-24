@@ -5,48 +5,47 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import Header from '../Header';
-import withParties from '../../decorators/withParties';
+import withParties, { WithPartiesProps } from '../../decorators/withParties';
 import SideMenu from '../SideMenu/SideMenu';
 
 type Props = {
   children?: React.ReactNode;
-};
+} & WithPartiesProps;
 
-const Layout = ({ children }: Props) => {
+const Layout = ({ children, parties }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
 
   return (
     <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-      }}
+      display="grid"
+      gridTemplateColumns="1fr"
+      gridTemplateRows="auto 1fr auto"
+      gridTemplateAreas={`"header"
+                          "body"
+                          "footer"`}
+      minHeight="100vh"
     >
-      <Header onExit={onExit} loggedUser={loggedUser} />
-      <Box display="grid" gridTemplateColumns="repeat(12, 1fr)" flex={1}>
+      <Box gridArea="header">
+        <Header onExit={onExit} loggedUser={loggedUser} parties={parties} />
+      </Box>
+      <Box gridArea="body" display="grid" gridTemplateColumns="minmax(200px, 2fr) 10fr">
+        <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
+          <SideMenu />
+        </Box>
         <Box
-          gridColumn="span 12"
-          sx={{ backgroundColor: 'background.paper' }}
+          gridColumn="auto"
+          sx={{ backgroundColor: '#F5F6F7' }}
           display="grid"
-          gridTemplateColumns="repeat(12, 1fr)"
+          justifyContent="center"
+          pb={16}
         >
-          <Box gridColumn="span 2">
-            <SideMenu />
-          </Box>
-          <Box
-            gridColumn="span 10"
-            sx={{ backgroundColor: '#F5F6F7' }}
-            display="grid"
-            justifyContent="center"
-            pb={16}
-          >
-            {children}
-          </Box>
+          {children}
         </Box>
       </Box>
-      <Footer onExit={onExit} loggedUser={true} />
+      <Box gridArea="footer">
+        <Footer onExit={onExit} loggedUser={true} />
+      </Box>
     </Box>
   );
 };

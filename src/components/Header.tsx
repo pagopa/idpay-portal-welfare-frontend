@@ -6,7 +6,7 @@ import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsS
 import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
 import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import withParties, { WithPartiesProps } from '../decorators/withParties';
+import { WithPartiesProps } from '../decorators/withParties';
 import { Product } from '../model/Product';
 import { useAppSelector } from '../redux/hooks';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
@@ -27,7 +27,6 @@ const welfareProduct: ProductEntity = {
 
 const Header = ({ onExit, loggedUser, parties }: Props) => {
   const { t } = useTranslation();
-  const party = useAppSelector(partiesSelectors.selectPartySelected);
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
   const parties2Show = parties.filter((party) => party.status === 'ACTIVE');
@@ -50,7 +49,7 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
   return (
     <CommonHeader
       onExit={onExit}
-      withSecondHeader={!!party}
+      withSecondHeader={true}
       selectedPartyId={selectedParty?.partyId}
       selectedProductId={welfareProduct.id}
       addSelfcareProduct={true} // TODO verify if returned from API
@@ -94,4 +93,4 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
     />
   );
 };
-export default withParties(Header);
+export default Header;
