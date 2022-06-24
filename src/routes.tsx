@@ -7,4 +7,4 @@ const ROUTES = {
   HOME: `${BASE_ROUTE}`,
 };
 
-export default ROUTES as { [key: string]: string };
+export default ROUTES;

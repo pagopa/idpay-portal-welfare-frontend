@@ -12,6 +12,7 @@ type Props = {
   children?: React.ReactNode;
 } & WithPartiesProps;
 
+/** The layout of the application: Header, Body (having a sidemenu) and Footer */
 const Layout = ({ children, parties }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
@@ -39,6 +40,9 @@ const Layout = ({ children, parties }: Props) => {
           display="grid"
           justifyContent="center"
           pb={16}
+          pt={2}
+          px={2}
+          gridTemplateColumns="1fr"
         >
           {children}
         </Box>

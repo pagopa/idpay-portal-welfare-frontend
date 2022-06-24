@@ -26,6 +26,7 @@ export const userFromJwtToken: (token: string) => User = function (token: string
   };
 };
 
+/** A custom hook used to obtain a function to check if there is a valid JWT token, loading into redux the logged user object */
 export const useLogin = () => {
   const dispatch = useDispatch();
   const setUser = (user: User) => dispatch(userActions.setLoggedUser(user));

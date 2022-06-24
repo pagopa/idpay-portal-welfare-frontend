@@ -39,6 +39,7 @@ export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
   }
 };
 
+/** A custom hook to read the current partyId from JWT and then fetch it's information, caching the result into redux */
 export const useSelectedParty = (): (() => Promise<Party>) => {
   const dispatch = useAppDispatch();
   const partyJwtConfig: PartyJwtConfig | null = retrieveSelectedPartyIdConfig();
