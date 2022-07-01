@@ -134,7 +134,7 @@ stages:
       )
     pool:
       vmImage: 'ubuntu-latest'
-    jobs:
+#    jobs:
 #      - job: make_release
 #        condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
 #        steps:
