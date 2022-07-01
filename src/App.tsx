@@ -11,15 +11,18 @@ import routes from './routes';
 import Home from './pages/home/Home';
 import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
 import Auth from './pages/auth/Auth';
+// import Wizard from './components/Wizard/Wizard';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => (
     <Layout>
       <Switch>
-        <Route path={routes.HOME}>
+        <Route path={routes.HOME} exact={true}>
           <Home />
         </Route>
-
+        {/* <Route path={routes.WIZARD} exact={true}>
+          <Wizard />
+        </Route> */}
         <Route path="*">
           <Redirect to={routes.HOME} />
         </Route>
@@ -33,12 +36,10 @@ const App = () => (
     <LoadingOverlay />
     <UserNotifyHandle />
     <UnloadEventHandler />
-
     <Switch>
       <Route path={routes.AUTH}>
         <Auth />
       </Route>
-
       <Route path="*">
         <SecuredRoutes />
       </Route>

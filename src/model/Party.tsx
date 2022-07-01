@@ -1,4 +1,4 @@
-import { InstitutionResource } from '../api/generated/b4f-dashboard/InstitutionResource';
+import { InstitutionResource } from '../api/generated/portal/InstitutionResource';
 import { ENV } from '../utils/env';
 
 export type SelfcareRole = 'ADMIN' | 'LIMITED';

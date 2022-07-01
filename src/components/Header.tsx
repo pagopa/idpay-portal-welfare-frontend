@@ -10,6 +10,7 @@ import { WithPartiesProps } from '../decorators/withParties';
 import { Product } from '../model/Product';
 import { useAppSelector } from '../redux/hooks';
 import { partiesSelectors } from '../redux/slices/partiesSlice';
+import { Party } from '../model/Party';
 import { ENV } from './../utils/env';
 
 type Props = WithPartiesProps & {
@@ -25,11 +26,12 @@ const welfareProduct: ProductEntity = {
   linkType: 'internal',
 };
 
-const Header = ({ onExit, loggedUser, parties }: Props) => {
+const Header = ({ onExit, loggedUser /* , parties */ }: Props) => {
   const { t } = useTranslation();
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
-  const parties2Show = parties.filter((party) => party.status === 'ACTIVE');
+  const parties2Show = [selectedParty as Party];
+  // const parties2Show = parties.filter((party) => party.status === 'ACTIVE');
   const activeProducts: Array<Product> = useMemo(
     () =>
       [
@@ -68,11 +70,11 @@ const Header = ({ onExit, loggedUser, parties }: Props) => {
       loggedUser={
         loggedUser
           ? {
-              id: loggedUser ? loggedUser.uid : '',
-              name: loggedUser?.name,
-              surname: loggedUser?.surname,
-              email: loggedUser?.email,
-            }
+            id: loggedUser ? loggedUser.uid : '',
+            name: loggedUser?.name,
+            surname: loggedUser?.surname,
+            email: loggedUser?.email,
+          }
           : false
       }
       assistanceEmail={ENV.ASSISTANCE.EMAIL}

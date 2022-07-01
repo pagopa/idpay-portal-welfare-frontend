@@ -4,11 +4,11 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { createClient, WithDefaultsT } from './generated/b4f-dashboard/client';
-import { InstitutionResource } from './generated/b4f-dashboard/InstitutionResource';
-import { ProductsResource } from './generated/b4f-dashboard/ProductsResource';
-import { IdentityTokenResource } from './generated/b4f-dashboard/IdentityTokenResource';
-import { ProductRoleMappingsResource } from './generated/b4f-dashboard/ProductRoleMappingsResource';
+import { createClient, WithDefaultsT } from './generated/portal/client';
+import { InstitutionResource } from './generated/portal/InstitutionResource';
+import { ProductsResource } from './generated/portal/ProductsResource';
+import { IdentityTokenResource } from './generated/portal/IdentityTokenResource';
+import { ProductRoleMappingsResource } from './generated/portal/ProductRoleMappingsResource';
 
 const withBearerAndPartyId: WithDefaultsT<'bearerAuth'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();

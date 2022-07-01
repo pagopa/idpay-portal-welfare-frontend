@@ -15,6 +15,9 @@ export default {
     home: {
       title: 'Home',
     },
+    wizard: {
+      title: 'Wizard',
+    }
   },
   subHeader: {
     partySelectionSearch: {
@@ -23,4 +26,30 @@ export default {
     },
     backButton: 'Esci',
   },
+  wizard: {
+    stepOne: {
+      title: 'Informazioni generali'
+    },
+    stepTwo: {
+      title: 'Destinatari'
+    },
+    stepThree: {
+      title: 'Regole di spesa'
+    },
+    stepFour: {
+      title: 'Regole di rimborso'
+    },
+    stepFive: {
+      title: 'Informazioni legali'
+    },
+    common: {
+      buttons: {
+        back: 'Indietro',
+        skip: 'Salva bozza',
+        continue: 'Continua',
+        send: 'Invia per la revisione',
+        reset: 'Reset'
+      }
+    }
+  }
 };

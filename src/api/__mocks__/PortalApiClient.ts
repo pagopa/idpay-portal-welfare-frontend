@@ -1,21 +1,21 @@
 import { EmailString } from '@pagopa/ts-commons/lib/strings';
-import { IdentityTokenResource } from '../generated/b4f-dashboard/IdentityTokenResource';
+import { IdentityTokenResource } from '../generated/portal/IdentityTokenResource';
 import {
   InstitutionResource,
   InstitutionTypeEnum,
-} from '../generated/b4f-dashboard/InstitutionResource';
+} from '../generated/portal/InstitutionResource';
 import {
   InstitutionUserResource,
   RoleEnum,
-} from '../generated/b4f-dashboard/InstitutionUserResource';
-import { SelcRoleEnum } from '../generated/b4f-dashboard/ProductRoleInfoResource';
+} from '../generated/portal/InstitutionUserResource';
+import { SelcRoleEnum } from '../generated/portal/ProductRoleInfoResource';
 import {
   PartyRoleEnum,
   ProductRoleMappingsResource,
-} from '../generated/b4f-dashboard/ProductRoleMappingsResource';
-import { ProductsResource, StatusEnum } from '../generated/b4f-dashboard/ProductsResource';
-import { ProductUserResource } from '../generated/b4f-dashboard/ProductUserResource';
-import { UserResource } from '../generated/b4f-dashboard/UserResource';
+} from '../generated/portal/ProductRoleMappingsResource';
+import { ProductsResource, StatusEnum } from '../generated/portal/ProductsResource';
+import { ProductUserResource } from '../generated/portal/ProductUserResource';
+import { UserResource } from '../generated/portal/UserResource';
 
 export const mockedInstitutionResources: Array<InstitutionResource> = [
   {
