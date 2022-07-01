@@ -32,6 +32,12 @@ export default function SideMenu() {
             isSelected={pathname === ROUTES.HOME}
             icon={DashboardCustomize}
           />
+          {/* <SidenavItem
+            title={t('sideMenu.wizard.title')}
+            handleClick={() => onExit(() => history.push(ROUTES.WIZARD))}
+            isSelected={pathname === ROUTES.WIZARD}
+            icon={DashboardCustomize}
+          /> */}
         </List>
       </Box>
     </Box>

@@ -1,7 +1,7 @@
 import {
   InstitutionResource,
   InstitutionTypeEnum,
-} from '../../api/generated/b4f-dashboard/InstitutionResource';
+} from '../../api/generated/portal/InstitutionResource';
 import { institutionResource2Party } from '../Party';
 
 test('Test institutionResource2Party', () => {

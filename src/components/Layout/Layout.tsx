@@ -5,15 +5,20 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import Header from '../Header';
-import withParties, { WithPartiesProps } from '../../decorators/withParties';
+// import withParties, { WithPartiesProps } from '../../decorators/withParties';
 import SideMenu from '../SideMenu/SideMenu';
+
+// type Props = {
+//   children?: React.ReactNode;
+// } & WithPartiesProps;
 
 type Props = {
   children?: React.ReactNode;
-} & WithPartiesProps;
+};
 
 /** The layout of the application: Header, Body (having a sidemenu) and Footer */
-const Layout = ({ children, parties }: Props) => {
+// const Layout = ({ children, parties }: Props) => {
+const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
 
@@ -28,7 +33,8 @@ const Layout = ({ children, parties }: Props) => {
       minHeight="100vh"
     >
       <Box gridArea="header">
-        <Header onExit={onExit} loggedUser={loggedUser} parties={parties} />
+        <Header onExit={onExit} loggedUser={loggedUser} parties={[]} />
+        {/* <Header onExit={onExit} loggedUser={loggedUser} parties={parties} /> */}
       </Box>
       <Box gridArea="body" display="grid" gridTemplateColumns="minmax(200px, 2fr) 10fr">
         <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
@@ -53,4 +59,5 @@ const Layout = ({ children, parties }: Props) => {
     </Box>
   );
 };
-export default withParties(Layout);
+// export default withParties(Layout);
+export default Layout;

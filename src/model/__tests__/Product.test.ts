@@ -1,4 +1,4 @@
-import { ProductsResource, StatusEnum } from '../../api/generated/b4f-dashboard/ProductsResource';
+import { ProductsResource, StatusEnum } from '../../api/generated/portal/ProductsResource';
 import { productResource2Product } from '../Product';
 
 test('Test institutionInfo2Party', () => {

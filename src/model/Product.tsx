@@ -1,4 +1,4 @@
-import { ProductsResource } from '../api/generated/b4f-dashboard/ProductsResource';
+import { ProductsResource } from '../api/generated/portal/ProductsResource';
 import { PartyRole, SelfcareRole, UserRole } from './Party';
 
 export type ProductStatus = 'ACTIVE' | 'INACTIVE' | 'PENDING';
