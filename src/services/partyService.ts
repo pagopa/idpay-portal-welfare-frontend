@@ -1,5 +1,4 @@
-import { PortalApi } from '../api/PortalApiClient';
-import { institutionResource2Party, Party } from '../model/Party';
+import { /* institutionResource2Party, */ Party } from '../model/Party';
 import { mockedParties } from './__mocks__/partyService';
 
 export const fetchParties = (): Promise<Array<Party>> => {
@@ -7,9 +6,11 @@ export const fetchParties = (): Promise<Array<Party>> => {
   if (process.env.REACT_APP_API_MOCK_PARTIES === 'true') {
     return new Promise((resolve) => resolve(mockedParties));
   } else {
-    return PortalApi.getInstitutions().then((institutionResources) =>
-      institutionResources ? institutionResources.map(institutionResource2Party) : []
-    );
+    throw new Error('TODO');
+
+    // return PortalApi.getInstitutions().then((institutionResources) =>
+    //   institutionResources ? institutionResources.map(institutionResource2Party) : []
+    // );
   }
 };
 
@@ -44,7 +45,10 @@ const retrieveParty = (
   }
 };
 
-const retrieveParty_fetch = (partyId: string): Promise<Party | null> =>
-  PortalApi.getInstitution(partyId).then((institutionResource) =>
-    institutionResource ? institutionResource2Party(institutionResource) : null
-  );
+const retrieveParty_fetch = (_partyId: string): Promise<Party | null> =>
+  // PortalApi.getInstitution(partyId).then((institutionResource) =>
+  //   institutionResource ? institutionResource2Party(institutionResource) : null
+  // );
+  {
+    throw new Error('TODO');
+  };
