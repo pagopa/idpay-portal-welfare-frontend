@@ -57,7 +57,7 @@ export default {
           timeRangeJoinTo: 'Fine adesione',
           timeRangeSpendTitle: 'Quando è possibile spendere i fondi?',
           timeRangeSpendFrom: 'Inizio periodo',
-          timeRangeSpendTo: 'fine periodo',
+          timeRangeSpendTo: 'Fine periodo',
         },
       },
       stepTwo: {
