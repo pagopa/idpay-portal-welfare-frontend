@@ -9,9 +9,9 @@ import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
 import Home from './pages/home/Home';
+import NewInitiative from './pages/newInitiative/newInitiative';
 import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
 import Auth from './pages/auth/Auth';
-// import Wizard from './components/Wizard/Wizard';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => (
@@ -20,9 +20,9 @@ const SecuredRoutes = withLogin(
         <Route path={routes.HOME} exact={true}>
           <Home />
         </Route>
-        {/* <Route path={routes.WIZARD} exact={true}>
-          <Wizard />
-        </Route> */}
+        <Route path={routes.NEW_INITIATIVE} exact={true}>
+          <NewInitiative />
+        </Route>
         <Route path="*">
           <Redirect to={routes.HOME} />
         </Route>
