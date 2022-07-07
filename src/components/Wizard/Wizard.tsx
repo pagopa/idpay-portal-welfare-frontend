@@ -19,7 +19,6 @@ const Wizard = () => {
 
   const handleNext = () => {
     setActionType('SUBMIT');
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleDraft = () => {
@@ -37,7 +36,14 @@ const Wizard = () => {
   const renderActiveStepBox = (activeStep: number) => {
     switch (activeStep) {
       case 0:
-        return <StepOneForm action={actionType} setAction={setActionType} />;
+        return (
+          <StepOneForm
+            action={actionType}
+            setAction={setActionType}
+            currentStep={activeStep}
+            setCurrentStep={setActiveStep}
+          />
+        );
       case 1:
         return <h1>{steps[activeStep]}</h1>;
       case 2:

@@ -9,7 +9,10 @@ import {
   TextField,
   Box,
   FormHelperText,
+  Tooltip,
 } from '@mui/material';
+import { grey } from '@mui/material/colors';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -18,24 +21,36 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { addDays } from 'date-fns';
+import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
 
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
 }
 
-const StepOneForm = ({ action, setAction }: Props) => {
+const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
+  const dispatch = useDispatch();
+  const formData = useSelector(stepOneFormSelector);
   const { t } = useTranslation();
+
   useEffect(() => {
     if (action === 'SUBMIT') {
       formik.handleSubmit();
-      console.log(formik.values);
     } else {
       return;
     }
     setAction('');
   }, [action]);
+
+  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
+    const totalBudgetInt = parseInt(totalBudget, 10);
+    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
+    return Math.floor(totalBudgetInt / budgetPerPersonInt);
+  };
 
   const validationSchema = Yup.object().shape({
     recipientsQuestionGroup: Yup.string().required(t('validation.required')),
@@ -96,18 +111,22 @@ const StepOneForm = ({ action, setAction }: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      recipientsQuestionGroup: 'persons',
-      recipientsTypeGroup: 'manual_list',
-      totalBudget: '',
-      budgetPerPerson: '',
-      joinFrom: '',
-      joinTo: '',
-      spendFrom: '',
-      spendTo: '',
+      recipientsQuestionGroup: formData.form.recipientsQuestionGroup,
+      recipientsTypeGroup: formData.form.recipientsTypeGroup,
+      totalBudget: formData.form.totalBudget,
+      budgetPerPerson: formData.form.budgetPerPerson,
+      joinFrom: formData.form.joinFrom,
+      joinTo: formData.form.joinTo,
+      spendFrom: formData.form.spendFrom,
+      spendTo: formData.form.spendTo,
     },
+
     validateOnChange: true,
     validationSchema,
-    onSubmit: () => {},
+    onSubmit: (values) => {
+      dispatch(stepOneFormActions.setFormData(values));
+      setCurrentStep(currentStep + 1);
+    },
   });
 
   return (
@@ -196,23 +215,14 @@ const StepOneForm = ({ action, setAction }: Props) => {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 3,
             gridTemplateRows: 'auto',
-            gridTemplateAreas: `"budgetTitle budgetTitle budgetPerPersonCalcTitle budgetPerPersonCalcTitle" 
-                                  "totalBudget budgetPerPerson budgetPerPersonCalc budgetPerPersonCalc"`,
+            gridTemplateAreas: `"budgetTitle budgetTitle . ." 
+                                  "totalBudget budgetPerPerson . budgetPerPersonCalc"`,
             py: 2,
           }}
         >
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'budgetTitle' }}>
             {t('components.wizard.stepOne.form.budget')}
           </FormLabel>
-          {!isNaN(
-            parseInt(formik.values.totalBudget, 10) / parseInt(formik.values.budgetPerPerson, 10)
-          ) && (
-            <FormLabel
-              sx={{ fontSize: '16px', gridArea: 'budgetPerPersonCalcTitle', justifySelf: 'end' }}
-            >
-              {t('components.wizard.stepOne.form.reachedUsers')}
-            </FormLabel>
-          )}
           <TextField
             sx={{ gridArea: 'totalBudget' }}
             inputProps={{
@@ -243,16 +253,42 @@ const StepOneForm = ({ action, setAction }: Props) => {
             error={formik.touched.budgetPerPerson && Boolean(formik.errors.budgetPerPerson)}
             helperText={formik.touched.budgetPerPerson && formik.errors.budgetPerPerson}
           />
-          {!isNaN(
-            parseInt(formik.values.totalBudget, 10) / parseInt(formik.values.budgetPerPerson, 10)
-          ) && (
-            <Typography
-              variant="subtitle2"
-              sx={{ gridArea: 'budgetPerPersonCalc', justifySelf: 'end', alignSelf: 'center' }}
+          {!isNaN(peopleReached(formik.values.totalBudget, formik.values.budgetPerPerson)) && (
+            <Box
+              sx={{
+                gridArea: 'budgetPerPersonCalc',
+                justifySelf: 'end',
+                alignSelf: 'center',
+                display: 'flex',
+                justifyContent: 'space-around',
+                width: '100%',
+                backgroundColor: grey[100],
+                borderRadius: 2,
+                py: 2,
+              }}
             >
-              {parseInt(formik.values.totalBudget, 10) /
-                parseInt(formik.values.budgetPerPerson, 10)}
-            </Typography>
+              <Typography
+                variant="body2"
+                component="span"
+                sx={{ display: 'flex', alignSelf: 'center' }}
+              >
+                {t('components.wizard.stepOne.form.reachedUsers')}
+              </Typography>
+              <Typography
+                variant="subtitle2"
+                component="span"
+                sx={{ display: 'flex', alignSelf: 'center' }}
+              >
+                {peopleReached(formik.values.totalBudget, formik.values.budgetPerPerson)}
+              </Typography>
+              <Tooltip
+                title={t('components.wizard.stepOne.form.reachedUsersTooltip')}
+                placement="top"
+                arrow
+              >
+                <InfoOutlinedIcon color="primary" />
+              </Tooltip>
+            </Box>
           )}
         </FormControl>
         <FormControl
@@ -280,13 +316,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
                 <TextField
                   {...props}
                   id="join-from"
-                  label={t('components.wizard.stepOne.form.timeRangeJoinFrom')}
                   name="joinFrom"
                   type="date"
                   sx={{ gridArea: 'timeRangeJoinFrom' }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   error={formik.touched.joinFrom && Boolean(formik.errors.joinFrom)}
                   helperText={formik.touched.joinFrom && formik.errors.joinFrom}
                 />
@@ -302,13 +334,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
                 <TextField
                   {...props}
                   id="join-to"
-                  label={t('components.wizard.stepOne.form.timeRangeJoinTo')}
                   name="joinTo"
                   type="date"
                   sx={{ gridArea: 'timeRangeJoinTo' }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   error={formik.touched.joinTo && Boolean(formik.errors.joinTo)}
                   helperText={formik.touched.joinTo && formik.errors.joinTo}
                 />
@@ -341,13 +369,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
                 <TextField
                   {...props}
                   id="spend-from"
-                  label={t('components.wizard.stepOne.form.timeRangeSpendFrom')}
                   name="spendFrom"
                   type="date"
                   sx={{ gridArea: 'timeRangeSpendFrom' }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   error={formik.touched.spendFrom && Boolean(formik.errors.spendFrom)}
                   helperText={formik.touched.spendFrom && formik.errors.spendFrom}
                 />
@@ -363,13 +387,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
                 <TextField
                   {...props}
                   id="spend-to"
-                  label={t('components.wizard.stepOne.form.timeRangeSpendTo')}
                   name="spendTo"
                   type="date"
                   sx={{ gridArea: 'timeRangeSpendTo' }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
                   error={formik.touched.spendTo && Boolean(formik.errors.spendTo)}
                   helperText={formik.touched.spendTo && formik.errors.spendTo}
                 />

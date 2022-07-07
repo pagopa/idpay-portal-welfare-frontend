@@ -49,7 +49,9 @@ export default {
           taxCodeList: 'Si, ho una lista di codici fiscali',
           manualSelection: "No, imposterò dei criteri d'ammissione",
           budget: 'Qual è il tuo budget?',
-          reachedUsers: "Quanti utenti raggiunge l'iniziativa?",
+          reachedUsers: 'Utenti raggiungibili',
+          reachedUsersTooltip:
+            'Numero di utenti raggiungibili dall’iniziativa dividendo il budget totale per il budget a persona.',
           totalBudget: 'Budget totale',
           budgetPerPerson: 'Budget a persona',
           timeRangeJoinTitle: 'Quando è possibile aderire?',
