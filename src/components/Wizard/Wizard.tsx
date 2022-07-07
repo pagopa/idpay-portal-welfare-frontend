@@ -37,7 +37,7 @@ const Wizard = () => {
   const renderActiveStepBox = (activeStep: number) => {
     switch (activeStep) {
       case 0:
-        return <StepOneForm action={actionType} />;
+        return <StepOneForm action={actionType} setAction={setActionType} />;
       case 1:
         return <h1>{steps[activeStep]}</h1>;
       case 2:
