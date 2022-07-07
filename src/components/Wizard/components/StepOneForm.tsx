@@ -18,48 +18,82 @@ import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { addDays } from 'date-fns';
-import { validateString, validateBudget, validateDateRange } from '../../../utils/validations';
+import * as Yup from 'yup';
 
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
 }
 
-interface Errors {
-  recipientsQuestionGroup: string;
-  recipientsTypeGroup: string;
-  totalBudget: string;
-  budgetPerPerson: string;
-  joinFrom: string;
-  joinTo: string;
-  spendFrom: string;
-  spendTo: string;
-}
-
 const StepOneForm = ({ action, setAction }: Props) => {
+  const { t } = useTranslation();
   useEffect(() => {
     if (action === 'SUBMIT') {
       formik.handleSubmit();
+      console.log(formik.values);
     } else {
       return;
     }
     setAction('');
   }, [action]);
 
-  const fieldOnError = (errorMessage: string | undefined, isTouched: boolean | undefined) => {
-    console.log(errorMessage);
-    console.log(isTouched);
+  const validationSchema = Yup.object().shape({
+    recipientsQuestionGroup: Yup.string().required(t('validation.required')),
+    recipientsTypeGroup: Yup.string().required(t('validation.required')),
+    totalBudget: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .integer(t('validation.integer')),
+    budgetPerPerson: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .integer(t('validation.integer'))
+      .when('totalBudget', (totalBudget, schema) => {
+        if (totalBudget) {
+          return Yup.number()
+            .typeError(t('validation.numeric'))
+            .required(t('validation.required'))
+            .positive(t('validation.positive'))
+            .integer(t('validation.integer'))
+            .max(parseInt(totalBudget, 10) - 1, t('validation.outBudgetPerPerson'));
+        }
+        return schema;
+      }),
+    joinFrom: Yup.date().required(t('validation.required')),
+    joinTo: Yup.date()
+      .required(t('validation.required'))
+      .when('joinFrom', (joinFrom, schema) => {
+        if (joinFrom) {
+          return Yup.date()
+            .min(joinFrom, t('validation.outJoinTo'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
+    spendFrom: Yup.date()
+      .required(t('validation.required'))
+      .when('joinTo', (joinTo, schema) => {
+        if (joinTo) {
+          return Yup.date()
+            .min(joinTo, t('validation.outSpendFrom'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
+    spendTo: Yup.date()
+      .required(t('validation.required'))
+      .when('spendFrom', (spendFrom, schema) => {
+        if (spendFrom) {
+          return Yup.date()
+            .min(spendFrom, t('validation.outSpendTo'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
+  });
 
-    if (typeof isTouched === undefined || isTouched === null) {
-      return false;
-    }
-    if (!errorMessage) {
-      return false;
-    }
-    return errorMessage?.length && isTouched ? true : false;
-  };
-
-  const { t } = useTranslation();
   const formik = useFormik({
     initialValues: {
       recipientsQuestionGroup: 'persons',
@@ -71,25 +105,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
       spendFrom: '',
       spendTo: '',
     },
-    validateOnChange: false,
-    validate: (values) => {
-      const errors: Errors = {
-        recipientsQuestionGroup: validateString(values.recipientsQuestionGroup),
-        recipientsTypeGroup: validateString(values.recipientsTypeGroup),
-        totalBudget: validateBudget(values.totalBudget, values.budgetPerPerson),
-        budgetPerPerson: validateBudget(values.totalBudget, values.budgetPerPerson),
-        joinFrom: '',
-        joinTo: '',
-        spendFrom: validateDateRange(new Date(values.spendFrom), new Date(values.spendTo)),
-        spendTo: validateDateRange(new Date(values.spendFrom), new Date(values.spendTo)),
-      };
-      console.log(errors);
-      return errors;
-    },
-
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    validateOnChange: true,
+    validationSchema,
+    onSubmit: () => {},
   });
 
   return (
@@ -112,7 +130,7 @@ const StepOneForm = ({ action, setAction }: Props) => {
             name="recipientsQuestionGroup"
             value={formik.values.recipientsQuestionGroup}
             defaultValue="persons"
-            onChange={formik.handleChange}
+            onChange={(value) => formik.setFieldValue('recipientsQuestionGroup', value)}
           >
             <FormControlLabel
               value="persons"
@@ -128,13 +146,13 @@ const StepOneForm = ({ action, setAction }: Props) => {
             />
           </RadioGroup>
           <FormHelperText
-            error={fieldOnError(
-              formik.errors.recipientsQuestionGroup,
-              formik.touched.recipientsQuestionGroup
-            )}
+            error={
+              formik.touched.recipientsQuestionGroup &&
+              Boolean(formik.errors.recipientsQuestionGroup)
+            }
             sx={{ gridColumn: 'span 12' }}
           >
-            {formik.errors.recipientsQuestionGroup}
+            {formik.touched.recipientsQuestionGroup && formik.errors.recipientsQuestionGroup}
           </FormHelperText>
         </FormControl>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
@@ -151,7 +169,7 @@ const StepOneForm = ({ action, setAction }: Props) => {
             name="recipientsTypeGroup"
             value={formik.values.recipientsTypeGroup}
             defaultValue="manual_list"
-            onChange={formik.handleChange}
+            onChange={(e) => formik.setFieldValue('recipientsTypeGroup', e.target.value, false)}
           >
             <FormControlLabel
               value="tax_code_list"
@@ -166,13 +184,10 @@ const StepOneForm = ({ action, setAction }: Props) => {
             />
           </RadioGroup>
           <FormHelperText
-            error={fieldOnError(
-              formik.errors.recipientsTypeGroup,
-              formik.touched.recipientsTypeGroup
-            )}
+            error={formik.touched.recipientsTypeGroup && Boolean(formik.errors.recipientsTypeGroup)}
             sx={{ gridColumn: 'span 12' }}
           >
-            {formik.errors.recipientsTypeGroup}
+            {formik.touched.recipientsTypeGroup && formik.errors.recipientsTypeGroup}
           </FormHelperText>
         </FormControl>
         <FormControl
@@ -209,9 +224,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
             placeholder={t('components.wizard.stepOne.form.totalBudget')}
             name="totalBudget"
             value={formik.values.totalBudget}
-            onChange={formik.handleChange}
-            error={fieldOnError(formik.errors.totalBudget, formik.touched.totalBudget)}
-            helperText={formik.errors.totalBudget}
+            onChange={(e) => formik.handleChange(e)}
+            error={formik.touched.totalBudget && Boolean(formik.errors.totalBudget)}
+            helperText={formik.touched.totalBudget && formik.errors.totalBudget}
           />
           <TextField
             sx={{ gridArea: 'budgetPerPerson' }}
@@ -224,9 +239,9 @@ const StepOneForm = ({ action, setAction }: Props) => {
             placeholder={t('components.wizard.stepOne.form.budgetPerPerson')}
             name="budgetPerPerson"
             value={formik.values.budgetPerPerson}
-            onChange={formik.handleChange}
-            error={fieldOnError(formik.errors.budgetPerPerson, formik.touched.budgetPerPerson)}
-            helperText={formik.errors.budgetPerPerson}
+            onChange={(e) => formik.handleChange(e)}
+            error={formik.touched.budgetPerPerson && Boolean(formik.errors.budgetPerPerson)}
+            helperText={formik.touched.budgetPerPerson && formik.errors.budgetPerPerson}
           />
           {!isNaN(
             parseInt(formik.values.totalBudget, 10) / parseInt(formik.values.budgetPerPerson, 10)
@@ -254,34 +269,52 @@ const StepOneForm = ({ action, setAction }: Props) => {
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeJoinTitle' }}>
             {t('components.wizard.stepOne.form.timeRangeJoinTitle')}
           </FormLabel>
-          <TextField
-            id="join-from"
-            label={t('components.wizard.stepOne.form.timeRangeJoinFrom')}
-            name="joinFrom"
-            type="date"
-            value={formik.values.joinFrom}
-            sx={{ gridArea: 'timeRangeJoinFrom' }}
-            onChange={formik.handleChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            error={fieldOnError(formik.errors.joinFrom, formik.touched.joinFrom)}
-            helperText={formik.errors.joinFrom}
-          />
-          <TextField
-            id="join-to"
-            label={t('components.wizard.stepOne.form.timeRangeJoinTo')}
-            name="joinTo"
-            type="date"
-            value={formik.values.joinTo}
-            sx={{ gridArea: 'timeRangeJoinTo' }}
-            onChange={formik.handleChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            error={fieldOnError(formik.errors.joinTo, formik.touched.joinTo)}
-            helperText={formik.errors.joinTo}
-          />
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label={t('components.wizard.stepOne.form.timeRangeJoinFrom')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.joinFrom}
+              onChange={(value) => formik.setFieldValue('joinFrom', value)}
+              minDate={new Date()}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="join-from"
+                  label={t('components.wizard.stepOne.form.timeRangeJoinFrom')}
+                  name="joinFrom"
+                  type="date"
+                  sx={{ gridArea: 'timeRangeJoinFrom' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  error={formik.touched.joinFrom && Boolean(formik.errors.joinFrom)}
+                  helperText={formik.touched.joinFrom && formik.errors.joinFrom}
+                />
+              )}
+            />
+            <DesktopDatePicker
+              label={t('components.wizard.stepOne.form.timeRangeJoinTo')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.joinTo}
+              onChange={(value) => formik.setFieldValue('joinTo', value)}
+              minDate={addDays(new Date(formik.values.joinFrom), 1)}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="join-to"
+                  label={t('components.wizard.stepOne.form.timeRangeJoinTo')}
+                  name="joinTo"
+                  type="date"
+                  sx={{ gridArea: 'timeRangeJoinTo' }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  error={formik.touched.joinTo && Boolean(formik.errors.joinTo)}
+                  helperText={formik.touched.joinTo && formik.errors.joinTo}
+                />
+              )}
+            />
+          </LocalizationProvider>
         </FormControl>
         <FormControl
           sx={{
@@ -315,8 +348,8 @@ const StepOneForm = ({ action, setAction }: Props) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={fieldOnError(formik.errors.spendFrom, formik.touched.spendFrom)}
-                  helperText={formik.errors.spendFrom}
+                  error={formik.touched.spendFrom && Boolean(formik.errors.spendFrom)}
+                  helperText={formik.touched.spendFrom && formik.errors.spendFrom}
                 />
               )}
             />
@@ -337,8 +370,8 @@ const StepOneForm = ({ action, setAction }: Props) => {
                   InputLabelProps={{
                     shrink: true,
                   }}
-                  error={fieldOnError(formik.errors.spendTo, formik.touched.spendTo)}
-                  helperText={formik.errors.spendTo}
+                  error={formik.touched.spendTo && Boolean(formik.errors.spendTo)}
+                  helperText={formik.touched.spendTo && formik.errors.spendTo}
                 />
               )}
             />

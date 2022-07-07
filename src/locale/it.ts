@@ -83,4 +83,15 @@ export default {
       },
     },
   },
+  validation: {
+    required: 'Campo obbligatorio',
+    numeric: 'Il campo deve contenere un valore numerico',
+    integer: 'Il campo deve contenere un valore intero',
+    positive: 'Il campo deve contenere un valore positivo',
+    outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
+    outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
+    outSpendFrom:
+      'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
+    outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
+  },
 };

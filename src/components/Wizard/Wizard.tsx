@@ -19,7 +19,7 @@ const Wizard = () => {
 
   const handleNext = () => {
     setActionType('SUBMIT');
-    // setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleDraft = () => {
