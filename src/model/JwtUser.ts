@@ -1,4 +1,4 @@
-import { PartyRole } from "./Party";
+import { PartyRole } from './Party';
 
 export type JWTUser = {
   uid: string;
@@ -11,6 +11,6 @@ export type JWTUser = {
     roles: Array<{
       partyRole: PartyRole;
       role: string;
-    }>
-  }
+    }>;
+  };
 };
