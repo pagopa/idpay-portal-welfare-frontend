@@ -24,6 +24,7 @@ import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
+import { WIZARD_ACTIONS } from '../../../utils/constants';
 
 interface Props {
   action: string;
@@ -38,10 +39,10 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (action === 'SUBMIT') {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
-    } else {
-      return;
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      dispatch(stepOneFormActions.setFormData(formik.values));
     }
     setAction('');
   }, [action]);

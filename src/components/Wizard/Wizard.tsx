@@ -2,6 +2,7 @@ import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material
 import SaveIcon from '@mui/icons-material/Save';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { WIZARD_ACTIONS } from '../../utils/constants';
 import StepOneForm from './components/StepOneForm';
 
 const Wizard = () => {
@@ -18,11 +19,11 @@ const Wizard = () => {
   ];
 
   const handleNext = () => {
-    setActionType('SUBMIT');
+    setActionType(WIZARD_ACTIONS.SUBMIT);
   };
 
   const handleDraft = () => {
-    setActionType('DRAFT');
+    setActionType(WIZARD_ACTIONS.DRAFT);
   };
 
   const handleBack = () => {
