@@ -10,6 +10,7 @@ export default {
     'incaricato-ente-creditore': 'Incaricato Ente Creditore',
     'referente-legale': 'Referente Legale',
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
+    admin: 'admin',
   },
   sideMenu: {
     home: {
@@ -17,7 +18,7 @@ export default {
     },
     wizard: {
       title: 'Wizard',
-    }
+    },
   },
   subHeader: {
     partySelectionSearch: {
@@ -28,19 +29,19 @@ export default {
   },
   wizard: {
     stepOne: {
-      title: 'Informazioni generali'
+      title: 'Informazioni generali',
     },
     stepTwo: {
-      title: 'Destinatari'
+      title: 'Destinatari',
     },
     stepThree: {
-      title: 'Regole di spesa'
+      title: 'Regole di spesa',
     },
     stepFour: {
-      title: 'Regole di rimborso'
+      title: 'Regole di rimborso',
     },
     stepFive: {
-      title: 'Informazioni legali'
+      title: 'Informazioni legali',
     },
     common: {
       buttons: {
@@ -48,8 +49,8 @@ export default {
         skip: 'Salva bozza',
         continue: 'Continua',
         send: 'Invia per la revisione',
-        reset: 'Reset'
-      }
-    }
-  }
+        reset: 'Reset',
+      },
+    },
+  },
 };
