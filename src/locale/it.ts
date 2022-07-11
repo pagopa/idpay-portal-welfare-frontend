@@ -65,12 +65,20 @@ export default {
       },
       stepTwo: {
         title: 'Destinatari',
-        form: {
-          title1: "Criteri d'ammissione",
-          subTitle1:
+        chooseCriteria: {
+          title: "Criteri d'ammissione",
+          subtitle:
             'Aggiungi uno o più criteri dal catalogo, oppure definisci dei criteri che i destinatari dell’iniziativa dovranno autodichiarare.',
-          criteria: 'Sfoglia criteri',
+          browse: 'Sfoglia criteri',
           addManually: 'Aggiungi manualmente',
+          modal: {
+            subtitle:
+              'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
+            addButton: 'Aggiungi',
+          },
+        },
+
+        form: {
           title2: 'Carica l’elenco degli ammessi',
           subTitle2:
             'Aggiungi i codici fiscali dei destinatari dell’iniziativa, così non dovranno effettuare alcun controllo d’ammissibilità.',

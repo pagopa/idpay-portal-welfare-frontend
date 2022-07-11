@@ -1,0 +1,91 @@
+import { Box, Button, Paper, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import { Dispatch, SetStateAction } from 'react';
+import withAdmissionCriteria, {
+  WithAdmissionCriteriaProps,
+} from '../../../../decorators/withAdmissionCriteria';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import AdmissionCriteriaModal from './AdmissionCriteriaModal';
+
+type Props = {
+  action: string;
+  setAction: Dispatch<SetStateAction<string>>;
+  // currentStep: number;
+  // setCurrentStep: Dispatch<SetStateAction<number>>;
+} & WithAdmissionCriteriaProps;
+
+const AdmissionCriteria = ({
+  action,
+  setAction,
+  admissionCriteria /* , currentStep, setCurrentStep */,
+}: Props) => {
+  const { t } = useTranslation();
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => setOpenModal(true);
+  const handleCloseModal = () => setOpenModal(false);
+  const [criteria, setCriteria] = useState(admissionCriteria);
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      //   formik.handleSubmit();
+    } else {
+      return;
+    }
+    setAction('');
+  }, [action]);
+
+  return (
+    <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
+      <Box sx={{ py: 3 }}>
+        <Typography variant="h6">{t('components.wizard.stepTwo.chooseCriteria.title')}</Typography>
+      </Box>
+      <form>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+          <Box sx={{ gridColumn: 'span 12' }}>
+            <Typography variant="body1">
+              {t('components.wizard.stepTwo.chooseCriteria.subtitle')}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 12' }}>
+            <Button size="small" href="" sx={{ p: 0 }}>
+              {t('components.wizard.common.links.findOut')}
+            </Button>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 3,
+            gridTemplateRows: 'auto',
+            gridTemplateAreas: `"criteriaButton addButton . . "`,
+            py: 2,
+            mb: 8,
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{ gridArea: 'criteriaButton' }}
+            startIcon={<ListAltIcon />}
+            onClick={handleOpenModal}
+          >
+            {t('components.wizard.stepTwo.chooseCriteria.browse')}
+          </Button>
+          <AdmissionCriteriaModal
+            openModal={openModal}
+            handleCloseModal={handleCloseModal}
+            criteria={criteria}
+            setCriteria={setCriteria}
+          />
+          <Button variant="text" sx={{ gridArea: 'addButton' }}>
+            {t('components.wizard.stepTwo.chooseCriteria.addManually')}
+          </Button>
+        </Box>
+      </form>
+    </Paper>
+  );
+};
+
+export default withAdmissionCriteria(AdmissionCriteria);
