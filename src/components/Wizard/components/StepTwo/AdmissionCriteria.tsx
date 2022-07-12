@@ -8,6 +8,7 @@ import withAdmissionCriteria, {
 } from '../../../../decorators/withAdmissionCriteria';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
+import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 
 type Props = {
   action: string;
@@ -23,9 +24,37 @@ const AdmissionCriteria = ({
 }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => setOpenModal(true);
-  const handleCloseModal = () => setOpenModal(false);
   const [criteria, setCriteria] = useState(admissionCriteria);
+  const [criteriaChanged, setCriteriaChanged] = useState(false);
+  const [criteriaToRender, setCriteriaToRender] = useState(Array<{ id: string; title: string }>);
+
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleOpenModal = () => setOpenModal(true);
+
+  const handleCriteriaAdded = () => {
+    setOpenModal(false);
+    setCriteriaChanged(!criteriaChanged);
+  };
+
+  const handleCriteriaRemoved = (e: any) => {
+    const elementIdToDelete = e.target.dataset.id;
+    const newCriteria = criteria.map((c) => {
+      if (c.id === elementIdToDelete) {
+        return { ...c, checked: false };
+      } else {
+        return { ...c };
+      }
+    });
+    setCriteria([...newCriteria]);
+    criteriaToRender.forEach((c, index) => {
+      if (c.id === elementIdToDelete) {
+        // eslint-disable-next-line functional/immutable-data
+        setCriteriaToRender([...criteriaToRender.splice(index, 0)]);
+        setCriteriaChanged(!criteriaChanged);
+      }
+    });
+  };
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -35,6 +64,25 @@ const AdmissionCriteria = ({
     }
     setAction('');
   }, [action]);
+
+  useEffect(() => {
+    /* eslint-disable functional/no-let */
+    criteria.forEach((c) => {
+      let i = 0;
+      let notPrinted = true;
+      while (notPrinted === true && i < criteriaToRender.length) {
+        notPrinted = c.id !== criteriaToRender[i].id ? true : false;
+        i++;
+      }
+      if (notPrinted === true && c.checked === true) {
+        // eslint-disable-next-line functional/immutable-data
+        setCriteriaToRender((prevCriteriaToRender) => [
+          ...prevCriteriaToRender,
+          { id: c.id, title: c.title },
+        ]);
+      }
+    });
+  }, [criteriaChanged]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -76,12 +124,23 @@ const AdmissionCriteria = ({
           <AdmissionCriteriaModal
             openModal={openModal}
             handleCloseModal={handleCloseModal}
+            handleCriteriaAdded={handleCriteriaAdded}
             criteria={criteria}
             setCriteria={setCriteria}
           />
           <Button variant="text" sx={{ gridArea: 'addButton' }}>
             {t('components.wizard.stepTwo.chooseCriteria.addManually')}
           </Button>
+        </Box>
+        <Box>
+          {criteriaToRender.map((c) => (
+            <AdmissionCriteriaItem
+              key={c.id}
+              id={c.id}
+              title={c.title}
+              handleCriteriaRemoved={handleCriteriaRemoved}
+            />
+          ))}
         </Box>
       </form>
     </Paper>

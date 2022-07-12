@@ -26,11 +26,18 @@ import { AdmissionCriteria } from '../../../../model/AdmissionCriteria';
 type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
+  handleCriteriaAdded: MouseEventHandler;
   criteria: Array<AdmissionCriteria>;
   setCriteria: Dispatch<Array<AdmissionCriteria>>;
 };
 
-const AdmissionCriteriaModal = ({ openModal, handleCloseModal, criteria, setCriteria }: Props) => {
+const AdmissionCriteriaModal = ({
+  openModal,
+  handleCloseModal,
+  handleCriteriaAdded,
+  criteria,
+  setCriteria,
+}: Props) => {
   const { t } = useTranslation();
   const [searchCriteria, setSearchCriteria] = useState('');
   const [headingHeight, setHeadingHeight] = useState('');
@@ -206,7 +213,7 @@ const AdmissionCriteriaModal = ({ openModal, handleCloseModal, criteria, setCrit
               pr: 2,
             }}
           >
-            <Button sx={{ width: '100%' }} variant="contained">
+            <Button sx={{ width: '100%' }} variant="contained" onClick={handleCriteriaAdded}>
               {t('components.wizard.stepTwo.chooseCriteria.modal.addButton')}
             </Button>
           </Box>
