@@ -140,6 +140,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
             id="recipients-question--label"
+            data-testid="recipients-question-label"
           >
             {t('components.wizard.stepOne.form.initiativeRecipients')}
           </FormLabel>
@@ -179,6 +180,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
             id="recipients-type--label"
+            data-testid="recipients-type-label"
           >
             {t('components.wizard.stepOne.form.recipientsType')}
           </FormLabel>
@@ -231,6 +233,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               min: 1,
               type: 'number',
             }}
+            id="total-budget"
+            data-testid="total-budget-t"
             label={t('components.wizard.stepOne.form.totalBudget')}
             placeholder={t('components.wizard.stepOne.form.totalBudget')}
             name="totalBudget"
@@ -246,6 +250,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               min: 1,
               type: 'number',
             }}
+            id="budget-per-person"
+            data-testid="budget-per-person"
             label={t('components.wizard.stepOne.form.budgetPerPerson')}
             placeholder={t('components.wizard.stepOne.form.budgetPerPerson')}
             name="budgetPerPerson"
@@ -317,6 +323,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="join-from"
+                  data-testid="join-from-t"
                   name="joinFrom"
                   type="date"
                   sx={{ gridArea: 'timeRangeJoinFrom' }}
@@ -335,6 +342,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="join-to"
+                  data-testid="join-to-t"
                   name="joinTo"
                   type="date"
                   sx={{ gridArea: 'timeRangeJoinTo' }}
@@ -370,6 +378,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="spend-from"
+                  data-testid="spend-from-t"
                   name="spendFrom"
                   type="date"
                   sx={{ gridArea: 'timeRangeSpendFrom' }}
@@ -388,6 +397,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="spend-to"
+                  data-testid="spend-to-t"
                   name="spendTo"
                   type="date"
                   sx={{ gridArea: 'timeRangeSpendTo' }}

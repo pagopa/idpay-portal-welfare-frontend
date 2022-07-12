@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { partiesActions, partiesSelectors } from '../../redux/slices/partiesSlice';
-import { RootState } from '../../redux/store';
+// import { RootState } from '../../redux/store';
 import { mockedParties } from '../../services/__mocks__/partyService';
 
-export const verifyMockExecution = (state: RootState) => {
-  expect(state.parties.list).toMatchObject(mockedParties);
-};
+// export const verifyMockExecution = (state: RootState) => {
+//   expect(state.parties.list).toMatchObject(mockedParties);
+// };
 
 export default (WrappedComponent: React.ComponentType<any>) => (props: any) => {
   const dispatch = useAppDispatch();
