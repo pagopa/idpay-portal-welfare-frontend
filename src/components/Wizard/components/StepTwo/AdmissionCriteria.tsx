@@ -28,6 +28,8 @@ const AdmissionCriteria = ({
   const [criteria, setCriteria] = useState(admissionCriteria);
   const [criteriaChanged, setCriteriaChanged] = useState(false);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<{ id: string; title: string }>);
+  const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<{ id: number }>);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -54,6 +56,25 @@ const AdmissionCriteria = ({
         // eslint-disable-next-line functional/immutable-data
         setCriteriaToRender([...criteriaToRender.splice(index, 0)]);
         setCriteriaChanged(!criteriaChanged);
+      }
+    });
+  };
+
+  const handleManualCriteriaAdded = () => {
+    setManualCriteriaNumber((prevManualCriteriaNumber) => prevManualCriteriaNumber + 1);
+    setManualCriteriaToRender((prevManualCriteriaToRender) => [
+      ...prevManualCriteriaToRender,
+      { id: manualCriteriaNumber },
+    ]);
+  };
+
+  // eslint-disable-next-line arrow-body-style
+  const handleManualCriteriaRemoved = (e: any) => {
+    const elementIdToDelete = parseInt(e.target.dataset.id, 10);
+    manualCriteriaToRender.forEach((m, index) => {
+      if (m.id === elementIdToDelete) {
+        // eslint-disable-next-line functional/immutable-data
+        setManualCriteriaToRender([...manualCriteriaToRender.splice(index, 0)]);
       }
     });
   };
@@ -121,7 +142,7 @@ const AdmissionCriteria = ({
             criteria={criteria}
             setCriteria={setCriteria}
           />
-          <Button variant="text" sx={{ gridArea: 'addButton' }}>
+          <Button variant="text" sx={{ gridArea: 'addButton' }} onClick={handleManualCriteriaAdded}>
             {t('components.wizard.stepTwo.chooseCriteria.addManually')}
           </Button>
         </Box>
@@ -132,6 +153,20 @@ const AdmissionCriteria = ({
               id={c.id}
               title={c.title}
               handleCriteriaRemoved={handleCriteriaRemoved}
+              action={action}
+              setAction={setAction}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+            />
+          ))}
+        </Box>
+        <Box>
+          {manualCriteriaToRender.map((m) => (
+            <AdmissionCriteriaItem
+              key={m.id}
+              id={m.id}
+              title={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m.id + 1}`}
+              handleCriteriaRemoved={handleManualCriteriaRemoved}
               action={action}
               setAction={setAction}
               currentStep={currentStep}

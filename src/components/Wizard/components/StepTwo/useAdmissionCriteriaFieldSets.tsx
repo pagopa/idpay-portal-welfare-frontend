@@ -6,8 +6,8 @@ import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 
 type Props = {
-  id: string;
-  action: string;
+  id: string | number;
+  action: string | number;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
@@ -438,7 +438,61 @@ const useAdmissionCriteriaFieldSets = ({
         </Box>
       );
     default:
-      return null;
+      return (
+        <Box
+          sx={{
+            gridColumn: 'span 12',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 3,
+            my: 2,
+          }}
+        >
+          <FormControl sx={{ gridColumn: 'span 1' }}>
+            <TextField
+              inputProps={{
+                step: 1,
+                min: 1,
+                type: 'number',
+              }}
+              placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+              name={`manualCriteria${id}}`}
+              // value={dateOfBirthFormik.values.dateOfBirthStartValue}
+              // onChange={(e) => dateOfBirthFormik.handleChange(e)}
+              // error={setError(
+              //   dateOfBirthFormik.touched.dateOfBirthStartValue,
+              //   dateOfBirthFormik.errors.dateOfBirthStartValue
+              // )}
+              // helperText={setErrorText(
+              //   dateOfBirthFormik.touched.dateOfBirthStartValue,
+              //   dateOfBirthFormik.errors.dateOfBirthStartValue
+              // )}
+            />
+          </FormControl>
+          <FormControl sx={{ gridColumn: 'span 1' }}>
+            <Select
+              id={`manualCriteriaSelect${id}}`}
+              name={`manualCriteriaSelect${id}}`}
+              value={1}
+              // onChange={(e) => dateOfBirthFormik.handleChange(e)}
+              // error={setError(
+              //   dateOfBirthFormik.touched.dateOfBirthSelect,
+              //   dateOfBirthFormik.errors.dateOfBirthSelect
+              // )}
+            >
+              <MenuItem value={1}>
+                {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
+              </MenuItem>
+            </Select>
+            <FormHelperText>
+              {/* {setErrorText(
+                dateOfBirthFormik.touched.dateOfBirthSelect,
+                dateOfBirthFormik.errors.dateOfBirthSelect
+              )} */}
+            </FormHelperText>
+          </FormControl>
+        </Box>
+      );
   }
 };
 

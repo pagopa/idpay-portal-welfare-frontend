@@ -5,8 +5,8 @@ import { Dispatch, SetStateAction, MouseEvent, MouseEventHandler } from 'react';
 import useAdmissionCriteriaFieldSets from './useAdmissionCriteriaFieldSets';
 
 type Props = {
-  id: string;
-  title: string;
+  id: string | number;
+  title: string | number;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   action: string;
   setAction: Dispatch<SetStateAction<string>>;

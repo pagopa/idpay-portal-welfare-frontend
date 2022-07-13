@@ -92,6 +92,8 @@ export default {
             nation: 'Nazione',
             is: 'È',
             isNot: 'Non è',
+            manual: 'Criterio # ',
+            boolean: 'Booleano',
           },
         },
 
