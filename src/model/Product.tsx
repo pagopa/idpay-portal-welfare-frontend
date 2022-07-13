@@ -1,5 +1,4 @@
-import { ProductsResource } from '../api/generated/portal/ProductsResource';
-import { PartyRole, SelfcareRole, UserRole } from './Party';
+import { SelfcareRole, UserRole } from './Party';
 
 export type ProductStatus = 'ACTIVE' | 'INACTIVE' | 'PENDING';
 
@@ -26,7 +25,7 @@ export type SubProduct = {
 };
 export type ProductsMap = { [id: string]: Product };
 
-export const productResource2Product = (resource: ProductsResource): Product => ({
+/* export const productResource2Product = (resource: ProductsResource): Product => ({
   activationDateTime: resource.activatedAt,
   description: resource.description,
   id: resource.id,
@@ -45,4 +44,4 @@ export const productResource2Product = (resource: ProductsResource): Product => 
   status: resource.status,
   imageUrl: resource.imageUrl,
   subProducts: resource.children?.slice() ?? [],
-});
+}); */

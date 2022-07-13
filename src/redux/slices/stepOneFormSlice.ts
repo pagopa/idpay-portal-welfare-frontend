@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
 
 interface StepOneFormModel {
-  recipientsQuestionGroup: string | undefined;
-  recipientsTypeGroup: string | undefined;
+  recipientsQuestionGroup: string;
+  recipientsTypeGroup: string;
   totalBudget: string;
   budgetPerPerson: string;
   joinFrom: string;
@@ -43,3 +43,5 @@ export const stepOneFormSlice = createSlice({
 export const stepOneFormActions = stepOneFormSlice.actions;
 export const stepOneFormReducer = stepOneFormSlice.reducer;
 export const stepOneFormSelector = (state: RootState): StepOneFormState => state.stepOneForm;
+export const stepOneRecipientsTypeSelector = (state: RootState): string =>
+  state.stepOneForm.form.recipientsTypeGroup;
