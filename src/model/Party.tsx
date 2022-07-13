@@ -23,7 +23,7 @@ export type Party = {
 };
 
 export type UserRole = {
-  partyRole: PartyRole;
+  partyRole: PartyRole | string;
   roleKey: string;
 };
 
