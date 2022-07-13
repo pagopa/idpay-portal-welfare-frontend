@@ -6,21 +6,22 @@ import { Dispatch, SetStateAction } from 'react';
 import withAdmissionCriteria, {
   WithAdmissionCriteriaProps,
 } from '../../../../decorators/withAdmissionCriteria';
-import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 
 type Props = {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
-  // currentStep: number;
-  // setCurrentStep: Dispatch<SetStateAction<number>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
 } & WithAdmissionCriteriaProps;
 
 const AdmissionCriteria = ({
   action,
   setAction,
-  admissionCriteria /* , currentStep, setCurrentStep */,
+  admissionCriteria,
+  currentStep,
+  setCurrentStep,
 }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
@@ -35,6 +36,7 @@ const AdmissionCriteria = ({
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setCriteriaChanged(!criteriaChanged);
+    // TODO dispatch of new criteria selected
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -55,15 +57,6 @@ const AdmissionCriteria = ({
       }
     });
   };
-
-  useEffect(() => {
-    if (action === WIZARD_ACTIONS.SUBMIT) {
-      //   formik.handleSubmit();
-    } else {
-      return;
-    }
-    setAction('');
-  }, [action]);
 
   useEffect(() => {
     /* eslint-disable functional/no-let */
@@ -139,6 +132,10 @@ const AdmissionCriteria = ({
               id={c.id}
               title={c.title}
               handleCriteriaRemoved={handleCriteriaRemoved}
+              action={action}
+              setAction={setAction}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
             />
           ))}
         </Box>

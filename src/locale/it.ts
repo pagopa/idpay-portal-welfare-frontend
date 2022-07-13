@@ -76,6 +76,23 @@ export default {
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
             addButton: 'Aggiungi',
           },
+          form: {
+            year: 'Anno',
+            age: 'Età',
+            exact: 'Esattamente',
+            majorTo: 'Maggiore di',
+            minorTo: 'Minore di',
+            majorOrEqualTo: 'Maggiore uguale di',
+            minorOrEqualTo: 'Minore uguale di',
+            between: 'Compreso tra',
+            value: 'Valore',
+            postalCode: 'Cap',
+            city: 'Città',
+            region: 'Regione',
+            nation: 'Nazione',
+            is: 'È',
+            isNot: 'Non è',
+          },
         },
 
         form: {
@@ -144,5 +161,6 @@ export default {
     outSpendFrom:
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
+    outValue: 'Il secondo valore deve essere maggiore del primo',
   },
 };

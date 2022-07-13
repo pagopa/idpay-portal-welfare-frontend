@@ -121,7 +121,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       spendFrom: formData.form.spendFrom,
       spendTo: formData.form.spendTo,
     },
-
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {

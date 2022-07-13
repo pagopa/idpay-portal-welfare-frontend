@@ -1,27 +1,35 @@
 import { Box, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { grey } from '@mui/material/colors';
-import { MouseEvent, MouseEventHandler } from 'react';
+import { Dispatch, SetStateAction, MouseEvent, MouseEventHandler } from 'react';
+import useAdmissionCriteriaFieldSets from './useAdmissionCriteriaFieldSets';
 
 type Props = {
   id: string;
   title: string;
   handleCriteriaRemoved: MouseEventHandler<Element>;
+  action: string;
+  setAction: Dispatch<SetStateAction<string>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
 };
 
-const AdmissionCriteriaItem = ({ id, title, handleCriteriaRemoved }: Props) => {
-  const renderFieldSet = () => {
-    switch (id) {
-      case '1':
-        return <Box>{title}</Box>;
-      case '2':
-        return <Box>{title}</Box>;
-      case '3':
-        return <Box>{title}</Box>;
-      default:
-        return null;
-    }
-  };
+const AdmissionCriteriaItem = ({
+  id,
+  title,
+  handleCriteriaRemoved,
+  action,
+  setAction,
+  currentStep,
+  setCurrentStep,
+}: Props) => {
+  const fieldset = useAdmissionCriteriaFieldSets({
+    id,
+    action,
+    setAction,
+    currentStep,
+    setCurrentStep,
+  });
 
   return (
     <Box
@@ -45,13 +53,17 @@ const AdmissionCriteriaItem = ({ id, title, handleCriteriaRemoved }: Props) => {
         <DeleteOutlineIcon
           color="error"
           data-id={id}
+          sx={{
+            cursor: 'pointer',
+          }}
           onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
             handleCriteriaRemoved(event)
           }
         />
       </Box>
-      {renderFieldSet()}
+      {fieldset}
     </Box>
   );
 };
+
 export default AdmissionCriteriaItem;

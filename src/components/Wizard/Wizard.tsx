@@ -23,7 +23,7 @@ const Wizard = () => {
     t('components.wizard.stepOne.title'),
     t('components.wizard.stepTwo.title'),
     t('components.wizard.stepThree.title'),
-    t('components.wizard.stepFour.title'),
+    t('components.wizard.stepFour.title1'),
     t('components.wizard.stepFive.title'),
   ];
 
@@ -69,8 +69,8 @@ const Wizard = () => {
             <AdmissionCriteria
               action={actionType}
               setAction={setActionType}
-              // currentStep={activeStep}
-              // setCurrentStep={setActiveStep}
+              currentStep={activeStep}
+              setCurrentStep={setActiveStep}
             />
           );
         }
