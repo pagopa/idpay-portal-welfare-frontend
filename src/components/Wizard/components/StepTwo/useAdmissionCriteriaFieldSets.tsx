@@ -29,6 +29,7 @@ const useAdmissionCriteriaFieldSets = ({
       dateOfBirthFormik.handleSubmit();
       residencyFormik.handleSubmit();
       iseeFormik.handleSubmit();
+      manualCriteriaFormik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
@@ -109,6 +110,26 @@ const useAdmissionCriteriaFieldSets = ({
     validationSchema: iseeValidationSchema,
     onSubmit: (values) => {
       console.log('isee');
+      console.log(values);
+      // TODO dispatch values
+      setCurrentStep(currentStep + 1);
+    },
+  });
+
+  const manualCriteriaValidationSchema = Yup.object().shape({
+    manualCriteriaName: Yup.string().required(t('validation.required')),
+    manualCriteriaSelectName: Yup.number().required(t('validation.required')),
+  });
+
+  const manualCriteriaFormik = useFormik({
+    initialValues: {
+      manualCriteriaName: '',
+      manualCriteriaSelectName: 1,
+    },
+    validateOnChange: true,
+    validationSchema: manualCriteriaValidationSchema,
+    onSubmit: (values) => {
+      console.log('manual criteria');
       console.log(values);
       // TODO dispatch values
       setCurrentStep(currentStep + 1);
@@ -450,45 +471,42 @@ const useAdmissionCriteriaFieldSets = ({
         >
           <FormControl sx={{ gridColumn: 'span 1' }}>
             <TextField
-              inputProps={{
-                step: 1,
-                min: 1,
-                type: 'number',
-              }}
+              id={`manualCriteria${id}}`}
+              name={`manualCriteriaName`}
+              variant="outlined"
+              value={manualCriteriaFormik.values.manualCriteriaName}
               placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
-              name={`manualCriteria${id}}`}
-              // value={dateOfBirthFormik.values.dateOfBirthStartValue}
-              // onChange={(e) => dateOfBirthFormik.handleChange(e)}
-              // error={setError(
-              //   dateOfBirthFormik.touched.dateOfBirthStartValue,
-              //   dateOfBirthFormik.errors.dateOfBirthStartValue
-              // )}
-              // helperText={setErrorText(
-              //   dateOfBirthFormik.touched.dateOfBirthStartValue,
-              //   dateOfBirthFormik.errors.dateOfBirthStartValue
-              // )}
+              onChange={(e) => manualCriteriaFormik.handleChange(e)}
+              error={setError(
+                manualCriteriaFormik.touched.manualCriteriaName,
+                manualCriteriaFormik.errors.manualCriteriaName
+              )}
+              helperText={setErrorText(
+                manualCriteriaFormik.touched.manualCriteriaName,
+                manualCriteriaFormik.errors.manualCriteriaName
+              )}
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 1' }}>
             <Select
               id={`manualCriteriaSelect${id}}`}
-              name={`manualCriteriaSelect${id}}`}
-              value={1}
-              // onChange={(e) => dateOfBirthFormik.handleChange(e)}
-              // error={setError(
-              //   dateOfBirthFormik.touched.dateOfBirthSelect,
-              //   dateOfBirthFormik.errors.dateOfBirthSelect
-              // )}
+              name={`manualCriteriaSelectName`}
+              value={manualCriteriaFormik.values.manualCriteriaSelectName}
+              onChange={(e) => manualCriteriaFormik.handleChange(e)}
+              error={setError(
+                manualCriteriaFormik.touched.manualCriteriaSelectName,
+                manualCriteriaFormik.errors.manualCriteriaSelectName
+              )}
             >
               <MenuItem value={1}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
               </MenuItem>
             </Select>
             <FormHelperText>
-              {/* {setErrorText(
-                dateOfBirthFormik.touched.dateOfBirthSelect,
-                dateOfBirthFormik.errors.dateOfBirthSelect
-              )} */}
+              {setErrorText(
+                manualCriteriaFormik.touched.manualCriteriaSelectName,
+                manualCriteriaFormik.errors.manualCriteriaSelectName
+              )}
             </FormHelperText>
           </FormControl>
         </Box>

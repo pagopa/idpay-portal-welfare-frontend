@@ -54,56 +54,56 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   };
 
   const validationSchema = Yup.object().shape({
-    recipientsQuestionGroup: Yup.string().required(t('validation.required')),
-    recipientsTypeGroup: Yup.string().required(t('validation.required')),
-    totalBudget: Yup.number()
+    beneficiaryType: Yup.string().required(t('validation.required')),
+    beneficiaryKnown: Yup.string().required(t('validation.required')),
+    budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive'))
       .integer(t('validation.integer')),
-    budgetPerPerson: Yup.number()
+    beneficiaryBudget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive'))
       .integer(t('validation.integer'))
-      .when('totalBudget', (totalBudget, schema) => {
-        if (totalBudget) {
+      .when('totalBudget', (budget, schema) => {
+        if (budget) {
           return Yup.number()
             .typeError(t('validation.numeric'))
             .required(t('validation.required'))
             .positive(t('validation.positive'))
             .integer(t('validation.integer'))
-            .max(parseInt(totalBudget, 10) - 1, t('validation.outBudgetPerPerson'));
+            .max(parseInt(budget, 10) - 1, t('validation.outBudgetPerPerson'));
         }
         return schema;
       }),
-    joinFrom: Yup.date().required(t('validation.required')),
-    joinTo: Yup.date()
+    startDate: Yup.date().required(t('validation.required')),
+    endDate: Yup.date()
       .required(t('validation.required'))
-      .when('joinFrom', (joinFrom, schema) => {
-        if (joinFrom) {
+      .when('startDate', (startDate, schema) => {
+        if (startDate) {
           return Yup.date()
-            .min(joinFrom, t('validation.outJoinTo'))
+            .min(startDate, t('validation.outJoinTo'))
             .required(t('validation.required'));
         }
         return schema;
       }),
-    spendFrom: Yup.date()
+    rankingStartDate: Yup.date()
       .required(t('validation.required'))
-      .when('joinTo', (joinTo, schema) => {
-        if (joinTo) {
+      .when('startDate', (startDate, schema) => {
+        if (startDate) {
           return Yup.date()
-            .min(joinTo, t('validation.outSpendFrom'))
+            .min(startDate, t('validation.outSpendFrom'))
             .required(t('validation.required'));
         }
         return schema;
       }),
-    spendTo: Yup.date()
+    rankingEndDate: Yup.date()
       .required(t('validation.required'))
-      .when('spendFrom', (spendFrom, schema) => {
-        if (spendFrom) {
+      .when('rankingStartDate', (rankingStartDate, schema) => {
+        if (rankingStartDate) {
           return Yup.date()
-            .min(spendFrom, t('validation.outSpendTo'))
+            .min(rankingStartDate, t('validation.outSpendTo'))
             .required(t('validation.required'));
         }
         return schema;
@@ -112,14 +112,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
 
   const formik = useFormik({
     initialValues: {
-      recipientsQuestionGroup: formData.form.recipientsQuestionGroup,
-      recipientsTypeGroup: formData.form.recipientsTypeGroup,
-      totalBudget: formData.form.totalBudget,
-      budgetPerPerson: formData.form.budgetPerPerson,
-      joinFrom: formData.form.joinFrom,
-      joinTo: formData.form.joinTo,
-      spendFrom: formData.form.spendFrom,
-      spendTo: formData.form.spendTo,
+      beneficiaryType: formData.form.beneficiaryType,
+      beneficiaryKnown: formData.form.beneficiaryKnown,
+      budget: formData.form.budget,
+      beneficiaryBudget: formData.form.beneficiaryBudget,
+      startDate: formData.form.startDate,
+      endDate: formData.form.endDate,
+      rankingStartDate: formData.form.rankingStartDate,
+      rankingEndDate: formData.form.rankingEndDate,
     },
     validateOnChange: true,
     validationSchema,
@@ -138,75 +138,72 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
-            id="recipients-question--label"
+            id="beneficiaryType--label"
           >
-            {t('components.wizard.stepOne.form.initiativeRecipients')}
+            {t('components.wizard.stepOne.form.beneficiaryType')}
           </FormLabel>
           <RadioGroup
             sx={{ gridColumn: 'span 12' }}
             row
-            aria-labelledby="recipients-question--label"
-            name="recipientsQuestionGroup"
-            value={formik.values.recipientsQuestionGroup}
+            aria-labelledby="beneficiaryType--label"
+            name="beneficiaryType"
+            value={formik.values.beneficiaryType}
             defaultValue="persons"
-            onChange={(value) => formik.setFieldValue('recipientsQuestionGroup', value)}
+            onChange={(value) => formik.setFieldValue('beneficiaryType', value)}
           >
             <FormControlLabel
-              value="persons"
+              value="PF"
               control={<Radio />}
               label={t('components.wizard.stepOne.form.person')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value="families"
+              value="families" // TBD
               control={<Radio />}
               label={t('components.wizard.stepOne.form.family')}
               disabled
             />
           </RadioGroup>
           <FormHelperText
-            error={
-              formik.touched.recipientsQuestionGroup &&
-              Boolean(formik.errors.recipientsQuestionGroup)
-            }
+            error={formik.touched.beneficiaryType && Boolean(formik.errors.beneficiaryType)}
             sx={{ gridColumn: 'span 12' }}
           >
-            {formik.touched.recipientsQuestionGroup && formik.errors.recipientsQuestionGroup}
+            {formik.touched.beneficiaryType && formik.errors.beneficiaryType}
           </FormHelperText>
         </FormControl>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
-            id="recipients-type--label"
+            id="beneficiaryKnown--label"
           >
-            {t('components.wizard.stepOne.form.recipientsType')}
+            {t('components.wizard.stepOne.form.beneficiaryKnown')}
           </FormLabel>
           <RadioGroup
             sx={{ gridColumn: 'span 12' }}
             row
-            aria-labelledby="recipients-type--label"
-            name="recipientsTypeGroup"
-            value={formik.values.recipientsTypeGroup}
-            defaultValue="manual_list"
-            onChange={(e) => formik.setFieldValue('recipientsTypeGroup', e.target.value, false)}
+            aria-labelledby="beneficiaryKnown--label"
+            name="beneficiaryKnown"
+            value={formik.values.beneficiaryKnown}
+            defaultValue={formik.values.beneficiaryKnown}
+            onChange={(e) => formik.setFieldValue('beneficiaryKnown', e.target.value, false)}
           >
             <FormControlLabel
-              value="tax_code_list"
+              value="true"
               control={<Radio />}
               label={t('components.wizard.stepOne.form.taxCodeList')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value="manual_list"
+              value="false"
               control={<Radio />}
               label={t('components.wizard.stepOne.form.manualSelection')}
             />
           </RadioGroup>
           <FormHelperText
-            error={formik.touched.recipientsTypeGroup && Boolean(formik.errors.recipientsTypeGroup)}
+            error={formik.touched.beneficiaryKnown && Boolean(formik.errors.beneficiaryKnown)}
             sx={{ gridColumn: 'span 12' }}
           >
-            {formik.touched.recipientsTypeGroup && formik.errors.recipientsTypeGroup}
+            {formik.touched.beneficiaryKnown && formik.errors.beneficiaryKnown}
           </FormHelperText>
         </FormControl>
         <FormControl
@@ -216,44 +213,44 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             gap: 3,
             gridTemplateRows: 'auto',
             gridTemplateAreas: `"budgetTitle budgetTitle . ." 
-                                  "totalBudget budgetPerPerson . budgetPerPersonCalc"`,
+                                  "budget beneficiaryBudget . budgetPerPersonCalc"`,
             py: 2,
           }}
         >
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'budgetTitle' }}>
-            {t('components.wizard.stepOne.form.budget')}
+            {t('components.wizard.stepOne.form.budgetTitle')}
           </FormLabel>
           <TextField
-            sx={{ gridArea: 'totalBudget' }}
+            sx={{ gridArea: 'budget' }}
             inputProps={{
               step: 1,
               min: 1,
               type: 'number',
             }}
-            label={t('components.wizard.stepOne.form.totalBudget')}
-            placeholder={t('components.wizard.stepOne.form.totalBudget')}
-            name="totalBudget"
-            value={formik.values.totalBudget}
+            label={t('components.wizard.stepOne.form.budget')}
+            placeholder={t('components.wizard.stepOne.form.budget')}
+            name="budget"
+            value={formik.values.budget}
             onChange={(e) => formik.handleChange(e)}
-            error={formik.touched.totalBudget && Boolean(formik.errors.totalBudget)}
-            helperText={formik.touched.totalBudget && formik.errors.totalBudget}
+            error={formik.touched.budget && Boolean(formik.errors.budget)}
+            helperText={formik.touched.budget && formik.errors.budget}
           />
           <TextField
-            sx={{ gridArea: 'budgetPerPerson' }}
+            sx={{ gridArea: 'beneficiaryBudget' }}
             inputProps={{
               step: 1,
               min: 1,
               type: 'number',
             }}
-            label={t('components.wizard.stepOne.form.budgetPerPerson')}
-            placeholder={t('components.wizard.stepOne.form.budgetPerPerson')}
-            name="budgetPerPerson"
-            value={formik.values.budgetPerPerson}
+            label={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            placeholder={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            name="beneficiaryBudget"
+            value={formik.values.beneficiaryBudget}
             onChange={(e) => formik.handleChange(e)}
-            error={formik.touched.budgetPerPerson && Boolean(formik.errors.budgetPerPerson)}
-            helperText={formik.touched.budgetPerPerson && formik.errors.budgetPerPerson}
+            error={formik.touched.beneficiaryBudget && Boolean(formik.errors.beneficiaryBudget)}
+            helperText={formik.touched.beneficiaryBudget && formik.errors.beneficiaryBudget}
           />
-          {!isNaN(peopleReached(formik.values.totalBudget, formik.values.budgetPerPerson)) && (
+          {!isNaN(peopleReached(formik.values.budget, formik.values.beneficiaryBudget)) && (
             <Box
               sx={{
                 gridArea: 'budgetPerPersonCalc',
@@ -279,7 +276,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 component="span"
                 sx={{ display: 'flex', alignSelf: 'center' }}
               >
-                {peopleReached(formik.values.totalBudget, formik.values.budgetPerPerson)}
+                {peopleReached(formik.values.budget, formik.values.beneficiaryBudget)}
               </Typography>
               <Tooltip
                 title={t('components.wizard.stepOne.form.reachedUsersTooltip')}
@@ -297,48 +294,48 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 3,
             gridTemplateRows: 'auto',
-            gridTemplateAreas: `"timeRangeJoinTitle timeRangeJoinTitle timeRangeJoinTitle timeRangeJoinTitle" 
-                                  "timeRangeJoinFrom timeRangeJoinTo . . "`,
+            gridTemplateAreas: `"timeRangeTitle timeRangeTitle timeRangeTitle timeRangeTitle" 
+                                  "startDate endDate . . "`,
             py: 2,
           }}
         >
-          <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeJoinTitle' }}>
-            {t('components.wizard.stepOne.form.timeRangeJoinTitle')}
+          <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
+            {t('components.wizard.stepOne.form.timeRangeTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.timeRangeJoinFrom')}
+              label={t('components.wizard.stepOne.form.startDate')}
               inputFormat="dd/MM/yyyy"
-              value={formik.values.joinFrom}
-              onChange={(value) => formik.setFieldValue('joinFrom', value)}
+              value={formik.values.startDate}
+              onChange={(value) => formik.setFieldValue('startDate', value)}
               minDate={new Date()}
               renderInput={(props) => (
                 <TextField
                   {...props}
-                  id="join-from"
-                  name="joinFrom"
+                  id="startDate"
+                  name="startDate"
                   type="date"
-                  sx={{ gridArea: 'timeRangeJoinFrom' }}
-                  error={formik.touched.joinFrom && Boolean(formik.errors.joinFrom)}
-                  helperText={formik.touched.joinFrom && formik.errors.joinFrom}
+                  sx={{ gridArea: 'startDate' }}
+                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                  helperText={formik.touched.startDate && formik.errors.startDate}
                 />
               )}
             />
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.timeRangeJoinTo')}
+              label={t('components.wizard.stepOne.form.endDate')}
               inputFormat="dd/MM/yyyy"
-              value={formik.values.joinTo}
-              onChange={(value) => formik.setFieldValue('joinTo', value)}
-              minDate={addDays(new Date(formik.values.joinFrom), 1)}
+              value={formik.values.endDate}
+              onChange={(value) => formik.setFieldValue('endDate', value)}
+              minDate={addDays(new Date(formik.values.startDate), 1)}
               renderInput={(props) => (
                 <TextField
                   {...props}
-                  id="join-to"
-                  name="joinTo"
+                  id="endDate"
+                  name="endDate"
                   type="date"
-                  sx={{ gridArea: 'timeRangeJoinTo' }}
-                  error={formik.touched.joinTo && Boolean(formik.errors.joinTo)}
-                  helperText={formik.touched.joinTo && formik.errors.joinTo}
+                  sx={{ gridArea: 'endDate' }}
+                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                  helperText={formik.touched.endDate && formik.errors.endDate}
                 />
               )}
             />
@@ -350,48 +347,50 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 3,
             gridTemplateRows: 'auto',
-            gridTemplateAreas: `"timeRangeSpendTitle timeRangeSpendTitle timeRangeSpendTitle timeRangeSpendTitle" 
-                                  "timeRangeSpendFrom timeRangeSpendTo . . "`,
+            gridTemplateAreas: `"timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle" 
+                                  "rankingStartDate rankingEndDate . . "`,
             py: 2,
           }}
         >
-          <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeSpendTitle' }}>
-            {t('components.wizard.stepOne.form.timeRangeSpendTitle')}
+          <FormLabel
+            sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeRankingTitle' }}
+          >
+            {t('components.wizard.stepOne.form.timeRangeRankingTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.timeRangeSpendFrom')}
+              label={t('components.wizard.stepOne.form.rankingStartDate')}
               inputFormat="dd/MM/yyyy"
-              value={formik.values.spendFrom}
-              onChange={(value) => formik.setFieldValue('spendFrom', value)}
-              minDate={addDays(new Date(formik.values.joinTo), 1)}
+              value={formik.values.rankingStartDate}
+              onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
+              minDate={addDays(new Date(formik.values.startDate), 1)}
               renderInput={(props) => (
                 <TextField
                   {...props}
-                  id="spend-from"
-                  name="spendFrom"
+                  id="rankingStartDate"
+                  name="rankingStartDate"
                   type="date"
-                  sx={{ gridArea: 'timeRangeSpendFrom' }}
-                  error={formik.touched.spendFrom && Boolean(formik.errors.spendFrom)}
-                  helperText={formik.touched.spendFrom && formik.errors.spendFrom}
+                  sx={{ gridArea: 'rankingStartDate' }}
+                  error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
+                  helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
                 />
               )}
             />
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.timeRangeSpendTo')}
+              label={t('components.wizard.stepOne.form.rankingEndDate')}
               inputFormat="dd/MM/yyyy"
-              value={formik.values.spendTo}
-              onChange={(value) => formik.setFieldValue('spendTo', value)}
-              minDate={addDays(new Date(formik.values.spendFrom), 1)}
+              value={formik.values.rankingEndDate}
+              onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
+              minDate={addDays(new Date(formik.values.rankingStartDate), 1)}
               renderInput={(props) => (
                 <TextField
                   {...props}
-                  id="spend-to"
-                  name="spendTo"
+                  id="rankingEndDate"
+                  name="rankingEndDate"
                   type="date"
-                  sx={{ gridArea: 'timeRangeSpendTo' }}
-                  error={formik.touched.spendTo && Boolean(formik.errors.spendTo)}
-                  helperText={formik.touched.spendTo && formik.errors.spendTo}
+                  sx={{ gridArea: 'rankingEndDate' }}
+                  error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
+                  helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
                 />
               )}
             />

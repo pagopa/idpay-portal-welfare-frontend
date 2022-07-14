@@ -4,19 +4,19 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../utils/constants';
-import { stepOneRecipientsTypeSelector } from '../../redux/slices/stepOneFormSlice';
+import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/stepOneFormSlice';
 import StepOneForm from './components/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
-  const [recipientsType, setRecipientType] = useState('');
+  const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const { t } = useTranslation();
-  const selectedCriteria = useSelector(stepOneRecipientsTypeSelector);
+  const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
   useEffect(() => {
-    setRecipientType(selectedCriteria);
+    setBeneficiaryKnown(selectedCriteria);
   }, [selectedCriteria]);
 
   const steps = [
@@ -55,7 +55,7 @@ const Wizard = () => {
           />
         );
       case 1:
-        if (recipientsType === 'tax_code_list') {
+        if (beneficiaryKnown === 'true') {
           return (
             <FileUpload
               action={actionType}
@@ -64,7 +64,7 @@ const Wizard = () => {
               // setCurrentStep={setActiveStep}
             />
           );
-        } else if (recipientsType === 'manual_list') {
+        } else if (beneficiaryKnown === 'false') {
           return (
             <AdmissionCriteria
               action={actionType}

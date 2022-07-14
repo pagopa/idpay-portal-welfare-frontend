@@ -29,7 +29,7 @@ const AdmissionCriteria = ({
   const [criteriaChanged, setCriteriaChanged] = useState(false);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<{ id: string; title: string }>);
   const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
-  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<{ id: number }>);
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<number>);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -64,19 +64,23 @@ const AdmissionCriteria = ({
     setManualCriteriaNumber((prevManualCriteriaNumber) => prevManualCriteriaNumber + 1);
     setManualCriteriaToRender((prevManualCriteriaToRender) => [
       ...prevManualCriteriaToRender,
-      { id: manualCriteriaNumber },
+      manualCriteriaNumber,
     ]);
   };
 
   // eslint-disable-next-line arrow-body-style
   const handleManualCriteriaRemoved = (e: any) => {
-    const elementIdToDelete = parseInt(e.target.dataset.id, 10);
-    manualCriteriaToRender.forEach((m, index) => {
-      if (m.id === elementIdToDelete) {
-        // eslint-disable-next-line functional/immutable-data
-        setManualCriteriaToRender([...manualCriteriaToRender.splice(index, 0)]);
-      }
-    });
+    if (typeof e.target.dataset.id !== undefined) {
+      const elementIdToDelete = parseInt(e.target.dataset.id, 10);
+      const newManualCriteriaToRender: Array<number> = [];
+      manualCriteriaToRender.forEach((m) => {
+        if (m !== elementIdToDelete) {
+          // eslint-disable-next-line functional/immutable-data
+          newManualCriteriaToRender.push(m);
+        }
+      });
+      setManualCriteriaToRender([...newManualCriteriaToRender]);
+    }
   };
 
   useEffect(() => {
@@ -163,9 +167,9 @@ const AdmissionCriteria = ({
         <Box>
           {manualCriteriaToRender.map((m) => (
             <AdmissionCriteriaItem
-              key={m.id}
-              id={m.id}
-              title={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m.id + 1}`}
+              key={m}
+              id={m}
+              title={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m + 1}`}
               handleCriteriaRemoved={handleManualCriteriaRemoved}
               action={action}
               setAction={setAction}
