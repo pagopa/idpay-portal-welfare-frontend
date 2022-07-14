@@ -242,6 +242,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             onChange={(e) => formik.handleChange(e)}
             error={formik.touched.totalBudget && Boolean(formik.errors.totalBudget)}
             helperText={formik.touched.totalBudget && formik.errors.totalBudget}
+            required
           />
           <TextField
             sx={{ gridArea: 'budgetPerPerson' }}
@@ -259,6 +260,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             onChange={(e) => formik.handleChange(e)}
             error={formik.touched.budgetPerPerson && Boolean(formik.errors.budgetPerPerson)}
             helperText={formik.touched.budgetPerPerson && formik.errors.budgetPerPerson}
+            required
           />
           {!isNaN(peopleReached(formik.values.totalBudget, formik.values.budgetPerPerson)) && (
             <Box
@@ -329,6 +331,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'timeRangeJoinFrom' }}
                   error={formik.touched.joinFrom && Boolean(formik.errors.joinFrom)}
                   helperText={formik.touched.joinFrom && formik.errors.joinFrom}
+                  required
                 />
               )}
             />
@@ -348,6 +351,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'timeRangeJoinTo' }}
                   error={formik.touched.joinTo && Boolean(formik.errors.joinTo)}
                   helperText={formik.touched.joinTo && formik.errors.joinTo}
+                  required
                 />
               )}
             />
@@ -384,6 +388,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'timeRangeSpendFrom' }}
                   error={formik.touched.spendFrom && Boolean(formik.errors.spendFrom)}
                   helperText={formik.touched.spendFrom && formik.errors.spendFrom}
+                  required
                 />
               )}
             />
@@ -403,6 +408,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'timeRangeSpendTo' }}
                   error={formik.touched.spendTo && Boolean(formik.errors.spendTo)}
                   helperText={formik.touched.spendTo && formik.errors.spendTo}
+                  required
                 />
               )}
             />
