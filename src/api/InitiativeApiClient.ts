@@ -4,8 +4,10 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
+import { SaveInitiativeGeneralDTO } from '../model/saveInitiativeGeneralDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
+import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -38,6 +40,16 @@ const onRedirectToLogin = () =>
 export const InitiativeApi = {
   getInitativeSummary: async (): Promise<Array<InitiativeSummaryDTO>> => {
     const result = await apiClient.getInitativeSummary({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+  initativeGeneralPost: async (data: SaveInitiativeGeneralDTO): Promise<InitiativeGeneralDTO> => {
+    const result = await apiClient.saveInitiativeGeneralInfo({
+      body: {
+        general: {
+          ...data,
+        },
+      },
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

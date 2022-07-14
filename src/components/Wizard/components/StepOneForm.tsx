@@ -23,8 +23,11 @@ import { Dispatch, SetStateAction } from 'react';
 import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
+import _ from 'lodash';
 import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
+import { initativeGeneralPost } from '../../../services/intitativeService';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 interface Props {
   action: string;
@@ -110,6 +113,19 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       }),
   });
 
+  const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
+    beneficiaryType:
+      values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
+    beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
+    budget: Number(values.budget),
+    name: 'test',
+    beneficiaryBudget: Number(values.beneficiaryBudget),
+    startDate: new Date(values.startDate),
+    endDate: new Date(values.endDate),
+    rankingStartDate: new Date(values.rankingStartDate),
+    rankingEndDate: new Date(values.rankingEndDate),
+  });
+
   const formik = useFormik({
     initialValues: {
       beneficiaryType: formData.form.beneficiaryType,
@@ -125,6 +141,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     validationSchema,
     onSubmit: (values) => {
       dispatch(stepOneFormActions.setFormData(values));
+      const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
+      initativeGeneralPost(formValuesParsed)
+        .then((_) => {
+          console.log('OK');
+        })
+        .catch((_) => {
+          console.error('KO');
+        });
       setCurrentStep(currentStep + 1);
     },
   });
