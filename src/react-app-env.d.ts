@@ -6,7 +6,7 @@ declare namespace NodeJS {
 
     REACT_APP_API_MOCK_PARTIES: string;
     REACT_APP_API_MOCK_PRODUCTS: string;
-    REACT_APP_API_MOCK_PORTAL: string;
+    REACT_APP_API_MOCK_INITIATIVE: string;
     REACT_APP_API_MOCK_ADMISSION_CRITERIA: string;
   }
 }

@@ -7,9 +7,7 @@
   "paths": {
     "/idpay/initiative/summary": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns the list of initiatives names for a specific organization",
         "operationId": "getInitativeSummary",
         "responses": {
@@ -70,9 +68,7 @@
     },
     "/idpay/initiative/{initiativeId}": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns the detail of an active initiative",
         "operationId": "getInitiativeDetail",
         "parameters": [
@@ -158,9 +154,7 @@
     },
     "/idpay/initiative/general": {
       "post": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Save initiative and first subset of data 'general info'",
         "operationId": "saveInitiativeGeneralInfo",
         "requestBody": {
@@ -269,9 +263,7 @@
     },
     "/idpay/initiative/{initiativeId}/general": {
       "patch": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Save initiative and first subset of data 'general info'",
         "operationId": "updateInitiativeGeneralInfo",
         "parameters": [
@@ -391,9 +383,7 @@
     },
     "/idpay/initiative/{initiativeId}/beneficiary": {
       "patch": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Association of beneficiary rules to an initiative",
         "operationId": "updateInitiativeBeneficiary",
         "parameters": [
@@ -583,10 +573,7 @@
           },
           "beneficiaryType": {
             "type": "string",
-            "enum": [
-              "PF",
-              "PG"
-            ]
+            "enum": ["PF", "PG"]
           },
           "beneficiaryKnown": {
             "type": "boolean"
@@ -645,10 +632,7 @@
         "type": "object",
         "properties": {
           "_type": {
-            "enum": [
-              "boolean",
-              "multi"
-            ],
+            "enum": ["boolean", "multi"],
             "type": "string"
           },
           "description": {
@@ -667,10 +651,7 @@
         "type": "object",
         "properties": {
           "_type": {
-            "enum": [
-              "boolean",
-              "multi"
-            ],
+            "enum": ["boolean", "multi"],
             "type": "string"
           },
           "description": {
@@ -681,11 +662,7 @@
             "items": {
               "type": "string"
             },
-            "example": [
-              "value1",
-              "value2",
-              "value3"
-            ]
+            "example": ["value1", "value2", "value3"]
           },
           "code": {
             "type": "string"

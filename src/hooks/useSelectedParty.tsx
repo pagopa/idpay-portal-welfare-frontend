@@ -1,7 +1,7 @@
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { Party, PartyRole } from '../model/Party';
+import { Party /* PartyRole, UserRole */ } from '../model/Party';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { partiesActions, partiesSelectors } from '../redux/slices/partiesSlice';
 import { fetchPartyDetails } from '../services/partyService';
@@ -10,15 +10,15 @@ import { parseJwt } from '../utils/jwt-utils';
 import { ENV } from '../utils/env';
 import { JWTUser } from '../model/JwtUser';
 
-export type PartyJwtConfig = {
+/* export type PartyJwtConfig = {
   partyId: string;
   roles: Array<{
     partyRole: PartyRole;
     roleKey: string;
   }>;
-};
+}; */
 
-export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
+/* export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
   const organization = (parseJwt(storageTokenOps.read()) as JWTUser)?.organization;
   if (
     organization &&
@@ -37,16 +37,63 @@ export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
   } else {
     return null;
   }
+}; */
+
+export type PartyJwtConfig = {
+  partyId: string;
+  roles: Array<{
+    partyRole: string;
+    roleKey: string;
+  }>;
+};
+
+export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
+  const organization = parseJwt(storageTokenOps.read()) as JWTUser;
+  if (organization.org_id && organization.org_party_role && organization.org_role) {
+    return {
+      partyId: organization.org_id,
+      roles: [
+        {
+          partyRole: organization.org_party_role,
+          roleKey: organization.org_role,
+        },
+      ],
+    };
+  } else {
+    return null;
+  }
 };
 
 /** A custom hook to read the current partyId from JWT and then fetch it's information, caching the result into redux */
 export const useSelectedParty = (): (() => Promise<Party>) => {
   const dispatch = useAppDispatch();
   const partyJwtConfig: PartyJwtConfig | null = retrieveSelectedPartyIdConfig();
+  console.log('PartJWTCOnfig', partyJwtConfig);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
   const parties = useAppSelector(partiesSelectors.selectPartiesList);
   const setParty = (party?: Party) => dispatch(partiesActions.setPartySelected(party));
   const setLoadingDetails = useLoading(LOADING_TASK_SEARCH_PARTY);
+
+  /* const fetchParty = (partyId: string): Promise<Party> =>
+    fetchPartyDetails(partyId, parties).then((party) => {
+      if (party) {
+        if (party.status !== 'ACTIVE') {
+          throw new Error(`INVALID_PARTY_STATE_${party.status}`);
+        }
+        const partyToSave = {
+          ...party,
+          roles:
+            partyJwtConfig?.roles.map((r) => ({
+              partyRole: r.partyRole,
+              roleKey: r.roleKey,
+            })) ?? [],
+        };
+        setParty(partyToSave);
+        return partyToSave;
+      } else {
+        throw new Error(`Cannot find partyId ${partyId}`);
+      }
+    }); */
 
   const fetchParty = (partyId: string): Promise<Party> =>
     fetchPartyDetails(partyId, parties).then((party) => {
