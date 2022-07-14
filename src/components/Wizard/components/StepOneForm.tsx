@@ -26,7 +26,7 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
-import { initativeGeneralPost } from '../../../services/intitativeService';
+import { saveInitiative } from '../../../services/intitativeService';
 import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 interface Props {
@@ -142,12 +142,12 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     onSubmit: (values) => {
       dispatch(stepOneFormActions.setFormData(values));
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
-      initativeGeneralPost(formValuesParsed)
-        .then((_) => {
+      saveInitiative(formValuesParsed)
+        .then(() => {
           console.log('OK');
         })
-        .catch((_) => {
-          console.error('KO');
+        .catch((reason) => {
+          console.error('KO', reason);
         });
       setCurrentStep(currentStep + 1);
     },

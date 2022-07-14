@@ -751,7 +751,7 @@
     "securitySchemes": {
       "Bearer": {
         "type": "apiKey",
-        "name": "Bearer Auth. Token",
+        "name": "Authorization",
         "in": "header"
       }
     }

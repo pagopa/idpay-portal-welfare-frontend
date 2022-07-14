@@ -7,7 +7,7 @@ import { ENV } from '../utils/env';
 import { SaveInitiativeGeneralDTO } from '../model/saveInitiativeGeneralDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
-import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
+import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -42,7 +42,7 @@ export const InitiativeApi = {
     const result = await apiClient.getInitativeSummary({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
-  initativeGeneralPost: async (data: SaveInitiativeGeneralDTO): Promise<InitiativeGeneralDTO> => {
+  initiativeGeneralPost: async (data: SaveInitiativeGeneralDTO): Promise<InitiativeDTO> => {
     const result = await apiClient.saveInitiativeGeneralInfo({
       body: {
         general: {
