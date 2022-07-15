@@ -69,7 +69,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .required(t('validation.required'))
       .positive(t('validation.positive'))
       .integer(t('validation.integer'))
-      .when('totalBudget', (budget, schema) => {
+      .when('budget', (budget, schema) => {
         if (budget) {
           return Yup.number()
             .typeError(t('validation.numeric'))
