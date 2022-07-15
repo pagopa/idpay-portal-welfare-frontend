@@ -150,6 +150,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             value={formik.values.beneficiaryType}
             defaultValue="persons"
             onChange={(value) => formik.setFieldValue('beneficiaryType', value)}
+            data-testid="beneficiary-type-test"
           >
             <FormControlLabel
               value="PF"
@@ -186,6 +187,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             value={formik.values.beneficiaryKnown}
             defaultValue={formik.values.beneficiaryKnown}
             onChange={(e) => formik.setFieldValue('beneficiaryKnown', e.target.value, false)}
+            data-testid="beneficiary-known-test"
           >
             <FormControlLabel
               value="true"
@@ -234,6 +236,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             onChange={(e) => formik.handleChange(e)}
             error={formik.touched.budget && Boolean(formik.errors.budget)}
             helperText={formik.touched.budget && formik.errors.budget}
+            data-testid="budget-test"
+            required
           />
           <TextField
             sx={{ gridArea: 'beneficiaryBudget' }}
@@ -249,6 +253,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             onChange={(e) => formik.handleChange(e)}
             error={formik.touched.beneficiaryBudget && Boolean(formik.errors.beneficiaryBudget)}
             helperText={formik.touched.beneficiaryBudget && formik.errors.beneficiaryBudget}
+            data-testid="beneficiary-budget-test"
+            required
           />
           {!isNaN(peopleReached(formik.values.budget, formik.values.beneficiaryBudget)) && (
             <Box
@@ -313,6 +319,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="startDate"
+                  data-testid="start-date-test"
                   name="startDate"
                   type="date"
                   sx={{ gridArea: 'startDate' }}
@@ -331,6 +338,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="endDate"
+                  data-testid="end-date-test"
                   name="endDate"
                   type="date"
                   sx={{ gridArea: 'endDate' }}
@@ -368,11 +376,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="rankingStartDate"
+                  data-testid="ranking-start-date-test"
                   name="rankingStartDate"
                   type="date"
                   sx={{ gridArea: 'rankingStartDate' }}
                   error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                   helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
+                  required
                 />
               )}
             />
@@ -386,11 +396,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="rankingEndDate"
+                  data-testid="ranking-end-date-test"
                   name="rankingEndDate"
                   type="date"
                   sx={{ gridArea: 'rankingEndDate' }}
                   error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                   helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
+                  required
                 />
               )}
             />

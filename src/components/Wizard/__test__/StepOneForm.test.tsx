@@ -61,14 +61,14 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         />
       </Provider>
     );
-    expect(getByTestId('recipients-question-label')).not.toBeNull();
-    expect(getByTestId('recipients-type-label')).not.toBeNull();
-    expect(getByTestId('total-budget-t')).not.toBeNull();
-    expect(getByTestId('budget-per-person')).not.toBeNull();
-    expect(getByTestId('join-from-t')).not.toBeNull();
-    expect(getByTestId('join-to-t')).not.toBeNull();
-    expect(getByTestId('spend-from-t')).not.toBeNull();
-    expect(getByTestId('spend-to-t')).not.toBeNull();
+    expect(getByTestId('beneficiary-type-test')).not.toBeNull();
+    expect(getByTestId('beneficiary-known-test')).not.toBeNull();
+    expect(getByTestId('budget-test')).not.toBeNull();
+    expect(getByTestId('beneficiary-budget-test')).not.toBeNull();
+    expect(getByTestId('start-date-test')).not.toBeNull();
+    expect(getByTestId('end-date-test')).not.toBeNull();
+    expect(getByTestId('ranking-start-date-test')).not.toBeNull();
+    expect(getByTestId('ranking-end-date-test')).not.toBeNull();
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
@@ -92,21 +92,21 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
 
     /* Test of value of radio button */
 
-    const firstRadioGroup = getByLabelText(/components.wizard.stepOne.form.initiativeRecipients/);
-    const radio1 = getByLabelText(/components.wizard.stepOne.form.person/);
-    const radio2 = getByLabelText(/components.wizard.stepOne.form.family/);
-    const secondRadioGroup = getByLabelText(/components.wizard.stepOne.form.recipientsType/);
-    const radio3 = getByLabelText(/components.wizard.stepOne.form.taxCodeList/);
-    const radio4 = getByLabelText(/components.wizard.stepOne.form.manualSelection/);
+    const beneficiaryType = getByLabelText(/components.wizard.stepOne.form.beneficiaryType/);
+    const beneficiaryType1 = getByLabelText(/components.wizard.stepOne.form.person/);
+    const beneficiaryType2 = getByLabelText(/components.wizard.stepOne.form.family/);
+    const beneficiaryKnown = getByLabelText(/components.wizard.stepOne.form.beneficiaryKnown/);
+    const beneficiaryKnown1 = getByLabelText(/components.wizard.stepOne.form.taxCodeList/);
+    const beneficiaryKnown2 = getByLabelText(/components.wizard.stepOne.form.manualSelection/);
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    userEvent.click(firstRadioGroup);
-    expect(radio1).toBeChecked();
+    userEvent.click(beneficiaryType);
+    expect(beneficiaryType1).toBeChecked();
 
-    expect(radio2).toBeDisabled();
+    expect(beneficiaryType2).toBeDisabled();
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    userEvent.click(secondRadioGroup);
-    expect(radio3 || radio4).not.toBeChecked();
+    userEvent.click(beneficiaryKnown);
+    expect(beneficiaryKnown1 || beneficiaryKnown2).not.toBeChecked();
   });
 
   it('Total Budget / Budget per Person Test', () => {
@@ -137,21 +137,21 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       return getByDisplayValue(budgetPerPerson) === e;
     }
 
-    const budgetTot = getByLabelText(/components.wizard.stepOne.form.totalBudget/);
-    const budgetPerPerson = getByLabelText(/components.wizard.stepOne.form.budgetPerPerson/);
+    const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
+    const beneficiaryBudget = getByLabelText(/components.wizard.stepOne.form.beneficiaryBudget/);
 
     /* check if the field are required */
 
-    expect(budgetTot).toBeRequired();
-    expect(budgetPerPerson).toBeRequired();
+    expect(budget).toBeRequired();
+    expect(beneficiaryBudget).toBeRequired();
 
     /* Validation */
 
-    fireEvent.change(budgetTot, { target: { value: '1000' } });
-    expect(hasInputValueTot(budgetTot, '1000')).toBe(true);
+    fireEvent.change(budget, { target: { value: '1000' } });
+    expect(hasInputValueTot(budget, '1000')).toBe(true);
 
-    fireEvent.change(budgetPerPerson, { target: { value: '100' } });
-    expect(hasInputValuePerPerson(budgetPerPerson, '100')).toBe(true);
+    fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
+    expect(hasInputValuePerPerson(beneficiaryBudget, '100')).toBe(true);
   });
 
   it('Date Join / Spend Test', () => {
@@ -178,10 +178,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       return getByDisplayValue(date) === e;
     }
 
-    const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinFrom/);
-    const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinTo/);
-    const startDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendFrom/);
-    const endDateDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendTo/);
+    const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.startDate/);
+    const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.endDate/);
+    const startDate = getByLabelText(/components.wizard.stepOne.form.rankingStartDate/);
+    const endDateDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
 
     /* check if the fields are required */
 
