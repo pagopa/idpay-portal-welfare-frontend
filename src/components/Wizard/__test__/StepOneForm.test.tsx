@@ -178,46 +178,44 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       return getByDisplayValue(date) === e;
     }
 
-    const joinFromDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinFrom/);
-    const JoinToDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinTo/);
-    const SpendFromDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendFrom/);
-    const SpendToDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendTo/);
+    const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinFrom/);
+    const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.timeRangeJoinTo/);
+    const startDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendFrom/);
+    const endDateDate = getByLabelText(/components.wizard.stepOne.form.timeRangeSpendTo/);
 
     /* check if the fields are required */
 
-    expect(joinFromDate).toBeRequired();
-    expect(JoinToDate).toBeRequired();
-    expect(SpendFromDate).toBeRequired();
-    expect(SpendToDate).toBeRequired();
+    expect(startDate).toBeRequired();
+    expect(endDateDate).toBeRequired();
 
     /* Validation */
 
     /* join-from */
 
-    fireEvent.mouseOver(joinFromDate);
-    fireEvent.change(joinFromDate, { target: { value: '10/07/2022' } });
-    fireEvent.mouseOut(joinFromDate);
-    expect(hasCorrectDateValue(joinFromDate, '10/07/2022')).toBe(true);
+    fireEvent.mouseOver(rankingStartDate);
+    fireEvent.change(rankingStartDate, { target: { value: '10/07/2022' } });
+    fireEvent.mouseOut(rankingStartDate);
+    expect(hasCorrectDateValue(rankingStartDate, '10/07/2022')).toBe(true);
 
     /* join-to */
 
-    fireEvent.mouseOver(JoinToDate);
-    fireEvent.change(JoinToDate, { target: { value: '11/07/2022' } });
-    fireEvent.mouseOut(JoinToDate);
-    expect(hasCorrectDateValue(JoinToDate, '11/07/2022')).toBe(true);
+    fireEvent.mouseOver(rankingEndDate);
+    fireEvent.change(rankingEndDate, { target: { value: '11/07/2022' } });
+    fireEvent.mouseOut(rankingEndDate);
+    expect(hasCorrectDateValue(rankingEndDate, '11/07/2022')).toBe(true);
 
     /* spend-from */
 
-    fireEvent.mouseOver(SpendFromDate);
-    fireEvent.change(SpendFromDate, { target: { value: '12/07/2022' } });
-    fireEvent.mouseOut(SpendFromDate);
-    expect(hasCorrectDateValue(SpendFromDate, '12/07/2022')).toBe(true);
+    fireEvent.mouseOver(startDate);
+    fireEvent.change(startDate, { target: { value: '12/07/2022' } });
+    fireEvent.mouseOut(startDate);
+    expect(hasCorrectDateValue(startDate, '12/07/2022')).toBe(true);
 
     /* spend-to */
 
-    fireEvent.mouseOver(SpendToDate);
-    fireEvent.change(SpendToDate, { target: { value: '13/07/2022' } });
-    fireEvent.mouseOut(SpendToDate);
-    expect(hasCorrectDateValue(SpendToDate, '13/07/2022')).toBe(true);
+    fireEvent.mouseOver(endDateDate);
+    fireEvent.change(endDateDate, { target: { value: '13/07/2022' } });
+    fireEvent.mouseOut(endDateDate);
+    expect(hasCorrectDateValue(endDateDate, '13/07/2022')).toBe(true);
   });
 });
