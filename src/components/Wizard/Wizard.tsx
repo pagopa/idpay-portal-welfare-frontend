@@ -1,20 +1,29 @@
 import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../utils/constants';
+import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/stepOneFormSlice';
 import StepOneForm from './components/StepOneForm';
+import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
+import FileUpload from './components/StepTwo/FileUpload';
 
 const Wizard = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
+  const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const { t } = useTranslation();
+  const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
+  useEffect(() => {
+    setBeneficiaryKnown(selectedCriteria);
+  }, [selectedCriteria]);
 
   const steps = [
     t('components.wizard.stepOne.title'),
     t('components.wizard.stepTwo.title'),
     t('components.wizard.stepThree.title'),
-    t('components.wizard.stepFour.title'),
+    t('components.wizard.stepFour.title1'),
     t('components.wizard.stepFive.title'),
   ];
 
@@ -46,7 +55,26 @@ const Wizard = () => {
           />
         );
       case 1:
-        return <h1>{steps[activeStep]}</h1>;
+        if (beneficiaryKnown === 'true') {
+          return (
+            <FileUpload
+              action={actionType}
+              setAction={setActionType}
+              // currentStep={activeStep}
+              // setCurrentStep={setActiveStep}
+            />
+          );
+        } else if (beneficiaryKnown === 'false') {
+          return (
+            <AdmissionCriteria
+              action={actionType}
+              setAction={setActionType}
+              currentStep={activeStep}
+              setCurrentStep={setActiveStep}
+            />
+          );
+        }
+        return null;
       case 2:
         return <h1>{steps[activeStep]}</h1>;
       case 3:

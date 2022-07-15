@@ -10,6 +10,7 @@ export default {
     'incaricato-ente-creditore': 'Incaricato Ente Creditore',
     'referente-legale': 'Referente Legale',
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
+    admin: 'admin',
   },
   sideMenu: {
     home: {
@@ -42,34 +43,61 @@ export default {
       stepOne: {
         title: 'Informazioni generali',
         form: {
-          initiativeRecipients: 'A chi è rivolta?',
-          person: 'persona fisica',
+          beneficiaryType: 'A chi è rivolta?',
+          person: 'Persona fisica',
           family: 'Nucleo familiare',
-          recipientsType: 'Conosci già i destinatari?',
+          beneficiaryKnown: 'Conosci già i destinatari?',
           taxCodeList: 'Si, ho una lista di codici fiscali',
           manualSelection: "No, imposterò dei criteri d'ammissione",
-          budget: 'Qual è il tuo budget?',
+          budgetTitle: 'Qual è il tuo budget?',
           reachedUsers: 'Utenti raggiungibili',
           reachedUsersTooltip:
             'Numero di utenti raggiungibili dall’iniziativa dividendo il budget totale per il budget a persona.',
-          totalBudget: 'Budget totale',
-          budgetPerPerson: 'Budget a persona',
-          timeRangeJoinTitle: 'Quando è possibile aderire?',
-          timeRangeJoinFrom: 'Inizio adesione',
-          timeRangeJoinTo: 'Fine adesione',
-          timeRangeSpendTitle: 'Quando è possibile spendere i fondi?',
-          timeRangeSpendFrom: 'Inizio periodo',
-          timeRangeSpendTo: 'Fine periodo',
+          budget: 'Budget totale',
+          beneficiaryBudget: 'Budget a persona',
+          timeRangeTitle: 'Quando è possibile aderire?',
+          startDate: 'Inizio adesione',
+          endDate: 'Fine adesione',
+          timeRangeRankingTitle: 'Quando è possibile spendere i fondi?',
+          rankingStartDate: 'Inizio periodo',
+          rankingEndDate: 'Fine periodo',
         },
       },
       stepTwo: {
         title: 'Destinatari',
-        form: {
-          title1: "Criteri d'ammissione",
-          subTitle1:
+        chooseCriteria: {
+          title: "Criteri d'ammissione",
+          subtitle:
             'Aggiungi uno o più criteri dal catalogo, oppure definisci dei criteri che i destinatari dell’iniziativa dovranno autodichiarare.',
-          criteria: 'Sfoglia criteri',
+          browse: 'Sfoglia criteri',
           addManually: 'Aggiungi manualmente',
+          modal: {
+            subtitle:
+              'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
+            addButton: 'Aggiungi',
+          },
+          form: {
+            year: 'Anno',
+            age: 'Età',
+            exact: 'Esattamente',
+            majorTo: 'Maggiore di',
+            minorTo: 'Minore di',
+            majorOrEqualTo: 'Maggiore uguale di',
+            minorOrEqualTo: 'Minore uguale di',
+            between: 'Compreso tra',
+            value: 'Valore',
+            postalCode: 'Cap',
+            city: 'Città',
+            region: 'Regione',
+            nation: 'Nazione',
+            is: 'È',
+            isNot: 'Non è',
+            manual: 'Criterio # ',
+            boolean: 'Booleano',
+          },
+        },
+
+        form: {
           title2: 'Carica l’elenco degli ammessi',
           subTitle2:
             'Aggiungi i codici fiscali dei destinatari dell’iniziativa, così non dovranno effettuare alcun controllo d’ammissibilità.',
@@ -133,7 +161,8 @@ export default {
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
-      'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
+      'La data di inizio periodo spesa deve essere successiva alla data di inizio adesione',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
+    outValue: 'Il secondo valore deve essere maggiore del primo',
   },
 };

@@ -1,4 +1,4 @@
-import { fetchParties, fetchPartyDetails } from '../partyService';
+/* import { fetchParties, fetchPartyDetails } from '../partyService';
 import { institutionResource2Party, Party } from '../../model/Party';
 import { PortalApi } from '../../api/PortalApiClient';
 import { mockedInstitutionResources } from '../../api/__mocks__/PortalApiClient';
@@ -64,4 +64,4 @@ describe('Test fetchPartyDetails', () => {
 
     checkPortalApiInvocation(1);
   });
-});
+}); */

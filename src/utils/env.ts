@@ -17,11 +17,11 @@ export const ENV = {
   },
 
   URL_API: {
-    PORTAL: env.get('REACT_APP_URL_API_PORTAL').required().asString(),
+    INITIATIVE: env.get('REACT_APP_URL_API_INITIATIVE').required().asString(),
   },
 
   API_TIMEOUT_MS: {
-    PORTAL: env.get('REACT_APP_API_PORTAL_TIMEOUT_MS').required().asInt(),
+    INITIATIVE: env.get('REACT_APP_API_INITIATIVE_TIMEOUT_MS').required().asInt(),
   },
 
   URL_INSTITUTION_LOGO: {

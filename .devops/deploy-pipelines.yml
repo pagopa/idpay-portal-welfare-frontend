@@ -35,7 +35,7 @@ variables:
     react_app_url_fe_landing: '$(UAT_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(UAT_REACT_APP_URL_FE_ASSISTANCE)'
 
-    react_app_url_api_portal: '$(UAT_REACT_APP_URL_API_PORTAL)'
+    react_app_url_api_initiative: '$(UAT_REACT_APP_URL_API_INITIATIVE)'
 
     react_app_url_storage: '$(UAT_REACT_APP_URL_STORAGE)'
 
@@ -59,7 +59,7 @@ variables:
     react_app_url_fe_landing: '$(PROD_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)'
 
-    react_app_url_api_portal: '$(PROD_REACT_APP_URL_API_PORTAL)'
+    react_app_url_api_initiative: '$(PROD_REACT_APP_URL_API_INITIATIVE)'
 
     react_app_url_storage: '$(PROD_REACT_APP_URL_STORAGE)'
 
@@ -85,7 +85,7 @@ variables:
     react_app_url_fe_landing: '$(DEV_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(DEV_REACT_APP_URL_FE_ASSISTANCE)'
 
-    react_app_url_api_portal: '$(DEV_REACT_APP_URL_API_PORTAL)'
+    react_app_url_api_initiative: '$(DEV_REACT_APP_URL_API_INITIATIVE)'
 
     react_app_url_storage: '$(DEV_REACT_APP_URL_STORAGE)'
 
@@ -126,35 +126,35 @@ stages:
   # Activated when ONE OF these are met:
   # - is on branch $(DEFAULT_BRANCH)
   # - is a tag in the form v{version}-RELEASE
-  - stage: Release
-    condition: or(
-      startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat')
-      , startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix')
-      , eq(variables['Build.SourceBranch'], 'refs/heads/main')
-      )
-    pool:
-      vmImage: 'ubuntu-latest'
-#    jobs:
-#      - job: make_release
-#        condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
-#        steps:
-#          - template: templates/node-job-setup/template.yaml@pagopaCommons
-#            parameters:
-#              persistCredentials: true
-#          - template: templates/node-github-release/template.yaml@pagopaCommons
-#            parameters:
-#              release_branch: '$(DEFAULT_BRANCH)'
-#              semver: '${{ parameters.RELEASE_SEMVER }}'
-#              gitEmail: '$(GIT_EMAIL)'
-#              gitUsername: '$(GIT_USERNAME)'
-#              gitHubConnection: '$(GITHUB_CONNECTION)'
-#
-#      - job: skip_release
-#        condition: ne(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
-#        steps:
-#          - script: |
-#              echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
-#            displayName: 'Skip release bundle'
+  #  - stage: Release
+  #    condition: or(
+  #      startsWith(variables['Build.SourceBranch'], 'refs/heads/release-uat')
+  #      , startsWith(variables['Build.SourceBranch'], 'refs/heads/hotfix')
+  #      , eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  #      )
+  #    pool:
+  #      vmImage: 'ubuntu-latest'
+  #    jobs:
+  #      - job: make_release
+  #        condition: eq(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
+  #        steps:
+  #          - template: templates/node-job-setup/template.yaml@pagopaCommons
+  #            parameters:
+  #              persistCredentials: true
+  #          - template: templates/node-github-release/template.yaml@pagopaCommons
+  #            parameters:
+  #              release_branch: '$(DEFAULT_BRANCH)'
+  #              semver: '${{ parameters.RELEASE_SEMVER }}'
+  #              gitEmail: '$(GIT_EMAIL)'
+  #              gitUsername: '$(GIT_USERNAME)'
+  #              gitHubConnection: '$(GITHUB_CONNECTION)'
+
+  #      - job: skip_release
+  #        condition: ne(variables['Build.SourceBranch'], format('refs/heads/{0}', variables.DEFAULT_BRANCH))
+  #        steps:
+  #          - script: |
+  #              echo "We assume this reference to be a valid release: $(Build.SourceBranch). Therefore, there is no need to bundle a new release."
+  #            displayName: 'Skip release bundle'
 
   # Prepare Artifact with application bundle
   - stage: Prepare_artifact
@@ -179,7 +179,7 @@ stages:
               REACT_APP_URL_FE_LANDING: '$(react_app_url_fe_landing)'
               REACT_APP_URL_FE_ASSISTANCE: '$(react_app_url_fe_assistance)'
 
-              REACT_APP_URL_API_PORTAL: '$(react_app_url_api_portal)'
+              REACT_APP_URL_API_INITIATIVE: '$(react_app_url_api_initiative)'
 
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
 

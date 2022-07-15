@@ -1,22 +1,26 @@
 import { Box, Button, FormControl, FormLabel, Paper, Typography } from '@mui/material';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Dispatch, SetStateAction } from 'react';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
 
 interface Props {
   action: string;
-  // setAction: Function;
+  setAction: Dispatch<SetStateAction<string>>;
+  // currentStep: number;
+  // setCurrentStep: Dispatch<SetStateAction<number>>;
 }
 
-const StepTwoFileUpload = ({ action }: Props) => {
+const FileUpload = ({ action, setAction /* , currentStep, setCurrentStep */ }: Props) => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    if (action === 'SUBMIT') {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
       //   formik.handleSubmit();
     } else {
       return;
     }
-    // setAction('');
+    setAction('');
   }, [action]);
 
   return (
@@ -56,4 +60,4 @@ const StepTwoFileUpload = ({ action }: Props) => {
   );
 };
 
-export default StepTwoFileUpload;
+export default FileUpload;

@@ -5,6 +5,7 @@ import { userReducer } from '@pagopa/selfcare-common-frontend/redux/slices/userS
 import { LOG_REDUX_ACTIONS } from '../utils/constants';
 import { partiesReducer } from './slices/partiesSlice';
 import { stepOneFormReducer } from './slices/stepOneFormSlice';
+import { admissionCriteriaReducer } from './slices/admissionCriteriaSlice';
 
 const additionalMiddlewares = [LOG_REDUX_ACTIONS ? logger : undefined];
 
@@ -15,6 +16,7 @@ export const createStore = () =>
       user: userReducer,
       appState: appStateReducer,
       stepOneForm: stepOneFormReducer,
+      admissionCriteria: admissionCriteriaReducer,
     },
     middleware: (getDefaultMiddleware) =>
       additionalMiddlewares.reduce(
