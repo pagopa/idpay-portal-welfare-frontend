@@ -26,17 +26,17 @@ test('test login success', () => {
 
   const user: User = storageUserOps.read();
   expect(user).not.toBeNull();
-  expect(user.uid).toBe('b9b89ef9-4dcb-4e27-8192-d972efef614e');
-  expect(user.taxCode).toBe('LNGMLE85P19C826J');
-  expect(user.name).toBe('Emilia');
-  expect(user.surname).toBe('Longo');
-  expect(user.email).toBe('dmartino@live.com');
+  expect(user.uid).toBe('b8986bf2-1f93-4827-ab16-b21eb8aeae2b');
+  expect(user.taxCode).toBe('');
+  expect(user.name).toBe('Test');
+  expect(user.surname).toBe('IDPay');
+  expect(user.email).toBe('test@test.com');
 
   expect(global.window.location.assign).toBeCalledWith(ROUTES.HOME);
 });
 
 test('test login success no token', () => {
-  mockedLocation.hash = undefined;
+  mockedLocation.hash = '';
   const requestedPath = 'prova?';
 
   render(<Auth />);

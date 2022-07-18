@@ -231,6 +231,10 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             }}
             label={t('components.wizard.stepOne.form.budget')}
             placeholder={t('components.wizard.stepOne.form.budget')}
+            /* needed by getByTextLabel */
+            aria-labelledby={t('components.wizard.stepOne.form.budget')}
+            id={t('components.wizard.stepOne.form.budget')}
+            /*  */
             name="budget"
             value={formik.values.budget}
             onChange={(e) => formik.handleChange(e)}
@@ -248,6 +252,10 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             }}
             label={t('components.wizard.stepOne.form.beneficiaryBudget')}
             placeholder={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            /* needed by getByTextLbel */
+            aria-labelledby={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            id={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            /*  */
             name="beneficiaryBudget"
             value={formik.values.beneficiaryBudget}
             onChange={(e) => formik.handleChange(e)}

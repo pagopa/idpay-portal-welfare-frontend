@@ -109,7 +109,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     expect(beneficiaryKnown1 || beneficiaryKnown2).not.toBeChecked();
   });
 
-  it('Total Budget / Budget per Person Test', () => {
+  it('Total Budget / Budget per Person Test', async () => {
     const { getByLabelText, getByDisplayValue } = render(
       <Provider store={store}>
         <StepOneForm
