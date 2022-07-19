@@ -21,14 +21,14 @@ import {
   useCallback,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdmissionCriteria } from '../../../../model/AdmissionCriteria';
+import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
 
 type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   handleCriteriaAdded: MouseEventHandler;
-  criteria: Array<AdmissionCriteria>;
-  setCriteria: Dispatch<Array<AdmissionCriteria>>;
+  criteria: Array<AdmissionCriteriaModel>;
+  setCriteria: Dispatch<Array<AdmissionCriteriaModel>>;
 };
 
 const AdmissionCriteriaModal = ({
@@ -66,7 +66,7 @@ const AdmissionCriteriaModal = ({
   };
 
   const renderAdmissionCriteriaList = (
-    list: Array<AdmissionCriteria>,
+    list: Array<AdmissionCriteriaModel>,
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler
   ) => {

@@ -4,6 +4,8 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
+import { SaveInitiativeGeneralDTO } from '../model/saveInitiativeGeneralDTO';
+import { InitiativeResponseDTO } from '../model/IniatiativeResponseDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
 
@@ -38,6 +40,18 @@ const onRedirectToLogin = () =>
 export const InitiativeApi = {
   getInitativeSummary: async (): Promise<Array<InitiativeSummaryDTO>> => {
     const result = await apiClient.getInitativeSummary({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  initiativeGeneralPost: async (data: SaveInitiativeGeneralDTO): Promise<InitiativeResponseDTO> => {
+    const result = await apiClient.saveInitiativeGeneralInfo({
+      body: {
+        general: {
+          ...data,
+        },
+      },
+    });
+    console.log('API_CLIENT', result);
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

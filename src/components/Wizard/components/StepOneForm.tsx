@@ -23,8 +23,11 @@ import { Dispatch, SetStateAction } from 'react';
 import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
-import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
+import _ from 'lodash';
+import { setGeneralInfo, generalInfoSelector } from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
+import { saveGeneralInfoService } from '../../../services/intitativeService';
+import { BeneficiaryTypeEnum } from '../../../utils/constants';
 
 interface Props {
   action: string;
@@ -35,14 +38,14 @@ interface Props {
 
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const dispatch = useDispatch();
-  const formData = useSelector(stepOneFormSelector);
+  const formData = useSelector(generalInfoSelector);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
-      dispatch(stepOneFormActions.setFormData(formik.values));
+      dispatch(setGeneralInfo(formik.values));
     }
     setAction('');
   }, [action]);
@@ -66,7 +69,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .required(t('validation.required'))
       .positive(t('validation.positive'))
       .integer(t('validation.integer'))
-      .when('totalBudget', (budget, schema) => {
+      .when('budget', (budget, schema) => {
         if (budget) {
           return Yup.number()
             .typeError(t('validation.numeric'))
@@ -77,55 +80,74 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         }
         return schema;
       }),
-    startDate: Yup.date().required(t('validation.required')),
+    rankingStartDate: Yup.date(),
+    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, schema) => {
+      if (rankingStartDate) {
+        return Yup.date()
+          .min(rankingStartDate, t('validation.outJoinTo'))
+          .required(t('validation.required'));
+      }
+      return schema;
+    }),
+    startDate: Yup.date()
+      .required(t('validation.required'))
+      .when('rankingEndDate', (rankingEndDate, schema) => {
+        if (rankingEndDate) {
+          return Yup.date()
+            .min(rankingEndDate, t('validation.outSpendFrom'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
     endDate: Yup.date()
       .required(t('validation.required'))
       .when('startDate', (startDate, schema) => {
         if (startDate) {
           return Yup.date()
-            .min(startDate, t('validation.outJoinTo'))
-            .required(t('validation.required'));
-        }
-        return schema;
-      }),
-    rankingStartDate: Yup.date()
-      .required(t('validation.required'))
-      .when('startDate', (startDate, schema) => {
-        if (startDate) {
-          return Yup.date()
-            .min(startDate, t('validation.outSpendFrom'))
-            .required(t('validation.required'));
-        }
-        return schema;
-      }),
-    rankingEndDate: Yup.date()
-      .required(t('validation.required'))
-      .when('rankingStartDate', (rankingStartDate, schema) => {
-        if (rankingStartDate) {
-          return Yup.date()
-            .min(rankingStartDate, t('validation.outSpendTo'))
+            .min(startDate, t('validation.outSpendTo'))
             .required(t('validation.required'));
         }
         return schema;
       }),
   });
 
+  const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
+    name: 'test',
+    beneficiaryType:
+      values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
+    beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
+    budget: Number(values.budget),
+    beneficiaryBudget: Number(values.beneficiaryBudget),
+    rankingStartDate: new Date(values.rankingStartDate),
+    rankingEndDate: new Date(values.rankingEndDate),
+    startDate: new Date(values.startDate),
+    endDate: new Date(values.endDate),
+  });
+
   const formik = useFormik({
     initialValues: {
-      beneficiaryType: formData.form.beneficiaryType,
-      beneficiaryKnown: formData.form.beneficiaryKnown,
-      budget: formData.form.budget,
-      beneficiaryBudget: formData.form.beneficiaryBudget,
-      startDate: formData.form.startDate,
-      endDate: formData.form.endDate,
-      rankingStartDate: formData.form.rankingStartDate,
-      rankingEndDate: formData.form.rankingEndDate,
+      beneficiaryType: formData.beneficiaryType,
+      beneficiaryKnown: formData.beneficiaryKnown,
+      budget: formData.budget,
+      beneficiaryBudget: formData.beneficiaryBudget,
+      rankingStartDate: formData.rankingStartDate,
+      rankingEndDate: formData.rankingEndDate,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
     },
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {
-      dispatch(stepOneFormActions.setFormData(values));
-      setCurrentStep(currentStep + 1);
+      const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
+      saveGeneralInfoService(formValuesParsed)
+        .then((response) => {
+          console.log(response);
+          dispatch(setGeneralInfo(values));
+          setCurrentStep(currentStep + 1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   });
 
@@ -308,61 +330,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 3,
             gridTemplateRows: 'auto',
-            gridTemplateAreas: `"timeRangeTitle timeRangeTitle timeRangeTitle timeRangeTitle" 
-                                  "startDate endDate . . "`,
-            py: 2,
-          }}
-        >
-          <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
-            {t('components.wizard.stepOne.form.timeRangeTitle')}
-          </FormLabel>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.startDate')}
-              inputFormat="dd/MM/yyyy"
-              value={formik.values.startDate}
-              onChange={(value) => formik.setFieldValue('startDate', value)}
-              minDate={new Date()}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="startDate"
-                  data-testid="start-date-test"
-                  name="startDate"
-                  type="date"
-                  sx={{ gridArea: 'startDate' }}
-                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                  helperText={formik.touched.startDate && formik.errors.startDate}
-                />
-              )}
-            />
-            <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.endDate')}
-              inputFormat="dd/MM/yyyy"
-              value={formik.values.endDate}
-              onChange={(value) => formik.setFieldValue('endDate', value)}
-              minDate={addDays(new Date(formik.values.startDate), 1)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="endDate"
-                  data-testid="end-date-test"
-                  name="endDate"
-                  type="date"
-                  sx={{ gridArea: 'endDate' }}
-                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-                  helperText={formik.touched.endDate && formik.errors.endDate}
-                />
-              )}
-            />
-          </LocalizationProvider>
-        </FormControl>
-        <FormControl
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 3,
-            gridTemplateRows: 'auto',
             gridTemplateAreas: `"timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle" 
                                   "rankingStartDate rankingEndDate . . "`,
             py: 2,
@@ -379,7 +346,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingStartDate}
               onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
-              minDate={addDays(new Date(formik.values.startDate), 1)}
+              minDate={new Date()}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -411,6 +378,59 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                   helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
                   required
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </FormControl>
+        <FormControl
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 3,
+            gridTemplateRows: 'auto',
+            gridTemplateAreas: `"timeRangeTitle timeRangeTitle timeRangeTitle timeRangeTitle" 
+                                  "startDate endDate . . "`,
+            py: 2,
+          }}
+        >
+          <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
+            {t('components.wizard.stepOne.form.timeRangeTitle')}
+          </FormLabel>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label={t('components.wizard.stepOne.form.startDate')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.startDate}
+              onChange={(value) => formik.setFieldValue('startDate', value)}
+              minDate={addDays(new Date(formik.values.rankingEndDate), 1)}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="startDate"
+                  name="startDate"
+                  type="date"
+                  sx={{ gridArea: 'startDate' }}
+                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
+                  helperText={formik.touched.startDate && formik.errors.startDate}
+                />
+              )}
+            />
+            <DesktopDatePicker
+              label={t('components.wizard.stepOne.form.endDate')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.endDate}
+              onChange={(value) => formik.setFieldValue('endDate', value)}
+              minDate={addDays(new Date(formik.values.startDate), 1)}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="endDate"
+                  name="endDate"
+                  type="date"
+                  sx={{ gridArea: 'endDate' }}
+                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
+                  helperText={formik.touched.endDate && formik.errors.endDate}
                 />
               )}
             />

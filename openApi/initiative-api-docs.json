@@ -171,7 +171,11 @@
           "200": {
             "description": "Enrollment OK",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiativeResponseDTO"
+                }
+              }
             }
           },
           "400": {
@@ -746,12 +750,20 @@
             "type": "string"
           }
         }
+      },
+      "InitiativeResponseDTO": {
+        "type": "object",
+        "properties": {
+          "initiativeId": {
+            "type": "string"
+          }
+        }
       }
     },
     "securitySchemes": {
       "Bearer": {
         "type": "apiKey",
-        "name": "Bearer Auth. Token",
+        "name": "Authorization",
         "in": "header"
       }
     }
