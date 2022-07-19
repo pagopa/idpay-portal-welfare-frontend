@@ -171,11 +171,7 @@
           "200": {
             "description": "Enrollment OK",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InitiativeResponseDTO"
-                }
-              }
+              "application/json": {}
             }
           },
           "400": {
@@ -747,14 +743,6 @@
             "format": "int32"
           },
           "message": {
-            "type": "string"
-          }
-        }
-      },
-      "InitiativeResponseDTO": {
-        "type": "object",
-        "properties": {
-          "initiativeId": {
             "type": "string"
           }
         }

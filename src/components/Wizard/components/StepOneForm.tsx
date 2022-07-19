@@ -141,7 +141,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
       saveGeneralInfoService(formValuesParsed)
         .then((response) => {
-          console.log(response);
+          console.log('PIPPONE', response);
           dispatch(setGeneralInfo(values));
           setCurrentStep(currentStep + 1);
         })
