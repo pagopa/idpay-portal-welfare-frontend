@@ -408,6 +408,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="startDate"
+                  data-testid="start-date-test"
                   name="startDate"
                   type="date"
                   sx={{ gridArea: 'startDate' }}
@@ -426,6 +427,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 <TextField
                   {...props}
                   id="endDate"
+                  data-testid="end-date-test"
                   name="endDate"
                   type="date"
                   sx={{ gridArea: 'endDate' }}
