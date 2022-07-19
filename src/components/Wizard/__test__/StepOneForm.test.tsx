@@ -2,6 +2,8 @@ import { fireEvent, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
+import { date } from 'yup';
+import { isDate, parse } from 'date-fns';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import StepOneForm from './../components/StepOneForm';
 import { createStore } from './../../../redux/store';
@@ -155,7 +157,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
   });
 
   it('Date Join / Spend Test', () => {
-    const { getByLabelText, getByDisplayValue } = render(
+    const { getByLabelText } = render(
       <Provider store={store}>
         <StepOneForm
           action={''}
@@ -172,50 +174,72 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       </Provider>
     );
 
-    type TestElement = Document | Element | Window | Node;
+    function parseDateString(_value: any, originalValue: string) {
+      return isDate(originalValue) ? originalValue : parse(originalValue, 'dd-MM-yyyy', new Date());
+    }
 
-    function hasCorrectDateValue(e: TestElement, date: string) {
-      return getByDisplayValue(date) === e;
+    function isValidDate(date: any): date is Date {
+      return date instanceof Date && !isNaN(date.getTime());
     }
 
     const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.startDate/);
     const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.endDate/);
     const startDate = getByLabelText(/components.wizard.stepOne.form.rankingStartDate/);
-    const endDateDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
+    const endDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
 
+    const d = date().transform(parseDateString);
     /* check if the fields are required */
 
     expect(startDate).toBeRequired();
-    expect(endDateDate).toBeRequired();
+    expect(endDate).toBeRequired();
 
-    /* Validation */
+    /* Checking if invalid cast return invalid date */
+
+    expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
+    expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
+
+    /* Casting */
+
+    expect(d.cast(new Date())).toBeInstanceOf(Date);
 
     /* join-from */
 
-    fireEvent.mouseOver(rankingStartDate);
-    fireEvent.change(rankingStartDate, { target: { value: '10/07/2022' } });
-    fireEvent.mouseOut(rankingStartDate);
-    expect(hasCorrectDateValue(rankingStartDate, '10/07/2022')).toBe(true);
+    fireEvent.click(rankingStartDate);
+    fireEvent.change(rankingStartDate, { target: { value: '19/07/2022' } });
+    expect(
+      d
+        .cast('19-07-2022')
+        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    ).toBe('19/07/2022');
 
     /* join-to */
 
     fireEvent.mouseOver(rankingEndDate);
-    fireEvent.change(rankingEndDate, { target: { value: '11/07/2022' } });
-    fireEvent.mouseOut(rankingEndDate);
-    expect(hasCorrectDateValue(rankingEndDate, '11/07/2022')).toBe(true);
+    fireEvent.change(rankingEndDate, { target: { value: '20/07/2022' } });
+    expect(
+      d
+        .cast('20-07-2022')
+        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    ).toBe('20/07/2022');
 
     /* spend-from */
 
     fireEvent.mouseOver(startDate);
-    fireEvent.change(startDate, { target: { value: '12/07/2022' } });
-    fireEvent.mouseOut(startDate);
-    expect(hasCorrectDateValue(startDate, '12/07/2022')).toBe(true);
+    fireEvent.change(startDate, { target: { value: '21/07/2022' } });
+    expect(
+      d
+        .cast('21-07-2022')
+        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    ).toBe('21/07/2022');
 
     /* spend-to */
 
-    fireEvent.mouseOver(endDateDate);
-    fireEvent.change(endDateDate, { target: { value: '13/07/2022' } });
-    fireEvent.mouseOut(endDateDate);
-    expect(hasCorrectDateValue(endDateDate, '13/07/2022')).toBe(true);
+    fireEvent.mouseOver(endDate);
+    fireEvent.change(endDate, { target: { value: '22/07/2022' } });
+    expect(
+      d
+        .cast('22-07-2022')
+        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    ).toBe('22/07/2022');
   });
 });
