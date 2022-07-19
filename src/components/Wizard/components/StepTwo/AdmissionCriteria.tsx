@@ -1,35 +1,36 @@
 import { Box, Button, Paper, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import { Dispatch, SetStateAction } from 'react';
-import withAdmissionCriteria, {
-  WithAdmissionCriteriaProps,
-} from '../../../../decorators/withAdmissionCriteria';
+import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
+import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
-
 type Props = {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-} & WithAdmissionCriteriaProps;
+};
 
-const AdmissionCriteria = ({
-  action,
-  setAction,
-  admissionCriteria,
-  currentStep,
-  setCurrentStep,
-}: Props) => {
+const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const [criteria, setCriteria] = useState(admissionCriteria);
+  const [criteria, setCriteria] = useState(Array<AdmissionCriteriaModel>);
   const [criteriaChanged, setCriteriaChanged] = useState(false);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<{ id: string; title: string }>);
   const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
   const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<number>);
+
+  useEffect(() => {
+    fetchAdmissionCriteria()
+      .then((response) => {
+        setCriteria([...response]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -38,7 +39,6 @@ const AdmissionCriteria = ({
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setCriteriaChanged(!criteriaChanged);
-    // TODO dispatch of new criteria selected
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -183,4 +183,4 @@ const AdmissionCriteria = ({
   );
 };
 
-export default withAdmissionCriteria(AdmissionCriteria);
+export default AdmissionCriteria;

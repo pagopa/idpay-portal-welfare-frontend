@@ -1,6 +1,6 @@
-import { AdmissionCriteria } from '../../model/AdmissionCriteria';
+import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
-export const mockedAdmissionCriteria: Array<AdmissionCriteria> = [
+export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
   {
     id: '1',
     title: 'Data di nascita',
@@ -22,7 +22,7 @@ export const mockedAdmissionCriteria: Array<AdmissionCriteria> = [
 ];
 
 export const verifyFetchAdmissionCriteriasMockExecution = (
-  admissionCriteria: Array<AdmissionCriteria>
+  admissionCriteria: Array<AdmissionCriteriaModel>
 ) => {
   expect(admissionCriteria).toStrictEqual(mockedAdmissionCriteria);
 };

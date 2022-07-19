@@ -42,6 +42,7 @@ export const InitiativeApi = {
     const result = await apiClient.getInitativeSummary({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
   initiativeGeneralPost: async (data: SaveInitiativeGeneralDTO): Promise<InitiativeDTO> => {
     const result = await apiClient.saveInitiativeGeneralInfo({
       body: {
@@ -50,6 +51,7 @@ export const InitiativeApi = {
         },
       },
     });
+    console.log('API_CLIENT', result);
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

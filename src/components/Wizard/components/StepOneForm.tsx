@@ -24,9 +24,9 @@ import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import { stepOneFormActions, stepOneFormSelector } from '../../../redux/slices/stepOneFormSlice';
+import { setGeneralInfo, generalInfoSelector } from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
-import { saveInitiative } from '../../../services/intitativeService';
+import { saveGeneralInfoService } from '../../../services/intitativeService';
 import { BeneficiaryTypeEnum } from '../../../utils/constants';
 
 interface Props {
@@ -38,14 +38,14 @@ interface Props {
 
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const dispatch = useDispatch();
-  const formData = useSelector(stepOneFormSelector);
+  const formData = useSelector(generalInfoSelector);
   const { t } = useTranslation();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
-      dispatch(stepOneFormActions.setFormData(formik.values));
+      dispatch(setGeneralInfo(formik.values));
     }
     setAction('');
   }, [action]);
@@ -126,29 +126,28 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
 
   const formik = useFormik({
     initialValues: {
-      beneficiaryType: formData.form.beneficiaryType,
-      beneficiaryKnown: formData.form.beneficiaryKnown,
-      budget: formData.form.budget,
-      beneficiaryBudget: formData.form.beneficiaryBudget,
-      rankingStartDate: formData.form.rankingStartDate,
-      rankingEndDate: formData.form.rankingEndDate,
-      startDate: formData.form.startDate,
-      endDate: formData.form.endDate,
+      beneficiaryType: formData.beneficiaryType,
+      beneficiaryKnown: formData.beneficiaryKnown,
+      budget: formData.budget,
+      beneficiaryBudget: formData.beneficiaryBudget,
+      rankingStartDate: formData.rankingStartDate,
+      rankingEndDate: formData.rankingEndDate,
+      startDate: formData.startDate,
+      endDate: formData.endDate,
     },
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {
-      dispatch(stepOneFormActions.setFormData(values));
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
-
-      saveInitiative(formValuesParsed)
-        .then(() => {
-          console.log('OK');
+      saveGeneralInfoService(formValuesParsed)
+        .then((response) => {
+          console.log(response);
+          dispatch(setGeneralInfo(values));
+          setCurrentStep(currentStep + 1);
         })
-        .catch((reason) => {
-          console.error('KO', reason);
+        .catch((error) => {
+          console.log(error);
         });
-      setCurrentStep(currentStep + 1);
     },
   });
 

@@ -1,4 +1,4 @@
-export type AdmissionCriteria = {
+export type AdmissionCriteriaModel = {
   id: string;
   title: string;
   subtitle: string;
