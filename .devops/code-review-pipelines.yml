@@ -98,7 +98,7 @@ stages:
           - script: |
               yarn generate
               yarn test:coverage --watchAll=false
-            displayName: 'Unit tests exec'
+            displayName: 'Unit tests execution'
 
   - stage: Sonarcloud
     dependsOn: []
@@ -108,8 +108,8 @@ stages:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
           - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
 
-          - script: yarn generate
-            displayName: 'Generate'
+#          - script: 
+#            displayName: 'Generate'
 
           - script: git branch
             displayName: 'Branch identification'
@@ -139,7 +139,9 @@ stages:
 #          - script: ls -R [!node_modules]*
 #            displayName: 'Show all files recursively'
 
-          - script: yarn test
+          - script: |
+              yarn generate
+              yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
           - script: yarn lint
