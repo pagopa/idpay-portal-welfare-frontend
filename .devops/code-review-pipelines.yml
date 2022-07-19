@@ -147,7 +147,7 @@ stages:
           - script: yarn lint
             displayName: 'Lint execution'
 
-          - task: SonarCloudAnalyze@1
+#          - task: SonarCloudAnalyze@1
 
           - task: SonarCloudPublish@1
             inputs:
