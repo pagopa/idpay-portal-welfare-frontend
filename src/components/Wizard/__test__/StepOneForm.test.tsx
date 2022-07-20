@@ -1,10 +1,10 @@
 import { fireEvent, render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
+import Wizard from '../Wizard';
 import StepOneForm from './../components/StepOneForm';
 import { createStore } from './../../../redux/store';
 
@@ -29,20 +29,31 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     );
   });
 
-  it('calls onSubmit prop function when form is submitted', () => {
-    <StepOneForm
-      action={WIZARD_ACTIONS.SUBMIT}
-      // eslint-disable-next-line react/jsx-no-bind
-      setAction={function (value: SetStateAction<string>) {
-        console.log(value);
-      }}
-      currentStep={0}
-      // eslint-disable-next-line react/jsx-no-bind
-      setCurrentStep={function (value: SetStateAction<number>) {
-        console.log(value);
-      }}
-    />;
+  it('call the submit event when form is submitted', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <Wizard />
+      </Provider>
+    );
+
+    // const onSubmit = jest.fn();
+    const submit = getByTestId('continue-action-test');
     expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
+    fireEvent.click(submit);
+  });
+
+  it('draf action makes the dispatch', () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <Wizard />
+      </Provider>
+    );
+
+    // const onSkip = jest.fn();
+    const skip = getByTestId('skip-action-test');
+    expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+    fireEvent.click(skip);
+    // expect(onSkip).toHaveBeenCalled();
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
@@ -74,7 +85,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
-  it('RadioGroup Form Checked Test', () => {
+  it('BeneficiaryTypes / BeneficiaryKnowns have the correct values', () => {
     const { getByLabelText } = render(
       <Provider store={store}>
         <StepOneForm
@@ -97,18 +108,25 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     const beneficiaryType = getByLabelText(/components.wizard.stepOne.form.beneficiaryType/);
     const beneficiaryType1 = getByLabelText(/components.wizard.stepOne.form.person/);
     const beneficiaryType2 = getByLabelText(/components.wizard.stepOne.form.family/);
-    const beneficiaryKnown = getByLabelText(/components.wizard.stepOne.form.beneficiaryKnown/);
-    const beneficiaryKnown1 = getByLabelText(/components.wizard.stepOne.form.taxCodeList/);
-    const beneficiaryKnown2 = getByLabelText(/components.wizard.stepOne.form.manualSelection/);
+    // const beneficiaryKnown = getByLabelText(/components.wizard.stepOne.form.beneficiaryKnown/);
+    const beneficiaryKnown1 = getByLabelText(
+      /components.wizard.stepOne.form.taxCodeList/
+    ) as HTMLInputElement;
+    const beneficiaryKnown2 = getByLabelText(
+      /components.wizard.stepOne.form.manualSelection/
+    ) as HTMLInputElement;
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    userEvent.click(beneficiaryType);
+    fireEvent.click(beneficiaryType);
     expect(beneficiaryType1).toBeChecked();
-
     expect(beneficiaryType2).toBeDisabled();
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    userEvent.click(beneficiaryKnown);
-    expect(beneficiaryKnown1 || beneficiaryKnown2).not.toBeChecked();
+
+    fireEvent.click(beneficiaryKnown1);
+    expect(beneficiaryKnown1.checked).toEqual(true);
+    expect(beneficiaryKnown2.checked).toEqual(false);
+
+    fireEvent.click(beneficiaryKnown2);
+    expect(beneficiaryKnown2.checked).toEqual(true);
+    expect(beneficiaryKnown1.checked).toEqual(false);
   });
 
   it('Total Budget / Budget per Person Test', async () => {
@@ -117,12 +135,12 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         <StepOneForm
           action={''}
           // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (value: SetStateAction<string>): void {
+          setAction={function (value: SetStateAction<string>) {
             console.log(value);
           }}
           currentStep={0}
           // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (value: SetStateAction<number>): void {
+          setCurrentStep={function (value: SetStateAction<number>) {
             console.log(value);
           }}
         />
