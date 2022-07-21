@@ -4,10 +4,10 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { createClient, WithDefaultsT } from './generated/initiative/client';
+import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
 import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
-import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
+import { createClient, WithDefaultsT } from './generated/initiative/client';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -43,10 +43,13 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  initiativeGeneralPost: async (data: InitiativeGeneralDTO): Promise<InitiativeDTO> => {
+  initiativeGeneralPost: async (data: InitiativeInfoDTO): Promise<InitiativeDTO> => {
     const result = await apiClient.saveInitiativeGeneralInfo({
       body: {
-        ...data,
+        general: {
+          ...data,
+        },
+        additionalInfo: {},
       },
     });
     console.log('API_CLIENT', result);
