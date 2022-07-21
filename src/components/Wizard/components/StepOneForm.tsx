@@ -112,7 +112,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   });
 
   const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
-    name: 'test',
     beneficiaryType:
       values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
     beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
