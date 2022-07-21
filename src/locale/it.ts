@@ -78,6 +78,8 @@ export default {
               'Indica un canale di assistenza dove gli utenti possono contattarvi',
             contact: 'Contatto',
             indicatesChannel: 'Indica il canale',
+            channelType: 'Tipo di canale',
+            addChannel: 'Aggiungi un altro canale',
           },
         },
       },

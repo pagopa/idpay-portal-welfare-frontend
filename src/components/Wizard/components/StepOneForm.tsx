@@ -21,6 +21,8 @@ import {
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import AddIcon from '@mui/icons-material/Add';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -196,7 +198,25 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     },
   ];
 
+  const channelTypes = [
+    {
+      id: 1,
+      name: t('components.wizard.stepOne.form.otherInfo.channelType'),
+    },
+  ];
+
   const result = contacts.find(({ name }) => name === 'Web URL');
+  const resultType = channelTypes.find(
+    ({ name }) => name === t('components.wizard.stepOne.form.otherInfo.channelType')
+  );
+
+  /*   const addRows = () => {
+    const rows = channelTypes.map()
+  }
+
+  const deleteRows = () => {
+
+  }; */
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -608,11 +628,61 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                   />
                 </FormControl>
+
+                <FormControl
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(24, 1fr)', py: 2 }}
+                >
+                  <RemoveCircleOutlineIcon
+                    color="error"
+                    sx={{
+                      cursor: 'pointer',
+                      alignItems: 'center',
+                      mt: 2,
+                      fontSize: 30,
+                      gridColumn: 'span 1',
+                    }}
+                  />
+                  <InputLabel sx={{ mt: 2, ml: 6 }}>
+                    {t('components.wizard.stepOne.form.otherInfo.contact')}
+                  </InputLabel>
+                  <Select
+                    label={t('components.wizard.stepOne.form.otherInfo.contact')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
+                    sx={{ gridColumn: 'span 4', pr: 4 }}
+                    defaultValue={resultType?.name}
+                  >
+                    {
+                      // eslint-disable-next-line sonarjs/no-identical-functions
+                      channelTypes.map(({ name }, id) => (
+                        <MenuItem key={id} value={name}>
+                          {name}
+                        </MenuItem>
+                      ))
+                    }
+                  </Select>
+                  <TextField
+                    variant="outlined"
+                    label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    sx={{ gridColumn: 'span 12', ml: 4 }}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                  />
+                </FormControl>
+
+                <FormControl
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
+                >
+                  <Button
+                    startIcon={<AddIcon />}
+                    color="primary"
+                    sx={{ gridColumn: 'span 3' }}
+                    size="large"
+                  >
+                    {t('components.wizard.stepOne.form.otherInfo.addChannel')}
+                  </Button>
+                </FormControl>
               </>
             )}
           </FormControl>
-
-          <FormControl></FormControl>
         </Box>
       </Paper>
     </form>
