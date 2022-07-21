@@ -10,6 +10,14 @@ import {
   Box,
   FormHelperText,
   Tooltip,
+  Button,
+  InputLabel,
+  Select,
+  Switch,
+  styled,
+  tooltipClasses,
+  TooltipProps,
+  MenuItem,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -17,7 +25,7 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { addDays } from 'date-fns';
@@ -40,6 +48,9 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   const dispatch = useDispatch();
   const formData = useSelector(generalInfoSelector);
   const { t } = useTranslation();
+  const [isChecked, setIsChecked] = useState(true);
+
+  const toggleSwitch = () => setIsChecked((previousState) => !previousState);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -151,12 +162,49 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     },
   });
 
+  const serviceOptions = [
+    {
+      id: 1,
+      name: 'Carta Della Cultura',
+    },
+    {
+      id: 2,
+      name: 'Carta Giovani Nazionale',
+    },
+  ];
+
+  const NoMaxWidthTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))({
+    [`& .${tooltipClasses.tooltip}`]: {
+      maxWidth: 'none',
+    },
+  });
+
+  const contacts = [
+    {
+      id: 1,
+      name: 'Web URL',
+    },
+    {
+      id: 2,
+      name: 'Email',
+    },
+    {
+      id: 3,
+      name: 'Numero di telefono',
+    },
+  ];
+
+  const result = contacts.find(({ name }) => name === 'Web URL');
+
   return (
-    <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
-      </Box>
-      <form onSubmit={formik.handleSubmit}>
+    <form onSubmit={formik.handleSubmit}>
+      <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
+        <Box sx={{ py: 3 }}>
+          <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
+        </Box>
+
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
@@ -438,8 +486,136 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             />
           </LocalizationProvider>
         </FormControl>
-      </form>
-    </Paper>
+      </Paper>
+
+      <Paper sx={{ mt: 5 }}>
+        <Box sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
+          <Box sx={{ py: 3 }}>
+            <Typography variant="h6">
+              {t('components.wizard.stepOne.form.otherInfo.title')}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Typography variant="body1">
+                {t('components.wizard.stepOne.form.otherInfo.subTitle')}
+              </Typography>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Button size="small" href="" sx={{ p: 0 }}>
+                {t('components.wizard.common.links.findOut')}
+              </Button>
+            </Box>
+          </Box>
+
+          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', py: 2 }}>
+            <FormControlLabel
+              sx={{ gridColumn: 'span 1' }}
+              control={<Switch value={isChecked} onChange={toggleSwitch} />}
+              label={t('components.wizard.stepOne.form.otherInfo.deliverInitiative')}
+            />
+          </FormControl>
+
+          <FormControl>
+            {!isChecked ? (
+              <>
+                <FormControl
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
+                >
+                  <InputLabel sx={{ mt: 2 }}>
+                    {t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
+                  </InputLabel>
+                  <Select
+                    label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
+                    sx={{ gridColumn: 'span 9' }}
+                  >
+                    {serviceOptions.map(({ id, name }, index) => (
+                      <MenuItem key={index} value={id}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </>
+            ) : (
+              <>
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+                  <Typography sx={{ fontSize: '18px', fontWeight: '600', gridColumn: 'span 2' }}>
+                    {t('components.wizard.stepOne.form.otherInfo.description')}
+                  </Typography>
+                </Box>
+
+                <FormControl
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
+                >
+                  <TextField
+                    label={t('components.wizard.stepOne.form.otherInfo.serviceName')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.serviceName')}
+                    sx={{ gridColumn: 'span 6', pr: 4 }}
+                  />
+                  <TextField
+                    label={t('components.wizard.stepOne.form.otherInfo.argument')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.argument')}
+                    sx={{ gridColumn: 'span 6' }}
+                    value={t('components.wizard.stepOne.form.otherInfo.argumentValue')}
+                  />
+                  <TextField
+                    sx={{ gridColumn: 'span 12', mt: 4 }}
+                    multiline
+                    maxRows={4}
+                    label={t('components.wizard.stepOne.form.otherInfo.description')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.description')}
+                    defaultValue={t('components.wizard.stepOne.form.otherInfo.descriptionValue')}
+                  />
+                </FormControl>
+
+                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+                  <Typography sx={{ fontSize: '18px', fontWeight: '600', gridColumn: 'span 2' }}>
+                    {t('components.wizard.stepOne.form.otherInfo.helpChannels')}
+                  </Typography>
+                  <NoMaxWidthTooltip
+                    title={t('components.wizard.stepOne.form.otherInfo.helpChannelsTooltip')}
+                    placement="right"
+                    arrow
+                  >
+                    <InfoOutlinedIcon color="primary" />
+                  </NoMaxWidthTooltip>
+                </Box>
+
+                <FormControl
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
+                >
+                  <InputLabel sx={{ mt: 2 }}>
+                    {t('components.wizard.stepOne.form.otherInfo.contact')}
+                  </InputLabel>
+                  <Select
+                    label={t('components.wizard.stepOne.form.otherInfo.contact')}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
+                    sx={{ gridColumn: 'span 2' }}
+                    defaultValue={result?.name}
+                  >
+                    {contacts.map(({ name }, id) => (
+                      <MenuItem key={id} value={name}>
+                        {name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  <TextField
+                    sx={{ gridColumn: 'span 6', ml: 4, content: 'initial' }}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                  />
+                </FormControl>
+              </>
+            )}
+          </FormControl>
+
+          <FormControl></FormControl>
+        </Box>
+      </Paper>
+    </form>
   );
 };
 

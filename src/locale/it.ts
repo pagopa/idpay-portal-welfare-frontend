@@ -61,6 +61,24 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
+          otherInfo: {
+            title: 'Altre informazioni',
+            subTitle:
+              ' L’iniziativa può essere fruita dall’app IO, dalle app degli Issuer convenzionati e presso la Rete Anti Digital-Divide. Per erogare l’iniziativa su IO è necessario associarla ad un servizio che verrà esposto in app.',
+            deliverInitiative: 'Eroga l’iniziativa su IO',
+            serviceSelect: 'Seleziona un servizio',
+            description: 'Descrizione',
+            serviceName: 'Nome del servizio',
+            argument: 'Argomento',
+            argumentValue: 'Bonus erogato dal Ministero della Cultura',
+            descriptionValue:
+              'Se hai compiuto 18 anni e sei residente in Italia, puoi ottenere € 500 da spendere in libri, cinema, musica, concerti, eventi culturali, musei, monumenti e parchi, teatro e danza, corsi di musica e di lingua straniera.',
+            helpChannels: 'Canali di assistenza',
+            helpChannelsTooltip:
+              'Indica un canale di assistenza dove gli utenti possono contattarvi',
+            contact: 'Contatto',
+            indicatesChannel: 'Indica il canale',
+          },
         },
       },
       stepTwo: {
