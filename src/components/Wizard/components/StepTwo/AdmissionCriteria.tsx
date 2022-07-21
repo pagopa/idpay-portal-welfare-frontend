@@ -6,6 +6,7 @@ import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
+import ManualCriteriaItem from './ManualCriteriaItem';
 type Props = {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
@@ -18,7 +19,9 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const [openModal, setOpenModal] = useState(false);
   const [criteria, setCriteria] = useState(Array<AdmissionCriteriaModel>);
   const [criteriaChanged, setCriteriaChanged] = useState(false);
-  const [criteriaToRender, setCriteriaToRender] = useState(Array<{ id: string; title: string }>);
+  const [criteriaToRender, setCriteriaToRender] = useState(
+    Array<{ code: string; field: string; authority: string }>
+  );
   const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
   const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<number>);
 
@@ -44,7 +47,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const handleCriteriaRemoved = (e: any) => {
     const elementIdToDelete = e.target.dataset.id;
     const newCriteria = criteria.map((c) => {
-      if (c.id === elementIdToDelete) {
+      if (c.code === elementIdToDelete) {
         return { ...c, checked: false };
       } else {
         return { ...c };
@@ -52,7 +55,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     });
     setCriteria([...newCriteria]);
     criteriaToRender.forEach((c, index) => {
-      if (c.id === elementIdToDelete) {
+      if (c.code === elementIdToDelete) {
         // eslint-disable-next-line functional/immutable-data
         setCriteriaToRender([...criteriaToRender.splice(index, 0)]);
         setCriteriaChanged(!criteriaChanged);
@@ -89,14 +92,14 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       let i = 0;
       let notPrinted = true;
       while (notPrinted === true && i < criteriaToRender.length) {
-        notPrinted = c.id !== criteriaToRender[i].id ? true : false;
+        notPrinted = c.code !== criteriaToRender[i].code ? true : false;
         i++;
       }
       if (notPrinted === true && c.checked === true) {
         // eslint-disable-next-line functional/immutable-data
         setCriteriaToRender((prevCriteriaToRender) => [
           ...prevCriteriaToRender,
-          { id: c.id, title: c.title },
+          { code: c.code, field: c.field, authority: c.authority },
         ]);
       }
     });
@@ -153,9 +156,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         <Box>
           {criteriaToRender.map((c) => (
             <AdmissionCriteriaItem
-              key={c.id}
-              id={c.id}
-              title={c.title}
+              key={c.code}
+              code={c.code}
+              field={c.field}
+              authority={c.authority}
               handleCriteriaRemoved={handleCriteriaRemoved}
               action={action}
               setAction={setAction}
@@ -166,15 +170,17 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         </Box>
         <Box>
           {manualCriteriaToRender.map((m) => (
-            <AdmissionCriteriaItem
+            <ManualCriteriaItem
               key={m}
-              id={m}
-              title={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m + 1}`}
+              code={m}
+              name={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m + 1}`}
               handleCriteriaRemoved={handleManualCriteriaRemoved}
               action={action}
               setAction={setAction}
-              currentStep={currentStep}
-              setCurrentStep={setCurrentStep}
+              // action={action}
+              // setAction={setAction}
+              // currentStep={currentStep}
+              // setCurrentStep={setCurrentStep}
             />
           ))}
         </Box>

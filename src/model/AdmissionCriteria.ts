@@ -1,6 +1,27 @@
+import { FilterOperator } from '../utils/constants';
+
 export type AdmissionCriteriaModel = {
-  id: string;
-  title: string;
-  subtitle: string;
+  code: string;
+  authority: string;
+  field: string;
   checked: boolean;
 };
+
+export interface DateOfBirthModel {
+  dateOfBirthSelect: number;
+  dateOfBirthRelationSelect: FilterOperator;
+  dateOfBirthStartValue: string;
+  dateOfBirthEndValue: string;
+}
+
+export interface ResidencyModel {
+  residencySelect: number;
+  residencyRelationSelect: FilterOperator;
+  residencyValue: string;
+}
+
+export interface IseeModel {
+  iseeRelationSelect: FilterOperator;
+  iseeStartValue: string;
+  iseeEndValue: string;
+}

@@ -5,7 +5,7 @@ const IS_DEVELOP = process.env.NODE_ENV === 'development';
 
 // Nuovo token
 export const testToken =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTgyMTY1ODIsImV4cCI6MTY1ODI0NTM4MiwiYXVkIjoiaWRwYXkud2VsZmFyZS5wYWdvcGEuaXQiLCJpc3MiOiJodHRwczovL2FwaS1pby5kZXYuY3N0YXIucGFnb3BhLml0IiwidWlkIjoiYjg5ODZiZjItMWY5My00ODI3LWFiMTYtYjIxZWI4YWVhZTJiIiwibmFtZSI6IlRlc3QiLCJmYW1pbHlfbmFtZSI6IklEUGF5IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwib3JnX2lkIjoiMmY2M2ExNTEtZGE0ZS00ZTFlLWFjZjktYWRlY2MwYzRkNzI3Iiwib3JnX3ZhdCI6IjAwNjA4NzIwMjcyIiwib3JnX3BhcnR5X3JvbGUiOiJNQU5BR0VSIiwib3JnX3JvbGUiOiJhZG1pbiJ9.X83-O1OXEcDXARs5Gc5umQVN5o8EmDHXEtFKXm8uldE7a_O346d6Y7gwluI51D72EKkPV0QqAmmV4FoiF_gdXxK47XYBP1Lt1HEduFjsJvHWsU8ocV3o6rbh9cWg4sv9f1xaTnFwzE3tLDDxb1QnKzw4zybRLc-IkUEYcxtbKkq28nnk7oHMcuCNLZ2WZmCmtb41EXVIjBAtRhJpkvLc-_JNDdKwe1mUwPuYo-ZBxj1qaVLCWtSRLC_yN4X9iE331KK7vNSkKYtafQ174Dgw3O1hD8ZqULZuuOmSX-YENBaPmeP3qEbxi3m6XUE4kYcVRhO3xak66oV5LZLDK6j9Nw';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpYXQiOjE2NTgzMjkzNDAsImV4cCI6MTY1ODM1ODE0MCwiYXVkIjoiaWRwYXkud2VsZmFyZS5wYWdvcGEuaXQiLCJpc3MiOiJodHRwczovL2FwaS1pby5kZXYuY3N0YXIucGFnb3BhLml0IiwidWlkIjoiYjg5ODZiZjItMWY5My00ODI3LWFiMTYtYjIxZWI4YWVhZTJiIiwibmFtZSI6IlRlc3QiLCJmYW1pbHlfbmFtZSI6IklEUGF5IiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIiwib3JnX2lkIjoiMmY2M2ExNTEtZGE0ZS00ZTFlLWFjZjktYWRlY2MwYzRkNzI3Iiwib3JnX3ZhdCI6IjAwNjA4NzIwMjcyIiwib3JnX3BhcnR5X3JvbGUiOiJNQU5BR0VSIiwib3JnX3JvbGUiOiJhZG1pbiJ9.ugArrKYIKEoIRhzt4yZjbMSjXzoPjRO32wFyK8fEImlkyV8YuoZv5TtXxOWujpHF0WrOxdXYr59UPwwialfuFaG1QZ5l4o6tWNnEqk1RCKSycPyZ4tWugwBMRWA5h8AR7jouML65fl2kWyzkQGejH5SF8Y8NpiY7o48bi3sn-d9R0t7TSqRT77JjqTc2XOoiUpcJFHuLgra9RUHbd7A8-Zxwa2b__MYqfYq5I0ZBmHzea_Fgujw7AgWgjUiae6fWt8-F-TtBG0cEih-6e9tW4TBJsI5Cee3cVvy5TMKpsKMXVO_BzkOcOROIpafuDDZBYUXOhJJ0aju8W8DsDvA1lA';
 
 export const MOCK_USER = IS_DEVELOP;
 export const LOG_REDUX_ACTIONS = IS_DEVELOP;
@@ -24,4 +24,32 @@ export enum WIZARD_ACTIONS {
 export enum BeneficiaryTypeEnum {
   PF = 'PF',
   PG = 'PG',
+}
+
+export enum DateOfBirthOptions {
+  YEAR = 'year',
+  AGE = 'age',
+}
+
+export enum ResidencyOptions {
+  POSTAL_CODE = 'postalCode',
+  CITY = 'city',
+  REGION = 'region',
+  NATION = 'nation',
+}
+
+export enum FilterOperator {
+  EQ = 'EQ',
+  NOT_EQ = 'NOT_EQ',
+  LT = 'LT',
+  LE = 'LE',
+  GT = 'GT',
+  GE = 'GE',
+  INSTANCE_OF = 'INSTANCE_OF',
+  IN = 'IN',
+}
+
+export enum ManualCriteriaOptions {
+  BOOLEAN = 'boolean',
+  MULTI = 'multi',
 }

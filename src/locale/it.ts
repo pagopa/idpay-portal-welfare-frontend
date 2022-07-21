@@ -94,6 +94,8 @@ export default {
             isNot: 'Non è',
             manual: 'Criterio # ',
             boolean: 'Booleano',
+            multi: 'Scelta multipla',
+            addOption: 'Aggiungi opzione',
           },
         },
 

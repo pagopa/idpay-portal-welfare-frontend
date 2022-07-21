@@ -2,11 +2,20 @@ import { Box, FormControl, FormHelperText, MenuItem, Select, TextField } from '@
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
-import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
+import {
+  WIZARD_ACTIONS,
+  FilterOperator,
+  DateOfBirthOptions,
+  ResidencyOptions,
+} from '../../../../utils/constants';
 
 type Props = {
-  id: string | number;
+  code: string | number;
+  field: string | number;
+  authority: string | number;
   action: string | number;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
@@ -14,22 +23,25 @@ type Props = {
 };
 
 const useAdmissionCriteriaFieldSets = ({
-  id,
+  code,
+  field,
+  authority,
   action,
   setAction,
-  currentStep,
-  setCurrentStep,
-}: Props) => {
+}: // currentStep,
+// setCurrentStep,
+Props) => {
   const { t } = useTranslation();
   const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState('hidden');
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState('hidden');
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       dateOfBirthFormik.handleSubmit();
       residencyFormik.handleSubmit();
       iseeFormik.handleSubmit();
-      manualCriteriaFormik.handleSubmit();
+      // manualCriteriaFormik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
@@ -42,7 +54,7 @@ const useAdmissionCriteriaFieldSets = ({
     dateOfBirthStartValue: Yup.string().required(t('validation.required')),
     dateOfBirthEndValue: Yup.number().when(['dateOfBirthRelationSelect', 'dateOfBirthStartValue'], {
       is: (dateOfBirthRelationSelect: string, dateOfBirthStartValue: string) =>
-        dateOfBirthRelationSelect === '6' && dateOfBirthStartValue,
+        dateOfBirthRelationSelect === FilterOperator.IN && dateOfBirthStartValue,
       then: Yup.number()
         .required(t('validation.required'))
         .min(Yup.ref('dateOfBirthStartValue'), t('validation.outValue')),
@@ -51,18 +63,24 @@ const useAdmissionCriteriaFieldSets = ({
 
   const dateOfBirthFormik = useFormik({
     initialValues: {
-      dateOfBirthSelect: 1,
-      dateOfBirthRelationSelect: 1,
+      field,
+      authority,
+      dateOfBirthSelect: DateOfBirthOptions.YEAR,
+      dateOfBirthRelationSelect: FilterOperator.EQ,
       dateOfBirthStartValue: '',
       dateOfBirthEndValue: '',
     },
     validateOnChange: true,
     validationSchema: dateOfBirthValidationSchema,
     onSubmit: (values) => {
-      console.log('data di nascita');
-      console.log(values);
-      // TODO dispatch values
-      setCurrentStep(currentStep + 1);
+      const data = {
+        authority: values.authority.toString(),
+        code: values.dateOfBirthSelect,
+        field: values.field.toString(),
+        operator: values.dateOfBirthRelationSelect,
+        value: values.dateOfBirthStartValue,
+      };
+      dispatch(setAutomatedCriteria(data));
     },
   });
 
@@ -74,17 +92,23 @@ const useAdmissionCriteriaFieldSets = ({
 
   const residencyFormik = useFormik({
     initialValues: {
-      residencySelect: 2,
-      residencyRelationSelect: 1,
+      field,
+      authority,
+      residencySelect: ResidencyOptions.CITY,
+      residencyRelationSelect: FilterOperator.EQ,
       residencyValue: '',
     },
     validateOnChange: true,
     validationSchema: residencyValidationSchema,
     onSubmit: (values) => {
-      console.log('residenza');
-      console.log(values);
-      // TODO dispatch values
-      setCurrentStep(currentStep + 1);
+      const data = {
+        authority: values.authority.toString(),
+        code: values.residencySelect,
+        field: values.field.toString(),
+        operator: values.residencyRelationSelect,
+        value: values.residencyValue,
+      };
+      dispatch(setAutomatedCriteria(data));
     },
   });
 
@@ -93,7 +117,7 @@ const useAdmissionCriteriaFieldSets = ({
     iseeStartValue: Yup.number().required(t('validation.required')),
     iseeEndValue: Yup.number().when(['iseeRelationSelect', 'iseeStartValue'], {
       is: (iseeRelationSelect: string, iseeStartValue: string) =>
-        iseeRelationSelect === '6' && iseeStartValue,
+        iseeRelationSelect === FilterOperator.IN && iseeStartValue,
       then: Yup.number()
         .required(t('validation.required'))
         .min(Yup.ref('iseeStartValue'), t('validation.outValue')),
@@ -102,39 +126,45 @@ const useAdmissionCriteriaFieldSets = ({
 
   const iseeFormik = useFormik({
     initialValues: {
-      iseeRelationSelect: 1,
+      field,
+      authority,
+      iseeRelationSelect: FilterOperator.EQ,
       iseeStartValue: '',
       iseeEndValue: '',
     },
     validateOnChange: true,
     validationSchema: iseeValidationSchema,
     onSubmit: (values) => {
-      console.log('isee');
-      console.log(values);
-      // TODO dispatch values
-      setCurrentStep(currentStep + 1);
+      const data = {
+        authority: values.authority.toString(),
+        code: values.field.toString(),
+        field: values.field.toString(),
+        operator: values.iseeRelationSelect,
+        value: values.iseeStartValue,
+      };
+      dispatch(setAutomatedCriteria(data));
     },
   });
 
-  const manualCriteriaValidationSchema = Yup.object().shape({
-    manualCriteriaName: Yup.string().required(t('validation.required')),
-    manualCriteriaSelectName: Yup.number().required(t('validation.required')),
-  });
+  // const manualCriteriaValidationSchema = Yup.object().shape({
+  //   manualCriteriaName: Yup.string().required(t('validation.required')),
+  //   manualCriteriaSelectName: Yup.number().required(t('validation.required')),
+  // });
 
-  const manualCriteriaFormik = useFormik({
-    initialValues: {
-      manualCriteriaName: '',
-      manualCriteriaSelectName: 1,
-    },
-    validateOnChange: true,
-    validationSchema: manualCriteriaValidationSchema,
-    onSubmit: (values) => {
-      console.log('manual criteria');
-      console.log(values);
-      // TODO dispatch values
-      setCurrentStep(currentStep + 1);
-    },
-  });
+  // const manualCriteriaFormik = useFormik({
+  //   initialValues: {
+  //     manualCriteriaName: '',
+  //     manualCriteriaSelectName: ManualCriteriaOptions.BOOLEAN,
+  //   },
+  //   validateOnChange: true,
+  //   validationSchema: manualCriteriaValidationSchema,
+  //   onSubmit: (values) => {
+  //     console.log('manual criteria');
+  //     console.log(values);
+  //     // TODO dispatch values
+  //     setCurrentStep(currentStep + 1);
+  //   },
+  // });
 
   const setError = (touched: boolean | undefined, errorText: string | undefined) =>
     touched && Boolean(errorText);
@@ -146,7 +176,7 @@ const useAdmissionCriteriaFieldSets = ({
     value: string | number,
     setterFunction: Dispatch<SetStateAction<string>>
   ) => {
-    if (value === '6' || value === 6) {
+    if (value === FilterOperator.IN || value === 6) {
       setterFunction('number');
     } else {
       setterFunction('hidden');
@@ -156,7 +186,7 @@ const useAdmissionCriteriaFieldSets = ({
   const setFormControlDisplayProp = (inputType: string) =>
     inputType === 'number' ? 'flex' : 'none';
 
-  switch (id) {
+  switch (code) {
     case '1':
       return (
         <Box
@@ -179,10 +209,10 @@ const useAdmissionCriteriaFieldSets = ({
                 dateOfBirthFormik.errors.dateOfBirthSelect
               )}
             >
-              <MenuItem value={1}>
+              <MenuItem value={DateOfBirthOptions.YEAR}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.year')}
               </MenuItem>
-              <MenuItem value={2}>
+              <MenuItem value={DateOfBirthOptions.AGE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.age')}
               </MenuItem>
             </Select>
@@ -207,22 +237,22 @@ const useAdmissionCriteriaFieldSets = ({
                 dateOfBirthFormik.errors.dateOfBirthRelationSelect
               )}
             >
-              <MenuItem value={1}>
+              <MenuItem value={FilterOperator.EQ}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.exact')}
               </MenuItem>
-              <MenuItem value={2}>
+              <MenuItem value={FilterOperator.GT}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.majorTo')}
               </MenuItem>
-              <MenuItem value={3}>
+              <MenuItem value={FilterOperator.LT}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.minorTo')}
               </MenuItem>
-              <MenuItem value={4}>
+              <MenuItem value={FilterOperator.GE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.majorOrEqualTo')}
               </MenuItem>
-              <MenuItem value={5}>
+              <MenuItem value={FilterOperator.LE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
               </MenuItem>
-              <MenuItem value={6}>
+              <MenuItem value={FilterOperator.IN}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.between')}
               </MenuItem>
             </Select>
@@ -304,16 +334,16 @@ const useAdmissionCriteriaFieldSets = ({
                 residencyFormik.errors.residencySelect
               )}
             >
-              <MenuItem value={1}>
+              <MenuItem value={ResidencyOptions.POSTAL_CODE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.postalCode')}
               </MenuItem>
-              <MenuItem value={2}>
+              <MenuItem value={ResidencyOptions.CITY}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.city')}
               </MenuItem>
-              <MenuItem value={3}>
+              <MenuItem value={ResidencyOptions.REGION}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.region')}
               </MenuItem>
-              <MenuItem value={4}>
+              <MenuItem value={ResidencyOptions.NATION}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.nation')}
               </MenuItem>
             </Select>
@@ -335,8 +365,10 @@ const useAdmissionCriteriaFieldSets = ({
                 residencyFormik.errors.residencyRelationSelect
               )}
             >
-              <MenuItem value={1}>{t('components.wizard.stepTwo.chooseCriteria.form.is')}</MenuItem>
-              <MenuItem value={2}>
+              <MenuItem value={FilterOperator.EQ}>
+                {t('components.wizard.stepTwo.chooseCriteria.form.is')}
+              </MenuItem>
+              <MenuItem value={FilterOperator.NOT_EQ}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.isNot')}
               </MenuItem>
             </Select>
@@ -392,22 +424,22 @@ const useAdmissionCriteriaFieldSets = ({
                 iseeFormik.errors.iseeRelationSelect
               )}
             >
-              <MenuItem value={1}>
+              <MenuItem value={FilterOperator.EQ}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.exact')}
               </MenuItem>
-              <MenuItem value={2}>
+              <MenuItem value={FilterOperator.GT}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.majorTo')}
               </MenuItem>
-              <MenuItem value={3}>
+              <MenuItem value={FilterOperator.LT}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.minorTo')}
               </MenuItem>
-              <MenuItem value={4}>
+              <MenuItem value={FilterOperator.GE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.majorOrEqualTo')}
               </MenuItem>
-              <MenuItem value={5}>
+              <MenuItem value={FilterOperator.LE}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
               </MenuItem>
-              <MenuItem value={6}>
+              <MenuItem value={FilterOperator.IN}>
                 {t('components.wizard.stepTwo.chooseCriteria.form.between')}
               </MenuItem>
             </Select>
@@ -459,58 +491,62 @@ const useAdmissionCriteriaFieldSets = ({
         </Box>
       );
     default:
-      return (
-        <Box
-          sx={{
-            gridColumn: 'span 12',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(4, 1fr)',
-            gap: 3,
-            my: 2,
-          }}
-        >
-          <FormControl sx={{ gridColumn: 'span 1' }}>
-            <TextField
-              id={`manualCriteria${id}}`}
-              name={`manualCriteriaName`}
-              variant="outlined"
-              value={manualCriteriaFormik.values.manualCriteriaName}
-              placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
-              onChange={(e) => manualCriteriaFormik.handleChange(e)}
-              error={setError(
-                manualCriteriaFormik.touched.manualCriteriaName,
-                manualCriteriaFormik.errors.manualCriteriaName
-              )}
-              helperText={setErrorText(
-                manualCriteriaFormik.touched.manualCriteriaName,
-                manualCriteriaFormik.errors.manualCriteriaName
-              )}
-            />
-          </FormControl>
-          <FormControl sx={{ gridColumn: 'span 1' }}>
-            <Select
-              id={`manualCriteriaSelect${id}}`}
-              name={`manualCriteriaSelectName`}
-              value={manualCriteriaFormik.values.manualCriteriaSelectName}
-              onChange={(e) => manualCriteriaFormik.handleChange(e)}
-              error={setError(
-                manualCriteriaFormik.touched.manualCriteriaSelectName,
-                manualCriteriaFormik.errors.manualCriteriaSelectName
-              )}
-            >
-              <MenuItem value={1}>
-                {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
-              </MenuItem>
-            </Select>
-            <FormHelperText>
-              {setErrorText(
-                manualCriteriaFormik.touched.manualCriteriaSelectName,
-                manualCriteriaFormik.errors.manualCriteriaSelectName
-              )}
-            </FormHelperText>
-          </FormControl>
-        </Box>
-      );
+      return null;
+    // return (
+    //   <Box
+    //     sx={{
+    //       gridColumn: 'span 12',
+    //       display: 'grid',
+    //       gridTemplateColumns: 'repeat(4, 1fr)',
+    //       gap: 3,
+    //       my: 2,
+    //     }}
+    //   >
+    //     <FormControl sx={{ gridColumn: 'span 1' }}>
+    //       <TextField
+    //         id={`manualCriteria${code}}`}
+    //         name={`manualCriteriaName`}
+    //         variant="outlined"
+    //         value={manualCriteriaFormik.values.manualCriteriaName}
+    //         placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+    //         onChange={(e) => manualCriteriaFormik.handleChange(e)}
+    //         error={setError(
+    //           manualCriteriaFormik.touched.manualCriteriaName,
+    //           manualCriteriaFormik.errors.manualCriteriaName
+    //         )}
+    //         helperText={setErrorText(
+    //           manualCriteriaFormik.touched.manualCriteriaName,
+    //           manualCriteriaFormik.errors.manualCriteriaName
+    //         )}
+    //       />
+    //     </FormControl>
+    //     <FormControl sx={{ gridColumn: 'span 1' }}>
+    //       <Select
+    //         id={`manualCriteriaSelect${code}}`}
+    //         name={`manualCriteriaSelectName`}
+    //         value={manualCriteriaFormik.values.manualCriteriaSelectName}
+    //         onChange={(e) => manualCriteriaFormik.handleChange(e)}
+    //         error={setError(
+    //           manualCriteriaFormik.touched.manualCriteriaSelectName,
+    //           manualCriteriaFormik.errors.manualCriteriaSelectName
+    //         )}
+    //       >
+    //         <MenuItem value={ManualCriteriaOptions.BOOLEAN}>
+    //           {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
+    //         </MenuItem>
+    //         <MenuItem value={ManualCriteriaOptions.MULTI}>
+    //           {t('components.wizard.stepTwo.chooseCriteria.form.multi')}
+    //         </MenuItem>
+    //       </Select>
+    //       <FormHelperText>
+    //         {setErrorText(
+    //           manualCriteriaFormik.touched.manualCriteriaSelectName,
+    //           manualCriteriaFormik.errors.manualCriteriaSelectName
+    //         )}
+    //       </FormHelperText>
+    //     </FormControl>
+    //   </Box>
+    // );
   }
 };
 

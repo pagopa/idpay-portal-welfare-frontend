@@ -1,3 +1,5 @@
+import { FilterOperator } from '../utils/constants';
+
 export interface GeneralInfo {
   beneficiaryType: string;
   beneficiaryKnown: string;
@@ -16,26 +18,26 @@ export interface AdditionalInfo {
   description: string;
 }
 
-export interface SelfeclarationCriteriaMultiItem {
-  _type: string;
-  description: string;
-  value: Array<string>;
-  code: string;
+export interface SelfDeclarationCriteriaBoolItem {
+  _type: string; // option value from the select field "boolean"
+  description: string; // value of the input text
+  value: string; // true OR false TODO ask for field to add
+  code: string; // array index as string
 }
 
-export interface SelfeclarationCriteriaBoolItem {
-  _type: string;
-  description: string;
-  value: boolean;
-  code: string;
+export interface SelfDeclarationCriteriaMultiItem {
+  _type: string; // option value from the select field "multi"
+  description: string; // '' - TODO ask for field to add
+  value: Array<string>; // options array
+  code: string; // array index as string
 }
 
 export interface AutomatedCriteriaItem {
-  authority: null;
+  authority: string;
   code: string;
-  field: boolean;
-  operator: string;
-  value: null;
+  field: string;
+  operator: FilterOperator;
+  value: string;
 }
 
 export interface Initiative {
@@ -45,7 +47,7 @@ export interface Initiative {
   additionalInfo: AdditionalInfo;
   beneficiaryRule: {
     selfDeclarationCriteria: Array<
-      SelfeclarationCriteriaMultiItem | SelfeclarationCriteriaBoolItem
+      SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
     >;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };

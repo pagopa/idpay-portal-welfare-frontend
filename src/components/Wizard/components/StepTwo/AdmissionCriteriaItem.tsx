@@ -5,8 +5,9 @@ import { Dispatch, SetStateAction, MouseEvent, MouseEventHandler } from 'react';
 import useAdmissionCriteriaFieldSets from './useAdmissionCriteriaFieldSets';
 
 type Props = {
-  id: string | number;
-  title: string | number;
+  code: string | number;
+  field: string | number;
+  authority: string | number;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
@@ -15,8 +16,9 @@ type Props = {
 };
 
 const AdmissionCriteriaItem = ({
-  id,
-  title,
+  code,
+  field,
+  authority,
   handleCriteriaRemoved,
   action,
   setAction,
@@ -24,7 +26,9 @@ const AdmissionCriteriaItem = ({
   setCurrentStep,
 }: Props) => {
   const fieldset = useAdmissionCriteriaFieldSets({
-    id,
+    code,
+    field,
+    authority,
     action,
     setAction,
     currentStep,
@@ -33,7 +37,7 @@ const AdmissionCriteriaItem = ({
 
   return (
     <Box
-      key={id}
+      key={code}
       sx={{
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
@@ -47,12 +51,12 @@ const AdmissionCriteriaItem = ({
       }}
     >
       <Box sx={{ gridColumn: 'span 11' }}>
-        <Typography variant="subtitle1">{title}</Typography>
+        <Typography variant="subtitle1">{field}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
         <DeleteOutlineIcon
           color="error"
-          data-id={id}
+          data-id={code}
           sx={{
             cursor: 'pointer',
           }}

@@ -52,7 +52,7 @@ const AdmissionCriteriaModal = ({
 
   const handleCriteriaChange = (e: ChangeEvent) => {
     const newCriteria = criteria.map((c) => {
-      if (c.id === e.target.id) {
+      if (c.code === e.target.id) {
         return { ...c, checked: !c.checked };
       }
       return c;
@@ -72,38 +72,38 @@ const AdmissionCriteriaModal = ({
   ) => {
     if (!searchKey.length) {
       return list.map((a) => (
-        <Box key={a.id} sx={{ display: 'flex', my: 2 }}>
+        <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
           <Box>
             <Checkbox
               onChange={(e) => handleCriteriaChange(e)}
               checked={a.checked}
-              id={a.id}
-              name={a.id}
+              id={a.code}
+              name={a.code}
             />
           </Box>
           <Box>
-            <Typography variant="body2">{a.title}</Typography>
-            <Typography variant="caption">{a.subtitle}</Typography>
+            <Typography variant="body2">{a.field}</Typography>
+            <Typography variant="caption">{a.authority}</Typography>
           </Box>
         </Box>
       ));
     } else {
       return list.map((a) => {
-        const lowerCaseTitle = a.title.toLowerCase();
+        const lowerCaseTitle = a.field.toLowerCase();
         if (lowerCaseTitle.startsWith(searchKey)) {
           return (
-            <Box key={a.id} sx={{ display: 'flex', my: 2 }}>
+            <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
               <Box>
                 <Checkbox
                   onChange={(e) => handleCriteriaChange(e)}
                   checked={a.checked}
-                  id={a.id}
-                  name={a.id}
+                  id={a.code}
+                  name={a.code}
                 />
               </Box>
               <Box>
-                <Typography variant="body2">{a.title}</Typography>
-                <Typography variant="caption">{a.subtitle}</Typography>
+                <Typography variant="body2">{a.field}</Typography>
+                <Typography variant="caption">{a.authority}</Typography>
               </Box>
             </Box>
           );
