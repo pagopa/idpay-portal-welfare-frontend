@@ -198,18 +198,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     },
   ];
 
-  const channelTypes = [
-    {
-      id: 1,
-      name: t('components.wizard.stepOne.form.otherInfo.channelType'),
-    },
-  ];
-
-  const result = contacts.find(({ name }) => name === 'Web URL');
-  const resultType = channelTypes.find(
-    ({ name }) => name === t('components.wizard.stepOne.form.otherInfo.channelType')
-  );
-
   /*   const addRows = () => {
     const rows = channelTypes.map()
   }
@@ -579,7 +567,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.argument')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.argument')}
                     sx={{ gridColumn: 'span 6' }}
-                    value={t('components.wizard.stepOne.form.otherInfo.argumentValue')}
                   />
                   <TextField
                     sx={{ gridColumn: 'span 12', mt: 4 }}
@@ -587,7 +574,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     maxRows={4}
                     label={t('components.wizard.stepOne.form.otherInfo.description')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.description')}
-                    defaultValue={t('components.wizard.stepOne.form.otherInfo.descriptionValue')}
                   />
                 </FormControl>
 
@@ -614,7 +600,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.contact')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
                     sx={{ gridColumn: 'span 2' }}
-                    defaultValue={result?.name}
                   >
                     {contacts.map(({ name }, id) => (
                       <MenuItem key={id} value={name}>
@@ -630,30 +615,24 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 </FormControl>
 
                 <FormControl
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(24, 1fr)', py: 2 }}
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(12, 1fr)',
+                    py: 2,
+                    gridTemplateAreas: `"Contact Contact Channel Channel Channel Channel Channel Channel . . . Cancel"`,
+                  }}
                 >
-                  <RemoveCircleOutlineIcon
-                    color="error"
-                    sx={{
-                      cursor: 'pointer',
-                      alignItems: 'center',
-                      mt: 2,
-                      fontSize: 30,
-                      gridColumn: 'span 1',
-                    }}
-                  />
-                  <InputLabel sx={{ mt: 2, ml: 6 }}>
+                  <InputLabel sx={{ mt: 2 }}>
                     {t('components.wizard.stepOne.form.otherInfo.contact')}
                   </InputLabel>
                   <Select
                     label={t('components.wizard.stepOne.form.otherInfo.contact')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
-                    sx={{ gridColumn: 'span 4', pr: 4 }}
-                    defaultValue={resultType?.name}
+                    sx={{ gridColumn: 'span 2', pr: 4, gridArea: 'Contact' }}
                   >
                     {
                       // eslint-disable-next-line sonarjs/no-identical-functions
-                      channelTypes.map(({ name }, id) => (
+                      contacts.map(({ name }, id) => (
                         <MenuItem key={id} value={name}>
                           {name}
                         </MenuItem>
@@ -663,8 +642,19 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   <TextField
                     variant="outlined"
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
-                    sx={{ gridColumn: 'span 12', ml: 4 }}
+                    sx={{ gridColumn: 'span 6', ml: 4, gridArea: 'Channel' }}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                  />
+                  <RemoveCircleOutlineIcon
+                    color="error"
+                    sx={{
+                      cursor: 'pointer',
+                      alignItems: 'end',
+                      mt: 2,
+                      fontSize: 30,
+                      gridColumn: 'span 1',
+                      gridArea: 'Cancel',
+                    }}
                   />
                 </FormControl>
 

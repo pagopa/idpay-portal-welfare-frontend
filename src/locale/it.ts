@@ -70,15 +70,11 @@ export default {
             description: 'Descrizione',
             serviceName: 'Nome del servizio',
             argument: 'Argomento',
-            argumentValue: 'Bonus erogato dal Ministero della Cultura',
-            descriptionValue:
-              'Se hai compiuto 18 anni e sei residente in Italia, puoi ottenere € 500 da spendere in libri, cinema, musica, concerti, eventi culturali, musei, monumenti e parchi, teatro e danza, corsi di musica e di lingua straniera.',
             helpChannels: 'Canali di assistenza',
             helpChannelsTooltip:
               'Indica un canale di assistenza dove gli utenti possono contattarvi',
             contact: 'Contatto',
             indicatesChannel: 'Indica il canale',
-            channelType: 'Tipo di canale',
             addChannel: 'Aggiungi un altro canale',
           },
         },
