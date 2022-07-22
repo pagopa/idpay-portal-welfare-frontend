@@ -7,11 +7,15 @@
 import remarkGfm from 'remark-gfm';
 import ReactMarkdown from 'react-markdown';
 import { useEffect, useState } from 'react';
+// const privacyMd = 'https://raw.githubusercontent.com/pagopa/idpay-portal-welfare-tos/main/privacy/privacy_it.md';
+// const tosMd = 'https://raw.githubusercontent.com/pagopa/idpay-portal-welfare-tos/main/README.md';
 
 const Home = () => {
   const [markdownContent, setMarkDownContent] = useState('');
   useEffect(() => {
-    fetch('https://raw.githubusercontent.com/pagopa/idpay-portal-welfare-tos/main/README.md')
+    fetch(
+      'https://raw.githubusercontent.com/pagopa/idpay-portal-welfare-tos/main/privacy/privacy_it.md'
+    )
       .then(
         (response) => response.text()
         // setContent(response?.body);
