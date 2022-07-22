@@ -8,6 +8,7 @@ import {
   SelfDeclarationCriteriaBoolItem,
   SelfDeclarationCriteriaMultiItem,
 } from '../../model/Initiative';
+// import { ManualCriteriaOptions } from '../../utils/constants';
 
 const initialState: Initiative = {
   initiativeId: '',
@@ -73,8 +74,10 @@ export const initiativeSlice = createSlice({
       state,
       action: PayloadAction<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
     ) => {
-      console.log(state);
-      console.log(action.payload);
+      state.beneficiaryRule.selfDeclarationCriteria = [
+        ...state.beneficiaryRule.selfDeclarationCriteria,
+        action.payload,
+      ];
     },
   },
 });

@@ -9,14 +9,7 @@ import {
   SelectChangeEvent,
   Button,
 } from '@mui/material';
-import {
-  Dispatch,
-  SetStateAction,
-  MouseEvent,
-  MouseEventHandler,
-  useState,
-  useEffect,
-} from 'react';
+import { Dispatch, SetStateAction, MouseEvent, MouseEventHandler, useEffect } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
@@ -39,7 +32,6 @@ type Props = {
 const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setAction }: Props) => {
   const { t } = useTranslation();
 
-  const [criteriaType, setCriteriaType] = useState(ManualCriteriaOptions.BOOLEAN);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -52,16 +44,12 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
   }, [action]);
 
   const manualCriteriaValidationSchema = Yup.object().shape({
-    manualCriteriaName: Yup.string().when('manualCriteriaSelectName', {
-      is: (manualCriteriaSelectName: string) =>
-        manualCriteriaSelectName === ManualCriteriaOptions.BOOLEAN,
-      then: Yup.string().required(t('validation.required')),
-    }),
+    manualCriteriaName: Yup.string().required(t('validation.required')),
     manualCriteriaSelectName: Yup.string().required(t('validation.required')),
     manualCriteriaValues: Yup.array().of(
       Yup.object().shape({
         value: Yup.string().when('manualCriteriaSelectName', {
-          is: (manualCriteriaSelectName: string) =>
+          is: (manualCriteriaSelectName: ManualCriteriaOptions) =>
             manualCriteriaSelectName === ManualCriteriaOptions.MULTI,
           then: Yup.string().required(t('validation.required')),
         }),
@@ -69,8 +57,11 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
     ),
   });
 
+  const criteriaCode = (code + 1).toString();
+
   const manualCriteriaFormik = useFormik({
     initialValues: {
+      manualCriteriaCode: criteriaCode,
       manualCriteriaName: '',
       manualCriteriaSelectName: ManualCriteriaOptions.BOOLEAN,
       manualCriteriaValues: [{ value: '' }, { value: '' }],
@@ -78,25 +69,28 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
     validateOnChange: true,
     validationSchema: manualCriteriaValidationSchema,
     onSubmit: (values) => {
+      console.log(values);
       if (values.manualCriteriaSelectName === ManualCriteriaOptions.BOOLEAN) {
         const data = {
           _type: values.manualCriteriaSelectName,
           description: values.manualCriteriaName,
-          value: values.manualCriteriaName,
-          code: values.manualCriteriaSelectName,
+          value: true,
+          code: values.manualCriteriaCode,
         };
         dispatch(setManualCriteria(data));
       } else if (values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
         const optionsValues: Array<string> = [];
         values.manualCriteriaValues.forEach((element) => {
-          // eslint-disable-next-line functional/immutable-data
-          optionsValues.push(element.value);
+          if (element.value !== undefined) {
+            // eslint-disable-next-line functional/immutable-data
+            optionsValues.push(element.value);
+          }
         });
         const data = {
           _type: values.manualCriteriaSelectName,
           description: values.manualCriteriaName,
           value: optionsValues,
-          code: values.manualCriteriaSelectName,
+          code: values.manualCriteriaCode,
         };
         dispatch(setManualCriteria(data));
       }
@@ -116,11 +110,13 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
     setValues: any
   ) => {
     if (e.target.value === ManualCriteriaOptions.BOOLEAN) {
-      setCriteriaType(ManualCriteriaOptions.BOOLEAN);
-      setValues({ ...values, manualCriteriaValues: [{ value: '' }, { value: '' }] });
+      setValues({
+        ...values,
+        manualCriteriaSelectName: e.target.value,
+        manualCriteriaValues: [{ value: '' }, { value: '' }],
+      });
     } else {
-      setCriteriaType(ManualCriteriaOptions.MULTI);
-      setValues({ ...values, manualCriteriaName: '' });
+      setValues({ ...values, manualCriteriaSelectName: e.target.value });
     }
     manualCriteriaFormik.handleChange(e);
   };
@@ -154,8 +150,10 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
     try {
       if (typeof errors === 'string') {
         return errors;
+      } else if (errors.value) {
+        return errors.value;
       } else {
-        return errors.value || '';
+        return '';
       }
     } catch {
       return '';
@@ -203,7 +201,7 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
       >
         <FormControl sx={{ gridColumn: 'span 3' }}>
           <Select
-            id={`manualCriteriaSelect${code}}`}
+            id={`manualCriteriaSelectName`}
             name={`manualCriteriaSelectName`}
             value={manualCriteriaFormik.values.manualCriteriaSelectName}
             onChange={(e) =>
@@ -228,37 +226,45 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
             )}
           </FormHelperText>
         </FormControl>
-        {criteriaType === ManualCriteriaOptions.BOOLEAN && (
-          <Box
-            sx={{
-              gridColumn: 'span 12',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(12, 1fr)',
-              gap: 3,
-              my: 2,
-            }}
-          >
-            <FormControl sx={{ gridColumn: 'span 9' }}>
-              <TextField
-                id={`manualCriteria${code}}`}
-                name={`manualCriteriaName`}
-                variant="outlined"
-                value={manualCriteriaFormik.values.manualCriteriaName}
-                placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
-                onChange={(e) => manualCriteriaFormik.handleChange(e)}
-                error={setError(
-                  manualCriteriaFormik.touched.manualCriteriaName,
-                  manualCriteriaFormik.errors.manualCriteriaName
-                )}
-                helperText={setErrorText(
-                  manualCriteriaFormik.touched.manualCriteriaName,
-                  manualCriteriaFormik.errors.manualCriteriaName
-                )}
-              />
-            </FormControl>
-          </Box>
-        )}
-        {criteriaType === ManualCriteriaOptions.MULTI &&
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gap: 3,
+          my: 2,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 9' }}>
+          <TextField
+            id={`manualCriteria${code}}`}
+            name={`manualCriteriaName`}
+            variant="outlined"
+            value={manualCriteriaFormik.values.manualCriteriaName}
+            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            onChange={(e) => manualCriteriaFormik.handleChange(e)}
+            error={setError(
+              manualCriteriaFormik.touched.manualCriteriaName,
+              manualCriteriaFormik.errors.manualCriteriaName
+            )}
+            helperText={setErrorText(
+              manualCriteriaFormik.touched.manualCriteriaName,
+              manualCriteriaFormik.errors.manualCriteriaName
+            )}
+          />
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          gap: 3,
+          my: 2,
+        }}
+      >
+        {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI &&
           manualCriteriaFormik.values.manualCriteriaValues.map((o, i) => {
             const optionErrors =
               manualCriteriaFormik.errors.manualCriteriaValues?.length &&
@@ -317,7 +323,7 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
               </Box>
             );
           })}
-        {criteriaType === ManualCriteriaOptions.MULTI && (
+        {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI && (
           <Box
             sx={{
               gridColumn: 'span 12',

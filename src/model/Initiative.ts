@@ -21,7 +21,7 @@ export interface AdditionalInfo {
 export interface SelfDeclarationCriteriaBoolItem {
   _type: string; // option value from the select field "boolean"
   description: string; // value of the input text
-  value: string; // true OR false TODO ask for field to add
+  value: boolean;
   code: string; // array index as string
 }
 
