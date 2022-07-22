@@ -6,7 +6,7 @@ import {
 } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../redux/hooks';
-import { RootState } from '../../redux/store';
+// import { RootState } from '../../redux/store';
 
 export const mockedUser: User = {
   name: 'NAME',
@@ -16,9 +16,9 @@ export const mockedUser: User = {
   email: 'a@a.aa',
 };
 
-export const verifyMockExecution = (state: RootState) => {
-  expect(state.user.logged).toMatchObject(mockedUser);
-};
+// export const verifyMockExecution = (state: RootState) => {
+//   expect(state.user.logged).toMatchObject(mockedUser);
+// };
 
 export default (WrappedComponent: React.ComponentType<any>) => () => {
   const dispatch = useAppDispatch();

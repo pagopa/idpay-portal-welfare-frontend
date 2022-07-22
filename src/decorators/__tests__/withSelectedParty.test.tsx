@@ -8,7 +8,7 @@ import { testToken } from '../../utils/constants';
 
 jest.mock('../../services/partyService');
 
-const expectedPartyId: string = 'onboarded';
+const expectedPartyId: string = '2f63a151-da4e-4e1e-acf9-adecc0c4d727';
 
 let fetchPartyDetailsSpy: jest.SpyInstance;
 

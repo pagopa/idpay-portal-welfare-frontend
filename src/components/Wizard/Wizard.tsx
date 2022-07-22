@@ -125,12 +125,17 @@ const Wizard = () => {
               </Button>
             </Box>
             <Box sx={{ gridArea: 'draft', justifySelf: 'end' }}>
-              <Button variant="text" startIcon={<SaveIcon />} onClick={handleDraft}>
+              <Button
+                variant="text"
+                startIcon={<SaveIcon />}
+                onClick={handleDraft}
+                data-testid="skip-action-test"
+              >
                 {t('components.wizard.common.buttons.skip')}
               </Button>
             </Box>
             <Box sx={{ gridArea: 'continue', justifySelf: 'end' }}>
-              <Button variant="contained" onClick={handleNext}>
+              <Button variant="contained" onClick={handleNext} data-testid="continue-action-test">
                 {activeStep === steps.length - 1
                   ? t('components.wizard.common.buttons.send')
                   : t('components.wizard.common.buttons.continue')}

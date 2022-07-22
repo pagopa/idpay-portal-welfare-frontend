@@ -1,9 +1,12 @@
+import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeApi } from '../api/InitiativeApiClient';
-import { SaveInitiativeGeneralDTO } from '../model/saveInitiativeGeneralDTO';
 
-export const saveGeneralInfoService = (generalInfo: SaveInitiativeGeneralDTO): Promise<any> =>
-  InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => console.log(res));
+export const saveGeneralInfoService = (
+  generalInfo: InitiativeInfoDTO
+): Promise<InitiativeDTO | void | undefined> =>
+  InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res?.initiativeId);
 
 export const getInitativeSummary = (): Promise<InitiativeGeneralDTO> =>
   InitiativeApi.getInitativeSummary();

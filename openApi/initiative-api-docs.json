@@ -1,14 +1,30 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "IdPay - Backend Portal Initiative",
+    "title": "IDPAY Welfare Portal Initiative API",
+    "description": "IDPAY Welfare Portal Initiative",
     "version": "1.0"
   },
+  "servers": [
+    {
+      "url": "http://api.dev.cstar.pagopa.it/idpay/initiative"
+    },
+    {
+      "url": "http://apim.internal.dev.cstar.pagopa.it/idpay/initiative"
+    },
+    {
+      "url": "https://api.dev.cstar.pagopa.it/idpay/initiative"
+    },
+    {
+      "url": "https://apim.internal.dev.cstar.pagopa.it/idpay/initiative"
+    }
+  ],
   "paths": {
-    "/idpay/initiative/summary": {
+    "/summary": {
       "get": {
         "tags": ["initiative"],
         "summary": "Returns the list of initiatives names for a specific organization",
+        "description": "Returns the list of initiatives names for a specific organization",
         "operationId": "getInitativeSummary",
         "responses": {
           "200": {
@@ -17,6 +33,11 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InitiativeSummaryDTO"
+                },
+                "example": {
+                  "initiativeId": "string",
+                  "initiativeName": "string",
+                  "status": "string"
                 }
               }
             }
@@ -66,10 +87,11 @@
         }
       }
     },
-    "/idpay/initiative/{initiativeId}": {
+    "/{initiativeId}": {
       "get": {
         "tags": ["initiative"],
         "summary": "Returns the detail of an active initiative",
+        "description": "Returns the detail of an active initiative",
         "operationId": "getInitiativeDetail",
         "parameters": [
           {
@@ -89,6 +111,58 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/InitiativeDTO"
+                },
+                "example": {
+                  "initiativeId": "string",
+                  "initiativeName": "string",
+                  "organizationId": "string",
+                  "pdndToken": "string",
+                  "status": "string",
+                  "pdndCheck": true,
+                  "autocertificationCheck": true,
+                  "beneficiaryRanking": true,
+                  "general": {
+                    "name": "string",
+                    "budget": 0,
+                    "beneficiaryType": "PF",
+                    "beneficiaryKnown": true,
+                    "beneficiaryBudget": 0,
+                    "startDate": "2022-01-30",
+                    "endDate": "2022-01-30",
+                    "rankingStartDate": "2022-01-30",
+                    "rankingEndDate": "2022-01-30"
+                  },
+                  "additionalInfo": {
+                    "serviceId": "string",
+                    "serviceName": "string",
+                    "argument": "string",
+                    "description": "string"
+                  },
+                  "beneficiaryRule": {
+                    "selfDeclarationCriteria": [
+                      {
+                        "_type": "boolean",
+                        "description": "string",
+                        "value": ["value1", "value2", "value3"],
+                        "code": "string"
+                      }
+                    ],
+                    "automatedCriteria": [
+                      {
+                        "authority": "string",
+                        "code": "string",
+                        "field": true,
+                        "operator": "string",
+                        "value": "string"
+                      }
+                    ]
+                  },
+                  "legal": {
+                    "privacyLink": "string",
+                    "tcLink": "string",
+                    "regulationLink": "string",
+                    "dpiaLink": "string"
+                  }
                 }
               }
             }
@@ -152,26 +226,102 @@
         }
       }
     },
-    "/idpay/initiative/general": {
+    "/general": {
       "post": {
         "tags": ["initiative"],
         "summary": "Save initiative and first subset of data 'general info'",
+        "description": "Save initiative and first subset of data 'general info'",
         "operationId": "saveInitiativeGeneralInfo",
         "requestBody": {
           "description": "Unique identifier of the subscribed initiative, IBAN of the citizen",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiativePatchDTO"
+                "$ref": "#/components/schemas/InitiativeInfoDTO"
+              },
+              "example": {
+                "general": {
+                  "name": "string",
+                  "budget": 0,
+                  "beneficiaryType": "PF",
+                  "beneficiaryKnown": true,
+                  "beneficiaryBudget": 0,
+                  "startDate": "2022-01-30",
+                  "endDate": "2022-01-30",
+                  "rankingStartDate": "2022-01-30",
+                  "rankingEndDate": "2022-01-30"
+                },
+                "additionalInfo": {
+                  "serviceId": "string",
+                  "serviceName": "string",
+                  "argument": "string",
+                  "description": "string"
+                }
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Enrollment OK",
+            "description": "Created",
             "content": {
-              "application/json": {}
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InitiativeDTO"
+                },
+                "example": {
+                  "initiativeId": "string",
+                  "initiativeName": "string",
+                  "organizationId": "string",
+                  "pdndToken": "string",
+                  "status": "string",
+                  "pdndCheck": true,
+                  "autocertificationCheck": true,
+                  "beneficiaryRanking": true,
+                  "general": {
+                    "name": "string",
+                    "budget": 0,
+                    "beneficiaryType": "PF",
+                    "beneficiaryKnown": true,
+                    "beneficiaryBudget": 0,
+                    "startDate": "2022-01-30",
+                    "endDate": "2022-01-30",
+                    "rankingStartDate": "2022-01-30",
+                    "rankingEndDate": "2022-01-30"
+                  },
+                  "additionalInfo": {
+                    "serviceId": "string",
+                    "serviceName": "string",
+                    "argument": "string",
+                    "description": "string"
+                  },
+                  "beneficiaryRule": {
+                    "selfDeclarationCriteria": [
+                      {
+                        "_type": "boolean",
+                        "description": "string",
+                        "value": true,
+                        "code": "string"
+                      }
+                    ],
+                    "automatedCriteria": [
+                      {
+                        "authority": "string",
+                        "code": "string",
+                        "field": true,
+                        "operator": "string",
+                        "value": "string"
+                      }
+                    ]
+                  },
+                  "legal": {
+                    "privacyLink": "string",
+                    "tcLink": "string",
+                    "regulationLink": "string",
+                    "dpiaLink": "string"
+                  }
+                }
+              }
             }
           },
           "400": {
@@ -261,10 +411,11 @@
         }
       }
     },
-    "/idpay/initiative/{initiativeId}/general": {
+    "/{initiativeId}/general": {
       "patch": {
         "tags": ["initiative"],
         "summary": "Save initiative and first subset of data 'general info'",
+        "description": "Save initiative and first subset of data 'general info'",
         "operationId": "updateInitiativeGeneralInfo",
         "parameters": [
           {
@@ -282,7 +433,26 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiativePatchDTO"
+                "$ref": "#/components/schemas/InitiativeInfoDTO"
+              },
+              "example": {
+                "general": {
+                  "name": "string",
+                  "budget": 0,
+                  "beneficiaryType": "PF",
+                  "beneficiaryKnown": true,
+                  "beneficiaryBudget": 0,
+                  "startDate": "2022-01-30",
+                  "endDate": "2022-01-30",
+                  "rankingStartDate": "2022-01-30",
+                  "rankingEndDate": "2022-01-30"
+                },
+                "additionalInfo": {
+                  "serviceId": "string",
+                  "serviceName": "string",
+                  "argument": "string",
+                  "description": "string"
+                }
               }
             }
           }
@@ -381,10 +551,11 @@
         }
       }
     },
-    "/idpay/initiative/{initiativeId}/beneficiary": {
+    "/{initiativeId}/beneficiary": {
       "patch": {
         "tags": ["initiative"],
         "summary": "Association of beneficiary rules to an initiative",
+        "description": "Association of beneficiary rules to an initiative",
         "operationId": "updateInitiativeBeneficiary",
         "parameters": [
           {
@@ -403,6 +574,25 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/InitiativeBeneficiaryRuleDTO"
+              },
+              "example": {
+                "selfDeclarationCriteria": [
+                  {
+                    "_type": "boolean",
+                    "description": "string",
+                    "value": ["value1", "value2", "value3"],
+                    "code": "string"
+                  }
+                ],
+                "automatedCriteria": [
+                  {
+                    "authority": "string",
+                    "code": "string",
+                    "field": true,
+                    "operator": "string",
+                    "value": "string"
+                  }
+                ]
               }
             }
           }
@@ -538,30 +728,6 @@
           }
         }
       },
-      "InitiativeBeneficiaryRuleDTO": {
-        "type": "object",
-        "properties": {
-          "selfDeclarationCriteria": {
-            "type": "array",
-            "items": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/SelfCriteriaMultiDTO"
-                },
-                {
-                  "$ref": "#/components/schemas/SelfCriteriaBoolDTO"
-                }
-              ]
-            }
-          },
-          "automatedCriteria": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/AutomatedCriteriaDTO"
-            }
-          }
-        }
-      },
       "InitiativeGeneralDTO": {
         "type": "object",
         "properties": {
@@ -572,8 +738,8 @@
             "type": "number"
           },
           "beneficiaryType": {
-            "type": "string",
-            "enum": ["PF", "PG"]
+            "enum": ["PF", "PG"],
+            "type": "string"
           },
           "beneficiaryKnown": {
             "type": "boolean"
@@ -627,48 +793,6 @@
           }
         }
       },
-      "SelfCriteriaBoolDTO": {
-        "title": "SelfCriteriaBoolDTO",
-        "type": "object",
-        "properties": {
-          "_type": {
-            "enum": ["boolean", "multi"],
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "value": {
-            "type": "boolean"
-          },
-          "code": {
-            "type": "string"
-          }
-        }
-      },
-      "SelfCriteriaMultiDTO": {
-        "title": "SelfCriteriaMultiDTO",
-        "type": "object",
-        "properties": {
-          "_type": {
-            "enum": ["boolean", "multi"],
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
-          "value": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "example": ["value1", "value2", "value3"]
-          },
-          "code": {
-            "type": "string"
-          }
-        }
-      },
       "InitiativeDTO": {
         "type": "object",
         "properties": {
@@ -710,17 +834,6 @@
           }
         }
       },
-      "InitiativePatchDTO": {
-        "type": "object",
-        "properties": {
-          "general": {
-            "$ref": "#/components/schemas/InitiativeGeneralDTO"
-          },
-          "additionalInfo": {
-            "$ref": "#/components/schemas/InitiativeAdditionalDTO"
-          }
-        }
-      },
       "InitiativeSummaryDTO": {
         "type": "object",
         "properties": {
@@ -735,14 +848,95 @@
           }
         }
       },
+      "InitiativeInfoDTO": {
+        "type": "object",
+        "properties": {
+          "general": {
+            "$ref": "#/components/schemas/InitiativeGeneralDTO"
+          },
+          "additionalInfo": {
+            "$ref": "#/components/schemas/InitiativeAdditionalDTO"
+          }
+        }
+      },
       "ErrorDTO": {
         "type": "object",
         "properties": {
           "code": {
-            "type": "integer",
-            "format": "int32"
+            "type": "string"
           },
           "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AnyOfInitiativeBeneficiaryRuleDTOSelfDeclarationCriteriaItems": {
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/SelfCriteriaBoolDTO"
+          },
+          {
+            "$ref": "#/components/schemas/SelfCriteriaMultiDTO"
+          }
+        ],
+        "description": "List of possible self criteria"
+      },
+      "InitiativeBeneficiaryRuleDTO": {
+        "type": "object",
+        "properties": {
+          "selfDeclarationCriteria": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AnyOfInitiativeBeneficiaryRuleDTOSelfDeclarationCriteriaItems"
+            },
+            "description": "List of generic contents inside Customer"
+          },
+          "automatedCriteria": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AutomatedCriteriaDTO"
+            }
+          }
+        }
+      },
+      "SelfCriteriaBoolDTO": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "enum": ["boolean"],
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "value": {
+            "type": "boolean"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      },
+      "SelfCriteriaMultiDTO": {
+        "title": "SelfCriteriaMultiDTO",
+        "type": "object",
+        "properties": {
+          "_type": {
+            "enum": ["multi"],
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "example": ["value1", "value2", "value3"]
+          },
+          "code": {
             "type": "string"
           }
         }
