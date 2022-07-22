@@ -102,3 +102,5 @@ export const beneficiaryRuleSelector = (
   >;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
+export const initiativeIdSelector = (state: RootState): string | undefined =>
+  state.initiative.initiativeId;

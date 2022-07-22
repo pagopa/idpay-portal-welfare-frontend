@@ -5,7 +5,14 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useSelector } from 'react-redux';
 import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
-import { beneficiaryRuleSelector } from '../../../../redux/slices/initiativeSlice';
+import {
+  initiativeIdSelector,
+  beneficiaryRuleSelector,
+} from '../../../../redux/slices/initiativeSlice';
+import {
+  patchBeneficiaryRuleService,
+  patchGeneralInfo,
+} from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 import ManualCriteriaItem from './ManualCriteriaItem';
@@ -31,6 +38,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     Array<{ code: string; dispatched: boolean }>
   );
   const beneficiaryRule = useSelector(beneficiaryRuleSelector);
+  const initiativeId = useSelector(initiativeIdSelector);
 
   useEffect(() => {
     fetchAdmissionCriteria()
@@ -154,10 +162,18 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     } else {
       serviceCanBeCalled = false;
     }
-    if (serviceCanBeCalled) {
-      console.log('serviceCanBeCalled');
-      console.log(beneficiaryRule);
+    if (serviceCanBeCalled && typeof initiativeId === 'string') {
+      patchBeneficiaryRuleService(initiativeId, beneficiaryRule)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
     }
+    patchGeneralInfo('ciao', { budget: 100 })
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
+
+    // getInitativeSummary()
+    //   .then((response) => console.log(response))
+    //   .catch((error) => console.log(error));
   }, [criteriaToSubmit]);
 
   return (

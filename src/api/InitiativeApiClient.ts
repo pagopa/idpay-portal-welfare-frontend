@@ -8,6 +8,7 @@ import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
 import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
+import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeBeneficiaryRuleDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -50,6 +51,29 @@ export const InitiativeApi = {
           ...data,
         },
         additionalInfo: {},
+      },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  initiativeBeneficiaryRulePatch: async (
+    id: string,
+    data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeBeneficiary({
+      initiativeId: id,
+      body: {
+        ...data,
+      },
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  initiativeGeneralPatch: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
+    const result = await apiClient.updateInitiativeGeneralInfo({
+      initiativeId: id,
+      body: {
+        ...data,
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);

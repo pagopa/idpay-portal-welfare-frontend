@@ -552,7 +552,7 @@
       }
     },
     "/{initiativeId}/beneficiary": {
-      "patch": {
+      "put": {
         "tags": ["initiative"],
         "summary": "Association of beneficiary rules to an initiative",
         "description": "Association of beneficiary rules to an initiative",

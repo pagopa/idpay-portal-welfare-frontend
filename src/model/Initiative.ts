@@ -33,11 +33,11 @@ export interface SelfDeclarationCriteriaMultiItem {
 }
 
 export interface AutomatedCriteriaItem {
-  authority: string;
-  code: string;
-  field: string;
-  operator: FilterOperator;
-  value: string;
+  authority: string | undefined;
+  code: string | undefined;
+  field: any; // ??? perché nel dto è boolean
+  operator: FilterOperator | string | undefined;
+  value: string | undefined;
 }
 
 export interface Initiative {
