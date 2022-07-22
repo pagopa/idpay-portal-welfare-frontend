@@ -52,7 +52,6 @@ export const InitiativeApi = {
         additionalInfo: {},
       },
     });
-    console.log('API_CLIENT', result);
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

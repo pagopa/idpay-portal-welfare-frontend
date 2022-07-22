@@ -6,7 +6,7 @@ import { InitiativeApi } from '../api/InitiativeApiClient';
 export const saveGeneralInfoService = (
   generalInfo: InitiativeInfoDTO
 ): Promise<InitiativeDTO | void | undefined> =>
-  InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res?.initiativeId);
+  InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
 
 export const getInitativeSummary = (): Promise<InitiativeGeneralDTO> =>
   InitiativeApi.getInitativeSummary();

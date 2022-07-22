@@ -24,7 +24,11 @@ import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import { setGeneralInfo, generalInfoSelector } from '../../../redux/slices/initiativeSlice';
+import {
+  setInitiativeId,
+  setGeneralInfo,
+  generalInfoSelector,
+} from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import { saveGeneralInfoService } from '../../../services/intitativeService';
 import { BeneficiaryTypeEnum } from '../../../utils/constants';
@@ -137,12 +141,15 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {
+      dispatch(setGeneralInfo(values));
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
       saveGeneralInfoService(formValuesParsed)
         .then((response) => {
-          console.log(response);
-          dispatch(setGeneralInfo(values));
-          setCurrentStep(currentStep + 1);
+          const initiativeId = response?.initiativeId;
+          if (typeof initiativeId === 'string') {
+            dispatch(setInitiativeId(initiativeId));
+            setCurrentStep(currentStep + 1);
+          }
         })
         .catch((error) => {
           console.log(error);

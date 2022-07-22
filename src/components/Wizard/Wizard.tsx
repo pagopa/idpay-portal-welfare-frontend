@@ -10,7 +10,7 @@ import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(1);
+  const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const { t } = useTranslation();

@@ -2,7 +2,9 @@ import { Box, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { grey } from '@mui/material/colors';
 import { Dispatch, SetStateAction, MouseEvent, MouseEventHandler } from 'react';
-import useAdmissionCriteriaFieldSets from './useAdmissionCriteriaFieldSets';
+import DateOfBirthCriteriaItem from './DateOfBirthCriteriaItem';
+import ResidencyCriteriaItem from './ResidencyCriteriaItem';
+import IseeCriteriaItem from './IseeCriteriaItem';
 
 type Props = {
   code: string | number;
@@ -13,6 +15,8 @@ type Props = {
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
+  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
 };
 
 const AdmissionCriteriaItem = ({
@@ -24,16 +28,57 @@ const AdmissionCriteriaItem = ({
   setAction,
   currentStep,
   setCurrentStep,
+  criteriaToSubmit,
+  setCriteriaToSubmit,
 }: Props) => {
-  const fieldset = useAdmissionCriteriaFieldSets({
-    code,
-    field,
-    authority,
-    action,
-    setAction,
-    currentStep,
-    setCurrentStep,
-  });
+  const criteria = (code: string | number) => {
+    switch (code) {
+      case '1':
+        return (
+          <DateOfBirthCriteriaItem
+            code={code}
+            field={field}
+            authority={authority}
+            action={action}
+            setAction={setAction}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            criteriaToSubmit={criteriaToSubmit}
+            setCriteriaToSubmit={setCriteriaToSubmit}
+          />
+        );
+      case '2':
+        return (
+          <ResidencyCriteriaItem
+            code={code}
+            field={field}
+            authority={authority}
+            action={action}
+            setAction={setAction}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            criteriaToSubmit={criteriaToSubmit}
+            setCriteriaToSubmit={setCriteriaToSubmit}
+          />
+        );
+      case '3':
+        return (
+          <IseeCriteriaItem
+            code={code}
+            field={field}
+            authority={authority}
+            action={action}
+            setAction={setAction}
+            currentStep={currentStep}
+            setCurrentStep={setCurrentStep}
+            criteriaToSubmit={criteriaToSubmit}
+            setCriteriaToSubmit={setCriteriaToSubmit}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <Box
@@ -65,7 +110,7 @@ const AdmissionCriteriaItem = ({
           }
         />
       </Box>
-      {fieldset}
+      {criteria(code)}
     </Box>
   );
 };

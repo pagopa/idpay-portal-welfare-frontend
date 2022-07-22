@@ -2,11 +2,14 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import { useSelector } from 'react-redux';
 import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
+import { beneficiaryRuleSelector } from '../../../../redux/slices/initiativeSlice';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 import ManualCriteriaItem from './ManualCriteriaItem';
+
 type Props = {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
@@ -24,6 +27,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   );
   const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
   const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<number>);
+  const [criteriaToSubmit, setCriteriaToSubmit] = useState(
+    Array<{ code: string; dispatched: boolean }>
+  );
+  const beneficiaryRule = useSelector(beneficiaryRuleSelector);
 
   useEffect(() => {
     fetchAdmissionCriteria()
@@ -34,6 +41,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    // console.log(action);
+  }, [action]);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -61,6 +72,9 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         setCriteriaChanged(!criteriaChanged);
       }
     });
+    const oldCriteriaToSubmit = [...criteriaToSubmit];
+    const newCriteriaToSubmit = oldCriteriaToSubmit.filter((oC) => oC.code !== elementIdToDelete);
+    setCriteriaToSubmit([...newCriteriaToSubmit]);
   };
 
   const handleManualCriteriaAdded = () => {
@@ -69,9 +83,12 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       ...prevManualCriteriaToRender,
       manualCriteriaNumber,
     ]);
+    setCriteriaToSubmit((prevCriteriaToSubmit) => [
+      ...prevCriteriaToSubmit,
+      { code: `manual_${manualCriteriaNumber}`, dispatched: false },
+    ]);
   };
 
-  // eslint-disable-next-line arrow-body-style
   const handleManualCriteriaRemoved = (e: any) => {
     if (typeof e.target.dataset.id !== undefined) {
       const elementIdToDelete = parseInt(e.target.dataset.id, 10);
@@ -83,6 +100,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         }
       });
       setManualCriteriaToRender([...newManualCriteriaToRender]);
+      const newCriteriaToSubmit = criteriaToSubmit.filter(
+        (cS) => cS.code !== `manual_${elementIdToDelete}`
+      );
+      setCriteriaToSubmit([...newCriteriaToSubmit]);
     }
   };
 
@@ -104,6 +125,40 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       }
     });
   }, [criteriaChanged]);
+
+  useEffect(() => {
+    /* eslint-disable functional/no-let */
+    criteria.forEach((c) => {
+      let i = 0;
+      let notInsubmitList = true;
+      while (notInsubmitList === true && i < criteriaToSubmit.length) {
+        notInsubmitList = c.code !== criteriaToSubmit[i].code ? true : false;
+        i++;
+      }
+      if (notInsubmitList === true && c.checked === true) {
+        setCriteriaToSubmit((prevCriteriaToSubmit) => [
+          ...prevCriteriaToSubmit,
+          { code: c.code, dispatched: false },
+        ]);
+      }
+    });
+  }, [criteriaChanged]);
+
+  useEffect(() => {
+    /* eslint-disable functional/no-let */
+    let serviceCanBeCalled = true;
+    if (criteriaToSubmit.length) {
+      criteriaToSubmit.forEach((element) => {
+        serviceCanBeCalled = serviceCanBeCalled && element.dispatched;
+      });
+    } else {
+      serviceCanBeCalled = false;
+    }
+    if (serviceCanBeCalled) {
+      console.log('serviceCanBeCalled');
+      console.log(beneficiaryRule);
+    }
+  }, [criteriaToSubmit]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -165,6 +220,8 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
               setAction={setAction}
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
+              criteriaToSubmit={criteriaToSubmit}
+              setCriteriaToSubmit={setCriteriaToSubmit}
             />
           ))}
         </Box>
@@ -177,10 +234,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
               handleCriteriaRemoved={handleManualCriteriaRemoved}
               action={action}
               setAction={setAction}
-              // action={action}
-              // setAction={setAction}
               // currentStep={currentStep}
               // setCurrentStep={setCurrentStep}
+              criteriaToSubmit={criteriaToSubmit}
+              setCriteriaToSubmit={setCriteriaToSubmit}
             />
           ))}
         </Box>

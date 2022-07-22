@@ -11,7 +11,7 @@ import {
 // import { ManualCriteriaOptions } from '../../utils/constants';
 
 const initialState: Initiative = {
-  initiativeId: '',
+  initiativeId: undefined,
   status: '',
   generalInfo: {
     beneficiaryType: 'PF',
@@ -94,3 +94,11 @@ export const initiativeSelector = (state: RootState): Initiative => state.initia
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
 export const stepOneBeneficiaryKnownSelector = (state: RootState): string =>
   state.initiative.generalInfo.beneficiaryKnown;
+export const beneficiaryRuleSelector = (
+  state: RootState
+): {
+  selfDeclarationCriteria: Array<
+    SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
+  >;
+  automatedCriteria: Array<AutomatedCriteriaItem>;
+} => state.initiative.beneficiaryRule;

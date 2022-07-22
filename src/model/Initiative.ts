@@ -41,7 +41,7 @@ export interface AutomatedCriteriaItem {
 }
 
 export interface Initiative {
-  initiativeId: string;
+  initiativeId: string | undefined;
   status: string;
   generalInfo: GeneralInfo;
   additionalInfo: AdditionalInfo;

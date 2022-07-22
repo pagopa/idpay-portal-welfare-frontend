@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from 'react-redux';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { setManualCriteria } from '../../../../redux/slices/initiativeSlice';
+import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
   code: number;
@@ -27,9 +28,19 @@ type Props = {
   handleCriteriaRemoved: MouseEventHandler<Element>;
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
+  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
+  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
 };
 
-const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setAction }: Props) => {
+const ManualCriteriaItem = ({
+  code,
+  name,
+  handleCriteriaRemoved,
+  action,
+  setAction,
+  criteriaToSubmit,
+  setCriteriaToSubmit,
+}: Props) => {
   const { t } = useTranslation();
 
   const dispatch = useDispatch();
@@ -94,6 +105,11 @@ const ManualCriteriaItem = ({ code, name, handleCriteriaRemoved, action, setActi
         };
         dispatch(setManualCriteria(data));
       }
+
+      const manualCriteriaIndex = parseInt(values.manualCriteriaCode, 10) - 1;
+      const criteriaToSubmitCode = `manual_${manualCriteriaIndex}`;
+      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, criteriaToSubmitCode)]);
+
       // setCurrentStep(currentStep + 1);
     },
   });
