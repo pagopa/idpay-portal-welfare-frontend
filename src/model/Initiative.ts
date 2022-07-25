@@ -8,12 +8,14 @@ export interface GeneralInfo {
   rankingStartDate: string;
   rankingEndDate: string;
 }
-
 export interface AdditionalInfo {
   serviceId: string;
   serviceName: string;
   argument: string;
   description: string;
+  contact: string;
+  channelName: string;
+  assistanceChannel: Array<string>;
 }
 
 export interface SelfeclarationCriteriaMultiItem {

@@ -20,6 +20,9 @@ const initialState: Initiative = {
     serviceName: '',
     argument: '',
     description: '',
+    contact: '',
+    channelName: '',
+    assistanceChannel: [],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
@@ -50,5 +53,7 @@ export const { setInitiativeId, setGeneralInfo, setAdditionalInfo } = initiative
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
+export const additionalInfoSelector = (state: RootState): AdditionalInfo =>
+  state.initiative.additionalInfo;
 export const stepOneBeneficiaryKnownSelector = (state: RootState): string =>
   state.initiative.generalInfo.beneficiaryKnown;

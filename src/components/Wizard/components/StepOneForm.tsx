@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 import {
   Paper,
   Typography,
@@ -34,7 +35,11 @@ import { addDays } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
-import { setGeneralInfo, generalInfoSelector } from '../../../redux/slices/initiativeSlice';
+import {
+  setGeneralInfo,
+  generalInfoSelector,
+  additionalInfoSelector,
+} from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import { saveGeneralInfoService } from '../../../services/intitativeService';
 import { BeneficiaryTypeEnum } from '../../../utils/constants';
@@ -46,11 +51,13 @@ interface Props {
   setCurrentStep: Dispatch<SetStateAction<number>>;
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const dispatch = useDispatch();
   const formData = useSelector(generalInfoSelector);
+  const formDataAddInfo = useSelector(additionalInfoSelector);
   const { t } = useTranslation();
-  const [isChecked, setIsChecked] = useState(true);
+  const [isChecked, setIsChecked] = useState(false);
 
   const toggleSwitch = () => setIsChecked((previousState) => !previousState);
 
@@ -69,7 +76,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     return Math.floor(totalBudgetInt / budgetPerPersonInt);
   };
 
-  const validationSchema = Yup.object().shape({
+  const validationSchemaToogleOn = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
     beneficiaryKnown: Yup.string().required(t('validation.required')),
     budget: Yup.number()
@@ -122,7 +129,92 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         }
         return schema;
       }),
+
+    serviceId: Yup.string().required(t('validation.required')),
   });
+
+  const validationSchemaToogleOff = Yup.object().shape({
+    beneficiaryType: Yup.string().required(t('validation.required')),
+    beneficiaryKnown: Yup.string().required(t('validation.required')),
+    budget: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .integer(t('validation.integer')),
+    beneficiaryBudget: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .integer(t('validation.integer'))
+      .when('budget', (budget, schema) => {
+        if (budget) {
+          return Yup.number()
+            .typeError(t('validation.numeric'))
+            .required(t('validation.required'))
+            .positive(t('validation.positive'))
+            .integer(t('validation.integer'))
+            .max(parseInt(budget, 10) - 1, t('validation.outBudgetPerPerson'));
+        }
+        return schema;
+      }),
+    rankingStartDate: Yup.date(),
+    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, schema) => {
+      if (rankingStartDate) {
+        return Yup.date()
+          .min(rankingStartDate, t('validation.outJoinTo'))
+          .required(t('validation.required'));
+      }
+      return schema;
+    }),
+    startDate: Yup.date()
+      .required(t('validation.required'))
+      .when('rankingEndDate', (rankingEndDate, schema) => {
+        if (rankingEndDate) {
+          return Yup.date()
+            .min(rankingEndDate, t('validation.outSpendFrom'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
+    endDate: Yup.date()
+      .required(t('validation.required'))
+      .when('startDate', (startDate, schema) => {
+        if (startDate) {
+          return Yup.date()
+            .min(startDate, t('validation.outSpendTo'))
+            .required(t('validation.required'));
+        }
+        return schema;
+      }),
+
+    serviceName: Yup.string()
+      .max(50, t('validation.maxServiceNameChar'))
+      .required(t('validation.required')),
+    argument: Yup.string()
+      .max(50, t('validation.maxArgumentsChar'))
+      .required(t('validation.required')),
+    description: Yup.string().required(t('validation.required')),
+    assistanceChannelValue: Yup.array().of(
+      Yup.object().shape({
+        contact: Yup.string().required(t('validation.required')),
+        channelName: Yup.string().required(t('validation.required')),
+      })
+    ),
+    contact: Yup.string().required(t('validation.required')),
+    channelName: Yup.string().when((schema) => {
+      console.log(formik.values.contact);
+      if (formik.values.contact === 'webUrl') {
+        return Yup.string().url().required(t('validation.web'));
+      } else if (formik.values.contact === 'email') {
+        return Yup.string().email().required(t('validation.email'));
+      } else if (formik.values.contact === 'numTel') {
+        return Yup.string().max(10).required(t('validation.celNum'));
+      }
+      return schema;
+    }),
+  });
+
+  const validationSchema = isChecked ? validationSchemaToogleOn : validationSchemaToogleOff;
 
   const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
     name: 'test',
@@ -135,6 +227,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     rankingEndDate: new Date(values.rankingEndDate),
     startDate: new Date(values.startDate),
     endDate: new Date(values.endDate),
+    serviceId: String(values.serviceId),
+    serviceName: String(values.serviceName),
+    argument: String(values.argument),
+    description: String(values.description),
+    contact: String(values.contact),
+    channelName: String(values.channelName),
+    assistanceChannelValue: String([values.contact, values.channelName]),
   });
 
   const formik = useFormik({
@@ -147,6 +246,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       rankingEndDate: formData.rankingEndDate,
       startDate: formData.startDate,
       endDate: formData.endDate,
+      serviceId: formDataAddInfo.serviceId,
+      serviceName: formDataAddInfo.serviceName,
+      argument: formDataAddInfo.argument,
+      description: formDataAddInfo.description,
+      contact: formDataAddInfo.contact,
+      channelName: formDataAddInfo.channelName,
+      assistanceChannel: formDataAddInfo.assistanceChannel,
     },
     validateOnChange: true,
     validationSchema,
@@ -166,11 +272,11 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
 
   const serviceOptions = [
     {
-      id: 1,
+      value: 'cartaCult',
       name: 'Carta Della Cultura',
     },
     {
-      id: 2,
+      value: 'cartaGio',
       name: 'Carta Giovani Nazionale',
     },
   ];
@@ -185,26 +291,69 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
 
   const contacts = [
     {
-      id: 1,
+      value: 'webUrl',
       name: 'Web URL',
     },
     {
-      id: 2,
+      value: 'email',
       name: 'Email',
     },
     {
-      id: 3,
+      value: 'numTel',
       name: 'Numero di telefono',
     },
   ];
 
-  /*   const addRows = () => {
-    const rows = channelTypes.map()
-  }
+  // const webUrl = contacts.find(({ name }) => name === 'Web URL');
+  // const emailAddres = contacts.find(({ name }) => name === 'Email');
+  // const cellNumber = contacts.find(({ name }) => name === 'Numero di telefono');
 
-  const deleteRows = () => {
+  const addAssistanceChannel = (values: any, setValues: any) => {
+    const newAssistanceChannelValues = [
+      ...values.assistanceChannelValue,
+      { contact: '', channelName: '' },
+    ];
+    setValues({ ...values, assistanceChannelValue: newAssistanceChannelValues });
+    console.log(newAssistanceChannelValues);
+  };
 
-  }; */
+  // const deleteAssistanceChannel = (i: number, values: any, setValues: any, setTouched: any) => {
+  //   const indexValueToRemove = i;
+  //   // eslint-disable-next-line functional/immutable-data
+  //   const newValues = values.assistanceChannelValue.filter((v: any, i: number) => {
+  //     if (i !== indexValueToRemove) {
+  //       return v;
+  //     }
+  //   });
+  //   setValues({ ...values, assistanceChannelValue: newValues });
+  //   setTouched({}, false);
+  // };
+
+  // const setError = (touched: boolean | undefined, errorText: string | undefined) =>
+  //   touched && Boolean(errorText);
+
+  // const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
+  //   touched && errorText;
+
+  // const handleOptionChange = (e: any, i: number, values: any, setValues: any, setTouched: any) => {
+  //   const assistanceChannel = [...values.assistanceChannelValue];
+  //   // eslint-disable-next-line functional/immutable-data
+  //   assistanceChannel[i].value = e.target.value;
+  //   setValues({ ...values, assistanceChannelValue: assistanceChannel });
+  //   setTouched({}, false);
+  // };
+
+  // const getOptionErrorText = (errors: string | FormikErrors<{ co: string; ch: string }>) => {
+  //   try {
+  //     if (typeof errors === 'string') {
+  //       return errors;
+  //     } else {
+  //       return (errors.co && errors.ch) || '';
+  //     }
+  //   } catch {
+  //     return '';
+  //   }
+  // };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -526,7 +675,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
           </FormControl>
 
           <FormControl>
-            {!isChecked ? (
+            {isChecked ? (
               <>
                 <FormControl
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
@@ -538,13 +687,21 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
+                    onChange={(e) => formik.setFieldValue('serviceId', e.target.value)}
+                    error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
                   >
-                    {serviceOptions.map(({ id, name }, index) => (
-                      <MenuItem key={index} value={id}>
+                    {serviceOptions.map(({ name, value }, index) => (
+                      <MenuItem key={index} value={value}>
                         {name}
                       </MenuItem>
                     ))}
                   </Select>
+                  <FormHelperText
+                    error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
+                    sx={{ gridColumn: 'span 12' }}
+                  >
+                    {formik.touched.serviceId && formik.errors.serviceId}
+                  </FormHelperText>
                 </FormControl>
               </>
             ) : (
@@ -562,11 +719,19 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.serviceName')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceName')}
                     sx={{ gridColumn: 'span 6', pr: 4 }}
+                    value={formik.values.serviceName}
+                    onChange={(e) => formik.setFieldValue('serviceName', e.target.value)}
+                    error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
+                    helperText={formik.touched.serviceName && formik.errors.serviceName}
                   />
                   <TextField
                     label={t('components.wizard.stepOne.form.otherInfo.argument')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.argument')}
                     sx={{ gridColumn: 'span 6' }}
+                    value={formik.values.argument}
+                    onChange={(e) => formik.setFieldValue('argument', e.target.value)}
+                    error={formik.touched.argument && Boolean(formik.errors.argument)}
+                    helperText={formik.touched.argument && formik.errors.argument}
                   />
                   <TextField
                     sx={{ gridColumn: 'span 12', mt: 4 }}
@@ -574,6 +739,10 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     maxRows={4}
                     label={t('components.wizard.stepOne.form.otherInfo.description')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.description')}
+                    value={formik.values.description}
+                    onChange={(e) => formik.setFieldValue('description', e.target.value)}
+                    error={formik.touched.description && Boolean(formik.errors.description)}
+                    helperText={formik.touched.description && formik.errors.description}
                   />
                 </FormControl>
 
@@ -591,7 +760,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 </Box>
 
                 <FormControl
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
+                  /* key={i} */
+                  sx={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(12, 1fr)',
+                    py: 2,
+                    gridTemplateAreas: `"Contact Contact Channel Channel Channel Channel Channel Channel . . . Cancel"`,
+                  }}
                 >
                   <InputLabel sx={{ mt: 2 }}>
                     {t('components.wizard.stepOne.form.otherInfo.contact')}
@@ -599,22 +774,48 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   <Select
                     label={t('components.wizard.stepOne.form.otherInfo.contact')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
-                    sx={{ gridColumn: 'span 2' }}
+                    sx={{ gridColumn: 'span 2', pr: 4, gridArea: 'Contact' }}
+                    onChange={(e) => formik.setFieldValue('contact', e.target.value)}
                   >
-                    {contacts.map(({ name }, id) => (
-                      <MenuItem key={id} value={name}>
-                        {name}
-                      </MenuItem>
-                    ))}
+                    {
+                      // eslint-disable-next-line sonarjs/no-identical-functions
+                      contacts.map(({ name, value }, index) => (
+                        <MenuItem key={index} value={value}>
+                          {name}
+                        </MenuItem>
+                      ))
+                    }
                   </Select>
+                  <FormHelperText
+                    error={formik.touched.contact && Boolean(formik.errors.contact)}
+                    sx={{ gridColumn: 'span 12' }}
+                  >
+                    {formik.touched.contact && formik.errors.contact}
+                  </FormHelperText>
                   <TextField
-                    sx={{ gridColumn: 'span 6', ml: 4, content: 'initial' }}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    variant="outlined"
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    sx={{ gridColumn: 'span 6', ml: 4, gridArea: 'Channel' }}
+                    placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    value={formik.values.channelName}
+                    onChange={(e) => formik.setFieldValue('channelName', e.target.value)}
+                    error={formik.touched.channelName && Boolean(formik.errors.channelName)}
+                    helperText={formik.touched.channelName && formik.errors.channelName}
                   />
                 </FormControl>
 
+                {/* {formik.values.assistanceChannel.map((o, i) => {
+                  const optionErrors =
+                    formik.errors.assistanceChannel?.length &&
+                    getOptionErrorText(formik.errors.assistanceChannel[i].valueOf());
+                  const optionTouched =
+                    (formik.touched.assistanceChannel?.length &&
+                      formik.touched.assistanceChannel[i]) ||
+                    false;
+                  return (
+                    <> */}
                 <FormControl
+                  /* key={i} */
                   sx={{
                     display: 'grid',
                     gridTemplateColumns: 'repeat(12, 1fr)',
@@ -639,11 +840,25 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                       ))
                     }
                   </Select>
+                  {/* <FormHelperText
+                    error={
+                      formik.touched.assistanceChannel && Boolean(formik.errors.assistanceChannel)
+                    }
+                    sx={{ gridColumn: 'span 12', mt: 1 }}
+                  >
+                    {formik.touched.assistanceChannel && formik.errors.assistanceChannel}
+                  </FormHelperText> */}
                   <TextField
                     variant="outlined"
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                     sx={{ gridColumn: 'span 6', ml: 4, gridArea: 'Channel' }}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                    value={formik.values.assistanceChannel}
+                    onChange={(e) => formik.setFieldValue('channelName', e.target.value)}
+                    // error={
+                    //   formik.touched.assistanceChannel && Boolean(formik.touched.assistanceChannel)
+                    // }
+                    // helperText={formik.touched.assistanceChannel && formik.errors.assistanceChannel}
                   />
                   <RemoveCircleOutlineIcon
                     color="error"
@@ -655,8 +870,19 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                       gridColumn: 'span 1',
                       gridArea: 'Cancel',
                     }}
+                    // onClick={() =>
+                    //   deleteAssistanceChannel(
+                    //     i,
+                    //     formik.values.assistanceChannel,
+                    //     formik.setValues,
+                    //     formik.setTouched
+                    //   )
+                    // }
                   />
                 </FormControl>
+                {/* </>
+                  );
+                })} */}
 
                 <FormControl
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
@@ -666,6 +892,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     color="primary"
                     sx={{ gridColumn: 'span 3' }}
                     size="large"
+                    onClick={() => addAssistanceChannel(formik.values, formik.setValues)}
                   >
                     {t('components.wizard.stepOne.form.otherInfo.addChannel')}
                   </Button>
