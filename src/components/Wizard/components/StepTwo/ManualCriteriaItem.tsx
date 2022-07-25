@@ -80,6 +80,7 @@ const ManualCriteriaItem = ({
     validateOnChange: true,
     validationSchema: manualCriteriaValidationSchema,
     onSubmit: (values) => {
+      console.log(values);
       if (values.manualCriteriaSelectName === ManualCriteriaOptions.BOOLEAN) {
         const data = {
           _type: values.manualCriteriaSelectName,
