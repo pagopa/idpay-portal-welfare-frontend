@@ -38,6 +38,12 @@ export default function SideMenu() {
             isSelected={pathname === ROUTES.NEW_INITIATIVE}
             icon={DashboardCustomize}
           />
+          <SidenavItem
+            title={t('sideMenu.initiativeList.title')}
+            handleClick={() => onExit(() => history.push(ROUTES.INITIATIVE_LIST))}
+            isSelected={pathname === ROUTES.INITIATIVE_LIST}
+            icon={DashboardCustomize}
+          />
         </List>
       </Box>
     </Box>

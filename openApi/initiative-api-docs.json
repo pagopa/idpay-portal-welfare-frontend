@@ -32,12 +32,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InitiativeSummaryDTO"
-                },
-                "example": {
-                  "initiativeId": "string",
-                  "initiativeName": "string",
-                  "status": "string"
+                  "$ref": "#/components/schemas/InitiativeSummaryArrayDTO"
                 }
               }
             }
@@ -832,6 +827,12 @@
           "legal": {
             "$ref": "#/components/schemas/InitiativeLegalDTO"
           }
+        }
+      },
+      "InitiativeSummaryArrayDTO": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/InitiativeSummaryDTO"
         }
       },
       "InitiativeSummaryDTO": {

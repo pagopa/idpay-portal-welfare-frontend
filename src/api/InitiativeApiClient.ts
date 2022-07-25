@@ -5,10 +5,11 @@ import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
 import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
-import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeBeneficiaryRuleDTO';
+// import { InitiativeSummaryArrayDTO } from './generated/initiative/InitiativeSummaryArrayDTO';
+// import { InitiativeSummaryDTO } from './generated/initiative/InitiativeSummaryDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -39,8 +40,9 @@ const onRedirectToLogin = () =>
   );
 
 export const InitiativeApi = {
-  getInitativeSummary: async (): Promise<Array<InitiativeSummaryDTO>> => {
+  getInitativeSummary: async (): Promise<any> => {
     const result = await apiClient.getInitativeSummary({});
+    console.log(result);
     return extractResponse(result, 200, onRedirectToLogin);
   },
 

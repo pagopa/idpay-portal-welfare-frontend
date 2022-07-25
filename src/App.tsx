@@ -10,6 +10,7 @@ import Layout from './components/Layout/Layout';
 import routes from './routes';
 import Home from './pages/home/Home';
 import NewInitiative from './pages/newInitiative/newInitiative';
+import InitiativeList from './pages/initiativeList/InitiativeList';
 import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
 import Auth from './pages/auth/Auth';
 
@@ -22,6 +23,9 @@ const SecuredRoutes = withLogin(
         </Route>
         <Route path={routes.NEW_INITIATIVE} exact={true}>
           <NewInitiative />
+        </Route>
+        <Route path={routes.INITIATIVE_LIST} exact={true}>
+          <InitiativeList />
         </Route>
         <Route path="*">
           <Redirect to={routes.HOME} />

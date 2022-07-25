@@ -19,6 +19,9 @@ export default {
     newInitiative: {
       title: 'Nuova iniziativa',
     },
+    initiativeList: {
+      title: 'Tutte le iniziative',
+    },
   },
   subHeader: {
     partySelectionSearch: {
@@ -36,6 +39,34 @@ export default {
       title: 'Crea una nuova iniziativa',
       subtitle:
         'Segui i passaggi e compila i campi richiesti. Una volta creata, potrai inviare l’iniziativa per la revisione e procedere poi alla pubblicazione.',
+    },
+    initiativeList: {
+      title: 'Iniziative',
+      subtitle: 'Visualizza e gestisci le iniziative di welfare del tuo ente.',
+      tableColumns: {
+        initiativeName: 'Nome',
+        initiativeCreationDate: 'Data creazione',
+        initiativeLastEditDate: 'Ultima modifica',
+        initiativeId: 'Codice identificativo',
+        initiativeStatus: 'Stato',
+      },
+      emptyList: 'Non ci sono iniziative. ',
+      createNew: "Crea un'niziativa",
+      search: "Cerca per nome dell'iniziativa",
+      status: {
+        draft: 'In bozza',
+        inRevision: 'In revisione',
+        toCheck: 'Da controllare',
+        approved: 'Approvata',
+        published: 'Pubblicata',
+        closed: 'Terminata',
+        suspended: 'Sospesa',
+      },
+      actions: {
+        update: 'Modifica',
+        delete: 'Elimina',
+        details: 'Dettagli',
+      },
     },
   },
   components: {

@@ -9,10 +9,10 @@ import {
   initiativeIdSelector,
   beneficiaryRuleSelector,
 } from '../../../../redux/slices/initiativeSlice';
-import {
-  patchBeneficiaryRuleService,
-  patchGeneralInfo,
-} from '../../../../services/intitativeService';
+// import {
+//   getInitativeSummary,
+//   patchBeneficiaryRuleService,
+// } from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 import ManualCriteriaItem from './ManualCriteriaItem';
@@ -50,9 +50,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       });
   }, []);
 
-  useEffect(() => {
-    // console.log(action);
-  }, [action]);
+  useEffect(() => {}, [action]);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -163,15 +161,12 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       serviceCanBeCalled = false;
     }
     if (serviceCanBeCalled && typeof initiativeId === 'string') {
-      patchBeneficiaryRuleService(initiativeId, beneficiaryRule)
-        .then((response) => console.log(response))
-        .catch((error) => console.log(error));
+      console.log(beneficiaryRule);
+      // patchBeneficiaryRuleService(initiativeId, beneficiaryRule)
+      //   .then((response) => console.log(response))
+      //   .catch((error) => console.log(error));
     }
-    patchGeneralInfo('ciao', { budget: 100 })
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
-
-    // getInitativeSummary()
+    // patchGeneralInfo('ciao', { budget: 100 })
     //   .then((response) => console.log(response))
     //   .catch((error) => console.log(error));
   }, [criteriaToSubmit]);

@@ -6,6 +6,7 @@ const ROUTES = {
   AUTH: `${BASE_ROUTE}/auth`,
   HOME: `${BASE_ROUTE}`,
   NEW_INITIATIVE: `${BASE_ROUTE}/nuova-iniziativa`,
+  INITIATIVE_LIST: `${BASE_ROUTE}/iniziative`,
 };
 
 export default ROUTES;
