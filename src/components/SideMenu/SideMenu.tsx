@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import { useTranslation } from 'react-i18next';
 import DashboardCustomize from '@mui/icons-material/DashboardCustomize';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useState } from 'react';
 import ROUTES from '../../routes';
 import SidenavItem from './SidenavItem';
@@ -33,16 +34,10 @@ export default function SideMenu() {
             icon={DashboardCustomize}
           />
           <SidenavItem
-            title={t('sideMenu.newInitiative.title')}
-            handleClick={() => onExit(() => history.push(ROUTES.NEW_INITIATIVE))}
-            isSelected={pathname === ROUTES.NEW_INITIATIVE}
-            icon={DashboardCustomize}
-          />
-          <SidenavItem
             title={t('sideMenu.initiativeList.title')}
             handleClick={() => onExit(() => history.push(ROUTES.INITIATIVE_LIST))}
             isSelected={pathname === ROUTES.INITIATIVE_LIST}
-            icon={DashboardCustomize}
+            icon={ListAltIcon}
           />
         </List>
       </Box>

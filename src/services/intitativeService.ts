@@ -10,7 +10,7 @@ export const saveGeneralInfoService = (
 ): Promise<InitiativeDTO | void | undefined> =>
   InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
 
-export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
+export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   // if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
   //   const initiatives = [
   //     { initiativeId: '62dbe27de0d7f80a80e6c01a', initiativeName: 'aaa', status: 'DRAFT' },
@@ -18,9 +18,7 @@ export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
   //   ];
   //   return new Promise((resolve) => resolve(initiatives));
   // }
-  console.log('SONO QUI');
-  return InitiativeApi.getInitativeSummary().then((res) => res);
-};
+  InitiativeApi.getInitativeSummary().then((res) => res);
 
 export const patchBeneficiaryRuleService = (
   id: string,

@@ -4,6 +4,7 @@ export interface Data {
   initiativeId: string;
   initiativeName: string;
   status: string;
+  id: number;
 }
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -62,9 +63,15 @@ export const headCells: ReadonlyArray<HeadCell> = [
   },
   {
     id: 'status',
-    numeric: true,
+    numeric: false,
     disablePadding: false,
     label: i18n.t('pages.initiativeList.tableColumns.initiativeStatus'),
+  },
+  {
+    id: 'id',
+    numeric: true,
+    disablePadding: false,
+    label: '',
   },
 ];
 

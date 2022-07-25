@@ -24,8 +24,10 @@ import { grey } from '@mui/material/colors';
 import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { useDispatch } from 'react-redux';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes from '../../routes';
+import { setInitiativeId } from '../../redux/slices/initiativeSlice';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -55,7 +57,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       label: t('pages.initiativeList.tableColumns.initiativeStatus'),
     },
     {
-      id: 'initiativeId',
+      id: 'id',
       numeric: true,
       disablePadding: false,
       label: '',
@@ -112,7 +114,6 @@ type ActionsMenuProps = {
   id: string;
   status: string;
 };
-
 const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -125,32 +126,45 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   };
 
   type RenderActionProps = {
+    id: string;
     status: string;
   };
 
-  const RenderAction = ({ status }: RenderActionProps) => {
+  const RenderAction = ({ id, status }: RenderActionProps) => {
+    const history = useHistory();
+    const dispatch = useDispatch();
+
+    const handleUpdateInitiative = (id: string) => {
+      dispatch(setInitiativeId(id));
+      history.push(routes.NEW_INITIATIVE);
+    };
+
     switch (status) {
       case 'DRAFT':
-        return <MenuItem>{t('pages.initiativeList.actions.update')}</MenuItem>;
+        return (
+          <MenuItem onClick={() => handleUpdateInitiative(id)}>
+            {t('pages.initiativeList.actions.update')}
+          </MenuItem>
+        );
       case 'IN_REVISION':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
       case 'TO_CHECK':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>; // TBD
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'APPROVED':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>; // TBD
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'PUBLISHED':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>; // TBD
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'CLOSED':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>; // TBD
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'SUSPENDED':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>; // TBD
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       default:
         return null;
     }
   };
 
   return (
-    <>
+    <TableCell align="right">
       <IconButton
         id={`actions_button-${id}`}
         aria-controls={open ? `actions-menu_${id}` : undefined}
@@ -169,10 +183,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           'aria-labelledby': `actions_button-${id}`,
         }}
       >
-        <RenderAction status={status} />
+        <RenderAction id={id} status={status} />
         <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>
       </Menu>
-    </>
+    </TableCell>
   );
 };
 
@@ -183,6 +197,7 @@ const InitiativeList = () => {
   const [initiativeListFiltered, setInitiativeListFiltered] = useState(Array<Data>);
   const { t } = useTranslation();
   const history = useHistory();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getInitativeSummary()
@@ -301,6 +316,7 @@ const InitiativeList = () => {
             variant="contained"
             sx={{ height: '58px' }}
             onClick={() => {
+              dispatch(setInitiativeId(''));
               history.push(routes.NEW_INITIATIVE);
             }}
           >
@@ -325,13 +341,14 @@ const InitiativeList = () => {
                     return (
                       <TableRow tabIndex={-1} key={row.initiativeName} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
-                          {row.initiativeName}
+                          <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
+                            {row.initiativeName}
+                          </Typography>
                         </TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-                        <TableCell align="right">
-                          <ActionMenu id={row.initiativeId} status={row.status} />
-                        </TableCell>
+
+                        <ActionMenu id={row.initiativeId} status={row.status} />
                       </TableRow>
                     );
                   }
@@ -373,7 +390,10 @@ const InitiativeList = () => {
                   ]}
                   size="small"
                   variant="text"
-                  onClick={() => history.push(routes.NEW_INITIATIVE)}
+                  onClick={() => {
+                    dispatch(setInitiativeId(''));
+                    history.push(routes.NEW_INITIATIVE);
+                  }}
                   disableRipple={true}
                   disableFocusRipple={true}
                 >
