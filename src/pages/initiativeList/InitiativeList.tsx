@@ -26,8 +26,15 @@ import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import { useDispatch } from 'react-redux';
 import { getInitativeSummary } from '../../services/intitativeService';
-import routes from '../../routes';
-import { setInitiativeId } from '../../redux/slices/initiativeSlice';
+import routes, { BASE_ROUTE } from '../../routes';
+import {
+  setGeneralInfo,
+  setInitiativeId,
+  setOrganizationId,
+  setStatus,
+} from '../../redux/slices/initiativeSlice';
+import { BeneficiaryTypeEnum } from '../../utils/constants';
+// import ROUTES from '../../routes';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -144,11 +151,9 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 
   const RenderAction = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const dispatch = useDispatch();
 
     const handleUpdateInitiative = (id: string) => {
-      dispatch(setInitiativeId(id));
-      history.push(routes.NEW_INITIATIVE);
+      history.push(`${BASE_ROUTE}/iniziativa/${id}`);
     };
 
     switch (status) {
@@ -287,6 +292,24 @@ const InitiativeList = () => {
     }
   };
 
+  const goToNewInitiative = () => {
+    dispatch(setInitiativeId(''));
+    dispatch(setOrganizationId(''));
+    dispatch(setStatus(''));
+    const emptyGeneralInfo = {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'false',
+      budget: '',
+      beneficiaryBudget: '',
+      startDate: undefined,
+      endDate: undefined,
+      rankingStartDate: undefined,
+      rankingEndDate: undefined,
+    };
+    dispatch(setGeneralInfo(emptyGeneralInfo));
+    history.push(routes.NEW_INITIATIVE);
+  };
+
   return (
     <Box sx={{ width: '100%', px: 2 }}>
       <TitleBox
@@ -326,14 +349,7 @@ const InitiativeList = () => {
           />
         </Box>
         <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-          <Button
-            variant="contained"
-            sx={{ height: '58px' }}
-            onClick={() => {
-              dispatch(setInitiativeId(''));
-              history.push(routes.NEW_INITIATIVE);
-            }}
-          >
+          <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
             {t('pages.initiativeList.createNew')}
           </Button>
         </Box>
@@ -406,10 +422,7 @@ const InitiativeList = () => {
                   ]}
                   size="small"
                   variant="text"
-                  onClick={() => {
-                    dispatch(setInitiativeId(''));
-                    history.push(routes.NEW_INITIATIVE);
-                  }}
+                  onClick={goToNewInitiative}
                   disableRipple={true}
                   disableFocusRipple={true}
                 >

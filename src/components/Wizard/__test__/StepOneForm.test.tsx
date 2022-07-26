@@ -5,7 +5,7 @@ import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import Wizard from '../Wizard';
-import StepOneForm from './../components/StepOneForm';
+import StepOneForm from '../components/StepOne/StepOneForm';
 import { createStore } from './../../../redux/store';
 
 describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => {

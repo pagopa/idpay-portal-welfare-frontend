@@ -22,8 +22,13 @@ const SecuredRoutes = withLogin(
           <Home />
         </Route>
         <Route path={routes.NEW_INITIATIVE} exact={true}>
-          <NewInitiative />
+          <NewInitiative initiativeId={''} />
         </Route>
+        <Route
+          path={routes.INITIATIVE}
+          exact={true}
+          render={(props) => <NewInitiative initiativeId={props.match.params.id} />}
+        />
         <Route path={routes.INITIATIVE_LIST} exact={true}>
           <InitiativeList />
         </Route>

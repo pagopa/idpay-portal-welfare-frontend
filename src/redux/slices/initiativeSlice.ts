@@ -9,12 +9,14 @@ import {
   SelfDeclarationCriteriaMultiItem,
 } from '../../model/Initiative';
 // import { ManualCriteriaOptions } from '../../utils/constants';
+import { BeneficiaryTypeEnum } from '../../utils/constants';
 
 const initialState: Initiative = {
   initiativeId: undefined,
-  status: '',
+  organizationId: undefined,
+  status: undefined,
   generalInfo: {
-    beneficiaryType: 'PF',
+    beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
     budget: '',
     beneficiaryBudget: '',
@@ -39,9 +41,17 @@ export const initiativeSlice = createSlice({
   name: 'initiative',
   initialState,
   reducers: {
-    setInitiativeId: (state, action: PayloadAction<string>) => {
+    setInitiativeId: (state, action: PayloadAction<string | undefined>) => {
       // eslint-disable-next-line functional/immutable-data
       state.initiativeId = action.payload;
+    },
+    setOrganizationId: (state, action: PayloadAction<string | undefined>) => {
+      // eslint-disable-next-line functional/immutable-data
+      state.organizationId = action.payload;
+    },
+    setStatus: (state, action: PayloadAction<string | undefined>) => {
+      // eslint-disable-next-line functional/immutable-data
+      state.status = action.payload;
     },
     setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => {
       // eslint-disable-next-line no-param-reassign, functional/immutable-data
@@ -84,6 +94,8 @@ export const initiativeSlice = createSlice({
 
 export const {
   setInitiativeId,
+  setOrganizationId,
+  setStatus,
   setGeneralInfo,
   setAdditionalInfo,
   setAutomatedCriteria,
@@ -92,7 +104,7 @@ export const {
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
-export const stepOneBeneficiaryKnownSelector = (state: RootState): string =>
+export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
 export const beneficiaryRuleSelector = (
   state: RootState

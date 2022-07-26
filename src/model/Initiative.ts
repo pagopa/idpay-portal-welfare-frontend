@@ -1,14 +1,14 @@
-import { FilterOperator } from '../utils/constants';
+import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
-  beneficiaryType: string;
-  beneficiaryKnown: string;
+  beneficiaryType: BeneficiaryTypeEnum;
+  beneficiaryKnown: string | undefined;
   budget: string;
   beneficiaryBudget: string;
-  startDate: string;
-  endDate: string;
-  rankingStartDate: string;
-  rankingEndDate: string;
+  startDate: Date | string | undefined;
+  endDate: Date | string | undefined;
+  rankingStartDate: Date | string | undefined;
+  rankingEndDate: Date | string | undefined;
 }
 
 export interface AdditionalInfo {
@@ -42,7 +42,8 @@ export interface AutomatedCriteriaItem {
 
 export interface Initiative {
   initiativeId: string | undefined;
-  status: string;
+  organizationId: string | undefined;
+  status: string | undefined;
   generalInfo: GeneralInfo;
   additionalInfo: AdditionalInfo;
   beneficiaryRule: {

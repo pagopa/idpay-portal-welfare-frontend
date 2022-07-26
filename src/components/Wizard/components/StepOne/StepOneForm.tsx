@@ -20,18 +20,19 @@ import { useFormik } from 'formik';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
-import { addDays } from 'date-fns';
+
 import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import {
   setInitiativeId,
-  setGeneralInfo,
   generalInfoSelector,
-} from '../../../redux/slices/initiativeSlice';
-import { WIZARD_ACTIONS } from '../../../utils/constants';
-import { saveGeneralInfoService } from '../../../services/intitativeService';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
+  setGeneralInfo,
+} from '../../../../redux/slices/initiativeSlice';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { saveGeneralInfoService } from '../../../../services/intitativeService';
+
+import { getMinDate, peopleReached, parseValuesFormToInitiativeGeneralDTO } from './helpers';
 
 interface Props {
   action: string;
@@ -42,7 +43,8 @@ interface Props {
 
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const dispatch = useDispatch();
-  const formData = useSelector(generalInfoSelector);
+  const generalInfoForm = useSelector(generalInfoSelector);
+  console.log(generalInfoForm);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -53,12 +55,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     }
     setAction('');
   }, [action]);
-
-  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt);
-  };
 
   const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
@@ -115,34 +111,22 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       }),
   });
 
-  const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
-    beneficiaryType:
-      values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
-    beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
-    budget: Number(values.budget),
-    beneficiaryBudget: Number(values.beneficiaryBudget),
-    rankingStartDate: new Date(values.rankingStartDate),
-    rankingEndDate: new Date(values.rankingEndDate),
-    startDate: new Date(values.startDate),
-    endDate: new Date(values.endDate),
-  });
-
   const formik = useFormik({
     initialValues: {
-      beneficiaryType: formData.beneficiaryType,
-      beneficiaryKnown: formData.beneficiaryKnown,
-      budget: formData.budget,
-      beneficiaryBudget: formData.beneficiaryBudget,
-      rankingStartDate: formData.rankingStartDate,
-      rankingEndDate: formData.rankingEndDate,
-      startDate: formData.startDate,
-      endDate: formData.endDate,
+      beneficiaryType: generalInfoForm.beneficiaryType,
+      beneficiaryKnown: generalInfoForm.beneficiaryKnown,
+      budget: generalInfoForm.budget,
+      beneficiaryBudget: generalInfoForm.beneficiaryBudget,
+      rankingStartDate: generalInfoForm.rankingStartDate || '',
+      rankingEndDate: generalInfoForm.rankingEndDate || '',
+      startDate: generalInfoForm.startDate || '',
+      endDate: generalInfoForm.endDate || '',
     },
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {
-      dispatch(setGeneralInfo(values));
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
+      dispatch(setGeneralInfo(values));
       saveGeneralInfoService(formValuesParsed)
         .then((response) => {
           const initiativeId = response?.initiativeId;
@@ -372,7 +356,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
               onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
-              minDate={addDays(new Date(formik.values.rankingStartDate), 1)}
+              minDate={getMinDate(formik.values.rankingStartDate)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -409,7 +393,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               inputFormat="dd/MM/yyyy"
               value={formik.values.startDate}
               onChange={(value) => formik.setFieldValue('startDate', value)}
-              minDate={addDays(new Date(formik.values.rankingEndDate), 1)}
+              minDate={getMinDate(formik.values.rankingEndDate)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -428,7 +412,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               inputFormat="dd/MM/yyyy"
               value={formik.values.endDate}
               onChange={(value) => formik.setFieldValue('endDate', value)}
-              minDate={addDays(new Date(formik.values.startDate), 1)}
+              minDate={getMinDate(formik.values.startDate)}
               renderInput={(props) => (
                 <TextField
                   {...props}
