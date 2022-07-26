@@ -39,11 +39,11 @@ import {
   setGeneralInfo,
   generalInfoSelector,
   additionalInfoSelector,
-  setAdditionalInfo,
 } from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import { saveGeneralInfoService } from '../../../services/intitativeService';
 import { BeneficiaryTypeEnum } from '../../../utils/constants';
+import { ChannelDTOTypeEnum } from '../../../utils/constants';
 
 interface Props {
   action: string;
@@ -200,12 +200,12 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .required(t('validation.required')),
     description: Yup.string().required(t('validation.required')),
     contact: Yup.string().required(t('validation.required')),
-    channelName: Yup.string().when((schema) => {
-      if (formik.values.contact === 'webUrl') {
+    ChannelDTO: Yup.string().when((schema) => {
+      if (formik.values.contact === 'web') {
         return Yup.string().url(t('validation.webValid')).required(t('validation.web'));
       } else if (formik.values.contact === 'email') {
         return Yup.string().email(t('validation.emailValid')).required(t('validation.email'));
-      } else if (formik.values.contact === 'numTel') {
+      } else if (formik.values.contact === 'mobile') {
         return Yup.string().max(10, t('validation.numTelValid')).required(t('validation.celNum'));
       }
       return schema;
@@ -247,7 +247,15 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     argument: String(values.argument),
     description: String(values.description),
     contact: String(values.contact),
-    channelName: String(values.channelName),
+    ChannelDTO:
+      values.ChannelDTO === 'web'
+        ? ChannelDTOTypeEnum.web
+        : values.ChannelDTO === 'email'
+        ? ChannelDTOTypeEnum.email
+        : values.ChannelDTO === 'mobile'
+        ? ChannelDTOTypeEnum.mobile
+        : null,
+    ChannelArrayDTO: Array(values.ChannelArrayDTO),
   });
 
   const formik = useFormik({
@@ -265,8 +273,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       argument: formDataAddInfo.argument,
       description: formDataAddInfo.description,
       contact: formDataAddInfo.contact,
-      channelName: formDataAddInfo.channelName,
-      assistanceChannel: [{ contact: '', channelName: '' }],
+      ChannelDTO: formDataAddInfo.ChannelDTO,
+      ChannelArrayDTO: [{ contact: '', ChannelDTO: '' }],
     },
     validateOnChange: true,
     validationSchema,
@@ -276,7 +284,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         .then((response) => {
           console.log(response);
           dispatch(setGeneralInfo(values));
-          dispatch(setAdditionalInfo(values));
           setCurrentStep(currentStep + 1);
         })
         .catch((error) => {
@@ -311,7 +318,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     // },
     {
       id: 1,
-      value: 'webUrl',
+      value: 'web',
       name: 'Web URL',
     },
     {
@@ -321,7 +328,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     },
     {
       id: 3,
-      value: 'numTel',
+      value: 'mobile',
       name: 'Numero di telefono',
     },
   ];
@@ -331,7 +338,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   // const cellNumber = contacts.find(({ name }) => name === 'Numero di telefono');
 
   const addAssistanceChannel = (values: any, setValues: any) => {
-    const newAssistanceChannel = [...values.assistanceChannel, { contact: '', channelName: '' }];
+    const newAssistanceChannel = [...values.assistanceChannel, { contact: '', ChannelDTO: '' }];
     setValues({ ...values, assistanceChannel: newAssistanceChannel });
   };
 
@@ -347,7 +354,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     setTouched({}, false);
   };
 
-  const handleAssistanceChannelNameChange = (
+  const handleAssistanceChannelDTOChange = (
     e: any,
     i: number,
     values: any,
@@ -356,7 +363,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   ) => {
     const assistanceChannelChanged = [...values.assistanceChannel];
     // eslint-disable-next-line functional/immutable-data
-    assistanceChannelChanged[i].channelName = e.target.value;
+    assistanceChannelChanged[i].ChannelDTO = e.target.value;
     setValues({ ...values, assistanceChannel: assistanceChannelChanged });
     setTouched({}, false);
   };
@@ -393,16 +400,16 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       argument: string;
       description: string;
       contact: string;
-      channelName: string;
-      assistanceChannel: Array<{ contact: string; channelName: string }>;
+      ChannelDTO: string;
+      ChannelArrayDTO: Array<{ contact: string; ChannelDTO: string }>;
     }
   ) => {
     const newValue = e.target.value;
-    const newAssistanceChannel = values.assistanceChannel.map((v, i) => {
+    const newAssistanceChannel = values.ChannelArrayDTO.map((v, i) => {
       if (i === index) {
         return {
           contact: newValue,
-          channelName: v.channelName,
+          ChannelDTO: v.ChannelDTO,
         };
       } else {
         return { ...v };
@@ -842,7 +849,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   </Select>
                   <FormHelperText
                     error={formik.touched.contact && Boolean(formik.errors.contact)}
-                    sx={{ gridColumn: 'span 12' }}
+                    sx={{ gridColumn: 'span 12', ml: 8 }}
                   >
                     {formik.touched.contact && formik.errors.contact}
                   </FormHelperText>
@@ -851,13 +858,13 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                     sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
-                    value={formik.values.channelName}
-                    onChange={(e) => formik.setFieldValue('channelName', e.target.value)}
-                    error={formik.touched.channelName && Boolean(formik.errors.channelName)}
-                    helperText={formik.touched.channelName && formik.errors.channelName}
+                    value={formik.values.ChannelDTO}
+                    onChange={(e) => formik.setFieldValue('ChannelDTO', e.target.value)}
+                    error={formik.touched.ChannelDTO && Boolean(formik.errors.ChannelDTO)}
+                    helperText={formik.touched.ChannelDTO && formik.errors.ChannelDTO}
                   />
                 </FormControl>
-                {formik.values.assistanceChannel.map((o, i) => {
+                {formik.values.ChannelArrayDTO.map((o, i) => {
                   // const assistanceErrors =
                   //   formik.errors.assistanceChannel?.length && formik.errors?.assistanceChannel[i];
                   // const assistanceTouchedChannel =
@@ -869,7 +876,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   //     formik.touched.assistanceChannel[i].contact) ||
                   //   false;
 
-                  console.log('');
+                  console.log(/* '' */);
 
                   return (
                     <Box key={i}>
@@ -930,17 +937,17 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                           {assistanceTouchedContact && assistanceErrors}
                         </FormHelperText> */}
                         <TextField
-                          id={`assistanceChannel[${i}].channelName}`}
-                          name={`assistanceChannel[${i}].channelName}`}
+                          id={`assistanceChannel[${i}].ChannelDTO}`}
+                          name={`assistanceChannel[${i}].ChannelDTO}`}
                           variant="outlined"
                           label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                           sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
                           placeholder={t(
                             'components.wizard.stepOne.form.otherInfo.indicatesChannel'
                           )}
-                          value={formik.values.assistanceChannel[i].channelName}
+                          value={formik.values.ChannelArrayDTO[i].ChannelDTO}
                           onChange={(e) =>
-                            handleAssistanceChannelNameChange(
+                            handleAssistanceChannelDTOChange(
                               e,
                               i,
                               formik.values,

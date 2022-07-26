@@ -14,7 +14,7 @@ export interface AdditionalInfo {
   argument: string;
   description: string;
   contact: string;
-  channelName: string;
+  ChannelDTO: string;
   // assistanceChannel: Array<string>;
 }
 

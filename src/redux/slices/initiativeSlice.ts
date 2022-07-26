@@ -21,8 +21,8 @@ const initialState: Initiative = {
     argument: '',
     description: '',
     contact: '',
-    channelName: '',
-    // assistanceChannel: [],
+    ChannelDTO: '',
+    // ChannelArrayDTO: [],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
