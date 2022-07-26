@@ -9,10 +9,7 @@ import {
   initiativeIdSelector,
   beneficiaryRuleSelector,
 } from '../../../../redux/slices/initiativeSlice';
-// import {
-//   getInitativeSummary,
-//   patchBeneficiaryRuleService,
-// } from '../../../../services/intitativeService';
+import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 import ManualCriteriaItem from './ManualCriteriaItem';
@@ -161,14 +158,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       serviceCanBeCalled = false;
     }
     if (serviceCanBeCalled && typeof initiativeId === 'string') {
-      console.log(beneficiaryRule);
-      // patchBeneficiaryRuleService(initiativeId, beneficiaryRule)
-      //   .then((response) => console.log(response))
-      //   .catch((error) => console.log(error));
+      putBeneficiaryRuleService(initiativeId, beneficiaryRule)
+        .then((_response) => setCurrentStep(currentStep + 1))
+        .catch((error) => console.log(error));
     }
-    // patchGeneralInfo('ciao', { budget: 100 })
-    //   .then((response) => console.log(response))
-    //   .catch((error) => console.log(error));
   }, [criteriaToSubmit]);
 
   return (

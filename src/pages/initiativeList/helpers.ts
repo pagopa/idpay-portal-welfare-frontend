@@ -3,6 +3,8 @@ import i18n from 'i18next';
 export interface Data {
   initiativeId: string;
   initiativeName: string;
+  creationDate: string;
+  updateDate: string;
   status: string;
   id: number;
 }

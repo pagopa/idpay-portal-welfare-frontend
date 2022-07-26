@@ -45,6 +45,18 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       label: t('pages.initiativeList.tableColumns.initiativeName'),
     },
     {
+      id: 'creationDate',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.creationDate'),
+    },
+    {
+      id: 'updateDate',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.updateDate'),
+    },
+    {
       id: 'initiativeId',
       numeric: false,
       disablePadding: true,
@@ -52,7 +64,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     },
     {
       id: 'status',
-      numeric: true,
+      numeric: false,
       disablePadding: false,
       label: t('pages.initiativeList.tableColumns.initiativeStatus'),
     },
@@ -205,6 +217,8 @@ const InitiativeList = () => {
       .then((responseT) => {
         const data = responseT.map((r: any, i: any) => ({
           ...r,
+          creationDate: r.creationDate.toLocaleDateString(),
+          updateDate: r.updateDate.toLocaleDateString(),
           id: i,
         }));
         setInitiativeList([...data]);
@@ -345,6 +359,8 @@ const InitiativeList = () => {
                             {row.initiativeName}
                           </Typography>
                         </TableCell>
+                        <TableCell>{row.creationDate}</TableCell>
+                        <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
 

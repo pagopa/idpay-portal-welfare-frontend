@@ -44,6 +44,11 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
+  getInitiativeById: async (id: string): Promise<InitiativeDTO> => {
+    const result = await apiClient.getInitiativeDetail({ initiativeId: id });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
   initiativeGeneralPost: async (data: InitiativeInfoDTO): Promise<InitiativeDTO> => {
     const result = await apiClient.saveInitiativeGeneralInfo({
       body: {
@@ -56,7 +61,7 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  initiativeBeneficiaryRulePatch: async (
+  initiativeBeneficiaryRulePut: async (
     id: string,
     data: InitiativeBeneficiaryRuleDTO
   ): Promise<void> => {
@@ -69,7 +74,7 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  initiativeGeneralPatch: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
+  initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
     const result = await apiClient.updateInitiativeGeneralInfo({
       initiativeId: id,
       body: {

@@ -4,7 +4,11 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../utils/constants';
-import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
+import {
+  initiativeIdSelector,
+  stepOneBeneficiaryKnownSelector,
+} from '../../redux/slices/initiativeSlice';
+import { getInitiativeDetail } from '../../services/intitativeService';
 import StepOneForm from './components/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
@@ -15,6 +19,16 @@ const Wizard = () => {
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
+  const initiativeId = useSelector(initiativeIdSelector);
+
+  useEffect(() => {
+    if (initiativeId && initiativeId?.length > 0) {
+      getInitiativeDetail(initiativeId)
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
+    }
+  }, []);
+
   useEffect(() => {
     if (selectedCriteria) {
       setBeneficiaryKnown(selectedCriteria);

@@ -45,8 +45,8 @@ export default {
       subtitle: 'Visualizza e gestisci le iniziative di welfare del tuo ente.',
       tableColumns: {
         initiativeName: 'Nome',
-        initiativeCreationDate: 'Data creazione',
-        initiativeLastEditDate: 'Ultima modifica',
+        creationDate: 'Data creazione',
+        updateDate: 'Ultima modifica',
         initiativeId: 'Codice identificativo',
         initiativeStatus: 'Stato',
       },

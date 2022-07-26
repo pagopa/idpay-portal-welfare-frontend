@@ -20,10 +20,13 @@ export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   // }
   InitiativeApi.getInitativeSummary().then((res) => res);
 
-export const patchBeneficiaryRuleService = (
+export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>
+  InitiativeApi.getInitiativeById(id).then((res) => res);
+
+export const putBeneficiaryRuleService = (
   id: string,
   data: InitiativeBeneficiaryRuleDTO
-): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePatch(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePut(id, data).then((res) => res);
 
-export const patchGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
-  InitiativeApi.initiativeGeneralPatch(id, data).then((res) => res);
+export const putGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
+  InitiativeApi.initiativeGeneralPut(id, data).then((res) => res);
