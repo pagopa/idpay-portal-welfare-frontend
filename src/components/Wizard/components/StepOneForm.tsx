@@ -27,7 +27,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { useFormik } from 'formik';
+import { /* FormikErrors, */ useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
@@ -39,6 +39,7 @@ import {
   setGeneralInfo,
   generalInfoSelector,
   additionalInfoSelector,
+  setAdditionalInfo,
 } from '../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import { saveGeneralInfoService } from '../../../services/intitativeService';
@@ -69,6 +70,10 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     }
     setAction('');
   }, [action]);
+
+  useEffect(() => {
+    console.log(formDataAddInfo);
+  }, [formDataAddInfo]);
 
   const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
     const totalBudgetInt = parseInt(totalBudget, 10);
@@ -194,24 +199,34 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .max(50, t('validation.maxArgumentsChar'))
       .required(t('validation.required')),
     description: Yup.string().required(t('validation.required')),
-    assistanceChannelValue: Yup.array().of(
-      Yup.object().shape({
-        contact: Yup.string().required(t('validation.required')),
-        channelName: Yup.string().required(t('validation.required')),
-      })
-    ),
     contact: Yup.string().required(t('validation.required')),
     channelName: Yup.string().when((schema) => {
-      console.log(formik.values.contact);
       if (formik.values.contact === 'webUrl') {
-        return Yup.string().url().required(t('validation.web'));
+        return Yup.string().url(t('validation.webValid')).required(t('validation.web'));
       } else if (formik.values.contact === 'email') {
-        return Yup.string().email().required(t('validation.email'));
+        return Yup.string().email(t('validation.emailValid')).required(t('validation.email'));
       } else if (formik.values.contact === 'numTel') {
-        return Yup.string().max(10).required(t('validation.celNum'));
+        return Yup.string().max(10, t('validation.numTelValid')).required(t('validation.celNum'));
       }
       return schema;
     }),
+    assistanceChannel: Yup.array().of(
+      Yup.object().shape({
+        // contact: Yup.string().required(t('validation.required')),
+        // channelName: Yup.string().when((schema) => {
+        //   if (contact === 'webUrl') {
+        //     return Yup.string().url().required(t('validation.web'));
+        //   }
+        //   if (contact === 'email') {
+        //     return Yup.string().email().required(t('validation.email'));
+        //   }
+        //   if (contact === 'numTel') {
+        //     return Yup.string().max(10).required(t('validation.celNum'));
+        //   }
+        //   return schema;
+        // }),
+      })
+    ),
   });
 
   const validationSchema = isChecked ? validationSchemaToogleOn : validationSchemaToogleOff;
@@ -233,7 +248,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     description: String(values.description),
     contact: String(values.contact),
     channelName: String(values.channelName),
-    assistanceChannelValue: String([values.contact, values.channelName]),
   });
 
   const formik = useFormik({
@@ -252,7 +266,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       description: formDataAddInfo.description,
       contact: formDataAddInfo.contact,
       channelName: formDataAddInfo.channelName,
-      assistanceChannel: formDataAddInfo.assistanceChannel,
+      assistanceChannel: [{ contact: '', channelName: '' }],
     },
     validateOnChange: true,
     validationSchema,
@@ -262,6 +276,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         .then((response) => {
           console.log(response);
           dispatch(setGeneralInfo(values));
+          dispatch(setAdditionalInfo(values));
           setCurrentStep(currentStep + 1);
         })
         .catch((error) => {
@@ -290,15 +305,22 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   });
 
   const contacts = [
+    // {
+    //   value: '',
+    //   name: 'Contatto',
+    // },
     {
+      id: 1,
       value: 'webUrl',
       name: 'Web URL',
     },
     {
+      id: 2,
       value: 'email',
       name: 'Email',
     },
     {
+      id: 3,
       value: 'numTel',
       name: 'Numero di telefono',
     },
@@ -309,51 +331,85 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   // const cellNumber = contacts.find(({ name }) => name === 'Numero di telefono');
 
   const addAssistanceChannel = (values: any, setValues: any) => {
-    const newAssistanceChannelValues = [
-      ...values.assistanceChannelValue,
-      { contact: '', channelName: '' },
-    ];
-    setValues({ ...values, assistanceChannelValue: newAssistanceChannelValues });
-    console.log(newAssistanceChannelValues);
+    const newAssistanceChannel = [...values.assistanceChannel, { contact: '', channelName: '' }];
+    setValues({ ...values, assistanceChannel: newAssistanceChannel });
   };
 
-  // const deleteAssistanceChannel = (i: number, values: any, setValues: any, setTouched: any) => {
-  //   const indexValueToRemove = i;
-  //   // eslint-disable-next-line functional/immutable-data
-  //   const newValues = values.assistanceChannelValue.filter((v: any, i: number) => {
-  //     if (i !== indexValueToRemove) {
-  //       return v;
-  //     }
-  //   });
-  //   setValues({ ...values, assistanceChannelValue: newValues });
-  //   setTouched({}, false);
-  // };
+  const deleteAssistanceChannel = (i: number, values: any, setValues: any, setTouched: any) => {
+    const indexValueToRemove = i;
+    // eslint-disable-next-line functional/immutable-data
+    const newValues = values.assistanceChannel.filter((v: any, i: number) => {
+      if (i !== indexValueToRemove) {
+        return v;
+      }
+    });
+    setValues({ ...values, assistanceChannel: newValues });
+    setTouched({}, false);
+  };
 
-  // const setError = (touched: boolean | undefined, errorText: string | undefined) =>
-  //   touched && Boolean(errorText);
+  const handleAssistanceChannelNameChange = (
+    e: any,
+    i: number,
+    values: any,
+    setValues: any,
+    setTouched: any
+  ) => {
+    const assistanceChannelChanged = [...values.assistanceChannel];
+    // eslint-disable-next-line functional/immutable-data
+    assistanceChannelChanged[i].channelName = e.target.value;
+    setValues({ ...values, assistanceChannel: assistanceChannelChanged });
+    setTouched({}, false);
+  };
 
-  // const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
-  //   touched && errorText;
-
-  // const handleOptionChange = (e: any, i: number, values: any, setValues: any, setTouched: any) => {
-  //   const assistanceChannel = [...values.assistanceChannelValue];
-  //   // eslint-disable-next-line functional/immutable-data
-  //   assistanceChannel[i].value = e.target.value;
-  //   setValues({ ...values, assistanceChannelValue: assistanceChannel });
-  //   setTouched({}, false);
-  // };
-
-  // const getOptionErrorText = (errors: string | FormikErrors<{ co: string; ch: string }>) => {
+  // const getOptionErrorText = (
+  //   errors: string | FormikErrors<{ contact: string; channelName: string }>
+  // ) => {
   //   try {
   //     if (typeof errors === 'string') {
   //       return errors;
   //     } else {
-  //       return (errors.co && errors.ch) || '';
+  //       return (errors.contact && errors.channelName) || '';
   //     }
   //   } catch {
   //     return '';
   //   }
   // };
+
+  const handleContactSelect = (
+    e: any,
+    setValues: any,
+    index: number,
+    values: {
+      beneficiaryType: string;
+      beneficiaryKnown: string;
+      budget: string;
+      beneficiaryBudget: string;
+      rankingStartDate: string;
+      rankingEndDate: string;
+      startDate: string;
+      endDate: string;
+      serviceId: string;
+      serviceName: string;
+      argument: string;
+      description: string;
+      contact: string;
+      channelName: string;
+      assistanceChannel: Array<{ contact: string; channelName: string }>;
+    }
+  ) => {
+    const newValue = e.target.value;
+    const newAssistanceChannel = values.assistanceChannel.map((v, i) => {
+      if (i === index) {
+        return {
+          contact: newValue,
+          channelName: v.channelName,
+        };
+      } else {
+        return { ...v };
+      }
+    });
+    setValues({ ...values, assistanceChannel: newAssistanceChannel });
+  };
 
   return (
     <form onSubmit={formik.handleSubmit}>
@@ -711,7 +767,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     {t('components.wizard.stepOne.form.otherInfo.description')}
                   </Typography>
                 </Box>
-
                 <FormControl
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
                 >
@@ -745,7 +800,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     helperText={formik.touched.description && formik.errors.description}
                   />
                 </FormControl>
-
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
                   <Typography sx={{ fontSize: '18px', fontWeight: '600', gridColumn: 'span 2' }}>
                     {t('components.wizard.stepOne.form.otherInfo.helpChannels')}
@@ -758,24 +812,24 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     <InfoOutlinedIcon color="primary" />
                   </NoMaxWidthTooltip>
                 </Box>
-
                 <FormControl
-                  /* key={i} */
                   sx={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(12, 1fr)',
+                    gridTemplateColumns: 'repeat(24, 1fr)',
                     py: 2,
-                    gridTemplateAreas: `"Contact Contact Channel Channel Channel Channel Channel Channel . . . Cancel"`,
+                    gridTemplateAreas: `". Contact Contact Contact Contact Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel . . . . . . . "`,
                   }}
                 >
-                  <InputLabel sx={{ mt: 2 }}>
+                  <InputLabel sx={{ ml: 6, mt: 2 }}>
                     {t('components.wizard.stepOne.form.otherInfo.contact')}
                   </InputLabel>
                   <Select
+                    name="contact"
                     label={t('components.wizard.stepOne.form.otherInfo.contact')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
-                    sx={{ gridColumn: 'span 2', pr: 4, gridArea: 'Contact' }}
-                    onChange={(e) => formik.setFieldValue('contact', e.target.value)}
+                    value={formik.values.contact}
+                    sx={{ gridColumn: 'span 4', pr: 4, gridArea: 'Contact' }}
+                    onChange={(e) => formik.handleChange(e)}
                   >
                     {
                       // eslint-disable-next-line sonarjs/no-identical-functions
@@ -795,7 +849,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   <TextField
                     variant="outlined"
                     label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
-                    sx={{ gridColumn: 'span 6', ml: 4, gridArea: 'Channel' }}
+                    sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                     value={formik.values.channelName}
                     onChange={(e) => formik.setFieldValue('channelName', e.target.value)}
@@ -803,87 +857,104 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     helperText={formik.touched.channelName && formik.errors.channelName}
                   />
                 </FormControl>
+                {formik.values.assistanceChannel.map((o, i) => {
+                  // const assistanceErrors =
+                  //   formik.errors.assistanceChannel?.length && formik.errors?.assistanceChannel[i];
+                  // const assistanceTouchedChannel =
+                  //   (formik.touched.assistanceChannel?.length &&
+                  //     formik.touched.assistanceChannel[i].channelName) ||
+                  //   false;
+                  // const assistanceTouchedContact =
+                  //   (formik.touched.assistanceChannel?.length &&
+                  //     formik.touched.assistanceChannel[i].contact) ||
+                  //   false;
 
-                {/* {formik.values.assistanceChannel.map((o, i) => {
-                  const optionErrors =
-                    formik.errors.assistanceChannel?.length &&
-                    getOptionErrorText(formik.errors.assistanceChannel[i].valueOf());
-                  const optionTouched =
-                    (formik.touched.assistanceChannel?.length &&
-                      formik.touched.assistanceChannel[i]) ||
-                    false;
+                  console.log('');
+
                   return (
-                    <> */}
-                <FormControl
-                  /* key={i} */
-                  sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(12, 1fr)',
-                    py: 2,
-                    gridTemplateAreas: `"Contact Contact Channel Channel Channel Channel Channel Channel . . . Cancel"`,
-                  }}
-                >
-                  <InputLabel sx={{ mt: 2 }}>
-                    {t('components.wizard.stepOne.form.otherInfo.contact')}
-                  </InputLabel>
-                  <Select
-                    label={t('components.wizard.stepOne.form.otherInfo.contact')}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
-                    sx={{ gridColumn: 'span 2', pr: 4, gridArea: 'Contact' }}
-                  >
-                    {
-                      // eslint-disable-next-line sonarjs/no-identical-functions
-                      contacts.map(({ name }, id) => (
-                        <MenuItem key={id} value={name}>
-                          {name}
-                        </MenuItem>
-                      ))
-                    }
-                  </Select>
-                  {/* <FormHelperText
-                    error={
-                      formik.touched.assistanceChannel && Boolean(formik.errors.assistanceChannel)
-                    }
-                    sx={{ gridColumn: 'span 12', mt: 1 }}
-                  >
-                    {formik.touched.assistanceChannel && formik.errors.assistanceChannel}
-                  </FormHelperText> */}
-                  <TextField
-                    variant="outlined"
-                    label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
-                    sx={{ gridColumn: 'span 6', ml: 4, gridArea: 'Channel' }}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
-                    value={formik.values.assistanceChannel}
-                    onChange={(e) => formik.setFieldValue('channelName', e.target.value)}
-                    // error={
-                    //   formik.touched.assistanceChannel && Boolean(formik.touched.assistanceChannel)
-                    // }
-                    // helperText={formik.touched.assistanceChannel && formik.errors.assistanceChannel}
-                  />
-                  <RemoveCircleOutlineIcon
-                    color="error"
-                    sx={{
-                      cursor: 'pointer',
-                      alignItems: 'end',
-                      mt: 2,
-                      fontSize: 30,
-                      gridColumn: 'span 1',
-                      gridArea: 'Cancel',
-                    }}
-                    // onClick={() =>
-                    //   deleteAssistanceChannel(
-                    //     i,
-                    //     formik.values.assistanceChannel,
-                    //     formik.setValues,
-                    //     formik.setTouched
-                    //   )
-                    // }
-                  />
-                </FormControl>
-                {/* </>
-                  );
-                })} */}
+                    <Box key={i}>
+                      <FormControl
+                        sx={{
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(24, 1fr)',
+                          py: 2,
+                          gridTemplateAreas: `"Cancel Contact Contact Contact Contact Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel . . . . . . ."`,
+                        }}
+                      >
+                        <RemoveCircleOutlineIcon
+                          color="error"
+                          sx={{
+                            cursor: 'pointer',
+                            alignItems: 'start',
+                            mt: 2,
+                            fontSize: 30,
+                            gridColumn: 'span 1',
+                            gridArea: 'Cancel',
+                          }}
+                          onClick={() =>
+                            deleteAssistanceChannel(
+                              i,
+                              formik.values,
+                              formik.setValues,
+                              formik.setTouched
+                            )
+                          }
+                        />
+                        <InputLabel sx={{ ml: 6, mt: 2 }}>
+                          {t('components.wizard.stepOne.form.otherInfo.contact')}
+                        </InputLabel>
 
+                        <Select
+                          name={`contact_${i}`}
+                          label={t('components.wizard.stepOne.form.otherInfo.contact')}
+                          value={o.contact}
+                          placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
+                          sx={{ gridColumn: 'span 4', pr: 5, gridArea: 'Contact' }}
+                          onChange={(e) =>
+                            handleContactSelect(e, formik.setValues, i, formik.values)
+                          }
+                        >
+                          {
+                            // eslint-disable-next-line sonarjs/no-identical-functions
+                            contacts.map(({ name, value }, id) => (
+                              <MenuItem key={id} value={value}>
+                                {name}
+                              </MenuItem>
+                            ))
+                          }
+                        </Select>
+                        {/* <FormHelperText
+                          error={assistanceTouchedContact && Boolean(assistanceErrors)}
+                          sx={{ gridColumn: 'span 12' }}
+                        >
+                          {assistanceTouchedContact && assistanceErrors}
+                        </FormHelperText> */}
+                        <TextField
+                          id={`assistanceChannel[${i}].channelName}`}
+                          name={`assistanceChannel[${i}].channelName}`}
+                          variant="outlined"
+                          label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                          sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
+                          placeholder={t(
+                            'components.wizard.stepOne.form.otherInfo.indicatesChannel'
+                          )}
+                          value={formik.values.assistanceChannel[i].channelName}
+                          onChange={(e) =>
+                            handleAssistanceChannelNameChange(
+                              e,
+                              i,
+                              formik.values,
+                              formik.setValues,
+                              formik.setTouched
+                            )
+                          }
+                          /* error={assistanceTouchedChannel && Boolean(assistanceErrors)}
+                          helperText={assistanceTouchedChannel && assistanceErrors} */
+                        />
+                      </FormControl>
+                    </Box>
+                  );
+                })}
                 <FormControl
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
                 >

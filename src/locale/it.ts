@@ -185,5 +185,8 @@ export default {
     web: 'Inserire un indirizzo web valido',
     email: 'Inserire un indirizzo email valido',
     celNum: 'Inserire un numero di telefono valido',
+    webValid: 'il canale deve essere un indirizzo web',
+    emailValid: 'il canale deve essere un indirizzo email',
+    celNumValid: 'il canale deve essere un numero di telefono',
   },
 };

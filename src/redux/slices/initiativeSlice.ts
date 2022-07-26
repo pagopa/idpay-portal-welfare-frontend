@@ -22,7 +22,7 @@ const initialState: Initiative = {
     description: '',
     contact: '',
     channelName: '',
-    assistanceChannel: [],
+    // assistanceChannel: [],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],

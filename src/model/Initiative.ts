@@ -15,7 +15,7 @@ export interface AdditionalInfo {
   description: string;
   contact: string;
   channelName: string;
-  assistanceChannel: Array<string>;
+  // assistanceChannel: Array<string>;
 }
 
 export interface SelfeclarationCriteriaMultiItem {
