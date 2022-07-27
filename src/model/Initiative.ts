@@ -12,10 +12,11 @@ export interface GeneralInfo {
 }
 
 export interface AdditionalInfo {
-  serviceId: string;
-  serviceName: string;
-  argument: string;
-  description: string;
+  serviceId: string | undefined;
+  serviceName: string | undefined;
+  argument: string | undefined;
+  description: string | undefined;
+  channels: Array<{ type: string; contact: string }>;
 }
 
 export interface SelfDeclarationCriteriaBoolItem {

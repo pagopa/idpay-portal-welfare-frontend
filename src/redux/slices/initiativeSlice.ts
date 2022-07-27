@@ -30,6 +30,7 @@ const initialState: Initiative = {
     serviceName: '',
     argument: '',
     description: '',
+    channels: [{ type: 'web', contact: '' }],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
@@ -64,7 +65,6 @@ export const initiativeSlice = createSlice({
     }),
     setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => ({
       ...state,
-      // generalInfo: { ...action.payload },
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
         beneficiaryKnown: action.payload.beneficiaryKnown,
@@ -125,6 +125,8 @@ export const {
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
+export const additionalInfoSelector = (state: RootState): AdditionalInfo =>
+  state.initiative.additionalInfo;
 export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
 export const beneficiaryRuleSelector = (

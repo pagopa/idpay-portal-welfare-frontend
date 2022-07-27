@@ -53,9 +53,11 @@ export const InitiativeApi = {
     const result = await apiClient.saveInitiativeGeneralInfo({
       body: {
         general: {
-          ...data,
+          ...data.general,
         },
-        additionalInfo: {},
+        additionalInfo: {
+          ...data.additionalInfo,
+        },
       },
     });
     return extractResponse(result, 200, onRedirectToLogin);

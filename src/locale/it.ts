@@ -92,6 +92,22 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
+          otherInfo: {
+            title: 'Altre informazioni',
+            subTitle:
+              ' L’iniziativa può essere fruita dall’app IO, dalle app degli Issuer convenzionati e presso la Rete Anti Digital-Divide. Per erogare l’iniziativa su IO è necessario associarla ad un servizio che verrà esposto in app.',
+            deliverInitiative: 'Eroga l’iniziativa su IO',
+            serviceSelect: 'Seleziona un servizio',
+            description: 'Descrizione',
+            serviceName: 'Nome del servizio',
+            argument: 'Argomento',
+            helpChannels: 'Canali di assistenza',
+            helpChannelsTooltip:
+              'Indica un canale di assistenza dove gli utenti possono contattarvi',
+            contact: 'Contatto',
+            indicatesChannel: 'Indica il canale',
+            addChannel: 'Aggiungi un altro canale',
+          },
         },
       },
       stepTwo: {
@@ -198,5 +214,13 @@ export default {
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
+    maxServiceNameChar: 'Il nome del servizio può contenere massimo 50 caratteri',
+    maxArgumentsChar: 'L’argomento può contenere massimo 50 caratteri',
+    web: 'Inserire un indirizzo web valido',
+    email: 'Inserire un indirizzo email valido',
+    celNum: 'Inserire un numero di telefono valido',
+    webValid: 'il canale deve essere un indirizzo web',
+    emailValid: 'il canale deve essere un indirizzo email',
+    celNumValid: 'il canale deve essere un numero di telefono',
   },
 };

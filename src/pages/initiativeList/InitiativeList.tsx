@@ -30,6 +30,7 @@ import routes, { BASE_ROUTE } from '../../routes';
 
 import {
   resetInitiative,
+  setAdditionalInfo,
   setGeneralInfo,
   setInitiativeId,
   setOrganizationId,
@@ -45,6 +46,7 @@ import {
   getComparator,
   HeadCell,
   parseGeneralInfo,
+  parseAdditionalInfo,
 } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -162,7 +164,6 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   const RenderAction = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
     const dispatch = useAppDispatch();
-
     const handleUpdateInitiative = (id: string) => {
       getInitiativeDetail(id)
         .then((response) => {
@@ -171,9 +172,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           dispatch(setStatus(response.status));
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
+          const additionalInfo = parseAdditionalInfo(response.additionalInfo);
+          dispatch(setAdditionalInfo(additionalInfo));
         })
         .catch((error) => console.log(error));
-
       history.push(`${BASE_ROUTE}/iniziativa/${id}`);
     };
 

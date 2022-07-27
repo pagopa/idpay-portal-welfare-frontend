@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
-import { GeneralInfo } from '../../model/Initiative';
+import { AdditionalInfo, GeneralInfo } from '../../model/Initiative';
 
 export interface Data {
   initiativeId: string;
@@ -129,5 +129,38 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     // eslint-disable-next-line functional/immutable-data
     dataT.rankingEndDate = data.rankingEndDate;
   }
+  return dataT;
+};
+
+export const parseAdditionalInfo = (data: any): AdditionalInfo => {
+  const dataT = {
+    serviceId: '',
+    serviceName: '',
+    argument: '',
+    description: '',
+    channels: [{ type: 'web', contact: '' }],
+  };
+
+  if (typeof data.serviceId !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceId = data.serviceId;
+  }
+  if (typeof data.serviceName !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceName = data.serviceName;
+  }
+  if (typeof data.argument !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.argument = data.argument;
+  }
+  if (typeof data.description !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.description = data.description;
+  }
+  if (typeof data.channels !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.channels = [...data.channels];
+  }
+
   return dataT;
 };
