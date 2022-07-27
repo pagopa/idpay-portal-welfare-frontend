@@ -314,20 +314,6 @@ const InitiativeList = () => {
   };
 
   const goToNewInitiative = () => {
-    // dispatch(setInitiativeId(''));
-    // dispatch(setOrganizationId(''));
-    // dispatch(setStatus(''));
-    // const emptyGeneralInfo = {
-    //   beneficiaryType: BeneficiaryTypeEnum.PF,
-    //   beneficiaryKnown: 'false',
-    //   budget: '',
-    //   beneficiaryBudget: '',
-    //   startDate: undefined,
-    //   endDate: undefined,
-    //   rankingStartDate: undefined,
-    //   rankingEndDate: undefined,
-    // };
-    // dispatch(setGeneralInfo(emptyGeneralInfo));
     dispatch(resetInitiative());
     history.push(routes.NEW_INITIATIVE);
   };

@@ -21,7 +21,9 @@ const SecuredRoutes = withLogin(
         <Route path={routes.HOME} exact={true}>
           <Home />
         </Route>
-        <Route path={routes.NEW_INITIATIVE} exact={true}></Route>
+        <Route path={routes.NEW_INITIATIVE} exact={true}>
+          <NewInitiative />
+        </Route>
         <Route path={routes.INITIATIVE} exact={true}>
           <NewInitiative />
         </Route>
