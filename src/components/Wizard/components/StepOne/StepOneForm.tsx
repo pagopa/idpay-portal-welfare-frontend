@@ -38,9 +38,10 @@ import {
   additionalInfoSelector,
   setGeneralInfo,
   setAdditionalInfo,
+  initiativeIdSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../utils/constants';
-import { saveGeneralInfoService } from '../../../../services/intitativeService';
+import { saveGeneralInfoService, putGeneralInfo } from '../../../../services/intitativeService';
 import {
   getMinDate,
   peopleReached,
@@ -60,6 +61,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   const dispatch = useAppDispatch();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const additionalInfoForm = useAppSelector(additionalInfoSelector, shallowEqual);
+  const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
   const { t } = useTranslation();
   const [isChecked, setIsChecked] = useState(false);
 
@@ -250,21 +252,30 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     validationSchema,
     onSubmit: (values) => {
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
-
       const { additionalInfo } = formValuesParsed;
       dispatch(setGeneralInfo(values));
       dispatch(setAdditionalInfo(additionalInfo));
-      saveGeneralInfoService(formValuesParsed)
-        .then((response) => {
-          const initiativeId = response?.initiativeId;
-          if (typeof initiativeId === 'string') {
-            dispatch(setInitiativeId(initiativeId));
+      if (typeof initiativeIdSel === undefined || initiativeIdSel?.length === 0) {
+        saveGeneralInfoService(formValuesParsed)
+          .then((response) => {
+            const initiativeId = response?.initiativeId;
+            if (typeof initiativeId === 'string') {
+              dispatch(setInitiativeId(initiativeId));
+              setCurrentStep(currentStep + 1);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } else if (typeof initiativeIdSel === 'string') {
+        putGeneralInfo(initiativeIdSel, formValuesParsed)
+          .then((_response) => {
             setCurrentStep(currentStep + 1);
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     },
   });
 
