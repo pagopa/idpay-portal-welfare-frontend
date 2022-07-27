@@ -17,9 +17,9 @@ import { grey } from '@mui/material/colors';
 import { FormikErrors, useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { setManualCriteria } from '../../../../redux/slices/initiativeSlice';
+import { useAppDispatch } from '../../../../redux/hooks';
 import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
@@ -43,7 +43,7 @@ const ManualCriteriaItem = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {

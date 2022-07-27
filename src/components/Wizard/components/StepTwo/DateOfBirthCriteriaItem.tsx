@@ -2,8 +2,8 @@ import { Box, FormControl, FormHelperText, MenuItem, Select, TextField } from '@
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
+import { useAppDispatch } from '../../../../redux/hooks';
 import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS, FilterOperator, DateOfBirthOptions } from '../../../../utils/constants';
 import {
@@ -39,7 +39,7 @@ const DateOdBirthCriteriaItem = ({
 Props) => {
   const { t } = useTranslation();
   const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState('hidden');
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {

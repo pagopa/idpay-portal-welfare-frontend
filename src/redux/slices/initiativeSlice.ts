@@ -41,26 +41,45 @@ export const initiativeSlice = createSlice({
   name: 'initiative',
   initialState,
   reducers: {
-    setInitiativeId: (state, action: PayloadAction<string | undefined>) => {
-      // eslint-disable-next-line functional/immutable-data
-      state.initiativeId = action.payload;
-    },
-    setOrganizationId: (state, action: PayloadAction<string | undefined>) => {
-      // eslint-disable-next-line functional/immutable-data
-      state.organizationId = action.payload;
-    },
-    setStatus: (state, action: PayloadAction<string | undefined>) => {
-      // eslint-disable-next-line functional/immutable-data
-      state.status = action.payload;
-    },
-    setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => {
-      // eslint-disable-next-line no-param-reassign, functional/immutable-data
-      state.generalInfo = { ...action.payload };
-    },
-    setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => {
-      // eslint-disable-next-line no-param-reassign, functional/immutable-data
-      state.additionalInfo = { ...action.payload };
-    },
+    resetInitiative: () => initialState,
+    setInitiative: (state, action: PayloadAction<Initiative>) => ({
+      ...state,
+      initiativeId: action.payload.initiativeId,
+      organizationId: action.payload.organizationId,
+      status: action.payload.status,
+      generalInfo: { ...action.payload.generalInfo },
+      // additionalInfo: { ...action.payload.additionalInfo },
+    }),
+    setInitiativeId: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      initiativeId: action.payload,
+    }),
+    setOrganizationId: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      organizationId: action.payload,
+    }),
+    setStatus: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      status: action.payload,
+    }),
+    setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => ({
+      ...state,
+      // generalInfo: { ...action.payload },
+      generalInfo: {
+        beneficiaryType: action.payload.beneficiaryType,
+        beneficiaryKnown: action.payload.beneficiaryKnown,
+        budget: action.payload.budget,
+        beneficiaryBudget: action.payload.beneficiaryBudget,
+        startDate: action.payload.startDate || '',
+        endDate: action.payload.endDate || '',
+        rankingStartDate: action.payload.rankingStartDate || '',
+        rankingEndDate: action.payload.rankingEndDate || '',
+      },
+    }),
+    setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => ({
+      ...state,
+      additionalInfo: { ...action.payload },
+    }),
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
       let criteriaFound = false;
@@ -93,6 +112,8 @@ export const initiativeSlice = createSlice({
 });
 
 export const {
+  setInitiative,
+  resetInitiative,
   setInitiativeId,
   setOrganizationId,
   setStatus,
@@ -103,7 +124,10 @@ export const {
 } = initiativeSlice.actions;
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
-export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
+export const generalInfoSelector = (state: RootState): GeneralInfo => {
+  console.log(state.initiative.generalInfo);
+  return state.initiative.generalInfo;
+};
 export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
 export const beneficiaryRuleSelector = (

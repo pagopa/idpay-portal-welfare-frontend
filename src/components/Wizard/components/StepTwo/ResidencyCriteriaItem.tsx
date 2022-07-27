@@ -2,10 +2,10 @@ import { Box, FormControl, FormHelperText, MenuItem, Select, TextField } from '@
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
 import * as Yup from 'yup';
 import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS, FilterOperator, ResidencyOptions } from '../../../../utils/constants';
+import { useAppDispatch } from '../../../../redux/hooks';
 import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
@@ -32,7 +32,7 @@ const DateOdBirthCriteriaItem = ({
 // setCurrentStep,
 Props) => {
   const { t } = useTranslation();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {

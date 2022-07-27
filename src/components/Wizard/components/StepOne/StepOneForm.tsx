@@ -20,10 +20,10 @@ import { useFormik } from 'formik';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
-
-import { useDispatch, useSelector } from 'react-redux';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { shallowEqual } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   setInitiativeId,
   generalInfoSelector,
@@ -31,7 +31,6 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { saveGeneralInfoService } from '../../../../services/intitativeService';
-
 import { getMinDate, peopleReached, parseValuesFormToInitiativeGeneralDTO } from './helpers';
 
 interface Props {
@@ -42,9 +41,8 @@ interface Props {
 }
 
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
-  const dispatch = useDispatch();
-  const generalInfoForm = useSelector(generalInfoSelector);
-  console.log(generalInfoForm);
+  const dispatch = useAppDispatch();
+  const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -112,16 +110,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   });
 
   const formik = useFormik({
-    initialValues: {
-      beneficiaryType: generalInfoForm.beneficiaryType,
-      beneficiaryKnown: generalInfoForm.beneficiaryKnown,
-      budget: generalInfoForm.budget,
-      beneficiaryBudget: generalInfoForm.beneficiaryBudget,
-      rankingStartDate: generalInfoForm.rankingStartDate || '',
-      rankingEndDate: generalInfoForm.rankingEndDate || '',
-      startDate: generalInfoForm.startDate || '',
-      endDate: generalInfoForm.endDate || '',
-    },
+    initialValues: generalInfoForm,
+    enableReinitialize: true,
     validateOnChange: true,
     validationSchema,
     onSubmit: (values) => {

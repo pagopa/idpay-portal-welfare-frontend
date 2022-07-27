@@ -1,4 +1,6 @@
 import i18n from 'i18next';
+import { BeneficiaryTypeEnum } from '../../utils/constants';
+import { GeneralInfo } from '../../model/Initiative';
 
 export interface Data {
   initiativeId: string;
@@ -82,3 +84,50 @@ export interface EnhancedTableProps {
   orderBy: string;
   onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Data) => void;
 }
+
+export const parseGeneralInfo = (data: any): GeneralInfo => {
+  const dataT = {
+    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryKnown: 'false',
+    budget: '',
+    beneficiaryBudget: '',
+    startDate: '',
+    endDate: '',
+    rankingStartDate: '',
+    rankingEndDate: '',
+  };
+  if (typeof data.beneficiaryType !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryType =
+      data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
+  }
+  if (typeof data.beneficiaryKnown !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+  }
+  if (typeof data.budget !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.budget = data.budget.toString();
+  }
+  if (typeof data.beneficiaryBudget !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryBudget = data.beneficiaryBudget.toString();
+  }
+  if (typeof data.startDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.startDate = data.startDate;
+  }
+  if (typeof data.endDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.endDate = data.endDate;
+  }
+  if (typeof data.rankingStartDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.rankingStartDate = data.rankingStartDate;
+  }
+  if (typeof data.rankingEndDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.rankingEndDate = data.rankingEndDate;
+  }
+  return dataT;
+};

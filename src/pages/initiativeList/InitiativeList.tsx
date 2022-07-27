@@ -24,18 +24,28 @@ import { grey } from '@mui/material/colors';
 import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import { useDispatch } from 'react-redux';
-import { getInitativeSummary } from '../../services/intitativeService';
+
+import { getInitativeSummary, getInitiativeDetail } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
+
 import {
+  resetInitiative,
   setGeneralInfo,
   setInitiativeId,
   setOrganizationId,
   setStatus,
 } from '../../redux/slices/initiativeSlice';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
-// import ROUTES from '../../routes';
-import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
+
+import { useAppDispatch } from '../../redux/hooks';
+import {
+  EnhancedTableProps,
+  Data,
+  Order,
+  stableSort,
+  getComparator,
+  HeadCell,
+  parseGeneralInfo,
+} from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
@@ -151,8 +161,19 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 
   const RenderAction = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
+    const dispatch = useAppDispatch();
 
     const handleUpdateInitiative = (id: string) => {
+      getInitiativeDetail(id)
+        .then((response) => {
+          dispatch(setInitiativeId(response.initiativeId));
+          dispatch(setOrganizationId(response.organizationId));
+          dispatch(setStatus(response.status));
+          const generalInfo = parseGeneralInfo(response.general);
+          dispatch(setGeneralInfo(generalInfo));
+        })
+        .catch((error) => console.log(error));
+
       history.push(`${BASE_ROUTE}/iniziativa/${id}`);
     };
 
@@ -214,7 +235,7 @@ const InitiativeList = () => {
   const [initiativeListFiltered, setInitiativeListFiltered] = useState(Array<Data>);
   const { t } = useTranslation();
   const history = useHistory();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     getInitativeSummary()
@@ -293,20 +314,21 @@ const InitiativeList = () => {
   };
 
   const goToNewInitiative = () => {
-    dispatch(setInitiativeId(''));
-    dispatch(setOrganizationId(''));
-    dispatch(setStatus(''));
-    const emptyGeneralInfo = {
-      beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: 'false',
-      budget: '',
-      beneficiaryBudget: '',
-      startDate: undefined,
-      endDate: undefined,
-      rankingStartDate: undefined,
-      rankingEndDate: undefined,
-    };
-    dispatch(setGeneralInfo(emptyGeneralInfo));
+    // dispatch(setInitiativeId(''));
+    // dispatch(setOrganizationId(''));
+    // dispatch(setStatus(''));
+    // const emptyGeneralInfo = {
+    //   beneficiaryType: BeneficiaryTypeEnum.PF,
+    //   beneficiaryKnown: 'false',
+    //   budget: '',
+    //   beneficiaryBudget: '',
+    //   startDate: undefined,
+    //   endDate: undefined,
+    //   rankingStartDate: undefined,
+    //   rankingEndDate: undefined,
+    // };
+    // dispatch(setGeneralInfo(emptyGeneralInfo));
+    dispatch(resetInitiative());
     history.push(routes.NEW_INITIATIVE);
   };
 
