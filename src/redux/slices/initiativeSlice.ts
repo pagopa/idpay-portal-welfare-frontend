@@ -124,10 +124,7 @@ export const {
 } = initiativeSlice.actions;
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
-export const generalInfoSelector = (state: RootState): GeneralInfo => {
-  console.log(state.initiative.generalInfo);
-  return state.initiative.generalInfo;
-};
+export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
 export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
 export const beneficiaryRuleSelector = (

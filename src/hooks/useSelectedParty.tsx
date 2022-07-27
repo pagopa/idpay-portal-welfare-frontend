@@ -68,7 +68,6 @@ export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
 export const useSelectedParty = (): (() => Promise<Party>) => {
   const dispatch = useAppDispatch();
   const partyJwtConfig: PartyJwtConfig | null = retrieveSelectedPartyIdConfig();
-  console.log('PartJWTCOnfig', partyJwtConfig);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
   const parties = useAppSelector(partiesSelectors.selectPartiesList);
   const setParty = (party?: Party) => dispatch(partiesActions.setPartySelected(party));

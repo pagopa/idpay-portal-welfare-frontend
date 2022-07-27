@@ -78,14 +78,15 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
         }
         return schema;
       }),
-    rankingStartDate: Yup.date(),
-    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, schema) => {
-      if (rankingStartDate) {
+    rankingStartDate: Yup.date().nullable().default(undefined),
+    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, _schema) => {
+      if (rankingStartDate !== null) {
         return Yup.date()
           .min(rankingStartDate, t('validation.outJoinTo'))
           .required(t('validation.required'));
+      } else {
+        return Yup.date().nullable().default(undefined);
       }
-      return schema;
     }),
     startDate: Yup.date()
       .required(t('validation.required'))
@@ -94,6 +95,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
           return Yup.date()
             .min(rankingEndDate, t('validation.outSpendFrom'))
             .required(t('validation.required'));
+        } else {
+          return Yup.date().min(new Date()).required(t('validation.required'));
         }
         return schema;
       }),

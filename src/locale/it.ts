@@ -197,5 +197,6 @@ export default {
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
+    maxTwoHundred: 'Max 200 caratteri',
   },
 };

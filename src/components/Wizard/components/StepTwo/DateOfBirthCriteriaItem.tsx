@@ -57,9 +57,10 @@ Props) => {
     dateOfBirthEndValue: Yup.number().when(['dateOfBirthRelationSelect', 'dateOfBirthStartValue'], {
       is: (dateOfBirthRelationSelect: string, dateOfBirthStartValue: string) =>
         dateOfBirthRelationSelect === FilterOperator.IN && dateOfBirthStartValue,
-      then: Yup.number()
-        .required(t('validation.required'))
-        .min(Yup.ref('dateOfBirthStartValue'), t('validation.outValue')),
+      then: (_dateOfBirthStartValue) =>
+        Yup.number()
+          .required(t('validation.required'))
+          .moreThan(Yup.ref('dateOfBirthStartValue'), t('validation.outValue')),
     }),
   });
 

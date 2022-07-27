@@ -55,7 +55,9 @@ const ManualCriteriaItem = ({
   }, [action]);
 
   const manualCriteriaValidationSchema = Yup.object().shape({
-    manualCriteriaName: Yup.string().required(t('validation.required')),
+    manualCriteriaName: Yup.string()
+      .required(t('validation.required'))
+      .max(200, t('validation.maxTwoHundred')),
     manualCriteriaSelectName: Yup.string().required(t('validation.required')),
     manualCriteriaValues: Yup.array().of(
       Yup.object().shape({
@@ -80,7 +82,6 @@ const ManualCriteriaItem = ({
     validateOnChange: true,
     validationSchema: manualCriteriaValidationSchema,
     onSubmit: (values) => {
-      console.log(values);
       if (values.manualCriteriaSelectName === ManualCriteriaOptions.BOOLEAN) {
         const data = {
           _type: values.manualCriteriaSelectName,
@@ -264,10 +265,12 @@ const ManualCriteriaItem = ({
               manualCriteriaFormik.touched.manualCriteriaName,
               manualCriteriaFormik.errors.manualCriteriaName
             )}
-            helperText={setErrorText(
-              manualCriteriaFormik.touched.manualCriteriaName,
-              manualCriteriaFormik.errors.manualCriteriaName
-            )}
+            helperText={
+              setErrorText(
+                manualCriteriaFormik.touched.manualCriteriaName,
+                manualCriteriaFormik.errors.manualCriteriaName
+              ) || t('validation.maxTwoHundred')
+            }
           />
         </FormControl>
       </Box>

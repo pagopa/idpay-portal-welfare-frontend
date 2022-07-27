@@ -11,7 +11,7 @@ export const getMinDate = (date: Date | string | undefined) => {
   if (date !== undefined && date instanceof Date) {
     return addDays(date, 1);
   }
-  return '';
+  return new Date();
 };
 
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({

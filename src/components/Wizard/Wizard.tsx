@@ -3,19 +3,22 @@ import SaveIcon from '@mui/icons-material/Save';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
 
+import routes from '../../routes';
 import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(1);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
+  const history = useHistory();
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -40,7 +43,11 @@ const Wizard = () => {
   };
 
   const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    if (activeStep > 0) {
+      setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    } else {
+      history.push(routes.INITIATIVE_LIST);
+    }
   };
 
   const handleReset = () => {
@@ -120,7 +127,7 @@ const Wizard = () => {
               <Button
                 variant="outlined"
                 color="inherit"
-                disabled={activeStep === 0}
+                //  disabled={activeStep === 0}
                 onClick={handleBack}
               >
                 {t('components.wizard.common.buttons.back')}
