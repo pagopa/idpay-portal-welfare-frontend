@@ -30,6 +30,8 @@ import routes, { BASE_ROUTE } from '../../routes';
 
 import {
   resetInitiative,
+  saveAutomatedCriteria,
+  saveManualCriteria,
   setAdditionalInfo,
   setGeneralInfo,
   setInitiativeId,
@@ -38,6 +40,11 @@ import {
 } from '../../redux/slices/initiativeSlice';
 
 import { useAppDispatch } from '../../redux/hooks';
+import {
+  AutomatedCriteriaItem,
+  SelfDeclarationCriteriaBoolItem,
+  SelfDeclarationCriteriaMultiItem,
+} from '../../model/Initiative';
 import {
   EnhancedTableProps,
   Data,
@@ -174,6 +181,28 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           dispatch(setGeneralInfo(generalInfo));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
+          // eslint-disable-next-line functional/no-let
+          let automatedCriteria: Array<AutomatedCriteriaItem> = [];
+          // eslint-disable-next-line functional/no-let
+          let selfDeclarationCriteria: Array<
+            SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
+          > = [];
+          if (
+            response.beneficiaryRule &&
+            response.beneficiaryRule.automatedCriteria &&
+            Object.keys(response.beneficiaryRule.automatedCriteria).length !== 0
+          ) {
+            automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
+          }
+          if (
+            response.beneficiaryRule &&
+            response.beneficiaryRule.selfDeclarationCriteria &&
+            Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
+          ) {
+            selfDeclarationCriteria = [...response.beneficiaryRule.selfDeclarationCriteria];
+          }
+          dispatch(saveAutomatedCriteria(automatedCriteria));
+          dispatch(saveManualCriteria(selfDeclarationCriteria));
         })
         .catch((error) => console.log(error));
       history.push(`${BASE_ROUTE}/iniziativa/${id}`);

@@ -48,6 +48,7 @@ import {
   parseValuesFormToInitiativeGeneralDTO,
   serviceOptions,
   contacts,
+  getYesterday,
 } from './helpers';
 interface Props {
   action: string;
@@ -116,7 +117,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             .min(rankingEndDate, t('validation.outSpendFrom'))
             .required(t('validation.required'));
         } else {
-          return Yup.date().min(new Date()).required(t('validation.required'));
+          return Yup.date().min(getYesterday()).required(t('validation.required'));
         }
       }),
     endDate: Yup.date()
@@ -171,15 +172,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     startDate: Yup.date()
       .required(t('validation.required'))
       // eslint-disable-next-line sonarjs/no-identical-functions
-      .when('rankingEndDate', (rankingEndDate, schema) => {
+      .when('rankingEndDate', (rankingEndDate, _schema) => {
         if (rankingEndDate) {
           return Yup.date()
             .min(rankingEndDate, t('validation.outSpendFrom'))
             .required(t('validation.required'));
         } else {
-          return Yup.date().min(new Date()).required(t('validation.required'));
+          return Yup.date().min(getYesterday()).required(t('validation.required'));
         }
-        return schema;
       }),
     endDate: Yup.date()
       .required(t('validation.required'))
@@ -255,12 +255,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       const { additionalInfo } = formValuesParsed;
       dispatch(setGeneralInfo(values));
       dispatch(setAdditionalInfo(additionalInfo));
-      if (typeof initiativeIdSel === undefined || initiativeIdSel?.length === 0) {
+
+      if (!initiativeIdSel) {
         saveGeneralInfoService(formValuesParsed)
           .then((response) => {
             const initiativeId = response?.initiativeId;
             if (typeof initiativeId === 'string') {
               dispatch(setInitiativeId(initiativeId));
+
               setCurrentStep(currentStep + 1);
             }
           })

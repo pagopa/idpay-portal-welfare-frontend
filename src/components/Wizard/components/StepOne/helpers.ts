@@ -83,3 +83,9 @@ export const setError = (touched: boolean | undefined, errorText: string | undef
 
 export const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
   touched && errorText;
+
+export const getYesterday = (dateOnly = false) => {
+  const d = new Date();
+  d.setDate(d.getDate() - 1);
+  return dateOnly ? new Date(d.toDateString()) : d;
+};

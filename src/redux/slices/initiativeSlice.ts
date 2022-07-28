@@ -99,6 +99,10 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.automatedCriteria.push(action.payload);
       }
     },
+    saveAutomatedCriteria: (state, action: PayloadAction<Array<AutomatedCriteriaItem>>) => {
+      state.beneficiaryRule.automatedCriteria = [];
+      state.beneficiaryRule.automatedCriteria = [...action.payload];
+    },
     setManualCriteria: (
       state,
       action: PayloadAction<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
@@ -107,6 +111,15 @@ export const initiativeSlice = createSlice({
         ...state.beneficiaryRule.selfDeclarationCriteria,
         action.payload,
       ];
+    },
+    saveManualCriteria: (
+      state,
+      action: PayloadAction<
+        Array<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
+      >
+    ) => {
+      state.beneficiaryRule.selfDeclarationCriteria = [];
+      state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
     },
   },
 });
@@ -120,7 +133,9 @@ export const {
   setGeneralInfo,
   setAdditionalInfo,
   setAutomatedCriteria,
+  saveAutomatedCriteria,
   setManualCriteria,
+  saveManualCriteria,
 } = initiativeSlice.actions;
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;

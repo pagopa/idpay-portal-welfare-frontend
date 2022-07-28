@@ -68,7 +68,7 @@ export const InitiativeApi = {
       initiativeId: id,
       body: { ...data },
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 
   initiativeBeneficiaryRulePut: async (
@@ -81,6 +81,6 @@ export const InitiativeApi = {
         ...data,
       },
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 };
