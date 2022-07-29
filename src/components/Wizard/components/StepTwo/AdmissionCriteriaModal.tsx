@@ -16,27 +16,27 @@ import {
   Dispatch,
   MouseEventHandler,
   useState,
-  ChangeEventHandler,
   ChangeEvent,
   useCallback,
+  ChangeEventHandler,
 } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AdmissionCriteriaModel } from '../../../../model/AdmissionCriteria';
+import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 
 type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   handleCriteriaAdded: MouseEventHandler;
-  criteria: Array<AdmissionCriteriaModel>;
-  setCriteria: Dispatch<Array<AdmissionCriteriaModel>>;
+  criteriaToRender: Array<AvailableCriteria>;
+  setCriteriaToRender: Dispatch<Array<AvailableCriteria>>;
 };
 
 const AdmissionCriteriaModal = ({
   openModal,
   handleCloseModal,
   handleCriteriaAdded,
-  criteria,
-  setCriteria,
+  criteriaToRender,
+  setCriteriaToRender,
 }: Props) => {
   const { t } = useTranslation();
   const [searchCriteria, setSearchCriteria] = useState('');
@@ -50,14 +50,14 @@ const AdmissionCriteriaModal = ({
     }
   }, []);
 
-  const handleCriteriaChange = (e: ChangeEvent) => {
-    const newCriteria = criteria.map((c) => {
+  const handleCriteriaChange = (e: ChangeEvent<Element>) => {
+    const newCriteria = criteriaToRender.map((c) => {
       if (c.code === e.target.id) {
         return { ...c, checked: !c.checked };
       }
       return c;
     });
-    setCriteria(newCriteria);
+    setCriteriaToRender([...newCriteria]);
   };
 
   const handleSearchCriteria = (s: string) => {
@@ -66,7 +66,7 @@ const AdmissionCriteriaModal = ({
   };
 
   const renderAdmissionCriteriaList = (
-    list: Array<AdmissionCriteriaModel>,
+    list: Array<AvailableCriteria>,
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler
   ) => {
@@ -82,14 +82,14 @@ const AdmissionCriteriaModal = ({
             />
           </Box>
           <Box>
-            <Typography variant="body2">{a.field}</Typography>
-            <Typography variant="caption">{a.authority}</Typography>
+            <Typography variant="body2">{a.fieldLabel}</Typography>
+            <Typography variant="caption">{a.authorityLabel}</Typography>
           </Box>
         </Box>
       ));
     } else {
       return list.map((a) => {
-        const lowerCaseTitle = typeof a.field === 'string' ? a.field.toLowerCase() : '';
+        const lowerCaseTitle = typeof a.fieldLabel === 'string' ? a.fieldLabel.toLowerCase() : '';
         if (lowerCaseTitle.startsWith(searchKey)) {
           return (
             <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
@@ -102,8 +102,8 @@ const AdmissionCriteriaModal = ({
                 />
               </Box>
               <Box>
-                <Typography variant="body2">{a.field}</Typography>
-                <Typography variant="caption">{a.authority}</Typography>
+                <Typography variant="body2">{a.fieldLabel}</Typography>
+                <Typography variant="caption">{a.authorityLabel}</Typography>
               </Box>
             </Box>
           );
@@ -200,7 +200,7 @@ const AdmissionCriteriaModal = ({
               maxHeight: 'calc(100% - ' + headingHeight + ')',
             }}
           >
-            {renderAdmissionCriteriaList(criteria, searchCriteria, handleCriteriaChange)}
+            {renderAdmissionCriteriaList(criteriaToRender, searchCriteria, handleCriteriaChange)}
           </Box>
           <Box
             sx={{

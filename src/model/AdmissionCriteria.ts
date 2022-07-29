@@ -1,11 +1,19 @@
 import { FilterOperator } from '../utils/constants';
 
-export type AdmissionCriteriaModel = {
-  code: string | undefined;
-  authority: string | undefined;
-  field: string | undefined;
+export interface AdmissionCriteriaModel {
+  code: string;
+  authority: string;
+  field: string;
+  operator: string;
   checked: boolean;
-};
+}
+
+export interface AvailableCriteria extends AdmissionCriteriaModel {
+  authorityLabel: string;
+  fieldLabel: string;
+  value: string;
+  value2: string;
+}
 
 export interface DateOfBirthModel {
   dateOfBirthSelect: number;

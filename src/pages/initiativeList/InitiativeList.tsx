@@ -174,6 +174,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
     const handleUpdateInitiative = (id: string) => {
       getInitiativeDetail(id)
         .then((response) => {
+          dispatch(resetInitiative());
           dispatch(setInitiativeId(response.initiativeId));
           dispatch(setOrganizationId(response.organizationId));
           dispatch(setStatus(response.status));

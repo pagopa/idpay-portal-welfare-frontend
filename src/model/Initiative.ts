@@ -39,6 +39,7 @@ export interface AutomatedCriteriaItem {
   field?: string | undefined;
   operator?: FilterOperator | string | undefined;
   value?: string | undefined;
+  value2?: string | undefined;
 }
 
 export interface Initiative {
