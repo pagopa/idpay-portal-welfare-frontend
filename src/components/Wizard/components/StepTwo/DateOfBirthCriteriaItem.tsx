@@ -10,37 +10,48 @@ import {
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
-import { MouseEventHandler, useState } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
-import { FilterOperator, DateOfBirthOptions } from '../../../../utils/constants';
+import { FilterOperator, DateOfBirthOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import { setError, setErrorText, setFieldType, setFormControlDisplayProp } from './helpers';
+import {
+  handleCriteriaToSubmit,
+  setError,
+  setErrorText,
+  setFieldType,
+  setFormControlDisplayProp,
+} from './helpers';
 
 type Props = {
+  action: string;
   formData: AvailableCriteria;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   handleFieldValueChanged: any;
+  criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setCriteriaToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
 const DateOdBirthCriteriaItem = ({
+  action,
   formData,
   handleCriteriaRemoved,
   handleFieldValueChanged,
+  criteriaToSubmit,
+  setCriteriaToSubmit,
 }: Props) => {
   const { t } = useTranslation();
   const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState('hidden');
 
-  // useEffect(() => {
-  //   if (action === WIZARD_ACTIONS.SUBMIT) {
-  //     dateOfBirthFormik.handleSubmit();
-  //   } else if (action === WIZARD_ACTIONS.DRAFT) {
-  //     return;
-  //   }
-  //   // setAction('');
-  // }, [action]);
-
-  console.log(formData);
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      dateOfBirthFormik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
 
   const dateOfBirthValidationSchema = Yup.object().shape({
     dateOfBirthSelect: Yup.string().required(t('validation.required')),
@@ -64,25 +75,19 @@ const DateOdBirthCriteriaItem = ({
       dateOfBirthEndValue: formData.value2,
     },
     validateOnChange: true,
-    // enableReinitialize: true,
+    enableReinitialize: true,
     validationSchema: dateOfBirthValidationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       // const data = {
-      //   authority: values.authority,
-      //   code: values.code,
+      //   authority: formData.authority,
+      //   code: formData.code,
       //   field: values.dateOfBirthSelect,
       //   operator: values.dateOfBirthRelationSelect,
       //   value: values.dateOfBirthStartValue,
+      //   value2: values.dateOfBirthEndValue,
       // };
-      // setFormValues({
-      //   code: values.code,
-      //   field: values.dateOfBirthSelect,
-      //   operator: values.dateOfBirthRelationSelect,
-      //   value: values.dateOfBirthStartValue,
-      // });
       // dispatch(setAutomatedCriteria(data));
-      // // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, initialFormValues.code)]);
+      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
 

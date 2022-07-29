@@ -12,20 +12,46 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
-import { MouseEventHandler, useState } from 'react';
-import { FilterOperator } from '../../../../utils/constants';
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
+import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import { setError, setErrorText, setFieldType, setFormControlDisplayProp } from './helpers';
+import {
+  handleCriteriaToSubmit,
+  setError,
+  setErrorText,
+  setFieldType,
+  setFormControlDisplayProp,
+} from './helpers';
 
 type Props = {
+  action: string;
   formData: AvailableCriteria;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   handleFieldValueChanged: any;
+  criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setCriteriaToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
-const IseeCriteriaItem = ({ formData, handleCriteriaRemoved, handleFieldValueChanged }: Props) => {
+const IseeCriteriaItem = ({
+  action,
+  formData,
+  handleCriteriaRemoved,
+  handleFieldValueChanged,
+  criteriaToSubmit,
+  setCriteriaToSubmit,
+}: Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState('hidden');
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      iseeFormik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
 
   const iseeValidationSchema = Yup.object().shape({
     iseeRelationSelect: Yup.string().required(t('validation.required')),
@@ -46,9 +72,19 @@ const IseeCriteriaItem = ({ formData, handleCriteriaRemoved, handleFieldValueCha
       iseeEndValue: formData.value2,
     },
     validateOnChange: true,
+    enableReinitialize: true,
     validationSchema: iseeValidationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
+      // const data = {
+      //   authority: formData.authority,
+      //   code: formData.code,
+      //   field: formData.field,
+      //   operator: values.iseeRelationSelect,
+      //   value: values.iseeStartValue,
+      //   value2: values.iseeEndValue,
+      // };
+      // dispatch(setAutomatedCriteria(data));
+      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
 

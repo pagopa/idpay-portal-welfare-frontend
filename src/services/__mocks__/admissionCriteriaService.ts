@@ -2,13 +2,6 @@ import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
   {
-    code: 'ISEE',
-    authority: 'INPS',
-    field: 'ISEE',
-    operator: 'EQ',
-    checked: false,
-  },
-  {
     code: 'BIRTHDATE',
     authority: 'AUTH1',
     field: 'year',
@@ -19,6 +12,13 @@ export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
     code: 'RESIDENCE',
     authority: 'AUTH2',
     field: 'city',
+    operator: 'EQ',
+    checked: false,
+  },
+  {
+    code: 'ISEE',
+    authority: 'INPS',
+    field: 'ISEE',
     operator: 'EQ',
     checked: false,
   },

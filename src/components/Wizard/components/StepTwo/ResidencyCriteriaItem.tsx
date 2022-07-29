@@ -9,35 +9,42 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { useFormik } from 'formik';
-import { MouseEventHandler } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import { FilterOperator, ResidencyOptions } from '../../../../utils/constants';
+import { FilterOperator, ResidencyOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
+import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
+  action: string;
   formData: AvailableCriteria;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   handleFieldValueChanged: any;
+  criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setCriteriaToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
 const ResidencyCriteriaItem = ({
+  action,
   formData,
   handleCriteriaRemoved,
   handleFieldValueChanged,
+  criteriaToSubmit,
+  setCriteriaToSubmit,
 }: Props) => {
   const { t } = useTranslation();
-  // const dispatch = useAppDispatch();
 
-  // useEffect(() => {
-  //   if (action === WIZARD_ACTIONS.SUBMIT) {
-  //     residencyFormik.handleSubmit();
-  //   } else if (action === WIZARD_ACTIONS.DRAFT) {
-  //     return;
-  //   }
-  //   // setAction('');
-  // }, [action]);
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      residencyFormik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
 
   const residencyValidationSchema = Yup.object().shape({
     residencySelect: Yup.string().required(t('validation.required')),
@@ -52,26 +59,18 @@ const ResidencyCriteriaItem = ({
       residencyValue: formData.value,
     },
     validateOnChange: true,
-    // enableReinitialize: true,
+    enableReinitialize: true,
     validationSchema: residencyValidationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       // const data = {
-      //   authority,
-      //   code: values.code,
+      //   authority: formData.authority,
+      //   code: formData.code,
       //   field: values.residencySelect,
       //   operator: values.residencyRelationSelect,
       //   value: values.residencyValue,
       // };
-      // setFormValues({
-      //   code: values.code,
-      //   field: values.residencySelect,
-      //   operator: values.residencyRelationSelect,
-      //   value: values.residencyValue,
-      // });
-
       // dispatch(setAutomatedCriteria(data));
-      // // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, initialFormValues.code)]);
+      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
 

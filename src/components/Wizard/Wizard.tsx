@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
-
 import routes from '../../routes';
 import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';

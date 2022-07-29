@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { AdmissionCriteriaModel, AvailableCriteria } from '../../../../model/AdmissionCriteria';
+import { AutomatedCriteriaItem } from '../../../../model/Initiative';
 import { FilterOperator } from '../../../../utils/constants';
 
 export const handleCriteriaToSubmit = (
@@ -16,7 +17,6 @@ export const handleCriteriaToSubmit = (
       newCriteriaToSubmit.push({ code: oC.code, dispatched: true });
     }
   });
-  // setCriteriaToSubmit([...newCriteriaToSubmit]);
   return newCriteriaToSubmit;
 };
 
@@ -77,3 +77,34 @@ export const mapResponse = (response: Array<AdmissionCriteriaModel>): Array<Avai
       };
     }
   });
+
+export const updateInitialAutomatedCriteriaOnSelector = (
+  automatedCriteria: Array<AutomatedCriteriaItem>,
+  responseData: Array<AvailableCriteria>
+) => {
+  const updatedResponseData: Array<AvailableCriteria> = [];
+  automatedCriteria.forEach((a) => {
+    responseData.forEach((r) => {
+      if (a.code === r.code) {
+        const criteria = {
+          code: r.code,
+          authority: r.authority,
+          authorityLabel: r.authorityLabel,
+          field: r.field,
+          fieldLabel: r.fieldLabel,
+          operator: a.operator ? a.operator : r.operator,
+          checked: true,
+          value: a.value ? a.value : r.value,
+          value2: a.value2 ? a.value2 : r.value2,
+        };
+        // eslint-disable-next-line functional/immutable-data
+        updatedResponseData.push(criteria);
+      } else {
+        const criteria = { ...r };
+        // eslint-disable-next-line functional/immutable-data
+        updatedResponseData.push(criteria);
+      }
+    });
+  });
+  return updatedResponseData;
+};

@@ -4,9 +4,15 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
+import {
+  beneficiaryRuleSelector,
+  // initiativeIdSelector,
+  // setAutomatedCriteria,
+} from '../../../../redux/slices/initiativeSlice';
+import { useAppSelector } from '../../../../redux/hooks';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
-import { mapResponse } from './helpers';
+import { mapResponse, updateInitialAutomatedCriteriaOnSelector } from './helpers';
 import DateOdBirthCriteriaItem from './DateOfBirthCriteriaItem';
 import ResidencyCriteriaItem from './ResidencyCriteriaItem';
 
@@ -22,9 +28,13 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const [openModal, setOpenModal] = useState(false);
   const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
+  const [criteriaToSubmit, setCriteriaToSubmit] = useState(
+    Array<{ code: string | undefined; dispatched: boolean }>
+  );
+  const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
+  // const initiativeId = useAppSelector(initiativeIdSelector);
 
   useEffect(() => {
-    console.log(action);
     console.log(setAction);
     console.log(currentStep);
     console.log(setCurrentStep);
@@ -34,6 +44,25 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         const responseData = mapResponse(response);
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
+
+        const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
+
+        if (automatedCriteria.length > 0) {
+          const updatedResponseData: Array<AvailableCriteria> =
+            updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
+          setAvailableCriteria([...updatedResponseData]);
+          setCriteriaToRender([...updatedResponseData]);
+          const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+          updatedResponseData.forEach((c) => {
+            if (c.checked === true) {
+              // eslint-disable-next-line functional/immutable-data
+              newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+            }
+          });
+          setCriteriaToSubmit([...newCriteriaToSubmit]);
+        }
+
+        console.log(selfDeclarationCriteria);
       })
       .catch((error) => {
         console.log(error);
@@ -47,6 +76,15 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setAvailableCriteria([...criteriaToRender]);
+    const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    criteriaToRender.forEach((c) => {
+      if (c.checked === true) {
+        // eslint-disable-next-line functional/immutable-data
+        newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+      }
+    });
+    setCriteriaToSubmit([...newCriteriaToSubmit]);
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -60,6 +98,15 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     });
     setCriteriaToRender([...newCriteriaToRender]);
     setAvailableCriteria([...newCriteriaToRender]);
+    const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    newCriteriaToRender.forEach((c) => {
+      if (c.checked === true) {
+        // eslint-disable-next-line functional/immutable-data
+        newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+      }
+    });
+    setCriteriaToSubmit([...newCriteriaToSubmit]);
   };
 
   const handleFieldValueChanged = (fieldValue: string, fieldKey: string, criteriaCode: string) => {
@@ -79,6 +126,21 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     setCriteriaToRender([...newCriteriaToRender]);
     setAvailableCriteria([...newCriteriaToRender]);
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line functional/no-let
+    let canBeSubmitted = true;
+    if (criteriaToSubmit.length > 0) {
+      criteriaToSubmit.forEach((c) => {
+        canBeSubmitted = canBeSubmitted && c.dispatched;
+      });
+    } else {
+      canBeSubmitted = false;
+    }
+    if (canBeSubmitted) {
+      console.log('CAN BE SUBMITTED');
+    }
+  }, [criteriaToSubmit]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -129,23 +191,16 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       </Box>
       <Box>
         {availableCriteria.map((a) => {
-          if (a.code === 'ISEE' && a.checked === true) {
-            return (
-              <IseeCriteriaItem
-                key={a.code}
-                formData={a}
-                handleCriteriaRemoved={handleCriteriaRemoved}
-                handleFieldValueChanged={handleFieldValueChanged}
-              />
-            );
-          }
           if (a.code === 'BIRTHDATE' && a.checked === true) {
             return (
               <DateOdBirthCriteriaItem
                 key={a.code}
                 formData={a}
+                action={action}
                 handleCriteriaRemoved={handleCriteriaRemoved}
                 handleFieldValueChanged={handleFieldValueChanged}
+                criteriaToSubmit={criteriaToSubmit}
+                setCriteriaToSubmit={setCriteriaToSubmit}
               />
             );
           }
@@ -154,8 +209,24 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
               <ResidencyCriteriaItem
                 key={a.code}
                 formData={a}
+                action={action}
                 handleCriteriaRemoved={handleCriteriaRemoved}
                 handleFieldValueChanged={handleFieldValueChanged}
+                criteriaToSubmit={criteriaToSubmit}
+                setCriteriaToSubmit={setCriteriaToSubmit}
+              />
+            );
+          }
+          if (a.code === 'ISEE' && a.checked === true) {
+            return (
+              <IseeCriteriaItem
+                key={a.code}
+                formData={a}
+                action={action}
+                handleCriteriaRemoved={handleCriteriaRemoved}
+                handleFieldValueChanged={handleFieldValueChanged}
+                criteriaToSubmit={criteriaToSubmit}
+                setCriteriaToSubmit={setCriteriaToSubmit}
               />
             );
           }
