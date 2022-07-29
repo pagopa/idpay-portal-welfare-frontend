@@ -7,72 +7,128 @@ import ResidencyCriteriaItem from './ResidencyCriteriaItem';
 import IseeCriteriaItem from './IseeCriteriaItem';
 
 type Props = {
-  code: string | number;
-  field: string | number;
-  authority: string | number;
+  code: string | undefined;
+  field: string | undefined;
+  authority: string | undefined;
+  dateOfBirthCriteria: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setDateOfBirthCriteria: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
+  residencyCriteria: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setResidencyCriteria: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
+  iseeCriteria: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setIseeCriteria: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
-  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
+  // criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  // setCriteriaToSubmit: Dispatch<
+  //   SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  // >;
 };
 
 const AdmissionCriteriaItem = ({
   code,
   field,
   authority,
+  dateOfBirthCriteria,
+  setDateOfBirthCriteria,
+  residencyCriteria,
+  setResidencyCriteria,
+  iseeCriteria,
+  setIseeCriteria,
   handleCriteriaRemoved,
   action,
   setAction,
   currentStep,
   setCurrentStep,
-  criteriaToSubmit,
-  setCriteriaToSubmit,
-}: Props) => {
-  const criteria = (code: string | number) => {
+}: // criteriaToSubmit,
+// setCriteriaToSubmit,
+Props) => {
+  const criteria = (code: string | undefined) => {
     switch (code) {
-      case '1':
+      case 'BIRTHDATE':
         return (
           <DateOfBirthCriteriaItem
             code={code}
             field={field}
             authority={authority}
             action={action}
+            initialFormValues={dateOfBirthCriteria}
+            setFormValues={setDateOfBirthCriteria}
             setAction={setAction}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            criteriaToSubmit={criteriaToSubmit}
-            setCriteriaToSubmit={setCriteriaToSubmit}
+            // criteriaToSubmit={criteriaToSubmit}
+            // setCriteriaToSubmit={setCriteriaToSubmit}
           />
         );
-      case '2':
+      case 'RESIDENCE':
         return (
           <ResidencyCriteriaItem
             code={code}
             field={field}
             authority={authority}
+            initialFormValues={residencyCriteria}
+            setFormValues={setResidencyCriteria}
             action={action}
             setAction={setAction}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            criteriaToSubmit={criteriaToSubmit}
-            setCriteriaToSubmit={setCriteriaToSubmit}
+            // criteriaToSubmit={criteriaToSubmit}
+            // setCriteriaToSubmit={setCriteriaToSubmit}
           />
         );
-      case '3':
+      case 'ISEE':
         return (
           <IseeCriteriaItem
             code={code}
             field={field}
             authority={authority}
+            initialFormValues={iseeCriteria}
+            setFormValues={setIseeCriteria}
             action={action}
             setAction={setAction}
             currentStep={currentStep}
             setCurrentStep={setCurrentStep}
-            criteriaToSubmit={criteriaToSubmit}
-            setCriteriaToSubmit={setCriteriaToSubmit}
+            // criteriaToSubmit={criteriaToSubmit}
+            // setCriteriaToSubmit={setCriteriaToSubmit}
           />
         );
       default:

@@ -23,14 +23,14 @@ export interface SelfDeclarationCriteriaBoolItem {
   _type?: string; // option value from the select field "boolean"
   description?: string; // value of the input text
   value?: boolean;
-  code?: string; // array index as string
+  code?: string | number; // array index as string
 }
 
 export interface SelfDeclarationCriteriaMultiItem {
   _type?: string; // option value from the select field "multi"
   description?: string; // '' - TODO ask for field to add
   value?: Array<string>; // options array
-  code?: string; // array index as string
+  code?: string | number; // array index as string
 }
 
 export interface AutomatedCriteriaItem {

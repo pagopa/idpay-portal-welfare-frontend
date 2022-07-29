@@ -107,10 +107,28 @@ export const initiativeSlice = createSlice({
       state,
       action: PayloadAction<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
     ) => {
-      state.beneficiaryRule.selfDeclarationCriteria = [
-        ...state.beneficiaryRule.selfDeclarationCriteria,
-        action.payload,
-      ];
+      /* eslint-disable functional/no-let */
+      let criteriaFound = false;
+      let i = 0;
+      const selfDeclarationCriteria = [...state.beneficiaryRule.selfDeclarationCriteria];
+      while (criteriaFound === false && i < selfDeclarationCriteria.length) {
+        criteriaFound = selfDeclarationCriteria[i].code === action.payload.code;
+        i++;
+      }
+      /* eslint-disable functional/immutable-data */
+      if (criteriaFound) {
+        i--;
+        const newSelfDeclarationCriteria = [...selfDeclarationCriteria.splice(i, 0)];
+        newSelfDeclarationCriteria.push(action.payload);
+        state.beneficiaryRule.selfDeclarationCriteria = [...newSelfDeclarationCriteria];
+      } else {
+        state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
+      }
+
+      // state.beneficiaryRule.selfDeclarationCriteria = [
+      //   ...state.beneficiaryRule.selfDeclarationCriteria,
+      //   action.payload,
+      // ];
     },
     saveManualCriteria: (
       state,

@@ -8,7 +8,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
-import Home from './pages/home/Home';
+// import Home from './pages/home/Home';
 import NewInitiative from './pages/newInitiative/newInitiative';
 import InitiativeList from './pages/initiativeList/InitiativeList';
 import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
@@ -18,16 +18,16 @@ const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => (
     <Layout>
       <Switch>
-        <Route path={routes.HOME} exact={true}>
+        {/* <Route path={routes.HOME} exact={true}>
           <Home />
-        </Route>
+        </Route> */}
         <Route path={routes.NEW_INITIATIVE} exact={true}>
           <NewInitiative />
         </Route>
         <Route path={routes.INITIATIVE} exact={true}>
           <NewInitiative />
         </Route>
-        <Route path={routes.INITIATIVE_LIST} exact={true}>
+        <Route path={routes.HOME} exact={true}>
           <InitiativeList />
         </Route>
         <Route path="*">

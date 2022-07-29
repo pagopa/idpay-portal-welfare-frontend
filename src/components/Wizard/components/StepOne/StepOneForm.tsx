@@ -262,7 +262,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             const initiativeId = response?.initiativeId;
             if (typeof initiativeId === 'string') {
               dispatch(setInitiativeId(initiativeId));
-
               setCurrentStep(currentStep + 1);
             }
           })
@@ -309,8 +308,12 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   ) => {
     const assistanceChannelChanged = [...values.channels];
     // eslint-disable-next-line functional/immutable-data
-    assistanceChannelChanged[i].contact = e.target.value;
-    setValues({ ...values, channels: assistanceChannelChanged });
+    assistanceChannelChanged[i] = {
+      ...assistanceChannelChanged[i],
+      contact: e.target.value,
+    };
+
+    setValues({ ...values, channels: [...assistanceChannelChanged] });
     setTouched({}, false);
   };
 

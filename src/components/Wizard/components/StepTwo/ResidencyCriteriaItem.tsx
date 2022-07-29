@@ -6,30 +6,44 @@ import * as Yup from 'yup';
 import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS, FilterOperator, ResidencyOptions } from '../../../../utils/constants';
 import { useAppDispatch } from '../../../../redux/hooks';
-import { handleCriteriaToSubmit } from './helpers';
+// import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
-  code: string | number;
-  field: string | number;
-  authority: string | number;
-  action: string | number;
+  code: string | undefined;
+  field: string | undefined;
+  authority: string | undefined;
+  initialFormValues: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setFormValues: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
+  action: string;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
-  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
+  // criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  // setCriteriaToSubmit: Dispatch<
+  //   SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  // >;
 };
 
 const DateOdBirthCriteriaItem = ({
-  code,
-  field,
   authority,
+  initialFormValues,
+  setFormValues,
   action,
-  setAction,
-  criteriaToSubmit,
-  setCriteriaToSubmit,
-}: // currentStep,
-// setCurrentStep,
+}: // setAction,
+// criteriaToSubmit,
+// setCriteriaToSubmit,
 Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -40,7 +54,7 @@ Props) => {
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
-    setAction('');
+    // setAction('');
   }, [action]);
 
   const residencyValidationSchema = Yup.object().shape({
@@ -51,24 +65,32 @@ Props) => {
 
   const residencyFormik = useFormik({
     initialValues: {
-      field,
       authority,
-      residencySelect: ResidencyOptions.CITY,
-      residencyRelationSelect: FilterOperator.EQ,
-      residencyValue: '',
+      code: initialFormValues.code,
+      residencySelect: initialFormValues.field,
+      residencyRelationSelect: initialFormValues.operator,
+      residencyValue: initialFormValues.value,
     },
     validateOnChange: true,
+    // enableReinitialize: true,
     validationSchema: residencyValidationSchema,
     onSubmit: (values) => {
       const data = {
-        authority: values.authority.toString(),
-        code: values.residencySelect,
-        field: values.field.toString(),
+        authority,
+        code: values.code,
+        field: values.residencySelect,
         operator: values.residencyRelationSelect,
         value: values.residencyValue,
       };
+      setFormValues({
+        code: values.code,
+        field: values.residencySelect,
+        operator: values.residencyRelationSelect,
+        value: values.residencyValue,
+      });
+
       dispatch(setAutomatedCriteria(data));
-      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, code)]);
+      // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, initialFormValues.code)]);
     },
   });
 

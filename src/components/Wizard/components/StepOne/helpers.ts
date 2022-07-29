@@ -40,7 +40,8 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
       endDate: new Date(values.endDate),
     },
     additionalInfo: {
-      serviceId: values.serviceId,
+      // serviceId: values.serviceId, DISABLED TEMP
+      serviceId: '',
       serviceName: values.serviceName,
       argument: values.argument,
       description: values.description,

@@ -1,9 +1,9 @@
 import { FilterOperator } from '../utils/constants';
 
 export type AdmissionCriteriaModel = {
-  code: string;
-  authority: string;
-  field: string;
+  code: string | undefined;
+  authority: string | undefined;
+  field: string | undefined;
   checked: boolean;
 };
 

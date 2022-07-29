@@ -7,7 +7,7 @@ import { useAppDispatch } from '../../../../redux/hooks';
 import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS, FilterOperator, DateOfBirthOptions } from '../../../../utils/constants';
 import {
-  handleCriteriaToSubmit,
+  // handleCriteriaToSubmit,
   setError,
   setErrorText,
   setFieldType,
@@ -15,27 +15,41 @@ import {
 } from './helpers';
 
 type Props = {
-  code: string | number;
-  field: string | number;
-  authority: string | number;
-  action: string | number;
+  code: string | undefined;
+  field: string | undefined;
+  authority: string | undefined;
+  initialFormValues: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setFormValues: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
+  action: string;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
-  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
+  // criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  // setCriteriaToSubmit: Dispatch<
+  //   SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  // >;
 };
 
 const DateOdBirthCriteriaItem = ({
-  code,
-  field,
   authority,
+  initialFormValues,
+  setFormValues,
   action,
-  setAction,
-  criteriaToSubmit,
-  setCriteriaToSubmit,
-}: // currentStep,
-// setCurrentStep,
+}: // setAction,
+// criteriaToSubmit,
+// setCriteriaToSubmit,
 Props) => {
   const { t } = useTranslation();
   const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState('hidden');
@@ -47,7 +61,7 @@ Props) => {
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
-    setAction('');
+    // setAction('');
   }, [action]);
 
   const dateOfBirthValidationSchema = Yup.object().shape({
@@ -66,25 +80,32 @@ Props) => {
 
   const dateOfBirthFormik = useFormik({
     initialValues: {
-      field,
       authority,
-      dateOfBirthSelect: DateOfBirthOptions.YEAR,
-      dateOfBirthRelationSelect: FilterOperator.EQ,
-      dateOfBirthStartValue: '',
+      code: initialFormValues.code,
+      dateOfBirthSelect: initialFormValues.field,
+      dateOfBirthRelationSelect: initialFormValues.operator,
+      dateOfBirthStartValue: initialFormValues.value,
       dateOfBirthEndValue: '',
     },
     validateOnChange: true,
+    // enableReinitialize: true,
     validationSchema: dateOfBirthValidationSchema,
     onSubmit: (values) => {
       const data = {
-        authority: values.authority.toString(),
-        code: values.dateOfBirthSelect,
-        field: values.field.toString(),
+        authority: values.authority,
+        code: values.code,
+        field: values.dateOfBirthSelect,
         operator: values.dateOfBirthRelationSelect,
         value: values.dateOfBirthStartValue,
       };
+      setFormValues({
+        code: values.code,
+        field: values.dateOfBirthSelect,
+        operator: values.dateOfBirthRelationSelect,
+        value: values.dateOfBirthStartValue,
+      });
       dispatch(setAutomatedCriteria(data));
-      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, code)]);
+      // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, initialFormValues.code)]);
     },
   });
 

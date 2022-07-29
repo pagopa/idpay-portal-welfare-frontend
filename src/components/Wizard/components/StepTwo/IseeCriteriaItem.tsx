@@ -7,7 +7,7 @@ import { setAutomatedCriteria } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS, FilterOperator } from '../../../../utils/constants';
 import { useAppDispatch } from '../../../../redux/hooks';
 import {
-  handleCriteriaToSubmit,
+  // handleCriteriaToSubmit,
   setError,
   setErrorText,
   setFieldType,
@@ -15,27 +15,42 @@ import {
 } from './helpers';
 
 type Props = {
-  code: string | number;
-  field: string | number;
-  authority: string | number;
-  action: string | number;
+  code: string | undefined;
+  field: string | undefined;
+  authority: string | undefined;
+  initialFormValues: {
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  };
+  setFormValues: Dispatch<
+    SetStateAction<{
+      code?: string | undefined;
+      field?: string | undefined;
+      operator?: string | undefined;
+      value?: string | undefined;
+    }>
+  >;
+  action: string | undefined;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
-  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
+  // criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  // setCriteriaToSubmit: Dispatch<
+  //   SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  // >;
 };
 
 const IseeCriteriaItem = ({
-  code,
   field,
   authority,
+  initialFormValues,
+  setFormValues,
   action,
-  setAction,
-  criteriaToSubmit,
-  setCriteriaToSubmit,
-}: // currentStep,
-// setCurrentStep,
+}: // setAction,
+// criteriaToSubmit,
+// setCriteriaToSubmit,
 Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState('hidden');
@@ -47,7 +62,7 @@ Props) => {
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
-    setAction('');
+    // setAction('');
   }, [action]);
 
   const iseeValidationSchema = Yup.object().shape({
@@ -66,22 +81,30 @@ Props) => {
     initialValues: {
       field,
       authority,
-      iseeRelationSelect: FilterOperator.EQ,
-      iseeStartValue: '',
+      code: initialFormValues.code,
+      iseeRelationSelect: initialFormValues.operator,
+      iseeStartValue: initialFormValues.value,
       iseeEndValue: '',
     },
     validateOnChange: true,
+    // enableReinitialize: true,
     validationSchema: iseeValidationSchema,
     onSubmit: (values) => {
       const data = {
-        authority: values.authority.toString(),
-        code: values.field.toString(),
-        field: values.field.toString(),
+        authority,
+        code: values.code,
+        field: values.field,
         operator: values.iseeRelationSelect,
         value: values.iseeStartValue,
       };
+      setFormValues({
+        code: values.code,
+        field: values.field,
+        operator: values.iseeRelationSelect,
+        value: values.iseeStartValue,
+      });
       dispatch(setAutomatedCriteria(data));
-      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, code)]);
+      // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, initialFormValues.code)]);
     },
   });
 

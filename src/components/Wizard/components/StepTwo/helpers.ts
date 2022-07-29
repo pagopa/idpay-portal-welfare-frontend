@@ -2,17 +2,17 @@ import { Dispatch, SetStateAction } from 'react';
 import { FilterOperator } from '../../../../utils/constants';
 
 export const handleCriteriaToSubmit = (
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>,
-  code: string | number
+  criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>,
+  code: string | undefined
 ) => {
-  const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+  const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
   criteriaToSubmit.forEach((oC) => {
     if (oC.code !== code) {
       // eslint-disable-next-line functional/immutable-data
       newCriteriaToSubmit.push(oC);
     } else {
       // eslint-disable-next-line functional/immutable-data
-      newCriteriaToSubmit.push({ code: oC.code, dispatched: oC.code === code });
+      newCriteriaToSubmit.push({ code: oC.code, dispatched: true });
     }
   });
   // setCriteriaToSubmit([...newCriteriaToSubmit]);

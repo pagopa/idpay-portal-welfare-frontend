@@ -10,6 +10,12 @@ import {
   beneficiaryRuleSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
+import {
+  SelfDeclarationCriteriaBoolItem,
+  SelfDeclarationCriteriaMultiItem,
+} from '../../../../model/Initiative';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import AdmissionCriteriaItem from './AdmissionCriteriaItem';
 import ManualCriteriaItem from './ManualCriteriaItem';
@@ -25,15 +31,43 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [criteria, setCriteria] = useState(Array<AdmissionCriteriaModel>);
+  const [criteriaFetched, setCriteriaFetched] = useState(false);
   const [criteriaChanged, setCriteriaChanged] = useState(false);
   const [criteriaToRender, setCriteriaToRender] = useState(
-    Array<{ code: string; field: string; authority: string }>
+    Array<{
+      code: string | undefined;
+      field: string | undefined;
+      authority: string | undefined;
+    }>
   );
   const [manualCriteriaNumber, setManualCriteriaNumber] = useState(0);
-  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<number>);
-  const [criteriaToSubmit, setCriteriaToSubmit] = useState(
-    Array<{ code: string; dispatched: boolean }>
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(
+    Array<SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem>
   );
+  // const [criteriaToSubmit, setCriteriaToSubmit] = useState(
+  //   Array<{ code: string | undefined; dispatched: boolean }>
+  // );
+  const [dateOfBirthCriteria, setDateOfBirthCriteria] = useState<{
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  }>({ code: 'BIRTHDATE', field: 'year', operator: 'EQ', value: '' });
+
+  const [residencyCriteria, setResidencyCriteria] = useState<{
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  }>({ code: 'RESIDENCE', field: 'city', operator: 'EQ', value: '' });
+
+  const [iseeCriteria, setIseeCriteria] = useState<{
+    code?: string | undefined;
+    field?: string | undefined;
+    operator?: string | undefined;
+    value?: string | undefined;
+  }>({ code: 'ISEE', field: 'ISEE', operator: 'EQ', value: '' });
+
   const beneficiaryRule = useSelector(beneficiaryRuleSelector);
   const initiativeId = useSelector(initiativeIdSelector);
 
@@ -41,13 +75,105 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     fetchAdmissionCriteria()
       .then((response) => {
         setCriteria([...response]);
+        setCriteriaFetched(true);
       })
       .catch((error) => {
         console.log(error);
       });
   }, []);
 
-  useEffect(() => {}, [action]);
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    if (criteriaFetched) {
+      const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
+      // const criteriaToSubmitP: Array<{ code: string | undefined; dispatched: boolean }> = [];
+
+      if (automatedCriteria.length > 0) {
+        const newCriteriaChecked = [...criteria];
+        newCriteriaChecked.forEach((c) => {
+          // eslint-disable-next-line functional/no-let
+          let i = 0;
+          while (i < automatedCriteria.length) {
+            if (c.code === automatedCriteria[i].code) {
+              // eslint-disable-next-line functional/immutable-data
+              c.checked = true;
+            }
+            i++;
+          }
+        });
+        const dateOfBirthValues = automatedCriteria.filter((a) => a.code === 'BIRTHDATE');
+        setDateOfBirthCriteria({ ...dateOfBirthValues[0] });
+        const residencyValues = automatedCriteria.filter((a) => a.code === 'RESIDENCE');
+        setResidencyCriteria({ ...residencyValues[0] });
+        const iseeValues = automatedCriteria.filter((a) => a.code === 'ISEE');
+        setIseeCriteria({ ...iseeValues[0] });
+        setCriteria([...newCriteriaChecked]);
+        setCriteriaChanged((prevCriteriaChanged) => !prevCriteriaChanged);
+        // automatedCriteria.forEach((a) => {
+        //   // eslint-disable-next-line functional/immutable-data
+        //   criteriaToSubmitP.push({ code: a.code, dispatched: false });
+        // });
+      }
+
+      if (selfDeclarationCriteria.length > 0) {
+        const selfDeclarationCriteriaNumber = selfDeclarationCriteria.length;
+        setManualCriteriaNumber(selfDeclarationCriteriaNumber - 1);
+        setManualCriteriaToRender([...selfDeclarationCriteria]);
+        // TODO handle and check criteria multi
+        // selfDeclarationCriteria.forEach((s) => {
+        //   const codeNumber = typeof s.code === 'string' ? parseInt(s.code, 10) - 1 : 0;
+        //   const code = codeNumber.toString();
+        //   // eslint-disable-next-line functional/immutable-data
+        //   criteriaToSubmitP.push({ code: `manual_${code}`, dispatched: false });
+        // });
+      }
+
+      // setCriteriaToSubmit([...criteriaToSubmitP]);
+    }
+  }, [beneficiaryRule, criteriaFetched]);
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
+      // eslint-disable-next-line functional/no-let
+      let automatedCriteriaValid = true;
+      if (automatedCriteria.length > 0) {
+        automatedCriteria.forEach((a) => {
+          automatedCriteriaValid =
+            automatedCriteriaValid &&
+            a.authority !== '' &&
+            a.code !== '' &&
+            a.field !== '' &&
+            a.operator !== '' &&
+            a.value !== '';
+        });
+      }
+      // eslint-disable-next-line functional/no-let
+      let selfDeclarationCriteriaValid = true;
+      if (selfDeclarationCriteria.length > 0) {
+        selfDeclarationCriteria.forEach((s) => {
+          selfDeclarationCriteriaValid =
+            selfDeclarationCriteriaValid &&
+            // eslint-disable-next-line no-underscore-dangle
+            s._type !== '' &&
+            s.code !== '' &&
+            s.description !== '';
+        });
+      }
+      // eslint-disable-next-line functional/no-let
+      let formValid = automatedCriteriaValid && selfDeclarationCriteriaValid;
+      if (automatedCriteria.length === 0 && selfDeclarationCriteria.length === 0) {
+        formValid = false;
+      }
+
+      if (formValid && typeof initiativeId === 'string') {
+        putBeneficiaryRuleService(initiativeId, beneficiaryRule)
+          .then((_response) => setCurrentStep(currentStep + 1))
+          .catch((error) => console.log(error));
+      }
+    }
+    setAction('');
+  }, [action, beneficiaryRule]);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -56,6 +182,19 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setCriteriaChanged(!criteriaChanged);
+    setDateOfBirthCriteria({
+      code: 'BIRTHDATE',
+      field: 'year',
+      operator: 'EQ',
+      value: dateOfBirthCriteria.value,
+    });
+    setResidencyCriteria({
+      code: 'RESIDENCE',
+      field: 'city',
+      operator: 'EQ',
+      value: residencyCriteria.value,
+    });
+    setIseeCriteria({ code: 'ISEE', field: 'ISEE', operator: 'EQ', value: iseeCriteria.value });
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -68,45 +207,58 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
       }
     });
     setCriteria([...newCriteria]);
-    criteriaToRender.forEach((c, index) => {
-      if (c.code === elementIdToDelete) {
+    const newCriteriaToRender: Array<{
+      code: string | undefined;
+      field: string | undefined;
+      authority: string | undefined;
+    }> = [];
+    criteriaToRender.forEach((c) => {
+      if (c.code !== elementIdToDelete) {
         // eslint-disable-next-line functional/immutable-data
-        setCriteriaToRender([...criteriaToRender.splice(index, 0)]);
-        setCriteriaChanged(!criteriaChanged);
+        newCriteriaToRender.push(c);
       }
     });
-    const oldCriteriaToSubmit = [...criteriaToSubmit];
-    const newCriteriaToSubmit = oldCriteriaToSubmit.filter((oC) => oC.code !== elementIdToDelete);
-    setCriteriaToSubmit([...newCriteriaToSubmit]);
+    setCriteriaToRender([...newCriteriaToRender]);
+    setCriteriaChanged(!criteriaChanged);
+    // const oldCriteriaToSubmit = [...criteriaToSubmit];
+    // const newCriteriaToSubmit = oldCriteriaToSubmit.filter((oC) => oC.code !== elementIdToDelete);
+    // setCriteriaToSubmit([...newCriteriaToSubmit]);
   };
 
   const handleManualCriteriaAdded = () => {
     setManualCriteriaNumber((prevManualCriteriaNumber) => prevManualCriteriaNumber + 1);
     setManualCriteriaToRender((prevManualCriteriaToRender) => [
       ...prevManualCriteriaToRender,
-      manualCriteriaNumber,
+      {
+        _type: 'boolean',
+        description: '',
+        value: true,
+        code: manualCriteriaNumber.toString(),
+      },
     ]);
-    setCriteriaToSubmit((prevCriteriaToSubmit) => [
-      ...prevCriteriaToSubmit,
-      { code: `manual_${manualCriteriaNumber}`, dispatched: false },
-    ]);
+    // setCriteriaToSubmit((prevCriteriaToSubmit) => [
+    //   ...prevCriteriaToSubmit,
+    //   { code: `manual_${manualCriteriaNumber}`, dispatched: false },
+    // ]);
   };
 
   const handleManualCriteriaRemoved = (e: any) => {
     if (typeof e.target.dataset.id !== undefined) {
       const elementIdToDelete = parseInt(e.target.dataset.id, 10);
-      const newManualCriteriaToRender: Array<number> = [];
+      const newManualCriteriaToRender: Array<
+        SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
+      > = [];
       manualCriteriaToRender.forEach((m) => {
-        if (m !== elementIdToDelete) {
+        if (m.code !== elementIdToDelete.toString()) {
           // eslint-disable-next-line functional/immutable-data
           newManualCriteriaToRender.push(m);
         }
       });
       setManualCriteriaToRender([...newManualCriteriaToRender]);
-      const newCriteriaToSubmit = criteriaToSubmit.filter(
-        (cS) => cS.code !== `manual_${elementIdToDelete}`
-      );
-      setCriteriaToSubmit([...newCriteriaToSubmit]);
+      // const newCriteriaToSubmit = criteriaToSubmit.filter(
+      //   (cS) => cS.code !== `manual_${elementIdToDelete}`
+      // );
+      // setCriteriaToSubmit([...newCriteriaToSubmit]);
     }
   };
 
@@ -123,46 +275,50 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         // eslint-disable-next-line functional/immutable-data
         setCriteriaToRender((prevCriteriaToRender) => [
           ...prevCriteriaToRender,
-          { code: c.code, field: c.field, authority: c.authority },
+          {
+            code: c.code,
+            field: c.field,
+            authority: c.authority,
+          },
         ]);
       }
     });
   }, [criteriaChanged]);
 
-  useEffect(() => {
-    /* eslint-disable functional/no-let */
-    criteria.forEach((c) => {
-      let i = 0;
-      let notInsubmitList = true;
-      while (notInsubmitList === true && i < criteriaToSubmit.length) {
-        notInsubmitList = c.code !== criteriaToSubmit[i].code ? true : false;
-        i++;
-      }
-      if (notInsubmitList === true && c.checked === true) {
-        setCriteriaToSubmit((prevCriteriaToSubmit) => [
-          ...prevCriteriaToSubmit,
-          { code: c.code, dispatched: false },
-        ]);
-      }
-    });
-  }, [criteriaChanged]);
+  // useEffect(() => {
+  //   /* eslint-disable functional/no-let */
+  //   criteria.forEach((c) => {
+  //     let i = 0;
+  //     let notInsubmitList = true;
+  //     while (notInsubmitList === true && i < criteriaToSubmit.length) {
+  //       notInsubmitList = c.code !== criteriaToSubmit[i].code ? true : false;
+  //       i++;
+  //     }
+  //     if (notInsubmitList === true && c.checked === true) {
+  //       setCriteriaToSubmit((prevCriteriaToSubmit) => [
+  //         ...prevCriteriaToSubmit,
+  //         { code: c.code, dispatched: false },
+  //       ]);
+  //     }
+  //   });
+  // }, [criteriaChanged]);
 
-  useEffect(() => {
-    /* eslint-disable functional/no-let */
-    let serviceCanBeCalled = true;
-    if (criteriaToSubmit.length) {
-      criteriaToSubmit.forEach((element) => {
-        serviceCanBeCalled = serviceCanBeCalled && element.dispatched;
-      });
-    } else {
-      serviceCanBeCalled = false;
-    }
-    if (serviceCanBeCalled && typeof initiativeId === 'string') {
-      putBeneficiaryRuleService(initiativeId, beneficiaryRule)
-        .then((_response) => setCurrentStep(currentStep + 1))
-        .catch((error) => console.log(error));
-    }
-  }, [criteriaToSubmit]);
+  // useEffect(() => {
+  //   /* eslint-disable functional/no-let */
+  //   let serviceCanBeCalled = true;
+  //   if (criteriaToSubmit.length) {
+  //     criteriaToSubmit.forEach((element) => {
+  //       serviceCanBeCalled = serviceCanBeCalled && element.dispatched;
+  //     });
+  //   } else {
+  //     serviceCanBeCalled = false;
+  //   }
+  //   if (serviceCanBeCalled && typeof initiativeId === 'string') {
+  //     putBeneficiaryRuleService(initiativeId, beneficiaryRule)
+  //       .then((_response) => setCurrentStep(currentStep + 1))
+  //       .catch((error) => console.log(error));
+  //   }
+  // }, [criteriaToSubmit]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -219,29 +375,34 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
               code={c.code}
               field={c.field}
               authority={c.authority}
+              dateOfBirthCriteria={dateOfBirthCriteria}
+              setDateOfBirthCriteria={setDateOfBirthCriteria}
+              residencyCriteria={residencyCriteria}
+              setResidencyCriteria={setResidencyCriteria}
+              iseeCriteria={iseeCriteria}
+              setIseeCriteria={setIseeCriteria}
               handleCriteriaRemoved={handleCriteriaRemoved}
               action={action}
               setAction={setAction}
               currentStep={currentStep}
               setCurrentStep={setCurrentStep}
-              criteriaToSubmit={criteriaToSubmit}
-              setCriteriaToSubmit={setCriteriaToSubmit}
+              // criteriaToSubmit={criteriaToSubmit}
+              // setCriteriaToSubmit={setCriteriaToSubmit}
             />
           ))}
         </Box>
         <Box>
-          {manualCriteriaToRender.map((m) => (
+          {manualCriteriaToRender.map((m, i) => (
             <ManualCriteriaItem
-              key={m}
-              code={m}
-              name={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m + 1}`}
+              key={m.code}
+              code={m.code || i}
+              data={m}
+              name={`${t('components.wizard.stepTwo.chooseCriteria.form.manual')} ${m.code}`}
               handleCriteriaRemoved={handleManualCriteriaRemoved}
               action={action}
               setAction={setAction}
-              // currentStep={currentStep}
-              // setCurrentStep={setCurrentStep}
-              criteriaToSubmit={criteriaToSubmit}
-              setCriteriaToSubmit={setCriteriaToSubmit}
+              // criteriaToSubmit={criteriaToSubmit}
+              // setCriteriaToSubmit={setCriteriaToSubmit}
             />
           ))}
         </Box>

@@ -2,7 +2,7 @@ import { List, Box } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import { useTranslation } from 'react-i18next';
-import DashboardCustomize from '@mui/icons-material/DashboardCustomize';
+// import DashboardCustomize from '@mui/icons-material/DashboardCustomize';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useState } from 'react';
 import ROUTES from '../../routes';
@@ -27,16 +27,16 @@ export default function SideMenu() {
     <Box display="grid" mt={1}>
       <Box gridColumn="auto">
         <List>
-          <SidenavItem
+          {/* <SidenavItem
             title={t('sideMenu.home.title')}
             handleClick={() => onExit(() => history.push(ROUTES.HOME))}
             isSelected={pathname === ROUTES.HOME}
             icon={DashboardCustomize}
-          />
+          /> */}
           <SidenavItem
             title={t('sideMenu.initiativeList.title')}
-            handleClick={() => onExit(() => history.push(ROUTES.INITIATIVE_LIST))}
-            isSelected={pathname === ROUTES.INITIATIVE_LIST}
+            handleClick={() => onExit(() => history.push(ROUTES.HOME))}
+            isSelected={pathname === ROUTES.HOME}
             icon={ListAltIcon}
           />
         </List>

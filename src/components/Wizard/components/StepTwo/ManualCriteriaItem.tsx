@@ -14,35 +14,42 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import { grey } from '@mui/material/colors';
-import { FormikErrors, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { setManualCriteria } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch } from '../../../../redux/hooks';
-import { handleCriteriaToSubmit } from './helpers';
+import {
+  SelfDeclarationCriteriaMultiItem,
+  SelfDeclarationCriteriaBoolItem,
+} from '../../../../model/Initiative';
+// import { handleCriteriaToSubmit } from './helpers';
 
 type Props = {
-  code: number;
+  code: string | number | undefined;
+  data: SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem;
   name: string;
   handleCriteriaRemoved: MouseEventHandler<Element>;
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
-  criteriaToSubmit: Array<{ code: string; dispatched: boolean }>;
-  setCriteriaToSubmit: Dispatch<SetStateAction<Array<{ code: string; dispatched: boolean }>>>;
+  // criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  // setCriteriaToSubmit: Dispatch<
+  //   SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  // >;
 };
 
 const ManualCriteriaItem = ({
   code,
+  data,
   name,
   handleCriteriaRemoved,
   action,
-  setAction,
-  criteriaToSubmit,
-  setCriteriaToSubmit,
-}: Props) => {
+}: // setAction,
+// criteriaToSubmit,
+// setCriteriaToSubmit,
+Props) => {
   const { t } = useTranslation();
-
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -51,8 +58,10 @@ const ManualCriteriaItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
-    setAction('');
+    // setAction('');
   }, [action]);
+
+  useEffect(() => console.log(data), []);
 
   const manualCriteriaValidationSchema = Yup.object().shape({
     manualCriteriaName: Yup.string()
@@ -70,17 +79,20 @@ const ManualCriteriaItem = ({
     ),
   });
 
-  const criteriaCode = (code + 1).toString();
-
   const manualCriteriaFormik = useFormik({
     initialValues: {
-      manualCriteriaCode: criteriaCode,
-      manualCriteriaName: '',
-      manualCriteriaSelectName: ManualCriteriaOptions.BOOLEAN,
-      manualCriteriaValues: [{ value: '' }, { value: '' }],
+      manualCriteriaCode: data.code,
+      manualCriteriaName: data.description,
+      // eslint-disable-next-line no-underscore-dangle
+      manualCriteriaSelectName: data._type,
+      manualCriteriaValues: Array.isArray(data.value)
+        ? data.value.map((v) => ({ value: v }))
+        : data.value,
     },
+    enableReinitialize: true,
     validateOnChange: true,
     validationSchema: manualCriteriaValidationSchema,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     onSubmit: (values) => {
       if (values.manualCriteriaSelectName === ManualCriteriaOptions.BOOLEAN) {
         const data = {
@@ -90,26 +102,45 @@ const ManualCriteriaItem = ({
           code: values.manualCriteriaCode,
         };
         dispatch(setManualCriteria(data));
+        // const manualCriteriaIndex =
+        //   typeof values.manualCriteriaCode === 'number'
+        //     ? values.manualCriteriaCode
+        //     : typeof values.manualCriteriaCode === 'string'
+        //     ? parseInt(values.manualCriteriaCode, 10)
+        //     : '0';
+        // const criteriaToSubmitCode = `manual_${manualCriteriaIndex}`;
+        // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, criteriaToSubmitCode)]);
       } else if (values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
         const optionsValues: Array<string> = [];
-        values.manualCriteriaValues.forEach((element) => {
-          if (element.value !== undefined) {
-            // eslint-disable-next-line functional/immutable-data
-            optionsValues.push(element.value);
-          }
-        });
-        const data = {
-          _type: values.manualCriteriaSelectName,
-          description: values.manualCriteriaName,
-          value: optionsValues,
-          code: values.manualCriteriaCode,
-        };
-        dispatch(setManualCriteria(data));
-      }
+        if (
+          typeof values.manualCriteriaValues !== undefined &&
+          Array.isArray(values.manualCriteriaValues)
+        ) {
+          values.manualCriteriaValues.forEach((element) => {
+            if (typeof element === 'object' && element.value !== undefined) {
+              // eslint-disable-next-line functional/immutable-data
+              optionsValues.push(element.value);
+            }
+          });
+          const data = {
+            _type: values.manualCriteriaSelectName,
+            description: values.manualCriteriaName,
+            value: optionsValues,
+            code: values.manualCriteriaCode,
+          };
+          dispatch(setManualCriteria(data));
+          // const manualCriteriaIndex =
+          //   typeof values.manualCriteriaCode === 'number'
+          //     ? values.manualCriteriaCode
+          //     : typeof values.manualCriteriaCode === 'string'
+          //     ? parseInt(values.manualCriteriaCode, 10)
+          //     : '0';
 
-      const manualCriteriaIndex = parseInt(values.manualCriteriaCode, 10) - 1;
-      const criteriaToSubmitCode = `manual_${manualCriteriaIndex}`;
-      setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, criteriaToSubmitCode)]);
+          // console.log(manualCriteriaIndex);
+          // const criteriaToSubmitCode = `manual_${manualCriteriaIndex}`;
+          // setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, criteriaToSubmitCode)]);
+        }
+      }
 
       // setCurrentStep(currentStep + 1);
     },
@@ -121,11 +152,7 @@ const ManualCriteriaItem = ({
   const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
     touched && errorText;
 
-  const handleCriteriaType = (
-    e: SelectChangeEvent<ManualCriteriaOptions>,
-    values: any,
-    setValues: any
-  ) => {
+  const handleCriteriaType = (e: SelectChangeEvent<string>, values: any, setValues: any) => {
     if (e.target.value === ManualCriteriaOptions.BOOLEAN) {
       setValues({
         ...values,
@@ -163,19 +190,19 @@ const ManualCriteriaItem = ({
     setTouched({}, false);
   };
 
-  const getOptionErrorText = (errors: string | FormikErrors<{ value: string }>) => {
-    try {
-      if (typeof errors === 'string') {
-        return errors;
-      } else if (errors.value) {
-        return errors.value;
-      } else {
-        return '';
-      }
-    } catch {
-      return '';
-    }
-  };
+  // const getOptionErrorText = (errors: string | FormikErrors<{ value: string }>) => {
+  //   try {
+  //     if (typeof errors === 'string') {
+  //       return errors;
+  //     } else if (errors.value) {
+  //       return errors.value;
+  //     } else {
+  //       return '';
+  //     }
+  //   } catch {
+  //     return '';
+  //   }
+  // };
 
   return (
     <Box
@@ -260,7 +287,9 @@ const ManualCriteriaItem = ({
             variant="outlined"
             value={manualCriteriaFormik.values.manualCriteriaName}
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
-            onChange={(e) => manualCriteriaFormik.handleChange(e)}
+            onChange={(e) => {
+              manualCriteriaFormik.handleChange(e);
+            }}
             error={setError(
               manualCriteriaFormik.touched.manualCriteriaName,
               manualCriteriaFormik.errors.manualCriteriaName
@@ -284,64 +313,69 @@ const ManualCriteriaItem = ({
         }}
       >
         {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI &&
-          manualCriteriaFormik.values.manualCriteriaValues.map((o, i) => {
-            const optionErrors =
-              manualCriteriaFormik.errors.manualCriteriaValues?.length &&
-              getOptionErrorText(manualCriteriaFormik.errors.manualCriteriaValues[i]);
-            const optionTouched =
-              (manualCriteriaFormik.touched.manualCriteriaValues?.length &&
-                manualCriteriaFormik.touched.manualCriteriaValues[i].value) ||
-              false;
-            return (
-              <Box
-                key={i}
-                sx={{
-                  gridColumn: 'span 24',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(24, 1fr)',
-                  gap: 3,
-                  my: 2,
-                }}
-              >
-                <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                  <RemoveCircleOutlineIcon
-                    color="error"
-                    data-id={o}
-                    sx={{
-                      cursor: 'pointer',
-                    }}
-                    onClick={() =>
-                      deleteOption(
-                        i,
-                        manualCriteriaFormik.values,
-                        manualCriteriaFormik.setValues,
-                        manualCriteriaFormik.setTouched
-                      )
-                    }
-                  />
-                </Box>
-                <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
-                  <TextField
-                    id={`manualCriteriaValues[${i}].value}`}
-                    name={`manualCriteriaValues[${i}].value}`}
-                    variant="outlined"
-                    value={manualCriteriaFormik.values.manualCriteriaValues[i].value}
-                    onChange={(e) =>
-                      handleOptionChange(
-                        e,
-                        i,
-                        manualCriteriaFormik.values,
-                        manualCriteriaFormik.setValues,
-                        manualCriteriaFormik.setTouched
-                      )
-                    }
-                    error={optionTouched && Boolean(optionErrors)}
-                    helperText={optionTouched && optionErrors}
-                  />
-                </Box>
+          Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
+          manualCriteriaFormik.values.manualCriteriaValues.map((o, i) => (
+            // const optionErrors =
+            //   manualCriteriaFormik.errors.manualCriteriaValues?.length &&
+            //   getOptionErrorText(manualCriteriaFormik.errors.manualCriteriaValues[i]);
+            // const optionTouched =
+            //   (manualCriteriaFormik.touched.manualCriteriaValues?.length &&
+            //     manualCriteriaFormik.touched.manualCriteriaValues[i].value) ||
+            //   false;
+            <Box
+              key={i}
+              sx={{
+                gridColumn: 'span 24',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(24, 1fr)',
+                gap: 3,
+                my: 2,
+              }}
+            >
+              <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
+                <RemoveCircleOutlineIcon
+                  color="error"
+                  data-id={o}
+                  sx={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() =>
+                    deleteOption(
+                      i,
+                      manualCriteriaFormik.values,
+                      manualCriteriaFormik.setValues,
+                      manualCriteriaFormik.setTouched
+                    )
+                  }
+                />
               </Box>
-            );
-          })}
+              <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
+                <TextField
+                  id={`manualCriteriaValues[${i}].value}`}
+                  name={`manualCriteriaValues[${i}].value}`}
+                  variant="outlined"
+                  value={
+                    typeof Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
+                    typeof manualCriteriaFormik.values.manualCriteriaValues !== 'boolean' &&
+                    typeof manualCriteriaFormik.values.manualCriteriaValues !== 'undefined'
+                      ? manualCriteriaFormik.values.manualCriteriaValues[i].value
+                      : manualCriteriaFormik.values.manualCriteriaValues
+                  }
+                  onChange={(e) =>
+                    handleOptionChange(
+                      e,
+                      i,
+                      manualCriteriaFormik.values,
+                      manualCriteriaFormik.setValues,
+                      manualCriteriaFormik.setTouched
+                    )
+                  }
+                  // error={optionTouched && Boolean(optionErrors)}
+                  // helperText={optionTouched && optionErrors}
+                />
+              </Box>
+            </Box>
+          ))}
         {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI && (
           <Box
             sx={{

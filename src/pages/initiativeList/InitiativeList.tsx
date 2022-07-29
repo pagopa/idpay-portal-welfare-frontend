@@ -408,7 +408,7 @@ const InitiativeList = () => {
                   (row, index) => {
                     const labelId = `enhanced-table-row-${index}`;
                     return (
-                      <TableRow tabIndex={-1} key={row.initiativeName} sx={{}}>
+                      <TableRow tabIndex={-1} key={row.id} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
                           <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
                             {row.initiativeName}

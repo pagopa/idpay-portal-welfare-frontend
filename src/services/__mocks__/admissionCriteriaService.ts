@@ -2,19 +2,19 @@ import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
   {
-    code: '1',
+    code: 'BIRTHDATE',
     field: 'Data di nascita',
     authority: "Ministero dell'interno",
     checked: false,
   },
   {
-    code: '2',
+    code: 'RESIDENCE',
     field: 'Residenza',
     authority: "Ministero dell'interno",
     checked: false,
   },
   {
-    code: '3',
+    code: 'ISEE',
     field: 'ISEE',
     authority: 'INPS',
     checked: false,
