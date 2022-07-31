@@ -33,6 +33,14 @@ export interface SelfDeclarationCriteriaMultiItem {
   code?: string | number; // array index as string
 }
 
+export interface ManualCriteriaItem {
+  _type?: string;
+  description: string;
+  boolValue?: boolean;
+  multiValue?: Array<string>;
+  code: string;
+}
+
 export interface AutomatedCriteriaItem {
   authority?: string | undefined;
   code?: string | undefined;
@@ -49,9 +57,7 @@ export interface Initiative {
   generalInfo: GeneralInfo;
   additionalInfo: AdditionalInfo;
   beneficiaryRule: {
-    selfDeclarationCriteria: Array<
-      SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
-    >;
+    selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
 }

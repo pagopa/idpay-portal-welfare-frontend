@@ -6,15 +6,20 @@ import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
   beneficiaryRuleSelector,
-  // initiativeIdSelector,
-  // setAutomatedCriteria,
+  initiativeIdSelector,
+  saveAutomatedCriteria,
+  saveManualCriteria,
 } from '../../../../redux/slices/initiativeSlice';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../../../model/Initiative';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import { mapResponse, updateInitialAutomatedCriteriaOnSelector } from './helpers';
 import DateOdBirthCriteriaItem from './DateOfBirthCriteriaItem';
 import ResidencyCriteriaItem from './ResidencyCriteriaItem';
+import ManualCriteria from './ManualCriteria';
 
 type Props = {
   action: string;
@@ -25,20 +30,18 @@ type Props = {
 
 const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const { t } = useTranslation();
+  const dispatch = useAppDispatch();
   const [openModal, setOpenModal] = useState(false);
   const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<ManualCriteriaItem>);
   const [criteriaToSubmit, setCriteriaToSubmit] = useState(
     Array<{ code: string | undefined; dispatched: boolean }>
   );
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
-  // const initiativeId = useAppSelector(initiativeIdSelector);
+  const initiativeId = useAppSelector(initiativeIdSelector);
 
   useEffect(() => {
-    console.log(setAction);
-    console.log(currentStep);
-    console.log(setCurrentStep);
-
     fetchAdmissionCriteria()
       .then((response) => {
         const responseData = mapResponse(response);
@@ -46,23 +49,27 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         setCriteriaToRender([...responseData]);
 
         const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
-
+        const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
         if (automatedCriteria.length > 0) {
           const updatedResponseData: Array<AvailableCriteria> =
             updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
           setAvailableCriteria([...updatedResponseData]);
           setCriteriaToRender([...updatedResponseData]);
-          const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
           updatedResponseData.forEach((c) => {
             if (c.checked === true) {
               // eslint-disable-next-line functional/immutable-data
               newCriteriaToSubmit.push({ code: c.code, dispatched: false });
             }
           });
-          setCriteriaToSubmit([...newCriteriaToSubmit]);
         }
-
-        console.log(selfDeclarationCriteria);
+        if (selfDeclarationCriteria.length > 0) {
+          setManualCriteriaToRender([...selfDeclarationCriteria]);
+          selfDeclarationCriteria.forEach((s) => {
+            // eslint-disable-next-line functional/immutable-data
+            newCriteriaToSubmit.push({ code: s.code, dispatched: false });
+          });
+        }
+        setCriteriaToSubmit([...newCriteriaToSubmit]);
       })
       .catch((error) => {
         console.log(error);
@@ -127,20 +134,101 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     setAvailableCriteria([...newCriteriaToRender]);
   };
 
-  useEffect(() => {
-    // eslint-disable-next-line functional/no-let
-    let canBeSubmitted = true;
-    if (criteriaToSubmit.length > 0) {
-      criteriaToSubmit.forEach((c) => {
-        canBeSubmitted = canBeSubmitted && c.dispatched;
+  const handleManualCriteriaAdded = () => {
+    const newManualCriteriaIndex =
+      manualCriteriaToRender.length > 0 ? manualCriteriaToRender.length + 1 : 1;
+    const newManualCriteriaCode = newManualCriteriaIndex.toString();
+    setManualCriteriaToRender((prevManualCriteriaToRender) => [
+      ...prevManualCriteriaToRender,
+      {
+        _type: 'boolean',
+        description: '',
+        boolValue: true,
+        multiValue: ['', ''],
+        code: newManualCriteriaCode,
+      },
+    ]);
+    setCriteriaToSubmit((prevCriteriaToSubmit) => [
+      ...prevCriteriaToSubmit,
+      {
+        code: newManualCriteriaCode,
+        dispatched: false,
+      },
+    ]);
+  };
+
+  const handleManualCriteriaRemoved = (e: any) => {
+    if (typeof e.target.dataset.id !== undefined) {
+      const codeToRemove = e.target.dataset.id;
+      const newManualCriteriaToRender: Array<ManualCriteriaItem> = [];
+      manualCriteriaToRender.forEach((m) => {
+        if (m.code !== codeToRemove) {
+          // eslint-disable-next-line functional/immutable-data
+          newManualCriteriaToRender.push(m);
+        }
       });
-    } else {
-      canBeSubmitted = false;
+      setManualCriteriaToRender([...newManualCriteriaToRender]);
+      const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
+      criteriaToSubmit.forEach((c) => {
+        if (c.code !== codeToRemove) {
+          // eslint-disable-next-line functional/immutable-data
+          newCriteriaToSubmit.push(c);
+        }
+      });
+      setCriteriaToSubmit([...newCriteriaToSubmit]);
     }
-    if (canBeSubmitted) {
-      console.log('CAN BE SUBMITTED');
+  };
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      // eslint-disable-next-line functional/no-let
+      let canBeSubmitted = true;
+      if (criteriaToSubmit.length > 0) {
+        criteriaToSubmit.forEach((c) => {
+          canBeSubmitted = canBeSubmitted && c.dispatched;
+        });
+      } else {
+        canBeSubmitted = false;
+      }
+      if (canBeSubmitted && typeof initiativeId === 'string') {
+        const criteriaToSave: Array<AutomatedCriteriaItem> = [];
+        criteriaToRender.forEach((c) => {
+          if (c.checked === true) {
+            const criteria = {
+              authority: c.authority,
+              code: c.code,
+              field: c.field,
+              operator: c.operator,
+              value: c.value,
+              value2: c.value2,
+            };
+            // eslint-disable-next-line functional/immutable-data
+            criteriaToSave.push({ ...criteria });
+          }
+        });
+
+        const body = {
+          beneficiaryRule: {
+            automatedCriteria: [...criteriaToSave],
+            selfDeclarationCriteria: [...manualCriteriaToRender],
+          },
+        };
+
+        // TODO check data sending in put request
+
+        putBeneficiaryRuleService(initiativeId, body)
+          .then((_response) => {
+            dispatch(saveAutomatedCriteria(criteriaToSave));
+            dispatch(saveManualCriteria(manualCriteriaToRender));
+            setAction('');
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => console.log(error));
+      }
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
     }
-  }, [criteriaToSubmit]);
+  }, [criteriaToSubmit, action]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -185,9 +273,9 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           criteriaToRender={criteriaToRender}
           setCriteriaToRender={setCriteriaToRender}
         />
-        {/* <Button variant="text" sx={{ gridArea: 'addButton' }} onClick={handleManualCriteriaAdded}>
-            {t('components.wizard.stepTwo.chooseCriteria.addManually')}
-          </Button> */}
+        <Button variant="text" sx={{ gridArea: 'addButton' }} onClick={handleManualCriteriaAdded}>
+          {t('components.wizard.stepTwo.chooseCriteria.addManually')}
+        </Button>
       </Box>
       <Box>
         {availableCriteria.map((a) => {
@@ -232,6 +320,20 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           }
           return null;
         })}
+      </Box>
+      <Box>
+        {manualCriteriaToRender.map((m) => (
+          <ManualCriteria
+            key={m.code}
+            data={m}
+            action={action}
+            handleCriteriaRemoved={handleManualCriteriaRemoved}
+            manualCriteriaToRender={manualCriteriaToRender}
+            setManualCriteriaToRender={setManualCriteriaToRender}
+            criteriaToSubmit={criteriaToSubmit}
+            setCriteriaToSubmit={setCriteriaToSubmit}
+          />
+        ))}
       </Box>
     </Paper>
   );

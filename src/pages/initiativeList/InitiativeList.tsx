@@ -40,11 +40,7 @@ import {
 } from '../../redux/slices/initiativeSlice';
 
 import { useAppDispatch } from '../../redux/hooks';
-import {
-  AutomatedCriteriaItem,
-  SelfDeclarationCriteriaBoolItem,
-  SelfDeclarationCriteriaMultiItem,
-} from '../../model/Initiative';
+import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../model/Initiative';
 import {
   EnhancedTableProps,
   Data,
@@ -168,6 +164,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
     status: string;
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const RenderAction = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
     const dispatch = useAppDispatch();
@@ -184,10 +181,8 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           dispatch(setAdditionalInfo(additionalInfo));
           // eslint-disable-next-line functional/no-let
           let automatedCriteria: Array<AutomatedCriteriaItem> = [];
-          // eslint-disable-next-line functional/no-let
-          let selfDeclarationCriteria: Array<
-            SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
-          > = [];
+          // eslint-disable-next-line sonarjs/no-unused-collection
+          const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
           if (
             response.beneficiaryRule &&
             response.beneficiaryRule.automatedCriteria &&
@@ -195,12 +190,42 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           ) {
             automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
           }
+
           if (
             response.beneficiaryRule &&
             response.beneficiaryRule.selfDeclarationCriteria &&
             Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
           ) {
-            selfDeclarationCriteria = [...response.beneficiaryRule.selfDeclarationCriteria];
+            const manualCriteriaFetched: Array<{
+              _type?: string;
+              description?: string;
+              value?: boolean | Array<string>;
+              code?: string;
+            }> = [...response.beneficiaryRule.selfDeclarationCriteria];
+
+            manualCriteriaFetched.forEach((m) => {
+              if (typeof m.value === 'boolean') {
+                // eslint-disable-next-line functional/immutable-data
+                selfDeclarationCriteria.push({
+                  // eslint-disable-next-line no-underscore-dangle
+                  _type: m._type,
+                  boolValue: m.value,
+                  multiValue: [],
+                  description: m.description || '',
+                  code: m.code || '',
+                });
+              } else if (Array.isArray(m.value)) {
+                // eslint-disable-next-line functional/immutable-data
+                selfDeclarationCriteria.push({
+                  // eslint-disable-next-line no-underscore-dangle
+                  _type: m._type,
+                  boolValue: true,
+                  multiValue: [...m.value],
+                  description: m.description || '',
+                  code: m.code || '',
+                });
+              }
+            });
           }
           dispatch(saveAutomatedCriteria(automatedCriteria));
           dispatch(saveManualCriteria(selfDeclarationCriteria));

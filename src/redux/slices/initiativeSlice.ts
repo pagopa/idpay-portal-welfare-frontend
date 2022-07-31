@@ -5,8 +5,9 @@ import {
   GeneralInfo,
   AdditionalInfo,
   AutomatedCriteriaItem,
-  SelfDeclarationCriteriaBoolItem,
-  SelfDeclarationCriteriaMultiItem,
+  // SelfDeclarationCriteriaBoolItem,
+  // SelfDeclarationCriteriaMultiItem,
+  ManualCriteriaItem,
 } from '../../model/Initiative';
 // import { ManualCriteriaOptions } from '../../utils/constants';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
@@ -103,10 +104,7 @@ export const initiativeSlice = createSlice({
       state.beneficiaryRule.automatedCriteria = [];
       state.beneficiaryRule.automatedCriteria = [...action.payload];
     },
-    setManualCriteria: (
-      state,
-      action: PayloadAction<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
-    ) => {
+    setManualCriteria: (state, action: PayloadAction<ManualCriteriaItem>) => {
       /* eslint-disable functional/no-let */
       let criteriaFound = false;
       let i = 0;
@@ -130,12 +128,7 @@ export const initiativeSlice = createSlice({
       //   action.payload,
       // ];
     },
-    saveManualCriteria: (
-      state,
-      action: PayloadAction<
-        Array<SelfDeclarationCriteriaBoolItem | SelfDeclarationCriteriaMultiItem>
-      >
-    ) => {
+    saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
       state.beneficiaryRule.selfDeclarationCriteria = [];
       state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
     },
@@ -165,9 +158,7 @@ export const stepOneBeneficiaryKnownSelector = (state: RootState): string | unde
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {
-  selfDeclarationCriteria: Array<
-    SelfDeclarationCriteriaMultiItem | SelfDeclarationCriteriaBoolItem
-  >;
+  selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
