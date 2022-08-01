@@ -83,6 +83,7 @@ export const updateInitialAutomatedCriteriaOnSelector = (
   responseData: Array<AvailableCriteria>
 ) => {
   const updatedResponseData: Array<AvailableCriteria> = [];
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   automatedCriteria.forEach((a) => {
     responseData.forEach((r) => {
       if (a.code === r.code) {
@@ -99,13 +100,26 @@ export const updateInitialAutomatedCriteriaOnSelector = (
         };
         // eslint-disable-next-line functional/immutable-data
         updatedResponseData.push(criteria);
-      } else {
-        const criteria = { ...r };
-        // eslint-disable-next-line functional/immutable-data
-        updatedResponseData.push(criteria);
       }
     });
   });
+
+  responseData.forEach((r) => {
+    /* eslint-disable functional/no-let */
+    let found = false;
+    let i = 0;
+    while (i < updatedResponseData.length && found === false) {
+      if (r.code === updatedResponseData[i].code) {
+        found = true;
+      }
+      i++;
+    }
+    if (!found) {
+      // eslint-disable-next-line functional/immutable-data
+      updatedResponseData.push({ ...r });
+    }
+  });
+  console.log(updatedResponseData);
   return updatedResponseData;
 };
 
