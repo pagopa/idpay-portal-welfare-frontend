@@ -135,6 +135,7 @@ export default {
             minorOrEqualTo: 'Minore uguale di',
             between: 'Compreso tra',
             value: 'Valore',
+            name: 'Nome',
             postalCode: 'Cap',
             city: 'Città',
             region: 'Regione',

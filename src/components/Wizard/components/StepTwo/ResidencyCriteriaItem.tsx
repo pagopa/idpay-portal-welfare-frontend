@@ -178,7 +178,7 @@ const ResidencyCriteriaItem = ({
           <TextField
             id="residencyValue"
             name="residencyValue"
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.name')}
             variant="outlined"
             value={residencyFormik.values.residencyValue}
             onBlur={(e) => residencyFormik.handleBlur(e)}

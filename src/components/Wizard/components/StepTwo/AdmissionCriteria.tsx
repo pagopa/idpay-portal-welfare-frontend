@@ -75,8 +75,6 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           });
         }
 
-        console.log(newCriteriaToSubmit);
-
         setCriteriaToSubmit([...newCriteriaToSubmit]);
       })
       .catch((error) => {
@@ -217,7 +215,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         // eslint-disable-next-line functional/immutable-data
         newCriteriaToSubmit.push({ code: n.code, dispatched: false });
       });
-      console.log(newCriteriaToSubmit);
+
       setManualCriteriaToRender([...newManualCriteriaToRenderCodesUpdated]);
       setCriteriaToSubmit([...newCriteriaToSubmit]);
     }
@@ -226,7 +224,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   useEffect(() => {
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
-    console.log(criteriaToSubmit);
+
     if (criteriaToSubmit.length > 0) {
       criteriaToSubmit.forEach((c) => {
         toSubmit = toSubmit && c.dispatched;
