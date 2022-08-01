@@ -34,16 +34,17 @@ const Wizard = () => {
   ];
 
   const handleNext = () => {
-    setActionType(WIZARD_ACTIONS.SUBMIT);
+    setActionType(() => WIZARD_ACTIONS.SUBMIT);
   };
 
   const handleDraft = () => {
-    setActionType(WIZARD_ACTIONS.DRAFT);
+    setActionType(() => WIZARD_ACTIONS.DRAFT);
   };
 
   const handleBack = () => {
     if (activeStep > 0) {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
+      setActionType(() => WIZARD_ACTIONS.BACK);
     } else {
       history.push(routes.INITIATIVE_LIST);
     }

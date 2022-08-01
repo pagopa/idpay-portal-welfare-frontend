@@ -78,6 +78,7 @@ const ManualCriteria = ({
       manualCriteriaSelectName: data._type,
       manualCriteriaValues: data.multiValue,
     },
+    validateOnMount: true,
     enableReinitialize: true,
     validateOnChange: true,
     validationSchema: manualCriteriaValidationSchema,

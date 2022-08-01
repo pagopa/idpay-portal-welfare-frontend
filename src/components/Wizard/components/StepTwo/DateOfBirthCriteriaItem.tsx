@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
+import _ from 'lodash';
 import { FilterOperator, DateOfBirthOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
@@ -43,7 +44,9 @@ const DateOdBirthCriteriaItem = ({
   setCriteriaToSubmit,
 }: Props) => {
   const { t } = useTranslation();
-  const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState('hidden');
+  const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState(
+    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
+  );
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -56,9 +59,9 @@ const DateOdBirthCriteriaItem = ({
   const dateOfBirthValidationSchema = Yup.object().shape({
     dateOfBirthSelect: Yup.string().required(t('validation.required')),
     dateOfBirthRelationSelect: Yup.string().required(t('validation.required')),
-    dateOfBirthStartValue: Yup.string().required(t('validation.required')),
+    dateOfBirthStartValue: Yup.number().required(t('validation.required')),
     dateOfBirthEndValue: Yup.number().when(['dateOfBirthRelationSelect', 'dateOfBirthStartValue'], {
-      is: (dateOfBirthRelationSelect: string, dateOfBirthStartValue: string) =>
+      is: (dateOfBirthRelationSelect: string, dateOfBirthStartValue: number) =>
         dateOfBirthRelationSelect === FilterOperator.BTW_CLOSED && dateOfBirthStartValue,
       then: (_dateOfBirthStartValue) =>
         Yup.number()
@@ -74,19 +77,11 @@ const DateOdBirthCriteriaItem = ({
       dateOfBirthStartValue: formData.value,
       dateOfBirthEndValue: formData.value2,
     },
+    validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema: dateOfBirthValidationSchema,
     onSubmit: (_values) => {
-      // const data = {
-      //   authority: formData.authority,
-      //   code: formData.code,
-      //   field: values.dateOfBirthSelect,
-      //   operator: values.dateOfBirthRelationSelect,
-      //   value: values.dateOfBirthStartValue,
-      //   value2: values.dateOfBirthEndValue,
-      // };
-      // dispatch(setAutomatedCriteria(data));
       setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
@@ -132,6 +127,7 @@ const DateOdBirthCriteriaItem = ({
             id="dateOfBirthSelect"
             name="dateOfBirthSelect"
             value={dateOfBirthFormik.values.dateOfBirthSelect}
+            onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
             onChange={(e) => {
               dateOfBirthFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'field', formData.code);
@@ -160,6 +156,7 @@ const DateOdBirthCriteriaItem = ({
             id="dateOfBirthRelationSelect"
             name="dateOfBirthRelationSelect"
             value={dateOfBirthFormik.values.dateOfBirthRelationSelect}
+            onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
             onChange={(e) => {
               setFieldType(e.target.value, setDateOfBirthEndValueVisible);
               dateOfBirthFormik.handleChange(e);
@@ -206,6 +203,7 @@ const DateOdBirthCriteriaItem = ({
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="dateOfBirthStartValue"
             value={dateOfBirthFormik.values.dateOfBirthStartValue}
+            onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
             onChange={(e) => {
               dateOfBirthFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'value', formData.code);
@@ -235,9 +233,10 @@ const DateOdBirthCriteriaItem = ({
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="dateOfBirthEndValue"
             value={dateOfBirthFormik.values.dateOfBirthEndValue}
+            onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
             onChange={(e) => {
-              dateOfBirthFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'value2', formData.code);
+              dateOfBirthFormik.handleChange(e);
             }}
             error={setError(
               dateOfBirthFormik.touched.dateOfBirthEndValue,

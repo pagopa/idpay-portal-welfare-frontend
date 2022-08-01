@@ -13,6 +13,7 @@ import { Dispatch, MouseEventHandler, SetStateAction, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
+import _ from 'lodash';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { FilterOperator, ResidencyOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { handleCriteriaToSubmit } from './helpers';
@@ -58,18 +59,11 @@ const ResidencyCriteriaItem = ({
       residencyRelationSelect: formData.operator,
       residencyValue: formData.value,
     },
+    validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema: residencyValidationSchema,
     onSubmit: (_values) => {
-      // const data = {
-      //   authority: formData.authority,
-      //   code: formData.code,
-      //   field: values.residencySelect,
-      //   operator: values.residencyRelationSelect,
-      //   value: values.residencyValue,
-      // };
-      // dispatch(setAutomatedCriteria(data));
       setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
@@ -121,6 +115,7 @@ const ResidencyCriteriaItem = ({
             id="residencySelect"
             name="residencySelect"
             value={residencyFormik.values.residencySelect}
+            onBlur={(e) => residencyFormik.handleBlur(e)}
             onChange={(e) => {
               residencyFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'field', formData.code);
@@ -139,9 +134,9 @@ const ResidencyCriteriaItem = ({
             <MenuItem value={ResidencyOptions.REGION}>
               {t('components.wizard.stepTwo.chooseCriteria.form.region')}
             </MenuItem>
-            <MenuItem value={ResidencyOptions.NATION}>
+            {/* <MenuItem value={ResidencyOptions.NATION}>
               {t('components.wizard.stepTwo.chooseCriteria.form.nation')}
-            </MenuItem>
+            </MenuItem> */}
           </Select>
           <FormHelperText>
             {setErrorText(
@@ -155,6 +150,7 @@ const ResidencyCriteriaItem = ({
             id="residencyRelationSelect"
             name="residencyRelationSelect"
             value={residencyFormik.values.residencyRelationSelect}
+            onBlur={(e) => residencyFormik.handleBlur(e)}
             onChange={(e) => {
               residencyFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'operator', formData.code);
@@ -185,6 +181,7 @@ const ResidencyCriteriaItem = ({
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             variant="outlined"
             value={residencyFormik.values.residencyValue}
+            onBlur={(e) => residencyFormik.handleBlur(e)}
             onChange={(e) => {
               residencyFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'value', formData.code);

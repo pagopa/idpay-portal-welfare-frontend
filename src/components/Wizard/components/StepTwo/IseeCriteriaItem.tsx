@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
+import _ from 'lodash';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
@@ -43,7 +44,9 @@ const IseeCriteriaItem = ({
   setCriteriaToSubmit,
 }: Props) => {
   const { t } = useTranslation();
-  const [iseeEndValueVisible, setIseeEndValueVisible] = useState('hidden');
+  const [iseeEndValueVisible, setIseeEndValueVisible] = useState(
+    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
+  );
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -57,11 +60,11 @@ const IseeCriteriaItem = ({
     iseeRelationSelect: Yup.string().required(t('validation.required')),
     iseeStartValue: Yup.number().required(t('validation.required')),
     iseeEndValue: Yup.number().when(['iseeRelationSelect', 'iseeStartValue'], {
-      is: (iseeRelationSelect: string, iseeStartValue: string) =>
+      is: (iseeRelationSelect: string, iseeStartValue: number) =>
         iseeRelationSelect === FilterOperator.BTW_CLOSED && iseeStartValue,
       then: Yup.number()
         .required(t('validation.required'))
-        .min(Yup.ref('iseeStartValue'), t('validation.outValue')),
+        .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
     }),
   });
 
@@ -71,19 +74,11 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
     },
+    validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema: iseeValidationSchema,
     onSubmit: (_values) => {
-      // const data = {
-      //   authority: formData.authority,
-      //   code: formData.code,
-      //   field: formData.field,
-      //   operator: values.iseeRelationSelect,
-      //   value: values.iseeStartValue,
-      //   value2: values.iseeEndValue,
-      // };
-      // dispatch(setAutomatedCriteria(data));
       setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
@@ -129,6 +124,7 @@ const IseeCriteriaItem = ({
             id="iseeRelationSelect"
             name="iseeRelationSelect"
             value={iseeFormik.values.iseeRelationSelect}
+            onBlur={(e) => iseeFormik.handleBlur(e)}
             onChange={(e) => {
               iseeFormik.handleChange(e);
               setFieldType(e.target.value, setIseeEndValueVisible);
@@ -175,6 +171,7 @@ const IseeCriteriaItem = ({
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="iseeStartValue"
             value={iseeFormik.values.iseeStartValue}
+            onBlur={(e) => iseeFormik.handleBlur(e)}
             onChange={(e) => {
               iseeFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'value', formData.code);
@@ -198,9 +195,10 @@ const IseeCriteriaItem = ({
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="iseeEndValue"
             value={iseeFormik.values.iseeEndValue}
+            onBlur={(e) => iseeFormik.handleBlur(e)}
             onChange={(e) => {
-              iseeFormik.handleChange(e);
               handleFieldValueChanged(e.target.value, 'value2', formData.code);
+              iseeFormik.handleChange(e);
             }}
             error={setError(iseeFormik.touched.iseeEndValue, iseeFormik.errors.iseeEndValue)}
             helperText={setErrorText(

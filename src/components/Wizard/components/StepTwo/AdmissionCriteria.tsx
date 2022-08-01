@@ -12,7 +12,7 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
-import { WIZARD_ACTIONS } from '../../../../utils/constants';
+// import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
@@ -74,6 +74,9 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
             newCriteriaToSubmit.push({ code: s.code, dispatched: false });
           });
         }
+
+        console.log(newCriteriaToSubmit);
+
         setCriteriaToSubmit([...newCriteriaToSubmit]);
       })
       .catch((error) => {
@@ -99,15 +102,24 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setAvailableCriteria([...criteriaToRender]);
-    const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+    const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
     // eslint-disable-next-line sonarjs/no-identical-functions
     criteriaToRender.forEach((c) => {
       if (c.checked === true) {
-        // eslint-disable-next-line functional/immutable-data
-        newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+        // eslint-disable-next-line functional/no-let
+        let found = false;
+        criteriaToSubmit.forEach((s) => {
+          if (s.code === c.code) {
+            found = true;
+          }
+        });
+        if (!found) {
+          // eslint-disable-next-line functional/immutable-data
+          newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+        }
       }
     });
-    setCriteriaToSubmit([...newCriteriaToSubmit]);
+    setCriteriaToSubmit([...criteriaToSubmit, ...newCriteriaToSubmit]);
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -152,7 +164,9 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
 
   const handleManualCriteriaAdded = () => {
     const newManualCriteriaIndex =
-      manualCriteriaToRender.length > 0 ? manualCriteriaToRender.length + 1 : 1;
+      manualCriteriaToRender.length > 0
+        ? parseInt(manualCriteriaToRender[manualCriteriaToRender.length - 1].code, 10) + 1
+        : 1;
     const newManualCriteriaCode = newManualCriteriaIndex.toString();
     setManualCriteriaToRender((prevManualCriteriaToRender) => [
       ...prevManualCriteriaToRender,
@@ -173,6 +187,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     ]);
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleManualCriteriaRemoved = (e: any) => {
     if (typeof e.target.dataset.id !== undefined) {
       const codeToRemove = e.target.dataset.id;
@@ -183,44 +198,59 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           newManualCriteriaToRender.push(m);
         }
       });
-      setManualCriteriaToRender([...newManualCriteriaToRender]);
+      const newManualCriteriaToRenderCodesUpdated: Array<ManualCriteriaItem> = [];
+      newManualCriteriaToRender.forEach((n, i) => {
+        const newCode = (i + 1).toString();
+        // eslint-disable-next-line functional/immutable-data
+        newManualCriteriaToRenderCodesUpdated.push({ ...n, code: newCode });
+      });
+
       const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
       criteriaToSubmit.forEach((c) => {
-        if (c.code !== codeToRemove) {
+        const intCode = typeof c.code !== undefined ? parseInt(c.code || '1', 10) : NaN;
+        if (isNaN(intCode)) {
           // eslint-disable-next-line functional/immutable-data
-          newCriteriaToSubmit.push(c);
+          newCriteriaToSubmit.push({ ...c });
         }
       });
+      newManualCriteriaToRenderCodesUpdated.forEach((n) => {
+        // eslint-disable-next-line functional/immutable-data
+        newCriteriaToSubmit.push({ code: n.code, dispatched: false });
+      });
+      console.log(newCriteriaToSubmit);
+      setManualCriteriaToRender([...newManualCriteriaToRenderCodesUpdated]);
       setCriteriaToSubmit([...newCriteriaToSubmit]);
     }
   };
 
   useEffect(() => {
-    if (action === WIZARD_ACTIONS.SUBMIT) {
-      // eslint-disable-next-line functional/no-let
-      let canBeSubmitted = true;
-      if (criteriaToSubmit.length > 0) {
-        criteriaToSubmit.forEach((c) => {
-          canBeSubmitted = canBeSubmitted && c.dispatched;
-        });
-      } else {
-        canBeSubmitted = false;
-      }
-      if (canBeSubmitted && typeof initiativeId === 'string') {
-        const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
-        putBeneficiaryRuleService(initiativeId, body)
-          .then((_response) => {
-            dispatch(saveAutomatedCriteria(body.automatedCriteria));
-            dispatch(saveManualCriteria(manualCriteriaToRender));
-            setAction('');
-            setCurrentStep(currentStep + 1);
-          })
-          .catch((error) => console.log(error));
-      }
-    } else if (action === WIZARD_ACTIONS.DRAFT) {
-      return;
+    // eslint-disable-next-line functional/no-let
+    let toSubmit = true;
+    console.log(criteriaToSubmit);
+    if (criteriaToSubmit.length > 0) {
+      criteriaToSubmit.forEach((c) => {
+        toSubmit = toSubmit && c.dispatched;
+      });
+    } else {
+      toSubmit = false;
     }
-  }, [criteriaToSubmit, action]);
+
+    // if (action === WIZARD_ACTIONS.SUBMIT) {
+    if (toSubmit && typeof initiativeId === 'string') {
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      putBeneficiaryRuleService(initiativeId, body)
+        .then((_response) => {
+          dispatch(saveAutomatedCriteria(body.automatedCriteria));
+          dispatch(saveManualCriteria(manualCriteriaToRender));
+          setCurrentStep(currentStep + 1);
+        })
+        .catch((error) => console.log(error));
+    }
+    // } else if (action === WIZARD_ACTIONS.DRAFT) {
+    //   return;
+    // }
+    setAction('');
+  }, [action, criteriaToSubmit]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
