@@ -119,7 +119,6 @@ export const updateInitialAutomatedCriteriaOnSelector = (
       updatedResponseData.push({ ...r });
     }
   });
-  console.log(updatedResponseData);
   return updatedResponseData;
 };
 
