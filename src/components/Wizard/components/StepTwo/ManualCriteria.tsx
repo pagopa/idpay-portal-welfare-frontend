@@ -58,18 +58,15 @@ const ManualCriteria = ({
       .max(200, t('validation.maxTwoHundred')),
     manualCriteriaSelectName: Yup.string().required(t('validation.required')),
     manualCriteriaValues: Yup.array().of(
-      Yup.string()
-        .when('manualCriteriaSelectName', (manualCriteriaSelectName, schema) => {
-          if (
-            manualCriteriaSelectName &&
-            manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
-          ) {
-            return Yup.string().required(t('validation.required'));
-          }
-          return schema;
-        })
-
-        .required(t('validation.required'))
+      Yup.string().when('manualCriteriaSelectName', (manualCriteriaSelectName, schema) => {
+        if (
+          manualCriteriaSelectName &&
+          manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
+        ) {
+          return Yup.string().required(t('validation.required'));
+        }
+        return schema;
+      })
     ),
   });
 
@@ -230,7 +227,9 @@ const ManualCriteria = ({
       }}
     >
       <Box sx={{ gridColumn: 'span 11' }}>
-        <Typography variant="subtitle1">{`criterio # ${data.code}`}</Typography>
+        <Typography variant="subtitle1">{`${t(
+          'components.wizard.stepTwo.chooseCriteria.form.manual'
+        )} ${data.code}`}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
         <DeleteOutlineIcon
@@ -358,7 +357,7 @@ const ManualCriteria = ({
                 }}
               >
                 <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                  {i > 1 && (
+                  {i > 0 && (
                     <RemoveCircleOutlineIcon
                       color="error"
                       data-id={o}
@@ -377,7 +376,6 @@ const ManualCriteria = ({
                     />
                   )}
                 </Box>
-
                 <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
                   <TextField
                     id={`manualCriteriaValues[${i}]}`}
@@ -417,12 +415,12 @@ const ManualCriteria = ({
             sx={{
               gridColumn: 'span 12',
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
+              gridTemplateColumns: 'repeat(12, 1fr)',
               gap: 3,
               my: 2,
             }}
           >
-            <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
+            <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
               <Button
                 sx={[
                   {

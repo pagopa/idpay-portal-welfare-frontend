@@ -123,6 +123,8 @@ export default {
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
             addButton: 'Aggiungi',
           },
+          admissionCriteriaAdded: 'Criteri aggiunti',
+          manualCriteriaAdded: 'Criteri manuali',
           form: {
             year: 'Anno',
             age: 'Età',

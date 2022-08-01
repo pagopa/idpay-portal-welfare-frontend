@@ -108,3 +108,58 @@ export const updateInitialAutomatedCriteriaOnSelector = (
   });
   return updatedResponseData;
 };
+
+export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria: Array<any>) => {
+  const criteriaToSave: Array<AutomatedCriteriaItem> = [];
+  automatedCriteria.forEach((c) => {
+    if (c.checked === true) {
+      const criteria = {
+        authority: c.authority,
+        code: c.code,
+        field: c.field,
+        operator: c.operator,
+        value: c.value,
+        value2: c.value2,
+      };
+      // eslint-disable-next-line functional/immutable-data
+      criteriaToSave.push({ ...criteria });
+    }
+  });
+
+  const manualCriteriaToSend: Array<{
+    _type: string;
+    description: string;
+    value: Array<string> | boolean;
+    code: string;
+  }> = [];
+  manualCriteria.forEach((m) => {
+    // eslint-disable-next-line no-underscore-dangle
+    if (m._type === 'boolean') {
+      const criteria = {
+        // eslint-disable-next-line no-underscore-dangle
+        _type: m._type,
+        description: m.description,
+        value: m.boolValue,
+        code: m.code,
+      };
+      // eslint-disable-next-line functional/immutable-data
+      manualCriteriaToSend.push({ ...criteria });
+      // eslint-disable-next-line no-underscore-dangle
+    } else if (m._type === 'multi') {
+      const criteria = {
+        // eslint-disable-next-line no-underscore-dangle
+        _type: m._type,
+        description: m.description,
+        value: Array.isArray(m.multiValue) ? [...m.multiValue] : [],
+        code: m.code,
+      };
+      // eslint-disable-next-line functional/immutable-data
+      manualCriteriaToSend.push({ ...criteria });
+    }
+  });
+
+  return {
+    automatedCriteria: [...criteriaToSave],
+    selfDeclarationCriteria: [...manualCriteriaToSend],
+  };
+};

@@ -11,12 +11,16 @@ import {
   saveManualCriteria,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
-import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../../../model/Initiative';
+import { ManualCriteriaItem } from '../../../../model/Initiative';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
-import { mapResponse, updateInitialAutomatedCriteriaOnSelector } from './helpers';
+import {
+  mapCriteriaToSend,
+  mapResponse,
+  updateInitialAutomatedCriteriaOnSelector,
+} from './helpers';
 import DateOdBirthCriteriaItem from './DateOfBirthCriteriaItem';
 import ResidencyCriteriaItem from './ResidencyCriteriaItem';
 import ManualCriteria from './ManualCriteria';
@@ -34,6 +38,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
   const [openModal, setOpenModal] = useState(false);
   const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
+  const [criteriaToRenderNumber, setCriteriaToRenderNumber] = useState(0);
   const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<ManualCriteriaItem>);
   const [criteriaToSubmit, setCriteriaToSubmit] = useState(
     Array<{ code: string | undefined; dispatched: boolean }>
@@ -75,6 +80,17 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         console.log(error);
       });
   }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line functional/no-let
+    let counter = 0;
+    availableCriteria.forEach((c) => {
+      if (c.checked === true) {
+        counter = counter + 1;
+      }
+    });
+    setCriteriaToRenderNumber(counter);
+  }, [availableCriteria]);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -191,34 +207,10 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         canBeSubmitted = false;
       }
       if (canBeSubmitted && typeof initiativeId === 'string') {
-        const criteriaToSave: Array<AutomatedCriteriaItem> = [];
-        criteriaToRender.forEach((c) => {
-          if (c.checked === true) {
-            const criteria = {
-              authority: c.authority,
-              code: c.code,
-              field: c.field,
-              operator: c.operator,
-              value: c.value,
-              value2: c.value2,
-            };
-            // eslint-disable-next-line functional/immutable-data
-            criteriaToSave.push({ ...criteria });
-          }
-        });
-
-        const body = {
-          beneficiaryRule: {
-            automatedCriteria: [...criteriaToSave],
-            selfDeclarationCriteria: [...manualCriteriaToRender],
-          },
-        };
-
-        // TODO check data sending in put request
-
+        const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
         putBeneficiaryRuleService(initiativeId, body)
           .then((_response) => {
-            dispatch(saveAutomatedCriteria(criteriaToSave));
+            dispatch(saveAutomatedCriteria(body.automatedCriteria));
             dispatch(saveManualCriteria(manualCriteriaToRender));
             setAction('');
             setCurrentStep(currentStep + 1);
@@ -278,6 +270,11 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         </Button>
       </Box>
       <Box>
+        {criteriaToRenderNumber > 0 && (
+          <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
+            {t('components.wizard.stepTwo.chooseCriteria.admissionCriteriaAdded')}
+          </Typography>
+        )}
         {availableCriteria.map((a) => {
           if (a.code === 'BIRTHDATE' && a.checked === true) {
             return (
@@ -322,6 +319,11 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         })}
       </Box>
       <Box>
+        {manualCriteriaToRender.length > 0 && (
+          <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
+            {t('components.wizard.stepTwo.chooseCriteria.manualCriteriaAdded')}
+          </Typography>
+        )}
         {manualCriteriaToRender.map((m) => (
           <ManualCriteria
             key={m.code}
