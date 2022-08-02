@@ -232,8 +232,6 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     } else {
       toSubmit = false;
     }
-
-    // if (action === WIZARD_ACTIONS.SUBMIT) {
     if (toSubmit && typeof initiativeId === 'string') {
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
       putBeneficiaryRuleService(initiativeId, body)
@@ -244,9 +242,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         })
         .catch((error) => console.log(error));
     }
-    // } else if (action === WIZARD_ACTIONS.DRAFT) {
-    //   return;
-    // }
+
     setAction('');
   }, [action, criteriaToSubmit]);
 

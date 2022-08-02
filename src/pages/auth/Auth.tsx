@@ -22,6 +22,7 @@ const Auth = () => {
 
   if (urlToken !== '' && urlToken !== undefined) {
     trackEvent('AUTH_SUCCESS');
+
     storageTokenOps.write(urlToken);
     readUserFromToken(urlToken);
     window.location.assign(ROUTES.HOME);
