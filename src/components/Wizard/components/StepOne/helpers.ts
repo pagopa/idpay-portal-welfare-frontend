@@ -15,6 +15,11 @@ export const getMinDate = (date: Date | string | undefined) => {
   return new Date();
 };
 
+export const parseDate = (d: string) => {
+  const date = new Date(d).toLocaleDateString('en-CA');
+  return new Date(date);
+};
+
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
   const channels: Array<{ type: TypeEnum; contact: string }> = [];
   values.channels.forEach((v: { type: TypeEnum; contact: string }) => {
@@ -26,7 +31,6 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
       });
     }
   });
-
   return {
     general: {
       beneficiaryType:
@@ -34,10 +38,10 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
       beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
       budget: Number(values.budget),
       beneficiaryBudget: Number(values.beneficiaryBudget),
-      rankingStartDate: new Date(values.rankingStartDate),
-      rankingEndDate: new Date(values.rankingEndDate),
-      startDate: new Date(values.startDate),
-      endDate: new Date(values.endDate),
+      rankingStartDate: parseDate(values.rankingStartDate),
+      rankingEndDate: parseDate(values.rankingEndDate),
+      startDate: parseDate(values.startDate),
+      endDate: parseDate(values.endDate),
     },
     additionalInfo: {
       // serviceId: values.serviceId, DISABLED TEMP
