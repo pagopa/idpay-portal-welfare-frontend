@@ -7,13 +7,13 @@ import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-fronten
 import { parseJwt } from '../utils/jwt-utils';
 import { JWTUser } from '../model/JwtUser';
 
-const mockedUser = {
-  uid: '0',
-  taxCode: 'AAAAAA00A00A000A',
-  name: 'loggedName',
-  surname: 'loggedSurname',
-  email: 'loggedEmail@aa.aa',
-};
+// const mockedUser = {
+//   uid: '0',
+//   taxCode: 'AAAAAA00A00A000A',
+//   name: 'loggedName',
+//   surname: 'loggedSurname',
+//   email: 'loggedEmail@aa.aa',
+// };
 
 export const userFromJwtToken: (token: string) => User = function (token: string) {
   const jwtUser: JWTUser = parseJwt(token);
@@ -32,12 +32,12 @@ export const useLogin = () => {
   const setUser = (user: User) => dispatch(userActions.setLoggedUser(user));
 
   const attemptSilentLogin = async () => {
-    if (CONFIG.MOCKS.MOCK_USER) {
-      setUser(mockedUser);
-      storageTokenOps.write(CONFIG.TEST.JWT);
-      storageUserOps.write(mockedUser);
-      return;
-    }
+    // if (CONFIG.MOCKS.MOCK_USER) {
+    //   setUser(mockedUser);
+    //   storageTokenOps.write(CONFIG.TEST.JWT);
+    //   storageUserOps.write(mockedUser);
+    //   return;
+    // }
 
     const token = storageTokenOps.read();
 
