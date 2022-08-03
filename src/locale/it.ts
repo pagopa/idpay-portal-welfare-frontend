@@ -104,7 +104,7 @@ export default {
             helpChannels: 'Canali di assistenza',
             helpChannelsTooltip:
               'Indica un canale di assistenza dove gli utenti possono contattarvi',
-            contact: 'Contatto',
+            contact: 'Tipo di canale',
             indicatesChannel: 'Indica il canale',
             addChannel: 'Aggiungi un altro canale',
           },
@@ -225,5 +225,6 @@ export default {
     webValid: 'il canale deve essere un indirizzo web',
     emailValid: 'il canale deve essere un indirizzo email',
     celNumValid: 'il canale deve essere un numero di telefono',
+    invalidDate: 'Data non valida',
   },
 };

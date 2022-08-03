@@ -60,7 +60,8 @@ export const InitiativeApi = {
         },
       },
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    console.log(result);
+    return extractResponse(result, 201, onRedirectToLogin);
   },
 
   initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {

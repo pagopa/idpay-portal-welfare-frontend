@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable complexity */
 import {
   Paper,
@@ -16,9 +17,11 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  InputAdornment,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -64,7 +67,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
   const additionalInfoForm = useAppSelector(additionalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
   const { t } = useTranslation();
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(additionalInfoForm.serviceId ? true : false);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -75,161 +78,152 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     setAction('');
   }, [action]);
 
-  const validationSchemaToggleOn = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
     beneficiaryKnown: Yup.string().required(t('validation.required')),
     budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .integer(t('validation.integer')),
+      .positive(t('validation.positive')),
+    // .integer(t('validation.integer')),
     beneficiaryBudget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive'))
-      .integer(t('validation.integer'))
-      .when('budget', (budget, schema) => {
-        if (budget) {
-          return Yup.number()
-            .typeError(t('validation.numeric'))
-            .required(t('validation.required'))
-            .positive(t('validation.positive'))
-            .integer(t('validation.integer'))
-            .max(parseInt(budget, 10) - 1, t('validation.outBudgetPerPerson'));
-        }
-        return schema;
-      }),
-    rankingStartDate: Yup.date().nullable().default(undefined),
-    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, _schema) => {
-      if (rankingStartDate) {
-        return Yup.date()
-          .min(rankingStartDate, t('validation.outJoinTo'))
-          .required(t('validation.required'));
-      } else {
-        return Yup.date().nullable().default(undefined);
-      }
-    }),
-    startDate: Yup.date()
-      .required(t('validation.required'))
-      .when('rankingEndDate', (rankingEndDate, _schema) => {
-        if (rankingEndDate) {
-          return Yup.date()
-            .min(rankingEndDate, t('validation.outSpendFrom'))
-            .required(t('validation.required'));
-        } else {
-          return Yup.date().min(getYesterday()).required(t('validation.required'));
-        }
-      }),
-    endDate: Yup.date()
-      .required(t('validation.required'))
-      .when('startDate', (startDate, schema) => {
-        if (startDate) {
-          return Yup.date()
-            .min(startDate, t('validation.outSpendTo'))
-            .required(t('validation.required'));
-        }
-        return schema;
-      }),
-    serviceId: Yup.string().required(t('validation.required')),
-  });
-
-  const validationSchemaToggleOff = Yup.object().shape({
-    beneficiaryType: Yup.string().required(t('validation.required')),
-    beneficiaryKnown: Yup.string().required(t('validation.required')),
-    budget: Yup.number()
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .integer(t('validation.integer')),
-    beneficiaryBudget: Yup.number()
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .integer(t('validation.integer'))
+      // .integer(t('validation.integer'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('budget', (budget, schema) => {
         if (budget) {
-          return Yup.number()
-            .typeError(t('validation.numeric'))
-            .required(t('validation.required'))
-            .positive(t('validation.positive'))
-            .integer(t('validation.integer'))
-            .max(parseInt(budget, 10) - 1, t('validation.outBudgetPerPerson'));
+          return (
+            Yup.number()
+              .typeError(t('validation.numeric'))
+              .required(t('validation.required'))
+              .positive(t('validation.positive'))
+              // .integer(t('validation.integer'))
+              .max(parseFloat(budget) - 1, t('validation.outBudgetPerPerson'))
+          );
         }
         return schema;
       }),
-    rankingStartDate: Yup.date().nullable().default(undefined),
+    rankingStartDate: Yup.date().nullable().typeError(t('validation.invalidDate')),
     // eslint-disable-next-line sonarjs/no-identical-functions
-    rankingEndDate: Yup.date().when('rankingStartDate', (rankingStartDate, _schema) => {
-      if (rankingStartDate) {
-        return Yup.date()
-          .min(rankingStartDate, t('validation.outJoinTo'))
-          .required(t('validation.required'));
-      } else {
-        return Yup.date().nullable().default(undefined);
-      }
-    }),
+    rankingEndDate: Yup.date()
+      .nullable()
+      .typeError(t('validation.invalidDate'))
+      .when('rankingStartDate', (rankingStartDate, _schema) => {
+        const timestamp = Date.parse(rankingStartDate);
+        if (isNaN(timestamp) === false) {
+          return Yup.date()
+            .min(rankingStartDate, t('validation.outJoinTo'))
+            .required(t('validation.required'))
+            .typeError(t('validation.invalidDate'));
+        } else {
+          return Yup.date().nullable().default(undefined).typeError(t('validation.invalidDate'));
+        }
+      }),
     startDate: Yup.date()
+      .nullable()
       .required(t('validation.required'))
+      .typeError(t('validation.invalidDate'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('rankingEndDate', (rankingEndDate, _schema) => {
-        if (rankingEndDate) {
+        const timestamp = Date.parse(rankingEndDate);
+        if (isNaN(timestamp) === false) {
           return Yup.date()
             .min(rankingEndDate, t('validation.outSpendFrom'))
-            .required(t('validation.required'));
+            .required(t('validation.required'))
+            .typeError(t('validation.invalidDate'));
         } else {
-          return Yup.date().min(getYesterday()).required(t('validation.required'));
+          return Yup.date()
+            .nullable()
+            .min(getYesterday())
+            .required(t('validation.required'))
+            .typeError(t('validation.invalidDate'));
         }
       }),
     endDate: Yup.date()
+      .nullable()
       .required(t('validation.required'))
+      .typeError(t('validation.invalidDate'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('startDate', (startDate, schema) => {
-        if (startDate) {
+        const timestamp = Date.parse(startDate);
+        if (isNaN(timestamp) === false) {
           return Yup.date()
+            .nullable()
             .min(startDate, t('validation.outSpendTo'))
-            .required(t('validation.required'));
+            .required(t('validation.required'))
+            .typeError(t('validation.invalidDate'));
         }
         return schema;
+      }),
+    initiativeOnIO: Yup.boolean(),
+    serviceId: Yup.string()
+      .nullable()
+      .default(undefined)
+      .when('initiativeOnIO', {
+        is: true,
+        then: Yup.string().required(t('validation.required')),
       }),
     serviceName: Yup.string()
-      .max(50, t('validation.maxServiceNameChar'))
-      .required(t('validation.required')),
+      .nullable()
+      .default(undefined)
+      .when('initiativeOnIO', {
+        is: false,
+        then: Yup.string()
+          .max(50, t('validation.maxServiceNameChar'))
+          .required(t('validation.required')),
+      }),
     argument: Yup.string()
-      .max(50, t('validation.maxArgumentsChar'))
-      .required(t('validation.required')),
-    description: Yup.string().required(t('validation.required')),
-    // contact: Yup.string().required(t('validation.required')),
-    // ChannelDTO: Yup.string().when((schema) => {
-    //   if (formik.values.contact === 'web') {
-    //     return Yup.string().url(t('validation.webValid')).required(t('validation.web'));
-    //   } else if (formik.values.contact === 'email') {
-    //     return Yup.string().email(t('validation.emailValid')).required(t('validation.email'));
-    //   } else if (formik.values.contact === 'mobile') {
-    //     return Yup.string().max(10, t('validation.numTelValid')).required(t('validation.celNum'));
-    //   }
-    //   return schema;
-    // }),
-    assistanceChannel: Yup.array().of(
-      Yup.object().shape({
-        // contact: Yup.string().required(t('validation.required')),
-        // channelName: Yup.string().when((schema) => {
-        //   if (contact === 'webUrl') {
-        //     return Yup.string().url().required(t('validation.web'));
-        //   }
-        //   if (contact === 'email') {
-        //     return Yup.string().email().required(t('validation.email'));
-        //   }
-        //   if (contact === 'numTel') {
-        //     return Yup.string().max(10).required(t('validation.celNum'));
-        //   }
-        //   return schema;
-        // }),
-      })
-    ),
+      .nullable()
+      .default(undefined)
+      .when('initiativeOnIO', {
+        is: false,
+        then: Yup.string()
+          .max(50, t('validation.maxServiceNameChar'))
+          .required(t('validation.required')),
+      }),
+    description: Yup.string()
+      .nullable()
+      .default(undefined)
+      .when('initiativeOnIO', {
+        is: false,
+        then: Yup.string()
+          .max(50, t('validation.maxServiceNameChar'))
+          .required(t('validation.required')),
+      }),
+    channels: Yup.array()
+      .nullable()
+      .default(undefined)
+      .when('initiativeOnIO', {
+        is: false,
+        then: Yup.array().of(
+          Yup.object().shape({
+            type: Yup.string().required(t('validation.required')),
+            contact: Yup.string()
+              .required(t('validation.required'))
+              .when('type', (type, schema) => {
+                if (type && type === 'web') {
+                  return Yup.string()
+                    .required(t('validation.required'))
+                    .url(t('validation.webValid'));
+                }
+                if (type && type === 'email') {
+                  return Yup.string()
+                    .required(t('validation.required'))
+                    .email(t('validation.emailValid'));
+                }
+                if (type && type === 'mobile') {
+                  return Yup.string()
+                    .required(t('validation.required'))
+                    .matches(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/, t('validation.celNumValid'));
+                }
+                return schema;
+              }),
+          })
+        ),
+      }),
   });
-
-  const validationSchema = isChecked ? validationSchemaToggleOn : validationSchemaToggleOff;
 
   const formik = useFormik({
     initialValues: {
@@ -241,6 +235,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       rankingEndDate: generalInfoForm.rankingEndDate,
       startDate: generalInfoForm.startDate,
       endDate: generalInfoForm.endDate,
+      initiativeOnIO: additionalInfoForm.serviceId ? true : false,
       serviceId: additionalInfoForm.serviceId,
       serviceName: additionalInfoForm.serviceName,
       argument: additionalInfoForm.argument,
@@ -280,7 +275,18 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     },
   });
 
-  const toggleSwitch = () => setIsChecked((previousState) => !previousState);
+  const handleInitiativeOnIO = (value: boolean, setFieldValue: any) => {
+    setIsChecked(() => value);
+    setFieldValue('initiativeOnIO', value);
+    if (value === true) {
+      setFieldValue('serviceName', '');
+      setFieldValue('description', '');
+      setFieldValue('argument', '');
+      setFieldValue('channels', [{ type: '', contact: '' }]);
+    } else {
+      setFieldValue('serviceId', '');
+    }
+  };
 
   const addAssistanceChannel = (values: any, setValues: any) => {
     const newAssistanceChannel = [...values.channels, { type: '', contact: '' }];
@@ -450,7 +456,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             <TextField
               sx={{ gridArea: 'budget' }}
               inputProps={{
-                step: 1,
+                step: 0.01,
                 min: 1,
                 type: 'number',
               }}
@@ -459,7 +465,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               /* needed by getByTextLabel */
               aria-labelledby={t('components.wizard.stepOne.form.budget')}
               id={t('components.wizard.stepOne.form.budget')}
-              /*  */
               name="budget"
               value={formik.values.budget}
               onChange={(e) => formik.handleChange(e)}
@@ -467,11 +472,19 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               helperText={formik.touched.budget && formik.errors.budget}
               data-testid="budget-test"
               required
+              InputLabelProps={{ required: false }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <EuroSymbolIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
             <TextField
               sx={{ gridArea: 'beneficiaryBudget' }}
               inputProps={{
-                step: 1,
+                step: 0.01,
                 min: 1,
                 type: 'number',
               }}
@@ -480,7 +493,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               /* needed by getByTextLbel */
               aria-labelledby={t('components.wizard.stepOne.form.beneficiaryBudget')}
               id={t('components.wizard.stepOne.form.beneficiaryBudget')}
-              /*  */
               name="beneficiaryBudget"
               value={formik.values.beneficiaryBudget}
               onChange={(e) => formik.handleChange(e)}
@@ -488,6 +500,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
               helperText={formik.touched.beneficiaryBudget && formik.errors.beneficiaryBudget}
               data-testid="beneficiary-budget-test"
               required
+              InputLabelProps={{ required: false }}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <EuroSymbolIcon />
+                  </InputAdornment>
+                ),
+              }}
             />
             {!isNaN(peopleReached(formik.values.budget, formik.values.beneficiaryBudget)) && (
               <Box
@@ -562,7 +582,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                       formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)
                     }
                     helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
-                    required
                   />
                 )}
               />
@@ -582,7 +601,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     sx={{ gridArea: 'rankingEndDate' }}
                     error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                     helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
-                    required
                   />
                 )}
               />
@@ -619,6 +637,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     sx={{ gridArea: 'startDate' }}
                     error={formik.touched.startDate && Boolean(formik.errors.startDate)}
                     helperText={formik.touched.startDate && formik.errors.startDate}
+                    required
+                    InputLabelProps={{ required: false }}
                   />
                 )}
               />
@@ -638,6 +658,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     sx={{ gridArea: 'endDate' }}
                     error={formik.touched.endDate && Boolean(formik.errors.endDate)}
                     helperText={formik.touched.endDate && formik.errors.endDate}
+                    required
+                    InputLabelProps={{ required: false }}
                   />
                 )}
               />
@@ -669,7 +691,15 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
           <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', py: 2 }}>
             <FormControlLabel
               sx={{ gridColumn: 'span 1' }}
-              control={<Switch value={isChecked} onChange={toggleSwitch} />}
+              control={
+                <Switch
+                  value={isChecked}
+                  onChange={(e) => {
+                    handleInitiativeOnIO(e.target.checked, formik.setFieldValue);
+                  }}
+                  name="initiativeOnIO"
+                />
+              }
               label={t('components.wizard.stepOne.form.otherInfo.deliverInitiative')}
             />
           </FormControl>
@@ -684,14 +714,16 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                     {t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                   </InputLabel>
                   <Select
+                    defaultValue=""
                     label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
                     onChange={(e) => formik.setFieldValue('serviceId', e.target.value)}
                     error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
+                    value={formik.values.serviceId}
                   >
-                    {serviceOptions.map(({ name, value }, index) => (
-                      <MenuItem key={index} value={value}>
+                    {serviceOptions.map(({ name, value }) => (
+                      <MenuItem key={value} value={value}>
                         {name}
                       </MenuItem>
                     ))}
@@ -758,29 +790,27 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                 </Box>
 
                 {formik.values.channels.map((_o, i) => {
-                  // const assistanceErrors =
-                  //   formik.errors.assistanceChannel?.length && formik.errors?.assistanceChannel[i];
-                  // const assistanceTouchedChannel =
-                  //   (formik.touched.assistanceChannel?.length &&
-                  //     formik.touched.assistanceChannel[i].channelName) ||
-                  //   false;
-                  // const assistanceTouchedContact =
-                  //   (formik.touched.assistanceChannel?.length &&
-                  //     formik.touched.assistanceChannel[i].contact) ||
-                  //   false;
+                  const channelErrors =
+                    (formik.errors.channels?.length && formik.errors.channels[i]) || {};
+                  const channelTouched =
+                    (formik.touched.channels?.length && formik.touched.channels[i]) || {};
 
-                  console.log(/* '' */);
+                  const typeError = typeof channelErrors === 'string' ? '' : channelErrors.type;
+                  const typeTouched = channelTouched.type;
+                  const contactError =
+                    typeof channelErrors === 'string' ? '' : channelErrors.contact;
+                  const contactTouched = channelTouched.contact;
 
                   return (
-                    <Box key={i}>
-                      <FormControl
-                        sx={{
-                          display: 'grid',
-                          gridTemplateColumns: 'repeat(24, 1fr)',
-                          py: 2,
-                          gridTemplateAreas: `"Cancel Contact Contact Contact Contact Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel Channel . . . . . . ."`,
-                        }}
-                      >
+                    <Box
+                      key={i}
+                      sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(24, 1fr)',
+                        py: 2,
+                      }}
+                    >
+                      <FormControl sx={{ gridColumn: 'span 1' }}>
                         {i !== 0 && (
                           <RemoveCircleOutlineIcon
                             color="error"
@@ -790,7 +820,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                               mt: 2,
                               fontSize: 30,
                               gridColumn: 'span 1',
-                              gridArea: 'Cancel',
                             }}
                             onClick={() =>
                               deleteAssistanceChannel(
@@ -802,16 +831,20 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                             }
                           />
                         )}
-                        <InputLabel sx={{ ml: 6, mt: 2 }}>
+                      </FormControl>
+
+                      <FormControl
+                        sx={{ gridColumn: 'span 4' }}
+                        error={typeTouched && Boolean(typeError)}
+                      >
+                        <InputLabel id={`channels[${i}].type}_label`}>
                           {t('components.wizard.stepOne.form.otherInfo.contact')}
                         </InputLabel>
-
                         <Select
+                          labelId={`channels[${i}].type}_label`}
                           name={`channels[${i}].type}`}
                           label={t('components.wizard.stepOne.form.otherInfo.contact')}
                           value={formik.values.channels[i].type}
-                          placeholder={t('components.wizard.stepOne.form.otherInfo.contact')}
-                          sx={{ gridColumn: 'span 4', pr: 5, gridArea: 'Contact' }}
                           onChange={(e) =>
                             handleContactSelect(
                               e,
@@ -821,6 +854,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                               formik.setTouched
                             )
                           }
+                          error={typeTouched && Boolean(typeError)}
                         >
                           {contacts.map(({ name, value }, id) => (
                             <MenuItem key={id} value={value}>
@@ -828,6 +862,9 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                             </MenuItem>
                           ))}
                         </Select>
+                        <FormHelperText>{typeTouched && typeError}</FormHelperText>
+                      </FormControl>
+                      <FormControl sx={{ gridColumn: 'span 10' }}>
                         <TextField
                           id={`channels[${i}].contact}`}
                           name={`channels[${i}].contact}`}
@@ -847,6 +884,8 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                               formik.setTouched
                             )
                           }
+                          error={contactTouched && Boolean(contactError)}
+                          helperText={contactTouched && contactError}
                         />
                       </FormControl>
                     </Box>
@@ -856,10 +895,20 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
                 >
                   <Button
+                    sx={[
+                      {
+                        justifyContent: 'start',
+                        padding: 0,
+                        gridColumn: 'span 12',
+                      },
+                      {
+                        '&:hover': { backgroundColor: 'transparent' },
+                      },
+                    ]}
+                    size="small"
+                    variant="text"
                     startIcon={<AddIcon />}
                     color="primary"
-                    sx={{ gridColumn: 'span 3' }}
-                    size="large"
                     onClick={() => addAssistanceChannel(formik.values, formik.setValues)}
                   >
                     {t('components.wizard.stepOne.form.otherInfo.addChannel')}

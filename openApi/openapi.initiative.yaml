@@ -141,7 +141,7 @@ paths:
             schema:
               $ref: '#/components/schemas/InitiativeInfoDTO'
       responses:
-        '200':
+        '201':
           description: Created
           content:
             application/json:
