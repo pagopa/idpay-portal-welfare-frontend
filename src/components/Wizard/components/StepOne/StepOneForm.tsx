@@ -34,6 +34,7 @@ import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   setInitiativeId,
@@ -63,6 +64,7 @@ interface Props {
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const additionalInfoForm = useAppSelector(additionalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
@@ -274,7 +276,17 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             }
           })
           .catch((error) => {
-            console.log(error);
+            addError({
+              id: 'NEW_GENERAL_INFO_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred saving initiative general info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
           });
       } else if (typeof initiativeIdSel === 'string') {
         putGeneralInfo(initiativeIdSel, formValuesParsed)
@@ -282,7 +294,17 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
             setCurrentStep(currentStep + 1);
           })
           .catch((error) => {
-            console.log(error);
+            addError({
+              id: 'EDIT_GENERAL_INFO_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative general info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
           });
       }
     },
