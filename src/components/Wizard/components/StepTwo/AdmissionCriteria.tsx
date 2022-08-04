@@ -2,6 +2,7 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
@@ -39,6 +40,7 @@ type Props = {
 const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
   const [openModal, setOpenModal] = useState(false);
   const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
@@ -82,7 +84,17 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         setCriteriaToSubmit([...newCriteriaToSubmit]);
       })
       .catch((error) => {
-        console.log(error);
+        addError({
+          id: 'GET_ADMISSION_CRITERIA_LIST_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting admission criteria list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
       });
   }, []);
 
@@ -242,7 +254,19 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           dispatch(saveManualCriteria(manualCriteriaToRender));
           setCurrentStep(currentStep + 1);
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          addError({
+            id: 'EDIT_BENEFICIARY_RULE_SAVE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred editing initiative beneficiary rule',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
@@ -252,7 +276,19 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
           dispatch(saveManualCriteria(manualCriteriaToRender));
         })
-        .catch((error) => console.log(error));
+        .catch((error) => {
+          addError({
+            id: 'EDIT_BENEFICIARY_RULE_SAVE_DRAFT_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred editing draft on initiative beneficiary rule',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
     setAction('');
   }, [action, criteriaToSubmit]);

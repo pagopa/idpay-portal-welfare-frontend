@@ -227,4 +227,9 @@ export default {
     celNumValid: 'il canale deve essere un numero di telefono',
     invalidDate: 'Data non valida',
   },
+  errors: {
+    title: 'Si è verificato un errore',
+    invalidDataDescription: 'Controllare i dati inseriti',
+    getDataDescription: 'Riprovare',
+  },
 };
