@@ -147,4 +147,24 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(() => expect(ManuallyAdded).toBeInTheDocument());
   });
+
+  // eslint-disable-next-line sonarjs/no-identical-functions
+  it('test add/remove ManualCriteria', () => {
+    render(
+      <Provider store={store}>
+        <AdmissionCriteria
+          action={''}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (value: SetStateAction<string>): void {
+            console.log(value);
+          }}
+          currentStep={1}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (value: SetStateAction<number>): void {
+            console.log(value);
+          }}
+        />
+      </Provider>
+    );
+  });
 });
