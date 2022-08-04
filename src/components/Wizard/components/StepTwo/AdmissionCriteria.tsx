@@ -13,7 +13,11 @@ import {
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
 // import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { putBeneficiaryRuleService } from '../../../../services/intitativeService';
+import {
+  putBeneficiaryRuleService,
+  putBeneficiaryRuleDraftService,
+} from '../../../../services/intitativeService';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -241,6 +245,15 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
         .catch((error) => console.log(error));
     }
 
+    if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      putBeneficiaryRuleDraftService(initiativeId, body)
+        .then((_response) => {
+          dispatch(saveAutomatedCriteria(body.automatedCriteria));
+          dispatch(saveManualCriteria(manualCriteriaToRender));
+        })
+        .catch((error) => console.log(error));
+    }
     setAction('');
   }, [action, criteriaToSubmit]);
 

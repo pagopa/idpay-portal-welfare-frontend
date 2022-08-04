@@ -8,6 +8,7 @@ import {
   TextField,
   SelectChangeEvent,
   Button,
+  IconButton,
 } from '@mui/material';
 import { Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useEffect } from 'react';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
@@ -58,11 +59,8 @@ const ManualCriteria = ({
       .max(200, t('validation.maxTwoHundred')),
     manualCriteriaSelectName: Yup.string().required(t('validation.required')),
     manualCriteriaValues: Yup.array().of(
-      Yup.string().when('manualCriteriaSelectName', (manualCriteriaSelectName, schema) => {
-        if (
-          manualCriteriaSelectName &&
-          manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
-        ) {
+      Yup.string().when('manualCriteriaSelectName', (_manualCriteriaSelectName, schema) => {
+        if (manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
           return Yup.string().required(t('validation.required'));
         }
         return schema;
@@ -233,16 +231,18 @@ const ManualCriteria = ({
         )} ${data.code}`}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <DeleteOutlineIcon
-          color="error"
-          data-id={data.code}
-          sx={{
-            cursor: 'pointer',
-          }}
-          onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
-            handleCriteriaRemoved(event)
-          }
-        />
+        <IconButton data-id={data.code}>
+          <DeleteOutlineIcon
+            color="error"
+            data-id={data.code}
+            sx={{
+              cursor: 'pointer',
+            }}
+            onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
+              handleCriteriaRemoved(event)
+            }
+          />
+        </IconButton>
       </Box>
       <Box
         sx={{

@@ -28,5 +28,10 @@ export const putBeneficiaryRuleService = (
   data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePut(id, data).then((res) => res);
 
+export const putBeneficiaryRuleDraftService = (
+  id: string,
+  data: InitiativeBeneficiaryRuleDTO
+): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
+
 export const putGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
   InitiativeApi.initiativeGeneralPut(id, data).then((res) => res);

@@ -139,6 +139,7 @@ const Wizard = () => {
                 startIcon={<SaveIcon />}
                 onClick={handleDraft}
                 data-testid="skip-action-test"
+                sx={{ display: activeStep > 0 ? 'inline-flex' : 'none' }}
               >
                 {t('components.wizard.common.buttons.skip')}
               </Button>
