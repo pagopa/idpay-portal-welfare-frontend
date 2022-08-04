@@ -96,9 +96,17 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       />
     ) as unknown as HTMLElement;
 
+    const formData = {
+      _type: '',
+      description: '',
+      code: '1',
+      boolValue: true,
+      multiValue: ['', ''],
+    };
+
     const ManuallyAdded = (
       <ManualCriteria
-        data={}
+        data={formData}
         action={''}
         // eslint-disable-next-line react/jsx-no-bind
         handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
