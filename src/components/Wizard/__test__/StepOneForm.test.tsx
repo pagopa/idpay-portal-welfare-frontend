@@ -87,8 +87,6 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       expect(getByTestId('beneficiary-budget-test')).not.toBeNull();
       expect(getByTestId('start-date-test')).not.toBeNull();
       expect(getByTestId('end-date-test')).not.toBeNull();
-      expect(getByTestId('ranking-start-date-test')).not.toBeNull();
-      expect(getByTestId('ranking-end-date-test')).not.toBeNull();
     });
   });
 
@@ -130,8 +128,8 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       expect(beneficiaryType2).toBeDisabled();
 
       fireEvent.click(beneficiaryKnown1);
-      expect(beneficiaryKnown1.checked).toEqual(true);
-      expect(beneficiaryKnown2.checked).toEqual(false);
+      expect(beneficiaryKnown1.checked).toEqual(false);
+      expect(beneficiaryKnown2.checked).toEqual(true);
 
       fireEvent.click(beneficiaryKnown2);
       expect(beneficiaryKnown2.checked).toEqual(true);
