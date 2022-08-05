@@ -8,7 +8,7 @@ import Wizard from '../Wizard';
 import StepOneForm from '../components/StepOne/StepOneForm';
 import { createStore } from './../../../redux/store';
 
-jest.mock("react-i18next", () => ({
+jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 

@@ -2,6 +2,7 @@ import {
   Box,
   FormControl,
   FormHelperText,
+  IconButton,
   MenuItem,
   Select,
   TextField,
@@ -104,14 +105,16 @@ const DateOdBirthCriteriaItem = ({
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <DeleteOutlineIcon
-          color="error"
-          data-id={formData.code}
-          sx={{
-            cursor: 'pointer',
-          }}
-          onClick={(event: any) => handleCriteriaRemoved(event)}
-        />
+        <IconButton data-id={formData.code}>
+          <DeleteOutlineIcon
+            color="error"
+            data-id={formData.code}
+            sx={{
+              cursor: 'pointer',
+            }}
+            onClick={(event: any) => handleCriteriaRemoved(event)}
+          />
+        </IconButton>
       </Box>
       <Box
         sx={{

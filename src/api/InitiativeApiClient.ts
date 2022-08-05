@@ -60,7 +60,7 @@ export const InitiativeApi = {
         },
       },
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponse(result, 201, onRedirectToLogin);
   },
 
   initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
@@ -80,6 +80,17 @@ export const InitiativeApi = {
       body: {
         ...data,
       },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  initiativeBeneficiaryRulePutDraft: async (
+    id: string,
+    data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeBeneficiaryDraft({
+      initiativeId: id,
+      body: { ...data },
     });
     return extractResponse(result, 204, onRedirectToLogin);
   },

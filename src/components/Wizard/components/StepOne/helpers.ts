@@ -16,8 +16,12 @@ export const getMinDate = (date: Date | string | undefined) => {
 };
 
 export const parseDate = (d: string) => {
-  const date = new Date(d).toLocaleDateString('en-CA');
-  return new Date(date);
+  if (d) {
+    const date = new Date(d).toLocaleDateString('en-CA');
+    return new Date(date);
+  } else {
+    return undefined;
+  }
 };
 
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
@@ -44,8 +48,7 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
       endDate: parseDate(values.endDate),
     },
     additionalInfo: {
-      // serviceId: values.serviceId, DISABLED TEMP
-      serviceId: '',
+      serviceId: values.serviceId,
       serviceName: values.serviceName,
       argument: values.argument,
       description: values.description,
@@ -56,7 +59,7 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => {
 
 export const serviceOptions = [
   {
-    value: 'cartaCult',
+    value: '7e789128-b99d-4428-83ba-db8a3e8ad4d0',
     name: 'Carta Della Cultura',
   },
   {

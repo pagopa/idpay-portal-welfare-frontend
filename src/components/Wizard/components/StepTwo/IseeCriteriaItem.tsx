@@ -2,12 +2,15 @@ import {
   Box,
   FormControl,
   FormHelperText,
+  IconButton,
+  InputAdornment,
   MenuItem,
   Select,
   TextField,
   Typography,
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
@@ -101,14 +104,16 @@ const IseeCriteriaItem = ({
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <DeleteOutlineIcon
-          color="error"
-          data-id={formData.code}
-          sx={{
-            cursor: 'pointer',
-          }}
-          onClick={(event: any) => handleCriteriaRemoved(event)}
-        />
+        <IconButton data-id={formData.code}>
+          <DeleteOutlineIcon
+            color="error"
+            data-id={formData.code}
+            sx={{
+              cursor: 'pointer',
+            }}
+            onClick={(event: any) => handleCriteriaRemoved(event)}
+          />
+        </IconButton>
       </Box>
       <Box
         sx={{
@@ -164,7 +169,7 @@ const IseeCriteriaItem = ({
         <FormControl sx={{ gridColumn: 'span 1' }}>
           <TextField
             inputProps={{
-              step: 1,
+              step: 0.01,
               min: 0,
               type: 'number',
             }}
@@ -181,6 +186,13 @@ const IseeCriteriaItem = ({
               iseeFormik.touched.iseeStartValue,
               iseeFormik.errors.iseeStartValue
             )}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EuroSymbolIcon htmlColor="#17324D" />
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <FormControl
@@ -188,7 +200,7 @@ const IseeCriteriaItem = ({
         >
           <TextField
             inputProps={{
-              step: 1,
+              step: 0.01,
               min: 1,
               type: iseeEndValueVisible,
             }}
@@ -205,6 +217,13 @@ const IseeCriteriaItem = ({
               iseeFormik.touched.iseeEndValue,
               iseeFormik.errors.iseeEndValue
             )}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EuroSymbolIcon htmlColor="#17324D" />
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
       </Box>
