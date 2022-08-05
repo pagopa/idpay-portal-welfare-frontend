@@ -119,9 +119,10 @@ stages:
             inputs:
               SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
               organization: '$(SONARCLOUD_ORG)'
-              scannerMode: Other
+              scannerMode: CLI
               projectKey: $(SONARCLOUD_PROJECT_KEY)
               projectName: $(SONARCLOUD_PROJECT_NAME)
+              cliSources: '.'
               extraProperties: |
                 sonar.javascript.file.suffixes=.js,.jsx
                 sonar.typescript.file.suffixes=.ts,.tsx
@@ -147,7 +148,8 @@ stages:
           - script: yarn lint
             displayName: 'Lint execution'
 
-#          - task: SonarCloudAnalyze@1
+          - script: ls -R [!node_modules]*
+            displayName: 'Show all files recursively'
 
           - task: SonarCloudPublish@1
             inputs:
