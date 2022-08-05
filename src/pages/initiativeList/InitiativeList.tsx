@@ -1,0 +1,531 @@
+import {
+  Paper,
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Typography,
+  Button,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Menu,
+  MenuItem,
+} from '@mui/material';
+import { useState, useEffect } from 'react';
+import { visuallyHidden } from '@mui/utils';
+import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { useTranslation } from 'react-i18next';
+import { grey } from '@mui/material/colors';
+import SearchIcon from '@mui/icons-material/Search';
+import { useHistory } from 'react-router-dom';
+import MoreIcon from '@mui/icons-material/MoreVert';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { getInitativeSummary, getInitiativeDetail } from '../../services/intitativeService';
+import routes, { BASE_ROUTE } from '../../routes';
+
+import {
+  resetInitiative,
+  saveAutomatedCriteria,
+  saveManualCriteria,
+  setAdditionalInfo,
+  setGeneralInfo,
+  setInitiativeId,
+  setOrganizationId,
+  setStatus,
+} from '../../redux/slices/initiativeSlice';
+
+import { useAppDispatch } from '../../redux/hooks';
+import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../model/Initiative';
+import {
+  EnhancedTableProps,
+  Data,
+  Order,
+  stableSort,
+  getComparator,
+  HeadCell,
+  parseGeneralInfo,
+  parseAdditionalInfo,
+} from './helpers';
+
+function EnhancedTableHead(props: EnhancedTableProps) {
+  const { order, orderBy, onRequestSort } = props;
+  const createSortHandler = (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+    onRequestSort(event, property);
+  };
+  const { t } = useTranslation();
+
+  const headCells: ReadonlyArray<HeadCell> = [
+    {
+      id: 'initiativeName',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.initiativeName'),
+    },
+    {
+      id: 'creationDate',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.creationDate'),
+    },
+    {
+      id: 'updateDate',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.updateDate'),
+    },
+    {
+      id: 'initiativeId',
+      numeric: false,
+      disablePadding: true,
+      label: t('pages.initiativeList.tableColumns.initiativeId'),
+    },
+    {
+      id: 'status',
+      numeric: false,
+      disablePadding: false,
+      label: t('pages.initiativeList.tableColumns.initiativeStatus'),
+    },
+    {
+      id: 'id',
+      numeric: true,
+      disablePadding: false,
+      label: '',
+    },
+  ];
+
+  return (
+    <TableHead sx={{ backgroundColor: grey.A200 }}>
+      <TableRow>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            align="left"
+            padding="normal"
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <Box component="span" sx={visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </Box>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+      </TableRow>
+    </TableHead>
+  );
+}
+
+type ChipProps = {
+  label: string;
+  color: string;
+};
+const StatusChip = ({ label, color }: ChipProps) => (
+  <span
+    style={{
+      backgroundColor: color,
+      padding: '7px 14px',
+      borderRadius: '16px',
+      fontWeight: 600,
+    }}
+  >
+    {label}
+  </span>
+);
+
+type ActionsMenuProps = {
+  id: string;
+  status: string;
+};
+const ActionMenu = ({ id, status }: ActionsMenuProps) => {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const { t } = useTranslation();
+  const handleClickActionsMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleCloseActionsMenu = () => {
+    setAnchorEl(null);
+  };
+
+  type RenderActionProps = {
+    id: string;
+    status: string;
+  };
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const RenderAction = ({ id, status }: RenderActionProps) => {
+    const history = useHistory();
+    const dispatch = useAppDispatch();
+    const addError = useErrorDispatcher();
+    const handleUpdateInitiative = (id: string) => {
+      getInitiativeDetail(id)
+        .then((response) => {
+          dispatch(resetInitiative());
+          dispatch(setInitiativeId(response.initiativeId));
+          dispatch(setOrganizationId(response.organizationId));
+          dispatch(setStatus(response.status));
+          const generalInfo = parseGeneralInfo(response.general);
+          dispatch(setGeneralInfo(generalInfo));
+          const additionalInfo = parseAdditionalInfo(response.additionalInfo);
+          dispatch(setAdditionalInfo(additionalInfo));
+          // eslint-disable-next-line functional/no-let
+          let automatedCriteria: Array<AutomatedCriteriaItem> = [];
+          // eslint-disable-next-line sonarjs/no-unused-collection
+          const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
+          if (
+            response.beneficiaryRule &&
+            response.beneficiaryRule.automatedCriteria &&
+            Object.keys(response.beneficiaryRule.automatedCriteria).length !== 0
+          ) {
+            automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
+          }
+
+          if (
+            response.beneficiaryRule &&
+            response.beneficiaryRule.selfDeclarationCriteria &&
+            Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
+          ) {
+            const manualCriteriaFetched: Array<{
+              _type?: string;
+              description?: string;
+              value?: boolean | Array<string>;
+              code?: string;
+            }> = [...response.beneficiaryRule.selfDeclarationCriteria];
+
+            manualCriteriaFetched.forEach((m) => {
+              if (typeof m.value === 'boolean') {
+                // eslint-disable-next-line functional/immutable-data
+                selfDeclarationCriteria.push({
+                  // eslint-disable-next-line no-underscore-dangle
+                  _type: m._type,
+                  boolValue: m.value,
+                  multiValue: [],
+                  description: m.description || '',
+                  code: m.code || '',
+                });
+              } else if (Array.isArray(m.value)) {
+                // eslint-disable-next-line functional/immutable-data
+                selfDeclarationCriteria.push({
+                  // eslint-disable-next-line no-underscore-dangle
+                  _type: m._type,
+                  boolValue: true,
+                  multiValue: [...m.value],
+                  description: m.description || '',
+                  code: m.code || '',
+                });
+              }
+            });
+          }
+          dispatch(saveAutomatedCriteria(automatedCriteria));
+          dispatch(saveManualCriteria(selfDeclarationCriteria));
+          history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_INITIATIVE_DETAIL_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting initiative data',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    };
+
+    switch (status) {
+      case 'DRAFT':
+        return (
+          <MenuItem onClick={() => handleUpdateInitiative(id)}>
+            {t('pages.initiativeList.actions.update')}
+          </MenuItem>
+        );
+      case 'IN_REVISION':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
+      case 'TO_CHECK':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      case 'APPROVED':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      case 'PUBLISHED':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      case 'CLOSED':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      case 'SUSPENDED':
+        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <TableCell align="right">
+      <IconButton
+        id={`actions_button-${id}`}
+        aria-controls={open ? `actions-menu_${id}` : undefined}
+        aria-haspopup="true"
+        aria-expanded={open ? 'true' : undefined}
+        onClick={handleClickActionsMenu}
+      >
+        <MoreIcon />
+      </IconButton>
+      <Menu
+        id={`actions-menu_${id}`}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleCloseActionsMenu}
+        MenuListProps={{
+          'aria-labelledby': `actions_button-${id}`,
+        }}
+      >
+        <RenderAction id={id} status={status} />
+        <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>
+      </Menu>
+    </TableCell>
+  );
+};
+
+const InitiativeList = () => {
+  const [order, setOrder] = useState<Order>('asc');
+  const [orderBy, setOrderBy] = useState<keyof Data>('initiativeName');
+  const [initiativeList, setInitiativeList] = useState(Array<Data>);
+  const [initiativeListFiltered, setInitiativeListFiltered] = useState(Array<Data>);
+  const { t } = useTranslation();
+  const history = useHistory();
+  const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
+
+  useEffect(() => {
+    getInitativeSummary()
+      .then((response: any) => response)
+      .then((responseT) => {
+        const data = responseT.map((r: any, i: any) => ({
+          ...r,
+          creationDate: r.creationDate.toLocaleDateString(),
+          updateDate: r.updateDate.toLocaleDateString(),
+          id: i,
+        }));
+        setInitiativeList([...data]);
+        setInitiativeListFiltered([...data]);
+      })
+      .catch((error: any) => {
+        addError({
+          id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting initiative summary list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      });
+  }, []);
+
+  const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof Data) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
+  };
+
+  const handleSearchInitiatives = (s: string) => {
+    const search = s.toLocaleLowerCase();
+    if (search.length > 0) {
+      const listFiltered: Array<Data> = [];
+      initiativeList.forEach((record) => {
+        if (record.initiativeName.toLowerCase().startsWith(search)) {
+          // eslint-disable-next-line functional/immutable-data
+          listFiltered.push(record);
+        }
+      });
+      setInitiativeListFiltered([...listFiltered]);
+    } else {
+      setInitiativeListFiltered([...initiativeList]);
+    }
+  };
+
+  const renderInitiativeStatus = (status: string) => {
+    /* eslint-disable functional/no-let */
+    let statusLabel = '';
+    let statusColor = '';
+    switch (status) {
+      case 'DRAFT':
+        statusLabel = t('pages.initiativeList.status.draft');
+        statusColor = grey.A200;
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'IN_REVISION':
+        statusLabel = t('pages.initiativeList.status.inRevision');
+        statusColor = '#FFD25E';
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'TO_CHECK':
+        statusLabel = t('pages.initiativeList.status.toCheck');
+        statusColor = '#FE7A7A';
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'APPROVED':
+        statusLabel = t('pages.initiativeList.status.approved');
+        statusColor = '#7FCD7D';
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'PUBLISHED':
+        statusLabel = t('pages.initiativeList.status.published');
+        statusColor = '#7ED5FC';
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'CLOSED':
+        statusLabel = t('pages.initiativeList.status.closed');
+        statusColor = grey.A200;
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      case 'SUSPENDED':
+        statusLabel = t('pages.initiativeList.status.suspended');
+        statusColor = '#FFD25E';
+        return <StatusChip label={statusLabel} color={statusColor} />;
+      default:
+        return <span>{status}</span>;
+    }
+  };
+
+  const goToNewInitiative = () => {
+    dispatch(resetInitiative());
+    history.push(routes.NEW_INITIATIVE);
+  };
+
+  return (
+    <Box sx={{ width: '100%', px: 2 }}>
+      <TitleBox
+        title={t('pages.initiativeList.title')}
+        subTitle={t('pages.initiativeList.subtitle')}
+        mbTitle={2}
+        mtTitle={2}
+        mbSubTitle={5}
+        variantTitle="h4"
+        variantSubTitle="body1"
+      />
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          columnGap: 2,
+          justifyContent: 'center',
+          width: '100%',
+          mb: 5,
+        }}
+      >
+        <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
+          <TextField
+            id="search-initiative"
+            placeholder={t('pages.initiativeList.search')}
+            variant="outlined"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            onChange={(e) => {
+              handleSearchInitiatives(e.target.value);
+            }}
+          />
+        </Box>
+        <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
+          <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
+            {t('pages.initiativeList.createNew')}
+          </Button>
+        </Box>
+      </Box>
+
+      <Paper sx={{ width: '100%', mb: 2, backgroundColor: grey.A200, p: 3 }}>
+        <TableContainer>
+          {initiativeListFiltered.length > 0 ? (
+            <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
+              <EnhancedTableHead
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+              />
+              <TableBody sx={{ backgroundColor: 'white' }}>
+                {stableSort(initiativeListFiltered, getComparator(order, orderBy)).map(
+                  (row, index) => {
+                    const labelId = `enhanced-table-row-${index}`;
+                    return (
+                      <TableRow tabIndex={-1} key={row.id} sx={{}}>
+                        <TableCell component="th" id={labelId} scope="row">
+                          <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
+                            {row.initiativeName}
+                          </Typography>
+                        </TableCell>
+                        <TableCell>{row.creationDate}</TableCell>
+                        <TableCell>{row.updateDate}</TableCell>
+                        <TableCell>{row.initiativeId}</TableCell>
+                        <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
+
+                        <ActionMenu id={row.initiativeId} status={row.status} />
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                justifyContent: 'center',
+                width: '100%',
+                backgroundColor: 'white',
+                p: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  display: 'inline',
+                  gridColumn: 'span 12',
+                  justifyContent: 'center',
+                  textAlign: 'center',
+                }}
+              >
+                <Typography sx={{ display: 'inline' }}>
+                  {t('pages.initiativeList.emptyList')}
+                </Typography>
+                <Button
+                  sx={[
+                    {
+                      justifyContent: 'start',
+                      padding: 0,
+                      fontSize: '1em',
+                    },
+                    {
+                      '&:hover': { backgroundColor: 'transparent' },
+                    },
+                  ]}
+                  size="small"
+                  variant="text"
+                  onClick={goToNewInitiative}
+                  disableRipple={true}
+                  disableFocusRipple={true}
+                >
+                  {t('pages.initiativeList.createNew')}
+                </Button>
+              </Box>
+            </Box>
+          )}
+        </TableContainer>
+      </Paper>
+    </Box>
+  );
+};
+
+export default InitiativeList;
