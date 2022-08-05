@@ -175,6 +175,7 @@ stages:
               INLINE_RUNTIME_CHUNK: 'false'
               REACT_APP_ENV: '$(environment)'
 
+              REACT_APP_URL_FE_PRE_LOGIN: '$(react_app_url_fe_pre_login)'
               REACT_APP_URL_FE_LOGIN: '$(react_app_url_fe_auth)/login'
               REACT_APP_URL_FE_LOGOUT: '$(react_app_url_fe_auth)/logout'
               REACT_APP_URL_FE_LANDING: '$(react_app_url_fe_landing)'
