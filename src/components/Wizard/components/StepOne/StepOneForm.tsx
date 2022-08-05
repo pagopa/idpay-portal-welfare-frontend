@@ -614,6 +614,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'rankingStartDate' }}
                   error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                   helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
+                  required
                 />
               )}
             />

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testExecutions version="1">
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx">
+    <testCase name="&lt;AdmissionCriteria /&gt; should display the second step, with validation on input data" duration="136"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; call the submit event when form is submitted" duration="1057"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; draf action makes the dispatch" duration="414"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; Test onClick of &quot;Sfoglia Criteri&quot; to open the modal must be true" duration="20">
+      <failure message="Error: expect(received).not.toBeInTheDocument()"><![CDATA[Error: expect(received).not.toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  object
+Received has value: <AdmissionCriteriaModal criteriaToRender={[]} handleCloseModal={[Function handleCloseModal]} handleCriteriaAdded={[Function handleCriteriaAdded]} openModal={false} setCriteriaToRender={[Function setCriteriaToRender]} />
+    at __EXTERNAL_MATCHER_TRAP__ (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\expect\build\index.js:386:30)
+    at Object.toBeInTheDocument (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\expect\build\index.js:387:15)
+    at C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:148:35
+    at batchedUpdates$1 (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom.development.js:22380:12)
+    at act (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom-test-utils.development.js:1042:14)
+    at C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:147:13
+    at batchedUpdates$1 (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom.development.js:22380:12)
+    at act (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom-test-utils.development.js:1042:14)
+    at Object.<anonymous> (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:74:11)
+    at Promise.then.completed (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\utils.js:391:28)
+    at new Promise (<anonymous>)
+    at callAsyncCircusFn (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\utils.js:316:10)
+    at _callCircusTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:218:40)
+    at _runTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:155:3)
+    at _runTestsForDescribeBlock (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:66:9)
+    at _runTestsForDescribeBlock (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:60:9)
+    at run (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:25:3)
+    at runAndTransformResultsToJestFormat (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
+    at jestAdapter (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
+    at runTestInternal (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-runner\build\runTest.js:389:16)
+    at runTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-runner\build\runTest.js:475:34)]]></failure>
+    </testCase>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\__tests__\App.test.tsx">
+    <testCase name="Test rendering" duration="197"/>
+    <testCase name="Test rendering dashboard parties loaded" duration="40"/>
+    <testCase name="Test routing " duration="60"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\__test__\StepOneForm.test.tsx">
+    <testCase name="&lt;StepOneForm /&gt; should display the first form, with validation on input data" duration="599"/>
+    <testCase name="&lt;StepOneForm /&gt; call the submit event when form is submitted" duration="592"/>
+    <testCase name="&lt;StepOneForm /&gt; draft action makes the dispatch" duration="373"/>
+    <testCase name="&lt;StepOneForm /&gt; Form Fields not null" duration="248"/>
+    <testCase name="&lt;StepOneForm /&gt; BeneficiaryTypes / BeneficiaryKnowns have the correct values" duration="393"/>
+    <testCase name="&lt;StepOneForm /&gt; Total Budget / Budget per Person Test" duration="558"/>
+    <testCase name="&lt;StepOneForm /&gt; Date Join / Spend Test" duration="760"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedParty.test.tsx">
+    <testCase name="Test default behavior when no parties" duration="73"/>
+    <testCase name="Test party not active" duration="60"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withLogin.test.tsx">
+    <testCase name="Test no auth session" duration="19"/>
+    <testCase name="Test auth session" duration="6"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedPartyProducts.test.tsx">
+    <testCase name="Test default behavior when no parties" duration="74"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\pages\auth\__tests__\Auth.test.tsx">
+    <testCase name="test login success" duration="19"/>
+    <testCase name="test login success no token" duration="23"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withParties.test.tsx">
+    <testCase name="Test" duration="87"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__tests__\partyService.test.ts">
+    <testCase name="Test fetchParties" duration="0"/>
+    <testCase name="Test fetchPartyDetails Test no parties as cache" duration="0"/>
+    <testCase name="Test fetchPartyDetails Test parties as cache" duration="0"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__tests__\productService.test.ts">
+    <testCase name="Test fetchProducts" duration="1"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Product.test.ts">
+    <testCase name="Test institutionInfo2Party" duration="0"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Party.test.ts">
+    <testCase name="Test institutionResource2Party" duration="0"/>
+  </file>
+</testExecutions>

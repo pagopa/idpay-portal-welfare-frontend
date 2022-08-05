@@ -326,6 +326,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           sx={{ gridArea: 'criteriaButton' }}
           startIcon={<ListAltIcon />}
           onClick={handleOpenModal}
+          data-testid="criteria-button-test"
         >
           {t('components.wizard.stepTwo.chooseCriteria.browse')}
         </Button>
@@ -335,8 +336,14 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
           handleCriteriaAdded={handleCriteriaAdded}
           criteriaToRender={criteriaToRender}
           setCriteriaToRender={setCriteriaToRender}
+          data-testid="modal-test"
         />
-        <Button variant="text" sx={{ gridArea: 'addButton' }} onClick={handleManualCriteriaAdded}>
+        <Button
+          variant="text"
+          sx={{ gridArea: 'addButton' }}
+          onClick={handleManualCriteriaAdded}
+          data-testid="add-manually-test"
+        >
           {t('components.wizard.stepTwo.chooseCriteria.addManually')}
         </Button>
       </Box>

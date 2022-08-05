@@ -6,6 +6,7 @@ import { verifyFetchPartyProductsMockExecution } from '../../services/__mocks__/
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { testToken } from '../../utils/constants';
 import withSelectedPartyProducts from '../withSelectedPartyProducts';
+import React, { Fragment } from 'react';
 
 jest.mock('../../services/partyService');
 jest.mock('../../services/productService');
@@ -28,7 +29,7 @@ const renderApp = async (
 ) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  const Component = () => <></>;
+  const Component = () => <Fragment></Fragment>;
   const DecoratedComponent = withSelectedPartyProducts(Component);
 
   render(

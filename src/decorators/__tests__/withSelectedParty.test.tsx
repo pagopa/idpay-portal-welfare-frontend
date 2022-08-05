@@ -5,6 +5,7 @@ import withSelectedParty from '../withSelectedParty';
 import { verifyFetchPartyDetailsMockExecution } from '../../services/__mocks__/partyService';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { testToken } from '../../utils/constants';
+import React, { Fragment } from 'react';
 
 jest.mock('../../services/partyService');
 
@@ -24,7 +25,7 @@ const renderApp = async (
 ) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  const Component = () => <></>;
+  const Component = () => <Fragment></Fragment>;
   const DecoratedComponent = withSelectedParty(Component);
 
   render(
