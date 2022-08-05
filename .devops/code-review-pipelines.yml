@@ -147,7 +147,8 @@ stages:
           - script: yarn lint
             displayName: 'Lint execution'
 
-#          - task: SonarCloudAnalyze@1
+          - script: ls -R [!node_modules]*
+            displayName: 'Show all files recursively'
 
           - task: SonarCloudPublish@1
             inputs:
