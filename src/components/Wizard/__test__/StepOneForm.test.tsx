@@ -43,14 +43,15 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         </Provider>
       );
 
-      // const onSubmit = jest.fn();
       const submit = getByTestId('continue-action-test');
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
+      await act(async () => {
+        expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
+      });
       fireEvent.click(submit);
     });
   });
 
-  it('draf action makes the dispatch', async () => {
+  it('draft action makes the dispatch', async () => {
     await act(async () => {
       const { getByTestId } = render(
         <Provider store={store}>
@@ -58,11 +59,11 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         </Provider>
       );
 
-      // const onSkip = jest.fn();
       const skip = getByTestId('skip-action-test');
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+      await act(async () => {
+        expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+      });
       fireEvent.click(skip);
-      // expect(onSkip).toHaveBeenCalled();
     });
   });
 
@@ -85,12 +86,24 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
           />
         </Provider>
       );
-      expect(getByTestId('beneficiary-type-test')).not.toBeNull();
-      expect(getByTestId('beneficiary-known-test')).not.toBeNull();
-      expect(getByTestId('budget-test')).not.toBeNull();
-      expect(getByTestId('beneficiary-budget-test')).not.toBeNull();
-      expect(getByTestId('start-date-test')).not.toBeNull();
-      expect(getByTestId('end-date-test')).not.toBeNull();
+      await act(async () => {
+        expect(getByTestId('beneficiary-type-test')).not.toBeNull();
+      });
+      await act(async () => {
+        expect(getByTestId('beneficiary-known-test')).not.toBeNull();
+      });
+      await act(async () => {
+        expect(getByTestId('budget-test')).not.toBeNull();
+      });
+      await act(async () => {
+        expect(getByTestId('beneficiary-budget-test')).not.toBeNull();
+      });
+      await act(async () => {
+        expect(getByTestId('start-date-test')).not.toBeNull();
+      });
+      await act(async () => {
+        expect(getByTestId('end-date-test')).not.toBeNull();
+      });
     });
   });
 
@@ -128,63 +141,76 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       ) as HTMLInputElement;
 
       fireEvent.click(beneficiaryType);
-      expect(beneficiaryType1).toBeChecked();
-      expect(beneficiaryType2).toBeDisabled();
+
+      await act(async () => {
+        expect(beneficiaryType1).toBeChecked();
+      });
+      await act(async () => {
+        expect(beneficiaryType2).toBeDisabled();
+      });
 
       fireEvent.click(beneficiaryKnown1);
-      expect(beneficiaryKnown1.checked).toEqual(false);
-      expect(beneficiaryKnown2.checked).toEqual(true);
+
+      await act(async () => {
+        expect(beneficiaryKnown1.checked).toEqual(true);
+      });
+      await act(async () => {
+        expect(beneficiaryKnown2.checked).toEqual(false);
+      });
 
       fireEvent.click(beneficiaryKnown2);
-      expect(beneficiaryKnown2.checked).toEqual(true);
-      expect(beneficiaryKnown1.checked).toEqual(false);
+
+      await act(async () => {
+        expect(beneficiaryKnown2.checked).toEqual(true);
+      });
+      await act(async () => {
+        expect(beneficiaryKnown1.checked).toEqual(false);
+      });
     });
   });
 
   it('Total Budget / Budget per Person Test', async () => {
+    const { getByLabelText, getByDisplayValue } = render(
+      <Provider store={store}>
+        <StepOneForm
+          action={''}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (value: SetStateAction<string>) {
+            console.log(value);
+          }}
+          currentStep={0}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (value: SetStateAction<number>) {
+            console.log(value);
+          }}
+        />
+      </Provider>
+    );
+
+    type TestElement = Document | Element | Window | Node;
+
+    /* check if the field are required */
+
+    function hasInputValueTot(e: TestElement, budgetTot: string) {
+      console.log('hasInputValueTot ', getByDisplayValue(budgetTot) === e);
+      return getByDisplayValue(budgetTot) === e;
+    }
+    const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
+    fireEvent.change(budget, { target: { value: '1000' } });
     await act(async () => {
-      const { getByLabelText, getByDisplayValue } = render(
-        <Provider store={store}>
-          <StepOneForm
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>) {
-              console.log(value);
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>) {
-              console.log(value);
-            }}
-          />
-        </Provider>
-      );
+      expect(hasInputValueTot(budget, '1000')).toBe(true);
+      expect(budget).toBeRequired();
+    });
 
-      type TestElement = Document | Element | Window | Node;
+    function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
+      return getByDisplayValue(budgetPerPerson) === e;
+    }
+    const beneficiaryBudget = getByLabelText(/components.wizard.stepOne.form.beneficiaryBudget/);
+    fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
 
-      /* check if the field are required */
-
-      await act(async () => {
-        function hasInputValueTot(e: TestElement, budgetTot: string) {
-          return getByDisplayValue(budgetTot) === e;
-        }
-        const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
-        fireEvent.change(budget, { target: { value: '1000' } });
-        expect(hasInputValueTot(budget, '1000')).toBe(true);
-        expect(budget).toBeRequired();
-      });
-
-      await act(async () => {
-        function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
-          return getByDisplayValue(budgetPerPerson) === e;
-        }
-        const beneficiaryBudget = getByLabelText(
-          /components.wizard.stepOne.form.beneficiaryBudget/
-        );
-        fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
-        expect(hasInputValuePerPerson(beneficiaryBudget, '100')).toBe(true);
-        expect(beneficiaryBudget).toBeRequired();
-      });
+    await act(async () => {
+      expect(hasInputValuePerPerson(beneficiaryBudget, '100')).toBe(true);
+      expect(beneficiaryBudget).toBeRequired();
     });
   });
 
@@ -224,58 +250,68 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
 
       const d = date().transform(parseDateString);
       /* check if the fields are required */
-
-      expect(startDate).toBeRequired();
-      expect(endDate).toBeRequired();
+      await act(async () => {
+        expect(startDate).toBeRequired();
+      });
+      await act(async () => {
+        expect(endDate).toBeRequired();
+      });
 
       /* Checking if invalid cast return invalid date */
-
-      expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
-      expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
-
+      await act(async () => {
+        expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
+      });
+      await act(async () => {
+        expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
+      });
       /* Casting */
-
-      expect(d.cast(new Date())).toBeInstanceOf(Date);
-
+      await act(async () => {
+        expect(d.cast(new Date())).toBeInstanceOf(Date);
+      });
       /* join-from */
 
       fireEvent.click(rankingStartDate);
       fireEvent.change(rankingStartDate, { target: { value: '19/07/2022' } });
-      expect(
-        d
-          .cast('19-07-2022')
-          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      ).toBe('19/07/2022');
-
+      await act(async () => {
+        expect(
+          d
+            .cast('19-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('19/07/2022');
+      });
       /* join-to */
 
       fireEvent.mouseOver(rankingEndDate);
       fireEvent.change(rankingEndDate, { target: { value: '20/07/2022' } });
-      expect(
-        d
-          .cast('20-07-2022')
-          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      ).toBe('20/07/2022');
-
+      await act(async () => {
+        expect(
+          d
+            .cast('20-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('20/07/2022');
+      });
       /* spend-from */
 
       fireEvent.mouseOver(startDate);
       fireEvent.change(startDate, { target: { value: '21/07/2022' } });
-      expect(
-        d
-          .cast('21-07-2022')
-          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      ).toBe('21/07/2022');
-
+      await act(async () => {
+        expect(
+          d
+            .cast('21-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('21/07/2022');
+      });
       /* spend-to */
 
       fireEvent.mouseOver(endDate);
       fireEvent.change(endDate, { target: { value: '22/07/2022' } });
-      expect(
-        d
-          .cast('22-07-2022')
-          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-      ).toBe('22/07/2022');
+      await act(async () => {
+        expect(
+          d
+            .cast('22-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('22/07/2022');
+      });
     });
   });
 });

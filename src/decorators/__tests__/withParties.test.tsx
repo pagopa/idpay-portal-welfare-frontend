@@ -3,12 +3,13 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../redux/store';
 import withParties from '../withParties';
 import { verifyFetchPartiesMockExecution } from '../../services/__mocks__/partyService';
+import React, { Fragment } from 'react';
 
 jest.mock('../../services/partyService');
 
 const renderApp = (injectedStore?: any) => {
   const store = injectedStore ? injectedStore : createStore();
-  const Component = () => <></>;
+  const Component = () => <Fragment></Fragment>;
   const DecoratedComponent = withParties(Component);
   render(
     <Provider store={store}>
