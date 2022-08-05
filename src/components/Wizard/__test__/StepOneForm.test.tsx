@@ -142,50 +142,50 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
   });
 
   it('Total Budget / Budget per Person Test', async () => {
-    const { getByLabelText, getByDisplayValue } = render(
-      <Provider store={store}>
-        <StepOneForm
-          action={''}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (value: SetStateAction<string>) {
-            console.log(value);
-          }}
-          currentStep={0}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (value: SetStateAction<number>) {
-            console.log(value);
-          }}
-        />
-      </Provider>
-    );
-
-    type TestElement = Document | Element | Window | Node;
-
-    function hasInputValueTot(e: TestElement, budgetTot: string) {
-      return getByDisplayValue(budgetTot) === e;
-    }
-
-    function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
-      return getByDisplayValue(budgetPerPerson) === e;
-    }
-
-    const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
-    const beneficiaryBudget = getByLabelText(/components.wizard.stepOne.form.beneficiaryBudget/);
-
-    /* check if the field are required */
-
-    fireEvent.change(budget, { target: { value: '1000' } });
-
     await act(async () => {
-      expect(hasInputValueTot(budget, '1000')).toBe(true);
+      const { getByLabelText, getByDisplayValue } = render(
+        <Provider store={store}>
+          <StepOneForm
+            action={''}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (value: SetStateAction<string>) {
+              console.log(value);
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (value: SetStateAction<number>) {
+              console.log(value);
+            }}
+          />
+        </Provider>
+      );
+
+      type TestElement = Document | Element | Window | Node;
+
+      /* check if the field are required */
+
+      await act(async () => {
+        function hasInputValueTot(e: TestElement, budgetTot: string) {
+          return getByDisplayValue(budgetTot) === e;
+        }
+        const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
+        fireEvent.change(budget, { target: { value: '1000' } });
+        expect(hasInputValueTot(budget, '1000')).toBe(true);
+        expect(budget).toBeRequired();
+      });
+
+      await act(async () => {
+        function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
+          return getByDisplayValue(budgetPerPerson) === e;
+        }
+        const beneficiaryBudget = getByLabelText(
+          /components.wizard.stepOne.form.beneficiaryBudget/
+        );
+        fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
+        expect(hasInputValuePerPerson(beneficiaryBudget, '100')).toBe(true);
+        expect(beneficiaryBudget).toBeRequired();
+      });
     });
-
-    fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
-    expect(hasInputValuePerPerson(beneficiaryBudget, '100')).toBe(true);
-
-    expect(budget).toBeRequired();
-    expect(beneficiaryBudget).toBeRequired();
-    /* Validation */
   });
 
   it('Date Join / Spend Test', async () => {
@@ -217,10 +217,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         return date instanceof Date && !isNaN(date.getTime());
       }
 
-      const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.startDate/);
-      const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.endDate/);
-      const startDate = getByLabelText(/components.wizard.stepOne.form.rankingStartDate/);
-      const endDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
+      const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.rankingStartDate/);
+      const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
+      const startDate = getByLabelText(/components.wizard.stepOne.form.startDate/);
+      const endDate = getByLabelText(/components.wizard.stepOne.form.endDate/);
 
       const d = date().transform(parseDateString);
       /* check if the fields are required */
