@@ -231,16 +231,18 @@ const ManualCriteria = ({
         )} ${data.code}`}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={data.code}>
+        <IconButton
+          data-id={data.code}
+          onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
+            handleCriteriaRemoved(event)
+          }
+        >
           <DeleteOutlineIcon
             color="error"
             data-id={data.code}
             sx={{
               cursor: 'pointer',
             }}
-            onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
-              handleCriteriaRemoved(event)
-            }
           />
         </IconButton>
       </Box>

@@ -63,7 +63,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
       const skip = getByTestId('skip-action-test');
       // eslint-disable-next-line @typescript-eslint/await-thenable
-      await fireEvent.click(skip);
+      fireEvent.click(skip);
       expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
     });
   });
@@ -93,11 +93,13 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       <AdmissionCriteriaModal
         openModal={false}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCloseModal={function (event: React.MouseEvent<Element, MouseEvent>): void {
+        handleCloseModal={function (event: React.MouseEvent<HTMLInputElement, MouseEvent>): void {
           console.log(event);
         }}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaAdded={function (event: React.MouseEvent<Element, MouseEvent>): void {
+        handleCriteriaAdded={function (
+          event: React.MouseEvent<HTMLInputElement, MouseEvent>
+        ): void {
           console.log(event);
         }}
         criteriaToRender={[]}
@@ -121,7 +123,9 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         data={formData}
         action={''}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
+        handleCriteriaRemoved={function (
+          event: React.MouseEvent<HTMLInputElement, MouseEvent>
+        ): void {
           console.log(event);
         }}
         manualCriteriaToRender={[]}
@@ -147,17 +151,11 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     });
 
     // eslint-disable-next-line @typescript-eslint/await-thenable
-    await fireEvent.click(criteria);
+    fireEvent.click(criteria);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
       expect(criteria).toBeTruthy();
-    });
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
       expect(criteriaModal).toBeInTheDocument();
-    });
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
       expect(ManuallyAdded).not.toBeInTheDocument();
     });
 
@@ -165,9 +163,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
       expect(addManually).toBeTruthy();
-    });
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
       expect(ManuallyAdded).toBeInTheDocument();
     });
   });
