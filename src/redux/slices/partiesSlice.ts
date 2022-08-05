@@ -3,7 +3,7 @@ import type { RootState } from '../store';
 import { Party } from '../../model/Party';
 import { Product } from '../../model/Product';
 
-interface PartiesState {
+export interface PartiesState {
   list?: Array<Party>;
   selected?: Party;
   selectedProducts?: Array<Product>;

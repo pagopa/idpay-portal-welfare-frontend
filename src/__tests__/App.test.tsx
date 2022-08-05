@@ -1,18 +1,16 @@
 /* istanbul ignore file */
-import { render /* , screen, waitFor */ } from '@testing-library/react';
+import { render /* , screen, waitFor */, waitFor } from '@testing-library/react';
 import App from '../App';
 import { Provider } from 'react-redux';
 import { createStore } from '../redux/store';
-// import { verifyMockExecution as verifyLoginMockExecution } from '../decorators/__mocks__/withLogin';
-// import { verifyMockExecution as verifyPartiesMockExecution } from '../decorators/__mocks__/withParties';
-// import { verifyMockExecution as verifySelectedPartyProductsMockExecution } from '../decorators/__mocks__/withSelectedPartyProducts';
+
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-/* import { mockedParties } from '../services/__mocks__/partyService'; */
 import { theme } from '@pagopa/mui-italia';
 import '../locale';
 import React from 'react';
 import { ThemeProvider } from '@mui/system';
+// import { PartiesState } from '../redux/slices/partiesSlice';
 
 jest.mock('@pagopa/mui-italia/dist/components/Footer/Footer', () => ({
   Footer: () => {},
@@ -63,6 +61,32 @@ test('Test rendering dashboard parties loaded', () => {
 });
 
 test('Test routing ', async () => {
-  // const { history } = renderApp();
-  // await waitFor(() => expect(history.location.pathname).toBe('/portale-enti'));
+  const { history } = renderApp();
+  await waitFor(() => expect(history.location.pathname).toBe('/'));
 });
+// function verifyPartiesMockExecution(arg0: {
+//   parties: PartiesState;
+//   // user: UserState;
+//   // appState: AppStateState;
+//   initiative: import('../model/Initiative').Initiative;
+// }) {
+//   throw new Error('Function not implemented.');
+// }
+
+// function verifyLoginMockExecution(arg0: {
+//   parties: PartiesState;
+//   // user: UserState;
+//   // appState: AppStateState;
+//   initiative: import('../model/Initiative').Initiative;
+// }) {
+//   throw new Error('Function not implemented.');
+// }
+
+// function verifySelectedPartyProductsMockExecution(arg0: {
+//   parties: PartiesState;
+//   // user: UserState;
+//   // appState: AppStateState;
+//   initiative: import('../model/Initiative').Initiative;
+// }) {
+//   throw new Error('Function not implemented.');
+// }

@@ -4,7 +4,7 @@ import { Header as CommonHeader } from '@pagopa/selfcare-common-frontend';
 import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { WithPartiesProps } from '../decorators/withParties';
 import { Product } from '../model/Product';
@@ -30,7 +30,10 @@ const Header = ({ onExit, loggedUser /* , parties */ }: Props) => {
   const { t } = useTranslation();
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
-  const parties2Show = [selectedParty as Party];
+  const [party2Show, setParty2Show] = useState<Array<Party>>();
+
+  useEffect(() => setParty2Show([{ ...(selectedParty as Party) }]), [selectedParty]);
+
   // const parties2Show = parties.filter((party) => party.status === 'ACTIVE');
   const activeProducts: Array<Product> = useMemo(
     () =>
@@ -61,20 +64,23 @@ const Header = ({ onExit, loggedUser /* , parties */ }: Props) => {
         productUrl: p.urlPublic ?? '',
         linkType: 'internal',
       }))}
-      partyList={parties2Show.map((party) => ({
-        id: party.partyId,
-        name: party.description,
-        productRole: party.roles.map((r) => t(`roles.${r.roleKey}`)).join(','),
-        logoUrl: party.urlLogo,
-      }))}
+      partyList={
+        party2Show &&
+        party2Show.map((party) => ({
+          id: party.partyId,
+          name: party.description,
+          productRole: party.roles.map((r) => t(`roles.${r.roleKey}`)).join(','),
+          logoUrl: party.urlLogo,
+        }))
+      }
       loggedUser={
         loggedUser
           ? {
-            id: loggedUser ? loggedUser.uid : '',
-            name: loggedUser?.name,
-            surname: loggedUser?.surname,
-            email: loggedUser?.email,
-          }
+              id: loggedUser ? loggedUser.uid : '',
+              name: loggedUser?.name,
+              surname: loggedUser?.surname,
+              email: loggedUser?.email,
+            }
           : false
       }
       assistanceEmail={ENV.ASSISTANCE.EMAIL}

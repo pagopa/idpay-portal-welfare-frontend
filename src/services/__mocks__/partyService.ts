@@ -184,8 +184,8 @@ export const mockedParties: Array<Party> = [
     // if change these roles, change them also in testToken
     roles: [
       {
-        partyRole: 'MANAGER',
-        roleKey: 'admin', // TODO use real product role
+        partyRole: 'ADMIN',
+        roleKey: 'API', // TODO use real product role
       },
     ],
     description: 'Comune di Jesolo',
