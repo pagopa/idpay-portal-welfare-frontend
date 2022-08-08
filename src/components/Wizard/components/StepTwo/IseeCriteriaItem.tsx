@@ -104,14 +104,13 @@ const IseeCriteriaItem = ({
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={formData.code}>
+        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)}>
           <DeleteOutlineIcon
             color="error"
             data-id={formData.code}
             sx={{
               cursor: 'pointer',
             }}
-            onClick={(event: any) => handleCriteriaRemoved(event)}
           />
         </IconButton>
       </Box>
