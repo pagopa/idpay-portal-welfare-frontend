@@ -136,15 +136,15 @@ stages:
                 sonar.javascript.lcov.reportPaths=coverage/lcov.info
                 sonar.typescript.tsconfigPath=tsconfig.json
                 sonar.eslint.reportPaths=eslint-report.json
-        
-          - script: ls -R [!node_modules]*
-            displayName: 'Show all files recursively'
 
           - script: |
               yarn generate
               yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
+          - script: ls -R [!node_modules]*
+            displayName: 'Show all files recursively'
+            
           - script: yarn lint
             displayName: 'Lint execution'
 

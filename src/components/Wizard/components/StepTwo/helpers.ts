@@ -84,6 +84,7 @@ export const updateInitialAutomatedCriteriaOnSelector = (
 ) => {
   const updatedResponseData: Array<AvailableCriteria> = [];
   // eslint-disable-next-line sonarjs/cognitive-complexity
+
   automatedCriteria.forEach((a) => {
     responseData.forEach((r) => {
       if (a.code === r.code) {
@@ -91,7 +92,7 @@ export const updateInitialAutomatedCriteriaOnSelector = (
           code: r.code,
           authority: r.authority,
           authorityLabel: r.authorityLabel,
-          field: r.field,
+          field: a.field ? a.field : r.field,
           fieldLabel: r.fieldLabel,
           operator: a.operator ? a.operator : r.operator,
           checked: true,
@@ -103,6 +104,7 @@ export const updateInitialAutomatedCriteriaOnSelector = (
       }
     });
   });
+  console.log(updatedResponseData);
 
   responseData.forEach((r) => {
     /* eslint-disable functional/no-let */

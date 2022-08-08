@@ -131,15 +131,18 @@ const ResidencyCriteriaItem = ({
             <MenuItem value={ResidencyOptions.POSTAL_CODE}>
               {t('components.wizard.stepTwo.chooseCriteria.form.postalCode')}
             </MenuItem>
+            <MenuItem value={ResidencyOptions.CITY_COUNCIL}>
+              {t('components.wizard.stepTwo.chooseCriteria.form.cityCouncil')}
+            </MenuItem>
             <MenuItem value={ResidencyOptions.CITY}>
               {t('components.wizard.stepTwo.chooseCriteria.form.city')}
+            </MenuItem>
+            <MenuItem value={ResidencyOptions.PROVINCE}>
+              {t('components.wizard.stepTwo.chooseCriteria.form.province')}
             </MenuItem>
             <MenuItem value={ResidencyOptions.REGION}>
               {t('components.wizard.stepTwo.chooseCriteria.form.region')}
             </MenuItem>
-            {/* <MenuItem value={ResidencyOptions.NATION}>
-              {t('components.wizard.stepTwo.chooseCriteria.form.nation')}
-            </MenuItem> */}
           </Select>
           <FormHelperText>
             {setErrorText(
