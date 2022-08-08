@@ -19,8 +19,7 @@ trigger:
   - release-*
 
 pr:
-  - main
-  - release-*
+  - '*'
 
 resources:
   repositories:
@@ -54,6 +53,7 @@ stages:
               yarn generate
               yarn build
             displayName: 'Build'
+
   - stage: Static_analysis
     dependsOn: []
     jobs:
@@ -66,6 +66,7 @@ stages:
           - script: |
               yarn lint
             displayName: 'Lint'
+
       - job: danger
         condition: and(
           succeeded(),
@@ -82,6 +83,7 @@ stages:
             env:
               DANGER_GITHUB_API_TOKEN: '$(DANGER_GITHUB_API_TOKEN)'
             displayName: 'Danger CI'
+
   # B) Run unit tests if there is a push or pull request on any branch.
   - stage: Test
     dependsOn: []
@@ -96,4 +98,60 @@ stages:
           - script: |
               yarn generate
               yarn test:coverage --watchAll=false
-            displayName: 'Unit tests exec'
+            displayName: 'Unit tests execution'
+
+  - stage: Sonarcloud
+    dependsOn: []
+    jobs:
+      - job: sonarcloud_analysis
+        steps:
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+          - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
+
+          #          - script:
+          #            displayName: 'Generate'
+
+          - script: git branch
+            displayName: 'Branch identification'
+
+          - task: SonarCloudPrepare@1
+            displayName: 'Prepare SonarCloud analysis configuration'
+            inputs:
+              SonarCloud: '$(SONARCLOUD_SERVICE_CONN)'
+              organization: '$(SONARCLOUD_ORG)'
+              scannerMode: CLI
+              projectKey: $(SONARCLOUD_PROJECT_KEY)
+              projectName: $(SONARCLOUD_PROJECT_NAME)
+              cliSources: '.'
+              extraProperties: |
+                sonar.javascript.file.suffixes=.js,.jsx
+                sonar.typescript.file.suffixes=.ts,.tsx
+                sonar.sources=.
+                sonar.exclusions=src/__tests__/**
+                sonar.tests=src/__tests__
+                sonar.test.inclusions=src/__tests__/**/*.test.tsx
+                sonar.testExecutionReportPaths=test-report.xml
+                sonar.sourceEncoding=UTF-8
+                sonar.verbose=true
+                sonar.javascript.lcov.reportPaths=coverage/lcov.info
+                sonar.typescript.tsconfigPath=tsconfig.json
+                sonar.eslint.reportPaths=eslint-report.json
+
+          - script: |
+              yarn generate
+              yarn test:coverage --watchAll=false
+            displayName: 'Unit tests execution'
+
+          - script: ls -R [!node_modules]*
+            displayName: 'Show all files recursively'
+
+          - script: yarn lint
+            displayName: 'Lint execution'
+
+          - script: ls -R [!node_modules]*
+            displayName: 'Show all files recursively'
+
+          - task: SonarCloudPublish@1
+            inputs:
+              pollingTimeoutSec: '300'
+            displayName: 'Publish SonarCloud results on build summary'
