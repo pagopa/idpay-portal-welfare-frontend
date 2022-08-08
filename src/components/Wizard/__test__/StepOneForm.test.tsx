@@ -29,6 +29,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
             setCurrentStep={function (value: SetStateAction<number>): void {
               console.log(value);
             }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
           />
         </Provider>
       );
@@ -83,6 +87,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
             setCurrentStep={function (value: SetStateAction<number>): void {
               console.log(value);
             }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
           />
         </Provider>
       );
@@ -121,6 +129,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
               console.log(value);
             }}
           />
@@ -183,6 +195,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
           setCurrentStep={function (value: SetStateAction<number>) {
             console.log(value);
           }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (value: SetStateAction<boolean>): void {
+            console.log(value);
+          }}
         />
       </Provider>
     );
@@ -227,6 +243,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
               console.log(value);
             }}
           />

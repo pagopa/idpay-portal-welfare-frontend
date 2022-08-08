@@ -35,9 +35,16 @@ type Props = {
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  setDisabledNext: Dispatch<SetStateAction<boolean>>;
 };
 
-const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
+const AdmissionCriteria = ({
+  action,
+  setAction,
+  currentStep,
+  setCurrentStep,
+  setDisabledNext,
+}: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
@@ -240,11 +247,13 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
     if (criteriaToSubmit.length > 0) {
+      setDisabledNext(false);
       criteriaToSubmit.forEach((c) => {
         toSubmit = toSubmit && c.dispatched;
       });
     } else {
       toSubmit = false;
+      setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);

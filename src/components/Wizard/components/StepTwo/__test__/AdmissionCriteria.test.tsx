@@ -33,6 +33,10 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
             setCurrentStep={function (value: SetStateAction<number>): void {
               console.log(value);
             }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
           />
         </Provider>
       );
@@ -80,6 +84,10 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
           currentStep={1}
           // eslint-disable-next-line react/jsx-no-bind
           setCurrentStep={function (value: SetStateAction<number>): void {
+            console.log(value);
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (value: SetStateAction<boolean>): void {
             console.log(value);
           }}
         />

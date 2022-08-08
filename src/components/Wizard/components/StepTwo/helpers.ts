@@ -104,7 +104,6 @@ export const updateInitialAutomatedCriteriaOnSelector = (
       }
     });
   });
-  console.log(updatedResponseData);
 
   responseData.forEach((r) => {
     /* eslint-disable functional/no-let */

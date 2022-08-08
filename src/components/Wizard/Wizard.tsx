@@ -15,6 +15,7 @@ const Wizard = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
+  const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
   const history = useHistory();
@@ -35,6 +36,7 @@ const Wizard = () => {
 
   const handleNext = () => {
     setActionType(() => WIZARD_ACTIONS.SUBMIT);
+    setDisabledNext(true);
   };
 
   const handleDraft = () => {
@@ -63,6 +65,7 @@ const Wizard = () => {
             setAction={setActionType}
             currentStep={activeStep}
             setCurrentStep={setActiveStep}
+            setDisabledNext={setDisabledNext}
           />
         );
       case 1:
@@ -82,6 +85,7 @@ const Wizard = () => {
               setAction={setActionType}
               currentStep={activeStep}
               setCurrentStep={setActiveStep}
+              setDisabledNext={setDisabledNext}
             />
           );
         }
@@ -145,7 +149,12 @@ const Wizard = () => {
               </Button>
             </Box>
             <Box sx={{ gridArea: 'continue', justifySelf: 'end' }}>
-              <Button variant="contained" onClick={handleNext} data-testid="continue-action-test">
+              <Button
+                variant="contained"
+                onClick={handleNext}
+                data-testid="continue-action-test"
+                disabled={disabledNext}
+              >
                 {activeStep === steps.length - 1
                   ? t('components.wizard.common.buttons.send')
                   : t('components.wizard.common.buttons.continue')}
