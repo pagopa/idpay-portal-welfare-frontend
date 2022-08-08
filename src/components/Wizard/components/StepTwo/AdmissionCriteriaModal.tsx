@@ -79,6 +79,7 @@ const AdmissionCriteriaModal = ({
               checked={a.checked}
               id={a.code}
               name={a.code}
+              data-testid="check-test-1"
             />
           </Box>
           <Box>
@@ -99,6 +100,7 @@ const AdmissionCriteriaModal = ({
                   checked={a.checked}
                   id={a.code}
                   name={a.code}
+                  data-testid="check-test-2"
                 />
               </Box>
               <Box>
@@ -153,6 +155,7 @@ const AdmissionCriteriaModal = ({
                 aria-label="close admission criteria modal"
                 component="span"
                 onClick={handleCloseModal}
+                data-testid="close-modal-test"
               >
                 <CloseIcon />
               </IconButton>
@@ -191,6 +194,7 @@ const AdmissionCriteriaModal = ({
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}
+                data-testid="search-criteria-test"
               />
             </Box>
           </Box>
@@ -213,7 +217,12 @@ const AdmissionCriteriaModal = ({
               pr: 2,
             }}
           >
-            <Button sx={{ width: '100%' }} variant="contained" onClick={handleCriteriaAdded}>
+            <Button
+              sx={{ width: '100%' }}
+              variant="contained"
+              onClick={handleCriteriaAdded}
+              data-testid="add-button-test"
+            >
               {t('components.wizard.stepTwo.chooseCriteria.modal.addButton')}
             </Button>
           </Box>
