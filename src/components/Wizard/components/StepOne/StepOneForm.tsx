@@ -194,7 +194,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .when('initiativeOnIO', {
         is: false,
         then: Yup.string()
-          .max(50, t('validation.maxServiceNameChar'))
+          .max(100, t('validation.maxArgumentsChar'))
           .required(t('validation.required')),
       }),
     description: Yup.string()

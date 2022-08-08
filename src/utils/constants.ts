@@ -32,7 +32,9 @@ export enum DateOfBirthOptions {
 }
 
 export enum ResidencyOptions {
-  POSTAL_CODE = 'postalCode',
+  POSTAL_CODE = 'postal_code',
+  CITY_COUNCIL = 'city_council',
+  PROVINCE = 'province',
   CITY = 'city',
   REGION = 'region',
   NATION = 'nation',
