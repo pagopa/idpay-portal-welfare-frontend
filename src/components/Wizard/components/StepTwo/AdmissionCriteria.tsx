@@ -412,6 +412,7 @@ const AdmissionCriteria = ({ action, setAction, currentStep, setCurrentStep }: P
             setManualCriteriaToRender={setManualCriteriaToRender}
             criteriaToSubmit={criteriaToSubmit}
             setCriteriaToSubmit={setCriteriaToSubmit}
+            data-testid="manually-added-test"
           />
         ))}
       </Box>
