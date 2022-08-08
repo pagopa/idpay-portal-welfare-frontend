@@ -203,7 +203,7 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
       .when('initiativeOnIO', {
         is: false,
         then: Yup.string()
-          .max(50, t('validation.maxServiceNameChar'))
+          .max(350, t('validation.maxDescriptionChar'))
           .required(t('validation.required')),
       }),
     channels: Yup.array()
@@ -614,7 +614,6 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
                   sx={{ gridArea: 'rankingStartDate' }}
                   error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                   helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
-                  required
                 />
               )}
             />

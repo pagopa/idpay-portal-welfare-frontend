@@ -217,6 +217,7 @@ export default {
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
+    maxDescriptionChar: 'La descrizione del servizio può contenere massimo 350 caratteri',
     maxServiceNameChar: 'Il nome del servizio può contenere massimo 50 caratteri',
     maxArgumentsChar: 'L’argomento può contenere massimo 50 caratteri',
     web: 'Inserire un indirizzo web valido',
