@@ -30,7 +30,7 @@ export const setFieldType = (
   value: string | number,
   setterFunction: Dispatch<SetStateAction<string>>
 ) => {
-  if (value === FilterOperator.BTW_CLOSED) {
+  if (value === FilterOperator.BTW_OPEN) {
     setterFunction('number');
   } else {
     setterFunction('hidden');

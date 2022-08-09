@@ -48,7 +48,7 @@ const IseeCriteriaItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState(
-    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
+    formData.operator === FilterOperator.BTW_OPEN ? 'number' : 'hidden'
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ const IseeCriteriaItem = ({
     iseeStartValue: Yup.number().required(t('validation.required')),
     iseeEndValue: Yup.number().when(['iseeRelationSelect', 'iseeStartValue'], {
       is: (iseeRelationSelect: string, iseeStartValue: number) =>
-        iseeRelationSelect === FilterOperator.BTW_CLOSED && iseeStartValue,
+        iseeRelationSelect === FilterOperator.BTW_OPEN && iseeStartValue,
       then: Yup.number()
         .required(t('validation.required'))
         .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
@@ -154,7 +154,7 @@ const IseeCriteriaItem = ({
             <MenuItem value={FilterOperator.LE}>
               {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.BTW_CLOSED}>
+            <MenuItem value={FilterOperator.BTW_OPEN}>
               {t('components.wizard.stepTwo.chooseCriteria.form.between')}
             </MenuItem>
           </Select>

@@ -46,7 +46,7 @@ const DateOdBirthCriteriaItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const [dateOfBirthEndValueVisible, setDateOfBirthEndValueVisible] = useState(
-    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
+    formData.operator === FilterOperator.BTW_OPEN ? 'number' : 'hidden'
   );
 
   useEffect(() => {
@@ -63,7 +63,7 @@ const DateOdBirthCriteriaItem = ({
     dateOfBirthStartValue: Yup.number().required(t('validation.required')),
     dateOfBirthEndValue: Yup.number().when(['dateOfBirthRelationSelect', 'dateOfBirthStartValue'], {
       is: (dateOfBirthRelationSelect: string, dateOfBirthStartValue: number) =>
-        dateOfBirthRelationSelect === FilterOperator.BTW_CLOSED && dateOfBirthStartValue,
+        dateOfBirthRelationSelect === FilterOperator.BTW_OPEN && dateOfBirthStartValue,
       then: (_dateOfBirthStartValue) =>
         Yup.number()
           .required(t('validation.required'))
@@ -185,7 +185,7 @@ const DateOdBirthCriteriaItem = ({
             <MenuItem value={FilterOperator.LE}>
               {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.BTW_CLOSED}>
+            <MenuItem value={FilterOperator.BTW_OPEN}>
               {t('components.wizard.stepTwo.chooseCriteria.form.between')}
             </MenuItem>
           </Select>
