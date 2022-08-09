@@ -108,8 +108,8 @@ stages:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
           - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
 
-#          - script: 
-#            displayName: 'Generate'
+          #          - script:
+          #            displayName: 'Generate'
 
           - script: git branch
             displayName: 'Branch identification'
@@ -144,7 +144,7 @@ stages:
 
           - script: ls -R [!node_modules]*
             displayName: 'Show all files recursively'
-            
+
           - script: yarn lint
             displayName: 'Lint execution'
 

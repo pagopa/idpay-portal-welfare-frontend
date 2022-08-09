@@ -63,8 +63,12 @@ export const serviceOptions = [
     name: 'Carta Della Cultura',
   },
   {
-    value: 'cartaGio',
+    value: '0c9f02da-0392-40d4-a8ab-e356e9b3c688',
     name: 'Carta Giovani Nazionale',
+  },
+  {
+    value: '50ef8992-c59b-4f2b-866e-6e352bf971cb',
+    name: 'Bonus anziani',
   },
 ];
 

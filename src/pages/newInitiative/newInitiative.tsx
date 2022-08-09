@@ -3,8 +3,12 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import Wizard from '../../components/Wizard/Wizard';
 
+import { useInitiative } from '../../hooks/useInitiative';
+
 const NewInitiative = () => {
   const { t } = useTranslation();
+
+  useInitiative();
 
   return (
     <Box width="100%" px={2}>

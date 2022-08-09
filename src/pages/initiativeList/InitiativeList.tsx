@@ -25,22 +25,25 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import { getInitativeSummary, getInitiativeDetail } from '../../services/intitativeService';
+import {
+  getInitativeSummary,
+  //  getInitiativeDetail
+} from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
 
 import {
   resetInitiative,
-  saveAutomatedCriteria,
-  saveManualCriteria,
-  setAdditionalInfo,
-  setGeneralInfo,
-  setInitiativeId,
-  setOrganizationId,
-  setStatus,
+  // saveAutomatedCriteria,
+  // saveManualCriteria,
+  // setAdditionalInfo,
+  // setGeneralInfo,
+  // setInitiativeId,
+  // setOrganizationId,
+  // setStatus,
 } from '../../redux/slices/initiativeSlice';
 
 import { useAppDispatch } from '../../redux/hooks';
-import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../model/Initiative';
+// import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../model/Initiative';
 import {
   EnhancedTableProps,
   Data,
@@ -48,8 +51,8 @@ import {
   stableSort,
   getComparator,
   HeadCell,
-  parseGeneralInfo,
-  parseAdditionalInfo,
+  // parseGeneralInfo,
+  // parseAdditionalInfo,
 } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -167,84 +170,85 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const RenderAction = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const dispatch = useAppDispatch();
-    const addError = useErrorDispatcher();
+    // const dispatch = useAppDispatch();
+    // const addError = useErrorDispatcher();
     const handleUpdateInitiative = (id: string) => {
-      getInitiativeDetail(id)
-        .then((response) => {
-          dispatch(resetInitiative());
-          dispatch(setInitiativeId(response.initiativeId));
-          dispatch(setOrganizationId(response.organizationId));
-          dispatch(setStatus(response.status));
-          const generalInfo = parseGeneralInfo(response.general);
-          dispatch(setGeneralInfo(generalInfo));
-          const additionalInfo = parseAdditionalInfo(response.additionalInfo);
-          dispatch(setAdditionalInfo(additionalInfo));
-          // eslint-disable-next-line functional/no-let
-          let automatedCriteria: Array<AutomatedCriteriaItem> = [];
-          // eslint-disable-next-line sonarjs/no-unused-collection
-          const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
-          if (
-            response.beneficiaryRule &&
-            response.beneficiaryRule.automatedCriteria &&
-            Object.keys(response.beneficiaryRule.automatedCriteria).length !== 0
-          ) {
-            automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
-          }
+      history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+      // getInitiativeDetail(id)
+      //   .then((response) => {
+      //     dispatch(resetInitiative());
+      //     dispatch(setInitiativeId(response.initiativeId));
+      //     dispatch(setOrganizationId(response.organizationId));
+      //     dispatch(setStatus(response.status));
+      //     const generalInfo = parseGeneralInfo(response.general);
+      //     dispatch(setGeneralInfo(generalInfo));
+      //     const additionalInfo = parseAdditionalInfo(response.additionalInfo);
+      //     dispatch(setAdditionalInfo(additionalInfo));
+      //     // eslint-disable-next-line functional/no-let
+      //     let automatedCriteria: Array<AutomatedCriteriaItem> = [];
+      //     // eslint-disable-next-line sonarjs/no-unused-collection
+      //     const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
+      //     if (
+      //       response.beneficiaryRule &&
+      //       response.beneficiaryRule.automatedCriteria &&
+      //       Object.keys(response.beneficiaryRule.automatedCriteria).length !== 0
+      //     ) {
+      //       automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
+      //     }
 
-          if (
-            response.beneficiaryRule &&
-            response.beneficiaryRule.selfDeclarationCriteria &&
-            Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
-          ) {
-            const manualCriteriaFetched: Array<{
-              _type?: string;
-              description?: string;
-              value?: boolean | Array<string>;
-              code?: string;
-            }> = [...response.beneficiaryRule.selfDeclarationCriteria];
+      //     if (
+      //       response.beneficiaryRule &&
+      //       response.beneficiaryRule.selfDeclarationCriteria &&
+      //       Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
+      //     ) {
+      //       const manualCriteriaFetched: Array<{
+      //         _type?: string;
+      //         description?: string;
+      //         value?: boolean | Array<string>;
+      //         code?: string;
+      //       }> = [...response.beneficiaryRule.selfDeclarationCriteria];
 
-            manualCriteriaFetched.forEach((m) => {
-              if (typeof m.value === 'boolean') {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: m.value,
-                  multiValue: [],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              } else if (Array.isArray(m.value)) {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: true,
-                  multiValue: [...m.value],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              }
-            });
-          }
-          dispatch(saveAutomatedCriteria(automatedCriteria));
-          dispatch(saveManualCriteria(selfDeclarationCriteria));
-          history.push(`${BASE_ROUTE}/iniziativa/${id}`);
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_INITIATIVE_DETAIL_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting initiative data',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
+      //       manualCriteriaFetched.forEach((m) => {
+      //         if (typeof m.value === 'boolean') {
+      //           // eslint-disable-next-line functional/immutable-data
+      //           selfDeclarationCriteria.push({
+      //             // eslint-disable-next-line no-underscore-dangle
+      //             _type: m._type,
+      //             boolValue: m.value,
+      //             multiValue: [],
+      //             description: m.description || '',
+      //             code: m.code || '',
+      //           });
+      //         } else if (Array.isArray(m.value)) {
+      //           // eslint-disable-next-line functional/immutable-data
+      //           selfDeclarationCriteria.push({
+      //             // eslint-disable-next-line no-underscore-dangle
+      //             _type: m._type,
+      //             boolValue: true,
+      //             multiValue: [...m.value],
+      //             description: m.description || '',
+      //             code: m.code || '',
+      //           });
+      //         }
+      //       });
+      //     }
+      //     dispatch(saveAutomatedCriteria(automatedCriteria));
+      //     dispatch(saveManualCriteria(selfDeclarationCriteria));
+      //     history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+      //   })
+      //   .catch((error) => {
+      //     addError({
+      //       id: 'GET_INITIATIVE_DETAIL_ERROR',
+      //       blocking: false,
+      //       error,
+      //       techDescription: 'An error occurred getting initiative data',
+      //       displayableTitle: t('errors.title'),
+      //       displayableDescription: t('errors.getDataDescription'),
+      //       toNotify: true,
+      //       component: 'Toast',
+      //       showCloseIcon: true,
+      //     });
+      //   });
     };
 
     switch (status) {

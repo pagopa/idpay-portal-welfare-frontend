@@ -54,15 +54,24 @@ import {
   contacts,
   getYesterday,
 } from './helpers';
+
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) => {
+const StepOneForm = ({
+  action,
+  setAction,
+  currentStep,
+  setCurrentStep,
+  setDisabledNext,
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
@@ -394,6 +403,14 @@ const StepOneForm = ({ action, setAction, currentStep, setCurrentStep }: Props) 
     setValues({ ...values, channels: [...newAssistanceChannel] });
     setTouched({}, false);
   };
+
+  useEffect(() => {
+    if (formik.dirty || formik.isValid) {
+      setDisabledNext(false);
+    } else {
+      setDisabledNext(true);
+    }
+  }, [formik]);
 
   return (
     <>
