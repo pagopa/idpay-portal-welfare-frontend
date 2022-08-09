@@ -154,14 +154,13 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
   // // eslint-disable-next-line sonarjs/no-identical-functions
   it('CheckBox Admission Criteria test', async () => {
+    const handleClose = jest.fn();
     // eslint-disable-next-line sonarjs/no-identical-functions
     const { queryByTestId /* queryByLabelText */ } = render(
       <AdmissionCriteriaModal
         openModal={false}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCloseModal={function (event: React.MouseEvent<HTMLInputElement, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCloseModal={handleClose}
         // eslint-disable-next-line react/jsx-no-bind
         handleCriteriaAdded={function (
           event: React.MouseEvent<HTMLInputElement, MouseEvent>
@@ -175,40 +174,43 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         }}
       />
     );
-    const check1 = queryByTestId('check-test-1') as HTMLInputElement;
-    const check2 = queryByTestId('check-test-2') as HTMLInputElement;
+
+    const checkNotSearched = queryByTestId('check-test-1') as HTMLInputElement;
+    const checkSearched = queryByTestId('check-test-2') as HTMLInputElement;
+    const closeModal = queryByTestId('close-modal-test') as HTMLInputElement;
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    waitFor(async () => {
+      expect(closeModal).toBeTruthy();
+      fireEvent.click(closeModal);
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    waitFor(async () => {
+      expect(handleClose).toHaveBeenCalledTimes(1);
+    });
 
     /* test checked value */
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
-      expect(check1 || check2).toHaveAttribute('checked');
+      expect(checkNotSearched || checkSearched).toHaveAttribute('checked');
     });
     /* test value change */
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
-      expect(check1.checked).toEqual(false);
-      fireEvent.change(check1, { target: { value: true } });
-      expect(check1.checked).toEqual(true);
+      expect(checkNotSearched.checked).toEqual(false);
+      fireEvent.change(checkNotSearched, { target: { value: true } });
+      expect(checkNotSearched.checked).toEqual(true);
     });
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
-      expect(check2.checked).toEqual(false);
-      fireEvent.change(check2, { target: { value: true } });
-      expect(check2.checked).toEqual(true);
+      expect(checkSearched.checked).toEqual(false);
+      fireEvent.change(checkSearched, { target: { value: true } });
+      expect(checkSearched.checked).toEqual(true);
     });
-
-    // const criteria = queryByTestId('add-button-test');
-
-    // // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    // waitFor(async () => {
-    //   fireEvent.click(criteria);
-    //   if (check1 || check2) {
-    //     expect();
-    //   }
-    // });
   });
 
   it('test Search Criteria TextField', async () => {
@@ -233,12 +235,55 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       />
     );
 
-    const searchInput = queryByLabelText('Cerca criteri') as HTMLInputElement;
+    const searchInput = queryByLabelText(
+      /components.wizard.stepTwo.chooseCriteria.modal.searchElement/
+    ) as HTMLInputElement;
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
       fireEvent.change(searchInput, { target: { value: 'test' } });
-      expect(searchInput.value).toBe('test');
+      expect(searchInput.value).toBe(true);
     });
   });
+
+  // it('Should add a Criteria', async () => {
+  //   const rendering = [Array<AvailableCriteria>];
+
+  //   const { queryByTestId } = render(
+  //     <AdmissionCriteriaModal
+  //       openModal={false}
+  //       // eslint-disable-next-line react/jsx-no-bind
+  //       handleCloseModal={function (event: React.MouseEvent<HTMLInputElement, MouseEvent>): void {
+  //         console.log(event);
+  //       }}
+  //       // eslint-disable-next-line react/jsx-no-bind
+  //       handleCriteriaAdded={function (
+  //         event: React.MouseEvent<HTMLInputElement, MouseEvent>
+  //       ): void {
+  //         console.log(event);
+  //       }}
+  //       criteriaToRender={[]}
+  //       // eslint-disable-next-line react/jsx-no-bind
+  //       setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
+  //         console.log(value);
+  //       }}
+  //     />
+  //   );
+
+  //   const addCrit = 'test';
+  //   const addButton = queryByTestId('add-button-test') as HTMLInputElement;
+  //   const checkNotSearched = queryByTestId('check-test-1') as HTMLInputElement;
+  //   const checkSearched = queryByTestId('check-test-2') as HTMLInputElement;
+
+  //   // eslint-disable-next-line @typescript-eslint/no-floating-promises
+  //   waitFor(async () => {
+  //     // verify addCrit is NOT in the initial list
+  //     expect(rendering.find((criteria: { name: string }) => criteria.name === addCrit)).toBeFalsy();
+
+  //     // add criteria
+  //     fireEvent.change(checkSearched || checkNotSearched, { target: { value: addCrit } });
+  //     fireEvent.click(addButton);
+  //     expect(rendering.findIndex((criteria) => criteria.arguments === addCrit)).toBe(0);
+  //   });
+  // });
 });

@@ -126,6 +126,7 @@ const AdmissionCriteriaModal = ({
       BackdropProps={{
         timeout: 500,
       }}
+      // data-testid="modal"
     >
       <Fade in={openModal}>
         <Box
@@ -155,9 +156,8 @@ const AdmissionCriteriaModal = ({
                 aria-label="close admission criteria modal"
                 component="span"
                 onClick={handleCloseModal}
-                data-testid="close-modal-test"
               >
-                <CloseIcon />
+                <CloseIcon data-testid="close-modal-test" />
               </IconButton>
             </Box>
           </Box>
@@ -182,7 +182,7 @@ const AdmissionCriteriaModal = ({
               <TextField
                 size="small"
                 id="search-criteria"
-                label="Cerca criteri"
+                label={t('components.wizard.stepTwo.chooseCriteria.modal.searchElement')}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
@@ -191,10 +191,10 @@ const AdmissionCriteriaModal = ({
                     </InputAdornment>
                   ),
                 }}
+                data-testid="search-criteria-test"
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}
-                data-testid="search-criteria-test"
               />
             </Box>
           </Box>
