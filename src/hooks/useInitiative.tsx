@@ -38,7 +38,6 @@ export const useInitiative = () => {
   // eslint-disable-next-line no-prototype-builtins
   if (match !== null && match.params.hasOwnProperty('id')) {
     const { id } = match.params as MatchParams;
-    console.log(id);
 
     getInitiativeDetail(id)
       .then((response) => {
