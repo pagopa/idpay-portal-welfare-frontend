@@ -182,7 +182,7 @@ const AdmissionCriteriaModal = ({
               <TextField
                 size="small"
                 id="search-criteria"
-                label={t('components.wizard.stepTwo.chooseCriteria.modal.searchElement')}
+                label={t('components.wizard.stepTwo.chooseCriteria.modal.searchCriteria')}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (

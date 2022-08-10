@@ -99,6 +99,7 @@ const IseeCriteriaItem = ({
         my: 3,
         p: 3,
       }}
+      data-testid="isee-criteria-test"
     >
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
@@ -111,6 +112,7 @@ const IseeCriteriaItem = ({
             sx={{
               cursor: 'pointer',
             }}
+            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -138,23 +140,24 @@ const IseeCriteriaItem = ({
               iseeFormik.touched.iseeRelationSelect,
               iseeFormik.errors.iseeRelationSelect
             )}
+            inputProps={{ 'data-testid': 'isee-realtion-select' }}
           >
-            <MenuItem value={FilterOperator.EQ}>
+            <MenuItem value={FilterOperator.EQ} data-testid="exact">
               {t('components.wizard.stepTwo.chooseCriteria.form.exact')}
             </MenuItem>
-            <MenuItem value={FilterOperator.GT}>
+            <MenuItem value={FilterOperator.GT} data-testid="majorTo">
               {t('components.wizard.stepTwo.chooseCriteria.form.majorTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.LT}>
+            <MenuItem value={FilterOperator.LT} data-testid="minorTo">
               {t('components.wizard.stepTwo.chooseCriteria.form.minorTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.GE}>
+            <MenuItem value={FilterOperator.GE} data-testid="majorOrEqualTo">
               {t('components.wizard.stepTwo.chooseCriteria.form.majorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.LE}>
+            <MenuItem value={FilterOperator.LE} data-testid="minorOrEqualTo">
               {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.BTW_OPEN}>
+            <MenuItem value={FilterOperator.BTW_OPEN} data-testid="between">
               {t('components.wizard.stepTwo.chooseCriteria.form.between')}
             </MenuItem>
           </Select>
@@ -171,6 +174,7 @@ const IseeCriteriaItem = ({
               step: 0.01,
               min: 0,
               type: 'number',
+              'data-testid': 'isee-start-value',
             }}
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="iseeStartValue"
@@ -202,6 +206,7 @@ const IseeCriteriaItem = ({
               step: 0.01,
               min: 1,
               type: iseeEndValueVisible,
+              'data-testid': 'isee-end-value',
             }}
             placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
             name="iseeEndValue"
