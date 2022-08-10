@@ -76,6 +76,7 @@ const Wizard = () => {
               setAction={setActionType}
               // currentStep={activeStep}
               // setCurrentStep={setActiveStep}
+              setDisabledNext={setDisabledNext}
             />
           );
         } else if (beneficiaryKnown === 'false') {

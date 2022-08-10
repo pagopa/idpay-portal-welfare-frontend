@@ -151,13 +151,16 @@ export default {
           },
         },
 
-        form: {
-          title2: 'Carica l’elenco degli ammessi',
-          subTitle2:
+        upload: {
+          title: 'Carica l’elenco degli ammessi',
+          subTitle:
             'Aggiungi i codici fiscali dei destinatari dell’iniziativa, così non dovranno effettuare alcun controllo d’ammissibilità.',
           title3: 'Destinatari esclusi',
           subTitle3:
             'Se conosci già i destinatari esclusi dall’iniziativa, aggiungi i loro codici fiscali così non potranno effettuare l’adesione. Puoi effettuare modifiche o aggiunte anche in un secondo momento.',
+          dragAreaText: 'Trascina qui il file .csv con la lista dei codici fiscali o',
+          dragAreaLink: 'selezionalo dal tuo computer.',
+          fileIsLoading: 'Caricamento in corso...',
         },
       },
       stepThree: {
