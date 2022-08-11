@@ -1,4 +1,3 @@
-import * as t from 'io-ts';
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO';
