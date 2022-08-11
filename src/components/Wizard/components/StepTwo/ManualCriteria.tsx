@@ -224,6 +224,7 @@ const ManualCriteria = ({
         my: 3,
         p: 3,
       }}
+      data-testid="manual-criteria-test"
     >
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{`${t(
@@ -243,6 +244,7 @@ const ManualCriteria = ({
             sx={{
               cursor: 'pointer',
             }}
+            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -272,11 +274,12 @@ const ManualCriteria = ({
               manualCriteriaFormik.touched.manualCriteriaSelectName,
               manualCriteriaFormik.errors.manualCriteriaSelectName
             )}
+            data-testid="manualCriteria-select-name"
           >
-            <MenuItem value={ManualCriteriaOptions.BOOLEAN}>
+            <MenuItem value={ManualCriteriaOptions.BOOLEAN} data-testid="boolean">
               {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
             </MenuItem>
-            <MenuItem value={ManualCriteriaOptions.MULTI}>
+            <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
               {t('components.wizard.stepTwo.chooseCriteria.form.multi')}
             </MenuItem>
           </Select>
@@ -322,6 +325,7 @@ const ManualCriteria = ({
                 manualCriteriaFormik.errors.manualCriteriaName
               ) || t('validation.maxTwoHundred')
             }
+            data-testid="manualCriteria-boolean-test"
           />
         </FormControl>
       </Box>
@@ -376,6 +380,7 @@ const ManualCriteria = ({
                         );
                         handleOptionDeleted(i, manualCriteriaFormik.values.manualCriteriaCode);
                       }}
+                      data-test-id="manualCriteria-remove-option"
                     />
                   )}
                 </Box>
@@ -408,6 +413,7 @@ const ManualCriteria = ({
                     }}
                     error={optionErrors.length > 0}
                     helperText={optionErrors.length > 0 ? optionErrors : ''}
+                    data-testid="manualCriteria-multi-test"
                   />
                 </Box>
               </Box>
@@ -446,6 +452,7 @@ const ManualCriteria = ({
                 }}
                 disableRipple={true}
                 disableFocusRipple={true}
+                data-testid="manualCriteria-add-option"
               >
                 {t('components.wizard.stepTwo.chooseCriteria.form.addOption')}
               </Button>
