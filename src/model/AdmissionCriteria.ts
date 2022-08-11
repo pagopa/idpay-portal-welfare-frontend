@@ -3,7 +3,7 @@ import { FilterOperator } from '../utils/constants';
 export interface AdmissionCriteriaModel {
   code: string;
   authority: string;
-  field: string;
+  field?: string;
   operator: string;
   checked: boolean;
 }

@@ -41,6 +41,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
 
   it('call the submit event when form is submitted', async () => {
     await act(async () => {
+      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
+      const saveGeneralInfoService = jest.fn();
+      const setGeneralInfo = jest.fn();
+      const setAdditionalInfo = jest.fn();
       const { getByTestId } = render(
         <Provider store={store}>
           <Wizard />
@@ -52,11 +56,19 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
       });
       fireEvent.click(submit);
+      expect(parseValuesFormToInitiativeGeneralDTO).toBeDefined();
+      expect(saveGeneralInfoService).toBeDefined();
+      expect(setGeneralInfo).toBeDefined();
+      expect(setAdditionalInfo).toBeDefined();
     });
   });
 
   it('draft action makes the dispatch', async () => {
     await act(async () => {
+      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
+      const saveGeneralInfoService = jest.fn();
+      const setGeneralInfo = jest.fn();
+      const setAdditionalInfo = jest.fn();
       const { getByTestId } = render(
         <Provider store={store}>
           <Wizard />
@@ -68,6 +80,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
       });
       fireEvent.click(skip);
+      expect(parseValuesFormToInitiativeGeneralDTO).toBeDefined();
+      expect(saveGeneralInfoService).toBeDefined();
+      expect(setGeneralInfo).toBeDefined();
+      expect(setAdditionalInfo).toBeDefined();
     });
   });
 
@@ -118,6 +134,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
   // eslint-disable-next-line sonarjs/no-identical-functions
   it('BeneficiaryTypes / BeneficiaryKnowns have the correct values', async () => {
     await act(async () => {
+      const fn = jest.fn();
       const { getByLabelText } = render(
         <Provider store={store}>
           <StepOneForm
@@ -153,6 +170,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       ) as HTMLInputElement;
 
       fireEvent.click(beneficiaryType);
+      expect(fn).toBeDefined();
 
       await act(async () => {
         expect(beneficiaryType1).toBeChecked();
@@ -178,6 +196,9 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       await act(async () => {
         expect(beneficiaryKnown1.checked).toEqual(false);
       });
+
+      fireEvent.change(beneficiaryType);
+      expect(fn).not.toBeCalled();
     });
   });
 
@@ -208,7 +229,6 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     /* check if the field are required */
 
     function hasInputValueTot(e: TestElement, budgetTot: string) {
-      console.log('hasInputValueTot ', getByDisplayValue(budgetTot) === e);
       return getByDisplayValue(budgetTot) === e;
     }
     const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
@@ -332,6 +352,220 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('22/07/2022');
       });
+    });
+  });
+
+  it('Initiative on IO switch on off', async () => {
+    await act(async () => {
+      const handleAssistanceChannelDTOChange = jest.fn();
+      const handleContactSelect = jest.fn();
+      const handleInitiativeOnIO = jest.fn();
+      const deleteAssistanceChannel = jest.fn();
+      const { getByTestId, getByRole, container } = render(
+        <Provider store={store}>
+          <StepOneForm
+            action={''}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (value: SetStateAction<string>): void {
+              console.log(value);
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
+          />
+        </Provider>
+      );
+
+      type TestElement = Document | Element | Window | Node;
+      const switchEl = getByTestId('initiative-on-io-test');
+      const checkbox = switchEl.children[0];
+      const serviceIdEl = container.querySelector('#service-id-select') as HTMLDivElement;
+      const defaultChannelTypeEl = container.querySelector('input[name="channels[0].type"]');
+
+      const defaultContactEl = container.querySelector(`#channels_0_contact`) as HTMLDivElement;
+
+      const serviceName = getByRole('input', { name: 'serviceName' });
+      const serviceArgument = getByRole('input', { name: 'argument' });
+      const serviceDescription = getByRole('input', { name: 'description' });
+      expect(checkbox).not.toBeChecked();
+      expect(serviceIdEl).not.toBeInTheDocument();
+      expect(serviceName).toBeInTheDocument();
+      expect(serviceArgument).toBeInTheDocument();
+      expect(serviceDescription).toBeInTheDocument();
+      expect(defaultChannelTypeEl).toBeInTheDocument();
+      expect(defaultChannelTypeEl?.getAttribute('value') === 'web');
+      expect(defaultContactEl).toBeInTheDocument();
+
+      expect(handleAssistanceChannelDTOChange).toBeDefined();
+      expect(deleteAssistanceChannel).toBeDefined();
+      expect(deleteAssistanceChannel).toHaveBeenCalledTimes(0);
+
+      fireEvent.change(serviceName.querySelector('input') as TestElement, {
+        target: { value: 'test name' },
+      });
+      expect(serviceName.getAttribute('value') === 'test name');
+      expect(serviceName).not.toBeNull();
+
+      fireEvent.change(serviceArgument.querySelector('input') as TestElement, {
+        target: { value: 'test argument' },
+      });
+      expect(serviceArgument.getAttribute('value') === 'test argument');
+      expect(serviceArgument).not.toBeNull();
+
+      fireEvent.change(serviceDescription.querySelector('textarea') as TestElement, {
+        target: { value: 'test description' },
+      });
+      expect(serviceDescription.getAttribute('value') === 'test description');
+      expect(serviceDescription).not.toBeNull();
+
+      expect(handleContactSelect).toBeDefined();
+
+      fireEvent.change(defaultChannelTypeEl as TestElement, {
+        target: { value: 'email' },
+      });
+      expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'email');
+
+      fireEvent.change(defaultContactEl, {
+        target: { value: 'test@mail.it' },
+      });
+      expect(defaultContactEl.getAttribute('value') === 'test@mail.it');
+
+      fireEvent.change(defaultChannelTypeEl as TestElement, {
+        target: { value: 'mobile' },
+      });
+      expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'mobile');
+
+      fireEvent.change(defaultContactEl, {
+        target: { value: '023456789' },
+      });
+      expect(defaultContactEl.getAttribute('value') === '023456789');
+
+      fireEvent.change(defaultChannelTypeEl as TestElement, {
+        target: { value: 'web' },
+      });
+      expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'web');
+
+      fireEvent.change(defaultContactEl, {
+        target: { value: 'http://test.it' },
+      });
+      expect(defaultContactEl.getAttribute('value') === 'http://test.it');
+
+      fireEvent.change(checkbox as TestElement, {
+        target: { value: 'true' },
+      });
+
+      expect(handleInitiativeOnIO).toBeDefined();
+    });
+  });
+
+  it('Initiative on IO switch change', async () => {
+    await act(async () => {
+      const fn = jest.fn();
+      const { getByRole } = render(
+        <Provider store={store}>
+          <StepOneForm
+            action={''}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (value: SetStateAction<string>): void {
+              console.log(value);
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
+          />
+        </Provider>
+      );
+
+      const switchEl = getByRole('checkbox');
+
+      expect(switchEl).toHaveAttribute('value', 'false');
+      fireEvent.click(switchEl);
+      fireEvent.change(switchEl, { target: { value: 'true' } });
+      await act(async () => {
+        expect(switchEl).toHaveAttribute('value', 'true');
+        expect(fn).toBeDefined();
+      });
+    });
+  });
+
+  it('Add option', async () => {
+    await act(async () => {
+      const addAssistanceChannel = jest.fn();
+      const { container } = render(
+        <Provider store={store}>
+          <StepOneForm
+            action={''}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (value: SetStateAction<string>): void {
+              console.log(value);
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
+          />
+        </Provider>
+      );
+
+      type TestElement = Document | Element | Window | Node;
+      const addButton = container.querySelector('#add-option') as TestElement;
+      fireEvent.click(addButton);
+      expect(addAssistanceChannel).toBeDefined();
+    });
+  });
+
+  it('Remove option', async () => {
+    await act(async () => {
+      const deleteAssistanceChannel = jest.fn();
+      const { container } = render(
+        <Provider store={store}>
+          <StepOneForm
+            action={''}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (value: SetStateAction<string>): void {
+              console.log(value);
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (value: SetStateAction<number>): void {
+              console.log(value);
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (value: SetStateAction<boolean>): void {
+              console.log(value);
+            }}
+          />
+        </Provider>
+      );
+      type TestElement = Document | Element | Window | Node;
+
+      const typeEl = container.querySelector(`#channels_1_type`) as TestElement;
+      const contactEl = container.querySelector(`#channels_1_contact`) as TestElement;
+      expect(typeEl).toBeFalsy();
+      expect(contactEl).toBeFalsy();
+
+      expect(typeEl).not.toBeInTheDocument();
+      expect(contactEl).not.toBeInTheDocument();
+
+      expect(deleteAssistanceChannel).toBeDefined();
+      expect(deleteAssistanceChannel).toBeCalledTimes(0);
     });
   });
 });
