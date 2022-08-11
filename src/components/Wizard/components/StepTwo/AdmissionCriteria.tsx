@@ -60,52 +60,49 @@ const AdmissionCriteria = ({
   const initiativeId = useAppSelector(initiativeIdSelector);
 
   useEffect(() => {
-    if (typeof initiativeId !== undefined) {
-      const id = initiativeId as string;
-      fetchAdmissionCriteria(id)
-        .then((response) => {
-          const responseData = mapResponse(response);
-          setAvailableCriteria([...responseData]);
-          setCriteriaToRender([...responseData]);
+    fetchAdmissionCriteria()
+      .then((response) => {
+        const responseData = mapResponse(response);
+        setAvailableCriteria([...responseData]);
+        setCriteriaToRender([...responseData]);
 
-          const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
-          const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
-          if (automatedCriteria.length > 0) {
-            const updatedResponseData: Array<AvailableCriteria> =
-              updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
-            setAvailableCriteria([...updatedResponseData]);
-            setCriteriaToRender([...updatedResponseData]);
-            updatedResponseData.forEach((c) => {
-              if (c.checked === true) {
-                // eslint-disable-next-line functional/immutable-data
-                newCriteriaToSubmit.push({ code: c.code, dispatched: false });
-              }
-            });
-          }
-          if (selfDeclarationCriteria.length > 0) {
-            setManualCriteriaToRender([...selfDeclarationCriteria]);
-            selfDeclarationCriteria.forEach((s) => {
+        const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
+        const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
+        if (automatedCriteria.length > 0) {
+          const updatedResponseData: Array<AvailableCriteria> =
+            updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
+          setAvailableCriteria([...updatedResponseData]);
+          setCriteriaToRender([...updatedResponseData]);
+          updatedResponseData.forEach((c) => {
+            if (c.checked === true) {
               // eslint-disable-next-line functional/immutable-data
-              newCriteriaToSubmit.push({ code: s.code, dispatched: false });
-            });
-          }
-
-          setCriteriaToSubmit([...newCriteriaToSubmit]);
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_ADMISSION_CRITERIA_LIST_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting admission criteria list',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
+              newCriteriaToSubmit.push({ code: c.code, dispatched: false });
+            }
           });
+        }
+        if (selfDeclarationCriteria.length > 0) {
+          setManualCriteriaToRender([...selfDeclarationCriteria]);
+          selfDeclarationCriteria.forEach((s) => {
+            // eslint-disable-next-line functional/immutable-data
+            newCriteriaToSubmit.push({ code: s.code, dispatched: false });
+          });
+        }
+
+        setCriteriaToSubmit([...newCriteriaToSubmit]);
+      })
+      .catch((error) => {
+        addError({
+          id: 'GET_ADMISSION_CRITERIA_LIST_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting admission criteria list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
         });
-    }
+      });
   }, []);
 
   useEffect(() => {
