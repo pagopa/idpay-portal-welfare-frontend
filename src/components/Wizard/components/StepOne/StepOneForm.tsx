@@ -741,8 +741,15 @@ Props) => {
               sx={{ gridColumn: 'span 1' }}
               control={
                 <Switch
+                  data-testid="initiative-on-io-test"
                   checked={formik.values.initiativeOnIO}
                   value={formik.values.initiativeOnIO}
+                  inputProps={{
+                    checked: formik.values.initiativeOnIO,
+                    role: 'checkbox',
+                    name: 'initiativeOnIOchk',
+                    id: 'initiativeOnIOchk',
+                  }}
                   onChange={async (e) => {
                     await handleInitiativeOnIO(e.target.checked);
                   }}
@@ -764,6 +771,8 @@ Props) => {
                   </InputLabel>
                   <Select
                     defaultValue=""
+                    id="service-id-select"
+                    data-testid="service-id-select"
                     label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
@@ -798,20 +807,30 @@ Props) => {
                   <TextField
                     label={t('components.wizard.stepOne.form.otherInfo.serviceName')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceName')}
+                    name="serviceName"
+                    aria-label="serviceName"
+                    role="input"
                     sx={{ gridColumn: 'span 6', pr: 4 }}
                     value={formik.values.serviceName}
                     onChange={(e) => formik.setFieldValue('serviceName', e.target.value)}
                     error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
                     helperText={formik.touched.serviceName && formik.errors.serviceName}
+                    required={true}
+                    InputLabelProps={{ required: false }}
                   />
                   <TextField
                     label={t('components.wizard.stepOne.form.otherInfo.argument')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.argument')}
+                    name="argument"
+                    aria-label="argument"
+                    role="input"
                     sx={{ gridColumn: 'span 6' }}
                     value={formik.values.argument}
                     onChange={(e) => formik.setFieldValue('argument', e.target.value)}
                     error={formik.touched.argument && Boolean(formik.errors.argument)}
                     helperText={formik.touched.argument && formik.errors.argument}
+                    required={true}
+                    InputLabelProps={{ required: false }}
                   />
                   <TextField
                     sx={{ gridColumn: 'span 12', mt: 4 }}
@@ -820,10 +839,15 @@ Props) => {
                     maxRows={4}
                     label={t('components.wizard.stepOne.form.otherInfo.description')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.description')}
+                    name="description"
+                    aria-label="description"
+                    role="input"
                     value={formik.values.description}
                     onChange={(e) => formik.setFieldValue('description', e.target.value)}
                     error={formik.touched.description && Boolean(formik.errors.description)}
                     helperText={formik.touched.description && formik.errors.description}
+                    required={true}
+                    InputLabelProps={{ required: false }}
                   />
                 </FormControl>
                 <Box sx={{ my: 3, display: 'flex' }}>
@@ -878,6 +902,7 @@ Props) => {
                                 formik.setTouched
                               )
                             }
+                            id={`remove_element_${i}`}
                           />
                         )}
                       </Box>
@@ -886,12 +911,13 @@ Props) => {
                         sx={{ gridColumn: 'span 4' }}
                         error={typeTouched && Boolean(typeError)}
                       >
-                        <InputLabel id={`channels[${i}].type}_label`}>
+                        <InputLabel id={`channels[${i}].type_label`}>
                           {t('components.wizard.stepOne.form.otherInfo.contact')}
                         </InputLabel>
                         <Select
-                          labelId={`channels[${i}].type}_label`}
-                          name={`channels[${i}].type}`}
+                          id={`channels_${i}_type`}
+                          labelId={`channels[${i}].type_label`}
+                          name={`channels[${i}].type`}
                           label={t('components.wizard.stepOne.form.otherInfo.contact')}
                           value={formik.values.channels[i].type}
                           onChange={(e) =>
@@ -915,8 +941,8 @@ Props) => {
                       </FormControl>
                       <FormControl sx={{ gridColumn: 'span 10' }}>
                         <TextField
-                          id={`channels[${i}].contact}`}
-                          name={`channels[${i}].contact}`}
+                          id={`channels_${i}_contact`}
+                          name={`channels[${i}].contact`}
                           variant="outlined"
                           label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
                           sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
@@ -935,6 +961,8 @@ Props) => {
                           }
                           error={contactTouched && Boolean(contactError)}
                           helperText={contactTouched && contactError}
+                          required
+                          InputLabelProps={{ required: false }}
                         />
                       </FormControl>
                     </Box>
@@ -957,6 +985,7 @@ Props) => {
                         '&:hover': { backgroundColor: 'transparent' },
                       },
                     ]}
+                    id="add-option"
                     size="small"
                     variant="text"
                     startIcon={<AddIcon />}
