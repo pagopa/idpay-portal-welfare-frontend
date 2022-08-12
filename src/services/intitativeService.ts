@@ -15,13 +15,6 @@ export const saveGeneralInfoService = (
   InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
-  // if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-  //   const initiatives = [
-  //     { initiativeId: '62dbe27de0d7f80a80e6c01a', initiativeName: 'aaa', status: 'DRAFT' },
-  //     { initiativeId: '62dbe9e8e0d7f80a80e6c01b', initiativeName: 'Table', status: 'DRAFT' },
-  //   ];
-  //   return new Promise((resolve) => resolve(initiatives));
-  // }
   InitiativeApi.getInitativeSummary().then((res) => res);
 
 export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>

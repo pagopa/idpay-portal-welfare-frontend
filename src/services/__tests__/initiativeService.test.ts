@@ -1,7 +1,72 @@
 import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
 import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
-import { trascodeRewardRule } from '../intitativeService';
+import {
+  getInitativeSummary,
+  getInitiativeDetail,
+  putBeneficiaryRuleDraftService,
+  putBeneficiaryRuleService,
+  putGeneralInfo,
+  saveGeneralInfoService,
+  trascodeRewardRule,
+} from '../intitativeService';
+import {
+  mockedInitiativeBeneficiaryRuleBody,
+  mockedInitiativeGeneralBody,
+  mockedInitiativeId,
+} from '../__mocks__/initiativeService';
+
+import { InitiativeApi } from '../../api/InitiativeApiClient';
+
+jest.mock('../../api/InitiativeApiClient');
+
+beforeEach(() => {
+  jest.spyOn(InitiativeApi, 'getInitativeSummary');
+  jest.spyOn(InitiativeApi, 'getInitiativeById');
+  jest.spyOn(InitiativeApi, 'initiativeGeneralPost');
+  jest.spyOn(InitiativeApi, 'initiativeGeneralPut');
+  jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePut');
+  jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePutDraft');
+});
+
+test('test get initiative summary', async () => {
+  await getInitativeSummary();
+  expect(InitiativeApi.getInitativeSummary).toBeCalled();
+});
+
+test('test get initiative by id', async () => {
+  await getInitiativeDetail(mockedInitiativeId);
+  expect(InitiativeApi.getInitiativeById).toBeCalledWith(mockedInitiativeId);
+});
+
+test('create initiative', async () => {
+  await saveGeneralInfoService(mockedInitiativeGeneralBody);
+  expect(InitiativeApi.initiativeGeneralPost).toBeCalled();
+});
+
+test('update initiative (general info)', async () => {
+  await putGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
+  expect(InitiativeApi.initiativeGeneralPut).toBeCalledWith(
+    mockedInitiativeId,
+    mockedInitiativeGeneralBody
+  );
+});
+
+test('update initiative (beneficiary rule)', async () => {
+  await putBeneficiaryRuleService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
+  expect(InitiativeApi.initiativeBeneficiaryRulePut).toBeCalledWith(
+    mockedInitiativeId,
+    mockedInitiativeBeneficiaryRuleBody
+  );
+});
+
+test('update initiative draft (beneficiary rule)', async () => {
+  await putBeneficiaryRuleDraftService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
+  expect(InitiativeApi.initiativeBeneficiaryRulePutDraft).toBeCalledWith(
+    mockedInitiativeId,
+    mockedInitiativeBeneficiaryRuleBody
+  );
+});
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {
   const value: InitiativeRewardAndTrxRulesDTORewardRule = {
