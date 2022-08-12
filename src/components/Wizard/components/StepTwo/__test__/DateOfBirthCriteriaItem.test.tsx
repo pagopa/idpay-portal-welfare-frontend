@@ -37,9 +37,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
             action={''}
             formData={data}
             // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-              console.log(event);
-            }}
+            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
             handleFieldValueChanged={undefined}
             criteriaToSubmit={[]}
             // eslint-disable-next-line react/jsx-no-bind
@@ -78,9 +76,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -111,9 +107,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -127,6 +121,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
 
     const deleteButton = getByTestId('delete-button-test');
     const dateBirth = getByTestId('dateBirth-criteria-test');
+    const handleCriteriaRemoved = jest.fn();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
@@ -136,6 +131,8 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
       expect(deleteButton).toBeTruthy();
       expect(dateBirth).not.toBeVisible();
       expect(dateBirth).not.toBeInTheDocument();
+      expect(handleCriteriaRemoved).toBeDefined();
+      expect(handleCriteriaRemoved).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -145,9 +142,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -167,6 +162,8 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     const between = queryByTestId('between');
     const year = queryByTestId('year');
     const age = queryByTestId('age');
+    const handleChange = jest.fn();
+    const handleFieldValueChanged = jest.fn();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
@@ -190,6 +187,10 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     waitFor(async () => {
       fireEvent.change(criteriaSelect, { target: { value: DateOfBirthOptions.YEAR } });
       expect(mockCallback.mock.calls).toHaveLength(1);
+      expect(handleChange).toBeDefined();
+      expect(handleChange).toHaveBeenCalledTimes(0);
+      expect(handleFieldValueChanged).toBeDefined();
+      expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -199,9 +200,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -214,6 +213,8 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     );
 
     const mockCallback = jest.fn();
+    const handleChange = jest.fn();
+    const handleFieldValueChanged = jest.fn();
 
     const criteria = getByTestId('dateOfBirth-select-test');
     // Dig deep to find the actual <select>
@@ -223,21 +224,25 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     waitFor(async () => {
       fireEvent.change(criteriaSelect, { target: { value: FilterOperator.EQ } });
       expect(mockCallback.mock.calls).toHaveLength(1);
+      expect(mockCallback.mock.calls).toHaveLength(1);
+      expect(handleChange).toBeDefined();
+      expect(handleChange).toHaveBeenCalledTimes(0);
+      expect(handleFieldValueChanged).toBeDefined();
+      expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
     });
   });
 
   it('Test DateOfBirthCriteriaItem TextField dateOfBirthStartValue/dateOfBirthEndValue', async () => {
-    const valueChanged = jest.fn();
+    const handleChange = jest.fn();
+    const handleFieldValueChanged = jest.fn();
 
     const { getByTestId } = render(
       <DateOdBirthCriteriaItem
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
-        handleFieldValueChanged={valueChanged}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+        handleFieldValueChanged={handleFieldValueChanged}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
@@ -268,6 +273,10 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         expect(dateOfBirthStartValue.value).toBe('100');
         fireEvent.change(dateOfBirthEndValue, { target: { value: '1000' } });
         expect(dateOfBirthEndValue.value).toBe('1100');
+        expect(handleChange).toBeDefined();
+        expect(handleChange).toHaveBeenCalledTimes(0);
+        expect(handleFieldValueChanged).toBeDefined();
+        expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
         // eslint-disable-next-line sonarjs/no-duplicated-branches
       } else {
         expect(dateOfBirthStartValue).toBeInTheDocument();
@@ -276,6 +285,10 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         expect(dateOfBirthEndValue).not.toBeVisible();
         fireEvent.change(dateOfBirthStartValue, { target: { value: '100' } });
         expect(dateOfBirthStartValue.value).toBe('100');
+        expect(handleChange).toBeDefined();
+        expect(handleChange).toHaveBeenCalledTimes(0);
+        expect(handleFieldValueChanged).toBeDefined();
+        expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
       }
     });
   });

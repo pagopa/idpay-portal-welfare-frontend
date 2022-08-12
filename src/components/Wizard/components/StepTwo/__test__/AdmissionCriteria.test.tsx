@@ -97,33 +97,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     const addManually = getByTestId('add-manually-test');
     const modal = queryByTestId('modal-test');
     const ManuallyAdded = queryByTestId('manually-added-test');
-
-    // const ManuallyAdded = (
-    //   <ManualCriteria
-    //     data={formData}
-    //     action={''}
-    //     // eslint-disable-next-line react/jsx-no-bind
-    //     handleCriteriaRemoved={function (
-    //       event: React.MouseEvent<HTMLInputElement, MouseEvent>
-    //     ): void {
-    //       console.log(event);
-    //     }}
-    //     manualCriteriaToRender={[]}
-    //     // eslint-disable-next-line react/jsx-no-bind
-    //     setManualCriteriaToRender={function (
-    //       value: SetStateAction<Array<ManualCriteriaItem>>
-    //     ): void {
-    //       console.log(value);
-    //     }}
-    //     criteriaToSubmit={[]}
-    //     // eslint-disable-next-line react/jsx-no-bind
-    //     setCriteriaToSubmit={function (
-    //       value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-    //     ): void {
-    //       console.log(value);
-    //     }}
-    //   />
-    // );
+    const handleOpenModal = jest.fn();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
@@ -135,6 +109,8 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     fireEvent.click(criteria);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
+      expect(handleOpenModal).toBeDefined();
+      expect(handleOpenModal).toHaveBeenCalledTimes(0);
       expect(criteria).toBeTruthy();
       expect(modal).toBeInTheDocument();
       expect(modal).toBeVisible();

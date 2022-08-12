@@ -36,9 +36,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
             action={''}
             formData={data}
             // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-              console.log(event);
-            }}
+            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
             handleFieldValueChanged={undefined}
             criteriaToSubmit={[]}
             // eslint-disable-next-line react/jsx-no-bind
@@ -59,9 +57,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -90,9 +86,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -124,9 +118,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={undefined}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
@@ -176,9 +168,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         action={''}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={function (event: React.MouseEvent<Element, MouseEvent>): void {
-          console.log(event);
-        }}
+        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={valueChanged}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
