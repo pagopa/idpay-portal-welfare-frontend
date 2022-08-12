@@ -122,6 +122,7 @@ export default {
             subtitle:
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
             addButton: 'Aggiungi',
+            searchCriteria: 'Cerca criteri',
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',

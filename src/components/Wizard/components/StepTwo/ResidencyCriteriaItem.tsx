@@ -88,19 +88,20 @@ const ResidencyCriteriaItem = ({
         my: 3,
         p: 3,
       }}
+      data-testid="residency-criteria-test"
     >
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={formData.code}>
+        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)}>
           <DeleteOutlineIcon
             color="error"
             data-id={formData.code}
             sx={{
               cursor: 'pointer',
             }}
-            onClick={(event: any) => handleCriteriaRemoved(event)}
+            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -127,20 +128,21 @@ const ResidencyCriteriaItem = ({
               residencyFormik.touched.residencySelect,
               residencyFormik.errors.residencySelect
             )}
+            data-testid="residency-select-test"
           >
-            <MenuItem value={ResidencyOptions.POSTAL_CODE}>
+            <MenuItem value={ResidencyOptions.POSTAL_CODE} data-testid="postalCode">
               {t('components.wizard.stepTwo.chooseCriteria.form.postalCode')}
             </MenuItem>
-            <MenuItem value={ResidencyOptions.CITY_COUNCIL}>
+            <MenuItem value={ResidencyOptions.CITY_COUNCIL} data-testid="cityCouncil">
               {t('components.wizard.stepTwo.chooseCriteria.form.cityCouncil')}
             </MenuItem>
-            <MenuItem value={ResidencyOptions.CITY}>
+            <MenuItem value={ResidencyOptions.CITY} data-testid="city">
               {t('components.wizard.stepTwo.chooseCriteria.form.city')}
             </MenuItem>
-            <MenuItem value={ResidencyOptions.PROVINCE}>
+            <MenuItem value={ResidencyOptions.PROVINCE} data-testid="province">
               {t('components.wizard.stepTwo.chooseCriteria.form.province')}
             </MenuItem>
-            <MenuItem value={ResidencyOptions.REGION}>
+            <MenuItem value={ResidencyOptions.REGION} data-testid="region">
               {t('components.wizard.stepTwo.chooseCriteria.form.region')}
             </MenuItem>
           </Select>
@@ -165,11 +167,12 @@ const ResidencyCriteriaItem = ({
               residencyFormik.touched.residencyRelationSelect,
               residencyFormik.errors.residencyRelationSelect
             )}
+            data-testid="residency-relation-test"
           >
-            <MenuItem value={FilterOperator.EQ}>
+            <MenuItem value={FilterOperator.EQ} data-testid="is">
               {t('components.wizard.stepTwo.chooseCriteria.form.is')}
             </MenuItem>
-            <MenuItem value={FilterOperator.NOT_EQ}>
+            <MenuItem value={FilterOperator.NOT_EQ} data-testid="isNot">
               {t('components.wizard.stepTwo.chooseCriteria.form.isNot')}
             </MenuItem>
           </Select>
@@ -200,6 +203,7 @@ const ResidencyCriteriaItem = ({
               residencyFormik.touched.residencyValue,
               residencyFormik.errors.residencyValue
             )}
+            inputProps={{ 'data-testid': 'residencyValue' }}
           />
         </FormControl>
       </Box>

@@ -1,27 +1,39 @@
-export const dummy = 'TODO';
-
-/* import { IdentityTokenResource } from '../generated/portal/IdentityTokenResource';
+import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
+import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
+import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
+import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
 import {
-  InstitutionResource,
-} from '../generated/portal/InstitutionResource';
-import {
-  ProductRoleMappingsResource,
-} from '../generated/portal/ProductRoleMappingsResource';
-import { ProductsResource } from '../generated/portal/ProductsResource'; */
+  mockedInitiativeDetail,
+  mockedInitiativeSummary,
+} from '../../services/__mocks__/initiativeService';
+import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
+import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
 
-/* export const PortalApi = {
-  getInstitutions: async (): Promise<Array<InstitutionResource>> =>
-    new Promise((resolve) => resolve(mockedInstitutionResources)),
+export const InitiativeApi = {
+  getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
+    new Promise((resolve) => resolve(mockedInitiativeSummary)),
 
-  getInstitution: async (_partyId: string): Promise<InstitutionResource> =>
-    new Promise((resolve) => resolve(mockedInstitutionResources[0])),
+  getInitiativeById: async (_id: string): Promise<InitiativeDTO> =>
+    new Promise((resolve) => resolve(mockedInitiativeDetail)),
 
-  getProducts: async (): Promise<Array<ProductsResource>> =>
-    new Promise((resolve) => resolve(mockedProductResources)),
+  initiativeGeneralPost: async (_data: InitiativeInfoDTO): Promise<InitiativeDTO> =>
+    new Promise((resolve) => resolve({})),
 
-  getTokenExchange: async (_partyId: string, _productId: string): Promise<IdentityTokenResource> =>
-    new Promise((resolve) => resolve({ token: 'DUMMYTOKEN' })),
+  initiativeGeneralPut: async (_id: string, _data: InitiativeInfoDTO): Promise<void> =>
+    new Promise((resolve) => resolve()),
 
-  getProductRoles: async (_productId: string): Promise<Array<ProductRoleMappingsResource>> =>
-    new Promise((resolve) => resolve(mockedProductRoles)),
-}; */
+  initiativeBeneficiaryRulePut: async (
+    _id: string,
+    _data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  initiativeBeneficiaryRulePutDraft: async (
+    _id: string,
+    _data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getEligibilityCriteriaForSidebar: async (
+    _initiativeId: string
+  ): Promise<Array<AdmissionCriteriaModel>> =>
+    new Promise((resolve) => resolve(mockedAdmissionCriteria)),
+};
