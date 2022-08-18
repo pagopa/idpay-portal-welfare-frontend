@@ -202,22 +202,12 @@
         }
       }
     },
-    "/{initiativeId}/beneficiary/criteria": {
+    "/config/beneficiary/rule": {
       "get": {
         "tags": ["initiative"],
         "summary": "Returns fixed automated Criteria",
         "description": "Returns fixed automated Criteria",
-        "operationId": "returns-fixed-automated-criteria",
-        "parameters": [
-          {
-            "name": "initiativeId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
+        "operationId": "getBeneficiaryConfigRules",
         "responses": {
           "200": {
             "description": "",

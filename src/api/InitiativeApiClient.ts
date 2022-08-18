@@ -96,10 +96,8 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  getEligibilityCriteriaForSidebar: async (
-    initiativeId: string
-  ): Promise<Array<AdmissionCriteriaModel>> => {
-    const result = await apiClient.returnsFixedAutomatedCriteria({ initiativeId });
+  getEligibilityCriteriaForSidebar: async (): Promise<Array<AdmissionCriteriaModel>> => {
+    const result = await apiClient.getBeneficiaryConfigRules({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

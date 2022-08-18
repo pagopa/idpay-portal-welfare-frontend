@@ -1,4 +1,5 @@
 // import { InitiativeApi } from '../api/InitiativeApiClient';
+
 import { AdmissionCriteriaModel } from '../model/AdmissionCriteria';
 import { mockedAdmissionCriteria } from './__mocks__/admissionCriteriaService';
 
@@ -7,6 +8,6 @@ export const fetchAdmissionCriteria = (): Promise<Array<AdmissionCriteriaModel>>
     return new Promise((resolve) => resolve(mockedAdmissionCriteria));
   } else {
     throw new Error('TODO');
-    //   return InitiativeApi.getEligibilityCriteriaForSidebar(id).then((res) => res);
+    // return InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
   }
 };
