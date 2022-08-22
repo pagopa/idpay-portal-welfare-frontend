@@ -99,7 +99,6 @@ export const InitiativeApi = {
   getEligibilityCriteriaForSidebar: async (): Promise<Array<AdmissionCriteriaModel>> => {
     const result = await apiClient.getBeneficiaryConfigRules({});
     console.log('Result', result);
-
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };
