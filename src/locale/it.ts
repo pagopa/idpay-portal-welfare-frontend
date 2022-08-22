@@ -51,7 +51,7 @@ export default {
         initiativeStatus: 'Stato',
       },
       emptyList: 'Non ci sono iniziative. ',
-      createNew: "Crea un'niziativa",
+      createNew: "Crea un'iniziativa",
       search: "Cerca per nome dell'iniziativa",
       status: {
         draft: 'In bozza',
