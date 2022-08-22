@@ -62,6 +62,8 @@ const AdmissionCriteria = ({
   useEffect(() => {
     fetchAdmissionCriteria()
       .then((response) => {
+        console.log('Response Criteria', response);
+
         const responseData = mapResponse(response);
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
