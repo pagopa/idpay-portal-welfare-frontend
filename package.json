@@ -46,7 +46,7 @@
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
     "generate": "npm-run-all generate:*",
     "clean:api-initiative": "rimraf src/api/generated/initiative && rimraf openApi/generated",
-    "generate:api-initiative": "yarn run clean:api-initiative && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/initiative-api-docs.json > openApi/generated/initiative-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/initiative-swagger20.json && node ./openApi/scripts/api-initiative_fixPreGen.js && gen-api-models --api-spec openApi/generated/initiative-swagger20.json --out-dir src/api/generated/initiative --no-strict --request-types --response-decoders --client && node openApi/scripts/api-initiative_fixPostGen.js"
+    "generate:api-initiative": "yarn run clean:api-initiative && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.initiative.yaml > openApi/generated/initiative-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/initiative-swagger20.json && node ./openApi/scripts/api-initiative_fixPreGen.js && gen-api-models --api-spec openApi/generated/initiative-swagger20.json --out-dir src/api/generated/initiative --no-strict --request-types --response-decoders --client && node openApi/scripts/api-initiative_fixPostGen.js"
   },
   "eslintConfig": {
     "extends": [
