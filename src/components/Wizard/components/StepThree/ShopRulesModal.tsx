@@ -8,7 +8,7 @@ import {
   // Checkbox,
   // TextField,
   // InputAdornment,
-  // Button,
+  Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { MouseEventHandler, useCallback, useState } from 'react';
@@ -91,6 +91,11 @@ const ShopRulesModal = ({ openModal, handleCloseModal }: Props) => {
               <Typography variant="body2" component="p" sx={{ mt: 2 }}>
                 {t('components.wizard.stepThree.modal.subtitle')}
               </Typography>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Button size="small" sx={{ p: 0 }}>
+                {t('components.wizard.common.links.findOut')}
+              </Button>
             </Box>
           </Box>
           <Box

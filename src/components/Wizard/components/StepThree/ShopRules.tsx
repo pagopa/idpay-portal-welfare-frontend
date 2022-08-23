@@ -2,8 +2,10 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import ShopRulesModal from './ShopRulesModal';
+import PercentageRecognizedItem from './PercentageRecognizedItem';
 
 interface Props {
   action: string;
@@ -56,7 +58,7 @@ const ShopRules = ({ action }: Props) => {
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"trxButton . . . "`,
           py: 2,
-          mb: 8,
+          mb: 3,
         }}
       >
         <Button
@@ -66,13 +68,19 @@ const ShopRules = ({ action }: Props) => {
           onClick={handleOpenModal}
           data-testid="criteria-button-test"
         >
-          {t('components.wizard.stepTwo.chooseCriteria.browse')}
+          {t('components.wizard.stepThree.addNew')}
         </Button>
         <ShopRulesModal
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           data-testid="shop-rules-modal-test"
         />
+      </Box>
+      <Box>
+        <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
+          {t('components.wizard.stepThree.rulesAddedTitle')}
+        </Typography>
+        <PercentageRecognizedItem />
       </Box>
     </Paper>
   );

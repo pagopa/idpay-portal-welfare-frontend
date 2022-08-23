@@ -166,10 +166,14 @@ export default {
         subtitle:
           'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
         addNew: 'Aggiungi nuova',
+        rulesAddedTitle: 'regole aggiunte',
         modal: {
           title: 'Aggiungi regola',
           subtitle:
             'Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
+        },
+        form: {
+          percentageRecognized: 'Percentuale riconosciuta',
         },
       },
       stepFour: {
