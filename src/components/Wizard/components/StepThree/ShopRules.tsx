@@ -2,13 +2,14 @@ import { Box, Button, FormControl, FormLabel, Paper, Typography } from '@mui/mat
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 
 interface Props {
   action: string;
   // setAction: Function;
 }
 
-const StepThreeShopRules = ({ action }: Props) => {
+const ShopRules = ({ action }: Props) => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -19,6 +20,12 @@ const StepThreeShopRules = ({ action }: Props) => {
     }
     // setAction('');
   }, [action]);
+
+  useEffect(() => {
+    fetchTransactionRules()
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -84,4 +91,4 @@ const StepThreeShopRules = ({ action }: Props) => {
   );
 };
 
-export default StepThreeShopRules;
+export default ShopRules;
