@@ -314,7 +314,7 @@ const AdmissionCriteria = ({
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" href="" sx={{ p: 0 }}>
+          <Button size="small" sx={{ p: 0 }}>
             {t('components.wizard.common.links.findOut')}
           </Button>
         </Box>

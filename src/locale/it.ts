@@ -163,10 +163,13 @@ export default {
       },
       stepThree: {
         title: 'Regole di spesa',
-        form: {
-          subTitle:
-            'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
-          addNew: 'Aggiungi nuova',
+        subtitle:
+          'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
+        addNew: 'Aggiungi nuova',
+        modal: {
+          title: 'Aggiungi regola',
+          subtitle:
+            'Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
         },
       },
       stepFour: {
