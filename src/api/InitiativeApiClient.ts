@@ -10,6 +10,7 @@ import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeSummaryArrayDTO } from './generated/initiative/InitiativeSummaryArrayDTO';
+import { ConfigBeneficiaryRuleArrayDTO } from './generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -96,7 +97,7 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  getEligibilityCriteriaForSidebar: async (): Promise<Array<AdmissionCriteriaModel>> => {
+  getEligibilityCriteriaForSidebar: async (): Promise<Array<ConfigBeneficiaryRuleArrayDTO>> => {
     const result = await apiClient.getBeneficiaryConfigRules({});
     console.log('Result', result);
     return extractResponse(result, 200, onRedirectToLogin);
