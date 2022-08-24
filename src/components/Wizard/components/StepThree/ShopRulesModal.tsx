@@ -1,39 +1,22 @@
-import {
-  Box,
-  Typography,
-  Modal,
-  Backdrop,
-  Fade,
-  IconButton,
-  // Checkbox,
-  // TextField,
-  // InputAdornment,
-  Button,
-} from '@mui/material';
+import { Box, Typography, Modal, Backdrop, Fade, IconButton, Button } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { MouseEventHandler, useCallback, /* useEffect, */ useState } from 'react';
+import { MouseEventHandler, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
-import StorefrontIcon from '@mui/icons-material/Storefront';
-import TagIcon from '@mui/icons-material/Tag';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import WatchLaterIcon from '@mui/icons-material/WatchLater';
-import PinDropIcon from '@mui/icons-material/PinDrop';
 import { ShopRulesModel } from '../../../../model/ShopRules';
+import { renderShopRuleIcon } from './helpers';
 
 type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   availableShopRules: Array<ShopRulesModel>;
-  shopListItemSelection: any;
+  handleShopListItemAdded: any;
 };
 
 const ShopRulesModal = ({
   openModal,
   handleCloseModal,
   availableShopRules,
-  shopListItemSelection,
+  handleShopListItemAdded,
 }: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
@@ -46,27 +29,6 @@ const ShopRulesModal = ({
     }
   }, []);
 
-  const renderShopRuleIcon = (code: string) => {
-    switch (code) {
-      case 'THRESHOLD':
-        return <EuroSymbolIcon color="primary" sx={{ mr: 2 }} />;
-      case 'MCC':
-        return <CreditCardIcon color="primary" sx={{ mr: 2 }} />;
-      case 'ATECO':
-        return <StorefrontIcon color="primary" sx={{ mr: 2 }} />;
-      case 'TRXCOUNT':
-        return <TagIcon color="primary" sx={{ mr: 2 }} />;
-      case 'REWARDLIMIT':
-        return <CalendarTodayIcon color="primary" sx={{ mr: 2 }} />;
-      case 'DAYHOURSWEEK':
-        return <WatchLaterIcon color="primary" sx={{ mr: 2 }} />;
-      case 'GIS':
-        return <PinDropIcon color="primary" sx={{ mr: 2 }} />;
-      default:
-        return null;
-    }
-  };
-
   // eslint-disable-next-line arrow-body-style
   const renderShopRulesList = (availableShopRules: Array<ShopRulesModel>) => {
     return availableShopRules.map((a) => {
@@ -75,9 +37,9 @@ const ShopRulesModal = ({
           <Box
             key={a.code}
             sx={{ display: 'flex', my: 2, alignItems: 'center', cursor: 'pointer' }}
-            onClick={() => shopListItemSelection(a.code)}
+            onClick={() => handleShopListItemAdded(a.code)}
           >
-            <Box>{renderShopRuleIcon(a.code)}</Box>
+            <Box>{renderShopRuleIcon(a.code, 2, 'primary')}</Box>
             <Box>
               <Typography variant="body1" sx={{ fontWeight: '600' }}>
                 {a.title}

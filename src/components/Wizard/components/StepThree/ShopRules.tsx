@@ -9,6 +9,12 @@ import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import { mapResponse } from './helpers';
 
+import SpendingLimitItem from './SpendingLimitItem';
+import MCCItem from './MCCItem';
+import TimeLimitItem from './TimeLimitItem';
+import TransactionNumberItem from './TransactionNumberItem';
+import TransactionTimeItem from './TransactionTimeItem';
+
 interface Props {
   action: string;
   // setAction: Function;
@@ -42,7 +48,7 @@ const ShopRules = ({ action }: Props) => {
 
   const handleOpenModal = () => setOpenModal(true);
 
-  const shopListItemSelection = (code: string) => {
+  const handleShopListItemAdded = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
     availableShopRules.forEach((a) => {
       if (code === a.code && a.checked === false) {
@@ -53,9 +59,22 @@ const ShopRules = ({ action }: Props) => {
         newAvailableShopRules.push({ ...a });
       }
     });
-    console.log(newAvailableShopRules);
     setAvailableShopRules([...newAvailableShopRules]);
     handleCloseModal();
+  };
+
+  const handleShopListItemRemoved = (code: string) => {
+    const newAvailableShopRules: Array<ShopRulesModel> = [];
+    availableShopRules.forEach((a) => {
+      if (code === a.code) {
+        // eslint-disable-next-line functional/immutable-data
+        newAvailableShopRules.push({ ...a, checked: false });
+      } else {
+        // eslint-disable-next-line functional/immutable-data
+        newAvailableShopRules.push({ ...a });
+      }
+    });
+    setAvailableShopRules([...newAvailableShopRules]);
   };
 
   return (
@@ -97,7 +116,7 @@ const ShopRules = ({ action }: Props) => {
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           availableShopRules={availableShopRules}
-          shopListItemSelection={shopListItemSelection}
+          handleShopListItemAdded={handleShopListItemAdded}
           data-testid="shop-rules-modal-test"
         />
       </Box>
@@ -107,6 +126,57 @@ const ShopRules = ({ action }: Props) => {
         </Typography>
         <PercentageRecognizedItem />
       </Box>
+
+      {availableShopRules.map((a) => {
+        if (a.code === 'THRESHOLD' && a.checked === true) {
+          return (
+            <SpendingLimitItem
+              key={a.code}
+              title={a.title}
+              code={a.code}
+              handleShopListItemRemoved={handleShopListItemRemoved}
+            />
+          );
+        } else if (a.code === 'MCC' && a.checked === true) {
+          return (
+            <MCCItem
+              key={a.code}
+              title={a.title}
+              code={a.code}
+              handleShopListItemRemoved={handleShopListItemRemoved}
+            />
+          );
+        } else if (a.code === 'TRXCOUNT' && a.checked === true) {
+          return (
+            <TransactionNumberItem
+              key={a.code}
+              title={a.title}
+              code={a.code}
+              handleShopListItemRemoved={handleShopListItemRemoved}
+            />
+          );
+        } else if (a.code === 'REWARDLIMIT' && a.checked === true) {
+          return (
+            <TransactionTimeItem
+              key={a.code}
+              title={a.title}
+              code={a.code}
+              handleShopListItemRemoved={handleShopListItemRemoved}
+            />
+          );
+        } else if (a.code === 'DAYHOURSWEEK' && a.checked === true) {
+          return (
+            <TimeLimitItem
+              key={a.code}
+              title={a.title}
+              code={a.code}
+              handleShopListItemRemoved={handleShopListItemRemoved}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
     </Paper>
   );
 };

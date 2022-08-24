@@ -1,4 +1,12 @@
 /* eslint-disable complexity */
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import StorefrontIcon from '@mui/icons-material/Storefront';
+import TagIcon from '@mui/icons-material/Tag';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import WatchLaterIcon from '@mui/icons-material/WatchLater';
+import PinDropIcon from '@mui/icons-material/PinDrop';
+
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 
@@ -92,3 +100,36 @@ export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesMod
       };
     }
   });
+
+type Colors =
+  | 'inherit'
+  | 'disabled'
+  | 'action'
+  | 'primary'
+  | 'secondary'
+  | 'error'
+  | 'info'
+  | 'success'
+  | 'warning'
+  | undefined;
+
+export const renderShopRuleIcon = (code: string, margin: number, color: Colors) => {
+  switch (code) {
+    case 'THRESHOLD':
+      return <EuroSymbolIcon color={color} sx={{ mr: margin }} />;
+    case 'MCC':
+      return <CreditCardIcon color={color} sx={{ mr: margin }} />;
+    case 'ATECO':
+      return <StorefrontIcon color={color} sx={{ mr: margin }} />;
+    case 'TRXCOUNT':
+      return <TagIcon color={color} sx={{ mr: margin }} />;
+    case 'REWARDLIMIT':
+      return <CalendarTodayIcon color={color} sx={{ mr: margin }} />;
+    case 'DAYHOURSWEEK':
+      return <WatchLaterIcon color={color} sx={{ mr: margin }} />;
+    case 'GIS':
+      return <PinDropIcon color={color} sx={{ mr: margin }} />;
+    default:
+      return null;
+  }
+};
