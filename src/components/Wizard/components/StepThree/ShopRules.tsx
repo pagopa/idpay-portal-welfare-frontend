@@ -4,8 +4,10 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
+import { ShopRulesModel } from '../../../../model/ShopRules';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
+import { mapResponse } from './helpers';
 
 interface Props {
   action: string;
@@ -15,6 +17,7 @@ interface Props {
 const ShopRules = ({ action }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
+  const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
 
   useEffect(() => {
     if (action === 'SUBMIT') {
@@ -27,7 +30,11 @@ const ShopRules = ({ action }: Props) => {
 
   useEffect(() => {
     fetchTransactionRules()
-      .then((response) => console.log(response))
+      .then((response) => {
+        const responseData = mapResponse(response);
+        // console.log(responseData);
+        setAvailableShopRules([...responseData]);
+      })
       .catch((error) => console.log(error));
   }, []);
 
@@ -73,6 +80,7 @@ const ShopRules = ({ action }: Props) => {
         <ShopRulesModal
           openModal={openModal}
           handleCloseModal={handleCloseModal}
+          availableShopRules={availableShopRules}
           data-testid="shop-rules-modal-test"
         />
       </Box>

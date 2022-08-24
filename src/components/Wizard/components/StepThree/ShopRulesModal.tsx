@@ -11,15 +11,17 @@ import {
   Button,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { MouseEventHandler, useCallback, useState } from 'react';
+import { MouseEventHandler, useCallback, /* useEffect, */ useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { ShopRulesModel } from '../../../../model/ShopRules';
 
 type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
+  availableShopRules: Array<ShopRulesModel>;
 };
 
-const ShopRulesModal = ({ openModal, handleCloseModal }: Props) => {
+const ShopRulesModal = ({ openModal, handleCloseModal, availableShopRules }: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
 
@@ -30,6 +32,13 @@ const ShopRulesModal = ({ openModal, handleCloseModal }: Props) => {
       setHeadingHeight(h);
     }
   }, []);
+
+  const shopRulesList = (availableShopRules: Array<ShopRulesModel>) =>
+    availableShopRules.map((a) => {
+      <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
+        <Typography variant="body1">{a.title}</Typography>
+      </Box>;
+    });
 
   return (
     <Modal
@@ -104,7 +113,7 @@ const ShopRulesModal = ({ openModal, handleCloseModal }: Props) => {
               maxHeight: 'calc(100% - ' + headingHeight + ')',
             }}
           >
-            content
+            {shopRulesList(availableShopRules)}
           </Box>
         </Box>
       </Fade>
