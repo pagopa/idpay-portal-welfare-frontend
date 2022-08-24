@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
-import { AdmissionCriteriaModel, AvailableCriteria } from '../../../../model/AdmissionCriteria';
+import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { AutomatedCriteriaItem } from '../../../../model/Initiative';
 import { FilterOperator } from '../../../../utils/constants';
 
@@ -40,36 +41,68 @@ export const setFieldType = (
 export const setFormControlDisplayProp = (inputType: string) =>
   inputType === 'number' ? 'flex' : 'none';
 
-export const mapResponse = (response: Array<AdmissionCriteriaModel>): Array<AvailableCriteria> =>
+export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<AvailableCriteria> =>
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   response.map((r) => {
-    if (r.code === 'ISEE') {
-      return {
-        ...r,
-        field: 'ISEE',
-        fieldLabel: 'ISEE',
-        authorityLabel: 'INPS',
-        value: '',
-        value2: '',
-      };
-    } else if (r.code === 'BIRTHDATE') {
-      return {
-        ...r,
-        fieldLabel: 'Data di nascita',
-        authorityLabel: "Ministero dell'interno",
-        value: '',
-        value2: '',
-      };
-    } else if (r.code === 'RESIDENCE') {
-      return {
-        ...r,
-        fieldLabel: 'Residenza',
-        authorityLabel: "Ministero dell'interno",
-        value: '',
-        value2: '',
-      };
+    // eslint-disable-next-line no-prototype-builtins
+    if (r.hasOwnProperty('code') && typeof r.code !== undefined) {
+      switch (r.code) {
+        case 'ISEE':
+          return {
+            authority: r.authority || '',
+            checked: r.checked || false,
+            code: r.code,
+            operator: r.operator || 'EQ',
+            field: 'ISEE',
+            fieldLabel: 'ISEE',
+            authorityLabel: 'INPS',
+            value: '',
+            value2: '',
+          };
+        case 'BIRTHDATE':
+          return {
+            authority: r.authority || '',
+            checked: r.checked || false,
+            code: r.code,
+            operator: r.operator || 'EQ',
+            field: r.field?.toLowerCase() || '',
+            fieldLabel: 'Data di nascita',
+            authorityLabel: "Ministero dell'interno",
+            value: '',
+            value2: '',
+          };
+        case 'RESIDENCE':
+          return {
+            authority: r.authority || '',
+            checked: r.checked || false,
+            code: r.code,
+            operator: r.operator || 'EQ',
+            field: r.field?.toLowerCase() || '',
+            fieldLabel: 'Residenza',
+            authorityLabel: "Ministero dell'interno",
+            value: '',
+            value2: '',
+          };
+        default:
+          return {
+            authority: '',
+            checked: false,
+            code: '',
+            operator: 'EQ',
+            field: '',
+            fieldLabel: '',
+            authorityLabel: '',
+            value: '',
+            value2: '',
+          };
+      }
     } else {
       return {
-        ...r,
+        authority: '',
+        checked: false,
+        code: '',
+        operator: 'EQ',
+        field: '',
         fieldLabel: '',
         authorityLabel: '',
         value: '',
