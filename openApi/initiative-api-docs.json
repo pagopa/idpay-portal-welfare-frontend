@@ -213,6 +213,9 @@
             "description": "",
             "content": {
               "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConfigBeneficiaryRuleArrayDTO"
+                },
                 "example": [
                   {
                     "code": "ISEE",
@@ -1206,6 +1209,33 @@
           },
           "code": {
             "type": "string"
+          }
+        }
+      },
+      "ConfigBeneficiaryRuleArrayDTO": {
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/ConfigBeneficiaryRuleDTO"
+        }
+      },
+      "ConfigBeneficiaryRuleDTO": {
+        "title": "ConfigBeneficiaryRuleDTO",
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "authority": {
+            "type": "string"
+          },
+          "field": {
+            "type": "string"
+          },
+          "operator": {
+            "type": "string"
+          },
+          "checked": {
+            "type": "boolean"
           }
         }
       },
