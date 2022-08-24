@@ -1,6 +1,7 @@
+import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
-export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
+export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
   {
     code: 'BIRTHDATE',
     authority: 'AUTH1',
@@ -18,7 +19,6 @@ export const mockedAdmissionCriteria: Array<AdmissionCriteriaModel> = [
   {
     code: 'ISEE',
     authority: 'INPS',
-    field: 'ISEE',
     operator: 'EQ',
     checked: false,
   },

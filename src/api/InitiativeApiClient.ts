@@ -4,7 +4,7 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { AdmissionCriteriaModel } from '../model/AdmissionCriteria';
+// import { AdmissionCriteriaModel } from '../model/AdmissionCriteria';
 import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
@@ -97,9 +97,8 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  getEligibilityCriteriaForSidebar: async (): Promise<Array<ConfigBeneficiaryRuleArrayDTO>> => {
+  getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> => {
     const result = await apiClient.getBeneficiaryConfigRules({});
-    console.log('Result', result);
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };
