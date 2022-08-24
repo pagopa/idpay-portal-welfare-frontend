@@ -34,11 +34,11 @@ const ShopRulesModal = ({ openModal, handleCloseModal, availableShopRules }: Pro
   }, []);
 
   const shopRulesList = (availableShopRules: Array<ShopRulesModel>) =>
-    availableShopRules.map((a) => {
+    availableShopRules.map((a) => (
       <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
         <Typography variant="body1">{a.title}</Typography>
-      </Box>;
-    });
+      </Box>
+    ));
 
   return (
     <Modal
@@ -113,7 +113,7 @@ const ShopRulesModal = ({ openModal, handleCloseModal, availableShopRules }: Pro
               maxHeight: 'calc(100% - ' + headingHeight + ')',
             }}
           >
-            {shopRulesList(availableShopRules)}
+            {availableShopRules && shopRulesList(availableShopRules)}
           </Box>
         </Box>
       </Fade>

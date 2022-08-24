@@ -32,7 +32,7 @@ export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesMod
             code: r.code,
             description: r.description || '',
             enabled: r.enabled || false,
-            title: 'Codice Adeco',
+            title: 'Codice Ateco',
             subtitle: 'Ammetti o escludi categorie',
           };
         case 'TRXCOUNT':
