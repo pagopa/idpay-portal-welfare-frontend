@@ -6,8 +6,8 @@ import {
   mockedInitiativeDetail,
   mockedInitiativeSummary,
 } from '../../services/__mocks__/initiativeService';
-import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
+import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 
 export const InitiativeApi = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -32,8 +32,6 @@ export const InitiativeApi = {
     _data: InitiativeBeneficiaryRuleDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
 
-  getEligibilityCriteriaForSidebar: async (
-    _initiativeId: string
-  ): Promise<Array<AdmissionCriteriaModel>> =>
+  getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
     new Promise((resolve) => resolve(mockedAdmissionCriteria)),
 };
