@@ -42,6 +42,22 @@ const ShopRules = ({ action }: Props) => {
 
   const handleOpenModal = () => setOpenModal(true);
 
+  const shopListItemSelection = (code: string) => {
+    const newAvailableShopRules: Array<ShopRulesModel> = [];
+    availableShopRules.forEach((a) => {
+      if (code === a.code && a.checked === false) {
+        // eslint-disable-next-line functional/immutable-data
+        newAvailableShopRules.push({ ...a, checked: true });
+      } else {
+        // eslint-disable-next-line functional/immutable-data
+        newAvailableShopRules.push({ ...a });
+      }
+    });
+    console.log(newAvailableShopRules);
+    setAvailableShopRules([...newAvailableShopRules]);
+    handleCloseModal();
+  };
+
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
@@ -81,6 +97,7 @@ const ShopRules = ({ action }: Props) => {
           openModal={openModal}
           handleCloseModal={handleCloseModal}
           availableShopRules={availableShopRules}
+          shopListItemSelection={shopListItemSelection}
           data-testid="shop-rules-modal-test"
         />
       </Box>
