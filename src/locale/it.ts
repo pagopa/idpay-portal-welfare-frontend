@@ -174,6 +174,12 @@ export default {
         },
         form: {
           percentageRecognized: 'Percentuale riconosciuta',
+          minSpeningLimit: 'Minimo',
+          maxSpeningLimit: 'Massimo',
+          minSpendingLimitTooltip:
+            'Le transazioni di importo inferiore a questo valore verranno scartate.',
+          maxSpendingLimitTooltip:
+            'La percentuale di spesa viene calcolata su questo valore per le transazioni di importo superiore.',
         },
       },
       stepFour: {
