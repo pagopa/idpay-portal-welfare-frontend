@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
+import { useFormik } from 'formik';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import ShopRulesModal from './ShopRulesModal';
@@ -77,6 +78,20 @@ const ShopRules = ({ action }: Props) => {
     setAvailableShopRules([...newAvailableShopRules]);
   };
 
+  const formik = useFormik({
+    initialValues: {
+      percetageRecognized: '',
+      minSpeningLimit: '',
+      maxSpeningLimit: '',
+      maxTransactionNumber: '',
+      minTransactionNumber: '',
+    },
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      console.log(values);
+    },
+  });
+
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
@@ -124,7 +139,7 @@ const ShopRules = ({ action }: Props) => {
         <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
           {t('components.wizard.stepThree.rulesAddedTitle')}
         </Typography>
-        <PercentageRecognizedItem />
+        <PercentageRecognizedItem formik={formik} />
       </Box>
 
       {availableShopRules.map((a) => {
@@ -135,6 +150,7 @@ const ShopRules = ({ action }: Props) => {
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
+              formik={formik}
             />
           );
         } else if (a.code === 'MCC' && a.checked === true) {
@@ -153,6 +169,7 @@ const ShopRules = ({ action }: Props) => {
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
+              formik={formik}
             />
           );
         } else if (a.code === 'REWARDLIMIT' && a.checked === true) {

@@ -3,7 +3,11 @@ import { Box, FormControl, TextField, Typography } from '@mui/material';
 import PercentIcon from '@mui/icons-material/Percent';
 import { useTranslation } from 'react-i18next';
 
-const PercentageRecognizedItem = () => {
+type Props = {
+  formik: any;
+};
+
+const PercentageRecognizedItem = ({ formik }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -48,6 +52,8 @@ const PercentageRecognizedItem = () => {
             }}
             placeholder={'%'}
             name="percetageRecognized"
+            value={formik.values.percetageRecognized}
+            onChange={(e) => formik.handleChange(e)}
           />
         </FormControl>
       </Box>

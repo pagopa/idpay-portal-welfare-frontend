@@ -10,9 +10,10 @@ type Props = {
   title: string;
   code: string;
   handleShopListItemRemoved: any;
+  formik: any;
 };
 
-const SpendingLimitItem = ({ title, code, handleShopListItemRemoved }: Props) => {
+const SpendingLimitItem = ({ title, code, handleShopListItemRemoved, formik }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -68,6 +69,8 @@ const SpendingLimitItem = ({ title, code, handleShopListItemRemoved }: Props) =>
             }}
             placeholder={t('components.wizard.stepThree.form.minSpeningLimit')}
             name="minSpeningLimit"
+            value={formik.values.minSpeningLimit}
+            onChange={(e) => formik.handleChange(e)}
           />
         </FormControl>
         <Tooltip
@@ -88,6 +91,8 @@ const SpendingLimitItem = ({ title, code, handleShopListItemRemoved }: Props) =>
             }}
             placeholder={t('components.wizard.stepThree.form.maxSpeningLimit')}
             name="maxSpeningLimit"
+            value={formik.values.maxSpeningLimit}
+            onChange={(e) => formik.handleChange(e)}
           />
         </FormControl>
         <Tooltip

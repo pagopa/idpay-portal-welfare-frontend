@@ -10,9 +10,10 @@ type Props = {
   title: string;
   code: string;
   handleShopListItemRemoved: any;
+  formik: any;
 };
 
-const TransactionNumberItem = ({ title, code, handleShopListItemRemoved }: Props) => {
+const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik }: Props) => {
   const { t } = useTranslation();
 
   return (
@@ -68,6 +69,8 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved }: Props
             }}
             placeholder={t('components.wizard.stepThree.form.minTransactionNumber')}
             name="minTransactionNumber"
+            value={formik.values.minTransactionNumber}
+            onChange={(e) => formik.handleChange(e)}
           />
         </FormControl>
         <Tooltip
@@ -88,6 +91,8 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved }: Props
             }}
             placeholder={t('components.wizard.stepThree.form.maxTransactionNumber')}
             name="maxTransactionNumber"
+            value={formik.values.maxTransactionNumber}
+            onChange={(e) => formik.handleChange(e)}
           />
         </FormControl>
         <Tooltip
