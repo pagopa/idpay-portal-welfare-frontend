@@ -176,10 +176,16 @@ export default {
           percentageRecognized: 'Percentuale riconosciuta',
           minSpeningLimit: 'Minimo',
           maxSpeningLimit: 'Massimo',
+          minTransactionNumber: 'Minimo',
+          maxTransactionNumber: 'Massimo',
           minSpendingLimitTooltip:
             'Le transazioni di importo inferiore a questo valore verranno scartate.',
           maxSpendingLimitTooltip:
             'La percentuale di spesa viene calcolata su questo valore per le transazioni di importo superiore.',
+          minTransactionNumberTooltip:
+            'Il numero minimo di transazioni necessario per poter erogare il rimborso',
+          maxTransactionNumberTooltip:
+            'Il numero massimo di transazioni consentite per spendere l’importo erogato',
         },
       },
       stepFour: {
