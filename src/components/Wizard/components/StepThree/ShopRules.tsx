@@ -4,12 +4,12 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 
 import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import { mapResponse } from './helpers';
-
 import SpendingLimitItem from './SpendingLimitItem';
 import MCCItem from './MCCItem';
 import TimeLimitItem from './TimeLimitItem';
@@ -78,6 +78,14 @@ const ShopRules = ({ action }: Props) => {
     setAvailableShopRules([...newAvailableShopRules]);
   };
 
+  const validationSchema = Yup.object().shape({
+    percentageRecognized: Yup.string().required(t('validation.required')),
+    minSpeningLimit: Yup.string(),
+    maxSpeningLimit: Yup.string(),
+    maxTransactionNumber: Yup.string(),
+    minTransactionNumber: Yup.string(),
+  });
+
   const formik = useFormik({
     initialValues: {
       percetageRecognized: '',
@@ -87,6 +95,7 @@ const ShopRules = ({ action }: Props) => {
       minTransactionNumber: '',
     },
     enableReinitialize: true,
+    validationSchema,
     onSubmit: (values) => {
       console.log(values);
     },
