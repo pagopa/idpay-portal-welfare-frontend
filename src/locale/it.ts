@@ -249,6 +249,9 @@ export default {
     emailValid: 'il canale deve essere un indirizzo email',
     celNumValid: 'il canale deve essere un numero di telefono',
     invalidDate: 'Data non valida',
+    outMaxSpendingLimit: 'Il valore di spesa massimo deve essere maggiore del minimo',
+    outTransactionNumberLimit: 'Il numero massimo di transazioni deve essere maggiore del minimo',
+    outPercentageRecognized: 'La percentuale massima non può essere maggiore di 100',
   },
   errors: {
     title: 'Si è verificato un errore',

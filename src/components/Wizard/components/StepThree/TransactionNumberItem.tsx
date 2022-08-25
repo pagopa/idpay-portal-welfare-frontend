@@ -4,17 +4,76 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
-import { renderShopRuleIcon } from './helpers';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
 type Props = {
   title: string;
   code: string;
   handleShopListItemRemoved: any;
-  formik: any;
+  action: string;
+  shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setShopRulesToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
-const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik }: Props) => {
+const TransactionNumberItem = ({
+  title,
+  code,
+  handleShopListItemRemoved,
+  action,
+  shopRulesToSubmit,
+  setShopRulesToSubmit,
+}: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
+
+  const validationSchema = Yup.object().shape({
+    minTransactionNumber: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive')),
+    maxTransactionNumber: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .when('minTransactionNumber', (minTransactionNumber, schema) => {
+        if (minTransactionNumber) {
+          return Yup.number()
+            .typeError(t('validation.numeric'))
+            .required(t('validation.required'))
+            .positive(t('validation.positive'))
+            .min(parseFloat(minTransactionNumber) + 1, t('validation.outTransactionNumberLimit'));
+        }
+        return schema;
+      }),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      minTransactionNumber: '',
+      maxTransactionNumber: '',
+    },
+    validateOnMount: true,
+    validateOnChange: true,
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
+    },
+  });
 
   return (
     <Box
@@ -62,7 +121,7 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik 
         <FormControl sx={{ gridArea: 'minTransactionNumberField' }}>
           <TextField
             inputProps={{
-              step: 0.01,
+              step: 1,
               min: 0,
               type: 'number',
               'data-testid': 'min-spending-limit',
@@ -71,6 +130,14 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik 
             name="minTransactionNumber"
             value={formik.values.minTransactionNumber}
             onChange={(e) => formik.handleChange(e)}
+            error={setError(
+              formik.touched.minTransactionNumber,
+              formik.errors.minTransactionNumber
+            )}
+            helperText={setErrorText(
+              formik.touched.minTransactionNumber,
+              formik.errors.minTransactionNumber
+            )}
           />
         </FormControl>
         <Tooltip
@@ -84,7 +151,7 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik 
         <FormControl sx={{ gridArea: 'maxTransactionNumberField' }}>
           <TextField
             inputProps={{
-              step: 0.01,
+              step: 1,
               min: 0,
               type: 'number',
               'data-testid': 'max-spending-limit',
@@ -93,6 +160,14 @@ const TransactionNumberItem = ({ title, code, handleShopListItemRemoved, formik 
             name="maxTransactionNumber"
             value={formik.values.maxTransactionNumber}
             onChange={(e) => formik.handleChange(e)}
+            error={setError(
+              formik.touched.maxTransactionNumber,
+              formik.errors.maxTransactionNumber
+            )}
+            helperText={setErrorText(
+              formik.touched.maxTransactionNumber,
+              formik.errors.maxTransactionNumber
+            )}
           />
         </FormControl>
         <Tooltip

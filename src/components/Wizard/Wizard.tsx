@@ -92,7 +92,15 @@ const Wizard = () => {
         }
         return null;
       case 2:
-        return <ShopRules action={actionType} />;
+        return (
+          <ShopRules
+            action={actionType}
+            setAction={setActionType}
+            // currentStep={activeStep}
+            // setCurrentStep={setActiveStep}
+            setDisabledNext={setDisabledNext}
+          />
+        );
       case 3:
         return <h1>{steps[activeStep]}</h1>;
       case 4:

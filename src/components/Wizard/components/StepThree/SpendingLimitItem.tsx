@@ -4,17 +4,76 @@ import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { renderShopRuleIcon } from './helpers';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
 type Props = {
   title: string;
   code: string;
   handleShopListItemRemoved: any;
-  formik: any;
+  action: string;
+  shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setShopRulesToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
-const SpendingLimitItem = ({ title, code, handleShopListItemRemoved, formik }: Props) => {
+const SpendingLimitItem = ({
+  title,
+  code,
+  handleShopListItemRemoved,
+  action,
+  shopRulesToSubmit,
+  setShopRulesToSubmit,
+}: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
+
+  const validationSchema = Yup.object().shape({
+    minSpendingLimit: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive')),
+    maxSpendingLimit: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .when('minSpendingLimit', (minSpendingLimit, schema) => {
+        if (minSpendingLimit) {
+          return Yup.number()
+            .typeError(t('validation.numeric'))
+            .required(t('validation.required'))
+            .positive(t('validation.positive'))
+            .min(parseFloat(minSpendingLimit) + 0.01, t('validation.outMaxSpendingLimit'));
+        }
+        return schema;
+      }),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      minSpendingLimit: '',
+      maxSpendingLimit: '',
+    },
+    validateOnMount: true,
+    validateOnChange: true,
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
+    },
+  });
 
   return (
     <Box
@@ -68,9 +127,14 @@ const SpendingLimitItem = ({ title, code, handleShopListItemRemoved, formik }: P
               'data-testid': 'min-spending-limit',
             }}
             placeholder={t('components.wizard.stepThree.form.minSpeningLimit')}
-            name="minSpeningLimit"
-            value={formik.values.minSpeningLimit}
+            name="minSpendingLimit"
+            value={formik.values.minSpendingLimit}
             onChange={(e) => formik.handleChange(e)}
+            error={setError(formik.touched.minSpendingLimit, formik.errors.minSpendingLimit)}
+            helperText={setErrorText(
+              formik.touched.minSpendingLimit,
+              formik.errors.minSpendingLimit
+            )}
           />
         </FormControl>
         <Tooltip
@@ -90,9 +154,14 @@ const SpendingLimitItem = ({ title, code, handleShopListItemRemoved, formik }: P
               'data-testid': 'max-spending-limit',
             }}
             placeholder={t('components.wizard.stepThree.form.maxSpeningLimit')}
-            name="maxSpeningLimit"
-            value={formik.values.maxSpeningLimit}
+            name="maxSpendingLimit"
+            value={formik.values.maxSpendingLimit}
             onChange={(e) => formik.handleChange(e)}
+            error={setError(formik.touched.maxSpendingLimit, formik.errors.maxSpendingLimit)}
+            helperText={setErrorText(
+              formik.touched.maxSpendingLimit,
+              formik.errors.maxSpendingLimit
+            )}
           />
         </FormControl>
         <Tooltip

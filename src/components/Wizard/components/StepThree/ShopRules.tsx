@@ -1,10 +1,7 @@
 import { Box, Button, Paper, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
-
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import ShopRulesModal from './ShopRulesModal';
@@ -18,24 +15,31 @@ import TransactionTimeItem from './TransactionTimeItem';
 
 interface Props {
   action: string;
-  // setAction: Function;
+  setAction: Dispatch<SetStateAction<string>>;
+  //   currentStep: number;
+  //   setCurrentStep: Dispatch<SetStateAction<number>>;
+  setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const ShopRules = ({ action }: Props) => {
+const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
+  const [shopRulesToSubmit, setShopRulesToSubmit] = useState<
+    Array<{ code: string | undefined; dispatched: boolean }>
+  >([{ code: 'PRCREC', dispatched: false }]);
+
+  // useEffect(() => {
+  //   if (action === 'SUBMIT') {
+  //     formik.handleSubmit();
+  //   } else {
+  //     return;
+  //   }
+  //   setAction('');
+  // }, [action]);
 
   useEffect(() => {
-    if (action === 'SUBMIT') {
-      //   formik.handleSubmit();
-    } else {
-      return;
-    }
-    // setAction('');
-  }, [action]);
-
-  useEffect(() => {
+    setDisabledNext(false);
     fetchTransactionRules()
       .then((response) => {
         const responseData = mapResponse(response);
@@ -51,6 +55,9 @@ const ShopRules = ({ action }: Props) => {
 
   const handleShopListItemAdded = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
+    const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'PRCREC', dispatched: false },
+    ];
     availableShopRules.forEach((a) => {
       if (code === a.code && a.checked === false) {
         // eslint-disable-next-line functional/immutable-data
@@ -61,11 +68,21 @@ const ShopRules = ({ action }: Props) => {
       }
     });
     setAvailableShopRules([...newAvailableShopRules]);
+    newAvailableShopRules.forEach((n) => {
+      if (n.checked === true) {
+        // eslint-disable-next-line functional/immutable-data
+        newShopRulesToSubmit.push({ code: n.code, dispatched: false });
+      }
+    });
+    setShopRulesToSubmit([...newShopRulesToSubmit]);
     handleCloseModal();
   };
 
   const handleShopListItemRemoved = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
+    const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'PRCREC', dispatched: false },
+    ];
     availableShopRules.forEach((a) => {
       if (code === a.code) {
         // eslint-disable-next-line functional/immutable-data
@@ -76,30 +93,34 @@ const ShopRules = ({ action }: Props) => {
       }
     });
     setAvailableShopRules([...newAvailableShopRules]);
+
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    newAvailableShopRules.forEach((n) => {
+      if (n.checked === true) {
+        // eslint-disable-next-line functional/immutable-data
+        newShopRulesToSubmit.push({ code: n.code, dispatched: false });
+      }
+    });
+    setShopRulesToSubmit([...newShopRulesToSubmit]);
   };
 
-  const validationSchema = Yup.object().shape({
-    percentageRecognized: Yup.string().required(t('validation.required')),
-    minSpeningLimit: Yup.string(),
-    maxSpeningLimit: Yup.string(),
-    maxTransactionNumber: Yup.string(),
-    minTransactionNumber: Yup.string(),
-  });
+  useEffect(() => {
+    // eslint-disable-next-line functional/no-let
+    let toSubmit = true;
+    if (shopRulesToSubmit.length > 0) {
+      shopRulesToSubmit.forEach((s) => {
+        toSubmit = toSubmit && s.dispatched;
+      });
+    } else {
+      toSubmit = false;
+      setDisabledNext(true);
+    }
 
-  const formik = useFormik({
-    initialValues: {
-      percetageRecognized: '',
-      minSpeningLimit: '',
-      maxSpeningLimit: '',
-      maxTransactionNumber: '',
-      minTransactionNumber: '',
-    },
-    enableReinitialize: true,
-    validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
-  });
+    console.log(shopRulesToSubmit);
+
+    setAction('');
+    setDisabledNext(false);
+  }, [action, shopRulesToSubmit]);
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -148,7 +169,12 @@ const ShopRules = ({ action }: Props) => {
         <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
           {t('components.wizard.stepThree.rulesAddedTitle')}
         </Typography>
-        <PercentageRecognizedItem formik={formik} />
+        <PercentageRecognizedItem
+          code="PRCREC"
+          action={action}
+          shopRulesToSubmit={shopRulesToSubmit}
+          setShopRulesToSubmit={setShopRulesToSubmit}
+        />
       </Box>
 
       {availableShopRules.map((a) => {
@@ -159,7 +185,9 @@ const ShopRules = ({ action }: Props) => {
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
-              formik={formik}
+              action={action}
+              shopRulesToSubmit={shopRulesToSubmit}
+              setShopRulesToSubmit={setShopRulesToSubmit}
             />
           );
         } else if (a.code === 'MCC' && a.checked === true) {
@@ -178,7 +206,9 @@ const ShopRules = ({ action }: Props) => {
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
-              formik={formik}
+              action={action}
+              shopRulesToSubmit={shopRulesToSubmit}
+              setShopRulesToSubmit={setShopRulesToSubmit}
             />
           );
         } else if (a.code === 'REWARDLIMIT' && a.checked === true) {

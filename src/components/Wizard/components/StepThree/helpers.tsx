@@ -133,3 +133,26 @@ export const renderShopRuleIcon = (code: string, margin: number, color: Colors) 
       return null;
   }
 };
+
+export const handleShopRulesToSubmit = (
+  shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>,
+  code: string | undefined
+) => {
+  const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
+  shopRulesToSubmit.forEach((s) => {
+    if (s.code !== code) {
+      // eslint-disable-next-line functional/immutable-data
+      newShopRulesToSubmit.push(s);
+    } else {
+      // eslint-disable-next-line functional/immutable-data
+      newShopRulesToSubmit.push({ code: s.code, dispatched: true });
+    }
+  });
+  return newShopRulesToSubmit;
+};
+
+export const setError = (touched: boolean | undefined, errorText: string | undefined) =>
+  touched && Boolean(errorText);
+
+export const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
+  touched && errorText;

@@ -2,13 +2,58 @@ import { grey } from '@mui/material/colors';
 import { Box, FormControl, TextField, Typography } from '@mui/material';
 import PercentIcon from '@mui/icons-material/Percent';
 import { useTranslation } from 'react-i18next';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { Dispatch, SetStateAction, useEffect } from 'react';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
-type Props = {
-  formik: any;
-};
+interface Props {
+  code: string;
+  action: string;
+  shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setShopRulesToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
+}
 
-const PercentageRecognizedItem = ({ formik }: Props) => {
+const PercentageRecognizedItem = ({
+  code,
+  action,
+  shopRulesToSubmit,
+  setShopRulesToSubmit,
+}: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
+
+  const validationSchema = Yup.object().shape({
+    percetageRecognized: Yup.number()
+      .typeError(t('validation.numeric'))
+      .required(t('validation.required'))
+      .positive(t('validation.positive'))
+      .max(100, t('validation.outPercentageRecognized')),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      percetageRecognized: '',
+    },
+    validateOnMount: true,
+    validateOnChange: true,
+    enableReinitialize: true,
+    validationSchema,
+    onSubmit: (values) => {
+      console.log(values);
+      setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
+    },
+  });
 
   return (
     <Box
@@ -46,7 +91,8 @@ const PercentageRecognizedItem = ({ formik }: Props) => {
           <TextField
             inputProps={{
               step: 0.01,
-              min: 0,
+              min: 1,
+              max: 100,
               type: 'number',
               'data-testid': 'percetage-recognized-value',
             }}
@@ -54,6 +100,11 @@ const PercentageRecognizedItem = ({ formik }: Props) => {
             name="percetageRecognized"
             value={formik.values.percetageRecognized}
             onChange={(e) => formik.handleChange(e)}
+            error={setError(formik.touched.percetageRecognized, formik.errors.percetageRecognized)}
+            helperText={setErrorText(
+              formik.touched.percetageRecognized,
+              formik.errors.percetageRecognized
+            )}
           />
         </FormControl>
       </Box>
