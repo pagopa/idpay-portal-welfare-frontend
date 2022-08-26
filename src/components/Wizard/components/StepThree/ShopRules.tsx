@@ -213,16 +213,19 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
           );
         } else if (a.code === 'REWARDLIMIT' && a.checked === true) {
           return (
-            <TransactionTimeItem
+            <TimeLimitItem
               key={a.code}
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
+              action={action}
+              shopRulesToSubmit={shopRulesToSubmit}
+              setShopRulesToSubmit={setShopRulesToSubmit}
             />
           );
         } else if (a.code === 'DAYHOURSWEEK' && a.checked === true) {
           return (
-            <TimeLimitItem
+            <TransactionTimeItem
               key={a.code}
               title={a.title}
               code={a.code}

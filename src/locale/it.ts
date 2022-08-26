@@ -186,6 +186,11 @@ export default {
             'Il numero minimo di transazioni necessario per poter erogare il rimborso',
           maxTransactionNumberTooltip:
             'Il numero massimo di transazioni consentite per spendere l’importo erogato',
+          rewardLimitDaily: 'Al giorno',
+          rewardLimitMonthly: 'Al mese',
+          rewardLimitYearly: "All'anno",
+          addTimeLimitItem: 'Aggiungi limite',
+          maxReward: 'Importo massimo',
         },
       },
       stepFour: {
