@@ -59,7 +59,7 @@ export const mockecdTransactionRules = [
   },
 ];
 
-export const verifyFetchAdmissionCriteriasMockExecution = (
+export const verifyFetchShopRulesMockExecution = (
   transactionRules: Array<ConfigTrxRuleArrayDTO>
 ) => {
   expect(transactionRules).toStrictEqual(mockecdTransactionRules);

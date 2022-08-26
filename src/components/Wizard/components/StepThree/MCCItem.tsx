@@ -13,7 +13,10 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { fetchMccCodes } from '../../../../services/mccCodesService';
+// import { MccCodesModel } from '../../../../model/MccCodes';
+import { MccCodesModel } from '../../../../model/MccCodes';
 import { renderShopRuleIcon } from './helpers';
 import MCCModal from './MCCModal';
 
@@ -26,6 +29,26 @@ type Props = {
 const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
   const { t } = useTranslation();
   const [openModalMcc, setOpenModalMcc] = useState(false);
+  const [mccCodesList, setMccCodesList] = useState(Array<MccCodesModel>);
+
+  useEffect(() => {
+    fetchMccCodes()
+      .then((response) => {
+        const responseData = [...response];
+        const newMccCodeList: Array<MccCodesModel> = [];
+
+        responseData.forEach((a) => {
+          const code = a.code || '';
+          const description = a.description || '';
+          const item = { code, description };
+          // eslint-disable-next-line functional/immutable-data
+          newMccCodeList.push(item);
+        });
+
+        setMccCodesList([...newMccCodeList]);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -40,6 +63,18 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
   const handleCloseModalMcc = () => setOpenModalMcc(false);
 
   const handleOpenModalMcc = () => setOpenModalMcc(true);
+
+  // const handleMccCodesListItemAdded = (code: string) => {
+  //   const newAvailableMccCode: Array<MccCodesModel> = [];
+
+  //   availableMccCodes.forEach((a) => {
+  //     if (code === a.code) {
+  //       // eslint-disable-next-line functional/immutable-data
+  //       newAvailableMccCode.push({ ...a });
+  //     }
+  //   });
+  //   setAvailableMccCodes([...newAvailableMccCode]);
+  // };
 
   return (
     <Box
@@ -146,6 +181,8 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
         <MCCModal
           openModalMcc={openModalMcc}
           handleCloseModalMcc={handleCloseModalMcc}
+          mccCodesList={mccCodesList}
+          // handleMccCodesListItemAdded={handleMccCodesListItemAdded}
           data-testid="modal-test"
         />
       </Box>

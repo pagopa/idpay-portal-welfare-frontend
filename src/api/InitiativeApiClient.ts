@@ -11,6 +11,7 @@ import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeB
 import { InitiativeSummaryArrayDTO } from './generated/initiative/InitiativeSummaryArrayDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from './generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { ConfigTrxRuleArrayDTO } from './generated/initiative/ConfigTrxRuleArrayDTO';
+import { ConfigMccArrayDTO } from './generated/initiative/ConfigMccArrayDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -104,6 +105,11 @@ export const InitiativeApi = {
 
   getTransactionConfigRules: async (): Promise<ConfigTrxRuleArrayDTO> => {
     const result = await apiClient.getTransactionConfigRules({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMccConfig: async (): Promise<ConfigMccArrayDTO> => {
+    const result = await apiClient.getMccConfig({});
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

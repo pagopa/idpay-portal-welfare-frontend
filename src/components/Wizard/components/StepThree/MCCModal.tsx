@@ -7,19 +7,22 @@ import {
   TextField,
   InputAdornment,
   Button,
+  Checkbox,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { MouseEventHandler, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
+import { MccCodesModel } from '../../../../model/MccCodes';
 
 type Props = {
   openModalMcc: boolean;
   handleCloseModalMcc: MouseEventHandler;
+  mccCodesList: Array<MccCodesModel>;
 };
 
-const MCCModal = ({ openModalMcc, handleCloseModalMcc }: Props) => {
+const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
 
@@ -30,6 +33,24 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc }: Props) => {
       setHeadingHeight(h);
     }
   }, []);
+
+  const renderMccCodesList = (list: Array<MccCodesModel>) =>
+    list.map((a) => {
+      const desc =
+        a.description.length > 61 ? `${a.description.substring(51, 0)}...` : a.description;
+
+      return (
+        <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
+          <Box>
+            <Checkbox checked={false} id={a.code} name={a.code} data-testid="check-test-1" />
+          </Box>
+          <Box>
+            <Typography variant="body2">{desc}</Typography>
+            <Typography variant="caption">{a.code}</Typography>
+          </Box>
+        </Box>
+      );
+    });
 
   return (
     <Modal
@@ -115,11 +136,12 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc }: Props) => {
           </Box>
           <Box
             sx={{
-              overflow: 'auto',
+              overflowY: 'auto',
               maxHeight: 'calc(100% - ' + headingHeight + ')',
+              overflowX: 'hidden',
             }}
           >
-            Context
+            {mccCodesList && renderMccCodesList(mccCodesList)}
           </Box>
           <Box
             sx={{
