@@ -186,6 +186,10 @@ export default {
             'Il numero minimo di transazioni necessario per poter erogare il rimborso',
           maxTransactionNumberTooltip:
             'Il numero massimo di transazioni consentite per spendere l’importo erogato',
+          everybodyExceptSelectItem: 'Tutti tranne',
+          nobodyExceptSelectItem: 'Nessuno tranne',
+          mccCodes: 'Inserisci o incolla i codici separati da virgola',
+          SelecFromList: 'Seleziona dall’elenco',
         },
       },
       stepFour: {
