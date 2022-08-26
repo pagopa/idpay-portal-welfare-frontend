@@ -172,6 +172,13 @@ export default {
           subtitle:
             'Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
         },
+        modalMcc: {
+          title: 'Elenco categorie merceologiche',
+          subtitle:
+            'In questa lista trovi i Merchant Category Code (MCC) utilizzati dai circuiti di pagamento per riconoscere la tipologia di beni o servizi forniti.',
+          searchCodeOrDescription: 'Cerca per codice o descrizione',
+          addButton: 'Aggiungi',
+        },
         form: {
           percentageRecognized: 'Percentuale riconosciuta',
           minSpeningLimit: 'Minimo',

@@ -13,7 +13,9 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
+import { useState } from 'react';
 import { renderShopRuleIcon } from './helpers';
+import MCCModal from './MCCModal';
 
 type Props = {
   title: string;
@@ -23,6 +25,7 @@ type Props = {
 
 const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
   const { t } = useTranslation();
+  const [openModalMcc, setOpenModalMcc] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -33,6 +36,10 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
       console.log(values);
     },
   });
+
+  const handleCloseModalMcc = () => setOpenModalMcc(false);
+
+  const handleOpenModalMcc = () => setOpenModalMcc(true);
 
   return (
     <Box
@@ -128,6 +135,7 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
               },
             ]}
             startIcon={<ListAltIcon />}
+            onClick={handleOpenModalMcc}
             data-testid="SelecFromList-button-test"
             disableRipple={true}
             disableFocusRipple={true}
@@ -135,6 +143,11 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
             {t('components.wizard.stepThree.form.SelecFromList')}
           </Button>
         </FormControl>
+        <MCCModal
+          openModalMcc={openModalMcc}
+          handleCloseModalMcc={handleCloseModalMcc}
+          data-testid="modal-test"
+        />
       </Box>
     </Box>
   );
