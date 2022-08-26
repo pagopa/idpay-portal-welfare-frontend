@@ -230,6 +230,9 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               title={a.title}
               code={a.code}
               handleShopListItemRemoved={handleShopListItemRemoved}
+              action={action}
+              shopRulesToSubmit={shopRulesToSubmit}
+              setShopRulesToSubmit={setShopRulesToSubmit}
             />
           );
         } else {

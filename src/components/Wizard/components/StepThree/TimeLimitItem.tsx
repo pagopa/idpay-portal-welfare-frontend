@@ -75,8 +75,6 @@ const TimeLimitItem = ({
     },
   });
 
-  console.log(formik);
-
   const addTimeLimitItem = (values: any, setValues: any) => {
     const newTimeLimit = [...values.timeLimit, { frequency: 'DAILY', rewardLimit: '' }];
     setValues({ ...values, timeLimit: [...newTimeLimit] });
