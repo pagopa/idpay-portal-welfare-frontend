@@ -10,7 +10,15 @@ import {
   Checkbox,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { MouseEventHandler, useCallback, useState } from 'react';
+import {
+  ChangeEvent,
+  Dispatch,
+  MouseEventHandler,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useTranslation } from 'react-i18next';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
@@ -20,11 +28,26 @@ type Props = {
   openModalMcc: boolean;
   handleCloseModalMcc: MouseEventHandler;
   mccCodesList: Array<MccCodesModel>;
+  setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>;
+  setFieldValue: any;
 };
 
-const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) => {
+const MCCModal = ({
+  openModalMcc,
+  handleCloseModalMcc,
+  mccCodesList,
+  setMccCodesList,
+  setFieldValue,
+}: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
+  const [searchMccCode, setSearchMccCode] = useState('');
+  const [mccCodesSelectedCounter, setMccCodesSelectedCounter] = useState(0);
+  const [atLeastOneCodeSelected, setAtLeastOneCodeSelected] = useState(false);
+
+  useEffect(() => {
+    handleMccCodesSelected(mccCodesList, setMccCodesSelectedCounter, setAtLeastOneCodeSelected);
+  }, [mccCodesList]);
 
   const elementRef = useCallback((node) => {
     if (node !== null) {
@@ -34,23 +57,128 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) =>
     }
   }, []);
 
-  const renderMccCodesList = (list: Array<MccCodesModel>) =>
-    list.map((a) => {
-      const desc =
-        a.description.length > 61 ? `${a.description.substring(51, 0)}...` : a.description;
+  const handleSearchMccCode = (s: string) => {
+    const searchMccCode = s.toLowerCase();
+    setSearchMccCode(searchMccCode);
+  };
 
-      return (
-        <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
-          <Box>
-            <Checkbox checked={false} id={a.code} name={a.code} data-testid="check-test-1" />
-          </Box>
-          <Box>
-            <Typography variant="body2">{desc}</Typography>
-            <Typography variant="caption">{a.code}</Typography>
-          </Box>
-        </Box>
-      );
+  const handleMccCodesChange = (
+    e: ChangeEvent<Element>,
+    mccCodesList: Array<MccCodesModel>,
+    setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>
+  ) => {
+    const newMccCodeList: Array<MccCodesModel> = [];
+    mccCodesList.forEach((c) => {
+      if (c.code === e.target.id) {
+        // eslint-disable-next-line functional/immutable-data
+        newMccCodeList.push({ ...c, checked: !c.checked });
+      } else {
+        // eslint-disable-next-line functional/immutable-data
+        newMccCodeList.push({ ...c });
+      }
     });
+    setMccCodesList([...newMccCodeList]);
+  };
+
+  const renderMccCodesList = (
+    mccCodeList: Array<MccCodesModel>,
+    setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>,
+    searchKey: string
+  ) => {
+    if (!searchKey.length) {
+      return mccCodeList.map((a) => {
+        const desc =
+          a.description.length > 61 ? `${a.description.substring(51, 0)}...` : a.description;
+
+        return (
+          <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
+            <Box>
+              <Checkbox
+                onChange={(e) => handleMccCodesChange(e, mccCodeList, setMccCodesList)}
+                checked={a.checked}
+                id={a.code}
+                name={a.code}
+                data-testid="check-test-1"
+              />
+            </Box>
+            <Box>
+              <Typography variant="body2">{desc}</Typography>
+              <Typography variant="caption">{a.code}</Typography>
+            </Box>
+          </Box>
+        );
+      });
+    } else {
+      return mccCodeList.map((a) => {
+        const desc =
+          a.description.length > 61 ? `${a.description.substring(51, 0)}...` : a.description;
+        const lowerCaseDesc = typeof a.description === 'string' ? a.description.toLowerCase() : '';
+
+        if (lowerCaseDesc.startsWith(searchKey)) {
+          return (
+            <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
+              <Box>
+                <Checkbox
+                  onChange={(e) => handleMccCodesChange(e, mccCodeList, setMccCodesList)}
+                  checked={a.checked}
+                  id={a.code}
+                  name={a.code}
+                  data-testid="check-test-1"
+                />
+              </Box>
+              <Box>
+                <Typography variant="body2">{desc}</Typography>
+                <Typography variant="caption">{a.code}</Typography>
+              </Box>
+            </Box>
+          );
+        } else {
+          return null;
+        }
+      });
+    }
+  };
+
+  const handleMccCodesSelected = (
+    mccCodeList: Array<MccCodesModel>,
+    setMccCodesSelectedCounter: Dispatch<SetStateAction<number>>,
+    setAtLeastOneCodeSelected: Dispatch<SetStateAction<boolean>>
+  ) => {
+    // eslint-disable-next-line functional/no-let
+    let count = 0;
+    mccCodeList.forEach((c) => {
+      if (c.checked === true) {
+        count++;
+      }
+    });
+    setMccCodesSelectedCounter(count);
+    setAtLeastOneCodeSelected(count > 0);
+  };
+
+  const handleSelectDeSelectAll = (
+    mccCodeList: Array<MccCodesModel>,
+    setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>
+  ) => {
+    const newMccCodeList: Array<MccCodesModel> = [];
+    mccCodeList.forEach((c) => {
+      // eslint-disable-next-line functional/immutable-data
+      newMccCodeList.push({ ...c, checked: !atLeastOneCodeSelected });
+    });
+    setMccCodesList([...newMccCodeList]);
+  };
+
+  const handleMccCodesSelectedToRender = (mccCodesList: Array<MccCodesModel>) => {
+    // eslint-disable-next-line functional/no-let
+    let mccCode = '';
+    mccCodesList.forEach((c) => {
+      if (c.checked === true) {
+        mccCode = mccCode + ' ' + c.code;
+      }
+    });
+    mccCode = mccCode.trim();
+    mccCode = mccCode.replace(/ /g, ', ');
+    setFieldValue('mccCodes', mccCode);
+  };
 
   return (
     <Modal
@@ -106,19 +234,19 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) =>
           >
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="h6" component="h2">
-                {t('components.wizard.stepThree.modalMcc.title')}
+                {t('components.wizard.stepThree.mccModal.title')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" component="p" sx={{ mt: 2 }}>
-                {t('components.wizard.stepThree.modalMcc.subtitle')}
+                {t('components.wizard.stepThree.mccModal.subtitle')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12', width: '100%', my: 3 }}>
               <TextField
                 size="small"
                 id="search-code-description"
-                label={t('components.wizard.stepThree.modalMcc.searchCodeOrDescription')}
+                label={t('components.wizard.stepThree.mccModal.searchCodeOrDescription')}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
@@ -128,10 +256,32 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) =>
                   ),
                 }}
                 data-testid="search-code-description-test"
-                //   onChange={(e) => {
-                //     handleSearchCriteria(e.target.value);
-                //   }}
+                onChange={(e) => {
+                  handleSearchMccCode(e.target.value);
+                }}
               />
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Button
+                sx={[
+                  {
+                    justifyContent: 'start',
+                    padding: 0,
+                    ml: 0.5,
+                  },
+                  {
+                    '&:hover': { backgroundColor: 'transparent' },
+                  },
+                ]}
+                onClick={() => handleSelectDeSelectAll(mccCodesList, setMccCodesList)}
+                data-testid="Select-Deselect-all-button-test"
+                disableRipple={true}
+                disableFocusRipple={true}
+              >
+                {atLeastOneCodeSelected
+                  ? t('components.wizard.stepThree.mccModal.deselectAllButtonName')
+                  : t('components.wizard.stepThree.mccModal.selectAllButtonName')}
+              </Button>
             </Box>
           </Box>
           <Box
@@ -141,7 +291,7 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) =>
               overflowX: 'hidden',
             }}
           >
-            {mccCodesList && renderMccCodesList(mccCodesList)}
+            {mccCodesList && renderMccCodesList(mccCodesList, setMccCodesList, searchMccCode)}
           </Box>
           <Box
             sx={{
@@ -157,10 +307,15 @@ const MCCModal = ({ openModalMcc, handleCloseModalMcc, mccCodesList }: Props) =>
             <Button
               sx={{ width: '100%' }}
               variant="contained"
-              // onClick={handleCriteriaAdded}
+              onClick={(e) => {
+                handleMccCodesSelectedToRender(mccCodesList);
+                handleCloseModalMcc(e);
+              }}
               data-testid="add-button-test"
+              disabled={!atLeastOneCodeSelected}
             >
-              {t('components.wizard.stepThree.modalMcc.addButton')}
+              {t('components.wizard.stepThree.mccModal.addButton')}{' '}
+              {atLeastOneCodeSelected && `(${mccCodesSelectedCounter})`}
             </Button>
           </Box>
         </Box>

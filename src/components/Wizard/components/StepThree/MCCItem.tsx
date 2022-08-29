@@ -40,7 +40,8 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
         responseData.forEach((a) => {
           const code = a.code || '';
           const description = a.description || '';
-          const item = { code, description };
+          const checked = false;
+          const item = { code, description, checked };
           // eslint-disable-next-line functional/immutable-data
           newMccCodeList.push(item);
         });
@@ -182,7 +183,8 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
           openModalMcc={openModalMcc}
           handleCloseModalMcc={handleCloseModalMcc}
           mccCodesList={mccCodesList}
-          // handleMccCodesListItemAdded={handleMccCodesListItemAdded}
+          setMccCodesList={setMccCodesList}
+          setFieldValue={formik.setFieldValue}
           data-testid="modal-test"
         />
       </Box>
