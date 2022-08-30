@@ -7,26 +7,41 @@ import {
   MenuItem,
   TextField,
   Button,
+  FormHelperText,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Dispatch, SetStateAction } from 'react';
+import * as Yup from 'yup';
 import { fetchMccCodes } from '../../../../services/mccCodesService';
 // import { MccCodesModel } from '../../../../model/MccCodes';
 import { MccCodesModel } from '../../../../model/MccCodes';
-import { renderShopRuleIcon } from './helpers';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { handleShopRulesToSubmit, renderShopRuleIcon, setError, setErrorText } from './helpers';
 import MCCModal from './MCCModal';
 
 type Props = {
   title: string;
   code: string;
   handleShopListItemRemoved: any;
+  action: string;
+  shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
+  setShopRulesToSubmit: Dispatch<
+    SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  >;
 };
 
-const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
+const MCCItem = ({
+  title,
+  code,
+  handleShopListItemRemoved,
+  action,
+  shopRulesToSubmit,
+  setShopRulesToSubmit,
+}: Props) => {
   const { t } = useTranslation();
   const [openModalMcc, setOpenModalMcc] = useState(false);
   const [mccCodesList, setMccCodesList] = useState(Array<MccCodesModel>);
@@ -51,13 +66,30 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
       .catch((error) => console.log(error));
   }, []);
 
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      return;
+    }
+  }, [action]);
+
+  const validationSchema = Yup.object().shape({
+    merchantSelect: Yup.string()
+      .typeError(t('validation.string'))
+      .required(t('validation.required')),
+    mccCodes: Yup.string().typeError(t('validation.string')).required(t('validation.required')),
+  });
+
   const formik = useFormik({
     initialValues: {
       merchantSelect: '',
-      mccCodes: '',
+      mccCodes: '0742, 0743, 0744',
     },
+    validationSchema,
     onSubmit: (values) => {
       console.log(values);
+      setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
 
@@ -65,17 +97,26 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
 
   const handleOpenModalMcc = () => setOpenModalMcc(true);
 
-  // const handleMccCodesListItemAdded = (code: string) => {
-  //   const newAvailableMccCode: Array<MccCodesModel> = [];
+  const handleMccCodeCheckedUpdate = (mccCodeList: Array<MccCodesModel>) => {
+    const mccCodesValue = formik.values.mccCodes.split(', ');
+    const newMccCodeList: Array<{ code: string; description: string; checked: boolean }> = [];
 
-  //   availableMccCodes.forEach((a) => {
-  //     if (code === a.code) {
-  //       // eslint-disable-next-line functional/immutable-data
-  //       newAvailableMccCode.push({ ...a });
-  //     }
-  //   });
-  //   setAvailableMccCodes([...newAvailableMccCode]);
-  // };
+    mccCodeList.forEach((i) => {
+      // eslint-disable-next-line functional/no-let
+      let j = 0;
+      // eslint-disable-next-line functional/no-let
+      let found = false;
+      while (j < mccCodesValue.length && found === false) {
+        if (mccCodesValue[j] === i.code) {
+          found = true;
+        }
+        j++;
+      }
+      // eslint-disable-next-line functional/immutable-data
+      newMccCodeList.push({ ...i, checked: found });
+    });
+    setMccCodesList([...newMccCodeList]);
+  };
 
   return (
     <Box
@@ -138,6 +179,12 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
               {t('components.wizard.stepThree.form.nobodyExceptSelectItem')}
             </MenuItem>
           </Select>
+          <FormHelperText
+            error={formik.touched.merchantSelect && Boolean(formik.errors.merchantSelect)}
+            sx={{ gridColumn: 'span 12' }}
+          >
+            {formik.touched.merchantSelect && formik.errors.merchantSelect}
+          </FormHelperText>
         </FormControl>
 
         {/* variant="text" */}
@@ -154,6 +201,8 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
             role="input"
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.mccCodes}
+            error={setError(formik.touched.mccCodes, formik.errors.mccCodes)}
+            helperText={setErrorText(formik.touched.mccCodes, formik.errors.mccCodes)}
           />
         </FormControl>
 
@@ -185,6 +234,7 @@ const MCCItem = ({ title, code, handleShopListItemRemoved }: Props) => {
           mccCodesList={mccCodesList}
           setMccCodesList={setMccCodesList}
           setFieldValue={formik.setFieldValue}
+          handleMccCodeCheckedUpdate={handleMccCodeCheckedUpdate}
           data-testid="modal-test"
         />
       </Box>

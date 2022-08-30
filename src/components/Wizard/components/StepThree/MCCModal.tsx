@@ -30,6 +30,7 @@ type Props = {
   mccCodesList: Array<MccCodesModel>;
   setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>;
   setFieldValue: any;
+  handleMccCodeCheckedUpdate: any;
 };
 
 const MCCModal = ({
@@ -38,7 +39,8 @@ const MCCModal = ({
   mccCodesList,
   setMccCodesList,
   setFieldValue,
-}: Props) => {
+}: // handleMccCodeCheckedUpdate,
+Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
   const [searchMccCode, setSearchMccCode] = useState('');
