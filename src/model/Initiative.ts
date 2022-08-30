@@ -1,3 +1,4 @@
+import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
@@ -50,6 +51,36 @@ export interface AutomatedCriteriaItem {
   value2?: string | undefined;
 }
 
+export interface MCCFilter {
+  allowedList?: boolean | undefined;
+  values?: Array<string> | undefined;
+}
+
+export interface RewardLimit {
+  frequency: string;
+  rewardLimit: number | undefined;
+}
+
+export interface Threshold {
+  from: number | undefined;
+  fromIncluded: boolean;
+  to: number | undefined;
+  toIncluded: boolean;
+}
+
+export interface TrxCount {
+  from: number | undefined;
+  fromIncluded: boolean;
+  to: number | undefined;
+  toIncluded: boolean;
+}
+
+export interface DaysOfWeekInterval {
+  daysOfWeek: string;
+  startTime: string;
+  endTime: string;
+}
+
 export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;
@@ -59,5 +90,16 @@ export interface Initiative {
   beneficiaryRule: {
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
+  };
+  rewardRule: {
+    _type: string;
+    rewardValue: number | undefined;
+  };
+  trxRule: {
+    mccFilter?: MccFilterDTO;
+    rewardLimits?: Array<RewardLimit> | undefined;
+    threshold?: Threshold | undefined;
+    trxCount?: TrxCount | undefined;
+    daysOfWeekIntervals: Array<DaysOfWeekInterval>;
   };
 }

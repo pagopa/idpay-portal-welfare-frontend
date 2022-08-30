@@ -1,3 +1,5 @@
+/* eslint-disable functional/no-let */
+/* eslint-disable complexity */
 import { useLocation } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
@@ -15,9 +17,23 @@ import {
   setInitiativeId,
   setOrganizationId,
   setStatus,
+  saveMccFilter,
+  saveRewardLimits,
+  saveThreshold,
+  saveTrxCount,
+  saveDaysOfWeekIntervals,
+  saveRewardRule,
 } from '../redux/slices/initiativeSlice';
-import { AutomatedCriteriaItem, ManualCriteriaItem } from '../model/Initiative';
-import { parseGeneralInfo, parseAdditionalInfo } from '../pages/initiativeList/helpers';
+import {
+  AdditionalInfo,
+  AutomatedCriteriaItem,
+  DaysOfWeekInterval,
+  GeneralInfo,
+  ManualCriteriaItem,
+} from '../model/Initiative';
+import { RewardLimitsDTO } from '../api/generated/initiative/RewardLimitsDTO';
+import { BeneficiaryTypeEnum } from '../utils/constants';
+import { DayConfig } from '../api/generated/initiative/DayConfig';
 
 interface MatchParams {
   id: string;
@@ -52,7 +68,8 @@ export const useInitiative = () => {
           dispatch(setAdditionalInfo(additionalInfo));
           // eslint-disable-next-line functional/no-let
           let automatedCriteria: Array<AutomatedCriteriaItem> = [];
-          const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
+          // eslint-disable-next-line functional/no-let
+          let selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
           if (
             response.beneficiaryRule &&
             response.beneficiaryRule.automatedCriteria &&
@@ -72,33 +89,68 @@ export const useInitiative = () => {
               value?: boolean | Array<string>;
               code?: string;
             }> = [...response.beneficiaryRule.selfDeclarationCriteria];
-
-            manualCriteriaFetched.forEach((m) => {
-              if (typeof m.value === 'boolean') {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: m.value,
-                  multiValue: [],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              } else if (Array.isArray(m.value)) {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: true,
-                  multiValue: [...m.value],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              }
-            });
+            selfDeclarationCriteria = [...parseManualCriteria(manualCriteriaFetched)];
           }
           dispatch(saveAutomatedCriteria(automatedCriteria));
           dispatch(saveManualCriteria(selfDeclarationCriteria));
+
+          if (
+            response.rewardRule &&
+            typeof response.rewardRule !== undefined &&
+            // eslint-disable-next-line no-underscore-dangle
+            response.rewardRule._type === 'rewardValue' &&
+            // eslint-disable-next-line no-prototype-builtins
+            response.rewardRule.hasOwnProperty('rewardValue')
+          ) {
+            const rewardRule = { ...response.rewardRule } as any;
+            dispatch(saveRewardRule(rewardRule));
+          }
+          if (
+            response.trxRule &&
+            response.trxRule.threshold &&
+            typeof response.trxRule.threshold !== undefined
+          ) {
+            dispatch(saveThreshold(response.trxRule.threshold));
+          }
+
+          if (
+            response.trxRule &&
+            response.trxRule.mccFilter &&
+            typeof response.trxRule.mccFilter !== undefined
+          ) {
+            dispatch(saveMccFilter(response.trxRule.mccFilter));
+          }
+
+          if (
+            response.trxRule &&
+            response.trxRule.trxCount &&
+            typeof response.trxRule.trxCount !== undefined
+          ) {
+            dispatch(saveTrxCount(response.trxRule.trxCount));
+          }
+
+          if (
+            response.trxRule &&
+            response.trxRule.rewardLimits &&
+            typeof response.trxRule.rewardLimits !== undefined
+          ) {
+            const rewardLimits: Array<RewardLimitsDTO> = [];
+            response.trxRule.rewardLimits.forEach((p) => {
+              // eslint-disable-next-line functional/immutable-data
+              rewardLimits.push({ frequency: p.frequency, rewardLimit: p.rewardLimit });
+            });
+            dispatch(saveRewardLimits(rewardLimits));
+          }
+
+          if (
+            response.trxRule &&
+            response.trxRule.daysOfWeek &&
+            typeof response.trxRule.daysOfWeek !== undefined
+          ) {
+            const daysOfWeek = [...response.trxRule.daysOfWeek];
+            const daysOfWeekIntervals = [...parseDaysOfWeekIntervals(daysOfWeek)];
+            dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
+          }
         })
         .catch((error) => {
           addError({
@@ -115,4 +167,165 @@ export const useInitiative = () => {
         });
     }
   }, []);
+};
+
+const parseGeneralInfo = (data: any): GeneralInfo => {
+  const dataT = {
+    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryKnown: 'false',
+    budget: '',
+    beneficiaryBudget: '',
+    startDate: '',
+    endDate: '',
+    rankingStartDate: '',
+    rankingEndDate: '',
+  };
+  if (typeof data.beneficiaryType !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryType =
+      data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
+  }
+  if (typeof data.beneficiaryKnown !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+  }
+  if (typeof data.budget !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.budget = data.budget.toString();
+  }
+  if (typeof data.beneficiaryBudget !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.beneficiaryBudget = data.beneficiaryBudget.toString();
+  }
+  if (typeof data.startDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.startDate = data.startDate;
+  }
+  if (typeof data.endDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.endDate = data.endDate;
+  }
+  if (typeof data.rankingStartDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.rankingStartDate = data.rankingStartDate;
+  }
+  if (typeof data.rankingEndDate !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.rankingEndDate = data.rankingEndDate;
+  }
+  return dataT;
+};
+
+const parseAdditionalInfo = (data: any): AdditionalInfo => {
+  const dataT = {
+    serviceId: '',
+    serviceName: '',
+    argument: '',
+    description: '',
+    channels: [{ type: 'web', contact: '' }],
+  };
+
+  if (typeof data.serviceId !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceId = data.serviceId;
+  }
+  if (typeof data.serviceName !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceName = data.serviceName;
+  }
+  if (typeof data.argument !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.argument = data.argument;
+  }
+  if (typeof data.description !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.description = data.description;
+  }
+  if (typeof data.channels !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.channels = [...data.channels];
+  }
+
+  return dataT;
+};
+
+const parseManualCriteria = (
+  manualCriteriaFetched: Array<{
+    _type?: string;
+    description?: string;
+    value?: boolean | Array<string>;
+    code?: string;
+  }>
+): Array<ManualCriteriaItem> => {
+  const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
+  manualCriteriaFetched.forEach((m) => {
+    if (typeof m.value === 'boolean') {
+      // eslint-disable-next-line functional/immutable-data
+      selfDeclarationCriteria.push({
+        // eslint-disable-next-line no-underscore-dangle
+        _type: m._type,
+        boolValue: m.value,
+        multiValue: [],
+        description: m.description || '',
+        code: m.code || '',
+      });
+    } else if (Array.isArray(m.value)) {
+      // eslint-disable-next-line functional/immutable-data
+      selfDeclarationCriteria.push({
+        // eslint-disable-next-line no-underscore-dangle
+        _type: m._type,
+        boolValue: true,
+        multiValue: [...m.value],
+        description: m.description || '',
+        code: m.code || '',
+      });
+    }
+  });
+  return selfDeclarationCriteria;
+};
+
+const parseDaysOfWeekIntervals = (daysOfWeek: Array<DayConfig>): Array<DaysOfWeekInterval> => {
+  const daysOfWeekIntervals: Array<{
+    daysOfWeek: string;
+    startTime: string;
+    endTime: string;
+  }> = [];
+  daysOfWeek.forEach((d) => {
+    const days: Array<string> = [];
+    const intervals: Array<{
+      startTime: string;
+      endTime: string;
+    }> = [];
+    if (
+      d.daysOfWeek &&
+      typeof d.daysOfWeek !== undefined &&
+      d.intervals &&
+      typeof d.intervals !== undefined
+    ) {
+      d.daysOfWeek.forEach((dd) => {
+        // eslint-disable-next-line functional/immutable-data
+        days.push(dd);
+      });
+      d.intervals.forEach((i) => {
+        const interval = {
+          startTime: i.startTime || '',
+          endTime: i.endTime || '',
+        };
+        // eslint-disable-next-line functional/immutable-data
+        intervals.push({ ...interval });
+      });
+    }
+    days.forEach((day) => {
+      intervals.forEach((intr) => {
+        const element = {
+          daysOfWeek: day,
+          startTime: intr.startTime.substring(0, 5),
+          endTime: intr.endTime.substring(0, 5),
+        };
+        // eslint-disable-next-line functional/immutable-data
+        daysOfWeekIntervals.push({ ...element });
+      });
+    });
+  });
+  return daysOfWeekIntervals;
 };

@@ -13,7 +13,7 @@ import FileUpload from './components/StepTwo/FileUpload';
 import ShopRules from './components/StepThree/ShopRules';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(2);
+  const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const [disabledNext, setDisabledNext] = useState(true);

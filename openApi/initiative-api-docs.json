@@ -1069,6 +1069,12 @@
           "beneficiaryRule": {
             "$ref": "#/components/schemas/InitiativeBeneficiaryRuleDTO"
           },
+          "rewardRule": {
+            "$ref": "#/components/schemas/InitiativeRewardRuleDTO"
+          },
+          "trxRule": {
+            "$ref": "#/components/schemas/InitiativeTrxConditionsDTO"
+          },
           "legal": {
             "$ref": "#/components/schemas/InitiativeLegalDTO"
           }
@@ -1384,8 +1390,8 @@
             "type": "boolean"
           },
           "values": {
-            "uniqueItems": true,
             "type": "array",
+            "uniqueItems": true,
             "items": {
               "type": "string"
             }
@@ -1428,6 +1434,7 @@
         ]
       },
       "RewardLimitsDTO": {
+        "required": ["frequency", "rewardLimit"],
         "type": "object",
         "properties": {
           "frequency": {
@@ -1458,6 +1465,7 @@
         ]
       },
       "ThresholdDTO": {
+        "required": ["from", "fromIncluded", "to", "toIncluded"],
         "type": "object",
         "properties": {
           "from": {
@@ -1475,6 +1483,7 @@
         }
       },
       "TrxCountDTO": {
+        "required": ["from", "fromIncluded", "to", "toIncluded"],
         "type": "object",
         "properties": {
           "from": {

@@ -5,12 +5,15 @@ import {
   GeneralInfo,
   AdditionalInfo,
   AutomatedCriteriaItem,
-  // SelfDeclarationCriteriaBoolItem,
-  // SelfDeclarationCriteriaMultiItem,
   ManualCriteriaItem,
+  RewardLimit,
+  Threshold,
+  TrxCount,
+  DaysOfWeekInterval,
 } from '../../model/Initiative';
-// import { ManualCriteriaOptions } from '../../utils/constants';
+
 import { BeneficiaryTypeEnum } from '../../utils/constants';
+import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -36,6 +39,20 @@ const initialState: Initiative = {
   beneficiaryRule: {
     selfDeclarationCriteria: [],
     automatedCriteria: [],
+  },
+  rewardRule: {
+    _type: '',
+    rewardValue: undefined,
+  },
+  trxRule: {
+    mccFilter: {
+      allowedList: true,
+      values: [],
+    },
+    rewardLimits: [{ frequency: 'DAILY', rewardLimit: undefined }],
+    threshold: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
+    trxCount: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
+    daysOfWeekIntervals: [{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }],
   },
 };
 
@@ -122,16 +139,73 @@ export const initiativeSlice = createSlice({
       } else {
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
-
-      // state.beneficiaryRule.selfDeclarationCriteria = [
-      //   ...state.beneficiaryRule.selfDeclarationCriteria,
-      //   action.payload,
-      // ];
     },
     saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
       state.beneficiaryRule.selfDeclarationCriteria = [];
       state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
     },
+    saveRewardRule: (
+      state,
+      action: PayloadAction<{ _type: string; rewardValue: number | undefined }>
+    ) => ({
+      ...state,
+      rewardRule: {
+        // eslint-disable-next-line no-underscore-dangle
+        _type: action.payload._type,
+        // eslint-disable-next-line no-prototype-builtins
+        rewardValue: action.payload.hasOwnProperty('rewardValue')
+          ? action.payload.rewardValue
+          : undefined,
+      },
+    }),
+    saveMccFilter: (state, action: PayloadAction<MccFilterDTO>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        mccFilter: {
+          allowedList: action.payload.allowedList,
+          values: action.payload.values,
+        },
+      },
+    }),
+    saveRewardLimits: (state, action: PayloadAction<Array<RewardLimit>>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        rewardLimits: [...action.payload],
+      },
+    }),
+    saveThreshold: (state, action: PayloadAction<Threshold>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        threshold: {
+          from: action.payload.from,
+          fromIncluded: action.payload.fromIncluded,
+          to: action.payload.to,
+          toIncluded: action.payload.toIncluded,
+        },
+      },
+    }),
+    saveTrxCount: (state, action: PayloadAction<TrxCount>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        trxCount: {
+          from: action.payload.from,
+          fromIncluded: action.payload.fromIncluded,
+          to: action.payload.to,
+          toIncluded: action.payload.toIncluded,
+        },
+      },
+    }),
+    saveDaysOfWeekIntervals: (state, action: PayloadAction<Array<DaysOfWeekInterval>>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        daysOfWeekIntervals: [...action.payload],
+      },
+    }),
   },
 });
 
@@ -147,7 +221,14 @@ export const {
   saveAutomatedCriteria,
   setManualCriteria,
   saveManualCriteria,
+  saveRewardRule,
+  saveMccFilter,
+  saveRewardLimits,
+  saveThreshold,
+  saveTrxCount,
+  saveDaysOfWeekIntervals,
 } = initiativeSlice.actions;
+
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
@@ -163,3 +244,17 @@ export const beneficiaryRuleSelector = (
 } => state.initiative.beneficiaryRule;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
+export const initiativeRewardRuleSelector = (
+  state: RootState
+): { _type: string; rewardValue: number | undefined } | undefined => state.initiative.rewardRule;
+export const initiativeMccFilterSelector = (state: RootState): MccFilterDTO | undefined =>
+  state.initiative.trxRule.mccFilter;
+export const initiativeRewardLimitsSelector = (state: RootState): Array<RewardLimit> | undefined =>
+  state.initiative.trxRule.rewardLimits;
+export const initiativeThresholdSelector = (state: RootState): Threshold | undefined =>
+  state.initiative.trxRule.threshold;
+export const initiativeTrxCountSelector = (state: RootState): TrxCount | undefined =>
+  state.initiative.trxRule.trxCount;
+export const initiativeDaysOfWeekIntervalsSelector = (
+  state: RootState
+): Array<DaysOfWeekInterval> | undefined => state.initiative.trxRule.daysOfWeekIntervals;
