@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { RewardLimit } from '../../../../model/Initiative';
 import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
 
 type Props = {
@@ -29,6 +30,8 @@ type Props = {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data: Array<RewardLimit> | undefined;
+  setData: Dispatch<SetStateAction<Array<RewardLimit> | undefined>>;
 };
 
 const TimeLimitItem = ({
@@ -38,6 +41,7 @@ const TimeLimitItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -63,7 +67,7 @@ const TimeLimitItem = ({
 
   const formik = useFormik({
     initialValues: {
-      timeLimit: [{ frequency: 'DAILY', rewardLimit: '' }],
+      timeLimit: Array.isArray(data) ? [...data] : [{ frequency: 'DAILY', rewardLimit: '' }],
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -206,7 +210,7 @@ const TimeLimitItem = ({
       <Box
         sx={{
           display: 'grid',
-          gridColumn: 'span 12',
+          gridColumn: 'span 3',
           py: 2,
         }}
       >

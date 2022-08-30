@@ -97,7 +97,7 @@ export interface Initiative {
   };
   trxRule: {
     mccFilter?: MccFilterDTO;
-    rewardLimits?: Array<RewardLimit> | undefined;
+    rewardLimits?: Array<RewardLimit>;
     threshold?: Threshold | undefined;
     trxCount?: TrxCount | undefined;
     daysOfWeekIntervals: Array<DaysOfWeekInterval>;

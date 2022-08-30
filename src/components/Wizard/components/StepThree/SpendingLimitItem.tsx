@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { Threshold } from '../../../../model/Initiative';
 import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
 type Props = {
@@ -19,6 +20,8 @@ type Props = {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data: Threshold | undefined;
+  setData: Dispatch<SetStateAction<any>>;
 };
 
 const SpendingLimitItem = ({
@@ -28,8 +31,15 @@ const SpendingLimitItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // TODO use in a function on change
+    console.log(setData);
+  }, []);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -62,8 +72,8 @@ const SpendingLimitItem = ({
 
   const formik = useFormik({
     initialValues: {
-      minSpendingLimit: '',
-      maxSpendingLimit: '',
+      minSpendingLimit: data?.from,
+      maxSpendingLimit: data?.to,
     },
     validateOnMount: true,
     validateOnChange: true,

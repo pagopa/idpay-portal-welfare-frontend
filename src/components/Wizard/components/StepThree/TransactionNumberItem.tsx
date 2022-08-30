@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { TrxCount } from '../../../../model/Initiative';
 import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
 type Props = {
@@ -19,6 +20,8 @@ type Props = {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data: TrxCount | undefined;
+  setData: Dispatch<SetStateAction<any>>;
 };
 
 const TransactionNumberItem = ({
@@ -28,8 +31,15 @@ const TransactionNumberItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // TODO use in a function on change
+    console.log(setData);
+  }, []);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -62,8 +72,8 @@ const TransactionNumberItem = ({
 
   const formik = useFormik({
     initialValues: {
-      minTransactionNumber: '',
-      maxTransactionNumber: '',
+      minTransactionNumber: data?.from,
+      maxTransactionNumber: data?.to,
     },
     validateOnMount: true,
     validateOnChange: true,

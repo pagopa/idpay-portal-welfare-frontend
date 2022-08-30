@@ -41,7 +41,7 @@ const initialState: Initiative = {
     automatedCriteria: [],
   },
   rewardRule: {
-    _type: '',
+    _type: 'rewardValue',
     rewardValue: undefined,
   },
   trxRule: {

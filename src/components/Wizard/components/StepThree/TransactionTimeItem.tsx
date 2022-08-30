@@ -20,6 +20,7 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { DaysOfWeekInterval } from '../../../../model/Initiative';
 import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
 
 type Props = {
@@ -31,6 +32,8 @@ type Props = {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data: Array<DaysOfWeekInterval> | undefined;
+  setData: Dispatch<SetStateAction<Array<DaysOfWeekInterval> | undefined>>;
 };
 
 const TransactionTimeItem = ({
@@ -40,6 +43,7 @@ const TransactionTimeItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -55,15 +59,15 @@ const TransactionTimeItem = ({
     transactionTime: Yup.array().of(
       Yup.object().shape({
         daysOfWeek: Yup.string().required(t('validation.required')),
-        minTime: Yup.string()
+        startTime: Yup.string()
           .required(t('validation.required'))
           .matches(/^((?:[01]\d|2[0-3]):[0-5]\d$)/, t('validation.formatTimeInvalid')),
-        maxTime: Yup.string()
+        endTime: Yup.string()
           .required(t('validation.required'))
           .matches(/^((?:[01]\d|2[0-3]):[0-5]\d$)/, t('validation.formatTimeInvalid'))
           .test('conditional-range-method', t('validation.outTransactionTime'), function (val) {
             if (val) {
-              const minTime = this.parent.minTime;
+              const minTime = this.parent.startTime;
               const minTimeAsNumber = parseInt(minTime.replace('/:/g', ''), 10);
               const maxTimeAsNumber = parseInt(val.replace('/:/g', ''), 10);
               return minTimeAsNumber < maxTimeAsNumber;
@@ -76,7 +80,9 @@ const TransactionTimeItem = ({
 
   const formik = useFormik({
     initialValues: {
-      transactionTime: [{ daysOfWeek: 'MONDAY', minTime: '', maxTime: '' }],
+      transactionTime: Array.isArray(data)
+        ? [...data]
+        : [{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }],
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -147,11 +153,11 @@ const TransactionTimeItem = ({
           typeof transactionTimeErrors === 'string' ? '' : transactionTimeErrors.daysOfWeek;
         const daysOfWeekTouched = transactionTimeTouched.daysOfWeek;
         const minTimeError =
-          typeof transactionTimeErrors === 'string' ? '' : transactionTimeErrors.minTime;
-        const minTimeTouched = transactionTimeTouched.minTime;
+          typeof transactionTimeErrors === 'string' ? '' : transactionTimeErrors.startTime;
+        const minTimeTouched = transactionTimeTouched.startTime;
         const maxTimeError =
-          typeof transactionTimeErrors === 'string' ? '' : transactionTimeErrors.maxTime;
-        const maxTimeTouched = transactionTimeTouched.maxTime;
+          typeof transactionTimeErrors === 'string' ? '' : transactionTimeErrors.endTime;
+        const maxTimeTouched = transactionTimeTouched.endTime;
 
         return (
           <Box
@@ -207,9 +213,9 @@ const TransactionTimeItem = ({
             </FormControl>
             <FormControl sx={{ gridColumn: 'span 6' }}>
               <TextField
-                id={`transactionTime[${i}].minTime`}
-                name={`transactionTime[${i}].minTime`}
-                value={formik.values.transactionTime[i].minTime}
+                id={`transactionTime[${i}].startTime`}
+                name={`transactionTime[${i}].startTime`}
+                value={formik.values.transactionTime[i].startTime}
                 placeholder={t('components.wizard.stepThree.form.minTime')}
                 onChange={(value) => formik.handleChange(value)}
                 error={minTimeTouched && Boolean(minTimeError)}
@@ -218,9 +224,9 @@ const TransactionTimeItem = ({
             </FormControl>
             <FormControl sx={{ gridColumn: 'span 6' }}>
               <TextField
-                id={`transactionTime[${i}].maxTime`}
-                name={`transactionTime[${i}].maxTime`}
-                value={formik.values.transactionTime[i].maxTime}
+                id={`transactionTime[${i}].endTime`}
+                name={`transactionTime[${i}].endTime`}
+                value={formik.values.transactionTime[i].endTime}
                 placeholder={t('components.wizard.stepThree.form.maxTime')}
                 onChange={(value) => formik.handleChange(value)}
                 error={maxTimeTouched && Boolean(maxTimeError)}
@@ -242,7 +248,7 @@ const TransactionTimeItem = ({
       <Box
         sx={{
           display: 'grid',
-          gridColumn: 'span 12',
+          gridColumn: 'span 3',
           py: 2,
         }}
       >

@@ -15,6 +15,13 @@ interface Props {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data:
+    | {
+        _type: string;
+        rewardValue: number | undefined;
+      }
+    | undefined;
+  setData: Dispatch<SetStateAction<any>>;
 }
 
 const PercentageRecognizedItem = ({
@@ -22,8 +29,15 @@ const PercentageRecognizedItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
+
+  useEffect(() => {
+    // TODO use in a function on change
+    console.log(setData);
+  }, []);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -43,7 +57,7 @@ const PercentageRecognizedItem = ({
 
   const formik = useFormik({
     initialValues: {
-      percetageRecognized: '',
+      percetageRecognized: data?.rewardValue,
     },
     validateOnMount: true,
     validateOnChange: true,

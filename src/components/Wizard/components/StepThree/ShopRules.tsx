@@ -4,9 +4,25 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
+import { useAppSelector } from '../../../../redux/hooks';
+import {
+  initiativeDaysOfWeekIntervalsSelector,
+  initiativeMccFilterSelector,
+  initiativeRewardLimitsSelector,
+  initiativeRewardRuleSelector,
+  initiativeThresholdSelector,
+  initiativeTrxCountSelector,
+} from '../../../../redux/slices/initiativeSlice';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
-import { mapResponse } from './helpers';
+import {
+  checkDaysOfWeekIntervalsChecked,
+  checkMccFilterChecked,
+  checkRewardLimitsChecked,
+  checkThresholdChecked,
+  checkTrxCountChecked,
+  mapResponse,
+} from './helpers';
 import SpendingLimitItem from './SpendingLimitItem';
 import MCCItem from './MCCItem';
 import TimeLimitItem from './TimeLimitItem';
@@ -28,26 +44,110 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
   const [shopRulesToSubmit, setShopRulesToSubmit] = useState<
     Array<{ code: string | undefined; dispatched: boolean }>
   >([{ code: 'PRCREC', dispatched: false }]);
+  const rewardRule = useAppSelector(initiativeRewardRuleSelector);
+  const mccFilter = useAppSelector(initiativeMccFilterSelector);
+  const rewardLimits = useAppSelector(initiativeRewardLimitsSelector);
+  const threshold = useAppSelector(initiativeThresholdSelector);
+  const trxCount = useAppSelector(initiativeTrxCountSelector);
+  const daysOfWeekIntervals = useAppSelector(initiativeDaysOfWeekIntervalsSelector);
+  const [rewardRuleData, setRewardRuleData] = useState(rewardRule);
+  // const [mccFilterData, setMccFilterData] = useState(mccFilter);
+  const [rewardLimitsData, setRewardLimitsData] = useState(rewardLimits);
+  const [thresholdData, setThresholdData] = useState(threshold);
+  const [trxCountData, setTrxCountData] = useState(trxCount);
+  const [daysOfWeekIntervalsData, setDaysOfWeekIntervalsData] = useState(daysOfWeekIntervals);
 
-  // useEffect(() => {
-  //   if (action === 'SUBMIT') {
-  //     formik.handleSubmit();
-  //   } else {
-  //     return;
-  //   }
-  //   setAction('');
-  // }, [action]);
-
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     setDisabledNext(false);
     fetchTransactionRules()
       .then((response) => {
         const responseData = mapResponse(response);
-        // console.log(responseData);
-        setAvailableShopRules([...responseData]);
+        const newAvailableShopRules: Array<ShopRulesModel> = [];
+        const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+          { code: 'PRCREC', dispatched: false },
+        ];
+        responseData.forEach((r) => {
+          switch (r.code) {
+            case 'THRESHOLD':
+              const checkedTheshold = checkThresholdChecked(threshold);
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r, checked: checkedTheshold });
+              if (checkedTheshold) {
+                // eslint-disable-next-line functional/immutable-data
+                newShopRulesToSubmit.push({ code: r.code, dispatched: false });
+              }
+              break;
+            case 'MCC':
+              const checkedMccFilter = checkMccFilterChecked(mccFilter);
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r, checked: checkedMccFilter });
+              if (checkedMccFilter) {
+                // eslint-disable-next-line functional/immutable-data
+                newShopRulesToSubmit.push({ code: r.code, dispatched: false });
+              }
+              break;
+            case 'ATECO':
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r });
+              break;
+            case 'TRXCOUNT':
+              const trxCountChecked = checkTrxCountChecked(trxCount);
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r, checked: trxCountChecked });
+              if (trxCountChecked) {
+                // eslint-disable-next-line functional/immutable-data
+                newShopRulesToSubmit.push({ code: r.code, dispatched: false });
+              }
+              break;
+            case 'REWARDLIMIT':
+              if (Array.isArray(rewardLimits)) {
+                setRewardLimitsData([...rewardLimits]);
+              } else {
+                setRewardLimitsData([{ frequency: 'DAILY', rewardLimit: undefined }]);
+              }
+              const rewardLimitsChecked = checkRewardLimitsChecked(rewardLimits);
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r, checked: rewardLimitsChecked });
+              if (rewardLimitsChecked) {
+                // eslint-disable-next-line functional/immutable-data
+                newShopRulesToSubmit.push({ code: r.code, dispatched: false });
+              }
+              break;
+            case 'DAYHOURSWEEK':
+              if (Array.isArray(daysOfWeekIntervals)) {
+                setDaysOfWeekIntervalsData([...daysOfWeekIntervals]);
+              } else {
+                setDaysOfWeekIntervalsData([{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }]);
+              }
+              const daysOfWeekIntervalsChecked =
+                checkDaysOfWeekIntervalsChecked(daysOfWeekIntervals);
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({
+                ...r,
+                checked: daysOfWeekIntervalsChecked,
+              });
+              if (daysOfWeekIntervalsChecked) {
+                // eslint-disable-next-line functional/immutable-data
+                newShopRulesToSubmit.push({ code: r.code, dispatched: false });
+              }
+              break;
+            case 'GIS':
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r });
+              break;
+            default:
+              // eslint-disable-next-line functional/immutable-data
+              newAvailableShopRules.push({ ...r });
+              break;
+          }
+        });
+
+        setAvailableShopRules([...newAvailableShopRules]);
+        setShopRulesToSubmit([...newShopRulesToSubmit]);
       })
       .catch((error) => console.log(error));
-  }, []);
+  }, [rewardRule, threshold, mccFilter, trxCount, rewardLimits, daysOfWeekIntervals]);
 
   const handleCloseModal = () => setOpenModal(false);
 
@@ -174,6 +274,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
           action={action}
           shopRulesToSubmit={shopRulesToSubmit}
           setShopRulesToSubmit={setShopRulesToSubmit}
+          data={rewardRuleData}
+          setData={setRewardRuleData}
         />
       </Box>
 
@@ -188,6 +290,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               action={action}
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
+              data={thresholdData}
+              setData={setThresholdData}
             />
           );
         } else if (a.code === 'MCC' && a.checked === true) {
@@ -209,6 +313,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               action={action}
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
+              data={trxCountData}
+              setData={setTrxCountData}
             />
           );
         } else if (a.code === 'REWARDLIMIT' && a.checked === true) {
@@ -221,6 +327,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               action={action}
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
+              data={rewardLimitsData}
+              setData={setRewardLimitsData}
             />
           );
         } else if (a.code === 'DAYHOURSWEEK' && a.checked === true) {
@@ -233,6 +341,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               action={action}
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
+              data={daysOfWeekIntervalsData}
+              setData={setDaysOfWeekIntervalsData}
             />
           );
         } else {

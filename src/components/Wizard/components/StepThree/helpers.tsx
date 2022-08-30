@@ -9,6 +9,56 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
+import { DaysOfWeekInterval, RewardLimit, Threshold, TrxCount } from '../../../../model/Initiative';
+import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
+
+export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
+  if (typeof thresold !== undefined) {
+    return typeof thresold?.from !== undefined || typeof thresold?.to !== undefined;
+  }
+  return false;
+};
+
+export const checkMccFilterChecked = (mccFilter: MccFilterDTO | undefined): boolean => {
+  if (typeof mccFilter !== undefined && typeof mccFilter?.values !== undefined) {
+    const values = mccFilter?.values || '';
+    return values.length > 0;
+  }
+  return false;
+};
+
+export const checkTrxCountChecked = (trxCount: TrxCount | undefined): boolean => {
+  if (typeof trxCount !== undefined) {
+    return typeof trxCount?.from !== undefined || typeof trxCount?.to !== undefined;
+  }
+  return false;
+};
+
+export const checkRewardLimitsChecked = (rewardLimits: Array<RewardLimit> | undefined): boolean => {
+  if (typeof rewardLimits !== undefined) {
+    // eslint-disable-next-line functional/no-let
+    let checked = false;
+    rewardLimits?.forEach((r) => {
+      checked = checked || typeof r.rewardLimit !== undefined;
+    });
+    return checked;
+  }
+  return false;
+};
+
+export const checkDaysOfWeekIntervalsChecked = (
+  daysOfWeekIntervals: Array<DaysOfWeekInterval> | undefined
+): boolean => {
+  if (typeof daysOfWeekIntervals !== undefined) {
+    // eslint-disable-next-line functional/no-let
+    let checked = false;
+    daysOfWeekIntervals?.forEach((d) => {
+      checked = checked || typeof d.startTime !== undefined || typeof d.endTime !== undefined;
+    });
+    return checked;
+  }
+  return false;
+};
 
 export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesModel> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity
