@@ -172,6 +172,15 @@ export default {
           subtitle:
             'Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
         },
+        mccModal: {
+          title: 'Elenco categorie merceologiche',
+          subtitle:
+            'In questa lista trovi i Merchant Category Code (MCC) utilizzati dai circuiti di pagamento per riconoscere la tipologia di beni o servizi forniti.',
+          searchCodeOrDescription: 'Cerca per codice o descrizione',
+          addButton: 'Aggiungi',
+          selectAllButtonName: 'Seleziona tutti',
+          deselectAllButtonName: 'Deseleziona tutti',
+        },
         form: {
           percentageRecognized: 'Percentuale riconosciuta',
           minSpeningLimit: 'Minimo',
@@ -186,22 +195,6 @@ export default {
             'Il numero minimo di transazioni necessario per poter erogare il rimborso',
           maxTransactionNumberTooltip:
             'Il numero massimo di transazioni consentite per spendere l’importo erogato',
-          rewardLimitDaily: 'Al giorno',
-          rewardLimitMonthly: 'Al mese',
-          rewardLimitYearly: "All'anno",
-          addTimeLimitItem: 'Aggiungi limite',
-          maxReward: 'Importo massimo',
-          monday: 'Lunedì',
-          tuesday: 'Martedì',
-          wednesday: 'Mercoledì',
-          thursday: 'Giovedì',
-          friday: 'Venerdì',
-          saturday: 'Sabato',
-          sunday: 'Domenica',
-          minTime: 'Dalle ore',
-          maxTime: 'Alle ore',
-          timeFormatTooltip: 'Inserisci nel formato hh:mm (es.: 08:16)',
-          addTransactionTimeItem: 'Aggiungi orario',
         },
       },
       stepFour: {

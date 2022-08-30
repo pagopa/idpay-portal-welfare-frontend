@@ -300,7 +300,10 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               key={a.code}
               title={a.title}
               code={a.code}
+              action={action}
               handleShopListItemRemoved={handleShopListItemRemoved}
+              shopRulesToSubmit={shopRulesToSubmit}
+              setShopRulesToSubmit={setShopRulesToSubmit}
             />
           );
         } else if (a.code === 'TRXCOUNT' && a.checked === true) {
