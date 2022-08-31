@@ -20,6 +20,7 @@ import { fetchMccCodes } from '../../../../services/mccCodesService';
 // import { MccCodesModel } from '../../../../model/MccCodes';
 import { MccCodesModel } from '../../../../model/MccCodes';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
 import { handleShopRulesToSubmit, renderShopRuleIcon, setError, setErrorText } from './helpers';
 import MCCModal from './MCCModal';
 
@@ -32,6 +33,8 @@ type Props = {
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  data: MccFilterDTO | undefined;
+  setData: Dispatch<SetStateAction<MccFilterDTO> | undefined>;
 };
 
 const MCCItem = ({
@@ -41,6 +44,8 @@ const MCCItem = ({
   action,
   shopRulesToSubmit,
   setShopRulesToSubmit,
+  data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
   const [openModalMcc, setOpenModalMcc] = useState(false);
@@ -75,20 +80,17 @@ const MCCItem = ({
   }, [action]);
 
   const validationSchema = Yup.object().shape({
-    merchantSelect: Yup.string()
-      .typeError(t('validation.string'))
-      .required(t('validation.required')),
-    mccCodes: Yup.string().typeError(t('validation.string')).required(t('validation.required')),
+    allowedList: Yup.string().required(t('validation.required')),
+    values: Yup.string().required(t('validation.required')),
   });
 
   const formik = useFormik({
     initialValues: {
-      merchantSelect: '',
-      mccCodes: '0742, 0743, 0744',
+      allowedList: data?.allowedList ? 'true' : 'false',
+      values: Array.isArray(data?.values) ? data?.values.join(', ') : '',
     },
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
@@ -97,10 +99,9 @@ const MCCItem = ({
 
   const handleOpenModalMcc = () => setOpenModalMcc(true);
 
-  const handleMccCodeCheckedUpdate = (mccCodeList: Array<MccCodesModel>) => {
-    const mccCodesValue = formik.values.mccCodes.split(', ');
+  const handleMccCodeCheckedUpdate = (mccCodeList: Array<MccCodesModel>, mccCodes: string) => {
+    const mccCodesValue = mccCodes.split(', ');
     const newMccCodeList: Array<{ code: string; description: string; checked: boolean }> = [];
-
     mccCodeList.forEach((i) => {
       // eslint-disable-next-line functional/no-let
       let j = 0;
@@ -117,6 +118,25 @@ const MCCItem = ({
     });
     setMccCodesList([...newMccCodeList]);
   };
+
+  const handleUpdateAllowedListFieldState = (value: string) => {
+    const valueBoolean = value === 'true' ? true : false;
+    const newState = { ...data, allowedList: valueBoolean };
+    setData({ ...newState });
+  };
+
+  const handleUpdateValuesFieldState = (value: string | undefined) => {
+    const valueArr = typeof value === 'string' ? value.split(', ') : [];
+    const newState = { ...data, values: [...valueArr] };
+    setData({
+      allowedList: newState.allowedList,
+      values: [...newState.values],
+    });
+  };
+
+  useEffect(() => {
+    handleUpdateValuesFieldState(formik.values.values);
+  }, [formik.values.values]);
 
   return (
     <Box
@@ -165,25 +185,28 @@ const MCCItem = ({
         <FormControl sx={{ gridArea: 'merchant' }}>
           <Select
             defaultValue=""
-            name="merchantSelect"
-            id="merchant-id-select"
+            name="allowedList"
+            id="allowedList"
             data-testid="merchantSelect-test"
-            onChange={(e) => formik.setFieldValue('merchantSelect', e.target.value)}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleUpdateAllowedListFieldState(e.target.value);
+            }}
             onBlur={(e) => formik.handleBlur(e)}
-            value={formik.values.merchantSelect}
+            value={formik.values.allowedList}
           >
-            <MenuItem value={'everybody'} data-testid="everybody">
+            <MenuItem value={'true'} data-testid="everybody">
               {t('components.wizard.stepThree.form.everybodyExceptSelectItem')}
             </MenuItem>
-            <MenuItem value={'mobody'} data-testid="nobody">
+            <MenuItem value={'false'} data-testid="nobody">
               {t('components.wizard.stepThree.form.nobodyExceptSelectItem')}
             </MenuItem>
           </Select>
           <FormHelperText
-            error={formik.touched.merchantSelect && Boolean(formik.errors.merchantSelect)}
+            error={formik.touched.allowedList && Boolean(formik.errors.allowedList)}
             sx={{ gridColumn: 'span 12' }}
           >
-            {formik.touched.merchantSelect && formik.errors.merchantSelect}
+            {formik.touched.allowedList && formik.errors.allowedList}
           </FormHelperText>
         </FormControl>
         <FormControl sx={{ gridArea: 'MccCode' }}>
@@ -193,13 +216,17 @@ const MCCItem = ({
             maxRows={4}
             label={t('components.wizard.stepThree.form.mccCodes')}
             placeholder={t('components.wizard.stepThree.form.mccCodes')}
-            name="mccCodes"
-            aria-label="mccCodes"
+            name="values"
+            aria-label="values"
             role="input"
-            onChange={(e) => formik.handleChange(e)}
-            value={formik.values.mccCodes}
-            error={setError(formik.touched.mccCodes, formik.errors.mccCodes)}
-            helperText={setErrorText(formik.touched.mccCodes, formik.errors.mccCodes)}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleMccCodeCheckedUpdate(mccCodesList, e.target.value);
+              // handleUpdateValuesFieldState(e.target.value);
+            }}
+            value={formik.values.values}
+            error={setError(formik.touched.values, formik.errors.values)}
+            helperText={setErrorText(formik.touched.values, formik.errors.values)}
           />
         </FormControl>
 

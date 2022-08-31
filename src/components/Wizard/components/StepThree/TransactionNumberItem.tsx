@@ -37,11 +37,6 @@ const TransactionNumberItem = ({
   const { t } = useTranslation();
 
   useEffect(() => {
-    // TODO use in a function on change
-    console.log(setData);
-  }, []);
-
-  useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
@@ -50,21 +45,21 @@ const TransactionNumberItem = ({
   }, [action]);
 
   const validationSchema = Yup.object().shape({
-    minTransactionNumber: Yup.number()
+    from: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive')),
-    maxTransactionNumber: Yup.number()
+    to: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive'))
-      .when('minTransactionNumber', (minTransactionNumber, schema) => {
-        if (minTransactionNumber) {
+      .when('from', (from, schema) => {
+        if (from) {
           return Yup.number()
             .typeError(t('validation.numeric'))
             .required(t('validation.required'))
             .positive(t('validation.positive'))
-            .min(parseFloat(minTransactionNumber) + 1, t('validation.outTransactionNumberLimit'));
+            .min(parseFloat(from) + 1, t('validation.outTransactionNumberLimit'));
         }
         return schema;
       }),
@@ -72,18 +67,31 @@ const TransactionNumberItem = ({
 
   const formik = useFormik({
     initialValues: {
-      minTransactionNumber: data?.from,
-      maxTransactionNumber: data?.to,
+      from: data?.from,
+      to: data?.to,
     },
     validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
+
+  const handleUpdateFromFieldState = (value: string | undefined) => {
+    const valueNumber =
+      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
+    const newState = { ...data, from: valueNumber };
+    setData({ ...newState });
+  };
+
+  const handleUpdateToFieldState = (value: string | undefined) => {
+    const valueNumber =
+      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
+    const newState = { ...data, to: valueNumber };
+    setData({ ...newState });
+  };
 
   return (
     <Box
@@ -137,17 +145,14 @@ const TransactionNumberItem = ({
               'data-testid': 'min-spending-limit',
             }}
             placeholder={t('components.wizard.stepThree.form.minTransactionNumber')}
-            name="minTransactionNumber"
-            value={formik.values.minTransactionNumber}
-            onChange={(e) => formik.handleChange(e)}
-            error={setError(
-              formik.touched.minTransactionNumber,
-              formik.errors.minTransactionNumber
-            )}
-            helperText={setErrorText(
-              formik.touched.minTransactionNumber,
-              formik.errors.minTransactionNumber
-            )}
+            name="from"
+            value={formik.values.from}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleUpdateFromFieldState(e.target.value);
+            }}
+            error={setError(formik.touched.from, formik.errors.from)}
+            helperText={setErrorText(formik.touched.from, formik.errors.from)}
           />
         </FormControl>
         <Tooltip
@@ -167,17 +172,14 @@ const TransactionNumberItem = ({
               'data-testid': 'max-spending-limit',
             }}
             placeholder={t('components.wizard.stepThree.form.maxTransactionNumber')}
-            name="maxTransactionNumber"
-            value={formik.values.maxTransactionNumber}
-            onChange={(e) => formik.handleChange(e)}
-            error={setError(
-              formik.touched.maxTransactionNumber,
-              formik.errors.maxTransactionNumber
-            )}
-            helperText={setErrorText(
-              formik.touched.maxTransactionNumber,
-              formik.errors.maxTransactionNumber
-            )}
+            name="to"
+            value={formik.values.to}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleUpdateToFieldState(e.target.value);
+            }}
+            error={setError(formik.touched.to, formik.errors.to)}
+            helperText={setErrorText(formik.touched.to, formik.errors.to)}
           />
         </FormControl>
         <Tooltip

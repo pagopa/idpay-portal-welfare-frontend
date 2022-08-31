@@ -44,6 +44,7 @@ const TransactionTimeItem = ({
   shopRulesToSubmit,
   setShopRulesToSubmit,
   data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -88,8 +89,7 @@ const TransactionTimeItem = ({
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
@@ -97,7 +97,7 @@ const TransactionTimeItem = ({
   const addTransactionTimeItem = (values: any, setValues: any) => {
     const newTransactionTime = [
       ...values.transactionTime,
-      { daysOfWeek: 'MONDAY', minTime: '', maxTime: '' },
+      { daysOfWeek: 'MONDAY', startTime: '', endTime: '' },
     ];
     setValues({ ...values, transactionTime: [...newTransactionTime] });
   };
@@ -112,6 +112,10 @@ const TransactionTimeItem = ({
     setValues({ ...values, transactionTime: newTransactionTime });
     setTouched({}, false);
   };
+
+  useEffect(() => {
+    setData([...formik.values.transactionTime]);
+  }, [formik.values.transactionTime]);
 
   return (
     <Box

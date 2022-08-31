@@ -35,11 +35,6 @@ const PercentageRecognizedItem = ({
   const { t } = useTranslation();
 
   useEffect(() => {
-    // TODO use in a function on change
-    console.log(setData);
-  }, []);
-
-  useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {
@@ -63,11 +58,17 @@ const PercentageRecognizedItem = ({
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
+
+  const handleUpdateState = (value: string | undefined) => {
+    const valueNumber =
+      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
+    const newState = { ...data, rewardValue: valueNumber };
+    setData({ ...newState });
+  };
 
   return (
     <Box
@@ -113,7 +114,10 @@ const PercentageRecognizedItem = ({
             placeholder={'%'}
             name="percetageRecognized"
             value={formik.values.percetageRecognized}
-            onChange={(e) => formik.handleChange(e)}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleUpdateState(e.target.value);
+            }}
             error={setError(formik.touched.percetageRecognized, formik.errors.percetageRecognized)}
             helperText={setErrorText(
               formik.touched.percetageRecognized,

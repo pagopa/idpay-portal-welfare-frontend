@@ -51,7 +51,7 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
   const trxCount = useAppSelector(initiativeTrxCountSelector);
   const daysOfWeekIntervals = useAppSelector(initiativeDaysOfWeekIntervalsSelector);
   const [rewardRuleData, setRewardRuleData] = useState(rewardRule);
-  // const [mccFilterData, setMccFilterData] = useState(mccFilter);
+  const [mccFilterData, setMccFilterData] = useState(mccFilter);
   const [rewardLimitsData, setRewardLimitsData] = useState(rewardLimits);
   const [thresholdData, setThresholdData] = useState(threshold);
   const [trxCountData, setTrxCountData] = useState(trxCount);
@@ -202,6 +202,42 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
       }
     });
     setShopRulesToSubmit([...newShopRulesToSubmit]);
+
+    resetStateOnItemRemoved(code);
+  };
+
+  const resetStateOnItemRemoved = (code: string) => {
+    switch (code) {
+      case 'THRESHOLD':
+        if (typeof thresholdData !== undefined) {
+          const resetThresholdData = {
+            fromIncluded: typeof thresholdData === 'object' ? thresholdData.fromIncluded : true,
+            from: undefined,
+            toIncluded: typeof thresholdData === 'object' ? thresholdData.toIncluded : true,
+            to: undefined,
+          };
+          setThresholdData({ ...resetThresholdData });
+        }
+        break;
+      case 'MCC':
+        console.log(mccFilterData);
+        break;
+      case 'ATECO':
+        break;
+      case 'TRXCOUNT':
+        console.log(trxCountData);
+        break;
+      case 'REWARDLIMIT':
+        console.log(rewardLimitsData);
+        break;
+      case 'DAYHOURSWEEK':
+        console.log(daysOfWeekIntervalsData);
+        break;
+      case 'GIS':
+        break;
+      default:
+        break;
+    }
   };
 
   useEffect(() => {
@@ -215,9 +251,7 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
       toSubmit = false;
       setDisabledNext(true);
     }
-
-    console.log(shopRulesToSubmit);
-
+    // TODO HANDLE SUBMIT
     setAction('');
     setDisabledNext(false);
   }, [action, shopRulesToSubmit]);
@@ -304,6 +338,8 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
               handleShopListItemRemoved={handleShopListItemRemoved}
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
+              data={mccFilterData}
+              setData={setMccFilterData}
             />
           );
         } else if (a.code === 'TRXCOUNT' && a.checked === true) {

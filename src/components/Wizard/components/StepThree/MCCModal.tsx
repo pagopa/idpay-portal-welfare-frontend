@@ -179,7 +179,7 @@ Props) => {
     });
     mccCode = mccCode.trim();
     mccCode = mccCode.replace(/ /g, ', ');
-    setFieldValue('mccCodes', mccCode);
+    setFieldValue('values', mccCode);
   };
 
   return (

@@ -42,6 +42,7 @@ const TimeLimitItem = ({
   shopRulesToSubmit,
   setShopRulesToSubmit,
   data,
+  setData,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -67,20 +68,19 @@ const TimeLimitItem = ({
 
   const formik = useFormik({
     initialValues: {
-      timeLimit: Array.isArray(data) ? [...data] : [{ frequency: 'DAILY', rewardLimit: '' }],
+      timeLimit: Array.isArray(data) ? [...data] : [{ frequency: 'DAILY', rewardLimit: undefined }],
     },
     validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
+    onSubmit: (_values) => {
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
 
   const addTimeLimitItem = (values: any, setValues: any) => {
-    const newTimeLimit = [...values.timeLimit, { frequency: 'DAILY', rewardLimit: '' }];
+    const newTimeLimit = [...values.timeLimit, { frequency: 'DAILY', rewardLimit: undefined }];
     setValues({ ...values, timeLimit: [...newTimeLimit] });
   };
 
@@ -94,6 +94,10 @@ const TimeLimitItem = ({
     setValues({ ...values, timeLimit: newTimeLimitItems });
     setTouched({}, false);
   };
+
+  useEffect(() => {
+    setData([...formik.values.timeLimit]);
+  }, [formik.values.timeLimit]);
 
   return (
     <Box
