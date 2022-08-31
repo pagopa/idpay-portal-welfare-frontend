@@ -186,9 +186,6 @@ const MCCItem = ({
             {formik.touched.merchantSelect && formik.errors.merchantSelect}
           </FormHelperText>
         </FormControl>
-
-        {/* variant="text" */}
-
         <FormControl sx={{ gridArea: 'MccCode' }}>
           <TextField
             multiline
@@ -213,7 +210,7 @@ const MCCItem = ({
               {
                 justifyContent: 'start',
                 padding: 0,
-                ml: 0.5,
+                fontSize: '14px',
               },
               {
                 '&:hover': { backgroundColor: 'transparent' },
@@ -225,7 +222,7 @@ const MCCItem = ({
             disableRipple={true}
             disableFocusRipple={true}
           >
-            {t('components.wizard.stepThree.form.SelecFromList')}
+            {t('components.wizard.stepThree.form.selectFromList')}
           </Button>
         </FormControl>
         <MCCModal
