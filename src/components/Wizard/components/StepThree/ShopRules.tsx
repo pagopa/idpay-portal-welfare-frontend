@@ -209,29 +209,36 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
   const resetStateOnItemRemoved = (code: string) => {
     switch (code) {
       case 'THRESHOLD':
-        if (typeof thresholdData !== undefined) {
-          const resetThresholdData = {
-            fromIncluded: typeof thresholdData === 'object' ? thresholdData.fromIncluded : true,
-            from: undefined,
-            toIncluded: typeof thresholdData === 'object' ? thresholdData.toIncluded : true,
-            to: undefined,
-          };
-          setThresholdData({ ...resetThresholdData });
-        }
+        const resetThresholdData = {
+          fromIncluded: typeof thresholdData === 'object' ? thresholdData.fromIncluded : true,
+          from: undefined,
+          toIncluded: typeof thresholdData === 'object' ? thresholdData.toIncluded : true,
+          to: undefined,
+        };
+        setThresholdData({ ...resetThresholdData });
         break;
       case 'MCC':
-        console.log(mccFilterData);
+        const resetMccFilterData = { allowedList: true, values: [] };
+        setMccFilterData({ ...resetMccFilterData });
         break;
       case 'ATECO':
         break;
       case 'TRXCOUNT':
-        console.log(trxCountData);
+        const resetTrxCountData = {
+          fromIncluded: typeof trxCountData === 'object' ? trxCountData.fromIncluded : true,
+          from: undefined,
+          toIncluded: typeof trxCountData === 'object' ? trxCountData.toIncluded : true,
+          to: undefined,
+        };
+        setTrxCountData({ ...resetTrxCountData });
         break;
       case 'REWARDLIMIT':
-        console.log(rewardLimitsData);
+        const resetRewardLimitData = [{ frequency: 'DAILY', rewardLimit: undefined }];
+        setRewardLimitsData([...resetRewardLimitData]);
         break;
       case 'DAYHOURSWEEK':
-        console.log(daysOfWeekIntervalsData);
+        const resetDaysOfWeekIntervalsData = [{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }];
+        setDaysOfWeekIntervalsData([...resetDaysOfWeekIntervalsData]);
         break;
       case 'GIS':
         break;
