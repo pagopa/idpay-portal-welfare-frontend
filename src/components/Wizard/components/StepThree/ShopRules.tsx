@@ -2,17 +2,30 @@ import { Box, Button, Paper, Typography } from '@mui/material';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
-import { useAppSelector } from '../../../../redux/hooks';
+import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import {
   initiativeDaysOfWeekIntervalsSelector,
+  initiativeIdSelector,
   initiativeMccFilterSelector,
   initiativeRewardLimitsSelector,
   initiativeRewardRuleSelector,
   initiativeThresholdSelector,
   initiativeTrxCountSelector,
+  saveDaysOfWeekIntervals,
+  saveMccFilter,
+  saveRewardLimits,
+  saveRewardRule,
+  saveThreshold,
+  saveTrxCount,
 } from '../../../../redux/slices/initiativeSlice';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import {
+  putTrxAndRewardRules,
+  putTrxAndRewardRulesDraft,
+} from '../../../../services/intitativeService';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -21,6 +34,7 @@ import {
   checkRewardLimitsChecked,
   checkThresholdChecked,
   checkTrxCountChecked,
+  mapDataToSend,
   mapResponse,
 } from './helpers';
 import SpendingLimitItem from './SpendingLimitItem';
@@ -32,12 +46,12 @@ import TransactionTimeItem from './TransactionTimeItem';
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
-  //   currentStep: number;
-  //   setCurrentStep: Dispatch<SetStateAction<number>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
+const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
@@ -50,12 +64,15 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
   const threshold = useAppSelector(initiativeThresholdSelector);
   const trxCount = useAppSelector(initiativeTrxCountSelector);
   const daysOfWeekIntervals = useAppSelector(initiativeDaysOfWeekIntervalsSelector);
+  const initiativeId = useAppSelector(initiativeIdSelector);
   const [rewardRuleData, setRewardRuleData] = useState(rewardRule);
   const [mccFilterData, setMccFilterData] = useState(mccFilter);
   const [rewardLimitsData, setRewardLimitsData] = useState(rewardLimits);
   const [thresholdData, setThresholdData] = useState(threshold);
   const [trxCountData, setTrxCountData] = useState(trxCount);
   const [daysOfWeekIntervalsData, setDaysOfWeekIntervalsData] = useState(daysOfWeekIntervals);
+  const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
@@ -146,7 +163,19 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
         setAvailableShopRules([...newAvailableShopRules]);
         setShopRulesToSubmit([...newShopRulesToSubmit]);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        addError({
+          id: 'GET_TRANSACTION_RULES_LIST_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting transaction rules list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      });
   }, [rewardRule, threshold, mccFilter, trxCount, rewardLimits, daysOfWeekIntervals]);
 
   const handleCloseModal = () => setOpenModal(false);
@@ -247,6 +276,7 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
@@ -258,9 +288,98 @@ const ShopRules = ({ action, setAction, setDisabledNext }: Props) => {
       toSubmit = false;
       setDisabledNext(true);
     }
-    // TODO HANDLE SUBMIT
+    if (toSubmit && typeof initiativeId === 'string') {
+      const body = {
+        ...mapDataToSend(
+          rewardRuleData,
+          mccFilterData,
+          rewardLimitsData,
+          thresholdData,
+          trxCountData,
+          daysOfWeekIntervalsData
+        ),
+      };
+      putTrxAndRewardRules(initiativeId, body)
+        .then((_response) => {
+          dispatch(saveRewardRule(rewardRuleData));
+          if (typeof mccFilterData === 'object') {
+            dispatch(saveMccFilter(mccFilterData));
+          }
+          if (Array.isArray(rewardLimitsData)) {
+            dispatch(saveRewardLimits(rewardLimitsData));
+          }
+          if (typeof thresholdData === 'object') {
+            dispatch(saveThreshold(thresholdData));
+          }
+          if (typeof trxCountData === 'object') {
+            dispatch(saveTrxCount(trxCountData));
+          }
+          if (Array.isArray(daysOfWeekIntervalsData)) {
+            dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
+          }
+          setCurrentStep(currentStep + 1);
+        })
+        .catch((error) => {
+          addError({
+            id: 'EDIT_TRANSACTION_RULES_SAVE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred editing initiative transaction rules',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+
+    if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
+      const body = {
+        ...mapDataToSend(
+          rewardRuleData,
+          mccFilterData,
+          rewardLimitsData,
+          thresholdData,
+          trxCountData,
+          daysOfWeekIntervalsData
+        ),
+      };
+      putTrxAndRewardRulesDraft(initiativeId, body)
+        // eslint-disable-next-line sonarjs/no-identical-functions
+        .then((_response) => {
+          dispatch(saveRewardRule(rewardRuleData));
+          if (typeof mccFilterData === 'object') {
+            dispatch(saveMccFilter(mccFilterData));
+          }
+          if (Array.isArray(rewardLimitsData)) {
+            dispatch(saveRewardLimits(rewardLimitsData));
+          }
+          if (typeof thresholdData === 'object') {
+            dispatch(saveThreshold(thresholdData));
+          }
+          if (typeof trxCountData === 'object') {
+            dispatch(saveTrxCount(trxCountData));
+          }
+          if (Array.isArray(daysOfWeekIntervalsData)) {
+            dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'EDIT_TRANSACTION_RULES_SAVE_DRAFT_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred editing draft initiative transaction rules',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
     setAction('');
-    setDisabledNext(false);
   }, [action, shopRulesToSubmit]);
 
   return (

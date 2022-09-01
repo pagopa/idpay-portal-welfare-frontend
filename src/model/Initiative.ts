@@ -81,6 +81,11 @@ export interface DaysOfWeekInterval {
   endTime: string;
 }
 
+export interface RewardRule {
+  _type: string;
+  rewardValue: number | undefined;
+}
+
 export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;
@@ -91,10 +96,7 @@ export interface Initiative {
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
-  rewardRule: {
-    _type: string;
-    rewardValue: number | undefined;
-  };
+  rewardRule: RewardRule;
   trxRule: {
     mccFilter?: MccFilterDTO;
     rewardLimits?: Array<RewardLimit>;

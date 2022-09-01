@@ -8,8 +8,16 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
-import { DaysOfWeekInterval, RewardLimit, Threshold, TrxCount } from '../../../../model/Initiative';
+import {
+  DaysOfWeekInterval,
+  RewardLimit,
+  RewardRule,
+  Threshold,
+  TrxCount,
+} from '../../../../model/Initiative';
 import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
+import { InitiativeRewardAndTrxRulesDTO } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { FrequencyEnum } from '../../../../api/generated/initiative/RewardLimitsDTO';
 
 export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
   if (typeof thresold !== undefined) {
@@ -205,3 +213,87 @@ export const setError = (touched: boolean | undefined, errorText: string | undef
 
 export const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
   touched && errorText;
+
+export const mapDataToSend = (
+  rewardRuleData: RewardRule,
+  mccFilterData: MccFilterDTO | undefined,
+  rewardLimitsData: Array<RewardLimit> | undefined,
+  thresholdData: Threshold | undefined,
+  trxCountData: TrxCount | undefined,
+  daysOfWeekIntervalsData: Array<DaysOfWeekInterval> | undefined
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+): InitiativeRewardAndTrxRulesDTO => {
+  // eslint-disable-next-line functional/no-let, prefer-const
+  let body: InitiativeRewardAndTrxRulesDTO = {
+    rewardRule: { ...rewardRuleData },
+    trxRule: {},
+  };
+  if (checkMccFilterChecked(mccFilterData)) {
+    // eslint-disable-next-line functional/immutable-data
+    body.trxRule.mccFilter = { ...mccFilterData };
+  }
+  if (checkRewardLimitsChecked(rewardLimitsData) && Array.isArray(rewardLimitsData)) {
+    const rewardLimit = rewardLimitsData.map((r) => ({
+      frequency: r.frequency as FrequencyEnum,
+      rewardLimit: r.rewardLimit as number,
+    }));
+    // eslint-disable-next-line functional/immutable-data
+    body.trxRule.rewardLimits = [...rewardLimit];
+  }
+  if (checkThresholdChecked(thresholdData)) {
+    const threshold = {
+      from: thresholdData?.from as number,
+      fromIncluded: thresholdData?.fromIncluded || true,
+      to: thresholdData?.to as number,
+      toIncluded: thresholdData?.toIncluded || true,
+    };
+    // eslint-disable-next-line functional/immutable-data
+    body.trxRule.threshold = { ...threshold };
+  }
+  if (checkTrxCountChecked(trxCountData)) {
+    const trxCount = {
+      from: trxCountData?.from as number,
+      fromIncluded: trxCountData?.fromIncluded || true,
+      to: trxCountData?.to as number,
+      toIncluded: trxCountData?.toIncluded || true,
+    };
+    // eslint-disable-next-line functional/immutable-data
+    body.trxRule.trxCount = { ...trxCount };
+  }
+  if (
+    checkDaysOfWeekIntervalsChecked(daysOfWeekIntervalsData) &&
+    Array.isArray(daysOfWeekIntervalsData)
+  ) {
+    const dw = daysOfWeekIntervalsData.map((d) => ({
+      daysOfWeek: d.daysOfWeek,
+      startTime: d.startTime + ':00.000',
+      endTime: d.endTime + ':00.000',
+    }));
+    const daysOfWeek: any = [];
+    dw.forEach((d) => {
+      // eslint-disable-next-line functional/no-let, prefer-const
+      let i = 0;
+      // eslint-disable-next-line functional/no-let, prefer-const
+      let found = false;
+      while (i < daysOfWeek.length && found === false) {
+        if (daysOfWeek[i].daysOfWeek.includes(d.daysOfWeek)) {
+          found = true;
+        }
+        i++;
+      }
+      if (!found) {
+        daysOfWeek.push({
+          daysOfWeek: [d.daysOfWeek],
+          intervals: [{ startTime: d.startTime, endTime: d.endTime }],
+        });
+      } else {
+        const newInterval = { startTime: d.startTime, endTime: d.endTime };
+        // eslint-disable-next-line functional/immutable-data
+        daysOfWeek[i - 1].intervals = [...daysOfWeek[i - 1].intervals, newInterval];
+      }
+    });
+    // eslint-disable-next-line functional/immutable-data
+    body.trxRule.daysOfWeek = [...daysOfWeek];
+  }
+  return body;
+};

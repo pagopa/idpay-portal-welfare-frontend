@@ -12,6 +12,7 @@ import { InitiativeSummaryArrayDTO } from './generated/initiative/InitiativeSumm
 import { ConfigBeneficiaryRuleArrayDTO } from './generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { ConfigTrxRuleArrayDTO } from './generated/initiative/ConfigTrxRuleArrayDTO';
 import { ConfigMccArrayDTO } from './generated/initiative/ConfigMccArrayDTO';
+import { InitiativeRewardAndTrxRulesDTO } from './generated/initiative/InitiativeRewardAndTrxRulesDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -111,5 +112,27 @@ export const InitiativeApi = {
   getMccConfig: async (): Promise<ConfigMccArrayDTO> => {
     const result = await apiClient.getMccConfig({});
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  initiativeTrxAndRewardRulesPut: async (
+    id: string,
+    data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateTrxAndRewardRules({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  initiativeTrxAndRewardRulesPutDraft: async (
+    id: string,
+    data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateTrxAndRewardRulesDraft({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 };

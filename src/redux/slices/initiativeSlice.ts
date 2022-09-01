@@ -10,6 +10,7 @@ import {
   Threshold,
   TrxCount,
   DaysOfWeekInterval,
+  RewardRule,
 } from '../../model/Initiative';
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
@@ -244,9 +245,8 @@ export const beneficiaryRuleSelector = (
 } => state.initiative.beneficiaryRule;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
-export const initiativeRewardRuleSelector = (
-  state: RootState
-): { _type: string; rewardValue: number | undefined } | undefined => state.initiative.rewardRule;
+export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
+  state.initiative.rewardRule;
 export const initiativeMccFilterSelector = (state: RootState): MccFilterDTO | undefined =>
   state.initiative.trxRule.mccFilter;
 export const initiativeRewardLimitsSelector = (state: RootState): Array<RewardLimit> | undefined =>

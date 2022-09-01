@@ -13,7 +13,6 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
-// import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   putBeneficiaryRuleService,
   putBeneficiaryRuleDraftService,
