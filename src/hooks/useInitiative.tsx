@@ -30,8 +30,9 @@ import {
   DaysOfWeekInterval,
   GeneralInfo,
   ManualCriteriaItem,
+  RewardLimit,
 } from '../model/Initiative';
-import { RewardLimitsDTO } from '../api/generated/initiative/RewardLimitsDTO';
+import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
 import { BeneficiaryTypeEnum } from '../utils/constants';
 import { DayConfig } from '../api/generated/initiative/DayConfig';
 
@@ -134,11 +135,17 @@ export const useInitiative = () => {
             response.trxRule.rewardLimits &&
             typeof response.trxRule.rewardLimits !== undefined
           ) {
-            const rewardLimits: Array<RewardLimitsDTO> = [];
-            response.trxRule.rewardLimits.forEach((p) => {
+            const rewardLimits: Array<RewardLimit> = [];
+            if (response.trxRule.rewardLimits.length > 0) {
+              response.trxRule.rewardLimits.forEach((p) => {
+                // eslint-disable-next-line functional/immutable-data
+                rewardLimits.push({ frequency: p.frequency, rewardLimit: p.rewardLimit });
+              });
+            } else {
               // eslint-disable-next-line functional/immutable-data
-              rewardLimits.push({ frequency: p.frequency, rewardLimit: p.rewardLimit });
-            });
+              rewardLimits.push({ frequency: FrequencyEnum.DAILY, rewardLimit: undefined });
+            }
+
             dispatch(saveRewardLimits(rewardLimits));
           }
 

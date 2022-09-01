@@ -62,17 +62,17 @@ export interface RewardLimit {
 }
 
 export interface Threshold {
-  from: number | undefined;
-  fromIncluded: boolean;
-  to: number | undefined;
-  toIncluded: boolean;
+  from?: number | undefined;
+  fromIncluded?: boolean;
+  to?: number | undefined;
+  toIncluded?: boolean;
 }
 
 export interface TrxCount {
-  from: number | undefined;
-  fromIncluded: boolean;
-  to: number | undefined;
-  toIncluded: boolean;
+  from?: number | undefined;
+  fromIncluded?: boolean;
+  to?: number | undefined;
+  toIncluded?: boolean;
 }
 
 export interface DaysOfWeekInterval {
