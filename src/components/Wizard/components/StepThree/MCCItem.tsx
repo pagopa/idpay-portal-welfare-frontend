@@ -93,9 +93,7 @@ const MCCItem = ({
 
   const validationSchema = Yup.object().shape({
     allowedList: Yup.string().required(t('validation.required')),
-    values: Yup.string()
-      .required(t('validation.required'))
-      .matches(/^[0-9, ]+$/, 'Must be only digits'),
+    values: Yup.string().required(t('validation.required')),
   });
 
   const formik = useFormik({
@@ -114,7 +112,7 @@ const MCCItem = ({
   const handleOpenModalMcc = () => setOpenModalMcc(true);
 
   const handleMccCodeCheckedUpdate = (mccCodeList: Array<MccCodesModel>, mccCodes: string) => {
-    const mccCodesValue = mccCodes.split(', ');
+    const mccCodesValue = mccCodes.replace(/\W+/g, ' ').trim().split(/\s/);
     const newMccCodeList: Array<{ code: string; description: string; checked: boolean }> = [];
     mccCodeList.forEach((i) => {
       // eslint-disable-next-line functional/no-let
@@ -122,10 +120,7 @@ const MCCItem = ({
       // eslint-disable-next-line functional/no-let
       let found = false;
       while (j < mccCodesValue.length && found === false) {
-        if (
-          mccCodesValue[j].replace(/,/, '') === i.code ||
-          mccCodesValue[j].replace(/ /, '') === i.code
-        ) {
+        if (mccCodesValue[j] === i.code) {
           found = true;
         }
         j++;
@@ -143,7 +138,7 @@ const MCCItem = ({
   };
 
   const handleUpdateValuesFieldState = (value: string | undefined) => {
-    const valueArr = typeof value === 'string' ? value.split(', ') : [];
+    const valueArr = typeof value === 'string' ? value.replace(/\W+/g, ' ').trim().split(/\s/) : [];
     const newState = { ...data, values: [...valueArr] };
     setData({
       allowedList: newState.allowedList,
