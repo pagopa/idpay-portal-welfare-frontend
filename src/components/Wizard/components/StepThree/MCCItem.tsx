@@ -65,8 +65,8 @@ const MCCItem = ({
           // eslint-disable-next-line functional/immutable-data
           newMccCodeList.push(item);
         });
-
-        setMccCodesList([...newMccCodeList]);
+        const mccCodeListStr = Array.isArray(data?.values) ? data?.values.join(', ') : '';
+        handleMccCodeCheckedUpdate(newMccCodeList, mccCodeListStr as string);
       })
       .catch((error) => {
         addError({
