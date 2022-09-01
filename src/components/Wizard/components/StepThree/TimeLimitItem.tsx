@@ -4,6 +4,7 @@ import {
   FormControl,
   FormHelperText,
   IconButton,
+  InputAdornment,
   MenuItem,
   Select,
   TextField,
@@ -12,6 +13,7 @@ import {
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { grey } from '@mui/material/colors';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
@@ -206,6 +208,13 @@ const TimeLimitItem = ({
                 }}
                 error={rewardLimitTouched && Boolean(rewardLimitError)}
                 helperText={rewardLimitTouched && rewardLimitError}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <EuroSymbolIcon htmlColor="#17324D" />
+                    </InputAdornment>
+                  ),
+                }}
               />
             </FormControl>
           </Box>

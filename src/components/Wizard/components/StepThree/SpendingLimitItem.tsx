@@ -1,5 +1,6 @@
-import { Box, FormControl, IconButton, TextField, Typography } from '@mui/material';
+import { Box, FormControl, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
@@ -153,6 +154,13 @@ const SpendingLimitItem = ({
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EuroSymbolIcon htmlColor="#17324D" />
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <Tooltip
@@ -180,6 +188,13 @@ const SpendingLimitItem = ({
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <EuroSymbolIcon htmlColor="#17324D" />
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <Tooltip
