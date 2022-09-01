@@ -32,7 +32,7 @@ const ShopRulesModal = ({
   // eslint-disable-next-line arrow-body-style
   const renderShopRulesList = (availableShopRules: Array<ShopRulesModel>) => {
     return availableShopRules.map((a) => {
-      if (a.enabled === true) {
+      if (a.enabled === true && a.checked === false) {
         return (
           <Box
             key={a.code}

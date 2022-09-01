@@ -1,3 +1,5 @@
+/* eslint-disable functional/no-let */
+/* eslint-disable prefer-const */
 import { Box, Button, Paper, Typography } from '@mui/material';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -73,6 +75,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [daysOfWeekIntervalsData, setDaysOfWeekIntervalsData] = useState(daysOfWeekIntervals);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
+  const [modalButtonVisible, setModalButtonVisible] = useState(true);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
@@ -281,6 +284,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
     if (shopRulesToSubmit.length > 0) {
+      setDisabledNext(false);
       shopRulesToSubmit.forEach((s) => {
         toSubmit = toSubmit && s.dispatched;
       });
@@ -382,6 +386,16 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     setAction('');
   }, [action, shopRulesToSubmit]);
 
+  useEffect(() => {
+    let allChecked = true;
+    availableShopRules.forEach((a) => {
+      if (a.code !== 'ATECO' && a.code !== 'GIS') {
+        allChecked = allChecked && a.checked;
+      }
+    });
+    setModalButtonVisible(!allChecked);
+  }, [availableShopRules]);
+
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
@@ -397,34 +411,37 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           </Button>
         </Box>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
-          gridTemplateRows: 'auto',
-          gridTemplateAreas: `"trxButton . . . "`,
-          py: 2,
-          mb: 3,
-        }}
-      >
-        <Button
-          variant="contained"
-          sx={{ gridArea: 'trxButton' }}
-          startIcon={<AddIcon />}
-          onClick={handleOpenModal}
-          data-testid="criteria-button-test"
+      {modalButtonVisible && (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gap: 3,
+            gridTemplateRows: 'auto',
+            gridTemplateAreas: `"trxButton . . . "`,
+            py: 2,
+            mb: 3,
+          }}
         >
-          {t('components.wizard.stepThree.addNew')}
-        </Button>
-        <ShopRulesModal
-          openModal={openModal}
-          handleCloseModal={handleCloseModal}
-          availableShopRules={availableShopRules}
-          handleShopListItemAdded={handleShopListItemAdded}
-          data-testid="shop-rules-modal-test"
-        />
-      </Box>
+          <Button
+            variant="contained"
+            sx={{ gridArea: 'trxButton' }}
+            startIcon={<AddIcon />}
+            onClick={handleOpenModal}
+            data-testid="criteria-button-test"
+          >
+            {t('components.wizard.stepThree.addNew')}
+          </Button>
+
+          <ShopRulesModal
+            openModal={openModal}
+            handleCloseModal={handleCloseModal}
+            availableShopRules={availableShopRules}
+            handleShopListItemAdded={handleShopListItemAdded}
+            data-testid="shop-rules-modal-test"
+          />
+        </Box>
+      )}
       <Box>
         <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
           {t('components.wizard.stepThree.rulesAddedTitle')}
