@@ -13,7 +13,7 @@ import { Box } from '@mui/system';
 import {
   ChangeEvent,
   Dispatch,
-  MouseEventHandler,
+  // MouseEventHandler,
   SetStateAction,
   useCallback,
   useEffect,
@@ -26,7 +26,7 @@ import { MccCodesModel } from '../../../../model/MccCodes';
 
 type Props = {
   openModalMcc: boolean;
-  handleCloseModalMcc: MouseEventHandler;
+  handleCloseModalMcc: any;
   mccCodesList: Array<MccCodesModel>;
   setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>;
   setFieldValue: any;
@@ -86,6 +86,7 @@ Props) => {
     mccCodeList: Array<MccCodesModel>,
     setMccCodesList: Dispatch<SetStateAction<Array<MccCodesModel>>>,
     searchKey: string
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     if (!searchKey.length) {
       return mccCodeList.map((a) => {
@@ -116,7 +117,7 @@ Props) => {
           a.description.length > 61 ? `${a.description.substring(51, 0)}...` : a.description;
         const lowerCaseDesc = typeof a.description === 'string' ? a.description.toLowerCase() : '';
 
-        if (lowerCaseDesc.startsWith(searchKey)) {
+        if (lowerCaseDesc.startsWith(searchKey) || a.code.startsWith(searchKey)) {
           return (
             <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
               <Box>
@@ -221,7 +222,10 @@ Props) => {
                 color="default"
                 aria-label="close mcc modal"
                 component="span"
-                onClick={handleCloseModalMcc}
+                onClick={() => {
+                  handleCloseModalMcc();
+                  handleSearchMccCode('');
+                }}
               >
                 <CloseIcon data-testid="close-modal-test" />
               </IconButton>
@@ -309,9 +313,10 @@ Props) => {
             <Button
               sx={{ width: '100%' }}
               variant="contained"
-              onClick={(e) => {
+              onClick={() => {
                 handleMccCodesSelectedToRender(mccCodesList);
-                handleCloseModalMcc(e);
+                handleCloseModalMcc();
+                handleSearchMccCode('');
               }}
               data-testid="add-button-test"
               disabled={!atLeastOneCodeSelected}
