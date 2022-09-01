@@ -16,8 +16,8 @@ import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { fetchMccCodes } from '../../../../services/mccCodesService';
-// import { MccCodesModel } from '../../../../model/MccCodes';
 import { MccCodesModel } from '../../../../model/MccCodes';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
@@ -50,13 +50,13 @@ const MCCItem = ({
   const { t } = useTranslation();
   const [openModalMcc, setOpenModalMcc] = useState(false);
   const [mccCodesList, setMccCodesList] = useState(Array<MccCodesModel>);
+  const addError = useErrorDispatcher();
 
   useEffect(() => {
     fetchMccCodes()
       .then((response) => {
         const responseData = [...response];
         const newMccCodeList: Array<MccCodesModel> = [];
-
         responseData.forEach((a) => {
           const code = a.code || '';
           const description = a.description || '';
@@ -68,7 +68,19 @@ const MCCItem = ({
 
         setMccCodesList([...newMccCodeList]);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        addError({
+          id: 'GET_TRANSACTION_MCC_CODES_LIST_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting MCC codes list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      });
   }, []);
 
   useEffect(() => {

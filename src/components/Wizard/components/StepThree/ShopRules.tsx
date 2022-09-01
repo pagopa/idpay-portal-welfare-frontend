@@ -176,7 +176,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           showCloseIcon: true,
         });
       });
-  }, [rewardRule, threshold, mccFilter, trxCount, rewardLimits, daysOfWeekIntervals]);
+  }, []);
 
   const handleCloseModal = () => setOpenModal(false);
 
