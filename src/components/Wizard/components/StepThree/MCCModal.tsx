@@ -183,6 +183,12 @@ Props) => {
     setFieldValue('values', mccCode);
   };
 
+  useEffect(() => {
+    if (openModalMcc === false) {
+      handleSearchMccCode('');
+    }
+  }, [openModalMcc]);
+
   return (
     <Modal
       aria-labelledby="choose-mcc-title"
