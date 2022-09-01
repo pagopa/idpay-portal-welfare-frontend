@@ -322,14 +322,15 @@ Props) => {
   const handleInitiativeOnIO = async (value: boolean) => {
     setIsChecked(() => value);
     await formik.setFieldValue('initiativeOnIO', value);
-    if (value === true) {
-      await formik.setFieldValue('serviceName', '');
-      await formik.setFieldValue('description', '');
-      await formik.setFieldValue('argument', '');
-      await formik.setFieldValue('channels', [{ type: '', contact: '' }]);
-    } else {
-      await formik.setFieldValue('serviceId', '');
-    }
+
+    // if (value === true) {
+    //   await formik.setFieldValue('serviceName', '');
+    //   await formik.setFieldValue('description', '');
+    //   await formik.setFieldValue('argument', '');
+    //   await formik.setFieldValue('channels', [{ type: '', contact: '' }]);
+    // } else {
+    //   await formik.setFieldValue('serviceId', '');
+    // }
     await formik.setTouched({}, false);
   };
 
@@ -770,13 +771,15 @@ Props) => {
                     {t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                   </InputLabel>
                   <Select
-                    defaultValue=""
-                    id="service-id-select"
+                    id="serviceId"
                     data-testid="service-id-select"
+                    name="serviceId"
                     label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
-                    onChange={(e) => formik.setFieldValue('serviceId', e.target.value)}
+                    onChange={async (e) => {
+                      await formik.setFieldValue('serviceId', e.target.value);
+                    }}
                     error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
                     value={formik.values.serviceId}
                   >
