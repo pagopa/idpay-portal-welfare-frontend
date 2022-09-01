@@ -52,7 +52,7 @@ const PercentageRecognizedItem = ({
 
   const formik = useFormik({
     initialValues: {
-      percetageRecognized: data?.rewardValue,
+      percetageRecognized: data?.rewardValue || undefined,
     },
     validateOnMount: true,
     validateOnChange: true,

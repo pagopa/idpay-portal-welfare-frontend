@@ -67,11 +67,14 @@ const TransactionTimeItem = ({
           .required(t('validation.required'))
           .matches(/^((?:[01]\d|2[0-3]):[0-5]\d$)/, t('validation.formatTimeInvalid'))
           .test('conditional-range-method', t('validation.outTransactionTime'), function (val) {
-            if (val) {
+            if (val && val.length > 0) {
               const minTime = this.parent.startTime;
-              const minTimeAsNumber = parseInt(minTime.replace('/:/g', ''), 10);
-              const maxTimeAsNumber = parseInt(val.replace('/:/g', ''), 10);
-              return minTimeAsNumber < maxTimeAsNumber;
+              if (minTime && minTime.length > 0) {
+                const minTimeAsNumber = parseInt(minTime.replace('/:/g', ''), 10);
+                const maxTimeAsNumber = parseInt(val.replace('/:/g', ''), 10);
+                return minTimeAsNumber < maxTimeAsNumber;
+              }
+              return true;
             }
             return true;
           }),

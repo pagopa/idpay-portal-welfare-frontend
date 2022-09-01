@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 /* eslint-disable functional/no-let */
 /* eslint-disable complexity */
 import { useLocation } from 'react-router-dom';
@@ -111,7 +112,30 @@ export const useInitiative = () => {
             response.trxRule.threshold &&
             typeof response.trxRule.threshold !== undefined
           ) {
-            dispatch(saveThreshold(response.trxRule.threshold));
+            if (
+              response.trxRule.threshold.hasOwnProperty('from') &&
+              response.trxRule.threshold.hasOwnProperty('to')
+            ) {
+              dispatch(saveThreshold(response.trxRule.threshold));
+            } else if (
+              !response.trxRule.threshold.hasOwnProperty('from') &&
+              response.trxRule.threshold.hasOwnProperty('to')
+            ) {
+              const threshold = {
+                ...response.trxRule.threshold,
+                from: undefined,
+              };
+              dispatch(saveThreshold(threshold));
+            } else if (
+              response.trxRule.threshold.hasOwnProperty('from') &&
+              !response.trxRule.threshold.hasOwnProperty('to')
+            ) {
+              const threshold = {
+                ...response.trxRule.threshold,
+                to: undefined,
+              };
+              dispatch(saveThreshold(threshold));
+            }
           }
 
           if (
@@ -127,7 +151,30 @@ export const useInitiative = () => {
             response.trxRule.trxCount &&
             typeof response.trxRule.trxCount !== undefined
           ) {
-            dispatch(saveTrxCount(response.trxRule.trxCount));
+            if (
+              response.trxRule.trxCount.hasOwnProperty('from') &&
+              response.trxRule.trxCount.hasOwnProperty('to')
+            ) {
+              dispatch(saveTrxCount(response.trxRule.trxCount));
+            } else if (
+              !response.trxRule.trxCount.hasOwnProperty('from') &&
+              response.trxRule.trxCount.hasOwnProperty('to')
+            ) {
+              const trxCount = {
+                ...response.trxRule.trxCount,
+                from: undefined,
+              };
+              dispatch(saveThreshold(trxCount));
+            } else if (
+              response.trxRule.trxCount.hasOwnProperty('from') &&
+              !response.trxRule.trxCount.hasOwnProperty('to')
+            ) {
+              const trxCount = {
+                ...response.trxRule.trxCount,
+                to: undefined,
+              };
+              dispatch(saveThreshold(trxCount));
+            }
           }
 
           if (
@@ -139,7 +186,7 @@ export const useInitiative = () => {
             if (response.trxRule.rewardLimits.length > 0) {
               response.trxRule.rewardLimits.forEach((p) => {
                 // eslint-disable-next-line functional/immutable-data
-                rewardLimits.push({ frequency: p.frequency, rewardLimit: p.rewardLimit });
+                rewardLimits.push({ frequency: p.frequency as string, rewardLimit: p.rewardLimit });
               });
             } else {
               // eslint-disable-next-line functional/immutable-data

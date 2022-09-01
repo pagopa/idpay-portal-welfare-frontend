@@ -228,9 +228,16 @@ export const mapDataToSend = (
     rewardRule: { ...rewardRuleData },
     trxRule: {},
   };
+  const trxRule: any = {
+    mccFilter: undefined,
+    rewardLimits: undefined,
+    threshold: undefined,
+    trxCount: undefined,
+    daysOfWeek: undefined,
+  };
   if (checkMccFilterChecked(mccFilterData)) {
     // eslint-disable-next-line functional/immutable-data
-    body.trxRule.mccFilter = { ...mccFilterData };
+    trxRule.mccFilter = { ...mccFilterData };
   }
   if (checkRewardLimitsChecked(rewardLimitsData) && Array.isArray(rewardLimitsData)) {
     const rewardLimit = rewardLimitsData.map((r) => ({
@@ -238,7 +245,7 @@ export const mapDataToSend = (
       rewardLimit: r.rewardLimit as number,
     }));
     // eslint-disable-next-line functional/immutable-data
-    body.trxRule.rewardLimits = [...rewardLimit];
+    trxRule.rewardLimits = [...rewardLimit];
   }
   if (checkThresholdChecked(thresholdData)) {
     const threshold = {
@@ -248,7 +255,7 @@ export const mapDataToSend = (
       toIncluded: thresholdData?.toIncluded || true,
     };
     // eslint-disable-next-line functional/immutable-data
-    body.trxRule.threshold = { ...threshold };
+    trxRule.threshold = { ...threshold };
   }
   if (checkTrxCountChecked(trxCountData)) {
     const trxCount = {
@@ -258,7 +265,7 @@ export const mapDataToSend = (
       toIncluded: trxCountData?.toIncluded || true,
     };
     // eslint-disable-next-line functional/immutable-data
-    body.trxRule.trxCount = { ...trxCount };
+    trxRule.trxCount = { ...trxCount };
   }
   if (
     checkDaysOfWeekIntervalsChecked(daysOfWeekIntervalsData) &&
@@ -293,7 +300,9 @@ export const mapDataToSend = (
       }
     });
     // eslint-disable-next-line functional/immutable-data
-    body.trxRule.daysOfWeek = [...daysOfWeek];
+    trxRule.daysOfWeek = [...daysOfWeek];
   }
+  // eslint-disable-next-line functional/immutable-data
+  body.trxRule = { ...trxRule };
   return body;
 };

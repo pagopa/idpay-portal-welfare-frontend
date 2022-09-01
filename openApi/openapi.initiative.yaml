@@ -686,6 +686,10 @@ components:
           $ref: '#/components/schemas/InitiativeAdditionalDTO'
         beneficiaryRule:
           $ref: '#/components/schemas/InitiativeBeneficiaryRuleDTO'
+        rewardRule:
+          $ref: '#/components/schemas/InitiativeRewardRuleDTO'
+        trxRule:
+          $ref: '#/components/schemas/InitiativeTrxConditionsDTO'
         legal:
           $ref: '#/components/schemas/InitiativeLegalDTO'
     InitiativeSummaryArrayDTO:
@@ -855,7 +859,6 @@ components:
     InitiativeRewardAndTrxRulesDTO:
       required:
         - rewardRule
-        - trxRule
       type: object
       properties:
         rewardRule:
