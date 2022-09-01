@@ -81,7 +81,9 @@ const MCCItem = ({
 
   const validationSchema = Yup.object().shape({
     allowedList: Yup.string().required(t('validation.required')),
-    values: Yup.string().required(t('validation.required')),
+    values: Yup.string()
+      .required(t('validation.required'))
+      .matches(/^[0-9, ]+$/, 'Must be only digits'),
   });
 
   const formik = useFormik({
@@ -108,7 +110,10 @@ const MCCItem = ({
       // eslint-disable-next-line functional/no-let
       let found = false;
       while (j < mccCodesValue.length && found === false) {
-        if (mccCodesValue[j] === i.code) {
+        if (
+          mccCodesValue[j].replace(/,/, '') === i.code ||
+          mccCodesValue[j].replace(/ /, '') === i.code
+        ) {
           found = true;
         }
         j++;
