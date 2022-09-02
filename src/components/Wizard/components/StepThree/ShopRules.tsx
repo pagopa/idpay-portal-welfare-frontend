@@ -281,18 +281,18 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
+    setDisabledNext(false);
     // eslint-disable-next-line functional/no-let
-    let toSubmit = true;
+    let submit = true;
     if (shopRulesToSubmit.length > 0) {
-      setDisabledNext(false);
       shopRulesToSubmit.forEach((s) => {
-        toSubmit = toSubmit && s.dispatched;
+        submit = submit && s.dispatched;
       });
     } else {
-      toSubmit = false;
-      setDisabledNext(true);
+      submit = false;
     }
-    if (toSubmit && typeof initiativeId === 'string') {
+
+    if (submit && typeof initiativeId === 'string') {
       const body = {
         ...mapDataToSend(
           rewardRuleData,
@@ -384,7 +384,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         });
     }
     setAction('');
-  }, [action, shopRulesToSubmit]);
+  }, [action, JSON.stringify(shopRulesToSubmit)]);
 
   useEffect(() => {
     let allChecked = true;
