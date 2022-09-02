@@ -37,7 +37,7 @@ const Wizard = () => {
 
   const handleNext = () => {
     setActionType(() => WIZARD_ACTIONS.SUBMIT);
-    setDisabledNext(true);
+    // setDisabledNext(true);
   };
 
   const handleDraft = () => {

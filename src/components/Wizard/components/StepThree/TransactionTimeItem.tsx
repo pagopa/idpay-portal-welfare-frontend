@@ -77,7 +77,34 @@ const TransactionTimeItem = ({
               return true;
             }
             return true;
-          }),
+          })
+          .test(
+            'no-equal-time-ranges-for-the-same-day',
+            'Non è possibile inserire due intervalli uguali per lo stesso giorno',
+            function (val) {
+              if (val && val.length > 0) {
+                const daysOfWeek = this.parent.daysOfWeek;
+                const minTime = this.parent.startTime;
+                if (daysOfWeek && daysOfWeek.length > 0 && minTime && minTime.length > 0) {
+                  const values = formik.values.transactionTime;
+                  // eslint-disable-next-line functional/no-let
+                  let countFound = 0;
+                  values.forEach((v) => {
+                    if (
+                      v.daysOfWeek === daysOfWeek &&
+                      v.startTime === minTime &&
+                      v.endTime === val
+                    ) {
+                      countFound++;
+                    }
+                  });
+                  return countFound === 1;
+                }
+                return true;
+              }
+              return true;
+            }
+          ),
       })
     ),
   });
