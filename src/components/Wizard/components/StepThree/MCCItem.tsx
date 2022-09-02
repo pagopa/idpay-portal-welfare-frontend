@@ -93,7 +93,23 @@ const MCCItem = ({
 
   const validationSchema = Yup.object().shape({
     allowedList: Yup.string().required(t('validation.required')),
-    values: Yup.string().required(t('validation.required')),
+    values: Yup.string()
+      .required(t('validation.required'))
+      .test('valid-mccCode-values', 'valori non validi', function (val) {
+        if (val && val.length > 0) {
+          const mccCodesValue = val.replace(/\W+/g, ' ').trim();
+          // eslint-disable-next-line functional/no-let
+          let mccCode = '';
+          mccCodesList.forEach((c) => {
+            mccCode = mccCode + ' ' + c.code;
+          });
+          mccCode = mccCode.trim();
+          console.log(mccCodesValue);
+          console.log(mccCode);
+          return mccCode.includes(mccCodesValue);
+        }
+        return true;
+      }),
   });
 
   const formik = useFormik({
@@ -234,7 +250,6 @@ const MCCItem = ({
             onChange={(e) => {
               formik.handleChange(e);
               handleMccCodeCheckedUpdate(mccCodesList, e.target.value);
-              // handleUpdateValuesFieldState(e.target.value);
             }}
             value={formik.values.values}
             error={setError(formik.touched.values, formik.errors.values)}
