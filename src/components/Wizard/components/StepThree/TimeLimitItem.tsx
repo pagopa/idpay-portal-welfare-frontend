@@ -59,7 +59,22 @@ const TimeLimitItem = ({
   const validationSchema = Yup.object().shape({
     timeLimit: Yup.array().of(
       Yup.object().shape({
-        frequency: Yup.string().required(t('validation.required')),
+        frequency: Yup.string()
+          .required(t('validation.required'))
+          .test('unique-frequency', t('validation.uniqueFrequency'), function (val) {
+            if (val && val.length > 0) {
+              const frequencies = formik.values.timeLimit;
+              // eslint-disable-next-line functional/no-let
+              let countFound = 0;
+              frequencies.forEach((f) => {
+                if (val === f.frequency) {
+                  countFound++;
+                }
+              });
+              return countFound === 1;
+            }
+            return true;
+          }),
         rewardLimit: Yup.number()
           .typeError(t('validation.numeric'))
           .required(t('validation.required'))

@@ -80,7 +80,7 @@ const TransactionTimeItem = ({
           })
           .test(
             'no-equal-time-ranges-for-the-same-day',
-            'Non è possibile inserire due intervalli uguali per lo stesso giorno',
+            t('validation.uniqueInterval'),
             function (val) {
               if (val && val.length > 0) {
                 const daysOfWeek = this.parent.daysOfWeek;

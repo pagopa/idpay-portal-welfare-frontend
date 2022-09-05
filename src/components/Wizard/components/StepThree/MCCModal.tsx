@@ -325,7 +325,6 @@ Props) => {
                 handleSearchMccCode('');
               }}
               data-testid="add-button-test"
-              disabled={!atLeastOneCodeSelected}
             >
               {t('components.wizard.stepThree.mccModal.addButton')}{' '}
               {atLeastOneCodeSelected && `(${mccCodesSelectedCounter})`}

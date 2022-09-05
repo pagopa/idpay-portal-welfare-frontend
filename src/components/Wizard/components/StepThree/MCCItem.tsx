@@ -95,7 +95,7 @@ const MCCItem = ({
     allowedList: Yup.string().required(t('validation.required')),
     values: Yup.string()
       .required(t('validation.required'))
-      .test('valid-mccCode-values', 'valori non validi', function (val) {
+      .test('valid-mccCode-values', t('validation.notValidMccLis'), function (val) {
         if (val && val.length > 0) {
           const mccCodesValue = val.replace(/\W+/g, ' ').trim();
           // eslint-disable-next-line functional/no-let

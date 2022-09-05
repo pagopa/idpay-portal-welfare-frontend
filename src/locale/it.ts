@@ -177,7 +177,7 @@ export default {
           subtitle:
             'In questa lista trovi i Merchant Category Code (MCC) utilizzati dai circuiti di pagamento per riconoscere la tipologia di beni o servizi forniti.',
           searchCodeOrDescription: 'Cerca per codice o descrizione',
-          addButton: 'Aggiungi',
+          addButton: 'Aggiorna',
           selectAllButtonName: 'Seleziona tutti',
           deselectAllButtonName: 'Deseleziona tutti',
         },
@@ -283,6 +283,9 @@ export default {
     outPercentageRecognized: 'La percentuale massima non può essere maggiore di 100',
     formatTimeInvalid: 'Ora non valida',
     outTransactionTime: "L'orario di fine deve essere maggiore di quello d'inizio",
+    uniqueFrequency: 'Non è possible inserire due importi differenti per lo stesso limite',
+    uniqueInterval: 'Non è possibile inserire due intervalli uguali per lo stesso giorno',
+    notValidMccLis: 'Sono stati inseriti valori non validi',
   },
   errors: {
     title: 'Si è verificato un errore',
