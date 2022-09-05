@@ -225,8 +225,23 @@ export default {
           accumulatedAmount: 'Importo accumulato',
           timeParameter: 'Parametro temporale',
           selectTimeParam: 'Seleziona un parametro temporale',
+          selectedAccumulatedAmount: 'Seleziona un importo accumulato',
           subTitle: 'Inserire qui una descrizione sulle info aggiuntive',
           idCodeBalance: 'Codice identificativo capitolo di bilancio (opzionale)',
+          reimbursementThreshold: 'Indica la soglia per il rimborso',
+        },
+        select: {
+          accumulatedAmount: {
+            balanceExhausted: 'A saldo esaurito',
+            certainThreshold: 'Al  raggiungimento di una determinata soglia',
+          },
+          timrParameter: {
+            initiativeDone: 'A iniziativa conclusa',
+            everyDay: 'Ogni giorno',
+            everyWeek: 'Ogni settimana',
+            everyMonth: 'Ogni mese',
+            everyThreeMonths: 'Ogni tre mesi',
+          },
         },
       },
       stepFive: {

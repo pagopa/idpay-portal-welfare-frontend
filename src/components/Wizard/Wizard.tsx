@@ -11,9 +11,10 @@ import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
 import ShopRules from './components/StepThree/ShopRules';
+import RefundRules from './components/StepFour/RefundRules';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [activeStep, setActiveStep] = useState(3);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const [disabledNext, setDisabledNext] = useState(true);
@@ -102,7 +103,7 @@ const Wizard = () => {
           />
         );
       case 3:
-        return <h1>{steps[activeStep]}</h1>;
+        return <RefundRules action={''} />;
       case 4:
         return <h1>{steps[activeStep]}</h1>;
       default:
