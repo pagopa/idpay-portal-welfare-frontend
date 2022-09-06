@@ -69,6 +69,11 @@ export default {
       },
     },
   },
+  breadcrumbs: {
+    exit: 'Esci',
+    initiatives: 'Iniziative',
+    createNew: 'Crea nuova iniziativa',
+  },
   components: {
     wizard: {
       stepOne: {
@@ -254,6 +259,12 @@ export default {
           findOut: 'Scopri di più',
         },
       },
+    },
+    exitModal: {
+      title: 'Vuoi davvero uscire?',
+      body: 'Se esci, le modifiche andranno perse.',
+      exitBtn: 'Esci',
+      cancelBtn: 'Annulla',
     },
   },
   validation: {

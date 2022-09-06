@@ -55,7 +55,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
   it('call the submit event when form is submitted', async () => {
     const { queryByTestId } = render(
       <Provider store={store}>
-        <Wizard />
+        <Wizard handleOpenExitModal={() => console.log('exit modal')} />
       </Provider>
     );
 

@@ -186,7 +186,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClickActionsMenu}
       >
-        <MoreIcon />
+        <MoreIcon color="primary" />
       </IconButton>
       <Menu
         id={`actions-menu_${id}`}
@@ -376,7 +376,6 @@ const InitiativeList = () => {
                         <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-
                         <ActionMenu id={row.initiativeId} status={row.status} />
                       </TableRow>
                     );

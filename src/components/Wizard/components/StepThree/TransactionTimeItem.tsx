@@ -200,7 +200,8 @@ const TransactionTimeItem = ({
               gridColumn: 'span 24',
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              gap: 3,
+              rowGap: 3,
+              columnGap: 2,
               my: 2,
             }}
           >
@@ -219,7 +220,7 @@ const TransactionTimeItem = ({
               </Box>
             )}
             <FormControl
-              sx={{ gridColumn: 'span 4' }}
+              sx={{ gridColumn: 'span 5' }}
               error={daysOfWeekTouched && Boolean(daysOfWeekError)}
             >
               <Select
@@ -245,7 +246,7 @@ const TransactionTimeItem = ({
               </Select>
               <FormHelperText>{daysOfWeekTouched && daysOfWeekError}</FormHelperText>
             </FormControl>
-            <FormControl sx={{ gridColumn: 'span 6' }}>
+            <FormControl sx={{ gridColumn: 'span 8' }}>
               <TextField
                 id={`transactionTime[${i}].startTime`}
                 name={`transactionTime[${i}].startTime`}
@@ -256,7 +257,7 @@ const TransactionTimeItem = ({
                 helperText={minTimeTouched && minTimeError}
               />
             </FormControl>
-            <FormControl sx={{ gridColumn: 'span 6' }}>
+            <FormControl sx={{ gridColumn: 'span 8' }}>
               <TextField
                 id={`transactionTime[${i}].endTime`}
                 name={`transactionTime[${i}].endTime`}
@@ -282,7 +283,7 @@ const TransactionTimeItem = ({
       <Box
         sx={{
           display: 'grid',
-          gridColumn: 'span 3',
+          gridColumn: 'span 4',
           py: 2,
         }}
       >

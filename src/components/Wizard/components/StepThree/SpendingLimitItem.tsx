@@ -128,12 +128,13 @@ const SpendingLimitItem = ({
         sx={{
           gridColumn: 'span 24',
           display: 'grid',
-          gridTemplateColumns: 'repeat( 4, 1fr)',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"minSpeningLimitField minSpendingLimitTooltip . . "
                               "maxSpendingLimitField maxSpendingLimitTooltip . . "`,
           alignItems: 'center',
-          gap: 3,
+          columnGap: 2,
+          rowGap: 3,
           my: 2,
         }}
       >

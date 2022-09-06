@@ -166,7 +166,8 @@ const TimeLimitItem = ({
               gridColumn: 'span 24',
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              gap: 3,
+              rowGap: 3,
+              columnGap: 2,
               my: 2,
             }}
           >
@@ -186,7 +187,7 @@ const TimeLimitItem = ({
             )}
 
             <FormControl
-              sx={{ gridColumn: 'span 4' }}
+              sx={{ gridColumn: 'span 5' }}
               error={frequencyTouched && Boolean(frequencyError)}
             >
               <Select
@@ -208,7 +209,7 @@ const TimeLimitItem = ({
               </Select>
               <FormHelperText>{frequencyTouched && frequencyError}</FormHelperText>
             </FormControl>
-            <FormControl sx={{ gridColumn: 'span 6' }}>
+            <FormControl sx={{ gridColumn: 'span 8' }}>
               <TextField
                 id={`timeLimit[${i}].rewardLimit`}
                 name={`timeLimit[${i}].rewardLimit`}
@@ -238,7 +239,7 @@ const TimeLimitItem = ({
       <Box
         sx={{
           display: 'grid',
-          gridColumn: 'span 3',
+          gridColumn: 'span 4',
           py: 2,
         }}
       >

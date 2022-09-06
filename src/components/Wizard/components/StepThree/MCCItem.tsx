@@ -200,11 +200,11 @@ const MCCItem = ({
         sx={{
           gridColumn: 'span 24',
           display: 'grid',
-          gridTemplateColumns: 'repeat( 4, 1fr)',
+          gridTemplateColumns: 'repeat( 3, 1fr)',
           gridTemplateRows: 'auto',
-          gridTemplateAreas: `"merchant . . ."
-                              "MccCode MccCode MccCode MccCode"
-                              "SelecFromList . . ."`,
+          gridTemplateAreas: `"merchant . . "
+                              "MccCode MccCode MccCode"
+                              "SelecFromList . . "`,
           alignItems: 'center',
           gap: 3,
           my: 2,

@@ -47,7 +47,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const setAdditionalInfo = jest.fn();
       const { getByTestId } = render(
         <Provider store={store}>
-          <Wizard />
+          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
         </Provider>
       );
 
@@ -71,7 +71,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const setAdditionalInfo = jest.fn();
       const { getByTestId } = render(
         <Provider store={store}>
-          <Wizard />
+          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
         </Provider>
       );
 
