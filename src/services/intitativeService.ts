@@ -4,7 +4,10 @@ import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO
 import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeApi } from '../api/InitiativeApiClient';
 import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
-import { InitiativeRewardAndTrxRulesDTORewardRule } from '../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import {
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeRewardAndTrxRulesDTORewardRule,
+} from '../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
 import { decode } from '../utils/io-utils';
 import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
@@ -48,3 +51,13 @@ export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORew
   }
   return rewardRule;
 };
+
+export const putTrxAndRewardRules = (
+  id: string,
+  data: InitiativeRewardAndTrxRulesDTO
+): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPut(id, data).then((res) => res);
+
+export const putTrxAndRewardRulesDraft = (
+  id: string,
+  data: InitiativeRewardAndTrxRulesDTO
+): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data).then((res) => res);

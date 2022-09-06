@@ -70,6 +70,10 @@ export const serviceOptions = [
     value: '50ef8992-c59b-4f2b-866e-6e352bf971cb',
     name: 'Bonus anziani',
   },
+  {
+    value: '98892675-e5d6-49f1-92aa-556c97906f20',
+    name: 'Bonus monopattino',
+  },
 ];
 
 export const contacts = [

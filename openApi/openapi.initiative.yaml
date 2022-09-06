@@ -127,24 +127,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/beneficiary/criteria:
+  /config/beneficiary/rule:
     get:
       tags:
         - initiative
       summary: Returns fixed automated Criteria
       description: Returns fixed automated Criteria
-      operationId: returns-fixed-automated-criteria
-      parameters:
-        - name: initiativeId
-          in: path
-          required: true
-          schema:
-            type: string
+      operationId: getBeneficiaryConfigRules
       responses:
         '200':
           description: ''
           content:
             application/json:
+              schema:
+                $ref: '#/components/schemas/ConfigBeneficiaryRuleArrayDTO'
               example:
                 - code: ISEE
                   authority: INPS
@@ -690,6 +686,10 @@ components:
           $ref: '#/components/schemas/InitiativeAdditionalDTO'
         beneficiaryRule:
           $ref: '#/components/schemas/InitiativeBeneficiaryRuleDTO'
+        rewardRule:
+          $ref: '#/components/schemas/InitiativeRewardRuleDTO'
+        trxRule:
+          $ref: '#/components/schemas/InitiativeTrxConditionsDTO'
         legal:
           $ref: '#/components/schemas/InitiativeLegalDTO'
     InitiativeSummaryArrayDTO:
@@ -790,6 +790,24 @@ components:
             - value3
         code:
           type: string
+    ConfigBeneficiaryRuleArrayDTO:
+      type: array
+      items:
+        $ref: '#/components/schemas/ConfigBeneficiaryRuleDTO'
+    ConfigBeneficiaryRuleDTO:
+      title: ConfigBeneficiaryRuleDTO
+      type: object
+      properties:
+        code:
+          type: string
+        authority:
+          type: string
+        field:
+          type: string
+        operator:
+          type: string
+        checked:
+          type: boolean
     ConfigTrxRuleArrayDTO:
       type: array
       items:
@@ -841,7 +859,6 @@ components:
     InitiativeRewardAndTrxRulesDTO:
       required:
         - rewardRule
-        - trxRule
       type: object
       properties:
         rewardRule:

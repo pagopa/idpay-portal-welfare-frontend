@@ -51,7 +51,7 @@ export default {
         initiativeStatus: 'Stato',
       },
       emptyList: 'Non ci sono iniziative. ',
-      createNew: "Crea un'niziativa",
+      createNew: "Crea un'iniziativa",
       search: "Cerca per nome dell'iniziativa",
       status: {
         draft: 'In bozza',
@@ -166,10 +166,58 @@ export default {
       },
       stepThree: {
         title: 'Regole di spesa',
+        subtitle:
+          'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
+        addNew: 'Aggiungi nuova',
+        rulesAddedTitle: 'regole aggiunte',
+        modal: {
+          title: 'Aggiungi regola',
+          subtitle:
+            'Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
+        },
+        mccModal: {
+          title: 'Elenco categorie merceologiche',
+          subtitle:
+            'In questa lista trovi i Merchant Category Code (MCC) utilizzati dai circuiti di pagamento per riconoscere la tipologia di beni o servizi forniti.',
+          searchCodeOrDescription: 'Cerca per codice o descrizione',
+          addButton: 'Aggiorna',
+          selectAllButtonName: 'Seleziona tutti',
+          deselectAllButtonName: 'Deseleziona tutti',
+        },
         form: {
-          subTitle:
-            'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
-          addNew: 'Aggiungi nuova',
+          percentageRecognized: 'Percentuale riconosciuta',
+          minSpeningLimit: 'Minimo',
+          maxSpeningLimit: 'Massimo',
+          minTransactionNumber: 'Minimo',
+          maxTransactionNumber: 'Massimo',
+          minSpendingLimitTooltip:
+            'Le transazioni di importo inferiore a questo valore verranno scartate.',
+          maxSpendingLimitTooltip:
+            'La percentuale di spesa viene calcolata su questo valore per le transazioni di importo superiore.',
+          minTransactionNumberTooltip:
+            'Il numero minimo di transazioni necessario per poter erogare il rimborso',
+          maxTransactionNumberTooltip:
+            'Il numero massimo di transazioni consentite per spendere l’importo erogato',
+          monday: 'Lunedì',
+          tuesday: 'Martedì',
+          wednesday: 'Mercoledì',
+          thursday: 'Giovedì',
+          friday: 'Venerdì',
+          saturday: 'Sabato',
+          sunday: 'Domenica',
+          minTime: 'Dalle ore',
+          maxTime: 'Alle ore',
+          timeFormatTooltip: 'Inserisci nel formato hh:mm (es.: 08:16)',
+          addTransactionTimeItem: 'Aggiungi orario',
+          rewardLimitDaily: 'Al giorno',
+          rewardLimitMonthly: 'Al mese',
+          rewardLimitYearly: "All'anno",
+          addTimeLimitItem: 'Aggiungi limite',
+          maxReward: 'Importo massimo',
+          selectFromList: "Seleziona dall'elenco",
+          mccCodes: 'Inserisci o incolla i codici separati da virgola',
+          everybodyExceptSelectItem: 'Tutti tranne',
+          nobodyExceptSelectItem: 'Nessuno tranne',
         },
       },
       stepFour: {
@@ -233,6 +281,14 @@ export default {
     emailValid: 'il canale deve essere un indirizzo email',
     celNumValid: 'il canale deve essere un numero di telefono',
     invalidDate: 'Data non valida',
+    outMaxSpendingLimit: 'Il valore di spesa massimo deve essere maggiore del minimo',
+    outTransactionNumberLimit: 'Il numero massimo di transazioni deve essere maggiore del minimo',
+    outPercentageRecognized: 'La percentuale massima non può essere maggiore di 100',
+    formatTimeInvalid: 'Ora non valida',
+    outTransactionTime: "L'orario di fine deve essere maggiore di quello d'inizio",
+    uniqueFrequency: 'Non è possible inserire due importi differenti per lo stesso limite',
+    uniqueInterval: 'Non è possibile inserire due intervalli uguali per lo stesso giorno',
+    notValidMccLis: 'Sono stati inseriti valori non validi',
   },
   errors: {
     title: 'Si è verificato un errore',

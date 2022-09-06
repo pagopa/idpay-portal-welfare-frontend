@@ -5,7 +5,7 @@ export interface AdmissionCriteriaModel {
   authority: string;
   field?: string;
   operator: string;
-  checked: boolean;
+  checked?: boolean;
 }
 
 export interface AvailableCriteria extends AdmissionCriteriaModel {

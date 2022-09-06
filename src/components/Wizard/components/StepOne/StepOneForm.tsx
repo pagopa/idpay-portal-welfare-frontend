@@ -265,9 +265,9 @@ Props) => {
       description: additionalInfoForm.description,
       channels: [...additionalInfoForm.channels],
     },
-    validateOnMount: true,
+    // validateOnMount: true,
     validateOnChange: true,
-    enableReinitialize: true,
+    // enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
@@ -322,15 +322,16 @@ Props) => {
   const handleInitiativeOnIO = async (value: boolean) => {
     setIsChecked(() => value);
     await formik.setFieldValue('initiativeOnIO', value);
+
     if (value === true) {
       await formik.setFieldValue('serviceName', '');
       await formik.setFieldValue('description', '');
       await formik.setFieldValue('argument', '');
-      await formik.setFieldValue('channels', [{ type: '', contact: '' }]);
+      await formik.setFieldValue('channels', [{ type: 'web', contact: '' }]);
     } else {
       await formik.setFieldValue('serviceId', '');
     }
-    await formik.setTouched({}, false);
+    // await formik.setTouched({}, false);
   };
 
   const addAssistanceChannel = (values: any, setValues: any) => {
@@ -516,7 +517,7 @@ Props) => {
             label={t('components.wizard.stepOne.form.budget')}
             placeholder={t('components.wizard.stepOne.form.budget')}
             aria-labelledby={t('components.wizard.stepOne.form.budget')}
-            id={t('components.wizard.stepOne.form.budget')}
+            id="budget"
             name="budget"
             value={formik.values.budget}
             onChange={(e) => formik.handleChange(e)}
@@ -543,7 +544,7 @@ Props) => {
             label={t('components.wizard.stepOne.form.beneficiaryBudget')}
             placeholder={t('components.wizard.stepOne.form.beneficiaryBudget')}
             aria-labelledby={t('components.wizard.stepOne.form.beneficiaryBudget')}
-            id={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            id="beneficiaryBudget"
             name="beneficiaryBudget"
             value={formik.values.beneficiaryBudget}
             onChange={(e) => formik.handleChange(e)}
@@ -747,10 +748,11 @@ Props) => {
                   inputProps={{
                     checked: formik.values.initiativeOnIO,
                     role: 'checkbox',
-                    name: 'initiativeOnIOchk',
-                    id: 'initiativeOnIOchk',
+                    // name: 'initiativeOnIO',
+                    // id: 'initiativeOnIO',
                   }}
                   onChange={async (e) => {
+                    console.log(e.target.checked);
                     await handleInitiativeOnIO(e.target.checked);
                   }}
                   name="initiativeOnIO"
@@ -770,13 +772,15 @@ Props) => {
                     {t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                   </InputLabel>
                   <Select
-                    defaultValue=""
-                    id="service-id-select"
+                    id="serviceId"
                     data-testid="service-id-select"
+                    name="serviceId"
                     label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
-                    onChange={(e) => formik.setFieldValue('serviceId', e.target.value)}
+                    onChange={async (e) => {
+                      await formik.setFieldValue('serviceId', e.target.value);
+                    }}
                     error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
                     value={formik.values.serviceId}
                   >

@@ -13,7 +13,6 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
-// import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   putBeneficiaryRuleService,
   putBeneficiaryRuleDraftService,
@@ -314,7 +313,7 @@ const AdmissionCriteria = ({
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" href="" sx={{ p: 0 }}>
+          <Button size="small" sx={{ p: 0 }}>
             {t('components.wizard.common.links.findOut')}
           </Button>
         </Box>

@@ -10,6 +10,7 @@ import routes from '../../routes';
 import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
+import ShopRules from './components/StepThree/ShopRules';
 
 const Wizard = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -92,7 +93,15 @@ const Wizard = () => {
         }
         return null;
       case 2:
-        return <h1>{steps[activeStep]}</h1>;
+        return (
+          <ShopRules
+            action={actionType}
+            setAction={setActionType}
+            currentStep={activeStep}
+            setCurrentStep={setActiveStep}
+            setDisabledNext={setDisabledNext}
+          />
+        );
       case 3:
         return <h1>{steps[activeStep]}</h1>;
       case 4:
