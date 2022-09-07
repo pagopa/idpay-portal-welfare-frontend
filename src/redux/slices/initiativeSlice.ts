@@ -11,6 +11,7 @@ import {
   TrxCount,
   DaysOfWeekInterval,
   RewardRule,
+  RefundRule,
 } from '../../model/Initiative';
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
@@ -54,6 +55,13 @@ const initialState: Initiative = {
     threshold: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
     trxCount: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
     daysOfWeekIntervals: [{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }],
+  },
+  refundRule: {
+    reimbursmentQuestionGroup: '',
+    timeParameter: '',
+    accumulatedAmount: '',
+    additionalInfo: '',
+    reimbursementThreshold: '',
   },
 };
 
@@ -207,6 +215,19 @@ export const initiativeSlice = createSlice({
         daysOfWeekIntervals: [...action.payload],
       },
     }),
+    saveRefundRule: (state, action: PayloadAction<RefundRule>) => ({
+      ...state,
+      refundRule: {
+        ...state.refundRule,
+        refundRule: {
+          reimbursmentQuestionGroup: action.payload.reimbursmentQuestionGroup,
+          timeParameter: action.payload.timeParameter,
+          accumulatedAmount: action.payload.accumulatedAmount,
+          additionalInfo: action.payload.additionalInfo,
+          reimbursementThreshold: action.payload.reimbursementThreshold,
+        },
+      },
+    }),
   },
 });
 
@@ -228,6 +249,7 @@ export const {
   saveThreshold,
   saveTrxCount,
   saveDaysOfWeekIntervals,
+  saveRefundRule,
 } = initiativeSlice.actions;
 
 export const initiativeReducer = initiativeSlice.reducer;
@@ -258,3 +280,5 @@ export const initiativeTrxCountSelector = (state: RootState): TrxCount | undefin
 export const initiativeDaysOfWeekIntervalsSelector = (
   state: RootState
 ): Array<DaysOfWeekInterval> | undefined => state.initiative.trxRule.daysOfWeekIntervals;
+export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
+  state.initiative.refundRule;

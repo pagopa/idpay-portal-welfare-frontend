@@ -86,6 +86,14 @@ export interface RewardRule {
   rewardValue: number | undefined;
 }
 
+export interface RefundRule {
+  reimbursmentQuestionGroup: string;
+  timeParameter: string;
+  accumulatedAmount: string | undefined;
+  additionalInfo: string;
+  reimbursementThreshold: string;
+}
+
 export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;
@@ -104,4 +112,5 @@ export interface Initiative {
     trxCount?: TrxCount | undefined;
     daysOfWeekIntervals: Array<DaysOfWeekInterval>;
   };
+  refundRule: RefundRule;
 }

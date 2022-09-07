@@ -15,29 +15,84 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { useFormik } from 'formik';
-import { useEffect } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { setError, setErrorText } from './helpers';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
+import {
+  initiativeIdSelector,
+  initiativeRefundRulesSelector,
+  saveRefundRule,
+} from '../../../../redux/slices/initiativeSlice';
+import { AccomulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
+import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
+import { putRefundRule } from '../../../../services/intitativeService';
+import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
   action: string;
-  // setAction: Function;
+  setAction: Dispatch<SetStateAction<string>>;
+  setDisableNext: Dispatch<SetStateAction<boolean>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
 }
 
-const RefundRules = ({ action }: Props) => {
+const RefundRules = ({
+  action,
+  setAction,
+  setDisableNext /* currentStep, setCurrentStep */,
+}: Props) => {
   const { t } = useTranslation();
+  const [_isChecked, setIsChecked] = useState('');
+  const initiativeId = useAppSelector(initiativeIdSelector);
+  const refundRules = useAppSelector(initiativeRefundRulesSelector);
+  const [refundRulesData, _setRefundRulesData] = useState(refundRules);
+  const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
+
+  useEffect(() => {
+    if (action === WIZARD_ACTIONS.SUBMIT) {
+      formik.handleSubmit();
+    }
+    // else if (action === WIZARD_ACTIONS.DRAFT) {
+    //   return;
+    // }
+    setAction('');
+  }, [action]);
 
   const validationSchema = Yup.object().shape({
     reimbursmentQuestionGroup: Yup.string().required(t('validation.required')),
-    timeParameter: Yup.string().required(t('validation.required')),
-    accumulatedAmount: Yup.string().required(t('validation.required')),
-    idCodeBalance: Yup.string(),
+    timeParameter: Yup.string()
+      .nullable()
+      .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
+        if (reimbursment === 'false') {
+          Yup.string().required(t('validation.required'));
+        }
+        return schema;
+      }),
+    accumulatedAmount: Yup.string()
+      .nullable()
+      .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
+        if (reimbursment === 'true') {
+          Yup.string().required(t('validation.required'));
+        }
+        return schema;
+      }),
+    additionalInfo: Yup.string(),
     reimbursementThreshold: Yup.number()
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive')),
+      .default(undefined)
+      .test('reimbursement-threshold', t('validation.required'), function (val) {
+        if (
+          this.parent.reimbursmentQuestionGroup === 'true' &&
+          this.parent.accumulatedAmount === AccomulatedTypeEnum.THRESHOLD_REACHED
+        ) {
+          return typeof val !== 'number';
+        }
+        return true;
+      }),
   });
 
   const formik = useFormik({
@@ -45,25 +100,67 @@ const RefundRules = ({ action }: Props) => {
       reimbursmentQuestionGroup: '',
       timeParameter: '',
       accumulatedAmount: '',
-      idCodeBalance: '',
+      additionalInfo: '',
       reimbursementThreshold: '',
     },
     validateOnChange: true,
-    // enableReinitialize: true,
+    enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      if (initiativeId) {
+        const body = mapDataToSend(values);
+        const b = { refundRule: { ...body } };
+        putRefundRule(initiativeId, b)
+          .then((res) => {
+            dispatch(saveRefundRule(refundRulesData));
+            // setCurrentStep(currentStep + 1);
+            console.log(res);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_REFUND_RULES_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative transaction rules',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+        console.log(values);
+      }
     },
   });
 
-  useEffect(() => {
-    if (action === 'SUBMIT') {
-      //   formik.handleSubmit();
+  const handleResetField = (value: string) => {
+    setIsChecked(() => value);
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    formik.setFieldValue('reimbursmentQuestionGroup', value);
+
+    if (value === 'true') {
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue('timeParameter', '');
     } else {
-      return;
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue('accumulatedAmount', '');
+      // eslint-disable-next-line @typescript-eslint/no-floating-promises
+      formik.setFieldValue('reimbursementThreshold', '');
     }
-    // setAction('');
-  }, [action]);
+  };
+
+  useEffect(() => {
+    if (formik.dirty || formik.isValid) {
+      setDisableNext(false);
+    } else {
+      setDisableNext(true);
+    }
+  }, [formik]);
+
+  useEffect(() => {
+    console.log(formik.errors);
+  }, [formik]);
 
   return (
     <>
@@ -83,19 +180,24 @@ const RefundRules = ({ action }: Props) => {
             sx={{ gridColumn: 'span 12' }}
             row
             aria-labelledby="import-time-label"
+            id="reimbursmentQuestionGroup"
             name="reimbursmentQuestionGroup"
             value={formik.values.reimbursmentQuestionGroup}
             defaultValue={formik.values.reimbursmentQuestionGroup}
-            onChange={(e) => formik.setFieldValue('reimbursmentQuestionGroup', e.target.value)}
+            onChange={async (e) => {
+              // eslint-disable-next-line @typescript-eslint/no-floating-promises
+              formik.setFieldValue('reimbursmentQuestionGroup', e.target.value);
+              handleResetField(e.target.value);
+            }}
           >
             <FormControlLabel
-              value="true"
+              value={'true'}
               control={<Radio />}
               label={t('components.wizard.stepFour.form.accumulatedAmount')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value="false"
+              value={'false'}
               control={<Radio />}
               label={t('components.wizard.stepFour.form.timeParameter')}
             />
@@ -120,16 +222,23 @@ const RefundRules = ({ action }: Props) => {
                 {t('components.wizard.stepFour.form.selectedAccumulatedAmount')}
               </InputLabel>
               <Select
-                id="select-accumulated-amount"
+                id="accumulatedAmount"
+                name="accumulatedAmount"
                 value={formik.values.accumulatedAmount}
                 label={t('components.wizard.stepFour.form.selectedAccumulatedAmount')}
                 onChange={(e) => formik.setFieldValue('accumulatedAmount', e.target.value)}
-                onBlur={(e) => formik.handleBlur(e)}
+                error={formik.touched.accumulatedAmount && Boolean(formik.errors.accumulatedAmount)}
               >
-                <MenuItem value="balanceExhausted" data-testid="balance-exhausted">
+                <MenuItem
+                  value={AccomulatedTypeEnum.BUDGET_EXHAUSTED}
+                  data-testid="balance-exhausted"
+                >
                   {t('components.wizard.stepFour.select.accumulatedAmount.balanceExhausted')}
                 </MenuItem>
-                <MenuItem value="certainThreshold" data-testid="certain-threshold">
+                <MenuItem
+                  value={AccomulatedTypeEnum.THRESHOLD_REACHED}
+                  data-testid="certain-threshold"
+                >
                   {t('components.wizard.stepFour.select.accumulatedAmount.certainThreshold')}
                 </MenuItem>
               </Select>
@@ -141,7 +250,7 @@ const RefundRules = ({ action }: Props) => {
               </FormHelperText>
             </FormControl>
 
-            {formik.values.accumulatedAmount === 'certainThreshold' ? (
+            {formik.values.accumulatedAmount === AccomulatedTypeEnum.THRESHOLD_REACHED ? (
               <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', mb: 4 }}>
                 <TextField
                   inputProps={{
@@ -150,7 +259,7 @@ const RefundRules = ({ action }: Props) => {
                     type: 'number',
                     'data-testid': 'reimbursement-threshold',
                   }}
-                  id="reimbursement-threshold"
+                  id="reimbursementThreshold"
                   label={t('components.wizard.stepFour.form.reimbursementThreshold')}
                   placeholder={t('components.wizard.stepFour.form.reimbursementThreshold')}
                   name="reimbursementThreshold"
@@ -185,25 +294,26 @@ const RefundRules = ({ action }: Props) => {
                 {t('components.wizard.stepFour.form.selectTimeParam')}
               </InputLabel>
               <Select
-                id="select-time-parameter"
+                id="selectTimeParam"
+                name="selectTimeParam"
                 value={formik.values.timeParameter}
                 label={t('components.wizard.stepFour.form.selectTimeParam')}
                 onChange={(e) => formik.setFieldValue('timeParameter', e.target.value)}
-                onBlur={(e) => formik.handleBlur(e)}
+                error={formik.touched.timeParameter && Boolean(formik.errors.timeParameter)}
               >
-                <MenuItem value="initiativeDone" data-testid="initiative-done">
+                <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
                   {t('components.wizard.stepFour.select.timrParameter.initiativeDone')}
                 </MenuItem>
-                <MenuItem value="everyDay" data-testid="every-day">
+                <MenuItem value={TimeTypeEnum.DAILY} data-testid="every-day">
                   {t('components.wizard.stepFour.select.timrParameter.everyDay')}
                 </MenuItem>
-                <MenuItem value="everyWeek" data-testid="every-week">
+                <MenuItem value={TimeTypeEnum.WEEKLY} data-testid="every-week">
                   {t('components.wizard.stepFour.select.timrParameter.everyWeek')}
                 </MenuItem>
-                <MenuItem value="everyMonth" data-testid="every-month">
+                <MenuItem value={TimeTypeEnum.MONTHLY} data-testid="every-month">
                   {t('components.wizard.stepFour.select.timrParameter.everyMonth')}
                 </MenuItem>
-                <MenuItem value="everyThreeMonths" data-testid="every-three-months">
+                <MenuItem value={TimeTypeEnum.QUARTERLY} data-testid="every-three-months">
                   {t('components.wizard.stepFour.select.timrParameter.everyThreeMonths')}
                 </MenuItem>
               </Select>
@@ -239,13 +349,13 @@ const RefundRules = ({ action }: Props) => {
 
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}>
           <TextField
-            id="id-code-balance"
+            id="additionalInfo"
             label={t('components.wizard.stepFour.form.idCodeBalance')}
             placeholder={t('components.wizard.stepFour.form.idCodeBalance')}
-            name="idCodeBalance"
-            aria-label="idCodeBalance"
-            value={formik.values.idCodeBalance}
-            onChange={(e) => formik.setFieldValue('idCodeBalance', e.target.value)}
+            name="additionalInfo"
+            aria-label="additionalInfo"
+            value={formik.values.additionalInfo}
+            onChange={(e) => formik.setFieldValue('additionalInfo', e.target.value)}
           />
         </FormControl>
       </Paper>

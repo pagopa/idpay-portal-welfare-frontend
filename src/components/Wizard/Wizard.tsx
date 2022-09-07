@@ -103,7 +103,15 @@ const Wizard = () => {
           />
         );
       case 3:
-        return <RefundRules action={''} />;
+        return (
+          <RefundRules
+            action={actionType}
+            setAction={setActionType}
+            currentStep={activeStep}
+            setCurrentStep={setActiveStep}
+            setDisableNext={setDisabledNext}
+          />
+        );
       case 4:
         return <h1>{steps[activeStep]}</h1>;
       default:
