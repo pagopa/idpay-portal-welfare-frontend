@@ -75,8 +75,8 @@ const Wizard = () => {
             <FileUpload
               action={actionType}
               setAction={setActionType}
-              // currentStep={activeStep}
-              // setCurrentStep={setActiveStep}
+              currentStep={activeStep}
+              setCurrentStep={setActiveStep}
               setDisabledNext={setDisabledNext}
             />
           );

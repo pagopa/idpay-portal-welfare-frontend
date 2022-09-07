@@ -151,7 +151,6 @@ export default {
             addOption: 'Aggiungi opzione',
           },
         },
-
         upload: {
           title: 'Carica l’elenco degli ammessi',
           subTitle:
@@ -162,6 +161,17 @@ export default {
           dragAreaText: 'Trascina qui il file .csv con la lista dei codici fiscali o',
           dragAreaLink: 'selezionalo dal tuo computer.',
           fileIsLoading: 'Caricamento in corso...',
+          invalidBeneficiaryNumberTitle: 'Il file caricato contiene troppi codici fiscali',
+          invalidBeneficiaryNumberDescription: 'Aumenta il budget o rimuovi i destinatari',
+          invalidFileTitle: 'Il file caricato non è valido',
+          invalidFileDescription: 'Errore',
+          invalidFileTypeDescription: 'Sono ammessi solamente file csv',
+          notEmptyDescription: 'Il file non può essere vuoto',
+          overMaxUploadDescription: 'La dimensione massima supportata è di 2MB',
+          invalidRow: 'Errore: riga {{rowNumber}}',
+          retry: 'Carica di nuovo',
+          changeFile: 'Sostituisci file',
+          validFile: 'File valido',
         },
       },
       stepThree: {

@@ -1,54 +1,267 @@
-import { Box, Button, LinearProgress, Paper, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  Box,
+  Button,
+  Chip,
+  LinearProgress,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-// import { Alert } from '@pagopa/mui-italia/dist/components';
+import { ButtonNaked } from '@pagopa/mui-italia';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import { uploadGroupOfBeneficiaryPut } from '../../../../services/groupsService';
+import { initiativeIdSelector } from '../../../../redux/slices/initiativeSlice';
+import { useAppSelector } from '../../../../redux/hooks';
 
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
-  // currentStep: number;
-  // setCurrentStep: Dispatch<SetStateAction<number>>;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const FileUpload = ({
-  action,
-  setAction,
-  setDisabledNext /* , currentStep, setCurrentStep */,
-}: Props) => {
+const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
+  const [fileRejected, setFileRejected] = useState(false);
+  const [fileAccepted, setFileAccepted] = useState(false);
+  const [fileName, setFileName] = useState('');
+  const [fileDate, setFileDate] = useState('');
+  const [alertTitle, setAlertTitle] = useState('');
+  const [alertDescription, setAlertDescription] = useState('');
+  const initiativeId = useAppSelector(initiativeIdSelector);
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
+    maxSize: 2097152,
     accept: 'text/csv',
-    onDrop: (files) => {
-      console.log(files);
+    onDropAccepted: (files) => {
+      setAlertTitle('');
+      setAlertDescription('');
       setFileIsLoading(true);
+      if (initiativeId) {
+        uploadGroupOfBeneficiaryPut(initiativeId, files[0])
+          .then((res) => {
+            setFileIsLoading(false);
+            if (res.status === 'KO') {
+              setFileRejected(true);
+              const errorKey = res.errorKey;
+              const errorRow = res.errorRow;
+              switch (errorKey) {
+                case 'group.groups.invalid.file.format':
+                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertDescription(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+                  break;
+                case 'group.groups.invalid.file.empty':
+                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertDescription(t('components.wizard.stepTwo.upload.notEmptyDescription'));
+                  break;
+                case 'group.groups.invalid.file.size':
+                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertDescription(
+                    t('components.wizard.stepTwo.upload.overMaxUploadDescription')
+                  );
+                  break;
+                case 'group.groups.invalid.fiIe':
+                  setAlertTitle(
+                    t('components.wizard.stepTwo.upload.invalidBeneficiaryNumberTitle')
+                  );
+                  setAlertDescription(
+                    t('components.wizard.stepTwo.upload.invalidBeneficiaryNumberDescription')
+                  );
+                  break;
+                case 'group.groups.invalid.file.cf.wrong':
+                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertDescription(
+                    t('components.wizard.stepTwo.upload.invalidRow', { rowNumber: errorRow })
+                  );
+                  break;
+              }
+            } else {
+              setFileRejected(false);
+              setFileAccepted(true);
+              setFileName(files[0].name);
 
-      setTimeout(() => {
-        setFileIsLoading(false);
-        setDisabledNext(false);
-      }, 1000);
+              const dateField =
+                Object.prototype.toString.call(res.elabTimeStamp) === '[object Date]'
+                  ? res.elabTimeStamp
+                  : new Date();
+              const fileDate = dateField && dateField.toLocaleString('fr-BE');
+              setFileDate(fileDate || '');
+              setDisabledNext(false);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    },
+    onDropRejected: (files) => {
+      setFileRejected(true);
+      const errorKey = files[0].errors[0].code;
+      switch (errorKey) {
+        case 'file-invalid-type':
+          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+          setAlertDescription(t('components.wizard.stepTwo.upload.invalidFileTypeDescription'));
+          break;
+        case 'file-too-large':
+          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+          setAlertDescription(t('components.wizard.stepTwo.upload.overMaxUploadDescription'));
+          break;
+        default:
+          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+          break;
+      }
     },
   });
 
-  // TEMP
+  const setIntiStatus = () => {
+    setAlertTitle('');
+    setAlertDescription('');
+    setFileIsLoading(false);
+    setFileRejected(false);
+    setFileAccepted(false);
+    setDisabledNext(true);
+  };
+
   useEffect(() => {
     setDisabledNext(true);
   }, []);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
-      //   formik.handleSubmit();
+      setCurrentStep(currentStep + 1);
     } else {
       return;
     }
     setAction('');
   }, [action]);
+
+  const LoadingFilePartial = (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        py: 2,
+      }}
+    >
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          alignItems: 'center',
+          width: '100%',
+          border: '1px solid #E3E7EB',
+          borderRadius: '10px',
+          p: 3,
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+        }}
+      >
+        <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+          {t('components.wizard.stepTwo.upload.fileIsLoading')}
+        </Typography>
+        <Box sx={{ gridColumn: 'span 9' }}>
+          <LinearProgress />
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  const InitStatusPartial = (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        py: 2,
+        my: 1,
+      }}
+    >
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          alignItems: 'center',
+          justifyItems: 'center',
+          width: '100%',
+          border: '1px dashed #0073E6',
+          borderRadius: '10px',
+          backgroundColor: 'rgba(0, 115, 230, 0.08)',
+          p: 3,
+        }}
+        {...getRootProps({ className: 'dropzone' })}
+      >
+        <input {...getInputProps()} />
+        <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
+          <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
+          <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
+            {t('components.wizard.stepTwo.upload.dragAreaText')}&#160;
+          </Typography>
+          <Typography
+            variant="body2"
+            sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
+          >
+            {t('components.wizard.stepTwo.upload.dragAreaLink')}
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+
+  const FileAcceptedPartial = (
+    <Box
+      sx={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(12, 1fr)',
+        py: 2,
+        my: 1,
+      }}
+    >
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          px: 2,
+          py: 1,
+          borderRadius: '10px',
+          border: '1px solid #E3E7EB',
+          alignItems: 'center',
+        }}
+      >
+        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
+          <CheckCircleIcon color="success" />
+        </Box>
+        <Box sx={{ gridColumn: 'span 4' }}>
+          <Typography variant="body2" fontWeight={600}>
+            {fileName}
+          </Typography>
+        </Box>
+        <Box sx={{ gridColumn: 'span 4' }}>
+          <Typography>{fileDate}</Typography>
+        </Box>
+        <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
+          <Chip label={t('components.wizard.stepTwo.upload.validFile')} color="success" />
+        </Box>
+      </Box>
+      <Box sx={{ gridColumn: 'span 12', py: 2 }}>
+        <ButtonNaked
+          size="small"
+          component="button"
+          onClick={setIntiStatus}
+          startIcon={<FileUploadIcon />}
+          sx={{ color: 'primary.main' }}
+          weight="default"
+        >
+          {t('components.wizard.stepTwo.upload.changeFile')}
+        </ButtonNaked>
+      </Box>
+    </Box>
+  );
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -65,76 +278,29 @@ const FileUpload = ({
           </Button>
         </Box>
       </Box>
-      {/* {!fileIsLoading && fileOnError ? (
-        <Alert  severity="error"
-        variant="standard"> </Alert>
-      )} */}
 
-      {fileIsLoading ? (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            py: 2,
-          }}
+      {fileRejected && (
+        <Alert
+          severity="error"
+          action={
+            <ButtonNaked
+              size="small"
+              component="button"
+              onClick={() => setFileRejected(false)}
+              startIcon={<FileUploadIcon />}
+              sx={{ color: 'primary.main' }}
+              weight="default"
+            >
+              {t('components.wizard.stepTwo.upload.retry')}
+            </ButtonNaked>
+          }
         >
-          <Box
-            sx={{
-              gridColumn: 'span 12',
-              alignItems: 'center',
-              width: '100%',
-              border: '1px solid #E3E7EB',
-              borderRadius: '10px',
-              p: 3,
-              display: 'grid',
-              gridTemplateColumns: 'repeat(12, 1fr)',
-            }}
-          >
-            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-              {t('components.wizard.stepTwo.upload.fileIsLoading')}
-            </Typography>
-            <Box sx={{ gridColumn: 'span 9' }}>
-              <LinearProgress />
-            </Box>
-          </Box>
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            py: 2,
-          }}
-        >
-          <Box
-            sx={{
-              gridColumn: 'span 12',
-              alignItems: 'center',
-              justifyItems: 'center',
-              width: '100%',
-              border: '1px dashed #0073E6',
-              borderRadius: '10px',
-              backgroundColor: 'rgba(0, 115, 230, 0.08)',
-              p: 3,
-            }}
-            {...getRootProps({ className: 'dropzone' })}
-          >
-            <input {...getInputProps()} />
-            <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
-              <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
-              <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-                {t('components.wizard.stepTwo.upload.dragAreaText')}&#160;
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
-              >
-                {t('components.wizard.stepTwo.upload.dragAreaLink')}
-              </Typography>
-            </Box>
-          </Box>
-        </Box>
+          <AlertTitle>{t(alertTitle)}</AlertTitle>
+          <Typography>{t(alertDescription)}</Typography>
+        </Alert>
       )}
+
+      {fileIsLoading ? LoadingFilePartial : fileAccepted ? FileAcceptedPartial : InitStatusPartial}
     </Paper>
   );
 };
