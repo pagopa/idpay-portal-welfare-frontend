@@ -172,6 +172,8 @@ export default {
           retry: 'Carica di nuovo',
           changeFile: 'Sostituisci file',
           validFile: 'File valido',
+          fileUploadHelpText: 'Non sai come preparare la lista?',
+          fileUuploadHelpFileLinkLabel: 'Scarica il file di esempio',
         },
       },
       stepThree: {

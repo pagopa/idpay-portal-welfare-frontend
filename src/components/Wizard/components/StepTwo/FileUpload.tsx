@@ -4,7 +4,9 @@ import {
   Box,
   Button,
   Chip,
+  FormHelperText,
   LinearProgress,
+  Link,
   Paper,
   Typography,
 } from '@mui/material';
@@ -260,6 +262,23 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </Typography>
         </Box>
       </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          alignItems: 'center',
+          justifyItems: 'center',
+          width: '100%',
+          py: 1,
+          px: 3,
+        }}
+      >
+        <FormHelperText sx={{ fontSize: '0.875rem' }}>
+          {t('components.wizard.stepTwo.upload.fileUploadHelpText')}&#160;
+          <Link href="#" variant="body2" sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
+            {t('components.wizard.stepTwo.upload.fileUuploadHelpFileLinkLabel')}
+          </Link>
+        </FormHelperText>
+      </Box>
     </Box>
   );
 
@@ -293,7 +312,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 4' }}>
-          <Typography>{fileDate}</Typography>
+          <Typography variant="body2">{fileDate}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
           <Chip label={t('components.wizard.stepTwo.upload.validFile')} color="success" />
