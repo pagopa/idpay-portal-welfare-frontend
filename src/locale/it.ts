@@ -304,5 +304,6 @@ export default {
     title: 'Si è verificato un errore',
     invalidDataDescription: 'Controllare i dati inseriti',
     getDataDescription: 'Riprovare',
+    getFileDataDescription: 'Caricare nuovamente il file',
   },
 };

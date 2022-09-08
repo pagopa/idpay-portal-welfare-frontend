@@ -7,15 +7,13 @@
   },
   "servers": [
     {
-      "url": "http://api-io.dev.cstar.pagopa.it/idpay/group"
+      "url": "https://api-io.dev.cstar.pagopa.it/idpay/group"
     }
   ],
   "paths": {
     "/initiative/{initiativeId}/upload": {
       "put": {
-        "tags": [
-          "group"
-        ],
+        "tags": ["group"],
         "summary": "Upload CSV file containing a group of Beneficiary",
         "operationId": "uploadGroupOfBeneficiary",
         "parameters": [
@@ -33,9 +31,7 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "required": [
-                  "file"
-                ],
+                "required": ["file"],
                 "type": "object",
                 "properties": {
                   "file": {
@@ -123,9 +119,7 @@
     },
     "/initiative/{initiativeId}/status": {
       "get": {
-        "tags": [
-          "group"
-        ],
+        "tags": ["group"],
         "summary": "Return Group of Beneficiary CSV file upload status with relative error detail if present",
         "operationId": "getGroupOfBeneficiaryStatusAndDetails",
         "parameters": [
@@ -205,9 +199,7 @@
     },
     "/initiative/{initiativeId}/citizen/{citizenToken}": {
       "get": {
-        "tags": [
-          "group"
-        ],
+        "tags": ["group"],
         "summary": "Return a positive or negative boolean if the searched user is part of the preset group list uploaded for the specific initiative",
         "operationId": "getCitizenStatusForInitiative",
         "parameters": [
@@ -331,6 +323,13 @@
         "type": "object",
         "properties": {
           "status": {
+            "type": "string"
+          },
+          "fileUploadingDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fileName": {
             "type": "string"
           },
           "errorMessage": {

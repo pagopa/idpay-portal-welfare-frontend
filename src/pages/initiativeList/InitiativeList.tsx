@@ -25,6 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
 
@@ -213,8 +214,10 @@ const InitiativeList = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
+  // const setLoading = useLoading('GET_INITIATIVE_LIST');
 
   useEffect(() => {
+    // setLoading(true);
     getInitativeSummary()
       .then((response: any) => response)
       .then((responseT) => {
@@ -226,6 +229,7 @@ const InitiativeList = () => {
         }));
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
+        // setLoading(false);
       })
       .catch((error: any) => {
         addError({
@@ -239,6 +243,7 @@ const InitiativeList = () => {
           component: 'Toast',
           showCloseIcon: true,
         });
+        // setLoading(false);
       });
   }, []);
 

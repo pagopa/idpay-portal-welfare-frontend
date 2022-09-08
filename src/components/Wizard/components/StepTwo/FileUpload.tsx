@@ -15,8 +15,12 @@ import { useDropzone } from 'react-dropzone';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { uploadGroupOfBeneficiaryPut } from '../../../../services/groupsService';
+import {
+  getGroupOfBeneficiaryStatusAndDetail,
+  uploadGroupOfBeneficiaryPut,
+} from '../../../../services/groupsService';
 import { initiativeIdSelector } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../../../redux/hooks';
 
@@ -38,6 +42,42 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
+  const addError = useErrorDispatcher();
+
+  useEffect(() => {
+    if (initiativeId) {
+      getGroupOfBeneficiaryStatusAndDetail(initiativeId)
+        .then((res) => {
+          const fileNameRes = res.fileName || '';
+          const fileUploadingDateTimeRes = res.fileUploadingDateTime || new Date();
+          const fileUploadingDateTimeStr = fileUploadingDateTimeRes.toLocaleString('fr-BE');
+          setFileName(fileNameRes);
+          setFileDate(fileUploadingDateTimeStr);
+          setFileRejected(false);
+          setFileAccepted(true);
+          setFileIsLoading(false);
+          setDisabledNext(false);
+        })
+        .catch((error) => {
+          if (error.httpStatus === 400 && error.httpBody.code === 'it.gov.pagopa.group.not.found') {
+            setIntiStatus();
+          } else {
+            addError({
+              id: 'GET_UPLOADED_FILE_DATA_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred getting groups file info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getFileDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          }
+        });
+    }
+  }, []);
+
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     maxSize: 2097152,
@@ -88,7 +128,6 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               setFileRejected(false);
               setFileAccepted(true);
               setFileName(files[0].name);
-
               const dateField =
                 Object.prototype.toString.call(res.elabTimeStamp) === '[object Date]'
                   ? res.elabTimeStamp
@@ -98,7 +137,19 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               setDisabledNext(false);
             }
           })
-          .catch((err) => console.log(err));
+          .catch((error) => {
+            addError({
+              id: 'PUT_GROUP_FILE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred saving groups file',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getFileDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
       }
     },
     onDropRejected: (files) => {

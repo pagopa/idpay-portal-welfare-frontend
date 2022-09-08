@@ -2,7 +2,6 @@ import { Box } from '@mui/material';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import Wizard from '../../components/Wizard/Wizard';
-
 import { useInitiative } from '../../hooks/useInitiative';
 
 const NewInitiative = () => {
