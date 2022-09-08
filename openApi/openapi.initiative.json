@@ -7,15 +7,13 @@
   },
   "servers": [
     {
-      "url": "http://api-io.dev.cstar.pagopa.it/idpay/initiative"
+      "url": "https://api-io.dev.cstar.pagopa.it/idpay/initiative"
     }
   ],
   "paths": {
     "/{initiativeId}/beneficiary/view": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns the detail of an active initiative",
         "operationId": "getInitiativeBeneficiaryView",
         "parameters": [
@@ -85,9 +83,7 @@
     },
     "/summary": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns the list of initiatives names for a specific organization",
         "description": "Returns the list of initiatives names for a specific organization",
         "operationId": "getInitativeSummary",
@@ -137,9 +133,7 @@
     },
     "/{initiativeId}": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns the detail of an active initiative",
         "description": "Returns the detail of an active initiative",
         "operationId": "getInitiativeDetail",
@@ -210,9 +204,7 @@
     },
     "/config/beneficiary/rule": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Returns fixed automated Criteria",
         "description": "Returns fixed automated Criteria",
         "operationId": "getBeneficiaryConfigRules",
@@ -254,9 +246,7 @@
     },
     "/config/transaction/rule": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Return transaction config rules content",
         "description": "Return transaction config rules content",
         "operationId": "getTransactionConfigRules",
@@ -316,9 +306,7 @@
     },
     "/config/transaction/mcc": {
       "get": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Return MCC config contents",
         "description": "Return MCC config contents",
         "operationId": "getMccConfig",
@@ -378,9 +366,7 @@
     },
     "/general": {
       "post": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Save initiative and first subset of data 'general info'",
         "description": "Save initiative and first subset of data 'general info'",
         "operationId": "saveInitiativeGeneralInfo",
@@ -470,9 +456,7 @@
     },
     "/{initiativeId}/general": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Update initiative and first subset of data 'general info'",
         "description": "Update initiative and first subset of data 'general info'",
         "operationId": "updateInitiativeGeneralInfo",
@@ -569,9 +553,7 @@
     },
     "/{initiativeId}/beneficiary": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Association of beneficiary rules to an initiative",
         "description": "Association of beneficiary rules to an initiative",
         "operationId": "updateInitiativeBeneficiary",
@@ -668,9 +650,7 @@
     },
     "/{initiativeId}/reward": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Association of transaction and reward rules to an initiative",
         "operationId": "updateTrxAndRewardRules",
         "parameters": [
@@ -763,9 +743,7 @@
     },
     "/{initiativeId}/beneficiary/draft": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Association of beneficiary rules to a draft initiative without validation",
         "description": "Association of beneficiary rules to a draft initiative without validation",
         "operationId": "updateInitiativeBeneficiaryDraft",
@@ -862,9 +840,7 @@
     },
     "/{initiativeId}/reward/draft": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Association of transaction and reward rules to a draft initiative without validation",
         "operationId": "updateTrxAndRewardRulesDraft",
         "parameters": [
@@ -957,9 +933,7 @@
     },
     "/{initiativeId}/refund": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Save the refund rule of the initiative",
         "operationId": "updateInitiativeRefundRule",
         "parameters": [
@@ -977,7 +951,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RefundRuleDTO"
+                "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
               }
             }
           },
@@ -1052,9 +1026,7 @@
     },
     "/{initiativeId}/refund/draft": {
       "put": {
-        "tags": [
-          "initiative"
-        ],
+        "tags": ["initiative"],
         "summary": "Save the refund rule of the initiative in Draft",
         "operationId": "updateInitiativeRefundRuleDraft",
         "parameters": [
@@ -1072,7 +1044,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/RefundRuleDTO"
+                "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
               }
             }
           },
@@ -1192,10 +1164,7 @@
             "type": "number"
           },
           "beneficiaryType": {
-            "enum": [
-              "PF",
-              "PG"
-            ],
+            "enum": ["PF", "PG"],
             "type": "string"
           },
           "beneficiaryKnown": {
@@ -1293,7 +1262,7 @@
             "$ref": "#/components/schemas/InitiativeTrxConditionsDTO"
           },
           "refundRule": {
-            "$ref": "#/components/schemas/RefundRuleDTO"
+            "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
           },
           "legal": {
             "$ref": "#/components/schemas/InitiativeLegalDTO"
@@ -1349,11 +1318,7 @@
         "type": "object",
         "properties": {
           "type": {
-            "enum": [
-              "web",
-              "email",
-              "mobile"
-            ],
+            "enum": ["web", "email", "mobile"],
             "type": "string"
           },
           "contact": {
@@ -1405,9 +1370,7 @@
         "type": "object",
         "properties": {
           "_type": {
-            "enum": [
-              "boolean"
-            ],
+            "enum": ["boolean"],
             "type": "string"
           },
           "description": {
@@ -1426,9 +1389,7 @@
         "type": "object",
         "properties": {
           "_type": {
-            "enum": [
-              "multi"
-            ],
+            "enum": ["multi"],
             "type": "string"
           },
           "description": {
@@ -1439,11 +1400,7 @@
             "items": {
               "type": "string"
             },
-            "example": [
-              "value1",
-              "value2",
-              "value3"
-            ]
+            "example": ["value1", "value2", "value3"]
           },
           "code": {
             "type": "string"
@@ -1527,15 +1484,7 @@
             "type": "array",
             "items": {
               "type": "string",
-              "enum": [
-                "MONDAY",
-                "TUESDAY",
-                "WEDNESDAY",
-                "THURSDAY",
-                "FRIDAY",
-                "SATURDAY",
-                "SUNDAY"
-              ]
+              "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
             }
           },
           "intervals": {
@@ -1547,9 +1496,7 @@
         }
       },
       "InitiativeRewardAndTrxRulesDTO": {
-        "required": [
-          "rewardRule"
-        ],
+        "required": ["rewardRule"],
         "type": "object",
         "properties": {
           "rewardRule": {
@@ -1568,9 +1515,7 @@
         }
       },
       "InitiativeRewardRuleDTO": {
-        "required": [
-          "_type"
-        ],
+        "required": ["_type"],
         "type": "object",
         "properties": {
           "_type": {
@@ -1682,12 +1627,7 @@
         "properties": {
           "frequency": {
             "type": "string",
-            "enum": [
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "YEARLY"
-            ]
+            "enum": ["DAILY", "WEEKLY", "MONTHLY", "YEARLY"]
           },
           "rewardLimit": {
             "type": "number"
@@ -1748,7 +1688,7 @@
           }
         }
       },
-      "RefundRuleDTO": {
+      "InitiativeRefundRuleDTO": {
         "type": "object",
         "properties": {
           "accumulatedAmount": {
@@ -1763,17 +1703,12 @@
         }
       },
       "AccumulatedAmountDTO": {
-        "required": [
-          "accomulatedType"
-        ],
+        "required": ["accumulatedType"],
         "type": "object",
         "properties": {
-          "accomulatedType": {
+          "accumulatedType": {
             "type": "string",
-            "enum": [
-              "BUDGET_EXHAUSTED",
-              "THRESHOLD_REACHED"
-            ]
+            "enum": ["BUDGET_EXHAUSTED", "THRESHOLD_REACHED"]
           },
           "refundThreshold": {
             "type": "number"
@@ -1781,27 +1716,17 @@
         }
       },
       "TimeParameterDTO": {
-        "required": [
-          "timeType"
-        ],
+        "required": ["timeType"],
         "type": "object",
         "properties": {
           "timeType": {
             "type": "string",
-            "enum": [
-              "CLOSED",
-              "DAILY",
-              "WEEKLY",
-              "MONTHLY",
-              "QUARTERLY"
-            ]
+            "enum": ["CLOSED", "DAILY", "WEEKLY", "MONTHLY", "QUARTERLY"]
           }
         }
       },
       "AdditionalInfoDTO": {
-        "required": [
-          "identificationCode"
-        ],
+        "required": ["identificationCode"],
         "type": "object",
         "properties": {
           "identificationCode": {

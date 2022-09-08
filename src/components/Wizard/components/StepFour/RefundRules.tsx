@@ -26,42 +26,48 @@ import {
   initiativeRefundRulesSelector,
   saveRefundRule,
 } from '../../../../redux/slices/initiativeSlice';
-import { AccomulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
+import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
 import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
-import { putRefundRule } from '../../../../services/intitativeService';
+import { putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
   action: string;
   setAction: Dispatch<SetStateAction<string>>;
-  setDisableNext: Dispatch<SetStateAction<boolean>>;
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
+  setDisableNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const RefundRules = ({
-  action,
-  setAction,
-  setDisableNext /* currentStep, setCurrentStep */,
-}: Props) => {
+const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisableNext }: Props) => {
   const { t } = useTranslation();
   const [_isChecked, setIsChecked] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
-  const refundRules = useAppSelector(initiativeRefundRulesSelector);
-  const [refundRulesData, _setRefundRulesData] = useState(refundRules);
+  const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      const body = mapDataToSend(formik.values);
+      if (initiativeId) {
+        putRefundRuleDraft(initiativeId, body)
+          .then((_res) => {
+            dispatch(saveRefundRule(formik.values));
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+      return;
     }
-    // else if (action === WIZARD_ACTIONS.DRAFT) {
-    //   return;
-    // }
     setAction('');
   }, [action]);
+
+  console.log(refundRulesSelector);
 
   const validationSchema = Yup.object().shape({
     reimbursmentQuestionGroup: Yup.string().required(t('validation.required')),
@@ -87,9 +93,9 @@ const RefundRules = ({
       .test('reimbursement-threshold', t('validation.required'), function (val) {
         if (
           this.parent.reimbursmentQuestionGroup === 'true' &&
-          this.parent.accumulatedAmount === AccomulatedTypeEnum.THRESHOLD_REACHED
+          this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
         ) {
-          return typeof val !== 'number';
+          return typeof val === 'number';
         }
         return true;
       }),
@@ -97,11 +103,11 @@ const RefundRules = ({
 
   const formik = useFormik({
     initialValues: {
-      reimbursmentQuestionGroup: '',
-      timeParameter: '',
-      accumulatedAmount: '',
-      additionalInfo: '',
-      reimbursementThreshold: '',
+      reimbursmentQuestionGroup: refundRulesSelector?.reimbursmentQuestionGroup,
+      timeParameter: refundRulesSelector?.timeParameter,
+      accumulatedAmount: refundRulesSelector?.accumulatedAmount,
+      additionalInfo: refundRulesSelector?.additionalInfo,
+      reimbursementThreshold: refundRulesSelector?.reimbursementThreshold,
     },
     validateOnChange: true,
     enableReinitialize: true,
@@ -109,12 +115,10 @@ const RefundRules = ({
     onSubmit: (values) => {
       if (initiativeId) {
         const body = mapDataToSend(values);
-        const b = { refundRule: { ...body } };
-        putRefundRule(initiativeId, b)
-          .then((res) => {
-            dispatch(saveRefundRule(refundRulesData));
-            // setCurrentStep(currentStep + 1);
-            console.log(res);
+        putRefundRule(initiativeId, body)
+          .then((_res) => {
+            dispatch(saveRefundRule(values));
+            setCurrentStep(currentStep + 1);
           })
           .catch((error) => {
             addError({
@@ -129,7 +133,6 @@ const RefundRules = ({
               showCloseIcon: true,
             });
           });
-        console.log(values);
       }
     },
   });
@@ -158,10 +161,6 @@ const RefundRules = ({
     }
   }, [formik]);
 
-  useEffect(() => {
-    console.log(formik.errors);
-  }, [formik]);
-
   return (
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -185,8 +184,7 @@ const RefundRules = ({
             value={formik.values.reimbursmentQuestionGroup}
             defaultValue={formik.values.reimbursmentQuestionGroup}
             onChange={async (e) => {
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
-              formik.setFieldValue('reimbursmentQuestionGroup', e.target.value);
+              await formik.setFieldValue('reimbursmentQuestionGroup', e.target.value);
               handleResetField(e.target.value);
             }}
           >
@@ -230,13 +228,13 @@ const RefundRules = ({
                 error={formik.touched.accumulatedAmount && Boolean(formik.errors.accumulatedAmount)}
               >
                 <MenuItem
-                  value={AccomulatedTypeEnum.BUDGET_EXHAUSTED}
+                  value={AccumulatedTypeEnum.BUDGET_EXHAUSTED}
                   data-testid="balance-exhausted"
                 >
                   {t('components.wizard.stepFour.select.accumulatedAmount.balanceExhausted')}
                 </MenuItem>
                 <MenuItem
-                  value={AccomulatedTypeEnum.THRESHOLD_REACHED}
+                  value={AccumulatedTypeEnum.THRESHOLD_REACHED}
                   data-testid="certain-threshold"
                 >
                   {t('components.wizard.stepFour.select.accumulatedAmount.certainThreshold')}
@@ -250,7 +248,7 @@ const RefundRules = ({
               </FormHelperText>
             </FormControl>
 
-            {formik.values.accumulatedAmount === AccomulatedTypeEnum.THRESHOLD_REACHED ? (
+            {formik.values.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED ? (
               <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', mb: 4 }}>
                 <TextField
                   inputProps={{

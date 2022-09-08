@@ -25,6 +25,7 @@ import {
   saveTrxCount,
   saveDaysOfWeekIntervals,
   saveRewardRule,
+  saveRefundRule,
 } from '../redux/slices/initiativeSlice';
 import {
   AdditionalInfo,
@@ -32,11 +33,13 @@ import {
   DaysOfWeekInterval,
   GeneralInfo,
   ManualCriteriaItem,
+  RefundRule,
   RewardLimit,
 } from '../model/Initiative';
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
 import { BeneficiaryTypeEnum } from '../utils/constants';
 import { DayConfig } from '../api/generated/initiative/DayConfig';
+import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 
 interface MatchParams {
   id: string;
@@ -207,6 +210,9 @@ export const useInitiative = () => {
             const daysOfWeekIntervals = [...parseDaysOfWeekIntervals(daysOfWeek)];
             dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
           }
+
+          const refundRule = parseRefundRule(response.refundRule);
+          dispatch(saveRefundRule(refundRule));
 
           // setLoading(false);
         })
@@ -387,4 +393,63 @@ const parseDaysOfWeekIntervals = (daysOfWeek: Array<DayConfig>): Array<DaysOfWee
     });
   });
   return daysOfWeekIntervals;
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
+const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined): RefundRule => {
+  const dataT = {
+    reimbursmentQuestionGroup: '',
+    timeParameter: '',
+    accumulatedAmount: '',
+    additionalInfo: '',
+    reimbursementThreshold: '',
+  };
+
+  if (
+    typeof refundRule !== undefined &&
+    refundRule?.accumulatedAmount &&
+    Object.keys(refundRule?.accumulatedAmount).length !== 0
+  ) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.accumulatedAmount = refundRule.accumulatedAmount.accumulatedType || '';
+    // eslint-disable-next-line functional/immutable-data
+    dataT.reimbursementThreshold =
+      typeof refundRule.accumulatedAmount.refundThreshold === 'number'
+        ? refundRule.accumulatedAmount.refundThreshold.toString()
+        : '';
+  }
+
+  if (
+    typeof refundRule !== undefined &&
+    refundRule?.timeParameter &&
+    Object.keys(refundRule?.timeParameter).length !== 0
+  ) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.timeParameter =
+      typeof refundRule.timeParameter.timeType !== undefined
+        ? (refundRule.timeParameter.timeType as string)
+        : '';
+  }
+
+  if (
+    typeof refundRule !== undefined &&
+    refundRule?.additionalInfo &&
+    Object.keys(refundRule?.additionalInfo).length !== 0
+  ) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.additionalInfo =
+      typeof refundRule.additionalInfo.identificationCode === 'string'
+        ? refundRule.additionalInfo.identificationCode
+        : '';
+  }
+
+  if (dataT.accumulatedAmount.length > 0 && dataT.timeParameter.length === 0) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.reimbursmentQuestionGroup = 'true';
+  } else if (dataT.accumulatedAmount.length === 0 && dataT.timeParameter.length > 0) {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.reimbursmentQuestionGroup = 'false';
+  }
+
+  return dataT;
 };

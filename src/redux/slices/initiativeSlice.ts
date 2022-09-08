@@ -218,14 +218,11 @@ export const initiativeSlice = createSlice({
     saveRefundRule: (state, action: PayloadAction<RefundRule>) => ({
       ...state,
       refundRule: {
-        ...state.refundRule,
-        refundRule: {
-          reimbursmentQuestionGroup: action.payload.reimbursmentQuestionGroup,
-          timeParameter: action.payload.timeParameter,
-          accumulatedAmount: action.payload.accumulatedAmount,
-          additionalInfo: action.payload.additionalInfo,
-          reimbursementThreshold: action.payload.reimbursementThreshold,
-        },
+        reimbursmentQuestionGroup: action.payload.reimbursmentQuestionGroup,
+        timeParameter: action.payload.timeParameter,
+        accumulatedAmount: action.payload.accumulatedAmount,
+        additionalInfo: action.payload.additionalInfo,
+        reimbursementThreshold: action.payload.reimbursementThreshold,
       },
     }),
   },

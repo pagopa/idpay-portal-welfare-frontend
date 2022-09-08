@@ -13,7 +13,7 @@ import { ConfigBeneficiaryRuleArrayDTO } from './generated/initiative/ConfigBene
 import { ConfigTrxRuleArrayDTO } from './generated/initiative/ConfigTrxRuleArrayDTO';
 import { ConfigMccArrayDTO } from './generated/initiative/ConfigMccArrayDTO';
 import { InitiativeRewardAndTrxRulesDTO } from './generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RefundRuleDTO } from './generated/initiative/RefundRuleDTO';
+import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefundRuleDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -137,8 +137,22 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  updateInitiativeRefundRulePut: async (id: string, data: RefundRuleDTO): Promise<void> => {
+  updateInitiativeRefundRulePut: async (
+    id: string,
+    data: InitiativeRefundRuleDTO
+  ): Promise<void> => {
     const result = await apiClient.updateInitiativeRefundRule({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeRefundRuleDraftPut: async (
+    id: string,
+    data: InitiativeRefundRuleDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeRefundRuleDraft({
       initiativeId: id,
       body: { ...data },
     });

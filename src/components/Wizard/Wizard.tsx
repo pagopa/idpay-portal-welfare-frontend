@@ -15,7 +15,7 @@ import ShopRules from './components/StepThree/ShopRules';
 import RefundRules from './components/StepFour/RefundRules';
 
 const Wizard = () => {
-  const [activeStep, setActiveStep] = useState(3);
+  const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const [disabledNext, setDisabledNext] = useState(true);

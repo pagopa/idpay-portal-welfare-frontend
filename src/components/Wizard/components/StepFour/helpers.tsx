@@ -1,5 +1,5 @@
-import { AccomulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { RefundRuleDTO } from '../../../../api/generated/initiative/RefundRuleDTO';
+import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
+import { InitiativeRefundRuleDTO } from '../../../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
 import { RefundRule } from '../../../../model/Initiative';
 
@@ -9,10 +9,10 @@ export const setError = (touched: boolean | undefined, errorText: string | undef
 export const setErrorText = (touched: boolean | undefined, errorText: string | undefined) =>
   touched && errorText;
 
-export const mapDataToSend = (values: RefundRule): RefundRuleDTO => {
-  const accumulatedTypeBudget = values.accumulatedAmount as AccomulatedTypeEnum.BUDGET_EXHAUSTED;
+export const mapDataToSend = (values: RefundRule): InitiativeRefundRuleDTO => {
+  const accumulatedTypeBudget = values.accumulatedAmount as AccumulatedTypeEnum.BUDGET_EXHAUSTED;
   const accumulatedTypeThreshold =
-    values.accumulatedAmount as AccomulatedTypeEnum.THRESHOLD_REACHED;
+    values.accumulatedAmount as AccumulatedTypeEnum.THRESHOLD_REACHED;
   const refundThreshold =
     typeof values.reimbursementThreshold === 'string'
       ? parseFloat(values.reimbursementThreshold)
@@ -21,18 +21,18 @@ export const mapDataToSend = (values: RefundRule): RefundRuleDTO => {
   const timeType = values.timeParameter as TimeTypeEnum;
   if (
     values.reimbursmentQuestionGroup === 'true' &&
-    values.accumulatedAmount === AccomulatedTypeEnum.THRESHOLD_REACHED
+    values.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
   ) {
     return {
-      accumulatedAmount: { accomulatedType: accumulatedTypeThreshold, refundThreshold },
+      accumulatedAmount: { accumulatedType: accumulatedTypeThreshold, refundThreshold },
       additionalInfo: { identificationCode },
     };
   } else if (
     values.reimbursmentQuestionGroup === 'true' &&
-    values.accumulatedAmount === AccomulatedTypeEnum.BUDGET_EXHAUSTED
+    values.accumulatedAmount === AccumulatedTypeEnum.BUDGET_EXHAUSTED
   ) {
     return {
-      accumulatedAmount: { accomulatedType: accumulatedTypeBudget },
+      accumulatedAmount: { accumulatedType: accumulatedTypeBudget },
       additionalInfo: { identificationCode },
     };
   } else {

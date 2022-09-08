@@ -11,7 +11,7 @@ import {
 import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
 import { decode } from '../utils/io-utils';
 import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
-import { RefundRuleDTO } from '../api/generated/initiative/RefundRuleDTO';
+import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 
 export const saveGeneralInfoService = (
   generalInfo: InitiativeInfoDTO
@@ -63,5 +63,8 @@ export const putTrxAndRewardRulesDraft = (
   data: InitiativeRewardAndTrxRulesDTO
 ): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data).then((res) => res);
 
-export const putRefundRule = (id: string, data: RefundRuleDTO): Promise<void> =>
+export const putRefundRule = (id: string, data: InitiativeRefundRuleDTO): Promise<void> =>
   InitiativeApi.updateInitiativeRefundRulePut(id, data).then((res) => res);
+
+export const putRefundRuleDraft = (id: string, data: InitiativeRefundRuleDTO): Promise<void> =>
+  InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data).then((res) => res);
