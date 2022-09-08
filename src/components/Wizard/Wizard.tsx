@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
 import routes from '../../routes';
+// import { useGroups } from '../../hooks/useGroups';
 import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
@@ -21,6 +22,7 @@ const Wizard = () => {
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
   const history = useHistory();
+  // useGroups();
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -76,8 +78,9 @@ const Wizard = () => {
             <FileUpload
               action={actionType}
               setAction={setActionType}
-              // currentStep={activeStep}
-              // setCurrentStep={setActiveStep}
+              currentStep={activeStep}
+              setCurrentStep={setActiveStep}
+              setDisabledNext={setDisabledNext}
             />
           );
         } else if (beneficiaryKnown === 'false') {

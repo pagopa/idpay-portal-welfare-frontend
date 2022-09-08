@@ -151,14 +151,27 @@ export default {
             addOption: 'Aggiungi opzione',
           },
         },
-
-        form: {
-          title2: 'Carica l’elenco degli ammessi',
-          subTitle2:
+        upload: {
+          title: 'Carica l’elenco degli ammessi',
+          subTitle:
             'Aggiungi i codici fiscali dei destinatari dell’iniziativa, così non dovranno effettuare alcun controllo d’ammissibilità.',
           title3: 'Destinatari esclusi',
           subTitle3:
             'Se conosci già i destinatari esclusi dall’iniziativa, aggiungi i loro codici fiscali così non potranno effettuare l’adesione. Puoi effettuare modifiche o aggiunte anche in un secondo momento.',
+          dragAreaText: 'Trascina qui il file .csv con la lista dei codici fiscali o',
+          dragAreaLink: 'selezionalo dal tuo computer.',
+          fileIsLoading: 'Caricamento in corso...',
+          invalidBeneficiaryNumberTitle: 'Il file caricato contiene troppi codici fiscali',
+          invalidBeneficiaryNumberDescription: 'Aumenta il budget o rimuovi i destinatari',
+          invalidFileTitle: 'Il file caricato non è valido',
+          invalidFileDescription: 'Errore',
+          invalidFileTypeDescription: 'Sono ammessi solamente file csv',
+          notEmptyDescription: 'Il file non può essere vuoto',
+          overMaxUploadDescription: 'La dimensione massima supportata è di 2MB',
+          invalidRow: 'Errore: riga {{rowNumber}}',
+          retry: 'Carica di nuovo',
+          changeFile: 'Sostituisci file',
+          validFile: 'File valido',
         },
       },
       stepThree: {
@@ -306,5 +319,6 @@ export default {
     title: 'Si è verificato un errore',
     invalidDataDescription: 'Controllare i dati inseriti',
     getDataDescription: 'Riprovare',
+    getFileDataDescription: 'Caricare nuovamente il file',
   },
 };

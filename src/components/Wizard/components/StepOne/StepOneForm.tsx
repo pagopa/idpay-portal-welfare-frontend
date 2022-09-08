@@ -265,9 +265,9 @@ Props) => {
       description: additionalInfoForm.description,
       channels: [...additionalInfoForm.channels],
     },
-    // validateOnMount: true,
+    validateOnMount: true,
     validateOnChange: true,
-    // enableReinitialize: true,
+    enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
