@@ -61,7 +61,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           setDisabledNext(false);
         })
         .catch((error) => {
-          if (error.httpStatus === 400 && error.httpBody.code === 'it.gov.pagopa.group.not.found') {
+          if (!Object.keys(error).length) {
             setIntiStatus();
           } else {
             addError({
@@ -99,7 +99,9 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               switch (errorKey) {
                 case 'group.groups.invalid.file.format':
                   setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-                  setAlertDescription(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+                  setAlertDescription(
+                    t('components.wizard.stepTwo.upload.invalidFileTypeDescription')
+                  );
                   break;
                 case 'group.groups.invalid.file.empty':
                   setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
@@ -112,6 +114,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   );
                   break;
                 case 'group.groups.invalid.fiIe':
+                case 'group.groups.invalid.file.beneficiary.number.budget':
                   setAlertTitle(
                     t('components.wizard.stepTwo.upload.invalidBeneficiaryNumberTitle')
                   );
@@ -151,11 +154,16 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               component: 'Toast',
               showCloseIcon: true,
             });
+            setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+            setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+            setFileIsLoading(false);
+            setFileRejected(true);
+            setFileAccepted(false);
+            setDisabledNext(true);
           });
       }
     },
     onDropRejected: (files) => {
-      setFileRejected(true);
       const errorKey = files[0].errors[0].code;
       switch (errorKey) {
         case 'file-invalid-type':
@@ -171,6 +179,10 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileDescription'));
           break;
       }
+      setFileIsLoading(false);
+      setFileRejected(true);
+      setFileAccepted(false);
+      setDisabledNext(true);
     },
   });
 
