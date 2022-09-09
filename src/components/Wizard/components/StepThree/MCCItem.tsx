@@ -98,15 +98,19 @@ const MCCItem = ({
       .test('valid-mccCode-values', t('validation.notValidMccLis'), function (val) {
         if (val && val.length > 0) {
           const mccCodesValue = val.replace(/\W+/g, ' ').trim();
+          const mccCodesArr = mccCodesValue.split(' ');
+          // eslint-disable-next-line functional/no-let
+          let valid = true;
           // eslint-disable-next-line functional/no-let
           let mccCode = '';
           mccCodesList.forEach((c) => {
             mccCode = mccCode + ' ' + c.code;
           });
           mccCode = mccCode.trim();
-          console.log(mccCodesValue);
-          console.log(mccCode);
-          return mccCode.includes(mccCodesValue);
+          mccCodesArr.forEach((m) => {
+            valid = valid && mccCode.includes(m);
+          });
+          return valid;
         }
         return true;
       }),
