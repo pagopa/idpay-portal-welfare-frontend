@@ -127,12 +127,13 @@ const TransactionNumberItem = ({
         sx={{
           gridColumn: 'span 24',
           display: 'grid',
-          gridTemplateColumns: 'repeat( 4, 1fr)',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"minTransactionNumberField minTransactionNumberTooltip . . "
                               "maxTransactionNumberField maxTransactionNumberTooltip . . "`,
           alignItems: 'center',
-          gap: 3,
+          columnGap: 2,
+          rowGap: 3,
           my: 2,
         }}
       >

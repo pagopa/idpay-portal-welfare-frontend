@@ -739,7 +739,7 @@ Props) => {
 
           <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', py: 2 }}>
             <FormControlLabel
-              sx={{ gridColumn: 'span 1' }}
+              sx={{ gridColumn: 'span 2' }}
               control={
                 <Switch
                   data-testid="initiative-on-io-test"
@@ -752,7 +752,6 @@ Props) => {
                     // id: 'initiativeOnIO',
                   }}
                   onChange={async (e) => {
-                    console.log(e.target.checked);
                     await handleInitiativeOnIO(e.target.checked);
                   }}
                   name="initiativeOnIO"
@@ -887,12 +886,12 @@ Props) => {
                         gridColumn: 'span 24',
                         display: 'grid',
                         gridTemplateColumns: 'repeat(24, 1fr)',
-                        gap: 3,
+                        gap: 0,
                         my: 2,
                       }}
                     >
-                      <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                        {i !== 0 && (
+                      {i !== 0 && (
+                        <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
                           <RemoveCircleOutlineIcon
                             color="error"
                             sx={{
@@ -908,11 +907,10 @@ Props) => {
                             }
                             id={`remove_element_${i}`}
                           />
-                        )}
-                      </Box>
-
+                        </Box>
+                      )}
                       <FormControl
-                        sx={{ gridColumn: 'span 4' }}
+                        sx={{ gridColumn: 'span 6' }}
                         error={typeTouched && Boolean(typeError)}
                       >
                         <InputLabel id={`channels[${i}].type_label`}>
@@ -943,7 +941,7 @@ Props) => {
                         </Select>
                         <FormHelperText>{typeTouched && typeError}</FormHelperText>
                       </FormControl>
-                      <FormControl sx={{ gridColumn: 'span 10' }}>
+                      <FormControl sx={{ gridColumn: 'span 12' }}>
                         <TextField
                           id={`channels_${i}_contact`}
                           name={`channels[${i}].contact`}

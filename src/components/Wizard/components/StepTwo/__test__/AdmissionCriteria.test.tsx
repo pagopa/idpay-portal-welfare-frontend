@@ -46,7 +46,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     await act(async () => {
       const { getByTestId } = render(
         <Provider store={store}>
-          <Wizard />
+          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
         </Provider>
       );
 
@@ -60,7 +60,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     await act(async () => {
       const { getByTestId } = render(
         <Provider store={store}>
-          <Wizard />
+          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
         </Provider>
       );
 

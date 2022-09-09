@@ -363,8 +363,8 @@ const ManualCriteria = ({
                   my: 2,
                 }}
               >
-                <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                  {i > 0 && (
+                {i > 0 && (
+                  <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
                     <RemoveCircleOutlineIcon
                       color="error"
                       data-id={o}
@@ -382,8 +382,8 @@ const ManualCriteria = ({
                       }}
                       data-test-id="manualCriteria-remove-option"
                     />
-                  )}
-                </Box>
+                  </Box>
+                )}
                 <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
                   <TextField
                     id={`manualCriteriaValues[${i}]}`}

@@ -1,28 +1,30 @@
 import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
-import { useEffect, useState } from 'react';
+import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
-import routes from '../../routes';
-// import { useGroups } from '../../hooks/useGroups';
+// import routes from '../../routes';
 import StepOneForm from './components/StepOne/StepOneForm';
 import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
 import FileUpload from './components/StepTwo/FileUpload';
 import ShopRules from './components/StepThree/ShopRules';
 import RefundRules from './components/StepFour/RefundRules';
 
-const Wizard = () => {
+type Props = {
+  handleOpenExitModal: MouseEventHandler;
+};
+
+const Wizard = ({ handleOpenExitModal }: Props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [actionType, setActionType] = useState('');
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
-  const history = useHistory();
-  // useGroups();
+  // const history = useHistory();
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -47,12 +49,13 @@ const Wizard = () => {
     setActionType(() => WIZARD_ACTIONS.DRAFT);
   };
 
-  const handleBack = () => {
+  const handleBack = (e: any) => {
     if (activeStep > 0) {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
       setActionType(() => WIZARD_ACTIONS.BACK);
     } else {
-      history.push(routes.INITIATIVE_LIST);
+      // history.push(routes.INITIATIVE_LIST);
+      handleOpenExitModal(e);
     }
   };
 
@@ -142,7 +145,7 @@ const Wizard = () => {
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
+              gridTemplateColumns: 'repeat(4, 1fr)',
               gap: 2,
               gridTemplateRows: 'auto',
               gridTemplateAreas: `"back . . . draft continue"`,
@@ -153,7 +156,7 @@ const Wizard = () => {
                 variant="outlined"
                 color="inherit"
                 //  disabled={activeStep === 0}
-                onClick={handleBack}
+                onClick={(e) => handleBack(e)}
               >
                 {t('components.wizard.common.buttons.back')}
               </Button>

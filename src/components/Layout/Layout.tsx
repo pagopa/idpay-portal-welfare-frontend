@@ -4,9 +4,12 @@ import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/use
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
+import { useLocation } from 'react-router-dom';
+import { matchPath } from 'react-router';
 import Header from '../Header';
 // import withParties, { WithPartiesProps } from '../../decorators/withParties';
 import SideMenu from '../SideMenu/SideMenu';
+import ROUTES from '../../routes';
 
 // type Props = {
 //   children?: React.ReactNode;
@@ -21,6 +24,13 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
+  const location = useLocation();
+
+  const match = matchPath(location.pathname, {
+    path: ROUTES.HOME,
+    exact: true,
+    strict: false,
+  });
 
   return (
     <Box
@@ -36,23 +46,44 @@ const Layout = ({ children }: Props) => {
         <Header onExit={onExit} loggedUser={loggedUser} parties={[]} />
         {/* <Header onExit={onExit} loggedUser={loggedUser} parties={parties} /> */}
       </Box>
-      <Box gridArea="body" display="grid" gridTemplateColumns="minmax(200px, 2fr) 10fr">
-        <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
-          <SideMenu />
+      {match !== null ? (
+        <Box gridArea="body" display="grid" gridTemplateColumns="minmax(200px, 2fr) 10fr">
+          <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
+            <SideMenu />
+          </Box>
+          <Box
+            gridColumn="auto"
+            sx={{ backgroundColor: '#F5F6F7' }}
+            display="grid"
+            justifyContent="center"
+            pb={16}
+            pt={2}
+            px={2}
+            gridTemplateColumns="1fr"
+          >
+            {children}
+          </Box>
         </Box>
+      ) : (
         <Box
-          gridColumn="auto"
-          sx={{ backgroundColor: '#F5F6F7' }}
+          gridArea="body"
           display="grid"
+          gridTemplateColumns="repeat(12, 1fr)"
           justifyContent="center"
-          pb={16}
-          pt={2}
-          px={2}
-          gridTemplateColumns="1fr"
         >
-          {children}
+          <Box
+            display="grid"
+            justifyContent="center"
+            pb={16}
+            pt={2}
+            gridColumn="span 12"
+            maxWidth={920}
+            justifySelf="center"
+          >
+            {children}
+          </Box>
         </Box>
-      </Box>
+      )}
       <Box gridArea="footer">
         <Footer onExit={onExit} loggedUser={true} />
       </Box>
