@@ -18,7 +18,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     description: '',
     code: '',
     boolValue: true,
-    multiValue: ['', ''],
+    multiValue: [{ value: '' }, { value: '' }],
     authorityLabel: '',
     fieldLabel: '',
     value: '',

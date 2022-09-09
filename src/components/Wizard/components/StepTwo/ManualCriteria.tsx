@@ -59,12 +59,21 @@ const ManualCriteria = ({
       .max(200, t('validation.maxTwoHundred')),
     manualCriteriaSelectName: Yup.string().required(t('validation.required')),
     manualCriteriaValues: Yup.array().of(
-      Yup.string().when('manualCriteriaSelectName', (_manualCriteriaSelectName, schema) => {
-        if (manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
-          return Yup.string().required(t('validation.required'));
-        }
-        return schema;
-      })
+      Yup.object()
+        .default({})
+        .shape({
+          value: Yup.string().when(
+            'manualCriteriaSelectName',
+            (_manualCriteriaSelectName, schema) => {
+              if (
+                manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
+              ) {
+                return Yup.string().required(t('validation.required'));
+              }
+              return schema;
+            }
+          ),
+        })
     ),
   });
 
@@ -74,7 +83,9 @@ const ManualCriteria = ({
       manualCriteriaName: data.description,
       // eslint-disable-next-line no-underscore-dangle
       manualCriteriaSelectName: data._type,
-      manualCriteriaValues: data.multiValue,
+      manualCriteriaValues: Array.isArray(data.multiValue)
+        ? [...data.multiValue]
+        : [{ value: '' }, { value: '' }],
     },
     validateOnMount: true,
     enableReinitialize: true,
@@ -90,7 +101,7 @@ const ManualCriteria = ({
       setValues({
         ...values,
         manualCriteriaSelectName: e.target.value,
-        manualCriteriaValues: ['', ''],
+        manualCriteriaValues: [{ value: '' }, { value: '' }],
       });
     } else {
       setValues({ ...values, manualCriteriaSelectName: e.target.value });
@@ -116,14 +127,14 @@ const ManualCriteria = ({
     setManualCriteriaToRender([...newManualCriteria]);
   };
 
-  const handleOptionAdded = (optionValues: Array<string> | undefined, code: string) => {
+  const handleOptionAdded = (optionValues: Array<{ value: string }> | undefined, code: string) => {
     const newManualCriteria: Array<ManualCriteriaItem> = [];
     manualCriteriaToRender.forEach((m) => {
       if (code === m.code) {
         if (Array.isArray(optionValues)) {
           const criteria = {
             ...m,
-            multiValue: [...optionValues, ''],
+            multiValue: [...optionValues, { value: '' }],
           };
           // eslint-disable-next-line functional/immutable-data
           newManualCriteria.push({ ...criteria });
@@ -140,7 +151,7 @@ const ManualCriteria = ({
     const newManualCriteria: Array<ManualCriteriaItem> = [];
     manualCriteriaToRender.forEach((m) => {
       if (m.code === code) {
-        const newValues: Array<string> = [];
+        const newValues: Array<{ value: string }> = [];
         m.multiValue?.forEach((v, i) => {
           if (i !== deletedOptionIndex) {
             // eslint-disable-next-line functional/immutable-data
@@ -161,11 +172,11 @@ const ManualCriteria = ({
     const newManualCriteria: Array<ManualCriteriaItem> = [];
     manualCriteriaToRender.forEach((m) => {
       if (m.code === code) {
-        const newOptions: Array<string> = [];
+        const newOptions: Array<{ value: string }> = [];
         m.multiValue?.forEach((v, i) => {
           if (i === optionIndex) {
             // eslint-disable-next-line functional/immutable-data
-            newOptions.push(optionValue);
+            newOptions.push({ value: optionValue });
           } else {
             // eslint-disable-next-line functional/immutable-data
             newOptions.push(v);
@@ -186,12 +197,7 @@ const ManualCriteria = ({
     setValues({ ...values, manualCriteriaValues: newOptionsValues });
   };
 
-  const deleteOption = (
-    indexValueToRemove: number,
-    values: any,
-    setValues: any,
-    setTouched: any
-  ) => {
+  const deleteOption = (indexValueToRemove: number, values: any, setValues: any) => {
     const newValues: Array<any> = [];
     values.manualCriteriaValues.forEach((v: any, i: number) => {
       if (i !== indexValueToRemove) {
@@ -200,15 +206,13 @@ const ManualCriteria = ({
       }
     });
     setValues({ ...values, manualCriteriaValues: newValues });
-    setTouched({}, false);
   };
 
-  const changeOption = (e: any, i: number, values: any, setValues: any, setTouched: any) => {
+  const changeOption = (e: any, i: number, values: any, setValues: any) => {
     const options = [...values.manualCriteriaValues];
     // eslint-disable-next-line functional/immutable-data
     options[i] = e.target.value;
     setValues({ ...values, manualCriteriaValues: options });
-    setTouched({}, false);
   };
 
   return (
@@ -253,8 +257,8 @@ const ManualCriteria = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
+          mt: 2,
         }}
       >
         <FormControl sx={{ gridColumn: 'span 3' }}>
@@ -300,7 +304,7 @@ const ManualCriteria = ({
           my: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 9' }}>
+        <FormControl sx={{ gridColumn: 'span 10' }}>
           <TextField
             id={`manualCriteria${data.code}}`}
             name={`manualCriteriaName`}
@@ -334,23 +338,23 @@ const ManualCriteria = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
         }}
       >
         {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI &&
           Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
           manualCriteriaFormik.values.manualCriteriaValues.map((o, i) => {
             const optionErrors =
-              Array.isArray(manualCriteriaFormik.errors.manualCriteriaValues) &&
-              typeof manualCriteriaFormik.errors.manualCriteriaValues[i] === 'string'
-                ? manualCriteriaFormik.errors.manualCriteriaValues[i]
-                : '';
-            // const optionTouched =
-            //   Array.isArray(manualCriteriaFormik.touched.manualCriteriaValues) &&
-            //   typeof manualCriteriaFormik.touched.manualCriteriaValues[i] === 'boolean'
-            //     ? manualCriteriaFormik.touched.manualCriteriaValues[i]
-            //     : false;
+              (manualCriteriaFormik.errors.manualCriteriaValues?.length &&
+                manualCriteriaFormik.errors.manualCriteriaValues[i]) ||
+              {};
+            const valueError = typeof optionErrors === 'string' ? '' : optionErrors.value;
+            const optionTouched =
+              (Array.isArray(manualCriteriaFormik.touched.manualCriteriaValues) &&
+                manualCriteriaFormik.touched.manualCriteriaValues?.length &&
+                manualCriteriaFormik.touched.manualCriteriaValues[i]) ||
+              {};
+            const valueTouched = optionTouched.value;
 
             return (
               <Box
@@ -359,8 +363,7 @@ const ManualCriteria = ({
                   gridColumn: 'span 24',
                   display: 'grid',
                   gridTemplateColumns: 'repeat(24, 1fr)',
-                  gap: 3,
-                  my: 2,
+                  gap: 2,
                 }}
               >
                 {i > 0 && (
@@ -375,8 +378,7 @@ const ManualCriteria = ({
                         deleteOption(
                           i,
                           manualCriteriaFormik.values,
-                          manualCriteriaFormik.setValues,
-                          manualCriteriaFormik.setTouched
+                          manualCriteriaFormik.setValues
                         );
                         handleOptionDeleted(i, manualCriteriaFormik.values.manualCriteriaCode);
                       }}
@@ -384,26 +386,26 @@ const ManualCriteria = ({
                     />
                   </Box>
                 )}
-                <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
+                <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
                   <TextField
-                    id={`manualCriteriaValues[${i}]}`}
-                    name={`manualCriteriaValues[${i}]}`}
+                    key={`manualCriteriaValues[${i}].value}`}
+                    id={`manualCriteriaValues[${i}].value}`}
+                    name={`manualCriteriaValues[${i}].value}`}
                     variant="outlined"
-                    value={
-                      typeof Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
-                      typeof manualCriteriaFormik.values.manualCriteriaValues !== 'undefined'
-                        ? manualCriteriaFormik.values.manualCriteriaValues[i]
-                        : ''
-                    }
+                    // value={
+                    //   typeof Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
+                    //   typeof manualCriteriaFormik.values.manualCriteriaValues !== 'undefined'
+                    //     ? manualCriteriaFormik.values.manualCriteriaValues[i].value
+                    //     : ''
+                    // }
+                    value={manualCriteriaFormik.values.manualCriteriaValues[i].value}
+                    onBlur={(e) => manualCriteriaFormik.handleBlur(e)}
                     onChange={(e) => {
-                      void manualCriteriaFormik.setTouched({}, false);
-
                       changeOption(
                         e,
                         i,
                         manualCriteriaFormik.values,
-                        manualCriteriaFormik.setValues,
-                        manualCriteriaFormik.setTouched
+                        manualCriteriaFormik.setValues
                       );
                       handleOptionChanged(
                         e.target.value,
@@ -411,8 +413,8 @@ const ManualCriteria = ({
                         manualCriteriaFormik.values.manualCriteriaCode
                       );
                     }}
-                    error={optionErrors.length > 0}
-                    helperText={optionErrors.length > 0 ? optionErrors : ''}
+                    error={valueTouched && Boolean(valueError)}
+                    helperText={valueTouched && valueError}
                     data-testid="manualCriteria-multi-test"
                   />
                 </Box>
@@ -426,7 +428,6 @@ const ManualCriteria = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(12, 1fr)',
               gap: 3,
-              my: 2,
             }}
           >
             <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>

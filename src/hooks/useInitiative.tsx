@@ -223,12 +223,18 @@ const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem>
           code: m.code || '',
         });
       } else if (Array.isArray(m.value)) {
+        const mValue: Array<{ value: string }> = [];
+        m.value.forEach((m) => {
+          // eslint-disable-next-line functional/immutable-data
+          mValue.push({ value: m });
+        });
+
         // eslint-disable-next-line functional/immutable-data
         selfDeclarationCriteria.push({
           // eslint-disable-next-line no-underscore-dangle
           _type: m._type,
           boolValue: true,
-          multiValue: [...m.value],
+          multiValue: [...mValue],
           description: m.description || '',
           code: m.code || '',
         });

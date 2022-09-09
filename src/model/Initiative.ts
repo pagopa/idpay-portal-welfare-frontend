@@ -38,7 +38,7 @@ export interface ManualCriteriaItem {
   _type?: string;
   description: string;
   boolValue?: boolean;
-  multiValue?: Array<string>;
+  multiValue?: Array<{ value: string }>;
   code: string;
 }
 

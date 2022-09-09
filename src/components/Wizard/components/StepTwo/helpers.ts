@@ -193,18 +193,26 @@ export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria:
       manualCriteriaToSend.push({ ...criteria });
       // eslint-disable-next-line no-underscore-dangle
     } else if (m._type === 'multi') {
+      const multiValue: Array<string> = [];
+      if (Array.isArray(m.multiValue)) {
+        m.multiValue.forEach((m: { value: string }) => {
+          // eslint-disable-next-line functional/immutable-data
+          multiValue.push(m.value);
+        });
+      }
+
       const criteria = {
         // eslint-disable-next-line no-underscore-dangle
         _type: m._type,
         description: m.description,
-        value: Array.isArray(m.multiValue) ? [...m.multiValue] : [],
+        value: [...multiValue],
         code: m.code,
       };
       // eslint-disable-next-line functional/immutable-data
       manualCriteriaToSend.push({ ...criteria });
     }
   });
-
+  console.log(manualCriteriaToSend);
   return {
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],

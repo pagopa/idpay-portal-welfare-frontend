@@ -194,7 +194,7 @@ const AdmissionCriteria = ({
         _type: 'boolean',
         description: '',
         boolValue: true,
-        multiValue: ['', ''],
+        multiValue: [{ value: '' }, { value: '' }],
         code: newManualCriteriaCode,
       },
     ]);
@@ -321,10 +321,10 @@ const AdmissionCriteria = ({
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           gap: 1,
           gridTemplateRows: 'auto',
-          gridTemplateAreas: `"criteriaButton addButton . . "`,
+          gridTemplateAreas: `"criteriaButton addButton .  "`,
           py: 2,
           mb: 8,
         }}
