@@ -5,6 +5,7 @@ import {
   Button,
   Chip,
   FormHelperText,
+  IconButton,
   LinearProgress,
   Link,
   Paper,
@@ -18,6 +19,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import CloseIcon from '@mui/icons-material/Close';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   getGroupOfBeneficiaryStatusAndDetail,
@@ -286,7 +288,12 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       >
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('components.wizard.stepTwo.upload.fileUploadHelpText')}&#160;
-          <Link href="#" variant="body2" sx={{ fontSize: '0.875rem', fontWeight: 600 }}>
+          <Link
+            href="#"
+            target="_blank"
+            variant="body2"
+            sx={{ fontSize: '0.875rem', fontWeight: 600 }}
+          >
             {t('components.wizard.stepTwo.upload.fileUuploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText>
@@ -323,7 +330,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {fileName}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 4' }}>
+        <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
           <Typography variant="body2">{fileDate}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
@@ -365,20 +372,20 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         <Alert
           severity="error"
           action={
-            <ButtonNaked
+            <IconButton
+              aria-label="close"
+              color="inherit"
               size="small"
-              component="button"
-              onClick={() => setFileRejected(false)}
-              startIcon={<FileUploadIcon />}
-              sx={{ color: 'primary.main' }}
-              weight="default"
+              onClick={() => {
+                setFileRejected(false);
+              }}
             >
-              {t('components.wizard.stepTwo.upload.retry')}
-            </ButtonNaked>
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
           }
         >
           <AlertTitle>{t(alertTitle)}</AlertTitle>
-          <Typography>{t(alertDescription)}</Typography>
+          <Typography variant="body2">{t(alertDescription)}</Typography>
         </Alert>
       )}
 

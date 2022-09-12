@@ -90,12 +90,21 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
     additionalInfo: Yup.string(),
     reimbursementThreshold: Yup.number()
       .default(undefined)
-      .test('reimbursement-threshold', t('validation.required'), function (val) {
+      .test('reimbursement-threshold-number', t('validation.required'), function (val) {
         if (
           this.parent.reimbursmentQuestionGroup === 'true' &&
           this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
         ) {
           return typeof val === 'number';
+        }
+        return true;
+      })
+      .test('reimbursement-threshold-min-one', t('validation.positive'), function (val) {
+        if (
+          this.parent.reimbursmentQuestionGroup === 'true' &&
+          this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+        ) {
+          return typeof val === 'number' && val >= 1;
         }
         return true;
       }),
@@ -165,14 +174,14 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
         <Box sx={{ py: 3 }}>
-          <Typography variant="h6">{t('components.wizard.stepFour.title2')}</Typography>
+          <Typography variant="h6">{t('components.wizard.stepFour.title1')}</Typography>
         </Box>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 1 }}>
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 2, fontSize: '16px', fontWeight: '600' }}
             id="import-time-label"
           >
-            {t('components.wizard.stepFour.form.subTitle')}
+            {t('components.wizard.stepFour.form.radioQuestion')}
           </FormLabel>
 
           <RadioGroup
@@ -253,7 +262,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                 <TextField
                   inputProps={{
                     step: 0.01,
-                    min: 0,
+                    min: 1,
                     type: 'number',
                     'data-testid': 'reimbursement-threshold',
                   }}
