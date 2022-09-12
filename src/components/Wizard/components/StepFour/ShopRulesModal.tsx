@@ -109,12 +109,12 @@ const ShopRulesModal = ({
           >
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="h6" component="h2">
-                {t('components.wizard.stepThree.modal.title')}
+                {t('components.wizard.stepFour.modal.title')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" component="p" sx={{ mt: 2 }}>
-                {t('components.wizard.stepThree.modal.subtitle')}
+                {t('components.wizard.stepFour.modal.subtitle')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>

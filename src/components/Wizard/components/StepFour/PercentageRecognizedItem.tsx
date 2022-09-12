@@ -90,7 +90,7 @@ const PercentageRecognizedItem = ({
       </Box>
       <Box sx={{ gridColumn: 'span 23' }}>
         <Typography variant="subtitle1">
-          {t('components.wizard.stepThree.form.percentageRecognized')}
+          {t('components.wizard.stepFour.form.percentageRecognized')}
         </Typography>
       </Box>
       <Box

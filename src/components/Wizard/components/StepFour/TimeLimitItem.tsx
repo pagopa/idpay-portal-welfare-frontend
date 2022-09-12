@@ -198,13 +198,13 @@ const TimeLimitItem = ({
                 error={frequencyTouched && Boolean(frequencyError)}
               >
                 <MenuItem value="DAILY">
-                  {t('components.wizard.stepThree.form.rewardLimitDaily')}
+                  {t('components.wizard.stepFour.form.rewardLimitDaily')}
                 </MenuItem>
                 <MenuItem value="MONTHLY">
-                  {t('components.wizard.stepThree.form.rewardLimitMonthly')}
+                  {t('components.wizard.stepFour.form.rewardLimitMonthly')}
                 </MenuItem>
                 <MenuItem value="YEARLY">
-                  {t('components.wizard.stepThree.form.rewardLimitYearly')}
+                  {t('components.wizard.stepFour.form.rewardLimitYearly')}
                 </MenuItem>
               </Select>
               <FormHelperText>{frequencyTouched && frequencyError}</FormHelperText>
@@ -215,7 +215,7 @@ const TimeLimitItem = ({
                 name={`timeLimit[${i}].rewardLimit`}
                 value={formik.values.timeLimit[i].rewardLimit}
                 onChange={(value) => formik.handleChange(value)}
-                placeholder={t('components.wizard.stepThree.form.maxReward')}
+                placeholder={t('components.wizard.stepFour.form.maxReward')}
                 inputProps={{
                   step: 0.01,
                   min: 1,
@@ -261,7 +261,7 @@ const TimeLimitItem = ({
           disableRipple={true}
           disableFocusRipple={true}
         >
-          {t('components.wizard.stepThree.form.addTimeLimitItem')}
+          {t('components.wizard.stepFour.form.addTimeLimitItem')}
         </Button>
       </Box>
     </Box>

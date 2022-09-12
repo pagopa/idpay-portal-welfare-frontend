@@ -22,7 +22,7 @@ const StepTwoExcluded = ({ action }: Props) => {
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepTwo.form.title3')}</Typography>
+        <Typography variant="h6">{t('components.wizard.stepThree.form.title3')}</Typography>
       </Box>
 
       <form>
@@ -35,7 +35,7 @@ const StepTwoExcluded = ({ action }: Props) => {
               letterSpacing: '0.15px',
             }}
           >
-            {t('components.wizard.stepTwo.form.subTitle3')}
+            {t('components.wizard.stepThree.form.subTitle3')}
           </FormLabel>
           <FormLabel
             sx={{

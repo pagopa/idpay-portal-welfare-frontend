@@ -76,7 +76,7 @@ export default {
   },
   components: {
     wizard: {
-      stepOne: {
+      stepTwo: {
         title: 'Informazioni generali',
         form: {
           beneficiaryType: 'A chi è rivolta?',
@@ -115,7 +115,7 @@ export default {
           },
         },
       },
-      stepTwo: {
+      stepThree: {
         title: 'Destinatari',
         chooseCriteria: {
           title: "Criteri d'ammissione",
@@ -181,7 +181,7 @@ export default {
           fileUuploadHelpFileLinkLabel: 'Scarica il file di esempio',
         },
       },
-      stepThree: {
+      stepFour: {
         title: 'Regole di spesa',
         subtitle:
           'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
@@ -237,7 +237,7 @@ export default {
           nobodyExceptSelectItem: 'Nessuno tranne',
         },
       },
-      stepFour: {
+      stepFive: {
         title1: 'Regole di rimborso',
         title2: 'Informazioni aggiuntive',
         form: {
@@ -264,19 +264,7 @@ export default {
           },
         },
       },
-      stepFive: {
-        title: 'Informazioni legali',
-        form: {
-          subTitle:
-            'Inserisci le URL dei documenti richiesti. Queste risorse dovranno essere raggiungibili pubblicamente durante tutta la durata dell’iniziativa. ',
-          infoPrivacy: 'Informativa Privacy',
-          termsCond: 'Termini e Condizioni',
-          rules: 'Regolamento',
-          helper: 'Hai bisogno di una sintesi delle regole?',
-          helperLink: 'Scarica la checklist',
-          tryUrl: 'Prova URL',
-        },
-      },
+
       common: {
         buttons: {
           back: 'Indietro',

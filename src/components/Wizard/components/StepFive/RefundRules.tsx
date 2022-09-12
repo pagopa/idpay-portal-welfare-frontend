@@ -174,14 +174,14 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
         <Box sx={{ py: 3 }}>
-          <Typography variant="h6">{t('components.wizard.stepFour.title1')}</Typography>
+          <Typography variant="h6">{t('components.wizard.stepFive.title1')}</Typography>
         </Box>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 1 }}>
           <FormLabel
             sx={{ gridColumn: 'span 12', pb: 2, fontSize: '16px', fontWeight: '600' }}
             id="import-time-label"
           >
-            {t('components.wizard.stepFour.form.radioQuestion')}
+            {t('components.wizard.stepFive.form.radioQuestion')}
           </FormLabel>
 
           <RadioGroup
@@ -200,13 +200,13 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
             <FormControlLabel
               value={'true'}
               control={<Radio />}
-              label={t('components.wizard.stepFour.form.accumulatedAmount')}
+              label={t('components.wizard.stepFive.form.accumulatedAmount')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
               value={'false'}
               control={<Radio />}
-              label={t('components.wizard.stepFour.form.timeParameter')}
+              label={t('components.wizard.stepFive.form.timeParameter')}
             />
           </RadioGroup>
           <FormHelperText
@@ -226,13 +226,13 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
               sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}
             >
               <InputLabel id="select-accumulated-amount" sx={{ pt: 2 }}>
-                {t('components.wizard.stepFour.form.selectedAccumulatedAmount')}
+                {t('components.wizard.stepFive.form.selectedAccumulatedAmount')}
               </InputLabel>
               <Select
                 id="accumulatedAmount"
                 name="accumulatedAmount"
                 value={formik.values.accumulatedAmount}
-                label={t('components.wizard.stepFour.form.selectedAccumulatedAmount')}
+                label={t('components.wizard.stepFive.form.selectedAccumulatedAmount')}
                 onChange={(e) => formik.setFieldValue('accumulatedAmount', e.target.value)}
                 error={formik.touched.accumulatedAmount && Boolean(formik.errors.accumulatedAmount)}
               >
@@ -240,13 +240,13 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                   value={AccumulatedTypeEnum.BUDGET_EXHAUSTED}
                   data-testid="balance-exhausted"
                 >
-                  {t('components.wizard.stepFour.select.accumulatedAmount.balanceExhausted')}
+                  {t('components.wizard.stepFive.select.accumulatedAmount.balanceExhausted')}
                 </MenuItem>
                 <MenuItem
                   value={AccumulatedTypeEnum.THRESHOLD_REACHED}
                   data-testid="certain-threshold"
                 >
-                  {t('components.wizard.stepFour.select.accumulatedAmount.certainThreshold')}
+                  {t('components.wizard.stepFive.select.accumulatedAmount.certainThreshold')}
                 </MenuItem>
               </Select>
               <FormHelperText
@@ -267,8 +267,8 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                     'data-testid': 'reimbursement-threshold',
                   }}
                   id="reimbursementThreshold"
-                  label={t('components.wizard.stepFour.form.reimbursementThreshold')}
-                  placeholder={t('components.wizard.stepFour.form.reimbursementThreshold')}
+                  label={t('components.wizard.stepFive.form.reimbursementThreshold')}
+                  placeholder={t('components.wizard.stepFive.form.reimbursementThreshold')}
                   name="reimbursementThreshold"
                   aria-label="reimbursementThreshold"
                   value={formik.values.reimbursementThreshold}
@@ -298,30 +298,30 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
               sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}
             >
               <InputLabel id="select-time-parameter" sx={{ pt: 2 }}>
-                {t('components.wizard.stepFour.form.selectTimeParam')}
+                {t('components.wizard.stepFive.form.selectTimeParam')}
               </InputLabel>
               <Select
                 id="selectTimeParam"
                 name="selectTimeParam"
                 value={formik.values.timeParameter}
-                label={t('components.wizard.stepFour.form.selectTimeParam')}
+                label={t('components.wizard.stepFive.form.selectTimeParam')}
                 onChange={(e) => formik.setFieldValue('timeParameter', e.target.value)}
                 error={formik.touched.timeParameter && Boolean(formik.errors.timeParameter)}
               >
                 <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
-                  {t('components.wizard.stepFour.select.timrParameter.initiativeDone')}
+                  {t('components.wizard.stepFive.select.timrParameter.initiativeDone')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.DAILY} data-testid="every-day">
-                  {t('components.wizard.stepFour.select.timrParameter.everyDay')}
+                  {t('components.wizard.stepFive.select.timrParameter.everyDay')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.WEEKLY} data-testid="every-week">
-                  {t('components.wizard.stepFour.select.timrParameter.everyWeek')}
+                  {t('components.wizard.stepFive.select.timrParameter.everyWeek')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.MONTHLY} data-testid="every-month">
-                  {t('components.wizard.stepFour.select.timrParameter.everyMonth')}
+                  {t('components.wizard.stepFive.select.timrParameter.everyMonth')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.QUARTERLY} data-testid="every-three-months">
-                  {t('components.wizard.stepFour.select.timrParameter.everyThreeMonths')}
+                  {t('components.wizard.stepFive.select.timrParameter.everyThreeMonths')}
                 </MenuItem>
               </Select>
               <FormHelperText
@@ -337,7 +337,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
 
       <Paper sx={{ display: 'grid', width: '100%', my: 5, px: 3 }}>
         <Box sx={{ py: 3 }}>
-          <Typography variant="h6">{t('components.wizard.stepFour.title2')}</Typography>
+          <Typography variant="h6">{t('components.wizard.stepFive.title2')}</Typography>
         </Box>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 1 }}>
           <FormLabel
@@ -350,15 +350,15 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
             }}
             id="import-time-label"
           >
-            {t('components.wizard.stepFour.form.subTitle')}
+            {t('components.wizard.stepFive.form.subTitle')}
           </FormLabel>
         </FormControl>
 
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}>
           <TextField
             id="additionalInfo"
-            label={t('components.wizard.stepFour.form.idCodeBalance')}
-            placeholder={t('components.wizard.stepFour.form.idCodeBalance')}
+            label={t('components.wizard.stepFive.form.idCodeBalance')}
+            placeholder={t('components.wizard.stepFive.form.idCodeBalance')}
             name="additionalInfo"
             aria-label="additionalInfo"
             value={formik.values.additionalInfo}

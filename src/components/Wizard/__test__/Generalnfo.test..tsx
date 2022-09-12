@@ -5,8 +5,8 @@ import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
 import { WIZARD_ACTIONS } from '../../../utils/constants';
 import Wizard from '../Wizard';
-import StepOneForm from '../components/StepOne/StepOneForm';
-import { createStore } from './../../../redux/store';
+import Generalnfo from '../components/StepTwo/Generalnfo';
+import { createStore } from '../../../redux/store';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -18,7 +18,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     await act(async () => {
       render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -92,7 +92,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     await act(async () => {
       const { getByTestId } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -137,7 +137,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const fn = jest.fn();
       const { getByLabelText } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -158,15 +158,15 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
 
       /* Test of value of radio button */
 
-      const beneficiaryType = getByLabelText(/components.wizard.stepOne.form.beneficiaryType/);
-      const beneficiaryType1 = getByLabelText(/components.wizard.stepOne.form.person/);
-      const beneficiaryType2 = getByLabelText(/components.wizard.stepOne.form.family/);
-      // const beneficiaryKnown = getByLabelText(/components.wizard.stepOne.form.beneficiaryKnown/);
+      const beneficiaryType = getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
+      const beneficiaryType1 = getByLabelText(/components.wizard.stepTwo.form.person/);
+      const beneficiaryType2 = getByLabelText(/components.wizard.stepTwo.form.family/);
+      // const beneficiaryKnown = getByLabelText(/components.wizard.stepTwo.form.beneficiaryKnown/);
       const beneficiaryKnown1 = getByLabelText(
-        /components.wizard.stepOne.form.taxCodeList/
+        /components.wizard.stepTwo.form.taxCodeList/
       ) as HTMLInputElement;
       const beneficiaryKnown2 = getByLabelText(
-        /components.wizard.stepOne.form.manualSelection/
+        /components.wizard.stepTwo.form.manualSelection/
       ) as HTMLInputElement;
 
       fireEvent.click(beneficiaryType);
@@ -205,7 +205,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
   it('Total Budget / Budget per Person Test', async () => {
     const { getByLabelText, getByDisplayValue } = render(
       <Provider store={store}>
-        <StepOneForm
+        <Generalnfo
           action={''}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (value: SetStateAction<string>) {
@@ -231,7 +231,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     function hasInputValueTot(e: TestElement, budgetTot: string) {
       return getByDisplayValue(budgetTot) === e;
     }
-    const budget = getByLabelText(/components.wizard.stepOne.form.budget/);
+    const budget = getByLabelText(/components.wizard.stepTwo.form.budget/);
     fireEvent.change(budget, { target: { value: '1000' } });
     await act(async () => {
       expect(hasInputValueTot(budget, '1000')).toBe(true);
@@ -241,7 +241,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
       return getByDisplayValue(budgetPerPerson) === e;
     }
-    const beneficiaryBudget = getByLabelText(/components.wizard.stepOne.form.beneficiaryBudget/);
+    const beneficiaryBudget = getByLabelText(/components.wizard.stepTwo.form.beneficiaryBudget/);
     fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
 
     await act(async () => {
@@ -254,7 +254,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
     await act(async () => {
       const { getByLabelText } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -283,10 +283,10 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
         return date instanceof Date && !isNaN(date.getTime());
       }
 
-      const rankingStartDate = getByLabelText(/components.wizard.stepOne.form.rankingStartDate/);
-      const rankingEndDate = getByLabelText(/components.wizard.stepOne.form.rankingEndDate/);
-      const startDate = getByLabelText(/components.wizard.stepOne.form.startDate/);
-      const endDate = getByLabelText(/components.wizard.stepOne.form.endDate/);
+      const rankingStartDate = getByLabelText(/components.wizard.stepTwo.form.rankingStartDate/);
+      const rankingEndDate = getByLabelText(/components.wizard.stepTwo.form.rankingEndDate/);
+      const startDate = getByLabelText(/components.wizard.stepTwo.form.startDate/);
+      const endDate = getByLabelText(/components.wizard.stepTwo.form.endDate/);
 
       const d = date().transform(parseDateString);
       /* check if the fields are required */
@@ -363,7 +363,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const deleteAssistanceChannel = jest.fn();
       const { getByTestId, getByRole, container } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -469,7 +469,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const fn = jest.fn();
       const { getByRole } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -505,7 +505,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const addAssistanceChannel = jest.fn();
       const { container } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {
@@ -536,7 +536,7 @@ describe('<StepOneForm />', (injectedStore?: ReturnType<typeof createStore>) => 
       const deleteAssistanceChannel = jest.fn();
       const { container } = render(
         <Provider store={store}>
-          <StepOneForm
+          <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (value: SetStateAction<string>): void {

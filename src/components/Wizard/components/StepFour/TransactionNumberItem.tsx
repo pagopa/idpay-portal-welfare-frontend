@@ -145,7 +145,7 @@ const TransactionNumberItem = ({
               type: 'number',
               'data-testid': 'min-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.minTransactionNumber')}
+            placeholder={t('components.wizard.stepFour.form.minTransactionNumber')}
             name="from"
             value={formik.values.from}
             onChange={(e) => {
@@ -157,7 +157,7 @@ const TransactionNumberItem = ({
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.minTransactionNumberTooltip')}
+          title={t('components.wizard.stepFour.form.minTransactionNumberTooltip')}
           placement="right"
           sx={{ gridArea: 'minTransactionNumberTooltip' }}
           arrow
@@ -172,7 +172,7 @@ const TransactionNumberItem = ({
               type: 'number',
               'data-testid': 'max-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.maxTransactionNumber')}
+            placeholder={t('components.wizard.stepFour.form.maxTransactionNumber')}
             name="to"
             value={formik.values.to}
             onChange={(e) => {
@@ -184,7 +184,7 @@ const TransactionNumberItem = ({
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.maxTransactionNumberTooltip')}
+          title={t('components.wizard.stepFour.form.maxTransactionNumberTooltip')}
           placement="right"
           sx={{ gridArea: 'maxTransactionNumberTooltip' }}
           arrow

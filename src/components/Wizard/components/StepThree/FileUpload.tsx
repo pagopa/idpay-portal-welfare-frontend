@@ -100,34 +100,34 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               const errorRow = res.errorRow;
               switch (errorKey) {
                 case 'group.groups.invalid.file.format':
-                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
                   setAlertDescription(
-                    t('components.wizard.stepTwo.upload.invalidFileTypeDescription')
+                    t('components.wizard.stepThree.upload.invalidFileTypeDescription')
                   );
                   break;
                 case 'group.groups.invalid.file.empty':
-                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-                  setAlertDescription(t('components.wizard.stepTwo.upload.notEmptyDescription'));
+                  setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
+                  setAlertDescription(t('components.wizard.stepThree.upload.notEmptyDescription'));
                   break;
                 case 'group.groups.invalid.file.size':
-                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
                   setAlertDescription(
-                    t('components.wizard.stepTwo.upload.overMaxUploadDescription')
+                    t('components.wizard.stepThree.upload.overMaxUploadDescription')
                   );
                   break;
                 case 'group.groups.invalid.fiIe':
                 case 'group.groups.invalid.file.beneficiary.number.budget':
                   setAlertTitle(
-                    t('components.wizard.stepTwo.upload.invalidBeneficiaryNumberTitle')
+                    t('components.wizard.stepThree.upload.invalidBeneficiaryNumberTitle')
                   );
                   setAlertDescription(
-                    t('components.wizard.stepTwo.upload.invalidBeneficiaryNumberDescription')
+                    t('components.wizard.stepThree.upload.invalidBeneficiaryNumberDescription')
                   );
                   break;
                 case 'group.groups.invalid.file.cf.wrong':
-                  setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
+                  setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
                   setAlertDescription(
-                    t('components.wizard.stepTwo.upload.invalidRow', { rowNumber: errorRow })
+                    t('components.wizard.stepThree.upload.invalidRow', { rowNumber: errorRow })
                   );
                   break;
               }
@@ -156,8 +156,8 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               component: 'Toast',
               showCloseIcon: true,
             });
-            setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-            setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+            setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
+            setAlertTitle(t('components.wizard.stepThree.upload.invalidFileDescription'));
             setFileIsLoading(false);
             setFileRejected(true);
             setFileAccepted(false);
@@ -169,16 +169,16 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       const errorKey = files[0].errors[0].code;
       switch (errorKey) {
         case 'file-invalid-type':
-          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-          setAlertDescription(t('components.wizard.stepTwo.upload.invalidFileTypeDescription'));
+          setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
+          setAlertDescription(t('components.wizard.stepThree.upload.invalidFileTypeDescription'));
           break;
         case 'file-too-large':
-          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-          setAlertDescription(t('components.wizard.stepTwo.upload.overMaxUploadDescription'));
+          setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
+          setAlertDescription(t('components.wizard.stepThree.upload.overMaxUploadDescription'));
           break;
         default:
-          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileTitle'));
-          setAlertTitle(t('components.wizard.stepTwo.upload.invalidFileDescription'));
+          setAlertTitle(t('components.wizard.stepThree.upload.invalidFileTitle'));
+          setAlertTitle(t('components.wizard.stepThree.upload.invalidFileDescription'));
           break;
       }
       setFileIsLoading(false);
@@ -231,7 +231,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }}
       >
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('components.wizard.stepTwo.upload.fileIsLoading')}
+          {t('components.wizard.stepThree.upload.fileIsLoading')}
         </Typography>
         <Box sx={{ gridColumn: 'span 9' }}>
           <LinearProgress />
@@ -266,13 +266,13 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
           <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
           <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-            {t('components.wizard.stepTwo.upload.dragAreaText')}&#160;
+            {t('components.wizard.stepThree.upload.dragAreaText')}&#160;
           </Typography>
           <Typography
             variant="body2"
             sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
           >
-            {t('components.wizard.stepTwo.upload.dragAreaLink')}
+            {t('components.wizard.stepThree.upload.dragAreaLink')}
           </Typography>
         </Box>
       </Box>
@@ -287,14 +287,14 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }}
       >
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
-          {t('components.wizard.stepTwo.upload.fileUploadHelpText')}&#160;
+          {t('components.wizard.stepThree.upload.fileUploadHelpText')}&#160;
           <Link
             href="#"
             target="_blank"
             variant="body2"
             sx={{ fontSize: '0.875rem', fontWeight: 600 }}
           >
-            {t('components.wizard.stepTwo.upload.fileUuploadHelpFileLinkLabel')}
+            {t('components.wizard.stepThree.upload.fileUuploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText>
       </Box>
@@ -334,7 +334,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           <Typography variant="body2">{fileDate}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
-          <Chip label={t('components.wizard.stepTwo.upload.validFile')} color="success" />
+          <Chip label={t('components.wizard.stepThree.upload.validFile')} color="success" />
         </Box>
       </Box>
       <Box sx={{ gridColumn: 'span 12', py: 2 }}>
@@ -346,7 +346,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           sx={{ color: 'primary.main' }}
           weight="default"
         >
-          {t('components.wizard.stepTwo.upload.changeFile')}
+          {t('components.wizard.stepThree.upload.changeFile')}
         </ButtonNaked>
       </Box>
     </Box>
@@ -355,11 +355,13 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepTwo.upload.title')}</Typography>
+        <Typography variant="h6">{t('components.wizard.stepThree.upload.title')}</Typography>
       </Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepTwo.upload.subTitle')}</Typography>
+          <Typography variant="body1">
+            {t('components.wizard.stepThree.upload.subTitle')}
+          </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
           <Button size="small" href="" sx={{ p: 0 }}>

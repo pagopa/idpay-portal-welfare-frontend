@@ -131,19 +131,19 @@ const ResidencyCriteriaItem = ({
             data-testid="residency-select-test"
           >
             <MenuItem value={ResidencyOptions.POSTAL_CODE} data-testid="postalCode">
-              {t('components.wizard.stepTwo.chooseCriteria.form.postalCode')}
+              {t('components.wizard.stepThree.chooseCriteria.form.postalCode')}
             </MenuItem>
             <MenuItem value={ResidencyOptions.CITY_COUNCIL} data-testid="cityCouncil">
-              {t('components.wizard.stepTwo.chooseCriteria.form.cityCouncil')}
+              {t('components.wizard.stepThree.chooseCriteria.form.cityCouncil')}
             </MenuItem>
             <MenuItem value={ResidencyOptions.CITY} data-testid="city">
-              {t('components.wizard.stepTwo.chooseCriteria.form.city')}
+              {t('components.wizard.stepThree.chooseCriteria.form.city')}
             </MenuItem>
             <MenuItem value={ResidencyOptions.PROVINCE} data-testid="province">
-              {t('components.wizard.stepTwo.chooseCriteria.form.province')}
+              {t('components.wizard.stepThree.chooseCriteria.form.province')}
             </MenuItem>
             <MenuItem value={ResidencyOptions.REGION} data-testid="region">
-              {t('components.wizard.stepTwo.chooseCriteria.form.region')}
+              {t('components.wizard.stepThree.chooseCriteria.form.region')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -170,10 +170,10 @@ const ResidencyCriteriaItem = ({
             data-testid="residency-relation-test"
           >
             <MenuItem value={FilterOperator.EQ} data-testid="is">
-              {t('components.wizard.stepTwo.chooseCriteria.form.is')}
+              {t('components.wizard.stepThree.chooseCriteria.form.is')}
             </MenuItem>
             <MenuItem value={FilterOperator.NOT_EQ} data-testid="isNot">
-              {t('components.wizard.stepTwo.chooseCriteria.form.isNot')}
+              {t('components.wizard.stepThree.chooseCriteria.form.isNot')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -187,7 +187,7 @@ const ResidencyCriteriaItem = ({
           <TextField
             id="residencyValue"
             name="residencyValue"
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.name')}
+            placeholder={t('components.wizard.stepThree.chooseCriteria.form.name')}
             variant="outlined"
             value={residencyFormik.values.residencyValue}
             onBlur={(e) => residencyFormik.handleBlur(e)}

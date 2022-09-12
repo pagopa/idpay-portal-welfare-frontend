@@ -146,7 +146,7 @@ const SpendingLimitItem = ({
               type: 'number',
               'data-testid': 'min-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.minSpeningLimit')}
+            placeholder={t('components.wizard.stepFour.form.minSpeningLimit')}
             name="from"
             value={formik.values.from}
             onChange={(e) => {
@@ -165,7 +165,7 @@ const SpendingLimitItem = ({
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.minSpendingLimitTooltip')}
+          title={t('components.wizard.stepFour.form.minSpendingLimitTooltip')}
           placement="right"
           sx={{ gridArea: 'minSpendingLimitTooltip' }}
           arrow
@@ -180,7 +180,7 @@ const SpendingLimitItem = ({
               type: 'number',
               'data-testid': 'max-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.maxSpeningLimit')}
+            placeholder={t('components.wizard.stepFour.form.maxSpeningLimit')}
             name="to"
             value={formik.values.to}
             onChange={(e) => {
@@ -199,7 +199,7 @@ const SpendingLimitItem = ({
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.maxSpendingLimitTooltip')}
+          title={t('components.wizard.stepFour.form.maxSpendingLimitTooltip')}
           placement="right"
           sx={{ gridArea: 'maxSpendingLimitTooltip' }}
           arrow

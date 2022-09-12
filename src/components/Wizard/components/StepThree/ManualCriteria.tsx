@@ -232,7 +232,7 @@ const ManualCriteria = ({
     >
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{`${t(
-          'components.wizard.stepTwo.chooseCriteria.form.manual'
+          'components.wizard.stepThree.chooseCriteria.form.manual'
         )} ${data.code}`}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
@@ -281,10 +281,10 @@ const ManualCriteria = ({
             data-testid="manualCriteria-select-name"
           >
             <MenuItem value={ManualCriteriaOptions.BOOLEAN} data-testid="boolean">
-              {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
+              {t('components.wizard.stepThree.chooseCriteria.form.boolean')}
             </MenuItem>
             <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
-              {t('components.wizard.stepTwo.chooseCriteria.form.multi')}
+              {t('components.wizard.stepThree.chooseCriteria.form.multi')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -310,7 +310,7 @@ const ManualCriteria = ({
             name={`manualCriteriaName`}
             variant="outlined"
             value={manualCriteriaFormik.values.manualCriteriaName}
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            placeholder={t('components.wizard.stepThree.chooseCriteria.form.value')}
             onChange={(e) => {
               manualCriteriaFormik.handleChange(e);
               handleFieldValueChanged(
@@ -455,7 +455,7 @@ const ManualCriteria = ({
                 disableFocusRipple={true}
                 data-testid="manualCriteria-add-option"
               >
-                {t('components.wizard.stepTwo.chooseCriteria.form.addOption')}
+                {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
               </Button>
             </Box>
           </Box>

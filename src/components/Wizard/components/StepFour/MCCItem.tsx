@@ -228,10 +228,10 @@ const MCCItem = ({
             value={formik.values.allowedList}
           >
             <MenuItem value={'true'} data-testid="everybody">
-              {t('components.wizard.stepThree.form.everybodyExceptSelectItem')}
+              {t('components.wizard.stepFour.form.everybodyExceptSelectItem')}
             </MenuItem>
             <MenuItem value={'false'} data-testid="nobody">
-              {t('components.wizard.stepThree.form.nobodyExceptSelectItem')}
+              {t('components.wizard.stepFour.form.nobodyExceptSelectItem')}
             </MenuItem>
           </Select>
           <FormHelperText
@@ -246,8 +246,8 @@ const MCCItem = ({
             multiline
             minRows={2}
             maxRows={4}
-            label={t('components.wizard.stepThree.form.mccCodes')}
-            placeholder={t('components.wizard.stepThree.form.mccCodes')}
+            label={t('components.wizard.stepFour.form.mccCodes')}
+            placeholder={t('components.wizard.stepFour.form.mccCodes')}
             name="values"
             aria-label="values"
             role="input"
@@ -280,7 +280,7 @@ const MCCItem = ({
             disableRipple={true}
             disableFocusRipple={true}
           >
-            {t('components.wizard.stepThree.form.selectFromList')}
+            {t('components.wizard.stepFour.form.selectFromList')}
           </Button>
         </FormControl>
         <MCCModal

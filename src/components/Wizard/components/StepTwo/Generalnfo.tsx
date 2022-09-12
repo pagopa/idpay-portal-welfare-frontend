@@ -64,7 +64,7 @@ interface Props {
 }
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const StepOneForm = ({
+const Generalnfo = ({
   action,
   setAction,
   currentStep,
@@ -417,7 +417,7 @@ Props) => {
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
         <Box sx={{ py: 3 }}>
-          <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
+          <Typography variant="h6">{t('components.wizard.stepTwo.title')}</Typography>
         </Box>
 
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
@@ -425,7 +425,7 @@ Props) => {
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
             id="beneficiaryType--label"
           >
-            {t('components.wizard.stepOne.form.beneficiaryType')}
+            {t('components.wizard.stepTwo.form.beneficiaryType')}
           </FormLabel>
           <RadioGroup
             sx={{ gridColumn: 'span 12' }}
@@ -440,13 +440,13 @@ Props) => {
             <FormControlLabel
               value="PF"
               control={<Radio />}
-              label={t('components.wizard.stepOne.form.person')}
+              label={t('components.wizard.stepTwo.form.person')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
               value="families" // TBD
               control={<Radio />}
-              label={t('components.wizard.stepOne.form.family')}
+              label={t('components.wizard.stepTwo.form.family')}
               disabled
             />
           </RadioGroup>
@@ -462,7 +462,7 @@ Props) => {
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
             id="beneficiaryKnown--label"
           >
-            {t('components.wizard.stepOne.form.beneficiaryKnown')}
+            {t('components.wizard.stepTwo.form.beneficiaryKnown')}
           </FormLabel>
           <RadioGroup
             sx={{ gridColumn: 'span 12' }}
@@ -477,13 +477,13 @@ Props) => {
             <FormControlLabel
               value="true"
               control={<Radio />}
-              label={t('components.wizard.stepOne.form.taxCodeList')}
+              label={t('components.wizard.stepTwo.form.taxCodeList')}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
               value="false"
               control={<Radio />}
-              label={t('components.wizard.stepOne.form.manualSelection')}
+              label={t('components.wizard.stepTwo.form.manualSelection')}
             />
           </RadioGroup>
           <FormHelperText
@@ -505,7 +505,7 @@ Props) => {
           }}
         >
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'budgetTitle' }}>
-            {t('components.wizard.stepOne.form.budgetTitle')}
+            {t('components.wizard.stepTwo.form.budgetTitle')}
           </FormLabel>
           <TextField
             sx={{ gridArea: 'budget' }}
@@ -514,9 +514,9 @@ Props) => {
               min: 1,
               type: 'number',
             }}
-            label={t('components.wizard.stepOne.form.budget')}
-            placeholder={t('components.wizard.stepOne.form.budget')}
-            aria-labelledby={t('components.wizard.stepOne.form.budget')}
+            label={t('components.wizard.stepTwo.form.budget')}
+            placeholder={t('components.wizard.stepTwo.form.budget')}
+            aria-labelledby={t('components.wizard.stepTwo.form.budget')}
             id="budget"
             name="budget"
             value={formik.values.budget}
@@ -541,9 +541,9 @@ Props) => {
               min: 1,
               type: 'number',
             }}
-            label={t('components.wizard.stepOne.form.beneficiaryBudget')}
-            placeholder={t('components.wizard.stepOne.form.beneficiaryBudget')}
-            aria-labelledby={t('components.wizard.stepOne.form.beneficiaryBudget')}
+            label={t('components.wizard.stepTwo.form.beneficiaryBudget')}
+            placeholder={t('components.wizard.stepTwo.form.beneficiaryBudget')}
+            aria-labelledby={t('components.wizard.stepTwo.form.beneficiaryBudget')}
             id="beneficiaryBudget"
             name="beneficiaryBudget"
             value={formik.values.beneficiaryBudget}
@@ -580,7 +580,7 @@ Props) => {
                 component="span"
                 sx={{ display: 'flex', alignSelf: 'center' }}
               >
-                {t('components.wizard.stepOne.form.reachedUsers')}
+                {t('components.wizard.stepTwo.form.reachedUsers')}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -590,7 +590,7 @@ Props) => {
                 {peopleReached(formik.values.budget, formik.values.beneficiaryBudget)}
               </Typography>
               <Tooltip
-                title={t('components.wizard.stepOne.form.reachedUsersTooltip')}
+                title={t('components.wizard.stepTwo.form.reachedUsersTooltip')}
                 placement="top"
                 arrow
               >
@@ -613,11 +613,11 @@ Props) => {
           <FormLabel
             sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeRankingTitle' }}
           >
-            {t('components.wizard.stepOne.form.timeRangeRankingTitle')}
+            {t('components.wizard.stepTwo.form.timeRangeRankingTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.rankingStartDate')}
+              label={t('components.wizard.stepTwo.form.rankingStartDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingStartDate}
               onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
@@ -636,7 +636,7 @@ Props) => {
               )}
             />
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.rankingEndDate')}
+              label={t('components.wizard.stepTwo.form.rankingEndDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
               onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
@@ -668,11 +668,11 @@ Props) => {
           }}
         >
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
-            {t('components.wizard.stepOne.form.timeRangeTitle')}
+            {t('components.wizard.stepTwo.form.timeRangeTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.startDate')}
+              label={t('components.wizard.stepTwo.form.startDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.startDate}
               onChange={(value) => formik.setFieldValue('startDate', value)}
@@ -693,7 +693,7 @@ Props) => {
               )}
             />
             <DesktopDatePicker
-              label={t('components.wizard.stepOne.form.endDate')}
+              label={t('components.wizard.stepTwo.form.endDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.endDate}
               onChange={(value) => formik.setFieldValue('endDate', value)}
@@ -720,14 +720,14 @@ Props) => {
         <Box sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
           <Box sx={{ py: 3 }}>
             <Typography variant="h6">
-              {t('components.wizard.stepOne.form.otherInfo.title')}
+              {t('components.wizard.stepTwo.form.otherInfo.title')}
             </Typography>
           </Box>
 
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body1">
-                {t('components.wizard.stepOne.form.otherInfo.subTitle')}
+                {t('components.wizard.stepTwo.form.otherInfo.subTitle')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
@@ -757,7 +757,7 @@ Props) => {
                   name="initiativeOnIO"
                 />
               }
-              label={t('components.wizard.stepOne.form.otherInfo.deliverInitiative')}
+              label={t('components.wizard.stepTwo.form.otherInfo.deliverInitiative')}
             />
           </FormControl>
 
@@ -768,14 +768,14 @@ Props) => {
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
                 >
                   <InputLabel sx={{ mt: 2 }}>
-                    {t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
+                    {t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
                   </InputLabel>
                   <Select
                     id="serviceId"
                     data-testid="service-id-select"
                     name="serviceId"
-                    label={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.serviceSelect')}
+                    label={t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
+                    placeholder={t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
                     sx={{ gridColumn: 'span 9' }}
                     onChange={async (e) => {
                       await formik.setFieldValue('serviceId', e.target.value);
@@ -801,15 +801,15 @@ Props) => {
               <>
                 <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
                   <Typography sx={{ fontSize: '18px', fontWeight: '600', gridColumn: 'span 2' }}>
-                    {t('components.wizard.stepOne.form.otherInfo.description')}
+                    {t('components.wizard.stepTwo.form.otherInfo.description')}
                   </Typography>
                 </Box>
                 <FormControl
                   sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
                 >
                   <TextField
-                    label={t('components.wizard.stepOne.form.otherInfo.serviceName')}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.serviceName')}
+                    label={t('components.wizard.stepTwo.form.otherInfo.serviceName')}
+                    placeholder={t('components.wizard.stepTwo.form.otherInfo.serviceName')}
                     name="serviceName"
                     aria-label="serviceName"
                     role="input"
@@ -822,8 +822,8 @@ Props) => {
                     InputLabelProps={{ required: false }}
                   />
                   <TextField
-                    label={t('components.wizard.stepOne.form.otherInfo.argument')}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.argument')}
+                    label={t('components.wizard.stepTwo.form.otherInfo.argument')}
+                    placeholder={t('components.wizard.stepTwo.form.otherInfo.argument')}
                     name="argument"
                     aria-label="argument"
                     role="input"
@@ -840,8 +840,8 @@ Props) => {
                     multiline
                     minRows={2}
                     maxRows={4}
-                    label={t('components.wizard.stepOne.form.otherInfo.description')}
-                    placeholder={t('components.wizard.stepOne.form.otherInfo.description')}
+                    label={t('components.wizard.stepTwo.form.otherInfo.description')}
+                    placeholder={t('components.wizard.stepTwo.form.otherInfo.description')}
                     name="description"
                     aria-label="description"
                     role="input"
@@ -855,11 +855,11 @@ Props) => {
                 </FormControl>
                 <Box sx={{ my: 3, display: 'flex' }}>
                   <Typography sx={{ fontSize: '18px', fontWeight: '600' }}>
-                    {t('components.wizard.stepOne.form.otherInfo.helpChannels')}
+                    {t('components.wizard.stepTwo.form.otherInfo.helpChannels')}
                   </Typography>
                   <Tooltip
                     sx={{ mx: 2 }}
-                    title={t('components.wizard.stepOne.form.otherInfo.helpChannelsTooltip')}
+                    title={t('components.wizard.stepTwo.form.otherInfo.helpChannelsTooltip')}
                     placement="right"
                     arrow
                   >
@@ -914,13 +914,13 @@ Props) => {
                         error={typeTouched && Boolean(typeError)}
                       >
                         <InputLabel id={`channels[${i}].type_label`}>
-                          {t('components.wizard.stepOne.form.otherInfo.contact')}
+                          {t('components.wizard.stepTwo.form.otherInfo.contact')}
                         </InputLabel>
                         <Select
                           id={`channels_${i}_type`}
                           labelId={`channels[${i}].type_label`}
                           name={`channels[${i}].type`}
-                          label={t('components.wizard.stepOne.form.otherInfo.contact')}
+                          label={t('components.wizard.stepTwo.form.otherInfo.contact')}
                           value={formik.values.channels[i].type}
                           onChange={(e) =>
                             handleContactSelect(
@@ -946,10 +946,10 @@ Props) => {
                           id={`channels_${i}_contact`}
                           name={`channels[${i}].contact`}
                           variant="outlined"
-                          label={t('components.wizard.stepOne.form.otherInfo.indicatesChannel')}
+                          label={t('components.wizard.stepTwo.form.otherInfo.indicatesChannel')}
                           sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
                           placeholder={t(
-                            'components.wizard.stepOne.form.otherInfo.indicatesChannel'
+                            'components.wizard.stepTwo.form.otherInfo.indicatesChannel'
                           )}
                           value={formik.values.channels[i].contact}
                           onChange={(e) =>
@@ -995,7 +995,7 @@ Props) => {
                     disableRipple={true}
                     disableFocusRipple={true}
                   >
-                    {t('components.wizard.stepOne.form.otherInfo.addChannel')}
+                    {t('components.wizard.stepTwo.form.otherInfo.addChannel')}
                   </Button>
                 </Box>
               </>
@@ -1007,4 +1007,4 @@ Props) => {
   );
 };
 
-export default StepOneForm;
+export default Generalnfo;

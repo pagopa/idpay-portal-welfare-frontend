@@ -399,11 +399,11 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepThree.title')}</Typography>
+        <Typography variant="h6">{t('components.wizard.stepFour.title')}</Typography>
       </Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepThree.subtitle')}</Typography>
+          <Typography variant="body1">{t('components.wizard.stepFour.subtitle')}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
           <Button size="small" sx={{ p: 0 }}>
@@ -430,7 +430,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
             onClick={handleOpenModal}
             data-testid="criteria-button-test"
           >
-            {t('components.wizard.stepThree.addNew')}
+            {t('components.wizard.stepFour.addNew')}
           </Button>
 
           <ShopRulesModal
@@ -444,7 +444,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       )}
       <Box>
         <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
-          {t('components.wizard.stepThree.rulesAddedTitle')}
+          {t('components.wizard.stepFour.rulesAddedTitle')}
         </Typography>
         <PercentageRecognizedItem
           code="PRCREC"
