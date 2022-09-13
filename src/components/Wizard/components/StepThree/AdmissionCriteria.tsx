@@ -328,7 +328,7 @@ const AdmissionCriteria = ({
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"criteriaButton addButton .  "`,
           py: 2,
-          mb: 8,
+          mb: 3,
         }}
       >
         <Button

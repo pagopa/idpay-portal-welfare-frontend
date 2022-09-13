@@ -110,11 +110,10 @@ const ResidencyCriteriaItem = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="residencySelect"
             name="residencySelect"
@@ -153,7 +152,7 @@ const ResidencyCriteriaItem = ({
             )}
           </FormHelperText>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="residencyRelationSelect"
             name="residencyRelationSelect"
@@ -204,6 +203,7 @@ const ResidencyCriteriaItem = ({
               residencyFormik.errors.residencyValue
             )}
             inputProps={{ 'data-testid': 'residencyValue' }}
+            size="small"
           />
         </FormControl>
       </Box>

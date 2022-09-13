@@ -6,12 +6,12 @@ import {
   Select,
   MenuItem,
   TextField,
-  Button,
   FormHelperText,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
@@ -210,11 +210,11 @@ const MCCItem = ({
                               "MccCode MccCode MccCode"
                               "SelecFromList . . "`,
           alignItems: 'center',
-          gap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
-        <FormControl sx={{ gridArea: 'merchant' }}>
+        <FormControl sx={{ gridArea: 'merchant' }} size="small">
           <Select
             defaultValue=""
             name="allowedList"
@@ -258,30 +258,21 @@ const MCCItem = ({
             value={formik.values.values}
             error={setError(formik.touched.values, formik.errors.values)}
             helperText={setErrorText(formik.touched.values, formik.errors.values)}
+            size="small"
           />
         </FormControl>
 
-        <FormControl sx={{ gridArea: 'SelecFromList' }}>
-          <Button
-            size="large"
-            sx={[
-              {
-                justifyContent: 'start',
-                padding: 0,
-                fontSize: '14px',
-              },
-              {
-                '&:hover': { backgroundColor: 'transparent' },
-              },
-            ]}
-            startIcon={<ListAltIcon />}
+        <FormControl sx={{ gridArea: 'SelecFromList', alignItems: 'start' }}>
+          <ButtonNaked
+            size="small"
+            component="button"
             onClick={handleOpenModalMcc}
-            data-testid="SelecFromList-button-test"
-            disableRipple={true}
-            disableFocusRipple={true}
+            startIcon={<ListAltIcon />}
+            sx={{ color: 'primary.main' }}
+            weight="default"
           >
             {t('components.wizard.stepFour.form.selectFromList')}
-          </Button>
+          </ButtonNaked>
         </FormControl>
         <MCCModal
           openModalMcc={openModalMcc}

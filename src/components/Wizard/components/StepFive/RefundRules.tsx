@@ -223,9 +223,10 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
         {formik.values.reimbursmentQuestionGroup === 'true' ? (
           <>
             <FormControl
-              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}
+              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 3, mt: 2 }}
+              size="small"
             >
-              <InputLabel id="select-accumulated-amount" sx={{ pt: 2 }}>
+              <InputLabel id="select-accumulated-amount">
                 {t('components.wizard.stepFive.form.selectedAccumulatedAmount')}
               </InputLabel>
               <Select
@@ -288,6 +289,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                       </InputAdornment>
                     ),
                   }}
+                  size="small"
                 />
               </FormControl>
             ) : null}
@@ -295,9 +297,10 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
         ) : formik.values.reimbursmentQuestionGroup === 'false' ? (
           <>
             <FormControl
-              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}
+              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 3, mt: 2 }}
+              size="small"
             >
-              <InputLabel id="select-time-parameter" sx={{ pt: 2 }}>
+              <InputLabel id="select-time-parameter">
                 {t('components.wizard.stepFive.form.selectTimeParam')}
               </InputLabel>
               <Select
@@ -335,15 +338,15 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
         ) : null}
       </Paper>
 
-      <Paper sx={{ display: 'grid', width: '100%', my: 5, px: 3 }}>
+      <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
         <Box sx={{ py: 3 }}>
           <Typography variant="h6">{t('components.wizard.stepFive.title2')}</Typography>
         </Box>
-        <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 1 }}>
+        <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
           <FormLabel
             sx={{
               gridColumn: 'span 12',
-              pb: 2,
+
               fontSize: '16px',
               fontWeight: '400',
               letterSpacing: '0.15px',
@@ -354,7 +357,9 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
           </FormLabel>
         </FormControl>
 
-        <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', py: 2, mb: 4 }}>
+        <FormControl
+          sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 3, mt: 3, mb: 5 }}
+        >
           <TextField
             id="additionalInfo"
             label={t('components.wizard.stepFive.form.idCodeBalance')}
@@ -363,6 +368,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
             aria-label="additionalInfo"
             value={formik.values.additionalInfo}
             onChange={(e) => formik.setFieldValue('additionalInfo', e.target.value)}
+            size="small"
           />
         </FormControl>
       </Paper>

@@ -122,11 +122,10 @@ const DateOdBirthCriteriaItem = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="dateOfBirthSelect"
             name="dateOfBirthSelect"
@@ -156,7 +155,7 @@ const DateOdBirthCriteriaItem = ({
             )}
           </FormHelperText>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="dateOfBirthRelationSelect"
             name="dateOfBirthRelationSelect"
@@ -223,6 +222,7 @@ const DateOdBirthCriteriaItem = ({
               dateOfBirthFormik.touched.dateOfBirthStartValue,
               dateOfBirthFormik.errors.dateOfBirthStartValue
             )}
+            size="small"
           />
         </FormControl>
         <FormControl

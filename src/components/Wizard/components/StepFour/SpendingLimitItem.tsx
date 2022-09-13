@@ -133,9 +133,8 @@ const SpendingLimitItem = ({
           gridTemplateAreas: `"minSpeningLimitField minSpendingLimitTooltip . . "
                               "maxSpendingLimitField maxSpendingLimitTooltip . . "`,
           alignItems: 'center',
-          columnGap: 2,
-          rowGap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
         <FormControl sx={{ gridArea: 'minSpeningLimitField' }}>
@@ -162,6 +161,7 @@ const SpendingLimitItem = ({
                 </InputAdornment>
               ),
             }}
+            size="small"
           />
         </FormControl>
         <Tooltip
@@ -196,6 +196,7 @@ const SpendingLimitItem = ({
                 </InputAdornment>
               ),
             }}
+            size="small"
           />
         </FormControl>
         <Tooltip

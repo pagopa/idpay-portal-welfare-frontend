@@ -3,10 +3,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-// import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
-// import routes from '../../routes';
 import ServiceConfig from './components/StepOne/ServiceConfig';
 import Generalnfo from './components/StepTwo/Generalnfo';
 import AdmissionCriteria from './components/StepThree/AdmissionCriteria';
@@ -25,7 +23,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
   const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
-  // const history = useHistory();
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -55,7 +52,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
       setActionType(() => WIZARD_ACTIONS.BACK);
     } else {
-      // history.push(routes.INITIATIVE_LIST);
       handleOpenExitModal(e);
     }
   };

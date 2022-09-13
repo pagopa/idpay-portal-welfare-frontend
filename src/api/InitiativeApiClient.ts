@@ -4,7 +4,7 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
+// import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeBeneficiaryRuleDTO';
@@ -54,27 +54,27 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  initiativeGeneralPost: async (data: InitiativeInfoDTO): Promise<InitiativeDTO> => {
-    const result = await apiClient.saveInitiativeGeneralInfo({
-      body: {
-        general: {
-          ...data.general,
-        },
-        additionalInfo: {
-          ...data.additionalInfo,
-        },
-      },
-    });
-    return extractResponse(result, 201, onRedirectToLogin);
-  },
+  // initiativeGeneralPost: async (data: InitiativeInfoDTO): Promise<InitiativeDTO> => {
+  //   const result = await apiClient.saveInitiativeGeneralInfo({
+  //     body: {
+  //       general: {
+  //         ...data.general,
+  //       },
+  //       additionalInfo: {
+  //         ...data.additionalInfo,
+  //       },
+  //     },
+  //   });
+  //   return extractResponse(result, 201, onRedirectToLogin);
+  // },
 
-  initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
-    const result = await apiClient.updateInitiativeGeneralInfo({
-      initiativeId: id,
-      body: { ...data },
-    });
-    return extractResponse(result, 204, onRedirectToLogin);
-  },
+  // initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
+  //   const result = await apiClient.updateInitiativeGeneralInfo({
+  //     initiativeId: id,
+  //     body: { ...data },
+  //   });
+  //   return extractResponse(result, 204, onRedirectToLogin);
+  // },
 
   initiativeBeneficiaryRulePut: async (
     id: string,

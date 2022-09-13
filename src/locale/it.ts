@@ -101,7 +101,7 @@ export default {
         modal: {
           serviceNotOnIOTitle: 'Servizio non erogato su IO',
           serviceNotOnIODescription:
-            '<Stai per creare un servizio che non include la creazione e l’erogazione sull’app IO, ma soltato su un app terza. Sei sicuro di voler continuare?>',
+            'Stai per creare un servizio che non include la creazione e l’erogazione sull’app IO, ma soltato su un app terza. Sei sicuro di voler continuare?',
           cancelBtn: 'Annulla',
           continueBtn: 'Continua',
         },

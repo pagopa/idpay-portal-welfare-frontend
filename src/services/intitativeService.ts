@@ -1,6 +1,6 @@
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
-import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO';
+// import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
+// import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeApi } from '../api/InitiativeApiClient';
 import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
@@ -13,10 +13,10 @@ import { decode } from '../utils/io-utils';
 import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 
-export const saveGeneralInfoService = (
-  generalInfo: InitiativeInfoDTO
-): Promise<InitiativeDTO | void | undefined> =>
-  InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
+// export const saveGeneralInfoService = (
+//   generalInfo: InitiativeInfoDTO
+// ): Promise<InitiativeDTO | void | undefined> =>
+//   InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
@@ -34,8 +34,8 @@ export const putBeneficiaryRuleDraftService = (
   data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
 
-export const putGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
-  InitiativeApi.initiativeGeneralPut(id, data).then((res) => res);
+// export const putGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
+//   InitiativeApi.initiativeGeneralPut(id, data).then((res) => res);
 
 /** It will accept a {@link InitiativeRewardAndTrxRulesDTORewardRule} and it will transcode it into {@link RewardGroupDTO} or {@link RewardValueDTO} */
 export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {

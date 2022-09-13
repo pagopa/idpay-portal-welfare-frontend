@@ -132,9 +132,8 @@ const TransactionNumberItem = ({
           gridTemplateAreas: `"minTransactionNumberField minTransactionNumberTooltip . . "
                               "maxTransactionNumberField maxTransactionNumberTooltip . . "`,
           alignItems: 'center',
-          columnGap: 2,
-          rowGap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
         <FormControl sx={{ gridArea: 'minTransactionNumberField' }}>
@@ -154,6 +153,7 @@ const TransactionNumberItem = ({
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
+            size="small"
           />
         </FormControl>
         <Tooltip
@@ -181,6 +181,7 @@ const TransactionNumberItem = ({
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}
+            size="small"
           />
         </FormControl>
         <Tooltip

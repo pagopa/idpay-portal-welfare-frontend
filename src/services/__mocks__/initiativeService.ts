@@ -2,7 +2,7 @@ import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeInfoDTO } from '../../api/generated/initiative/InitiativeInfoDTO';
+// import { InitiativeInfoDTO } from '../../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 
@@ -141,11 +141,11 @@ export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: Initiat
 export const getInitiativeDetail = (_id: string) =>
   new Promise((resolve) => resolve(mockedInitiativeDetail));
 
-export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
-  expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);
+// export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
+//   expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);
 
-export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
-  new Promise((resolve) => resolve('createdInitiativeId'));
+// export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
+//   new Promise((resolve) => resolve('createdInitiativeId'));
 
 export const putGeneralInfo = (_id: string, _data: InitiativeGeneralDTO): Promise<void> =>
   new Promise((resolve) => resolve());

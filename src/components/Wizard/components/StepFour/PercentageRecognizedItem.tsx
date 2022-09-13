@@ -98,8 +98,8 @@ const PercentageRecognizedItem = ({
           gridColumn: 'span 24',
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
         <FormControl sx={{ gridColumn: 'span 1' }}>
@@ -123,6 +123,7 @@ const PercentageRecognizedItem = ({
               formik.touched.percetageRecognized,
               formik.errors.percetageRecognized
             )}
+            size="small"
           />
         </FormControl>
       </Box>

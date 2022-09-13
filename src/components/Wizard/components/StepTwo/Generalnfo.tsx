@@ -1,5 +1,3 @@
-/* eslint-disable no-prototype-builtins */
-/* eslint-disable complexity */
 import {
   Paper,
   Typography,
@@ -27,17 +25,17 @@ import { Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
-  setInitiativeId,
+  // setInitiativeId,
   generalInfoSelector,
   setGeneralInfo,
   setAdditionalInfo,
   initiativeIdSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { saveGeneralInfoService, putGeneralInfo } from '../../../../services/intitativeService';
+// import { saveGeneralInfoService, putGeneralInfo } from '../../../../services/intitativeService';
 import {
   getMinDate,
   peopleReached,
@@ -53,41 +51,18 @@ interface Props {
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
 const Generalnfo = ({
   action,
   setAction,
-  currentStep,
-  setCurrentStep,
+  // currentStep,
+  // setCurrentStep,
   setDisabledNext,
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-Props) => {
+}: Props) => {
   const dispatch = useAppDispatch();
-  const addError = useErrorDispatcher();
+  // const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
-  // const additionalInfoForm = useAppSelector(additionalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
   const { t } = useTranslation();
-  // const [isChecked, setIsChecked] = useState(
-  //   typeof additionalInfoForm !== undefined &&
-  //     additionalInfoForm.hasOwnProperty('serviceId') &&
-  //     typeof additionalInfoForm.serviceId === 'string' &&
-  //     additionalInfoForm.serviceId.length > 0
-  //     ? true
-  //     : false
-  // );
-
-  // useEffect(() => {
-  //   const initiativeOnIO =
-  //     typeof additionalInfoForm !== undefined &&
-  //     additionalInfoForm.hasOwnProperty('serviceId') &&
-  //     typeof additionalInfoForm.serviceId === 'string' &&
-  //     additionalInfoForm.serviceId.length > 0
-  //       ? true
-  //       : false;
-
-  //   setIsChecked(initiativeOnIO);
-  // }, [additionalInfoForm]);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -170,72 +145,6 @@ Props) => {
         }
         return schema;
       }),
-    // initiativeOnIO: Yup.boolean(),
-    // serviceId: Yup.string()
-    //   .nullable()
-    //   .default(undefined)
-    //   .when('initiativeOnIO', {
-    //     is: true,
-    //     then: Yup.string().required(t('validation.required')),
-    //   }),
-    // serviceName: Yup.string()
-    //   .nullable()
-    //   .default(undefined)
-    //   .when('initiativeOnIO', {
-    //     is: false,
-    //     then: Yup.string()
-    //       .max(50, t('validation.maxServiceNameChar'))
-    //       .required(t('validation.required')),
-    //   }),
-    // argument: Yup.string()
-    //   .nullable()
-    //   .default(undefined)
-    //   .when('initiativeOnIO', {
-    //     is: false,
-    //     then: Yup.string()
-    //       .max(100, t('validation.maxArgumentsChar'))
-    //       .required(t('validation.required')),
-    //   }),
-    // description: Yup.string()
-    //   .nullable()
-    //   .default(undefined)
-    //   .when('initiativeOnIO', {
-    //     is: false,
-    //     then: Yup.string()
-    //       .max(350, t('validation.maxDescriptionChar'))
-    //       .required(t('validation.required')),
-    //   }),
-    // channels: Yup.array()
-    //   .nullable()
-    //   .default(undefined)
-    //   .when('initiativeOnIO', {
-    //     is: false,
-    //     then: Yup.array().of(
-    //       Yup.object().shape({
-    //         type: Yup.string().required(t('validation.required')),
-    //         contact: Yup.string()
-    //           .required(t('validation.required'))
-    //           .when('type', (type, schema) => {
-    //             if (type && type === 'web') {
-    //               return Yup.string()
-    //                 .required(t('validation.required'))
-    //                 .url(t('validation.webValid'));
-    //             }
-    //             if (type && type === 'email') {
-    //               return Yup.string()
-    //                 .required(t('validation.required'))
-    //                 .email(t('validation.emailValid'));
-    //             }
-    //             if (type && type === 'mobile') {
-    //               return Yup.string()
-    //                 .required(t('validation.required'))
-    //                 .matches(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/, t('validation.celNumValid'));
-    //             }
-    //             return schema;
-    //           }),
-    //       })
-    //     ),
-    //   }),
   });
 
   const formik = useFormik({
@@ -248,12 +157,6 @@ Props) => {
       rankingEndDate: generalInfoForm.rankingEndDate,
       startDate: generalInfoForm.startDate,
       endDate: generalInfoForm.endDate,
-      // initiativeOnIO: isChecked,
-      // serviceId: additionalInfoForm.serviceId,
-      // serviceName: additionalInfoForm.serviceName,
-      // argument: additionalInfoForm.argument,
-      // description: additionalInfoForm.description,
-      // channels: [...additionalInfoForm.channels],
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -266,45 +169,46 @@ Props) => {
       dispatch(setAdditionalInfo(additionalInfo));
 
       if (!initiativeIdSel) {
-        saveGeneralInfoService(formValuesParsed)
-          .then((response) => {
-            const initiativeId = response?.initiativeId;
-            if (typeof initiativeId === 'string') {
-              dispatch(setInitiativeId(initiativeId));
-              setCurrentStep(currentStep + 1);
-            }
-          })
-          .catch((error) => {
-            addError({
-              id: 'NEW_GENERAL_INFO_SAVE_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred saving initiative general info',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.invalidDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
-          });
+        // saveGeneralInfoService(formValuesParsed)
+        //   .then((response) => {
+        //     const initiativeId = response?.initiativeId;
+        //     if (typeof initiativeId === 'string') {
+        //       dispatch(setInitiativeId(initiativeId));
+        //       setCurrentStep(currentStep + 1);
+        //     }
+        //   })
+        //   .catch((error) => {
+        //     addError({
+        //       id: 'NEW_GENERAL_INFO_SAVE_ERROR',
+        //       blocking: false,
+        //       error,
+        //       techDescription: 'An error occurred saving initiative general info',
+        //       displayableTitle: t('errors.title'),
+        //       displayableDescription: t('errors.invalidDataDescription'),
+        //       toNotify: true,
+        //       component: 'Toast',
+        //       showCloseIcon: true,
+        //     });
+        //   });
       } else if (typeof initiativeIdSel === 'string') {
-        putGeneralInfo(initiativeIdSel, formValuesParsed)
-          .then((_response) => {
-            setCurrentStep(currentStep + 1);
-          })
-          .catch((error) => {
-            addError({
-              id: 'EDIT_GENERAL_INFO_SAVE_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred editing initiative general info',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.invalidDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
-          });
+        console.log('todo put');
+        // putGeneralInfo(initiativeIdSel, formValuesParsed)
+        //   .then((_response) => {
+        //     setCurrentStep(currentStep + 1);
+        //   })
+        //   .catch((error) => {
+        //     addError({
+        //       id: 'EDIT_GENERAL_INFO_SAVE_ERROR',
+        //       blocking: false,
+        //       error,
+        //       techDescription: 'An error occurred editing initiative general info',
+        //       displayableTitle: t('errors.title'),
+        //       displayableDescription: t('errors.invalidDataDescription'),
+        //       toNotify: true,
+        //       component: 'Toast',
+        //       showCloseIcon: true,
+        //     });
+        //   });
       }
     },
   });
@@ -400,11 +304,11 @@ Props) => {
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
+          gap: 2,
+          mb: 3,
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"budgetTitle budgetTitle . ." 
                                   "budget beneficiaryBudget budgetPerPersonCalc budgetPerPersonCalc "`,
-          py: 2,
         }}
       >
         <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'budgetTitle' }}>
@@ -436,6 +340,7 @@ Props) => {
               </InputAdornment>
             ),
           }}
+          size="small"
         />
         <TextField
           sx={{ gridArea: 'beneficiaryBudget' }}
@@ -463,6 +368,7 @@ Props) => {
               </InputAdornment>
             ),
           }}
+          size="small"
         />
         {!isNaN(peopleReached(formik.values.budget, formik.values.beneficiaryBudget)) && (
           <Box
@@ -475,7 +381,7 @@ Props) => {
               minWidth: '60%',
               backgroundColor: grey[100],
               borderRadius: 2,
-              py: 2,
+              py: 1,
               px: 3,
             }}
           >
@@ -507,11 +413,11 @@ Props) => {
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
+          gap: 2,
+          mb: 3,
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle timeRangeRankingTitle" 
                                   "rankingStartDate rankingEndDate . . "`,
-          py: 2,
         }}
       >
         <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeRankingTitle' }}>
@@ -534,6 +440,7 @@ Props) => {
                 sx={{ gridArea: 'rankingStartDate' }}
                 error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                 helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
+                size="small"
               />
             )}
           />
@@ -553,6 +460,7 @@ Props) => {
                 sx={{ gridArea: 'rankingEndDate' }}
                 error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                 helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
+                size="small"
               />
             )}
           />
@@ -562,11 +470,11 @@ Props) => {
         sx={{
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
+          gap: 2,
+          mb: 3,
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"timeRangeTitle timeRangeTitle timeRangeTitle timeRangeTitle" 
                                   "startDate endDate . . "`,
-          py: 2,
         }}
       >
         <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
@@ -591,6 +499,7 @@ Props) => {
                 helperText={formik.touched.startDate && formik.errors.startDate}
                 required
                 InputLabelProps={{ required: false }}
+                size="small"
               />
             )}
           />
@@ -612,6 +521,7 @@ Props) => {
                 helperText={formik.touched.endDate && formik.errors.endDate}
                 required
                 InputLabelProps={{ required: false }}
+                size="small"
               />
             )}
           />
@@ -622,293 +532,3 @@ Props) => {
 };
 
 export default Generalnfo;
-
-{
-  /* <Paper sx={{ mt: 5 }}>
-        <Box sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-          <Box sx={{ py: 3 }}>
-            <Typography variant="h6">
-              {t('components.wizard.stepTwo.form.otherInfo.title')}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body1">
-                {t('components.wizard.stepTwo.form.otherInfo.subTitle')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Button size="small" href="" sx={{ p: 0 }}>
-                {t('components.wizard.common.links.findOut')}
-              </Button>
-            </Box>
-          </Box>
-
-          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', py: 2 }}>
-            <FormControlLabel
-              sx={{ gridColumn: 'span 2' }}
-              control={
-                <Switch
-                  data-testid="initiative-on-io-test"
-                  checked={formik.values.initiativeOnIO}
-                  value={formik.values.initiativeOnIO}
-                  inputProps={{
-                    checked: formik.values.initiativeOnIO,
-                    role: 'checkbox',
-                    // name: 'initiativeOnIO',
-                    // id: 'initiativeOnIO',
-                  }}
-                  onChange={async (e) => {
-                    await handleInitiativeOnIO(e.target.checked);
-                  }}
-                  name="initiativeOnIO"
-                />
-              }
-              label={t('components.wizard.stepTwo.form.otherInfo.deliverInitiative')}
-            />
-          </FormControl>
-
-          <FormControl>
-            {formik.values.initiativeOnIO ? (
-              <>
-                <FormControl
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
-                >
-                  <InputLabel sx={{ mt: 2 }}>
-                    {t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
-                  </InputLabel>
-                  <Select
-                    id="serviceId"
-                    data-testid="service-id-select"
-                    name="serviceId"
-                    label={t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
-                    placeholder={t('components.wizard.stepTwo.form.otherInfo.serviceSelect')}
-                    sx={{ gridColumn: 'span 9' }}
-                    onChange={async (e) => {
-                      await formik.setFieldValue('serviceId', e.target.value);
-                    }}
-                    error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
-                    value={formik.values.serviceId}
-                  >
-                    {serviceOptions.map(({ name, value }) => (
-                      <MenuItem key={value} value={value}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText
-                    error={formik.touched.serviceId && Boolean(formik.errors.serviceId)}
-                    sx={{ gridColumn: 'span 12' }}
-                  >
-                    {formik.touched.serviceId && formik.errors.serviceId}
-                  </FormHelperText>
-                </FormControl>
-              </>
-            ) : (
-              <>
-                <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-                  <Typography sx={{ fontSize: '18px', fontWeight: '600', gridColumn: 'span 2' }}>
-                    {t('components.wizard.stepTwo.form.otherInfo.description')}
-                  </Typography>
-                </Box>
-                <FormControl
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}
-                >
-                  <TextField
-                    label={t('components.wizard.stepTwo.form.otherInfo.serviceName')}
-                    placeholder={t('components.wizard.stepTwo.form.otherInfo.serviceName')}
-                    name="serviceName"
-                    aria-label="serviceName"
-                    role="input"
-                    sx={{ gridColumn: 'span 6', pr: 4 }}
-                    value={formik.values.serviceName}
-                    onChange={(e) => formik.setFieldValue('serviceName', e.target.value)}
-                    error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
-                    helperText={formik.touched.serviceName && formik.errors.serviceName}
-                    required={true}
-                    InputLabelProps={{ required: false }}
-                  />
-                  <TextField
-                    label={t('components.wizard.stepTwo.form.otherInfo.argument')}
-                    placeholder={t('components.wizard.stepTwo.form.otherInfo.argument')}
-                    name="argument"
-                    aria-label="argument"
-                    role="input"
-                    sx={{ gridColumn: 'span 6' }}
-                    value={formik.values.argument}
-                    onChange={(e) => formik.setFieldValue('argument', e.target.value)}
-                    error={formik.touched.argument && Boolean(formik.errors.argument)}
-                    helperText={formik.touched.argument && formik.errors.argument}
-                    required={true}
-                    InputLabelProps={{ required: false }}
-                  />
-                  <TextField
-                    sx={{ gridColumn: 'span 12', mt: 4 }}
-                    multiline
-                    minRows={2}
-                    maxRows={4}
-                    label={t('components.wizard.stepTwo.form.otherInfo.description')}
-                    placeholder={t('components.wizard.stepTwo.form.otherInfo.description')}
-                    name="description"
-                    aria-label="description"
-                    role="input"
-                    value={formik.values.description}
-                    onChange={(e) => formik.setFieldValue('description', e.target.value)}
-                    error={formik.touched.description && Boolean(formik.errors.description)}
-                    helperText={formik.touched.description && formik.errors.description}
-                    required={true}
-                    InputLabelProps={{ required: false }}
-                  />
-                </FormControl>
-                <Box sx={{ my: 3, display: 'flex' }}>
-                  <Typography sx={{ fontSize: '18px', fontWeight: '600' }}>
-                    {t('components.wizard.stepTwo.form.otherInfo.helpChannels')}
-                  </Typography>
-                  <Tooltip
-                    sx={{ mx: 2 }}
-                    title={t('components.wizard.stepTwo.form.otherInfo.helpChannelsTooltip')}
-                    placement="right"
-                    arrow
-                  >
-                    <InfoOutlinedIcon color="primary" />
-                  </Tooltip>
-                </Box>
-
-                {formik.values.channels.map((_o, i) => {
-                  const channelErrors =
-                    (formik.errors.channels?.length && formik.errors.channels[i]) || {};
-                  const channelTouched =
-                    (formik.touched.channels?.length && formik.touched.channels[i]) || {};
-
-                  const typeError = typeof channelErrors === 'string' ? '' : channelErrors.type;
-                  const typeTouched = channelTouched.type;
-                  const contactError =
-                    typeof channelErrors === 'string' ? '' : channelErrors.contact;
-                  const contactTouched = channelTouched.contact;
-
-                  return (
-                    <Box
-                      key={i}
-                      sx={{
-                        gridColumn: 'span 24',
-                        display: 'grid',
-                        gridTemplateColumns: 'repeat(24, 1fr)',
-                        gap: 0,
-                        my: 2,
-                      }}
-                    >
-                      {i !== 0 && (
-                        <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                          <RemoveCircleOutlineIcon
-                            color="error"
-                            sx={{
-                              cursor: 'pointer',
-                            }}
-                            onClick={() =>
-                              deleteAssistanceChannel(
-                                i,
-                                formik.values,
-                                formik.setValues,
-                                formik.setTouched
-                              )
-                            }
-                            id={`remove_element_${i}`}
-                          />
-                        </Box>
-                      )}
-                      <FormControl
-                        sx={{ gridColumn: 'span 6' }}
-                        error={typeTouched && Boolean(typeError)}
-                      >
-                        <InputLabel id={`channels[${i}].type_label`}>
-                          {t('components.wizard.stepTwo.form.otherInfo.contact')}
-                        </InputLabel>
-                        <Select
-                          id={`channels_${i}_type`}
-                          labelId={`channels[${i}].type_label`}
-                          name={`channels[${i}].type`}
-                          label={t('components.wizard.stepTwo.form.otherInfo.contact')}
-                          value={formik.values.channels[i].type}
-                          onChange={(e) =>
-                            handleContactSelect(
-                              e,
-                              formik.setValues,
-                              i,
-                              formik.values,
-                              formik.setTouched
-                            )
-                          }
-                          error={typeTouched && Boolean(typeError)}
-                        >
-                          {contacts.map(({ name, value }, id) => (
-                            <MenuItem key={id} value={value}>
-                              {name}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                        <FormHelperText>{typeTouched && typeError}</FormHelperText>
-                      </FormControl>
-                      <FormControl sx={{ gridColumn: 'span 12' }}>
-                        <TextField
-                          id={`channels_${i}_contact`}
-                          name={`channels[${i}].contact`}
-                          variant="outlined"
-                          label={t('components.wizard.stepTwo.form.otherInfo.indicatesChannel')}
-                          sx={{ gridColumn: 'span 12', ml: 4, gridArea: 'Channel' }}
-                          placeholder={t(
-                            'components.wizard.stepTwo.form.otherInfo.indicatesChannel'
-                          )}
-                          value={formik.values.channels[i].contact}
-                          onChange={(e) =>
-                            handleAssistanceChannelDTOChange(
-                              e,
-                              i,
-                              formik.values,
-                              formik.setValues,
-                              formik.setTouched
-                            )
-                          }
-                          error={contactTouched && Boolean(contactError)}
-                          helperText={contactTouched && contactError}
-                          required
-                          InputLabelProps={{ required: false }}
-                        />
-                      </FormControl>
-                    </Box>
-                  );
-                })}
-                <Box
-                  sx={{
-                    display: 'grid',
-                    gridColumn: 'span 12',
-                    py: 2,
-                  }}
-                >
-                  <Button
-                    sx={[
-                      {
-                        justifyContent: 'start',
-                        padding: 0,
-                      },
-                      {
-                        '&:hover': { backgroundColor: 'transparent' },
-                      },
-                    ]}
-                    id="add-option"
-                    size="small"
-                    variant="text"
-                    startIcon={<AddIcon />}
-                    onClick={() => addAssistanceChannel(formik.values, formik.setValues)}
-                    disableRipple={true}
-                    disableFocusRipple={true}
-                  >
-                    {t('components.wizard.stepTwo.form.otherInfo.addChannel')}
-                  </Button>
-                </Box>
-              </>
-            )}
-          </FormControl>
-        </Box>
-      </Paper> */
-}

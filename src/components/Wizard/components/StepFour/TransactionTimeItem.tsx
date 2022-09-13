@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormControl,
   FormHelperText,
   IconButton,
@@ -19,6 +18,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { DaysOfWeekInterval } from '../../../../model/Initiative';
 import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
@@ -200,9 +200,7 @@ const TransactionTimeItem = ({
               gridColumn: 'span 24',
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              rowGap: 3,
-              columnGap: 2,
-              my: 2,
+              gap: 2,
             }}
           >
             {i !== 0 && (
@@ -222,6 +220,7 @@ const TransactionTimeItem = ({
             <FormControl
               sx={{ gridColumn: 'span 5' }}
               error={daysOfWeekTouched && Boolean(daysOfWeekError)}
+              size="small"
             >
               <Select
                 id={`transactionTime[${i}].daysOfWeek`}
@@ -255,6 +254,7 @@ const TransactionTimeItem = ({
                 onChange={(value) => formik.handleChange(value)}
                 error={minTimeTouched && Boolean(minTimeError)}
                 helperText={minTimeTouched && minTimeError}
+                size="small"
               />
             </FormControl>
             <FormControl sx={{ gridColumn: 'span 8' }}>
@@ -266,6 +266,7 @@ const TransactionTimeItem = ({
                 onChange={(value) => formik.handleChange(value)}
                 error={maxTimeTouched && Boolean(maxTimeError)}
                 helperText={maxTimeTouched && maxTimeError}
+                size="small"
               />
             </FormControl>
             <Box sx={{ gridColumn: 'span 1', alignSelf: 'center' }}>
@@ -284,29 +285,20 @@ const TransactionTimeItem = ({
         sx={{
           display: 'grid',
           gridColumn: 'span 4',
-          py: 2,
+          mt: 1,
+          justifyContent: 'start',
         }}
       >
-        <Button
-          sx={[
-            {
-              justifyContent: 'start',
-              padding: 0,
-            },
-            {
-              '&:hover': { backgroundColor: 'transparent' },
-            },
-          ]}
-          id="add-option"
+        <ButtonNaked
           size="small"
-          variant="text"
-          startIcon={<AddIcon />}
+          component="button"
           onClick={() => addTransactionTimeItem(formik.values, formik.setValues)}
-          disableRipple={true}
-          disableFocusRipple={true}
+          startIcon={<AddIcon />}
+          sx={{ color: 'primary.main' }}
+          weight="default"
         >
           {t('components.wizard.stepFour.form.addTransactionTimeItem')}
-        </Button>
+        </ButtonNaked>
       </Box>
     </Box>
   );

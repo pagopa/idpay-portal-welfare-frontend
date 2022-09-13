@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormControl,
   FormHelperText,
   IconButton,
@@ -19,6 +18,7 @@ import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { Dispatch, SetStateAction, useEffect } from 'react';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { RewardLimit } from '../../../../model/Initiative';
 import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
@@ -131,11 +131,11 @@ const TimeLimitItem = ({
       }}
       data-testid="time-limit-item-test"
     >
-      <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
-      <Box sx={{ gridColumn: 'span 22' }}>
+      <Box sx={{ gridColumn: 'span 1', mb: 1 }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
+      <Box sx={{ gridColumn: 'span 22', mb: 1 }}>
         <Typography variant="subtitle1">{title}</Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
+      <Box sx={{ gridColumn: 'span 1', justifySelf: 'end', mb: 1 }}>
         <IconButton onClick={() => handleShopListItemRemoved(code)}>
           <DeleteOutlineIcon
             color="error"
@@ -166,9 +166,7 @@ const TimeLimitItem = ({
               gridColumn: 'span 24',
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              rowGap: 3,
-              columnGap: 2,
-              my: 2,
+              gap: 2,
             }}
           >
             {i !== 0 && (
@@ -189,6 +187,7 @@ const TimeLimitItem = ({
             <FormControl
               sx={{ gridColumn: 'span 5' }}
               error={frequencyTouched && Boolean(frequencyError)}
+              size="small"
             >
               <Select
                 id={`timeLimit[${i}].frequency`}
@@ -231,6 +230,7 @@ const TimeLimitItem = ({
                     </InputAdornment>
                   ),
                 }}
+                size="small"
               />
             </FormControl>
           </Box>
@@ -240,29 +240,20 @@ const TimeLimitItem = ({
         sx={{
           display: 'grid',
           gridColumn: 'span 4',
-          py: 2,
+          mt: 1,
+          justifyContent: 'start',
         }}
       >
-        <Button
-          sx={[
-            {
-              justifyContent: 'start',
-              padding: 0,
-            },
-            {
-              '&:hover': { backgroundColor: 'transparent' },
-            },
-          ]}
-          id="add-option"
+        <ButtonNaked
           size="small"
-          variant="text"
-          startIcon={<AddIcon />}
+          component="button"
           onClick={() => addTimeLimitItem(formik.values, formik.setValues)}
-          disableRipple={true}
-          disableFocusRipple={true}
+          startIcon={<AddIcon />}
+          sx={{ color: 'primary.main' }}
+          weight="default"
         >
           {t('components.wizard.stepFour.form.addTimeLimitItem')}
-        </Button>
+        </ButtonNaked>
       </Box>
     </Box>
   );

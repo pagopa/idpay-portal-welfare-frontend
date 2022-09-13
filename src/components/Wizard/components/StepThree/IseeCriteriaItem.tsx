@@ -121,11 +121,10 @@ const IseeCriteriaItem = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="iseeRelationSelect"
             name="iseeRelationSelect"
@@ -196,6 +195,7 @@ const IseeCriteriaItem = ({
                 </InputAdornment>
               ),
             }}
+            size="small"
           />
         </FormControl>
         <FormControl
@@ -228,6 +228,7 @@ const IseeCriteriaItem = ({
                 </InputAdornment>
               ),
             }}
+            size="small"
           />
         </FormControl>
       </Box>

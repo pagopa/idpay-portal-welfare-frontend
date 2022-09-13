@@ -411,7 +411,7 @@ const ServiceConfig = ({
           borderRadius: 1,
           alignItems: 'center',
           p: 3,
-          mt: 3,
+          my: 3,
         }}
       >
         <Box sx={{ gridColumn: 'span 1', mt: 1 }}>
