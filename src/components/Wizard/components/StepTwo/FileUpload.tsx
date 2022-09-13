@@ -289,7 +289,8 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('components.wizard.stepTwo.upload.fileUploadHelpText')}&#160;
           <Link
-            href="#"
+            href="example_fiscal_code_.csv"
+            download
             target="_blank"
             variant="body2"
             sx={{ fontSize: '0.875rem', fontWeight: 600 }}
