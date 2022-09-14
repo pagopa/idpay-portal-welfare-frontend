@@ -212,7 +212,7 @@ export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria:
       manualCriteriaToSend.push({ ...criteria });
     }
   });
-  console.log(manualCriteriaToSend);
+
   return {
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],

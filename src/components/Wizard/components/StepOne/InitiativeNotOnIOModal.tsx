@@ -1,5 +1,5 @@
 import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
-import { MouseEventHandler } from 'react';
+import { Dispatch, MouseEventHandler, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
@@ -7,6 +7,8 @@ type Props = {
   handleCloseInitiativeNotOnIOModal: MouseEventHandler;
   values: any;
   sendValues: any;
+  currentStep: number;
+  setCurrentStep: Dispatch<SetStateAction<number>>;
 };
 
 const InitiativeNotOnIOModal = ({
@@ -14,6 +16,8 @@ const InitiativeNotOnIOModal = ({
   handleCloseInitiativeNotOnIOModal,
   values,
   sendValues,
+  currentStep,
+  setCurrentStep,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -68,7 +72,7 @@ const InitiativeNotOnIOModal = ({
               variant="contained"
               sx={{ gridArea: 'exitBtn', justifySelf: 'end' }}
               onClick={(e) => {
-                sendValues(values);
+                sendValues(values, currentStep, setCurrentStep);
                 handleCloseInitiativeNotOnIOModal(e);
               }}
             >

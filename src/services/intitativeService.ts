@@ -1,6 +1,4 @@
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
-// import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
-// import { InitiativeInfoDTO } from '../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeApi } from '../api/InitiativeApiClient';
 import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
@@ -12,17 +10,34 @@ import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
 import { decode } from '../utils/io-utils';
 import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
-
-// export const saveGeneralInfoService = (
-//   generalInfo: InitiativeInfoDTO
-// ): Promise<InitiativeDTO | void | undefined> =>
-//   InitiativeApi.initiativeGeneralPost(generalInfo).then((res) => res);
+import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
 
 export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>
   InitiativeApi.getInitiativeById(id).then((res) => res);
+
+export const createInitiativeServiceInfo = (
+  data: InitiativeAdditionalDTO
+): Promise<InitiativeDTO | void | undefined> =>
+  InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
+
+export const updateInitiativeServiceInfo = (
+  id: string,
+  data: InitiativeAdditionalDTO
+): Promise<void> => InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
+
+export const updateInitiativeGeneralInfo = (
+  id: string,
+  data: InitiativeGeneralDTO
+): Promise<void> => InitiativeApi.updateInitiativeGeneralInfo(id, data).then((res) => res);
+
+export const updateInitiativeGeneralInfoDraft = (
+  id: string,
+  data: InitiativeGeneralDTO
+): Promise<void> => InitiativeApi.updateInitiativeGeneralInfoDraft(id, data).then((res) => res);
 
 export const putBeneficiaryRuleService = (
   id: string,
@@ -33,9 +48,6 @@ export const putBeneficiaryRuleDraftService = (
   id: string,
   data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
-
-// export const putGeneralInfo = (id: string, data: InitiativeGeneralDTO): Promise<void> =>
-//   InitiativeApi.initiativeGeneralPut(id, data).then((res) => res);
 
 /** It will accept a {@link InitiativeRewardAndTrxRulesDTORewardRule} and it will transcode it into {@link RewardGroupDTO} or {@link RewardValueDTO} */
 export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {

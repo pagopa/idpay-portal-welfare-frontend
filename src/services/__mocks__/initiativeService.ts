@@ -1,4 +1,8 @@
 import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
+import {
+  InitiativeAdditionalDTO,
+  ServiceScopeEnum,
+} from '../../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
@@ -38,6 +42,7 @@ export const mockedInitiativeSummary = [
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',
+  initiativeName: 'prova313',
   organizationId: '2f63a151-da4e-4e1e-acf9-adecc0c4d727',
   status: 'DRAFT',
   creationDate: new Date('2022-07-28T13:32:50.002'),
@@ -53,14 +58,17 @@ export const mockedInitiativeDetail = {
     rankingEndDate: new Date('2022-09-30'),
   },
   additionalInfo: {
-    serviceId: '',
-    serviceName: 'Servizio Test 1',
-    argument: 'Argomento di test',
-    description: 'Descrizione di test',
+    serviceIO: true,
+    serviceId: 'provaaaaa316',
+    serviceName: 'prova313',
+    serviceScope: ServiceScopeEnum.LOCAL,
+    description: 'culpa non sint',
+    privacyLink: 'https://www.google.it',
+    tcLink: 'https://www.google.it',
     channels: [
       {
-        type: TypeEnum.email,
-        contact: 'test@mail.it',
+        type: TypeEnum.mobile,
+        contact: '336754625',
       },
     ],
   },
@@ -127,6 +135,16 @@ export const mockedInitiativeBeneficiaryRuleBody = {
   selfDeclarationCriteria: [],
 };
 
+export const mockedServiceInfoData = {
+  serviceIO: true,
+  serviceName: 'newStepOneTest',
+  serviceScope: 'NATIONAL',
+  description: 'newStepOneTest',
+  privacyLink: 'http://test.it',
+  tcLink: 'http://test.it',
+  channels: [{ type: 'web', contact: 'http://test.it' }],
+};
+
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -140,6 +158,9 @@ export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: Initiat
 
 export const getInitiativeDetail = (_id: string) =>
   new Promise((resolve) => resolve(mockedInitiativeDetail));
+
+export const createInitiativeServiceInfo = (_mockedServiceInfoData: InitiativeAdditionalDTO) =>
+  new Promise((resolve) => resolve(mockedInitiativeId));
 
 // export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
 //   expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);

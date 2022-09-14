@@ -24,8 +24,21 @@ import { useFormik } from 'formik';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import * as Yup from 'yup';
 import { CallMade } from '@mui/icons-material';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { contacts } from './helpers';
+import {
+  createInitiativeServiceInfo,
+  updateInitiativeServiceInfo,
+} from '../../../../services/intitativeService';
+import {
+  initiativeIdSelector,
+  additionalInfoSelector,
+  setInitiativeId,
+  setAdditionalInfo,
+} from '../../../../redux/slices/initiativeSlice';
+import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
+import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
 
 interface Props {
@@ -44,7 +57,11 @@ const ServiceConfig = ({
   setDisabledNext,
 }: Props) => {
   const { t } = useTranslation();
+  const initiativeId = useAppSelector(initiativeIdSelector);
+  const additionalInfo = useAppSelector(additionalInfoSelector);
   const [openInitiativeNotOnIOModal, setOpenInitiativeNotOnIOModal] = useState(false);
+  const addError = useErrorDispatcher();
+  const dispatch = useAppDispatch();
 
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
@@ -91,24 +108,24 @@ const ServiceConfig = ({
 
   const formik = useFormik({
     initialValues: {
-      initiativeOnIO: false,
-      serviceName: '',
-      serviceArea: '1',
-      serviceDescription: '',
-      privacyPolicyUrl: '',
-      termsAndConditions: '',
-      assistanceChannels: [{ type: 'web', contact: '' }],
+      initiativeOnIO: additionalInfo.initiativeOnIO,
+      serviceName: additionalInfo.serviceName,
+      serviceArea: additionalInfo.serviceArea,
+      serviceDescription: additionalInfo.serviceDescription,
+      privacyPolicyUrl: additionalInfo.privacyPolicyUrl,
+      termsAndConditions: additionalInfo.termsAndConditions,
+      assistanceChannels: [...additionalInfo.assistanceChannels],
     },
     validationSchema,
+    validateOnMount: true,
+    validateOnChange: true,
+    enableReinitialize: true,
     onSubmit: (values) => {
       if (values.initiativeOnIO === false) {
         handleOpenInitiativeNotOnIOModal();
       } else {
-        sendValues(values);
+        sendValues(values, currentStep, setCurrentStep);
       }
-
-      // setCurrentStep(currentStep + 1);
-      setCurrentStep(currentStep);
     },
   });
 
@@ -120,8 +137,53 @@ const ServiceConfig = ({
     }
   }, [formik]);
 
-  const sendValues = (values: any) => {
-    console.log(values);
+  const sendValues = (
+    values: any,
+    currentStep: number,
+    setCurrentStep: Dispatch<SetStateAction<number>>
+  ) => {
+    const data = parseDataToSend(values);
+    dispatch(setAdditionalInfo(values));
+    if (!initiativeId) {
+      createInitiativeServiceInfo(data)
+        .then((res) => {
+          dispatch(setInitiativeId(res?.initiativeId));
+          setCurrentStep(currentStep + 1);
+        })
+        .catch((error) => {
+          addError({
+            id: 'NEW_SERVICE_INFO_SAVE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred saving initiative service info',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    } else {
+      updateInitiativeServiceInfo(initiativeId, data)
+        .then((_res) => {
+          setCurrentStep(currentStep + 1);
+        })
+        .catch((error) => {
+          console.log(JSON.stringify(error));
+
+          addError({
+            id: 'EDIT_SERVICE_INFO_SAVE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred editing initiative service info',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.invalidDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
   };
 
   const addAssistanceChannel = (values: any, setValues: any) => {
@@ -129,7 +191,7 @@ const ServiceConfig = ({
     setValues({ ...values, assistanceChannels: newAssistanceChannel });
   };
 
-  const deleteAssistanceChannel = (i: number, values: any, setValues: any, _setTouched: any) => {
+  const deleteAssistanceChannel = (i: number, values: any, setValues: any) => {
     const indexValueToRemove = i;
     // eslint-disable-next-line functional/immutable-data
     const newValues = values.assistanceChannels.filter((v: any, i: number) => {
@@ -138,7 +200,6 @@ const ServiceConfig = ({
       }
     });
     setValues({ ...values, assistanceChannels: newValues });
-    // setTouched({}, false);
   };
 
   const handleContactSelect = (e: any, setValues: any, index: number, values: any) => {
@@ -175,6 +236,8 @@ const ServiceConfig = ({
         handleCloseInitiativeNotOnIOModal={handleCloseInitiativeNotOnIOModal}
         values={formik.values}
         sendValues={sendValues}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
       />
       <Box sx={{ py: 3 }}>
         <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
@@ -273,8 +336,12 @@ const ServiceConfig = ({
               value={formik.values.serviceArea}
               size="small"
             >
-              <MenuItem value={'1'}>aaaa</MenuItem>
-              <MenuItem value={'2'}>bbbb</MenuItem>
+              <MenuItem value={ServiceScopeEnum.LOCAL}>
+                {t('components.wizard.stepOne.form.serviceScopeLocal')}
+              </MenuItem>
+              <MenuItem value={ServiceScopeEnum.NATIONAL}>
+                {t('components.wizard.stepOne.form.serviceScopeNational')}
+              </MenuItem>
             </Select>
             <FormHelperText
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
@@ -350,22 +417,23 @@ const ServiceConfig = ({
               size="small"
             />
           </FormControl>
-          {formik.values.privacyPolicyUrl.length > 0 && (
-            <FormControl
-              sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <ButtonNaked
-                size="small"
-                href={formik.values.privacyPolicyUrl}
-                target="_blank"
-                endIcon={<CallMade />}
-                sx={{ color: 'primary.main' }}
-                weight="default"
+          {typeof formik.values.privacyPolicyUrl === 'string' &&
+            formik.values.privacyPolicyUrl.length > 0 && (
+              <FormControl
+                sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
               >
-                {t('components.wizard.stepOne.form.tryUrl')}
-              </ButtonNaked>
-            </FormControl>
-          )}
+                <ButtonNaked
+                  size="small"
+                  href={formik.values.privacyPolicyUrl}
+                  target="_blank"
+                  endIcon={<CallMade />}
+                  sx={{ color: 'primary.main' }}
+                  weight="default"
+                >
+                  {t('components.wizard.stepOne.form.tryUrl')}
+                </ButtonNaked>
+              </FormControl>
+            )}
 
           <FormControl sx={{ gridColumn: 'span 18' }}>
             <TextField
@@ -383,22 +451,23 @@ const ServiceConfig = ({
               size="small"
             />
           </FormControl>
-          {formik.values.termsAndConditions.length > 0 && (
-            <FormControl
-              sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
-            >
-              <ButtonNaked
-                size="small"
-                href={formik.values.termsAndConditions}
-                target="_blank"
-                endIcon={<CallMade />}
-                sx={{ color: 'primary.main' }}
-                weight="default"
+          {typeof formik.values.termsAndConditions === 'string' &&
+            formik.values.termsAndConditions.length > 0 && (
+              <FormControl
+                sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
               >
-                {t('components.wizard.stepOne.form.tryUrl')}
-              </ButtonNaked>
-            </FormControl>
-          )}
+                <ButtonNaked
+                  size="small"
+                  href={formik.values.termsAndConditions}
+                  target="_blank"
+                  endIcon={<CallMade />}
+                  sx={{ color: 'primary.main' }}
+                  weight="default"
+                >
+                  {t('components.wizard.stepOne.form.tryUrl')}
+                </ButtonNaked>
+              </FormControl>
+            )}
         </Box>
       </Box>
       <Box
@@ -461,14 +530,7 @@ const ServiceConfig = ({
                       sx={{
                         cursor: 'pointer',
                       }}
-                      onClick={() =>
-                        deleteAssistanceChannel(
-                          i,
-                          formik.values,
-                          formik.setValues,
-                          formik.setTouched
-                        )
-                      }
+                      onClick={() => deleteAssistanceChannel(i, formik.values, formik.setValues)}
                       id={`remove_assistanceChannel_${i}`}
                     />
                   </Box>

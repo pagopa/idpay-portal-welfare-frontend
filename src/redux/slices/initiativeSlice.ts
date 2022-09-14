@@ -16,11 +16,21 @@ import {
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
+import { ServiceScopeEnum } from '../../api/generated/initiative/InitiativeAdditionalDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
   organizationId: undefined,
   status: undefined,
+  additionalInfo: {
+    initiativeOnIO: false,
+    serviceName: '',
+    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceDescription: '',
+    privacyPolicyUrl: '',
+    termsAndConditions: '',
+    assistanceChannels: [{ type: 'web', contact: '' }],
+  },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
@@ -30,13 +40,6 @@ const initialState: Initiative = {
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
-  },
-  additionalInfo: {
-    serviceId: '',
-    serviceName: '',
-    argument: '',
-    description: '',
-    channels: [{ type: 'web', contact: '' }],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],

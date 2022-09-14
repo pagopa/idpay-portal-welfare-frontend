@@ -482,14 +482,10 @@
           }
         },
         "responses": {
-          "201": {
-            "description": "Created",
+          "204": {
+            "description": "No Content",
             "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/InitiativeDTO"
-                }
-              }
+              "application/json": {}
             }
           },
           "400": {

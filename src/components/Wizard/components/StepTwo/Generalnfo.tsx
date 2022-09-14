@@ -25,17 +25,18 @@ import { Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
-// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
-  // setInitiativeId,
   generalInfoSelector,
   setGeneralInfo,
-  setAdditionalInfo,
   initiativeIdSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-// import { saveGeneralInfoService, putGeneralInfo } from '../../../../services/intitativeService';
+import {
+  updateInitiativeGeneralInfo,
+  updateInitiativeGeneralInfoDraft,
+} from '../../../../services/intitativeService';
 import {
   getMinDate,
   peopleReached,
@@ -51,15 +52,9 @@ interface Props {
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const Generalnfo = ({
-  action,
-  setAction,
-  // currentStep,
-  // setCurrentStep,
-  setDisabledNext,
-}: Props) => {
+const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const dispatch = useAppDispatch();
-  // const addError = useErrorDispatcher();
+  const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
   const { t } = useTranslation();
@@ -67,6 +62,26 @@ const Generalnfo = ({
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(formik.values);
+      dispatch(setGeneralInfo(formik.values));
+      if (initiativeIdSel) {
+        updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed)
+          .then((_res) => {})
+          .catch((error) => {
+            addError({
+              id: 'EDIT_GENERAL_INFO_SAVE_DRAFT_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing draft initiative general info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+      }
     }
     setAction('');
   }, [action]);
@@ -164,51 +179,25 @@ const Generalnfo = ({
     validationSchema,
     onSubmit: (values) => {
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
-      const { additionalInfo } = formValuesParsed;
       dispatch(setGeneralInfo(values));
-      dispatch(setAdditionalInfo(additionalInfo));
-
-      if (!initiativeIdSel) {
-        // saveGeneralInfoService(formValuesParsed)
-        //   .then((response) => {
-        //     const initiativeId = response?.initiativeId;
-        //     if (typeof initiativeId === 'string') {
-        //       dispatch(setInitiativeId(initiativeId));
-        //       setCurrentStep(currentStep + 1);
-        //     }
-        //   })
-        //   .catch((error) => {
-        //     addError({
-        //       id: 'NEW_GENERAL_INFO_SAVE_ERROR',
-        //       blocking: false,
-        //       error,
-        //       techDescription: 'An error occurred saving initiative general info',
-        //       displayableTitle: t('errors.title'),
-        //       displayableDescription: t('errors.invalidDataDescription'),
-        //       toNotify: true,
-        //       component: 'Toast',
-        //       showCloseIcon: true,
-        //     });
-        //   });
-      } else if (typeof initiativeIdSel === 'string') {
-        console.log('todo put');
-        // putGeneralInfo(initiativeIdSel, formValuesParsed)
-        //   .then((_response) => {
-        //     setCurrentStep(currentStep + 1);
-        //   })
-        //   .catch((error) => {
-        //     addError({
-        //       id: 'EDIT_GENERAL_INFO_SAVE_ERROR',
-        //       blocking: false,
-        //       error,
-        //       techDescription: 'An error occurred editing initiative general info',
-        //       displayableTitle: t('errors.title'),
-        //       displayableDescription: t('errors.invalidDataDescription'),
-        //       toNotify: true,
-        //       component: 'Toast',
-        //       showCloseIcon: true,
-        //     });
-        //   });
+      if (initiativeIdSel) {
+        updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed)
+          .then((_res) => {
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_GENERAL_INFO_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative general info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
       }
     },
   });

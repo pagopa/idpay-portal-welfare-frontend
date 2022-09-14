@@ -1,4 +1,4 @@
-import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -54,10 +54,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
     } else {
       handleOpenExitModal(e);
     }
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   const renderActiveStepBox = (activeStep: number) => {
@@ -134,17 +130,12 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
     <Box>
       <Stepper sx={{ my: 2 }} activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
-          <Step key={index}>
+          <Step key={index} sx={{ px: 0 }}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length ? (
-        <>
-          <Typography sx={{ mt: 2, mb: 1 }}>Inviato per la revisione</Typography>
-          <Button onClick={handleReset}>{t('wizard.common.buttons.reset')}</Button>
-        </>
-      ) : (
+      {activeStep < steps.length && (
         <>
           {renderActiveStepBox(activeStep)}
           <Box

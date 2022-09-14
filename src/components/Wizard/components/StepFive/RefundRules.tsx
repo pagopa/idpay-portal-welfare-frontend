@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { useHistory } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
@@ -30,6 +31,7 @@ import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/Accumu
 import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
 import { putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import ROUTES from '../../../../routes';
 import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
@@ -40,13 +42,14 @@ interface Props {
   setDisableNext: Dispatch<SetStateAction<boolean>>;
 }
 
-const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisableNext }: Props) => {
+const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const { t } = useTranslation();
   const [_isChecked, setIsChecked] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
   const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
+  const history = useHistory();
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -66,8 +69,6 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
     }
     setAction('');
   }, [action]);
-
-  console.log(refundRulesSelector);
 
   const validationSchema = Yup.object().shape({
     reimbursmentQuestionGroup: Yup.string().required(t('validation.required')),
@@ -127,7 +128,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
         putRefundRule(initiativeId, body)
           .then((_res) => {
             dispatch(saveRefundRule(values));
-            setCurrentStep(currentStep + 1);
+            history.push(ROUTES.INITIATIVE_LIST);
           })
           .catch((error) => {
             addError({

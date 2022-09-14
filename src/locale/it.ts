@@ -97,6 +97,8 @@ export default {
           email: 'Email',
           phone: 'Telefono',
           addChannel: 'Aggiungi un altro canale',
+          serviceScopeLocal: 'Locale',
+          serviceScopeNational: 'Nazionale',
         },
         modal: {
           serviceNotOnIOTitle: 'Servizio non erogato su IO',
