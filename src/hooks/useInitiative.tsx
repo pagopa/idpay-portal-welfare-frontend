@@ -40,6 +40,7 @@ import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
+import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 
 interface MatchParams {
   id: string;
@@ -69,10 +70,13 @@ export const useInitiative = () => {
           dispatch(setInitiativeId(response.initiativeId));
           dispatch(setOrganizationId(response.organizationId));
           dispatch(setStatus(response.status));
-          const generalInfo = parseGeneralInfo(response.general);
-          dispatch(setGeneralInfo(generalInfo));
+
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
+
+          const generalInfo = parseGeneralInfo(response.general);
+          dispatch(setGeneralInfo(generalInfo));
+
           const automatedCriteria = [...parseAutomatedCriteria(response)];
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
@@ -105,6 +109,50 @@ export const useInitiative = () => {
   }, []);
 };
 
+const parseAdditionalInfo = (data: any): AdditionalInfo => {
+  const dataT = {
+    initiativeOnIO: false,
+    serviceName: '',
+    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceDescription: '',
+    privacyPolicyUrl: '',
+    termsAndConditions: '',
+    assistanceChannels: [{ type: 'web', contact: '' }],
+  };
+
+  if (typeof data.serviceIO !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.initiativeOnIO = data.serviceIO;
+  }
+  if (typeof data.serviceName !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceName = data.serviceName;
+  }
+  if (typeof data.serviceScope !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceArea = data.serviceScope;
+  }
+  if (typeof data.description !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceDescription = data.description;
+  }
+  if (typeof data.privacyLink !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.privacyPolicyUrl = data.privacyLink;
+  }
+  if (typeof data.tcLink !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.termsAndConditions = data.tcLink;
+  }
+  if (typeof data.channels !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.assistanceChannels = [...data.channels];
+  }
+
+  return dataT;
+};
+
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
@@ -116,70 +164,40 @@ const parseGeneralInfo = (data: any): GeneralInfo => {
     rankingStartDate: '',
     rankingEndDate: '',
   };
-  if (typeof data.beneficiaryType !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.beneficiaryType =
-      data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
-  }
-  if (typeof data.beneficiaryKnown !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
-  }
-  if (typeof data.budget !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.budget = data.budget.toString();
-  }
-  if (typeof data.beneficiaryBudget !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.beneficiaryBudget = data.beneficiaryBudget.toString();
-  }
-  if (typeof data.startDate !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.startDate = data.startDate;
-  }
-  if (typeof data.endDate !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.endDate = data.endDate;
-  }
-  if (typeof data.rankingStartDate !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.rankingStartDate = data.rankingStartDate;
-  }
-  if (typeof data.rankingEndDate !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.rankingEndDate = data.rankingEndDate;
-  }
-  return dataT;
-};
-
-const parseAdditionalInfo = (data: any): AdditionalInfo => {
-  const dataT = {
-    serviceId: '',
-    serviceName: '',
-    argument: '',
-    description: '',
-    channels: [{ type: 'web', contact: '' }],
-  };
-
-  if (typeof data.serviceId !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.serviceId = data.serviceId;
-  }
-  if (typeof data.serviceName !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.serviceName = data.serviceName;
-  }
-  if (typeof data.argument !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.argument = data.argument;
-  }
-  if (typeof data.description !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.description = data.description;
-  }
-  if (typeof data.channels !== undefined) {
-    // eslint-disable-next-line functional/immutable-data
-    dataT.channels = [...data.channels];
+  if (data && Object.keys(data).length !== 0) {
+    if (typeof data.beneficiaryType !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.beneficiaryType =
+        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
+    }
+    if (typeof data.beneficiaryKnown !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+    }
+    if (typeof data.budget !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.budget = data.budget.toString();
+    }
+    if (typeof data.beneficiaryBudget !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.beneficiaryBudget = data.beneficiaryBudget.toString();
+    }
+    if (typeof data.startDate !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.startDate = data.startDate;
+    }
+    if (typeof data.endDate !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.endDate = data.endDate;
+    }
+    if (typeof data.rankingStartDate !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.rankingStartDate = data.rankingStartDate;
+    }
+    if (typeof data.rankingEndDate !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.rankingEndDate = data.rankingEndDate;
+    }
   }
 
   return dataT;

@@ -132,9 +132,8 @@ const TransactionNumberItem = ({
           gridTemplateAreas: `"minTransactionNumberField minTransactionNumberTooltip . . "
                               "maxTransactionNumberField maxTransactionNumberTooltip . . "`,
           alignItems: 'center',
-          columnGap: 2,
-          rowGap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
         <FormControl sx={{ gridArea: 'minTransactionNumberField' }}>
@@ -145,7 +144,7 @@ const TransactionNumberItem = ({
               type: 'number',
               'data-testid': 'min-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.minTransactionNumber')}
+            placeholder={t('components.wizard.stepFour.form.minTransactionNumber')}
             name="from"
             value={formik.values.from}
             onChange={(e) => {
@@ -154,10 +153,11 @@ const TransactionNumberItem = ({
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
+            size="small"
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.minTransactionNumberTooltip')}
+          title={t('components.wizard.stepFour.form.minTransactionNumberTooltip')}
           placement="right"
           sx={{ gridArea: 'minTransactionNumberTooltip' }}
           arrow
@@ -172,7 +172,7 @@ const TransactionNumberItem = ({
               type: 'number',
               'data-testid': 'max-spending-limit',
             }}
-            placeholder={t('components.wizard.stepThree.form.maxTransactionNumber')}
+            placeholder={t('components.wizard.stepFour.form.maxTransactionNumber')}
             name="to"
             value={formik.values.to}
             onChange={(e) => {
@@ -181,10 +181,11 @@ const TransactionNumberItem = ({
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}
+            size="small"
           />
         </FormControl>
         <Tooltip
-          title={t('components.wizard.stepThree.form.maxTransactionNumberTooltip')}
+          title={t('components.wizard.stepFour.form.maxTransactionNumberTooltip')}
           placement="right"
           sx={{ gridArea: 'maxTransactionNumberTooltip' }}
           arrow

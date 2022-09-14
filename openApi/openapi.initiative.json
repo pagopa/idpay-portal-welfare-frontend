@@ -364,18 +364,18 @@
         }
       }
     },
-    "/general": {
+    "/info": {
       "post": {
         "tags": ["initiative"],
-        "summary": "Save initiative and first subset of data 'general info'",
-        "description": "Save initiative and first subset of data 'general info'",
-        "operationId": "saveInitiativeGeneralInfo",
+        "summary": "Save initiative and first subset of data 'service info'",
+        "description": "Save initiative and first subset of data 'service info'",
+        "operationId": "saveInitiativeServiceInfo",
         "requestBody": {
           "description": "Unique identifier of the subscribed initiative, IBAN of the citizen",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiativeInfoDTO"
+                "$ref": "#/components/schemas/InitiativeAdditionalDTO"
               }
             }
           }
@@ -454,10 +454,107 @@
         }
       }
     },
+    "/{initiativeId}/info": {
+      "put": {
+        "tags": ["initiative"],
+        "summary": "Save initiative and first subset of data 'service info'",
+        "description": "Save initiative and first subset of data 'service info'",
+        "operationId": "updateInitiativeServiceInfo",
+        "parameters": [
+          {
+            "name": "initiativeId",
+            "in": "path",
+            "description": "The initiative ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Unique identifier of the subscribed initiative, IBAN of the citizen",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeAdditionalDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested ID was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server ERROR",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/{initiativeId}/general": {
       "put": {
         "tags": ["initiative"],
-        "summary": "Update initiative and first subset of data 'general info'",
+        "summary": "Update initiative and subset of data 'general info'",
         "description": "Update initiative and first subset of data 'general info'",
         "operationId": "updateInitiativeGeneralInfo",
         "parameters": [
@@ -476,7 +573,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/InitiativeInfoDTO"
+                "$ref": "#/components/schemas/InitiativeGeneralDTO"
               }
             }
           }
@@ -741,6 +838,195 @@
         }
       }
     },
+    "/{initiativeId}/refund": {
+      "put": {
+        "tags": ["initiative"],
+        "summary": "Save the refund rule of the initiative",
+        "operationId": "updateInitiativeRefundRule",
+        "parameters": [
+          {
+            "name": "initiativeId",
+            "in": "path",
+            "description": "The initiative ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested ID was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server ERROR",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{initiativeId}/general/draft": {
+      "put": {
+        "tags": ["initiative"],
+        "summary": "Update initiative and subset of data 'general info'",
+        "description": "Update initiative and first subset of data 'general info'",
+        "operationId": "updateInitiativeGeneralInfoDraft",
+        "parameters": [
+          {
+            "name": "initiativeId",
+            "in": "path",
+            "description": "The initiative ID",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InitiativeGeneralDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {}
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The requested ID was not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server ERROR",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/{initiativeId}/beneficiary/draft": {
       "put": {
         "tags": ["initiative"],
@@ -759,7 +1045,6 @@
           }
         ],
         "requestBody": {
-          "description": "Unique identifier of the subscribed initiative, instrument HPAN",
           "content": {
             "application/json": {
               "schema": {
@@ -931,99 +1216,6 @@
         }
       }
     },
-    "/{initiativeId}/refund": {
-      "put": {
-        "tags": ["initiative"],
-        "summary": "Save the refund rule of the initiative",
-        "operationId": "updateInitiativeRefundRule",
-        "parameters": [
-          {
-            "name": "initiativeId",
-            "in": "path",
-            "description": "The initiative ID",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "204": {
-            "description": "No Content"
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Authentication failed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Forbidden",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "The requested ID was not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server ERROR",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorDTO"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/{initiativeId}/refund/draft": {
       "put": {
         "tags": ["initiative"],
@@ -1123,37 +1315,30 @@
       "InitiativeAdditionalDTO": {
         "type": "object",
         "properties": {
+          "serviceIO": {
+            "type": "boolean"
+          },
           "serviceId": {
             "type": "string"
           },
           "serviceName": {
             "type": "string"
           },
-          "argument": {
+          "serviceScope": {
+            "enum": ["LOCAL", "NATIONAL"],
             "type": "string"
           },
           "description": {
             "type": "string"
           },
-          "channels": {
-            "$ref": "#/components/schemas/ChannelArrayDTO"
-          }
-        }
-      },
-      "InitiativeLegalDTO": {
-        "type": "object",
-        "properties": {
           "privacyLink": {
             "type": "string"
           },
           "tcLink": {
             "type": "string"
           },
-          "regulationLink": {
-            "type": "string"
-          },
-          "dpiaLink": {
-            "type": "string"
+          "channels": {
+            "$ref": "#/components/schemas/ChannelArrayDTO"
           }
         }
       },
@@ -1263,9 +1448,6 @@
           },
           "refundRule": {
             "$ref": "#/components/schemas/InitiativeRefundRuleDTO"
-          },
-          "legal": {
-            "$ref": "#/components/schemas/InitiativeLegalDTO"
           }
         }
       },
@@ -1294,17 +1476,6 @@
           "updateDate": {
             "type": "string",
             "format": "date-time"
-          }
-        }
-      },
-      "InitiativeInfoDTO": {
-        "type": "object",
-        "properties": {
-          "general": {
-            "$ref": "#/components/schemas/InitiativeGeneralDTO"
-          },
-          "additionalInfo": {
-            "$ref": "#/components/schemas/InitiativeAdditionalDTO"
           }
         }
       },
@@ -1698,7 +1869,7 @@
             "$ref": "#/components/schemas/TimeParameterDTO"
           },
           "additionalInfo": {
-            "$ref": "#/components/schemas/AdditionalInfoDTO"
+            "$ref": "#/components/schemas/RefundAdditionalInfoDTO"
           }
         }
       },
@@ -1725,7 +1896,7 @@
           }
         }
       },
-      "AdditionalInfoDTO": {
+      "RefundAdditionalInfoDTO": {
         "required": ["identificationCode"],
         "type": "object",
         "properties": {

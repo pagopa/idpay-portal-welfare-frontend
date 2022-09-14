@@ -7,7 +7,7 @@ import {
   FormHelperText,
   TextField,
   SelectChangeEvent,
-  Button,
+  // Button,
   IconButton,
 } from '@mui/material';
 import { Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useEffect } from 'react';
@@ -18,6 +18,7 @@ import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
 import { handleCriteriaToSubmit, setError, setErrorText } from './helpers';
@@ -232,7 +233,7 @@ const ManualCriteria = ({
     >
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{`${t(
-          'components.wizard.stepTwo.chooseCriteria.form.manual'
+          'components.wizard.stepThree.chooseCriteria.form.manual'
         )} ${data.code}`}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
@@ -258,10 +259,9 @@ const ManualCriteria = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           gap: 2,
-          mt: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 3' }}>
+        <FormControl sx={{ gridColumn: 'span 3' }} size="small">
           <Select
             id={`manualCriteriaSelectName`}
             name={`manualCriteriaSelectName`}
@@ -281,10 +281,10 @@ const ManualCriteria = ({
             data-testid="manualCriteria-select-name"
           >
             <MenuItem value={ManualCriteriaOptions.BOOLEAN} data-testid="boolean">
-              {t('components.wizard.stepTwo.chooseCriteria.form.boolean')}
+              {t('components.wizard.stepThree.chooseCriteria.form.boolean')}
             </MenuItem>
             <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
-              {t('components.wizard.stepTwo.chooseCriteria.form.multi')}
+              {t('components.wizard.stepThree.chooseCriteria.form.multi')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -310,7 +310,7 @@ const ManualCriteria = ({
             name={`manualCriteriaName`}
             variant="outlined"
             value={manualCriteriaFormik.values.manualCriteriaName}
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            placeholder={t('components.wizard.stepThree.chooseCriteria.form.value')}
             onChange={(e) => {
               manualCriteriaFormik.handleChange(e);
               handleFieldValueChanged(
@@ -330,6 +330,7 @@ const ManualCriteria = ({
               ) || t('validation.maxTwoHundred')
             }
             data-testid="manualCriteria-boolean-test"
+            size="small"
           />
         </FormControl>
       </Box>
@@ -386,18 +387,13 @@ const ManualCriteria = ({
                     />
                   </Box>
                 )}
-                <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
+                <Box sx={{ display: 'grid', gridColumn: 'span 14' }}>
                   <TextField
                     key={`manualCriteriaValues[${i}].value}`}
                     id={`manualCriteriaValues[${i}].value}`}
                     name={`manualCriteriaValues[${i}].value}`}
                     variant="outlined"
-                    // value={
-                    //   typeof Array.isArray(manualCriteriaFormik.values.manualCriteriaValues) &&
-                    //   typeof manualCriteriaFormik.values.manualCriteriaValues !== 'undefined'
-                    //     ? manualCriteriaFormik.values.manualCriteriaValues[i].value
-                    //     : ''
-                    // }
+                    size="small"
                     value={manualCriteriaFormik.values.manualCriteriaValues[i].value}
                     onBlur={(e) => manualCriteriaFormik.handleBlur(e)}
                     onChange={(e) => {
@@ -430,20 +426,10 @@ const ManualCriteria = ({
               gap: 3,
             }}
           >
-            <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-              <Button
-                sx={[
-                  {
-                    justifyContent: 'start',
-                    padding: 0,
-                  },
-                  {
-                    '&:hover': { backgroundColor: 'transparent' },
-                  },
-                ]}
+            <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'start' }}>
+              <ButtonNaked
                 size="small"
-                variant="text"
-                startIcon={<AddIcon />}
+                component="button"
                 onClick={() => {
                   addOption(manualCriteriaFormik.values, manualCriteriaFormik.setValues);
                   handleOptionAdded(
@@ -451,12 +437,12 @@ const ManualCriteria = ({
                     manualCriteriaFormik.values.manualCriteriaCode
                   );
                 }}
-                disableRipple={true}
-                disableFocusRipple={true}
-                data-testid="manualCriteria-add-option"
+                startIcon={<AddIcon />}
+                sx={{ color: 'primary.main' }}
+                weight="default"
               >
-                {t('components.wizard.stepTwo.chooseCriteria.form.addOption')}
-              </Button>
+                {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
+              </ButtonNaked>
             </Box>
           </Box>
         )}

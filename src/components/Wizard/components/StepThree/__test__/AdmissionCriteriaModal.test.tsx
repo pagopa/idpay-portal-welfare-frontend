@@ -157,7 +157,7 @@ describe('<AdmissionCriteriaModal />', (injectedStore?: ReturnType<typeof create
     );
 
     const searchInput = queryByLabelText(
-      /components.wizard.stepTwo.chooseCriteria.modal.searchCriteria/
+      /components.wizard.stepThree.chooseCriteria.modal.searchCriteria/
     ) as HTMLInputElement;
     const handleSearchCriteria = jest.fn();
 

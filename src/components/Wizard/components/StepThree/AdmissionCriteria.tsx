@@ -304,12 +304,14 @@ const AdmissionCriteria = ({
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepTwo.chooseCriteria.title')}</Typography>
+        <Typography variant="h6">
+          {t('components.wizard.stepThree.chooseCriteria.title')}
+        </Typography>
       </Box>
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
         <Box sx={{ gridColumn: 'span 12' }}>
           <Typography variant="body1">
-            {t('components.wizard.stepTwo.chooseCriteria.subtitle')}
+            {t('components.wizard.stepThree.chooseCriteria.subtitle')}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
@@ -326,7 +328,7 @@ const AdmissionCriteria = ({
           gridTemplateRows: 'auto',
           gridTemplateAreas: `"criteriaButton addButton .  "`,
           py: 2,
-          mb: 8,
+          mb: 3,
         }}
       >
         <Button
@@ -336,7 +338,7 @@ const AdmissionCriteria = ({
           onClick={handleOpenModal}
           data-testid="criteria-button-test"
         >
-          {t('components.wizard.stepTwo.chooseCriteria.browse')}
+          {t('components.wizard.stepThree.chooseCriteria.browse')}
         </Button>
         <AdmissionCriteriaModal
           openModal={openModal}
@@ -352,13 +354,13 @@ const AdmissionCriteria = ({
           onClick={handleManualCriteriaAdded}
           data-testid="add-manually-test"
         >
-          {t('components.wizard.stepTwo.chooseCriteria.addManually')}
+          {t('components.wizard.stepThree.chooseCriteria.addManually')}
         </Button>
       </Box>
       <Box>
         {criteriaToRenderNumber > 0 && (
           <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
-            {t('components.wizard.stepTwo.chooseCriteria.admissionCriteriaAdded')}
+            {t('components.wizard.stepThree.chooseCriteria.admissionCriteriaAdded')}
           </Typography>
         )}
         {availableCriteria.map((a) => {
@@ -407,7 +409,7 @@ const AdmissionCriteria = ({
       <Box>
         {manualCriteriaToRender.length > 0 && (
           <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
-            {t('components.wizard.stepTwo.chooseCriteria.manualCriteriaAdded')}
+            {t('components.wizard.stepThree.chooseCriteria.manualCriteriaAdded')}
           </Typography>
         )}
         {manualCriteriaToRender.map((m) => (

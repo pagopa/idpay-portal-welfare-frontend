@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   FormControl,
   FormHelperText,
   IconButton,
@@ -19,6 +18,7 @@ import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { DaysOfWeekInterval } from '../../../../model/Initiative';
 import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
@@ -200,9 +200,7 @@ const TransactionTimeItem = ({
               gridColumn: 'span 24',
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              rowGap: 3,
-              columnGap: 2,
-              my: 2,
+              gap: 2,
             }}
           >
             {i !== 0 && (
@@ -222,6 +220,7 @@ const TransactionTimeItem = ({
             <FormControl
               sx={{ gridColumn: 'span 5' }}
               error={daysOfWeekTouched && Boolean(daysOfWeekError)}
+              size="small"
             >
               <Select
                 id={`transactionTime[${i}].daysOfWeek`}
@@ -230,19 +229,19 @@ const TransactionTimeItem = ({
                 onChange={(value) => formik.handleChange(value)}
                 error={daysOfWeekTouched && Boolean(daysOfWeekError)}
               >
-                <MenuItem value="MONDAY">{t('components.wizard.stepThree.form.monday')}</MenuItem>
-                <MenuItem value="TUESDAY">{t('components.wizard.stepThree.form.tuesday')}</MenuItem>
+                <MenuItem value="MONDAY">{t('components.wizard.stepFour.form.monday')}</MenuItem>
+                <MenuItem value="TUESDAY">{t('components.wizard.stepFour.form.tuesday')}</MenuItem>
                 <MenuItem value="WEDNESDAY">
-                  {t('components.wizard.stepThree.form.wednesday')}
+                  {t('components.wizard.stepFour.form.wednesday')}
                 </MenuItem>
                 <MenuItem value="THURSDAY">
-                  {t('components.wizard.stepThree.form.thursday')}
+                  {t('components.wizard.stepFour.form.thursday')}
                 </MenuItem>
-                <MenuItem value="FRIDAY">{t('components.wizard.stepThree.form.friday')}</MenuItem>
+                <MenuItem value="FRIDAY">{t('components.wizard.stepFour.form.friday')}</MenuItem>
                 <MenuItem value="SATURDAY">
-                  {t('components.wizard.stepThree.form.saturday')}
+                  {t('components.wizard.stepFour.form.saturday')}
                 </MenuItem>
-                <MenuItem value="SUNDAY">{t('components.wizard.stepThree.form.sunday')}</MenuItem>
+                <MenuItem value="SUNDAY">{t('components.wizard.stepFour.form.sunday')}</MenuItem>
               </Select>
               <FormHelperText>{daysOfWeekTouched && daysOfWeekError}</FormHelperText>
             </FormControl>
@@ -251,10 +250,11 @@ const TransactionTimeItem = ({
                 id={`transactionTime[${i}].startTime`}
                 name={`transactionTime[${i}].startTime`}
                 value={formik.values.transactionTime[i].startTime}
-                placeholder={t('components.wizard.stepThree.form.minTime')}
+                placeholder={t('components.wizard.stepFour.form.minTime')}
                 onChange={(value) => formik.handleChange(value)}
                 error={minTimeTouched && Boolean(minTimeError)}
                 helperText={minTimeTouched && minTimeError}
+                size="small"
               />
             </FormControl>
             <FormControl sx={{ gridColumn: 'span 8' }}>
@@ -262,15 +262,16 @@ const TransactionTimeItem = ({
                 id={`transactionTime[${i}].endTime`}
                 name={`transactionTime[${i}].endTime`}
                 value={formik.values.transactionTime[i].endTime}
-                placeholder={t('components.wizard.stepThree.form.maxTime')}
+                placeholder={t('components.wizard.stepFour.form.maxTime')}
                 onChange={(value) => formik.handleChange(value)}
                 error={maxTimeTouched && Boolean(maxTimeError)}
                 helperText={maxTimeTouched && maxTimeError}
+                size="small"
               />
             </FormControl>
             <Box sx={{ gridColumn: 'span 1', alignSelf: 'center' }}>
               <Tooltip
-                title={t('components.wizard.stepThree.form.timeFormatTooltip')}
+                title={t('components.wizard.stepFour.form.timeFormatTooltip')}
                 placement="right"
                 arrow
               >
@@ -284,29 +285,20 @@ const TransactionTimeItem = ({
         sx={{
           display: 'grid',
           gridColumn: 'span 4',
-          py: 2,
+          mt: 1,
+          justifyContent: 'start',
         }}
       >
-        <Button
-          sx={[
-            {
-              justifyContent: 'start',
-              padding: 0,
-            },
-            {
-              '&:hover': { backgroundColor: 'transparent' },
-            },
-          ]}
-          id="add-option"
+        <ButtonNaked
           size="small"
-          variant="text"
-          startIcon={<AddIcon />}
+          component="button"
           onClick={() => addTransactionTimeItem(formik.values, formik.setValues)}
-          disableRipple={true}
-          disableFocusRipple={true}
+          startIcon={<AddIcon />}
+          sx={{ color: 'primary.main' }}
+          weight="default"
         >
-          {t('components.wizard.stepThree.form.addTransactionTimeItem')}
-        </Button>
+          {t('components.wizard.stepFour.form.addTransactionTimeItem')}
+        </ButtonNaked>
       </Box>
     </Box>
   );

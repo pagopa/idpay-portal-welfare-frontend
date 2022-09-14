@@ -122,11 +122,10 @@ const DateOdBirthCriteriaItem = ({
           gridColumn: 'span 12',
           display: 'grid',
           gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 3,
-          my: 2,
+          gap: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="dateOfBirthSelect"
             name="dateOfBirthSelect"
@@ -143,10 +142,10 @@ const DateOdBirthCriteriaItem = ({
             inputProps={{ 'data-testid': 'dateOfBirth-select-test' }}
           >
             <MenuItem value={DateOfBirthOptions.YEAR} data-testid="year">
-              {t('components.wizard.stepTwo.chooseCriteria.form.year')}
+              {t('components.wizard.stepThree.chooseCriteria.form.year')}
             </MenuItem>
             <MenuItem value={DateOfBirthOptions.AGE} data-testid="age">
-              {t('components.wizard.stepTwo.chooseCriteria.form.age')}
+              {t('components.wizard.stepThree.chooseCriteria.form.age')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -156,7 +155,7 @@ const DateOdBirthCriteriaItem = ({
             )}
           </FormHelperText>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }} size="small">
           <Select
             id="dateOfBirthRelationSelect"
             name="dateOfBirthRelationSelect"
@@ -174,22 +173,22 @@ const DateOdBirthCriteriaItem = ({
             inputProps={{ 'data-testid': 'dateOfBirth-relation-test' }}
           >
             <MenuItem value={FilterOperator.EQ} data-testid="exact">
-              {t('components.wizard.stepTwo.chooseCriteria.form.exact')}
+              {t('components.wizard.stepThree.chooseCriteria.form.exact')}
             </MenuItem>
             <MenuItem value={FilterOperator.GT} data-testid="majorTo">
-              {t('components.wizard.stepTwo.chooseCriteria.form.majorTo')}
+              {t('components.wizard.stepThree.chooseCriteria.form.majorTo')}
             </MenuItem>
             <MenuItem value={FilterOperator.LT} data-testid="minorTo">
-              {t('components.wizard.stepTwo.chooseCriteria.form.minorTo')}
+              {t('components.wizard.stepThree.chooseCriteria.form.minorTo')}
             </MenuItem>
             <MenuItem value={FilterOperator.GE} data-testid="majorOrEqualTo">
-              {t('components.wizard.stepTwo.chooseCriteria.form.majorOrEqualTo')}
+              {t('components.wizard.stepThree.chooseCriteria.form.majorOrEqualTo')}
             </MenuItem>
             <MenuItem value={FilterOperator.LE} data-testid="minorOrEqualTo">
-              {t('components.wizard.stepTwo.chooseCriteria.form.minorOrEqualTo')}
+              {t('components.wizard.stepThree.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
             <MenuItem value={FilterOperator.BTW_OPEN} data-testid="between">
-              {t('components.wizard.stepTwo.chooseCriteria.form.between')}
+              {t('components.wizard.stepThree.chooseCriteria.form.between')}
             </MenuItem>
           </Select>
           <FormHelperText>
@@ -207,7 +206,7 @@ const DateOdBirthCriteriaItem = ({
               type: 'number',
               'data-testid': 'dateOfBirth-start-value',
             }}
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            placeholder={t('components.wizard.stepThree.chooseCriteria.form.value')}
             name="dateOfBirthStartValue"
             value={dateOfBirthFormik.values.dateOfBirthStartValue}
             onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
@@ -223,6 +222,7 @@ const DateOdBirthCriteriaItem = ({
               dateOfBirthFormik.touched.dateOfBirthStartValue,
               dateOfBirthFormik.errors.dateOfBirthStartValue
             )}
+            size="small"
           />
         </FormControl>
         <FormControl
@@ -238,7 +238,7 @@ const DateOdBirthCriteriaItem = ({
               type: dateOfBirthEndValueVisible,
               'data-testid': 'dateOfBirth-end-value',
             }}
-            placeholder={t('components.wizard.stepTwo.chooseCriteria.form.value')}
+            placeholder={t('components.wizard.stepThree.chooseCriteria.form.value')}
             name="dateOfBirthEndValue"
             value={dateOfBirthFormik.values.dateOfBirthEndValue}
             onBlur={(e) => dateOfBirthFormik.handleBlur(e)}
