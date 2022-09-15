@@ -73,18 +73,18 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const validationSchema = Yup.object().shape({
     reimbursmentQuestionGroup: Yup.string().required(t('validation.required')),
     timeParameter: Yup.string()
-      .nullable()
+      // .nullable()
       .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
         if (reimbursment === 'false') {
-          Yup.string().required(t('validation.required'));
+          return Yup.string().required(t('validation.required'));
         }
         return schema;
       }),
     accumulatedAmount: Yup.string()
-      .nullable()
+      // .nullable()
       .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
         if (reimbursment === 'true') {
-          Yup.string().required(t('validation.required'));
+          return Yup.string().required(t('validation.required'));
         }
         return schema;
       }),
@@ -119,6 +119,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       additionalInfo: refundRulesSelector?.additionalInfo,
       reimbursementThreshold: refundRulesSelector?.reimbursementThreshold,
     },
+    validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
@@ -164,6 +165,8 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   };
 
   useEffect(() => {
+    console.log(formik.errors);
+
     if (formik.dirty || formik.isValid) {
       setDisableNext(false);
     } else {
@@ -227,7 +230,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
         {formik.values.reimbursmentQuestionGroup === 'true' ? (
           <>
             <FormControl
-              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 3, mt: 2 }}
+              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', mt: 2, mb: 3 }}
               size="small"
             >
               <InputLabel id="select-accumulated-amount">
@@ -301,15 +304,15 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
         ) : formik.values.reimbursmentQuestionGroup === 'false' ? (
           <>
             <FormControl
-              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', rowGap: 3, mt: 2 }}
+              sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', mt: 2, mb: 3 }}
               size="small"
             >
               <InputLabel id="select-time-parameter">
                 {t('components.wizard.stepFive.form.selectTimeParam')}
               </InputLabel>
               <Select
-                id="selectTimeParam"
-                name="selectTimeParam"
+                id="timeParameter"
+                name="timeParameter"
                 value={formik.values.timeParameter}
                 label={t('components.wizard.stepFive.form.selectTimeParam')}
                 onChange={(e) => formik.setFieldValue('timeParameter', e.target.value)}
