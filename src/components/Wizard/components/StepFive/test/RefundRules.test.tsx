@@ -190,6 +190,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     expect(getByTestId('accumulatedAmount-radio-test')).toBeInTheDocument();
     fireEvent.click(getByTestId('accumulatedAmount-radio-test'));
     expect(handleResetField).toBeDefined();
+
     const accAmount = queryByRole('input', {
       name: 'accumulatedAmount',
     }) as HTMLInputElement;
@@ -199,8 +200,8 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
       expect(accAmount).toBeChecked();
     });
 
-    const balanceExhausted = container.querySelector('#balance-exhausted') as HTMLDivElement;
-    const certainThreshold = container.querySelector('#certain-threshold') as HTMLDivElement;
+    const balanceExhausted = container.querySelector('#balance-exhausted') as HTMLSelectElement;
+    const certainThreshold = container.querySelector('#certain-threshold') as HTMLSelectElement;
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
@@ -331,7 +332,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     type TestElement = Document | Element | Window | Node;
 
     const additionalInfo = getByRole('textbox', {
-      name: 'components.wizard.stepFour.form.idCodeBalance',
+      name: 'components.wizard.stepFive.form.idCodeBalance',
     });
 
     expect(additionalInfo).toBeInTheDocument();
