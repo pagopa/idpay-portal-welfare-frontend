@@ -40,7 +40,6 @@ import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
-import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 
 interface MatchParams {
   id: string;
@@ -113,7 +112,7 @@ const parseAdditionalInfo = (data: any): AdditionalInfo => {
   const dataT = {
     initiativeOnIO: false,
     serviceName: '',
-    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceArea: '',
     serviceDescription: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',

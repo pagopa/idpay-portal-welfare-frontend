@@ -16,7 +16,7 @@ export interface GeneralInfo {
 export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
   serviceName: string | undefined;
-  serviceArea: ServiceScopeEnum | undefined;
+  serviceArea: ServiceScopeEnum | string | undefined;
   serviceDescription: string | undefined;
   privacyPolicyUrl: string | undefined;
   termsAndConditions: string | undefined;

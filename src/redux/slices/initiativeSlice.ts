@@ -16,7 +16,6 @@ import {
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
-import { ServiceScopeEnum } from '../../api/generated/initiative/InitiativeAdditionalDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -25,7 +24,7 @@ const initialState: Initiative = {
   additionalInfo: {
     initiativeOnIO: false,
     serviceName: '',
-    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceArea: '',
     serviceDescription: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',

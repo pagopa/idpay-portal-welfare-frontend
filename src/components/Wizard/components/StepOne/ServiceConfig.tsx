@@ -79,8 +79,18 @@ const ServiceConfig = ({
     serviceName: Yup.string().required(t('validation.required')),
     serviceArea: Yup.string().required(t('validation.required')),
     serviceDescription: Yup.string().required(t('validation.required')),
-    privacyPolicyUrl: Yup.string().required(t('validation.required')).url(t('validation.web')),
-    termsAndConditions: Yup.string().required(t('validation.required')).url(t('validation.web')),
+    privacyPolicyUrl: Yup.string()
+      .required(t('validation.required'))
+      .matches(
+        /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+        t('validation.web')
+      ),
+    termsAndConditions: Yup.string()
+      .required(t('validation.required'))
+      .matches(
+        /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+        t('validation.web')
+      ),
     assistanceChannels: Yup.array().of(
       Yup.object().shape({
         type: Yup.string().required(t('validation.required')),
@@ -88,7 +98,12 @@ const ServiceConfig = ({
           .required(t('validation.required'))
           .when('type', (type, schema) => {
             if (type && type === 'web') {
-              return Yup.string().required(t('validation.required')).url(t('validation.webValid'));
+              return Yup.string()
+                .required(t('validation.required'))
+                .matches(
+                  /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
+                  t('validation.webValid')
+                );
             }
             if (type && type === 'email') {
               return Yup.string()
@@ -169,8 +184,6 @@ const ServiceConfig = ({
           setCurrentStep(currentStep + 1);
         })
         .catch((error) => {
-          console.log(JSON.stringify(error));
-
           addError({
             id: 'EDIT_SERVICE_INFO_SAVE_ERROR',
             blocking: false,
@@ -321,7 +334,7 @@ const ServiceConfig = ({
               size="small"
             />
           </FormControl>
-          <FormControl sx={{ gridColumn: 'span 12' }}>
+          <FormControl sx={{ gridColumn: 'span 12' }} size="small">
             <InputLabel>{t('components.wizard.stepOne.form.serviceArea')}</InputLabel>
             <Select
               id="serviceArea"
@@ -334,7 +347,6 @@ const ServiceConfig = ({
               }}
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
-              size="small"
             >
               <MenuItem value={ServiceScopeEnum.LOCAL}>
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
@@ -417,23 +429,25 @@ const ServiceConfig = ({
               size="small"
             />
           </FormControl>
-          {typeof formik.values.privacyPolicyUrl === 'string' &&
-            formik.values.privacyPolicyUrl.length > 0 && (
-              <FormControl
-                sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <ButtonNaked
-                  size="small"
-                  href={formik.values.privacyPolicyUrl}
-                  target="_blank"
-                  endIcon={<CallMade />}
-                  sx={{ color: 'primary.main' }}
-                  weight="default"
-                >
-                  {t('components.wizard.stepOne.form.tryUrl')}
-                </ButtonNaked>
-              </FormControl>
-            )}
+
+          <FormControl
+            sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <ButtonNaked
+              size="small"
+              href={formik.values.privacyPolicyUrl}
+              target="_blank"
+              endIcon={<CallMade />}
+              sx={{ color: 'primary.main' }}
+              weight="default"
+              disabled={
+                typeof formik.values.privacyPolicyUrl === 'string' &&
+                formik.values.privacyPolicyUrl.length === 0
+              }
+            >
+              {t('components.wizard.stepOne.form.tryUrl')}
+            </ButtonNaked>
+          </FormControl>
 
           <FormControl sx={{ gridColumn: 'span 18' }}>
             <TextField
@@ -451,23 +465,25 @@ const ServiceConfig = ({
               size="small"
             />
           </FormControl>
-          {typeof formik.values.termsAndConditions === 'string' &&
-            formik.values.termsAndConditions.length > 0 && (
-              <FormControl
-                sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
-              >
-                <ButtonNaked
-                  size="small"
-                  href={formik.values.termsAndConditions}
-                  target="_blank"
-                  endIcon={<CallMade />}
-                  sx={{ color: 'primary.main' }}
-                  weight="default"
-                >
-                  {t('components.wizard.stepOne.form.tryUrl')}
-                </ButtonNaked>
-              </FormControl>
-            )}
+
+          <FormControl
+            sx={{ gridColumn: 'span 6', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <ButtonNaked
+              size="small"
+              href={formik.values.termsAndConditions}
+              target="_blank"
+              endIcon={<CallMade />}
+              sx={{ color: 'primary.main' }}
+              weight="default"
+              disabled={
+                typeof formik.values.termsAndConditions === 'string' &&
+                formik.values.termsAndConditions.length === 0
+              }
+            >
+              {t('components.wizard.stepOne.form.tryUrl')}
+            </ButtonNaked>
+          </FormControl>
         </Box>
       </Box>
       <Box
