@@ -396,6 +396,49 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     setModalButtonVisible(!allChecked);
   }, [availableShopRules]);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    let almostOnePopulated = false;
+    if (typeof rewardRuleData === 'object') {
+      almostOnePopulated = almostOnePopulated || typeof rewardRuleData.rewardValue === 'number';
+    }
+    if (typeof mccFilterData === 'object') {
+      almostOnePopulated =
+        almostOnePopulated ||
+        (Array.isArray(mccFilterData.values) && mccFilterData.values?.length > 0);
+    }
+    if (Array.isArray(rewardLimitsData)) {
+      rewardLimitsData.forEach((r) => {
+        almostOnePopulated = almostOnePopulated || typeof r.rewardLimit === 'number';
+      });
+    }
+    if (typeof thresholdData === 'object') {
+      almostOnePopulated =
+        almostOnePopulated ||
+        typeof thresholdData.from === 'number' ||
+        typeof thresholdData.to === 'number';
+    }
+    if (typeof trxCountData === 'object') {
+      almostOnePopulated =
+        almostOnePopulated ||
+        typeof trxCountData.from === 'number' ||
+        typeof trxCountData.to === 'number';
+    }
+    if (Array.isArray(daysOfWeekIntervalsData)) {
+      daysOfWeekIntervalsData.forEach((d) => {
+        almostOnePopulated = almostOnePopulated || d.startTime.length > 0 || d.endTime.length > 0;
+      });
+    }
+    setDisabledNext(!almostOnePopulated);
+  }, [
+    rewardRuleData,
+    mccFilterData,
+    rewardLimitsData,
+    thresholdData,
+    trxCountData,
+    daysOfWeekIntervalsData,
+  ]);
+
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <Box sx={{ py: 3 }}>
