@@ -196,17 +196,20 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
               await formik.setFieldValue('reimbursmentQuestionGroup', e.target.value);
               handleResetField(e.target.value);
             }}
+            data-testid="reimbursmentQuestionGroup-test"
           >
             <FormControlLabel
               value={'true'}
               control={<Radio />}
               label={t('components.wizard.stepFour.form.accumulatedAmount')}
+              data-testid="accumulatedAmount-radio-test"
             />
             <FormControlLabel
               sx={{ ml: 2 }}
               value={'false'}
               control={<Radio />}
               label={t('components.wizard.stepFour.form.timeParameter')}
+              data-testid="timeParameter-radio-test"
             />
           </RadioGroup>
           <FormHelperText
@@ -235,6 +238,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                 label={t('components.wizard.stepFour.form.selectedAccumulatedAmount')}
                 onChange={(e) => formik.setFieldValue('accumulatedAmount', e.target.value)}
                 error={formik.touched.accumulatedAmount && Boolean(formik.errors.accumulatedAmount)}
+                data-testid="accumulatedAmount-test"
               >
                 <MenuItem
                   value={AccumulatedTypeEnum.BUDGET_EXHAUSTED}
@@ -264,7 +268,6 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                     step: 0.01,
                     min: 1,
                     type: 'number',
-                    'data-testid': 'reimbursement-threshold',
                   }}
                   id="reimbursementThreshold"
                   label={t('components.wizard.stepFour.form.reimbursementThreshold')}
@@ -307,6 +310,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
                 label={t('components.wizard.stepFour.form.selectTimeParam')}
                 onChange={(e) => formik.setFieldValue('timeParameter', e.target.value)}
                 error={formik.touched.timeParameter && Boolean(formik.errors.timeParameter)}
+                data-testid="selectTimeParam-test"
               >
                 <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
                   {t('components.wizard.stepFour.select.timrParameter.initiativeDone')}
@@ -363,6 +367,7 @@ const RefundRules = ({ action, setAction, currentStep, setCurrentStep, setDisabl
             aria-label="additionalInfo"
             value={formik.values.additionalInfo}
             onChange={(e) => formik.setFieldValue('additionalInfo', e.target.value)}
+            data-testid="additionalInfo-test"
           />
         </FormControl>
       </Paper>
