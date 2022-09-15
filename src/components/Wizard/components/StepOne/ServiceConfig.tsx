@@ -332,6 +332,7 @@ const ServiceConfig = ({
               error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
               helperText={formik.touched.serviceName && formik.errors.serviceName}
               size="small"
+              data-testid="serviceName-test"
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 12' }} size="small">
@@ -371,6 +372,7 @@ const ServiceConfig = ({
               placeholder={t('components.wizard.stepOne.form.serviceDescription')}
               name="serviceDescription"
               aria-label="service-description"
+              data-testid="serviceDescription-test"
               role="input"
               value={formik.values.serviceDescription}
               onChange={(e) => formik.handleChange(e)}

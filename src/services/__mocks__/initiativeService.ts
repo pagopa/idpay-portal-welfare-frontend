@@ -1,3 +1,4 @@
+// import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
 import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
 import {
   InitiativeAdditionalDTO,
@@ -8,7 +9,9 @@ import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
 // import { InitiativeInfoDTO } from '../../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
+// import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
+// import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 
 export const mockedInitiativeSummary = [
   {
@@ -145,6 +148,14 @@ export const mockedServiceInfoData = {
   channels: [{ type: 'web', contact: 'http://test.it' }],
 };
 
+// export const mockedRefundRules = {
+//   accumulatedAmount: {
+//     accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,
+//     refundThreshold: 10000,
+//   },
+//   additionalInfo: { identificationCode: 'test', timeParameter: TimeTypeEnum.CLOSED },
+// };
+
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -180,3 +191,6 @@ export const putBeneficiaryRuleDraftService = (
   _id: string,
   _data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => new Promise((resolve) => resolve());
+
+// export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
+//   new Promise((resolve) => resolve());
