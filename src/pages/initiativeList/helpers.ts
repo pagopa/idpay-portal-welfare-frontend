@@ -10,13 +10,29 @@ export interface Data {
 }
 
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
+  const dA = a[orderBy] as unknown as string;
+  const dB = b[orderBy] as unknown as string;
+  if (orderBy === 'creationDate' || orderBy === 'updateDate') {
+    const dAArr = dA.split('/');
+    const dBArr = dB.split('/');
+    const dateA = new Date(parseInt(dAArr[2], 10), parseInt(dAArr[1], 10), parseInt(dAArr[0], 10));
+    const dateB = new Date(parseInt(dBArr[2], 10), parseInt(dBArr[1], 10), parseInt(dBArr[0], 10));
+    if (dateB.getTime() < dateA.getTime()) {
+      return -1;
+    }
+    if (dateB.getTime() > dateA.getTime()) {
+      return 1;
+    }
+    return 0;
+  } else {
+    if (dB.toLowerCase() < dA.toLowerCase()) {
+      return -1;
+    }
+    if (dB.toLowerCase() > dA.toLowerCase()) {
+      return 1;
+    }
+    return 0;
   }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
 }
 
 export type Order = 'asc' | 'desc';

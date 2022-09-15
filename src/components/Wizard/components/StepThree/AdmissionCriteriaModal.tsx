@@ -170,19 +170,19 @@ const AdmissionCriteriaModal = ({
           >
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="h6" component="h2">
-                {t('components.wizard.stepTwo.chooseCriteria.browse')}
+                {t('components.wizard.stepThree.chooseCriteria.browse')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" component="p" sx={{ mt: 2 }}>
-                {t('components.wizard.stepTwo.chooseCriteria.modal.subtitle')}
+                {t('components.wizard.stepThree.chooseCriteria.modal.subtitle')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12', width: '100%', my: 3 }}>
               <TextField
                 size="small"
                 id="search-criteria"
-                label={t('components.wizard.stepTwo.chooseCriteria.modal.searchCriteria')}
+                label={t('components.wizard.stepThree.chooseCriteria.modal.searchCriteria')}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
@@ -223,7 +223,7 @@ const AdmissionCriteriaModal = ({
               onClick={handleCriteriaAdded}
               data-testid="add-button-test"
             >
-              {t('components.wizard.stepTwo.chooseCriteria.modal.addButton')}
+              {t('components.wizard.stepThree.chooseCriteria.modal.addButton')}
             </Button>
           </Box>
         </Box>

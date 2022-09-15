@@ -77,6 +77,38 @@ export default {
   components: {
     wizard: {
       stepOne: {
+        title: 'Configurazione del servizio',
+        subtitle:
+          'L’iniziativa può essere fruita dall’app IO, dalle app degli Issuer convenzionati e presso la Rete Anti Digital-Divide. Per erogare l’iniziativa su IO è necessario associarla ad un servizio che verrà esposto in app. Il servizio si occuperà anche di mandare i relativi messaggi per informare i destinatari durante il ciclo di vita dell’iniziativa.',
+        form: {
+          initiativeOnIo: 'Eroga l’iniziativa su IO',
+          description: 'Descrizione',
+          serviceName: 'Nome del servizio',
+          serviceArea: 'Area di competenza',
+          serviceDescription: 'Cosa permette di fare questo servizio?',
+          legalInfo: 'Informazioni legali',
+          privacyPolicyUrl: 'URL Privacy policy',
+          tryUrl: 'Prova URL',
+          termsAndConditions: 'Regolamento (Termini e Condizioni)',
+          assistanceChannels: 'Canali di assistenza',
+          indicateChannel: 'Indica il canale',
+          channelType: 'Tipo di canale',
+          webUrl: 'Web URL',
+          email: 'Email',
+          phone: 'Telefono',
+          addChannel: 'Aggiungi un altro canale',
+          serviceScopeLocal: 'Locale',
+          serviceScopeNational: 'Nazionale',
+        },
+        modal: {
+          serviceNotOnIOTitle: 'Servizio non erogato su IO',
+          serviceNotOnIODescription:
+            'Stai per creare un servizio che non include la creazione e l’erogazione sull’app IO, ma soltato su un app terza. Sei sicuro di voler continuare?',
+          cancelBtn: 'Annulla',
+          continueBtn: 'Continua',
+        },
+      },
+      stepTwo: {
         title: 'Informazioni generali',
         form: {
           beneficiaryType: 'A chi è rivolta?',
@@ -97,25 +129,9 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
-          otherInfo: {
-            title: 'Altre informazioni',
-            subTitle:
-              ' L’iniziativa può essere fruita dall’app IO, dalle app degli Issuer convenzionati e presso la Rete Anti Digital-Divide. Per erogare l’iniziativa su IO è necessario associarla ad un servizio che verrà esposto in app.',
-            deliverInitiative: 'Eroga l’iniziativa su IO',
-            serviceSelect: 'Seleziona un servizio',
-            description: 'Descrizione',
-            serviceName: 'Nome del servizio',
-            argument: 'Argomento',
-            helpChannels: 'Canali di assistenza',
-            helpChannelsTooltip:
-              'Indica un canale di assistenza dove gli utenti possono contattarvi',
-            contact: 'Tipo di canale',
-            indicatesChannel: 'Indica il canale',
-            addChannel: 'Aggiungi un altro canale',
-          },
         },
       },
-      stepTwo: {
+      stepThree: {
         title: 'Destinatari',
         chooseCriteria: {
           title: "Criteri d'ammissione",
@@ -181,7 +197,7 @@ export default {
           fileUuploadHelpFileLinkLabel: 'Scarica il file di esempio',
         },
       },
-      stepThree: {
+      stepFour: {
         title: 'Regole di spesa',
         subtitle:
           'Puoi definire delle regole sulla spesa. Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.',
@@ -237,7 +253,7 @@ export default {
           nobodyExceptSelectItem: 'Nessuno tranne',
         },
       },
-      stepFour: {
+      stepFive: {
         title1: 'Regole di rimborso',
         title2: 'Informazioni aggiuntive',
         form: {
@@ -264,19 +280,7 @@ export default {
           },
         },
       },
-      stepFive: {
-        title: 'Informazioni legali',
-        form: {
-          subTitle:
-            'Inserisci le URL dei documenti richiesti. Queste risorse dovranno essere raggiungibili pubblicamente durante tutta la durata dell’iniziativa. ',
-          infoPrivacy: 'Informativa Privacy',
-          termsCond: 'Termini e Condizioni',
-          rules: 'Regolamento',
-          helper: 'Hai bisogno di una sintesi delle regole?',
-          helperLink: 'Scarica la checklist',
-          tryUrl: 'Prova URL',
-        },
-      },
+
       common: {
         buttons: {
           back: 'Indietro',
@@ -315,8 +319,8 @@ export default {
     web: 'Inserire un indirizzo web valido',
     email: 'Inserire un indirizzo email valido',
     celNum: 'Inserire un numero di telefono valido',
-    webValid: 'il canale deve essere un indirizzo web',
-    emailValid: 'il canale deve essere un indirizzo email',
+    webValid: 'Il canale deve essere un indirizzo web',
+    emailValid: 'Il canale deve essere un indirizzo email',
     celNumValid: 'il canale deve essere un numero di telefono',
     invalidDate: 'Data non valida',
     outMaxSpendingLimit: 'Il valore di spesa massimo deve essere maggiore del minimo',

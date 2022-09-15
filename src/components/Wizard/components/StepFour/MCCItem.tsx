@@ -6,12 +6,12 @@ import {
   Select,
   MenuItem,
   TextField,
-  Button,
   FormHelperText,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
@@ -210,11 +210,11 @@ const MCCItem = ({
                               "MccCode MccCode MccCode"
                               "SelecFromList . . "`,
           alignItems: 'center',
-          gap: 3,
-          my: 2,
+          gap: 2,
+          mt: 1,
         }}
       >
-        <FormControl sx={{ gridArea: 'merchant' }}>
+        <FormControl sx={{ gridArea: 'merchant' }} size="small">
           <Select
             defaultValue=""
             name="allowedList"
@@ -228,10 +228,10 @@ const MCCItem = ({
             value={formik.values.allowedList}
           >
             <MenuItem value={'true'} data-testid="everybody">
-              {t('components.wizard.stepThree.form.everybodyExceptSelectItem')}
+              {t('components.wizard.stepFour.form.everybodyExceptSelectItem')}
             </MenuItem>
             <MenuItem value={'false'} data-testid="nobody">
-              {t('components.wizard.stepThree.form.nobodyExceptSelectItem')}
+              {t('components.wizard.stepFour.form.nobodyExceptSelectItem')}
             </MenuItem>
           </Select>
           <FormHelperText
@@ -246,8 +246,8 @@ const MCCItem = ({
             multiline
             minRows={2}
             maxRows={4}
-            label={t('components.wizard.stepThree.form.mccCodes')}
-            placeholder={t('components.wizard.stepThree.form.mccCodes')}
+            label={t('components.wizard.stepFour.form.mccCodes')}
+            placeholder={t('components.wizard.stepFour.form.mccCodes')}
             name="values"
             aria-label="values"
             role="input"
@@ -258,30 +258,21 @@ const MCCItem = ({
             value={formik.values.values}
             error={setError(formik.touched.values, formik.errors.values)}
             helperText={setErrorText(formik.touched.values, formik.errors.values)}
+            size="small"
           />
         </FormControl>
 
-        <FormControl sx={{ gridArea: 'SelecFromList' }}>
-          <Button
-            size="large"
-            sx={[
-              {
-                justifyContent: 'start',
-                padding: 0,
-                fontSize: '14px',
-              },
-              {
-                '&:hover': { backgroundColor: 'transparent' },
-              },
-            ]}
-            startIcon={<ListAltIcon />}
+        <FormControl sx={{ gridArea: 'SelecFromList', alignItems: 'start' }}>
+          <ButtonNaked
+            size="small"
+            component="button"
             onClick={handleOpenModalMcc}
-            data-testid="SelecFromList-button-test"
-            disableRipple={true}
-            disableFocusRipple={true}
+            startIcon={<ListAltIcon />}
+            sx={{ color: 'primary.main' }}
+            weight="default"
           >
-            {t('components.wizard.stepThree.form.selectFromList')}
-          </Button>
+            {t('components.wizard.stepFour.form.selectFromList')}
+          </ButtonNaked>
         </FormControl>
         <MCCModal
           openModalMcc={openModalMcc}

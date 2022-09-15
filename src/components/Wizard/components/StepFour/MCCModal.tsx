@@ -246,19 +246,19 @@ Props) => {
           >
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="h6" component="h2">
-                {t('components.wizard.stepThree.mccModal.title')}
+                {t('components.wizard.stepFour.mccModal.title')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" component="p" sx={{ mt: 2 }}>
-                {t('components.wizard.stepThree.mccModal.subtitle')}
+                {t('components.wizard.stepFour.mccModal.subtitle')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12', width: '100%', my: 3 }}>
               <TextField
                 size="small"
                 id="search-code-description"
-                label={t('components.wizard.stepThree.mccModal.searchCodeOrDescription')}
+                label={t('components.wizard.stepFour.mccModal.searchCodeOrDescription')}
                 variant="outlined"
                 InputProps={{
                   startAdornment: (
@@ -291,8 +291,8 @@ Props) => {
                 disableFocusRipple={true}
               >
                 {atLeastOneCodeSelected
-                  ? t('components.wizard.stepThree.mccModal.deselectAllButtonName')
-                  : t('components.wizard.stepThree.mccModal.selectAllButtonName')}
+                  ? t('components.wizard.stepFour.mccModal.deselectAllButtonName')
+                  : t('components.wizard.stepFour.mccModal.selectAllButtonName')}
               </Button>
             </Box>
           </Box>
@@ -326,7 +326,7 @@ Props) => {
               }}
               data-testid="add-button-test"
             >
-              {t('components.wizard.stepThree.mccModal.addButton')}{' '}
+              {t('components.wizard.stepFour.mccModal.addButton')}{' '}
               {atLeastOneCodeSelected && `(${mccCodesSelectedCounter})`}
             </Button>
           </Box>

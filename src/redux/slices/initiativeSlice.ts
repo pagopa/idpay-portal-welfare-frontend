@@ -21,6 +21,15 @@ const initialState: Initiative = {
   initiativeId: undefined,
   organizationId: undefined,
   status: undefined,
+  additionalInfo: {
+    initiativeOnIO: false,
+    serviceName: '',
+    serviceArea: '',
+    serviceDescription: '',
+    privacyPolicyUrl: '',
+    termsAndConditions: '',
+    assistanceChannels: [{ type: 'web', contact: '' }],
+  },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
@@ -30,13 +39,6 @@ const initialState: Initiative = {
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
-  },
-  additionalInfo: {
-    serviceId: '',
-    serviceName: '',
-    argument: '',
-    description: '',
-    channels: [{ type: 'web', contact: '' }],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],

@@ -1,17 +1,16 @@
-import { Box, Stepper, Step, StepLabel, Button, Typography } from '@mui/material';
+import { Box, Stepper, Step, StepLabel, Button } from '@mui/material';
 import SaveIcon from '@mui/icons-material/Save';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
-// import { useHistory } from 'react-router-dom';
 import { WIZARD_ACTIONS } from '../../utils/constants';
 import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
-// import routes from '../../routes';
-import StepOneForm from './components/StepOne/StepOneForm';
-import AdmissionCriteria from './components/StepTwo/AdmissionCriteria';
-import FileUpload from './components/StepTwo/FileUpload';
-import ShopRules from './components/StepThree/ShopRules';
-import RefundRules from './components/StepFour/RefundRules';
+import ServiceConfig from './components/StepOne/ServiceConfig';
+import Generalnfo from './components/StepTwo/Generalnfo';
+import AdmissionCriteria from './components/StepThree/AdmissionCriteria';
+import FileUpload from './components/StepThree/FileUpload';
+import ShopRules from './components/StepFour/ShopRules';
+import RefundRules from './components/StepFive/RefundRules';
 
 type Props = {
   handleOpenExitModal: MouseEventHandler;
@@ -24,7 +23,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
   const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
-  // const history = useHistory();
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -36,8 +34,8 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
     t('components.wizard.stepOne.title'),
     t('components.wizard.stepTwo.title'),
     t('components.wizard.stepThree.title'),
-    t('components.wizard.stepFour.title1'),
-    t('components.wizard.stepFive.title'),
+    t('components.wizard.stepFour.title'),
+    t('components.wizard.stepFive.title1'),
   ];
 
   const handleNext = () => {
@@ -54,20 +52,15 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
       setActionType(() => WIZARD_ACTIONS.BACK);
     } else {
-      // history.push(routes.INITIATIVE_LIST);
       handleOpenExitModal(e);
     }
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
   };
 
   const renderActiveStepBox = (activeStep: number) => {
     switch (activeStep) {
       case 0:
         return (
-          <StepOneForm
+          <ServiceConfig
             action={actionType}
             setAction={setActionType}
             currentStep={activeStep}
@@ -76,6 +69,16 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
           />
         );
       case 1:
+        return (
+          <Generalnfo
+            action={actionType}
+            setAction={setActionType}
+            currentStep={activeStep}
+            setCurrentStep={setActiveStep}
+            setDisabledNext={setDisabledNext}
+          />
+        );
+      case 2:
         if (beneficiaryKnown === 'true') {
           return (
             <FileUpload
@@ -98,7 +101,7 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
           );
         }
         return null;
-      case 2:
+      case 3:
         return (
           <ShopRules
             action={actionType}
@@ -108,7 +111,7 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             setDisabledNext={setDisabledNext}
           />
         );
-      case 3:
+      case 4:
         return (
           <RefundRules
             action={actionType}
@@ -118,8 +121,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             setDisableNext={setDisabledNext}
           />
         );
-      case 4:
-        return <h1>{steps[activeStep]}</h1>;
       default:
         return null;
     }
@@ -129,17 +130,12 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
     <Box>
       <Stepper sx={{ my: 2 }} activeStep={activeStep} alternativeLabel>
         {steps.map((label, index) => (
-          <Step key={index}>
+          <Step key={index} sx={{ px: 0 }}>
             <StepLabel>{label}</StepLabel>
           </Step>
         ))}
       </Stepper>
-      {activeStep === steps.length ? (
-        <>
-          <Typography sx={{ mt: 2, mb: 1 }}>Inviato per la revisione</Typography>
-          <Button onClick={handleReset}>{t('wizard.common.buttons.reset')}</Button>
-        </>
-      ) : (
+      {activeStep < steps.length && (
         <>
           {renderActiveStepBox(activeStep)}
           <Box

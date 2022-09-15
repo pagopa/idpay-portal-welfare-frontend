@@ -223,8 +223,8 @@ const InitiativeList = () => {
       .then((responseT) => {
         const data = responseT.map((r: any, i: any) => ({
           ...r,
-          creationDate: r.creationDate.toLocaleDateString(),
-          updateDate: r.updateDate.toLocaleDateString(),
+          creationDate: r.creationDate.toLocaleDateString('fr-BE'),
+          updateDate: r.updateDate.toLocaleDateString('fr-BE'),
           id: i,
         }));
         setInitiativeList([...data]);

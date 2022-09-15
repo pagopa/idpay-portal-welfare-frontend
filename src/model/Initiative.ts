@@ -1,3 +1,4 @@
+import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 
@@ -13,11 +14,13 @@ export interface GeneralInfo {
 }
 
 export interface AdditionalInfo {
-  serviceId: string | undefined;
+  initiativeOnIO: boolean | undefined;
   serviceName: string | undefined;
-  argument: string | undefined;
-  description: string | undefined;
-  channels: Array<{ type: string; contact: string }>;
+  serviceArea: ServiceScopeEnum | string | undefined;
+  serviceDescription: string | undefined;
+  privacyPolicyUrl: string | undefined;
+  termsAndConditions: string | undefined;
+  assistanceChannels: Array<{ type: string; contact: string }>;
 }
 
 export interface SelfDeclarationCriteriaBoolItem {
