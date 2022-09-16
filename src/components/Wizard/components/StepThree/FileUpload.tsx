@@ -86,6 +86,9 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
     maxFiles: 1,
     maxSize: 2097152,
     accept: 'text/csv',
+    onDrop: () => {
+      setFileRejected(false);
+    },
     onDropAccepted: (files) => {
       setAlertTitle('');
       setAlertDescription('');
