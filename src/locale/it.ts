@@ -331,6 +331,7 @@ export default {
     uniqueFrequency: 'Non è possible inserire due importi differenti per lo stesso limite',
     uniqueInterval: 'Non è possibile inserire due intervalli uguali per lo stesso giorno',
     notValidMccLis: 'Sono stati inseriti valori non validi',
+    maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
   },
   errors: {
     title: 'Si è verificato un errore',

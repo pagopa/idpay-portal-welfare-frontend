@@ -26,6 +26,7 @@ import {
   initiativeIdSelector,
   initiativeRefundRulesSelector,
   saveRefundRule,
+  generalInfoSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
 import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
@@ -46,6 +47,8 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const { t } = useTranslation();
   const [_isChecked, setIsChecked] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
+  const generalInfo = useAppSelector(generalInfoSelector);
+  const budgetPerPerson = generalInfo.beneficiaryBudget;
   const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
@@ -108,7 +111,20 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
           return typeof val === 'number' && val >= 1;
         }
         return true;
-      }),
+      })
+      .test(
+        'reimbursement-threshold-max',
+        t('validation.maxValue', { value: budgetPerPerson }),
+        function (val) {
+          if (
+            this.parent.reimbursmentQuestionGroup === 'true' &&
+            this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+          ) {
+            return typeof val === 'number' && val <= parseFloat(budgetPerPerson);
+          }
+          return true;
+        }
+      ),
   });
 
   const formik = useFormik({
@@ -272,6 +288,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                   inputProps={{
                     step: 0.01,
                     min: 1,
+                    max: budgetPerPerson,
                     type: 'number',
                   }}
                   id="reimbursementThreshold"
