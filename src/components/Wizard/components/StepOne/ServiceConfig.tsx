@@ -349,10 +349,10 @@ const ServiceConfig = ({
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
             >
-              <MenuItem value={ServiceScopeEnum.LOCAL}>
+              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScopeLocal-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.NATIONAL}>
+              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScopeNational-test">
                 {t('components.wizard.stepOne.form.serviceScopeNational')}
               </MenuItem>
             </Select>
@@ -361,6 +361,7 @@ const ServiceConfig = ({
             >
               {formik.touched.serviceArea && formik.errors.serviceArea}
             </FormHelperText>
+            0
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 24' }}>
             <TextField
@@ -429,6 +430,7 @@ const ServiceConfig = ({
               error={formik.touched.privacyPolicyUrl && Boolean(formik.errors.privacyPolicyUrl)}
               helperText={formik.touched.privacyPolicyUrl && formik.errors.privacyPolicyUrl}
               size="small"
+              data-testid="privacyPolicyUrl-test"
             />
           </FormControl>
 
@@ -465,6 +467,7 @@ const ServiceConfig = ({
               error={formik.touched.termsAndConditions && Boolean(formik.errors.termsAndConditions)}
               helperText={formik.touched.termsAndConditions && formik.errors.termsAndConditions}
               size="small"
+              data-testid="termsAndConditions-test"
             />
           </FormControl>
 

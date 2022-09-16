@@ -6,17 +6,23 @@ import {
   getInitiativeDetail,
   putBeneficiaryRuleDraftService,
   putBeneficiaryRuleService,
-  // updateInitiativeServiceInfo,
+  updateInitiativeServiceInfo,
   trascodeRewardRule,
   createInitiativeServiceInfo,
   updateInitiativeGeneralInfo,
   putRefundRule,
+  putRefundRuleDraft,
+  updateInitiativeGeneralInfoDraft,
+  putTrxAndRewardRules,
+  putTrxAndRewardRulesDraft,
 } from '../intitativeService';
 import {
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
-  // mockedRefundRules,
+  mockedRefundRules,
+  mockedServiceInfoData,
+  mockedTrxAndRewardRules,
 } from '../__mocks__/initiativeService';
 
 import { InitiativeApi } from '../../api/InitiativeApiClient';
@@ -26,13 +32,16 @@ jest.mock('../../api/InitiativeApiClient');
 beforeEach(() => {
   jest.spyOn(InitiativeApi, 'getInitativeSummary');
   jest.spyOn(InitiativeApi, 'getInitiativeById');
-  // jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
-  // jest.spyOn(InitiativeApi, 'updateInitiativeServiceInfo');
-  // jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfo');
+  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeServiceInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
   jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePut');
   jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePutDraft');
-  // jest.spyOn(InitiativeApi, 'updateInitiativeRefundRulePut');
-  // jest.spyOn(InitiativeApi, 'updateInitiativeRefundRuleDraftPut');
+  jest.spyOn(InitiativeApi, 'initiativeTrxAndRewardRulesPut');
+  jest.spyOn(InitiativeApi, 'initiativeTrxAndRewardRulesPutDraft');
+  jest.spyOn(InitiativeApi, 'updateInitiativeRefundRulePut');
+  jest.spyOn(InitiativeApi, 'updateInitiativeRefundRuleDraftPut');
 });
 
 test('test get initiative summary', async () => {
@@ -45,26 +54,34 @@ test('test get initiative by id', async () => {
   expect(InitiativeApi.getInitiativeById).toBeCalledWith(mockedInitiativeId);
 });
 
-// test('create initiative', async () => {
-//   await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
-//   expect(InitiativeApi.saveInitiativeServiceInfo).toBeCalled();
-// });
+test('create initiative', async () => {
+  await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
+  expect(InitiativeApi.saveInitiativeServiceInfo).toBeCalled();
+});
 
-// test('update initiative (service info)', async () => {
-//   await updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
-//   expect(InitiativeApi.updateInitiativeServiceInfo).toBeCalledWith(
-//     mockedInitiativeId,
-//     mockedInitiativeGeneralBody
-//   );
-// });
+test('update initiative (service info)', async () => {
+  await updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
+  expect(InitiativeApi.updateInitiativeServiceInfo).toBeCalledWith(
+    mockedInitiativeId,
+    mockedServiceInfoData
+  );
+});
 
-// test('update initiative (general info)', async () => {
-//   await updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
-//   expect(InitiativeApi.updateInitiativeGeneralInfo).toBeCalledWith(
-//     mockedInitiativeId,
-//     mockedInitiativeGeneralBody
-//   );
-// });
+test('update initiative (general info)', async () => {
+  await updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
+  expect(InitiativeApi.updateInitiativeGeneralInfo).toBeCalledWith(
+    mockedInitiativeId,
+    mockedInitiativeGeneralBody
+  );
+});
+
+test('update initiative draft (general info)', async () => {
+  await updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
+  expect(InitiativeApi.updateInitiativeGeneralInfoDraft).toBeCalledWith(
+    mockedInitiativeId,
+    mockedInitiativeGeneralBody
+  );
+});
 
 test('update initiative (beneficiary rule)', async () => {
   await putBeneficiaryRuleService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
@@ -82,13 +99,37 @@ test('update initiative draft (beneficiary rule)', async () => {
   );
 });
 
-// test('update initiative (Refund Rules)', async () => {
-//   await putRefundRule(mockedInitiativeId, mockedRefundRules);
-//   expect(InitiativeApi.updateInitiativeRefundRulePut).toBeCalledWith(
-//     mockedInitiativeId,
-//     mockedRefundRules
-//   );
-// });
+test('update initiative (reward rules)', async () => {
+  await putTrxAndRewardRules(mockedInitiativeId, mockedTrxAndRewardRules);
+  expect(InitiativeApi.initiativeTrxAndRewardRulesPut).toBeCalledWith(
+    mockedInitiativeId,
+    mockedTrxAndRewardRules
+  );
+});
+
+test('update initiative draft (reward rules)', async () => {
+  await putTrxAndRewardRulesDraft(mockedInitiativeId, mockedTrxAndRewardRules);
+  expect(InitiativeApi.initiativeTrxAndRewardRulesPutDraft).toBeCalledWith(
+    mockedInitiativeId,
+    mockedTrxAndRewardRules
+  );
+});
+
+test('update initiative (Refund Rules)', async () => {
+  await putRefundRule(mockedInitiativeId, mockedRefundRules);
+  expect(InitiativeApi.updateInitiativeRefundRulePut).toBeCalledWith(
+    mockedInitiativeId,
+    mockedRefundRules
+  );
+});
+
+test('update initiative draft (Refund Rules)', async () => {
+  await putRefundRuleDraft(mockedInitiativeId, mockedRefundRules);
+  expect(InitiativeApi.updateInitiativeRefundRuleDraftPut).toBeCalledWith(
+    mockedInitiativeId,
+    mockedRefundRules
+  );
+});
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {
   const value: InitiativeRewardAndTrxRulesDTORewardRule = {

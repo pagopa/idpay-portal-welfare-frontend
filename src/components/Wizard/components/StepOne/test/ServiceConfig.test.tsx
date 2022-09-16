@@ -124,6 +124,8 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     const serviceName = getByTestId('serviceName-test');
     const serviceArea = getByTestId('service-area-select');
     const serviceDescription = getByTestId('serviceDescription-test');
+    const privacyPolicyUrl = getByTestId('privacyPolicyUrl-test');
+    const termsAndConditions = getByTestId('termsAndConditions-test');
 
     await act(async () => {
       expect(serviceName).not.toBeNull();
@@ -138,6 +140,16 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     await act(async () => {
       expect(serviceDescription).not.toBeNull();
       expect(serviceDescription).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      expect(privacyPolicyUrl).not.toBeNull();
+      expect(privacyPolicyUrl).toBeInTheDocument();
+    });
+
+    await act(async () => {
+      expect(termsAndConditions).not.toBeNull();
+      expect(termsAndConditions).toBeInTheDocument();
     });
   });
 });

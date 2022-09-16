@@ -8,6 +8,10 @@ import {
 } from '../../services/__mocks__/initiativeService';
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
 import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { InitiativeRefundRuleDTO } from '../generated/initiative/InitiativeRefundRuleDTO';
+import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeGeneralDTO } from '../generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRewardAndTrxRulesDTO } from '../generated/initiative/InitiativeRewardAndTrxRulesDTO';
 
 export const InitiativeApi = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -16,11 +20,11 @@ export const InitiativeApi = {
   getInitiativeById: async (_id: string): Promise<InitiativeDTO> =>
     new Promise((resolve) => resolve(mockedInitiativeDetail)),
 
-  // initiativeGeneralPost: async (_data: InitiativeInfoDTO): Promise<InitiativeDTO> =>
-  //   new Promise((resolve) => resolve({})),
+  saveInitiativeServiceInfo: async (_data: InitiativeAdditionalDTO): Promise<InitiativeDTO> =>
+    new Promise((resolve) => resolve({})),
 
-  // initiativeGeneralPut: async (_id: string, _data: InitiativeInfoDTO): Promise<void> =>
-  //   new Promise((resolve) => resolve()),
+  updateInitiativeServiceInfo: async (_id: string, _data: InitiativeAdditionalDTO): Promise<void> =>
+    new Promise((resolve) => resolve()),
 
   initiativeBeneficiaryRulePut: async (
     _id: string,
@@ -34,4 +38,32 @@ export const InitiativeApi = {
 
   getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
     new Promise((resolve) => resolve(mockedAdmissionCriteria)),
+
+  initiativeTrxAndRewardRulesPut: async (
+    _id: string,
+    _data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  initiativeTrxAndRewardRulesPutDraft: async (
+    _id: string,
+    _data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRulePut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRuleDraftPut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeGeneralInfo: async (_id: string, _data: InitiativeGeneralDTO): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativeGeneralInfoDraft: async (
+    _id: string,
+    _data: InitiativeGeneralDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
 };
