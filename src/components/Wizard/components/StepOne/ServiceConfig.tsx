@@ -361,7 +361,6 @@ const ServiceConfig = ({
             >
               {formik.touched.serviceArea && formik.errors.serviceArea}
             </FormHelperText>
-            0
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 24' }}>
             <TextField
