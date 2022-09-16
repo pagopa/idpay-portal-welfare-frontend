@@ -77,6 +77,10 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const addError = useErrorDispatcher();
   const [modalButtonVisible, setModalButtonVisible] = useState(true);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     setDisabledNext(false);

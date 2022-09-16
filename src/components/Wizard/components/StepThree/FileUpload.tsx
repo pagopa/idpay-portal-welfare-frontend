@@ -49,6 +49,10 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const addError = useErrorDispatcher();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (initiativeId) {
       getGroupOfBeneficiaryStatusAndDetail(initiativeId)
         .then((res) => {

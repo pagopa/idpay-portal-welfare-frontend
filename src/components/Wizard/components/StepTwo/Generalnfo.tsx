@@ -60,6 +60,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const { t } = useTranslation();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
     } else if (action === WIZARD_ACTIONS.DRAFT) {

@@ -22,7 +22,7 @@ const initialState: Initiative = {
   organizationId: undefined,
   status: undefined,
   additionalInfo: {
-    initiativeOnIO: false,
+    initiativeOnIO: true,
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',

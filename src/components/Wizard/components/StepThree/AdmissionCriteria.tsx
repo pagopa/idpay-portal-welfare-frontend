@@ -59,6 +59,10 @@ const AdmissionCriteria = ({
   const initiativeId = useAppSelector(initiativeIdSelector);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useEffect(() => {
     fetchAdmissionCriteria()
       .then((response) => {
         const responseData = mapResponse(response);
