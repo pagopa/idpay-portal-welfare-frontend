@@ -30,9 +30,11 @@ import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
 
 import { resetInitiative } from '../../redux/slices/initiativeSlice';
+import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
 
 import { useAppDispatch } from '../../redux/hooks';
 
+import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -156,6 +158,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 
     switch (status) {
       case 'DRAFT':
+      case 'APPROVED':
         return (
           <MenuItem onClick={() => handleUpdateInitiative(id)}>
             {t('pages.initiativeList.actions.update')}
@@ -164,8 +167,6 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
       case 'IN_REVISION':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
       case 'TO_CHECK':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
-      case 'APPROVED':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'PUBLISHED':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
@@ -219,7 +220,7 @@ const InitiativeList = () => {
   useEffect(() => {
     // setLoading(true);
     getInitativeSummary()
-      .then((response: any) => response)
+      .then((response: InitiativeSummaryArrayDTO) => response)
       .then((responseT) => {
         const data = responseT.map((r: any, i: any) => ({
           ...r,
@@ -227,6 +228,7 @@ const InitiativeList = () => {
           updateDate: r.updateDate.toLocaleDateString('fr-BE'),
           id: i,
         }));
+        dispatch(setInitiativeSummaryList(responseT));
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
         // setLoading(false);

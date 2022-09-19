@@ -1,11 +1,24 @@
-import { List, Box } from '@mui/material';
+import {
+  List,
+  Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  ListItemText,
+} from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import { useTranslation } from 'react-i18next';
-// import DashboardCustomize from '@mui/icons-material/DashboardCustomize';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import GroupIcon from '@mui/icons-material/Group';
+import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import ListAltIcon from '@mui/icons-material/ListAlt';
-import { useState } from 'react';
-import ROUTES from '../../routes';
+import { useEffect, useState } from 'react';
+
+import ROUTES, { BASE_ROUTE } from '../../routes';
+import { useAppSelector } from '../../redux/hooks';
+import { initiativeSummarySelector } from '../../redux/slices/initiativeSummarySlice';
 import SidenavItem from './SidenavItem';
 
 /** The side menu of the application */
@@ -13,6 +26,8 @@ export default function SideMenu() {
   const { t } = useTranslation();
   const history = useHistory();
   const onExit = useUnloadEventOnExit();
+  const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
+  const [expanded, setExpanded] = useState<string | false>(false);
   const [pathname, setPathName] = useState(() => {
     /*
     For some reason, push on history will not notify this component.
@@ -23,22 +38,87 @@ export default function SideMenu() {
     return history.location.pathname;
   });
 
+  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
+  useEffect(() => {
+    const firstItemExpanded = Array.isArray(initiativeSummaryList)
+      ? `panel-${initiativeSummaryList[0].initiativeId}`
+      : false;
+    setExpanded(firstItemExpanded);
+  }, [initiativeSummaryList]);
+
   return (
     <Box display="grid" mt={1}>
       <Box gridColumn="auto">
         <List>
-          {/* <SidenavItem
-            title={t('sideMenu.home.title')}
-            handleClick={() => onExit(() => history.push(ROUTES.HOME))}
-            isSelected={pathname === ROUTES.HOME}
-            icon={DashboardCustomize}
-          /> */}
           <SidenavItem
             title={t('sideMenu.initiativeList.title')}
             handleClick={() => onExit(() => history.push(ROUTES.HOME))}
             isSelected={pathname === ROUTES.HOME}
             icon={ListAltIcon}
+            level={0}
           />
+          {initiativeSummaryList?.map((item) => (
+            <Accordion
+              key={item.initiativeId}
+              expanded={expanded === `panel-${item.initiativeId}`}
+              onChange={handleChange(`panel-${item.initiativeId}`)}
+              disableGutters
+              elevation={0}
+              sx={{ border: 'none' }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls={`panel-${item.initiativeId}-content`}
+                id={`panel-${item.initiativeId}-header`}
+              >
+                <ListItemText primary={item.initiativeName} />
+              </AccordionSummary>
+              <AccordionDetails sx={{ p: 0 }}>
+                <List disablePadding>
+                  <SidenavItem
+                    title={t('sideMenu.initiativeOveview.title')}
+                    handleClick={() =>
+                      onExit(() =>
+                        history.push(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
+                      )
+                    }
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`
+                    }
+                    icon={DashboardIcon}
+                    level={2}
+                  />
+                  <SidenavItem
+                    title={t('sideMenu.initiativeUsers.title')}
+                    handleClick={() =>
+                      onExit(() =>
+                        history.push(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
+                      )
+                    }
+                    isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
+                    icon={GroupIcon}
+                    level={2}
+                  />
+                  <SidenavItem
+                    title={t('sideMenu.initiativeRefunds.title')}
+                    handleClick={() =>
+                      onExit(() =>
+                        history.push(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
+                      )
+                    }
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
+                    }
+                    icon={EuroSymbolIcon}
+                    level={2}
+                  />
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          ))}
         </List>
       </Box>
     </Box>

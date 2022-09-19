@@ -185,8 +185,6 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   };
 
   useEffect(() => {
-    console.log(formik.errors);
-
     if (formik.dirty || formik.isValid) {
       setDisableNext(false);
     } else {

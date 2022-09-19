@@ -12,6 +12,9 @@ import NewInitiative from './pages/newInitiative/newInitiative';
 import InitiativeList from './pages/initiativeList/InitiativeList';
 import withSelectedPartyProducts from './decorators/withSelectedPartyProducts';
 import Auth from './pages/auth/Auth';
+import InitiativeOverview from './pages/initiativeOverview/initiativeOverview';
+import InitiativeUsers from './pages/initiativeUsers/initiativeUsers';
+import InitiativeRefunds from './pages/initiativeRefunds/initiativeRefunds';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => (
@@ -22,6 +25,15 @@ const SecuredRoutes = withLogin(
         </Route>
         <Route path={routes.INITIATIVE} exact={true}>
           <NewInitiative />
+        </Route>
+        <Route path={routes.INITIATIVE_OVERVIEW} exact={true}>
+          <InitiativeOverview />
+        </Route>
+        <Route path={routes.INITIATIVE_USERS} exact={true}>
+          <InitiativeUsers />
+        </Route>
+        <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
+          <InitiativeRefunds />
         </Route>
         <Route path={routes.HOME} exact={true}>
           <InitiativeList />

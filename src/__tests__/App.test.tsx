@@ -62,7 +62,7 @@ test('Test rendering dashboard parties loaded', () => {
 
 test('Test routing ', async () => {
   const { history } = renderApp();
-  await waitFor(() => expect(history.location.pathname).toBe('/'));
+  await waitFor(() => expect(history.location.pathname).toBe('/portale-enti'));
 });
 // function verifyPartiesMockExecution(arg0: {
 //   parties: PartiesState;

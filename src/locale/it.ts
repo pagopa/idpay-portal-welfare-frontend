@@ -22,6 +22,15 @@ export default {
     initiativeList: {
       title: 'Tutte le iniziative',
     },
+    initiativeOveview: {
+      title: 'Panoramica',
+    },
+    initiativeUsers: {
+      title: 'Utenti',
+    },
+    initiativeRefunds: {
+      title: 'Rimborsi',
+    },
   },
   subHeader: {
     partySelectionSearch: {

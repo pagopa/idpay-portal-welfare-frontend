@@ -27,7 +27,12 @@ const Layout = ({ children }: Props) => {
   const location = useLocation();
 
   const match = matchPath(location.pathname, {
-    path: ROUTES.HOME,
+    path: [
+      ROUTES.HOME,
+      ROUTES.INITIATIVE_OVERVIEW,
+      ROUTES.INITIATIVE_USERS,
+      ROUTES.INITIATIVE_REFUNDS,
+    ],
     exact: true,
     strict: false,
   });

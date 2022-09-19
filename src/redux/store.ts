@@ -5,6 +5,7 @@ import { userReducer } from '@pagopa/selfcare-common-frontend/redux/slices/userS
 import { LOG_REDUX_ACTIONS } from '../utils/constants';
 import { partiesReducer } from './slices/partiesSlice';
 import { initiativeReducer } from './slices/initiativeSlice';
+import { initiativeSummaryReducer } from './slices/initiativeSummarySlice';
 
 const additionalMiddlewares = [LOG_REDUX_ACTIONS ? logger : undefined];
 
@@ -15,6 +16,7 @@ export const createStore = () =>
       user: userReducer,
       appState: appStateReducer,
       initiative: initiativeReducer,
+      initiativeSummary: initiativeSummaryReducer,
     },
     middleware: (getDefaultMiddleware) =>
       additionalMiddlewares.reduce(
