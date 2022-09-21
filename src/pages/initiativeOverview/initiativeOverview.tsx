@@ -9,14 +9,17 @@ import PublishIcon from '@mui/icons-material/Publish';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
+import { useHistory } from 'react-router-dom';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
+import { BASE_ROUTE } from '../../routes';
 
 const InitiativeOverview = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
+  const history = useHistory();
 
   type ChipProps = {
     label: string;
@@ -243,6 +246,10 @@ const InitiativeOverview = () => {
     }
   };
 
+  const handleUpdateInitiative = (id: string) => {
+    history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+  };
+
   return (
     <>
       <Box sx={{ width: '100%', px: 2 }}>
@@ -278,6 +285,13 @@ const InitiativeOverview = () => {
                   weight="default"
                   variant="contained"
                   data-testid="view-datails-test"
+                  onClick={() =>
+                    handleUpdateInitiative(
+                      typeof initiativeSel.initiativeId === 'string'
+                        ? initiativeSel.initiativeId
+                        : ''
+                    )
+                  }
                 >
                   {t('pages.initiativeList.actions.update')}
                 </ButtonNaked>
