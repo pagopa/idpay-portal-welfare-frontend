@@ -77,6 +77,38 @@ export default {
         details: 'Dettagli',
       },
     },
+    initiativeOverview: {
+      info: {
+        title: 'Informativa',
+        idCode: 'Codice identificativo',
+        creationData: 'Data creazione',
+        lastModify: 'Ultima modifica',
+        initiativeState: 'Stato',
+        otherinfo: {
+          title: 'Date di riferimento',
+          adhesion: 'Periodo di adesione',
+          spend: 'Periodo di spesa',
+          details: 'Vedi dettagli',
+          start: 'Inizia il',
+        },
+      },
+      next: {
+        title: 'What’s next?',
+
+        status: {
+          subtitleApproved:
+            'L’iniziativa è stata approvata dal team di PagoPA ed è pronta per essere pubblicata',
+          approved: 'Pubblica',
+          subtitleDraft: 'Continua la configurazione della tua iniziativa',
+          draft: 'Modifica bozza',
+          subtitleReview: 'Attendi che l’iniziativa sia revisionata dall’operatore PagoPA',
+          review: 'Revisione in corso',
+          subtitleModify:
+            'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
+          modify: 'Modifica iniziativa',
+        },
+      },
+    },
   },
   breadcrumbs: {
     exit: 'Esci',

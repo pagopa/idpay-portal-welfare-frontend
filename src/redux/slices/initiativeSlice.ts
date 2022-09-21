@@ -21,6 +21,8 @@ const initialState: Initiative = {
   initiativeId: undefined,
   organizationId: undefined,
   status: undefined,
+  creationDate: undefined,
+  updateDate: undefined,
   additionalInfo: {
     initiativeOnIO: true,
     serviceName: '',
@@ -91,6 +93,14 @@ export const initiativeSlice = createSlice({
     setStatus: (state, action: PayloadAction<string | undefined>) => ({
       ...state,
       status: action.payload,
+    }),
+    setInitiativeCreationDate: (state, action: PayloadAction<Date | undefined>) => ({
+      ...state,
+      creationDate: action.payload,
+    }),
+    setInitiativeUpdateDate: (state, action: PayloadAction<Date | undefined>) => ({
+      ...state,
+      updateDate: action.payload,
     }),
     setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => ({
       ...state,
@@ -236,6 +246,8 @@ export const {
   setInitiativeId,
   setOrganizationId,
   setStatus,
+  setInitiativeCreationDate,
+  setInitiativeUpdateDate,
   setGeneralInfo,
   setAdditionalInfo,
   setAutomatedCriteria,
@@ -281,3 +293,5 @@ export const initiativeDaysOfWeekIntervalsSelector = (
 ): Array<DaysOfWeekInterval> | undefined => state.initiative.trxRule.daysOfWeekIntervals;
 export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
   state.initiative.refundRule;
+export const initiativeStatusSelector = (state: RootState): string | undefined =>
+  state.initiative.status;
