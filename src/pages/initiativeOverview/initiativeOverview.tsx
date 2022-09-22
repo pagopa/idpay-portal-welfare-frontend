@@ -80,7 +80,6 @@ const InitiativeOverview = () => {
     switch (status) {
       case 'DRAFT':
       case 'IN_REVISION':
-        console.log('SONO QUI', initiativeSel.generalInfo.rankingStartDate);
         return (
           <Box
             sx={{
@@ -302,11 +301,10 @@ const InitiativeOverview = () => {
                   //   href={}
                   target="_blank"
                   startIcon={<DeleteOutlineIcon color="error" />}
-                  sx={{ padding: 0, alignItems: 'end', fontWeight: 700 }}
+                  sx={{ padding: 0, color: 'error.main', alignItems: 'end', fontWeight: 700 }}
                   weight="default"
-                  variant="text"
+                  variant="contained"
                   data-testid="view-datails-test"
-                  color="error"
                 >
                   {t('pages.initiativeList.actions.delete')}
                 </ButtonNaked>
