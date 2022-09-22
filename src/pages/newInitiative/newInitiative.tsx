@@ -1,8 +1,9 @@
-import { Box, Breadcrumbs, Button, Typography } from '@mui/material';
+import { Box, Breadcrumbs, Typography } from '@mui/material';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useState } from 'react';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import Wizard from '../../components/Wizard/Wizard';
 import { useInitiative } from '../../hooks/useInitiative';
 import ExitModal from '../../components/Wizard/components/ExitModal/ExitModal';
@@ -20,29 +21,21 @@ const NewInitiative = () => {
   return (
     <Box width="100%" px={2}>
       <Breadcrumbs aria-label="breadcrumb">
-        <Button
-          sx={[
-            {
-              justifyContent: 'start',
-              padding: 0,
-            },
-            {
-              '&:hover': { backgroundColor: 'transparent' },
-            },
-          ]}
-          id="open-exit-modal"
-          size="small"
-          variant="text"
-          startIcon={<ArrowBackIcon />}
+        <ButtonNaked
+          component="button"
           onClick={handleOpenExitModal}
-          disableRipple={true}
-          disableFocusRipple={true}
+          startIcon={<ArrowBackIcon />}
+          sx={{ color: 'primary.main' }}
+          weight="default"
         >
           {t('breadcrumbs.exit')}
-        </Button>
-
-        <Typography color="text.primary">{t('breadcrumbs.initiatives')}</Typography>
-        <Typography color="text.secondary">{t('breadcrumbs.createNew')}</Typography>
+        </ButtonNaked>
+        <Typography color="text.primary" variant="body2">
+          {t('breadcrumbs.initiatives')}
+        </Typography>
+        <Typography color="text.secondary" variant="body2">
+          {t('breadcrumbs.createNew')}
+        </Typography>
       </Breadcrumbs>
       <ExitModal openExitModal={openExitModal} handleCloseExitModal={handleCloseExitModal} />
       <TitleBox

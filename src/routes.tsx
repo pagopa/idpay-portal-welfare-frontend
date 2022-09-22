@@ -11,6 +11,7 @@ const ROUTES = {
   INITIATIVE_OVERVIEW: `${BASE_ROUTE}/panoramica-iniziativa/:id`,
   INITIATIVE_USERS: `${BASE_ROUTE}/utenti-iniziativa/:id`,
   INITIATIVE_REFUNDS: `${BASE_ROUTE}/rimborsi-iniziativa/:id`,
+  INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
 };
 
 export default ROUTES;

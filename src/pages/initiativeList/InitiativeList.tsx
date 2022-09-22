@@ -156,6 +156,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
       history.push(`${BASE_ROUTE}/iniziativa/${id}`);
     };
 
+    const handleViewInitiativeDetail = (id: string) => {
+      history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+    };
+
     switch (status) {
       case 'DRAFT':
       case 'APPROVED':
@@ -165,7 +169,11 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           </MenuItem>
         );
       case 'IN_REVISION':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
+        return (
+          <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
+            {t('pages.initiativeList.actions.details')}
+          </MenuItem>
+        );
       case 'TO_CHECK':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'PUBLISHED':
@@ -174,6 +182,17 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'SUSPENDED':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      default:
+        return null;
+    }
+  };
+
+  const RenderDelete = ({ status }: RenderActionProps) => {
+    switch (status) {
+      case 'DRAFT':
+      case 'APPROVED':
+      case 'TO_CHECK':
+        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>;
       default:
         return null;
     }
@@ -200,7 +219,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         }}
       >
         <RenderAction id={id} status={status} />
-        <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>
+        <RenderDelete id={id} status={status} />
       </Menu>
     </TableCell>
   );
@@ -294,7 +313,7 @@ const InitiativeList = () => {
         return <StatusChip label={statusLabel} color={statusColor} />;
       case 'PUBLISHED':
         statusLabel = t('pages.initiativeList.status.published');
-        statusColor = '#7ED5FC';
+        statusColor = '#5856D6';
         return <StatusChip label={statusLabel} color={statusColor} />;
       case 'CLOSED':
         statusLabel = t('pages.initiativeList.status.closed');
@@ -311,7 +330,7 @@ const InitiativeList = () => {
 
   const goToNewInitiative = () => {
     dispatch(resetInitiative());
-    history.push(routes.NEW_INITIATIVE);
+    history.replace(routes.NEW_INITIATIVE);
   };
 
   return (

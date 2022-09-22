@@ -15,6 +15,7 @@ import Auth from './pages/auth/Auth';
 import InitiativeOverview from './pages/initiativeOverview/initiativeOverview';
 import InitiativeUsers from './pages/initiativeUsers/initiativeUsers';
 import InitiativeRefunds from './pages/initiativeRefunds/initiativeRefunds';
+import InitiativeDetail from './pages/initiativeDetail/initiativeDetail';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => (
@@ -34,6 +35,9 @@ const SecuredRoutes = withLogin(
         </Route>
         <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
           <InitiativeRefunds />
+        </Route>
+        <Route path={routes.INITIATIVE_DETAIL} exact={true}>
+          <InitiativeDetail />
         </Route>
         <Route path={routes.HOME} exact={true}>
           <InitiativeList />

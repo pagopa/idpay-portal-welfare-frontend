@@ -14,7 +14,7 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
   const history = useHistory();
 
   const closeWithoutSaving = (e: any) => {
-    history.push(ROUTES.HOME);
+    history.replace(ROUTES.HOME);
     handleCloseExitModal(e);
   };
 
