@@ -143,14 +143,10 @@ stages:
               yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
-          - script: ls -R [!node_modules]*
-            displayName: 'Show all files recursively'
-
           - script: yarn lint
             displayName: 'Lint execution'
 
-          - script: ls -R [!node_modules]*
-            displayName: 'Show all files recursively'
+          - task: SonarCloudAnalyze@1
 
           - task: SonarCloudPublish@1
             inputs:
