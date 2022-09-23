@@ -15,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Chip,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -111,23 +112,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     </TableHead>
   );
 }
-
-type ChipProps = {
-  label: string;
-  color: string;
-};
-const StatusChip = ({ label, color }: ChipProps) => (
-  <span
-    style={{
-      backgroundColor: color,
-      padding: '7px 14px',
-      borderRadius: '16px',
-      fontWeight: 600,
-    }}
-  >
-    {label}
-  </span>
-);
 
 type ActionsMenuProps = {
   id: string;
@@ -291,40 +275,23 @@ const InitiativeList = () => {
   };
 
   const renderInitiativeStatus = (status: string) => {
-    /* eslint-disable functional/no-let */
-    let statusLabel = '';
-    let statusColor = '';
     switch (status) {
       case 'DRAFT':
-        statusLabel = t('pages.initiativeList.status.draft');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.draft')} color="default" />;
       case 'IN_REVISION':
-        statusLabel = t('pages.initiativeList.status.inRevision');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.inRevision')} color="warning" />;
       case 'TO_CHECK':
-        statusLabel = t('pages.initiativeList.status.toCheck');
-        statusColor = '#FE7A7A';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.toCheck')} color="error" />;
       case 'APPROVED':
-        statusLabel = t('pages.initiativeList.status.approved');
-        statusColor = '#7FCD7D';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        statusLabel = t('pages.initiativeList.status.published');
-        statusColor = '#5856D6';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
       case 'CLOSED':
-        statusLabel = t('pages.initiativeList.status.closed');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
-        statusLabel = t('pages.initiativeList.status.suspended');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.suspended')} color="error" />;
       default:
-        return <span>{status}</span>;
+        return null;
     }
   };
 

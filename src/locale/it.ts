@@ -151,6 +151,13 @@ export default {
             manual: 'Criterio # ',
             boolean: 'Booleano',
             multi: 'Scelta multipla',
+            beneficiaryList: 'Elenco degli ammessi',
+            beneficiaryNumber: 'Numero beneficiari ammessi',
+            fileUploadedStatus: 'Esito file caricato',
+            fileProcessingStatus: 'Esito elaborazione',
+            statusOk: 'Corretto',
+            statusKo: 'Fallito',
+            statusLoading: 'In corso',
           },
         },
         step4: {

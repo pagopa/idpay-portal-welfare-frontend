@@ -148,12 +148,7 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             }}
           >
             <Box sx={{ gridArea: 'back' }}>
-              <Button
-                variant="outlined"
-                color="inherit"
-                //  disabled={activeStep === 0}
-                onClick={(e) => handleBack(e)}
-              >
+              <Button variant="outlined" onClick={(e) => handleBack(e)}>
                 {t('components.wizard.common.buttons.back')}
               </Button>
             </Box>
