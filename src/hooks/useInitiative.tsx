@@ -28,6 +28,7 @@ import {
   saveRefundRule,
   setInitiativeCreationDate,
   setInitiativeUpdateDate,
+  setInitiativeName,
 } from '../redux/slices/initiativeSlice';
 import {
   AdditionalInfo,
@@ -71,6 +72,7 @@ export const useInitiative = () => {
           dispatch(setInitiativeId(response.initiativeId));
           dispatch(setOrganizationId(response.organizationId));
           dispatch(setStatus(response.status));
+          dispatch(setInitiativeName(response.initiativeName));
           dispatch(setInitiativeCreationDate(response.creationDate));
           dispatch(setInitiativeUpdateDate(response.updateDate));
 

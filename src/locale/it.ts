@@ -75,6 +75,7 @@ export default {
         update: 'Modifica',
         delete: 'Elimina',
         details: 'Dettagli',
+        suspend: 'Sospendi',
       },
     },
     initiativeOverview: {
@@ -90,6 +91,7 @@ export default {
           spend: 'Periodo di spesa',
           details: 'Vedi dettagli',
           start: 'Inizia il',
+          expiration: 'giorni rimanenti',
         },
       },
       next: {
@@ -107,6 +109,21 @@ export default {
             'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
           modify: 'Modifica iniziativa',
         },
+      },
+      modal: {
+        title: 'Vuoi davvero eliminare?',
+        subtitle: 'Se elimini, tutti i dati inseriti andranno persi.',
+        delete: 'Elimina',
+        cancel: 'Annulla',
+      },
+      snackBar: {
+        approved: 'L’iniziativa verrà comunicata a',
+        recipients: 'destinatari',
+        users: 'Vedi utenti',
+        pending:
+          'Stiamo elaborando l’elenco dei destinatari. Al termine potrai pubblicare l’iniziativa.',
+        uploadFailed:
+          'Non siamo riusciti a completare il caricamento dei destinatari. I nostri tecnici sono già al lavoro per risolvere il problema.',
       },
     },
   },

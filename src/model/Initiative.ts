@@ -101,6 +101,7 @@ export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;
   status: string | undefined;
+  initiativeName: string | undefined;
   creationDate: Date | undefined;
   updateDate: Date | undefined;
   generalInfo: GeneralInfo;

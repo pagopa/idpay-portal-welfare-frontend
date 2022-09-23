@@ -21,6 +21,7 @@ const initialState: Initiative = {
   initiativeId: undefined,
   organizationId: undefined,
   status: undefined,
+  initiativeName: undefined,
   creationDate: undefined,
   updateDate: undefined,
   additionalInfo: {
@@ -93,6 +94,10 @@ export const initiativeSlice = createSlice({
     setStatus: (state, action: PayloadAction<string | undefined>) => ({
       ...state,
       status: action.payload,
+    }),
+    setInitiativeName: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      initiativeName: action.payload,
     }),
     setInitiativeCreationDate: (state, action: PayloadAction<Date | undefined>) => ({
       ...state,
@@ -246,6 +251,7 @@ export const {
   setInitiativeId,
   setOrganizationId,
   setStatus,
+  setInitiativeName,
   setInitiativeCreationDate,
   setInitiativeUpdateDate,
   setGeneralInfo,
