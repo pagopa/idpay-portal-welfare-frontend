@@ -300,6 +300,10 @@ const InitiativeList = () => {
     history.replace(routes.NEW_INITIATIVE);
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Box sx={{ width: '100%', px: 2 }}>
       <TitleBox
