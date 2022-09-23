@@ -254,6 +254,7 @@ const DateOdBirthCriteriaItem = ({
               dateOfBirthFormik.touched.dateOfBirthEndValue,
               dateOfBirthFormik.errors.dateOfBirthEndValue
             )}
+            size="small"
           />
         </FormControl>
       </Box>

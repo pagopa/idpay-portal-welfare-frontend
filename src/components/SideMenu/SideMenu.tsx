@@ -67,7 +67,7 @@ export default function SideMenu() {
               onChange={handleChange(`panel-${item.initiativeId}`)}
               disableGutters
               elevation={0}
-              sx={{ border: 'none' }}
+              sx={{ border: 'none', '&:before': { backgroundColor: '#fff' } }}
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}

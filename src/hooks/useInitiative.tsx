@@ -26,6 +26,9 @@ import {
   saveDaysOfWeekIntervals,
   saveRewardRule,
   saveRefundRule,
+  setInitiativeCreationDate,
+  setInitiativeUpdateDate,
+  setInitiativeName,
 } from '../redux/slices/initiativeSlice';
 import {
   AdditionalInfo,
@@ -53,7 +56,7 @@ export const useInitiative = () => {
   // const setLoading = useLoading('GET_INITIATIVE_DETAIL');
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE, ROUTES.INITIATIVE_OVERVIEW],
+    path: [ROUTES.INITIATIVE, ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_DETAIL],
     exact: true,
     strict: false,
   });
@@ -69,6 +72,9 @@ export const useInitiative = () => {
           dispatch(setInitiativeId(response.initiativeId));
           dispatch(setOrganizationId(response.organizationId));
           dispatch(setStatus(response.status));
+          dispatch(setInitiativeName(response.initiativeName));
+          dispatch(setInitiativeCreationDate(response.creationDate));
+          dispatch(setInitiativeUpdateDate(response.updateDate));
 
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));

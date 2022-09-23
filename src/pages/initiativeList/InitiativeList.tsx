@@ -15,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Chip,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -112,23 +113,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-type ChipProps = {
-  label: string;
-  color: string;
-};
-const StatusChip = ({ label, color }: ChipProps) => (
-  <span
-    style={{
-      backgroundColor: color,
-      padding: '7px 14px',
-      borderRadius: '16px',
-      fontWeight: 600,
-    }}
-  >
-    {label}
-  </span>
-);
-
 type ActionsMenuProps = {
   id: string;
   status: string;
@@ -156,6 +140,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
       history.push(`${BASE_ROUTE}/iniziativa/${id}`);
     };
 
+    const handleViewInitiativeDetail = (id: string) => {
+      history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+    };
+
     switch (status) {
       case 'DRAFT':
       case 'APPROVED':
@@ -165,7 +153,11 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           </MenuItem>
         );
       case 'IN_REVISION':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
+        return (
+          <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
+            {t('pages.initiativeList.actions.details')}
+          </MenuItem>
+        );
       case 'TO_CHECK':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'PUBLISHED':
@@ -174,6 +166,17 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'SUSPENDED':
         return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      default:
+        return null;
+    }
+  };
+
+  const RenderDelete = ({ status }: RenderActionProps) => {
+    switch (status) {
+      case 'DRAFT':
+      case 'APPROVED':
+      case 'TO_CHECK':
+        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>;
       default:
         return null;
     }
@@ -200,7 +203,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         }}
       >
         <RenderAction id={id} status={status} />
-        <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>
+        <RenderDelete id={id} status={status} />
       </Menu>
     </TableCell>
   );
@@ -272,47 +275,34 @@ const InitiativeList = () => {
   };
 
   const renderInitiativeStatus = (status: string) => {
-    /* eslint-disable functional/no-let */
-    let statusLabel = '';
-    let statusColor = '';
     switch (status) {
       case 'DRAFT':
-        statusLabel = t('pages.initiativeList.status.draft');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.draft')} color="default" />;
       case 'IN_REVISION':
-        statusLabel = t('pages.initiativeList.status.inRevision');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.inRevision')} color="warning" />;
       case 'TO_CHECK':
-        statusLabel = t('pages.initiativeList.status.toCheck');
-        statusColor = '#FE7A7A';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.toCheck')} color="error" />;
       case 'APPROVED':
-        statusLabel = t('pages.initiativeList.status.approved');
-        statusColor = '#7FCD7D';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        statusLabel = t('pages.initiativeList.status.published');
-        statusColor = '#7ED5FC';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
       case 'CLOSED':
-        statusLabel = t('pages.initiativeList.status.closed');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
-        statusLabel = t('pages.initiativeList.status.suspended');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
+        return <Chip label={t('pages.initiativeList.status.suspended')} color="error" />;
       default:
-        return <span>{status}</span>;
+        return null;
     }
   };
 
   const goToNewInitiative = () => {
     dispatch(resetInitiative());
-    history.push(routes.NEW_INITIATIVE);
+    history.replace(routes.NEW_INITIATIVE);
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
