@@ -6,21 +6,26 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
-import SpendingLimitItem from '../SpendingLimitItem';
+import TransactionNumberItem from '../TransactionNumberItem';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  test('should render correctly the SpendingLimitItem component', async () => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
+  test('should render correctly the TransactionNumberItem component', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <SpendingLimitItem
+          <TransactionNumberItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -77,7 +82,7 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
       const handleSubmit = jest.fn();
       render(
         <Provider store={store}>
-          <SpendingLimitItem
+          <TransactionNumberItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -100,28 +105,28 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
     });
   });
 
-  // it('form fields not null', async () => {
-  //   await act(async () => {
-  //     const { getByTestId, container } = render(
-  //       <Provider store={store}>
-  //         <SpendingLimitItem
-  //         title={''}
-  //         code={''}
-  //         handleShopListItemRemoved={undefined}
-  //         action={''}
-  //         shopRulesToSubmit={[]}
-  //         setShopRulesToSubmit={function (
-  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //         ): void {
-  //           //
-  //         }}
-  //         data={undefined}
-  //         setData={function (_value: any): void {
-  //           //
-  //         }}
-  //       />
-  //       </Provider>
-  //     );
+  //   it('form fields not null', async () => {
+  //     await act(async () => {
+  //       const { getByTestId, container } = render(
+  //         <Provider store={store}>
+  //           <TransactionNumberItem
+  //             title={''}
+  //             code={''}
+  //             handleShopListItemRemoved={undefined}
+  //             action={''}
+  //             shopRulesToSubmit={[]}
+  //             setShopRulesToSubmit={function (
+  //               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  //             ): void {
+  //               //
+  //             }}
+  //             data={undefined}
+  //             setData={function (_value: any): void {
+  //               //
+  //             }}
+  //           />
+  //         </Provider>
+  //       );
+  //     });
   //   });
-  // });
 });

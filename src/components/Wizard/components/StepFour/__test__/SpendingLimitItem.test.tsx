@@ -3,25 +3,29 @@ import { fireEvent, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { DaysOfWeekInterval } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
-import TransactionTimeItem from '../TransactionTimeItem';
+import SpendingLimitItem from '../SpendingLimitItem';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  test('should render correctly the TransactionTimeItem component', async () => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
+  test('should render correctly the SpendingLimitItem component', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <TransactionTimeItem
+          <SpendingLimitItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -33,9 +37,7 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
               //
             }}
             data={undefined}
-            setData={function (
-              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
-            ): void {
+            setData={function (_value: any): void {
               //
             }}
           />
@@ -80,7 +82,7 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
       const handleSubmit = jest.fn();
       render(
         <Provider store={store}>
-          <TransactionTimeItem
+          <SpendingLimitItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -92,9 +94,7 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
               //
             }}
             data={undefined}
-            setData={function (
-              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
-            ): void {
+            setData={function (_value: any): void {
               //
             }}
           />
@@ -109,7 +109,7 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
   //   await act(async () => {
   //     const { getByTestId, container } = render(
   //       <Provider store={store}>
-  //         <TransactionTimeItem
+  //         <SpendingLimitItem
   //         title={''}
   //         code={''}
   //         handleShopListItemRemoved={undefined}
@@ -121,7 +121,7 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
   //           //
   //         }}
   //         data={undefined}
-  //         setData={function (_value: SetStateAction<Array<DaysOfWeekInterval> | undefined>): void {
+  //         setData={function (_value: any): void {
   //           //
   //         }}
   //       />

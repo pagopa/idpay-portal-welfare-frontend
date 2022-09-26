@@ -10,6 +10,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+// import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
@@ -79,6 +80,10 @@ const InitiativeOverview = () => {
     history.push(`${BASE_ROUTE}/iniziativa/${id}`);
   };
 
+  const handleViewDetails = (id: string) => {
+    history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+  };
+
   const renderInitiativeStatus = (status: string) => {
     switch (status) {
       case 'DRAFT':
@@ -105,12 +110,15 @@ const InitiativeOverview = () => {
       case 'DRAFT':
         return;
       case 'IN_REVISION':
-      case 'TO_CHECK':
         return (
           <Box sx={{ gridColumn: 'span 3' }}>
             <ButtonNaked
               size="small"
-              //   href={}
+              onClick={() =>
+                handleViewDetails(
+                  typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                )
+              }
               target="_blank"
               startIcon={<AssignmentIcon />}
               sx={{ color: 'primary.main', padding: 0 }}
@@ -122,6 +130,8 @@ const InitiativeOverview = () => {
             </ButtonNaked>
           </Box>
         );
+      case 'TO_CHECK':
+        return;
       case 'APPROVED':
         return (
           <Box
@@ -161,19 +171,6 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.info.otherinfo.start')}{' '}
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              <ButtonNaked
-                size="medium"
-                target="_blank"
-                startIcon={<AssignmentIcon />}
-                sx={{ color: 'primary.main', padding: 0 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-datails-test"
-              >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
-              </ButtonNaked>
             </Box>
           </Box>
         );
@@ -221,19 +218,6 @@ const InitiativeOverview = () => {
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
             </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              <ButtonNaked
-                size="medium"
-                target="_blank"
-                startIcon={<AssignmentIcon />}
-                sx={{ color: 'primary.main', padding: 0 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-datails-test"
-              >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
-              </ButtonNaked>
-            </Box>
           </Box>
         );
       case 'CLOSED':
@@ -253,7 +237,15 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.next.status.subtitleDraft')}
             </Box>
             <Box sx={{ gridColumn: 'span 8' }}>
-              <Button variant="contained" startIcon={<EditIcon />}>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                onClick={() =>
+                  handleUpdateInitiative(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+              >
                 {t('pages.initiativeOverview.next.status.draft')}
               </Button>
             </Box>
@@ -279,7 +271,16 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.next.status.subtitleModify')}
             </Box>
             <Box sx={{ gridColumn: 'span 8' }}>
-              <Button variant="contained" startIcon={<EditIcon />}>
+              <Button
+                variant="contained"
+                startIcon={<EditIcon />}
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleUpdateInitiative(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+              >
                 {t('pages.initiativeOverview.next.status.modify')}
               </Button>
             </Box>
@@ -299,6 +300,51 @@ const InitiativeOverview = () => {
           </>
         );
       case 'PUBLISHED':
+        // return (
+        //   <>
+        //     <Box sx={{ gridColumn: 'span 8', color: '#5C6F82' }}>
+        //       {t('pages.initiativeOverview.next.lastUpdate')}
+        //     </Box>
+        //     <Box sx={{ gridColumn: 'span 2' }}>{t('pages.initiativeOverview.next.join')}</Box>
+        //     <Box
+        //       sx={{
+        //         gridColumn: 'span 1',
+        //         fontWeight: '600',
+        //         fontSize: '24px',
+        //         textAlign: 'center',
+        //       }}
+        //     >
+        //       /
+        //     </Box>
+        //     <Box sx={{ gridColumn: 'span 5', fontWeight: '600' }}>
+        //       {peopleReached(
+        //         initiativeSel.generalInfo.budget,
+        //         initiativeSel.generalInfo.beneficiaryBudget
+        //       )}
+        //     </Box>
+        //     <Box sx={{ gridColumn: 'span 2' }}>
+        //       {t('pages.initiativeOverview.next.budgetExhausted')}
+        //     </Box>
+        //     <Box
+        //       sx={{
+        //         gridColumn: 'span 1',
+        //       }}
+        //     >
+        //       <Typography sx={{ fontWeight: 600, fontSize: '24px' }}>
+        //         /
+        //         <EuroSymbolIcon fontSize="small" />
+        //       </Typography>
+        //     </Box>
+        //     <Box sx={{ gridColumn: 'span 5' }}>
+        //       <Typography sx={{ fontWeight: 600 }}>
+        //         {initiativeSel.generalInfo.budget}
+
+        //         <EuroSymbolIcon fontSize="small" />
+        //       </Typography>
+        //     </Box>
+        //   </>
+        // );
+        return;
       case 'CLOSED':
       case 'SUSPENDED':
         return;
@@ -323,6 +369,7 @@ const InitiativeOverview = () => {
                 weight="default"
                 variant="contained"
                 data-testid="view-custom-test"
+                // eslint-disable-next-line sonarjs/no-identical-functions
                 onClick={() =>
                   handleUpdateInitiative(
                     typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
@@ -578,7 +625,11 @@ const InitiativeOverview = () => {
             }}
           >
             <Box sx={{ pt: 3, gridColumn: 'span 8' }}>
-              <Typography variant="h6">{t('pages.initiativeOverview.next.title')}</Typography>
+              {initiativeSel.status === 'PUBLISHED' ? (
+                <Typography variant="h6">{t('pages.initiativeOverview.next.stats')}</Typography>
+              ) : (
+                <Typography variant="h6">{t('pages.initiativeOverview.next.title')}</Typography>
+              )}
             </Box>
             {typeof initiativeSel.status === 'string' &&
               renderConditionalNextStatus(initiativeSel.status)}

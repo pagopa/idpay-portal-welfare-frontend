@@ -3,25 +3,29 @@ import { fireEvent, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { RewardLimit } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
-import TimeLimitItem from '../TimeLimitItem';
+import MCCItem from '../MCCItem';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  test('should render correctly the TimeLimitItem component', async () => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
+  test('should render correctly the MCCItem component', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <TimeLimitItem
+          <MCCItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -33,7 +37,7 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
               //
             }}
             data={undefined}
-            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
+            setData={function (_value: any): void {
               //
             }}
           />
@@ -78,7 +82,7 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       const handleSubmit = jest.fn();
       render(
         <Provider store={store}>
-          <TimeLimitItem
+          <MCCItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -90,7 +94,7 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
               //
             }}
             data={undefined}
-            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
+            setData={function (_value: any): void {
               //
             }}
           />
@@ -101,28 +105,28 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
     });
   });
 
-  // it('form fields not null', async () => {
-  //   await act(async () => {
-  //     const { getByTestId, container } = render(
-  //       <Provider store={store}>
-  //         <TimeLimitItem
-  //         title={''}
-  //         code={''}
-  //         handleShopListItemRemoved={undefined}
-  //         action={''}
-  //         shopRulesToSubmit={[]}
-  //         setShopRulesToSubmit={function (
-  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //         ): void {
-  //           //
-  //         }}
-  //         data={undefined}
-  //         setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
-  //           //
-  //         }}
-  //       />
-  //       </Provider>
-  //     );
+  //   it('form fields not null', async () => {
+  //     await act(async () => {
+  //       const { getByTestId, container } = render(
+  //         <Provider store={store}>
+  //           <MCCItem
+  //             title={''}
+  //             code={''}
+  //             handleShopListItemRemoved={undefined}
+  //             action={''}
+  //             shopRulesToSubmit={[]}
+  //             setShopRulesToSubmit={function (
+  //               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  //             ): void {
+  //               //
+  //             }}
+  //             data={undefined}
+  //             setData={function (_value: any): void {
+  //               //
+  //             }}
+  //           />
+  //         </Provider>
+  //       );
+  //     });
   //   });
-  // });
 });

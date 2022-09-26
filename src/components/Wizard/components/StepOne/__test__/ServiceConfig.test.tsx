@@ -11,7 +11,13 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
   const store = injectedStore ? injectedStore : createStore();
+
   test('should display the first form, with validation on input data', async () => {
     await act(async () => {
       render(

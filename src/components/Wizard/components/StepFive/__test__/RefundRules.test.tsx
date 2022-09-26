@@ -17,6 +17,11 @@ jest.mock('react-i18next', () => ({
 describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
   test('should display the third step component', async () => {
     await act(async () => {
       render(

@@ -29,6 +29,11 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     checked: false,
   };
 
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
   const store = injectedStore ? injectedStore : createStore();
   test('Should display ManualCriteria and must have a correct validation', async () => {
     await act(async () => {

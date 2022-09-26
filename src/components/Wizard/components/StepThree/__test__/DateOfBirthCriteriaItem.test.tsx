@@ -12,6 +12,11 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>) => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
   const data = {
     _type: '',
     description: '',

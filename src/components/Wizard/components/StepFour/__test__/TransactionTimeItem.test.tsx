@@ -3,24 +3,30 @@ import { fireEvent, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { DaysOfWeekInterval } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
-import TransactionNumberItem from '../TransactionNumberItem';
+import TransactionTimeItem from '../TransactionTimeItem';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  test('should render correctly the TransactionNumberItem component', async () => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
+  test('should render correctly the TransactionTimeItem component', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <TransactionNumberItem
+          <TransactionTimeItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -32,7 +38,9 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
               //
             }}
             data={undefined}
-            setData={function (_value: any): void {
+            setData={function (
+              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
+            ): void {
               //
             }}
           />
@@ -77,7 +85,7 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
       const handleSubmit = jest.fn();
       render(
         <Provider store={store}>
-          <TransactionNumberItem
+          <TransactionTimeItem
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
@@ -89,7 +97,9 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
               //
             }}
             data={undefined}
-            setData={function (_value: any): void {
+            setData={function (
+              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
+            ): void {
               //
             }}
           />
@@ -100,28 +110,28 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
     });
   });
 
-  //   it('form fields not null', async () => {
-  //     await act(async () => {
-  //       const { getByTestId, container } = render(
-  //         <Provider store={store}>
-  //           <TransactionNumberItem
-  //             title={''}
-  //             code={''}
-  //             handleShopListItemRemoved={undefined}
-  //             action={''}
-  //             shopRulesToSubmit={[]}
-  //             setShopRulesToSubmit={function (
-  //               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //             ): void {
-  //               //
-  //             }}
-  //             data={undefined}
-  //             setData={function (_value: any): void {
-  //               //
-  //             }}
-  //           />
-  //         </Provider>
-  //       );
-  //     });
+  // it('form fields not null', async () => {
+  //   await act(async () => {
+  //     const { getByTestId, container } = render(
+  //       <Provider store={store}>
+  //         <TransactionTimeItem
+  //         title={''}
+  //         code={''}
+  //         handleShopListItemRemoved={undefined}
+  //         action={''}
+  //         shopRulesToSubmit={[]}
+  //         setShopRulesToSubmit={function (
+  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+  //         ): void {
+  //           //
+  //         }}
+  //         data={undefined}
+  //         setData={function (_value: SetStateAction<Array<DaysOfWeekInterval> | undefined>): void {
+  //           //
+  //         }}
+  //       />
+  //       </Provider>
+  //     );
   //   });
+  // });
 });
