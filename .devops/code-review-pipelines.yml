@@ -97,7 +97,7 @@ stages:
 
           - script: |
               yarn generate
-              yarn test:coverage --watchAll=true
+              yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
   - stage: Sonarcloud
@@ -140,7 +140,7 @@ stages:
                 
           - script: |
               yarn generate
-              yarn test:coverage --watchAll=true
+              yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
           - script: yarn lint
