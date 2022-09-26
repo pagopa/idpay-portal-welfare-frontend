@@ -390,7 +390,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 setFileRejected(false);
               }}
             >
-              <CloseIcon fontSize="inherit" />
+              <CloseIcon color="primary" fontSize="inherit" />
             </IconButton>
           }
         >

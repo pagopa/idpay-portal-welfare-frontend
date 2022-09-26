@@ -221,12 +221,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       </Box>
 
       <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <FormLabel
+        <Typography
           sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
           id="beneficiaryType--label"
         >
           {t('components.wizard.stepTwo.form.beneficiaryType')}
-        </FormLabel>
+        </Typography>
         <RadioGroup
           sx={{ gridColumn: 'span 12' }}
           row
@@ -258,12 +258,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         </FormHelperText>
       </FormControl>
       <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <FormLabel
+        <Typography
           sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
           id="beneficiaryKnown--label"
         >
           {t('components.wizard.stepTwo.form.beneficiaryKnown')}
-        </FormLabel>
+        </Typography>
         <RadioGroup
           sx={{ gridColumn: 'span 12' }}
           row
@@ -375,20 +375,20 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               backgroundColor: grey[100],
               borderRadius: 2,
               py: 1,
-              px: 3,
+              px: 2,
             }}
           >
             <Typography
               variant="body2"
               component="span"
-              sx={{ display: 'flex', alignSelf: 'center', pr: 3 }}
+              sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
             >
               {t('components.wizard.stepTwo.form.reachedUsers')}
             </Typography>
             <Typography
               variant="subtitle2"
               component="span"
-              sx={{ display: 'flex', alignSelf: 'center', pr: 3 }}
+              sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
             >
               {peopleReached(formik.values.budget, formik.values.beneficiaryBudget)}
             </Typography>

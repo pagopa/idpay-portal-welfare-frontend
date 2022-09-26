@@ -75,13 +75,10 @@ export const useInitiative = () => {
           dispatch(setInitiativeName(response.initiativeName));
           dispatch(setInitiativeCreationDate(response.creationDate));
           dispatch(setInitiativeUpdateDate(response.updateDate));
-
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
-
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
-
           const automatedCriteria = [...parseAutomatedCriteria(response)];
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
@@ -111,7 +108,7 @@ export const useInitiative = () => {
           // setLoading(false);
         });
     }
-  }, []);
+  }, [location.pathname]);
 };
 
 const parseAdditionalInfo = (data: any): AdditionalInfo => {

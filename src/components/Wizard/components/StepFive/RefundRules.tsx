@@ -199,12 +199,12 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
           <Typography variant="h6">{t('components.wizard.stepFive.title1')}</Typography>
         </Box>
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 1 }}>
-          <FormLabel
+          <Typography
             sx={{ gridColumn: 'span 12', pb: 2, fontSize: '16px', fontWeight: '600' }}
             id="import-time-label"
           >
             {t('components.wizard.stepFive.form.radioQuestion')}
-          </FormLabel>
+          </Typography>
 
           <RadioGroup
             sx={{ gridColumn: 'span 12' }}

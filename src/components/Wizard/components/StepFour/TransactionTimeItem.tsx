@@ -201,6 +201,7 @@ const TransactionTimeItem = ({
               display: 'grid',
               gridTemplateColumns: 'repeat(24, 1fr)',
               gap: 2,
+              my: 1,
             }}
           >
             {i !== 0 && (
