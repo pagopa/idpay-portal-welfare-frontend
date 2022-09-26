@@ -169,4 +169,19 @@ export const InitiativeApi = {
     });
     return extractResponse(result, 204, onRedirectToLogin);
   },
+
+  updateInitiativeApprovedStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativeApprovedStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeToCheckStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativeToCheckStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativePublishedStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativePublishedStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
 };
