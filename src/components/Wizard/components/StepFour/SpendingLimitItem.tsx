@@ -157,7 +157,7 @@ const SpendingLimitItem = ({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <EuroSymbolIcon htmlColor="#17324D" />
+                  <EuroSymbolIcon />
                 </InputAdornment>
               ),
             }}
@@ -192,7 +192,7 @@ const SpendingLimitItem = ({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <EuroSymbolIcon htmlColor="#17324D" />
+                  <EuroSymbolIcon />
                 </InputAdornment>
               ),
             }}

@@ -20,11 +20,13 @@ export const ENV = {
   URL_API: {
     INITIATIVE: env.get('REACT_APP_URL_API_INITIATIVE').required().asString(),
     GROUPS: env.get('REACT_APP_URL_API_GROUPS').required().asString(),
+    ROLE_PERMISSION: env.get('REACT_APP_URL_API_ROLE_PERMISSION').required().asString(),
   },
 
   API_TIMEOUT_MS: {
     INITIATIVE: env.get('REACT_APP_API_INITIATIVE_TIMEOUT_MS').required().asInt(),
     GROUPS: env.get('REACT_APP_API_GROUPS_TIMEOUT_MS').required().asInt(),
+    ROLE_PERMISSION: env.get('REACT_APP_API_ROLE_PERMISSION_TIMEOUT_MS').required().asInt(),
   },
 
   URL_INSTITUTION_LOGO: {

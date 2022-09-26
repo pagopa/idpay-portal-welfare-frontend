@@ -6,6 +6,7 @@ import { userActions } from '@pagopa/selfcare-common-frontend/redux/slices/userS
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { parseJwt } from '../utils/jwt-utils';
 import { JWTUser } from '../model/JwtUser';
+import { getUserPermission } from '../services/rolePermissionService';
 
 const mockedUser = {
   uid: '0',
@@ -13,16 +14,21 @@ const mockedUser = {
   name: 'loggedName',
   surname: 'loggedSurname',
   email: 'loggedEmail@aa.aa',
+  org_party_role: 'ADMIN',
+  org_role: 'admin',
 };
 
 export const userFromJwtToken: (token: string) => User = function (token: string) {
   const jwtUser: JWTUser = parseJwt(token);
+  console.log(jwtUser);
   return {
     uid: jwtUser.uid,
     taxCode: '',
     name: jwtUser.name,
     surname: jwtUser.family_name,
     email: jwtUser.email,
+    org_party_role: jwtUser.org_party_role,
+    org_role: jwtUser.org_role,
   };
 };
 
@@ -36,6 +42,9 @@ export const useLogin = () => {
       setUser(mockedUser);
       storageTokenOps.write(CONFIG.TEST.JWT);
       storageUserOps.write(mockedUser);
+      getUserPermission()
+        .then((res) => console.log(res))
+        .catch((error) => console.log(error));
       return;
     }
 
@@ -57,9 +66,15 @@ export const useLogin = () => {
       const user: User = userFromJwtToken(token);
       storageUserOps.write(user);
       setUser(user);
+      getUserPermission()
+        .then((res) => console.log(res))
+        .catch((error) => console.log(error));
     } else {
       // Otherwise, set the user to the one stored in the storage
       setUser(sessionStorageUser);
+      getUserPermission()
+        .then((res) => console.log(res))
+        .catch((error) => console.log(error));
     }
   };
 

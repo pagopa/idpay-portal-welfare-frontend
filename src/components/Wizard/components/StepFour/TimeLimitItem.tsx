@@ -227,7 +227,7 @@ const TimeLimitItem = ({
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">
-                      <EuroSymbolIcon htmlColor="#17324D" />
+                      <EuroSymbolIcon />
                     </InputAdornment>
                   ),
                 }}

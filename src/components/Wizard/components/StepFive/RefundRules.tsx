@@ -311,7 +311,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                        <EuroSymbolIcon htmlColor="#17324D" />
+                        <EuroSymbolIcon />
                       </InputAdornment>
                     ),
                   }}

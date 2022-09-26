@@ -329,7 +329,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <EuroSymbolIcon htmlColor="#17324D" />
+                <EuroSymbolIcon />
               </InputAdornment>
             ),
           }}
@@ -357,7 +357,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
-                <EuroSymbolIcon htmlColor="#17324D" />
+                <EuroSymbolIcon />
               </InputAdornment>
             ),
           }}

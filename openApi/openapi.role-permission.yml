@@ -1,0 +1,244 @@
+openapi: 3.0.1
+info:
+  title: IDPAY Welfare Portal User Permission API
+  description: IDPAY Welfare Portal User Permission
+  version: '1.0'
+servers:
+  - url: https://api-io.dev.cstar.pagopa.it/idpay/authorization
+paths:
+  /permissions:
+    get:
+      tags:
+        - UserPermission
+      summary: Return User Permissions
+      description: Return User Permissions
+      operationId: userPermission
+      responses:
+        '200':
+          description: Check successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPermissionDTO'
+              example:
+                role: string
+                permissions:
+                  - id: string
+                    name: string
+                    mode: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+  /consent:
+    post:
+      tags:
+        - Consent
+      summary: Save user consent
+      description: Save user consent
+      operationId: saveConsent
+      parameters:
+        - name: Accept-Language
+          in: header
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Array of accepted consent
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConsentItemArrayDTO'
+            example:
+              - label: privacy
+                sha: string
+                url: string
+      responses:
+        '204':
+          description: No Content - Consent Submit successful
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '404':
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+    get:
+      tags:
+        - Consent
+      summary: Retrive user consent
+      description: Retrive user consent
+      operationId: retrieveConsent
+      responses:
+        '200':
+          description: Retriee consent successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConsentDTO'
+              example:
+                accepted: true
+                changed: true
+                consents:
+                  - label: privacy
+                    sha: string
+                    url: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+components:
+  schemas:
+    UserPermissionDTO:
+      title: UserPermissionDTO
+      type: object
+      properties:
+        role:
+          type: string
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PermissionDTO'
+          description: List of permissions
+    PermissionDTO:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        mode:
+          type: string
+    ConsentDTO:
+      type: object
+      properties:
+        accepted:
+          type: boolean
+          description: flag to indicate if permits are accepted or not
+        changed:
+          type: boolean
+          description: flag to indicate a change from previously accepted permits
+        consents:
+          $ref: '#/components/schemas/ConsentItemArrayDTO'
+    ConsentItemDTO:
+      required:
+        - label
+        - sha
+      type: object
+      properties:
+        label:
+          enum:
+            - privacy
+            - tc
+          type: string
+        sha:
+          type: string
+        url:
+          type: string
+    ConsentItemArrayDTO:
+      minItems: 1
+      type: array
+      items:
+        $ref: '#/components/schemas/ConsentItemDTO'
+      description: List of consent
+    ErrorDTO:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      name: Authorization
+      in: header
+security:
+  - Bearer: []
+tags:
+  - name: UserPermission
+    description: ''
