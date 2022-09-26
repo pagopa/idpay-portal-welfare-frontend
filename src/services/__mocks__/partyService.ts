@@ -185,7 +185,7 @@ export const mockedParties: Array<Party> = [
     roles: [
       {
         partyRole: 'ADMIN',
-        roleKey: 'API', // TODO use real product role
+        roleKey: 'admin', // TODO use real product role
       },
     ],
     description: 'Comune di Jesolo',

@@ -80,3 +80,12 @@ export const putRefundRule = (id: string, data: InitiativeRefundRuleDTO): Promis
 
 export const putRefundRuleDraft = (id: string, data: InitiativeRefundRuleDTO): Promise<void> =>
   InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data).then((res) => res);
+
+export const updateInitiativeApprovedStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativeApprovedStatus(id).then((res) => res);
+
+export const updateInitiativeToCheckStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativeToCheckStatus(id).then((res) => res);
+
+export const updateInitiativePublishedStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativePublishedStatus(id).then((res) => res);
