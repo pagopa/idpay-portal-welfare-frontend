@@ -20,7 +20,6 @@ const mockedUser = {
 
 export const userFromJwtToken: (token: string) => User = function (token: string) {
   const jwtUser: JWTUser = parseJwt(token);
-  console.log(jwtUser);
   return {
     uid: jwtUser.uid,
     taxCode: '',
