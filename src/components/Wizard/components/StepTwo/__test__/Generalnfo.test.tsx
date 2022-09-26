@@ -3,16 +3,21 @@ import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
-import { WIZARD_ACTIONS } from '../../../utils/constants';
-import Wizard from '../Wizard';
-import Generalnfo from '../components/StepTwo/Generalnfo';
-import { createStore } from '../../../redux/store';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import Wizard from '../../../Wizard';
+import Generalnfo from '../Generalnfo';
+import { createStore } from '../../../../../redux/store';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
 describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
+  it('renders without crashing', () => {
+    // eslint-disable-next-line functional/immutable-data
+    window.scrollTo = jest.fn();
+  });
+
   const store = injectedStore ? injectedStore : createStore();
   test('should display the first form, with validation on input data', async () => {
     await act(async () => {

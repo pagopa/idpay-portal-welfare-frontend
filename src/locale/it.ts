@@ -96,6 +96,11 @@ export default {
       },
       next: {
         title: 'What’s next?',
+        stats: 'Statistiche',
+        lastUpdate: 'Ultimo aggiornamento:',
+        join: 'Hanno aderito',
+        budgetExhausted: 'Budget speso',
+        ViewUsers: 'Vedi utenti',
 
         status: {
           subtitleApproved:
