@@ -16,6 +16,7 @@ import {
   Menu,
   MenuItem,
   Chip,
+  Link,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -395,9 +396,14 @@ const InitiativeList = () => {
                     return (
                       <TableRow tabIndex={-1} key={row.id} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
-                          <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
+                          <Link
+                            underline="none"
+                            variant="body2"
+                            sx={{ fontWeight: 700 }}
+                            href={`${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`}
+                          >
                             {row.initiativeName}
-                          </Typography>
+                          </Link>
                         </TableCell>
                         <TableCell>{row.creationDate}</TableCell>
                         <TableCell>{row.updateDate}</TableCell>
