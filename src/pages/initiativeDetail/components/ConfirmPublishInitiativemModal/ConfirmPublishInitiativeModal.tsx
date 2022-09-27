@@ -1,6 +1,8 @@
 import { Backdrop, Modal, Fade, Box, Typography, Button } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '../../../../redux/hooks';
+import { initiativeSelector } from '../../../../redux/slices/initiativeSlice';
 
 type Props = {
   publishModalOpen: boolean;
@@ -16,6 +18,7 @@ const ConfirmPublishInitiativeModal = ({
   handlePusblishInitiative,
 }: Props) => {
   const { t } = useTranslation();
+  const initiativeSel = useAppSelector(initiativeSelector);
 
   return (
     <Modal
@@ -46,7 +49,9 @@ const ConfirmPublishInitiativeModal = ({
             {t('pages.initiativeOverview.next.modalPublish.title')}
           </Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('pages.initiativeOverview.next.modalPublish.subtitle')}
+            {t('pages.initiativeOverview.next.modalPublish.subtitle', {
+              initiativeName: initiativeSel.initiativeName,
+            })}
           </Typography>
           <Box
             sx={{
