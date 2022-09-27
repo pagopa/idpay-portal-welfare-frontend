@@ -62,8 +62,8 @@ const InitiativeOverview = () => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
 
-  const publishInitiative = (id: string) => {
-    if (initiativeSel.status === 'APPROVED') {
+  const publishInitiative = (id: string | undefined) => {
+    if (initiativeSel.status === 'APPROVED' && typeof id === 'string') {
       updateInitiativePublishedStatus(id)
         .then((_res) => history.replace(ROUTES.HOME))
         .catch((error) => ({
