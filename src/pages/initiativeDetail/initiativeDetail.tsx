@@ -346,7 +346,7 @@ const InitiativeDetail = () => {
           </Button>
         </Box>
 
-        {user.org_role === 'ope_base' && (
+        {user.org_role === 'ope_base' && initiativeDetail.status === 'IN_REVISION' && (
           <Box sx={{ gridArea: 'reject', justifySelf: 'end' }}>
             <Button
               variant="outlined"
@@ -364,7 +364,7 @@ const InitiativeDetail = () => {
             />
           </Box>
         )}
-        {user.org_role === 'ope_base' && (
+        {user.org_role === 'ope_base' && initiativeDetail.status === 'IN_REVISION' && (
           <Box sx={{ gridArea: 'approve', justifySelf: 'end' }}>
             <Button
               variant="contained"

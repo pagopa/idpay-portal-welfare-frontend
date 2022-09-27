@@ -827,7 +827,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/approve:
+  /{initiativeId}/approved:
     put:
       tags:
         - initiative
@@ -881,7 +881,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/reject:
+  /{initiativeId}/rejected:
     put:
       tags:
         - initiative
@@ -935,7 +935,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/publish:
+  /{initiativeId}/published:
     put:
       tags:
         - initiative
@@ -1301,12 +1301,12 @@ components:
       properties:
         startTime:
           type: string
-          description: "hours:minutes:seconds.nano"
-          example: "00:16:00.000"
+          description: 'hours:minutes:seconds.nano'
+          example: '00:16:00.000'
         endTime:
           type: string
-          description: "hours:minutes:seconds.nano"
-          example: "02:00:00.000"
+          description: 'hours:minutes:seconds.nano'
+          example: '02:00:00.000'
     MccFilterDTO:
       type: object
       properties:
