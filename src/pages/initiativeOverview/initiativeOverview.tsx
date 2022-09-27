@@ -13,7 +13,7 @@ import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 // import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { useHistory } from 'react-router-dom';
+import { useHistory /* , useLocation */ } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MuiAlert from '@mui/material/Alert';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -21,42 +21,48 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
-import { initiativeIdSelector } from '../../redux/slices/initiativeSlice';
+// import { initiativeIdSelector } from '../../redux/slices/initiativeSlice';
 import InitiativeOverviewDeleteModal from './initiativeOverviewDeleteModal';
 
 const InitiativeOverview = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
-  const initiativeId = useAppSelector(initiativeIdSelector);
+  // const initiativeId = useAppSelector(initiativeIdSelector);
   const history = useHistory();
   const [openInitiativeOverviewDeleteModal, setOpenInitiativeOverviewDeleteModal] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(true);
   const [statusFile, setStatusFile] = useState('');
+  // const location = useLocation();
+
+  const handleCloseSnackBar = () => setOpenSnackBar(false);
+
+  const handleOpenSnackBar = () => setOpenSnackBar(true);
 
   useEffect(() => {
-    if (initiativeSel.generalInfo.beneficiaryKnown === 'true' && initiativeId) {
-      getGroupOfBeneficiaryStatusAndDetail(initiativeId)
+    if (initiativeSel.generalInfo.beneficiaryKnown === 'true' && initiativeSel.initiativeId) {
+      getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
         .then((res) => {
           const statusFileRes = res.status || '';
           setStatusFile(statusFileRes);
+          handleOpenSnackBar();
         })
         .catch((error) => {
           console.log(error);
         });
+    } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
+      handleCloseSnackBar();
     }
-  }, []);
+  }, [initiativeSel.generalInfo]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [initiativeSel.initiativeId]);
 
   const handleCloseInitiativeOverviewDeleteModal = () =>
     setOpenInitiativeOverviewDeleteModal(false);
 
   const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
-
-  const handleCloseSnackBar = () => setOpenSnackBar(false);
 
   const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
     const totalBudgetInt = parseInt(totalBudget, 10);
@@ -105,6 +111,7 @@ const InitiativeOverview = () => {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderConditionalInfoStatus = (status: string) => {
     switch (status) {
       case 'DRAFT':
@@ -172,6 +179,25 @@ const InitiativeOverview = () => {
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
             </Box>
+            <Box sx={{ gridColumn: 'span 3' }}>
+              <ButtonNaked
+                size="small"
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleViewDetails(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+                target="_blank"
+                startIcon={<AssignmentIcon />}
+                sx={{ color: 'primary.main', padding: 0 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-datails-test"
+              >
+                {t('pages.initiativeOverview.info.otherinfo.details')}
+              </ButtonNaked>
+            </Box>
           </Box>
         );
       case 'PUBLISHED':
@@ -217,6 +243,25 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.info.otherinfo.start')}{' '}
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
+            </Box>
+            <Box sx={{ gridColumn: 'span 3' }}>
+              <ButtonNaked
+                size="small"
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleViewDetails(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+                target="_blank"
+                startIcon={<AssignmentIcon />}
+                sx={{ color: 'primary.main', padding: 0 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-datails-test"
+              >
+                {t('pages.initiativeOverview.info.otherinfo.details')}
+              </ButtonNaked>
             </Box>
           </Box>
         );
