@@ -65,7 +65,7 @@ export default {
       status: {
         draft: 'In bozza',
         inRevision: 'In revisione',
-        toCheck: 'Da controllare',
+        toCheck: 'Modifiche richieste',
         approved: 'Approvata',
         published: 'In corso',
         closed: 'Terminata',
@@ -263,6 +263,15 @@ export default {
             balanceExhausted: 'A saldo esaurito',
             certainThreshold: 'Al  raggiungimento di una determinata soglia',
           },
+        },
+        buttons: {
+          back: 'Indietro',
+          reject: 'Rifiuta',
+          approve: 'Approva',
+        },
+        modal: {
+          title: 'Vuoi procedere?',
+          subtitle: 'Avverti l’ente via email di eventuali segnalazioni o note.',
         },
       },
     },
@@ -537,5 +546,7 @@ export default {
     invalidDataDescription: 'Controllare i dati inseriti',
     getDataDescription: 'Riprovare',
     getFileDataDescription: 'Caricare nuovamente il file',
+    cantRejectInitiative: "Non è stato possibile rifiutare l'iniziativa. Riprova",
+    cantApproveInitiative: 'Non è stato possibile inviare la  revisione. Riprova.',
   },
 };
