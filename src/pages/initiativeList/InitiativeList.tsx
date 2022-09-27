@@ -16,7 +16,6 @@ import {
   Menu,
   MenuItem,
   Chip,
-  Link,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -28,14 +27,12 @@ import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 // import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
-
 import { resetInitiative } from '../../redux/slices/initiativeSlice';
 import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
-
 import { useAppDispatch } from '../../redux/hooks';
-
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
@@ -396,14 +393,17 @@ const InitiativeList = () => {
                     return (
                       <TableRow tabIndex={-1} key={row.id} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
-                          <Link
-                            underline="none"
-                            variant="body2"
-                            sx={{ fontWeight: 700 }}
-                            href={`${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`}
+                          <ButtonNaked
+                            component="button"
+                            sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1em' }}
+                            onClick={() =>
+                              history.replace(
+                                `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
+                              )
+                            }
                           >
                             {row.initiativeName}
-                          </Link>
+                          </ButtonNaked>
                         </TableCell>
                         <TableCell>{row.creationDate}</TableCell>
                         <TableCell>{row.updateDate}</TableCell>

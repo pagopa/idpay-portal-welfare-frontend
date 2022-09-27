@@ -136,7 +136,7 @@ const ServiceConfig = ({
       assistanceChannels: [...additionalInfo.assistanceChannels],
     },
     validationSchema,
-    validateOnMount: true,
+    // validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
