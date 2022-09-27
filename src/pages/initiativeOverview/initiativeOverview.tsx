@@ -95,7 +95,7 @@ const InitiativeOverview = () => {
       case 'APPROVED':
         return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
       case 'CLOSED':
         return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
