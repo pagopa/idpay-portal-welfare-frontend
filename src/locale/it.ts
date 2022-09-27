@@ -114,6 +114,12 @@ export default {
             'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
           modify: 'Modifica iniziativa',
         },
+
+        modalPublish: {
+          title: 'Pubblica iniziativa',
+          subtitle:
+            'Qui diciamo all’ente che sta per pubblicare l’iniziativa <nome iniziativa>, che il servizio sarà visible in app e che <n> utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
+        },
       },
       modal: {
         title: 'Vuoi davvero eliminare?',
@@ -548,5 +554,6 @@ export default {
     getFileDataDescription: 'Caricare nuovamente il file',
     cantRejectInitiative: "Non è stato possibile rifiutare l'iniziativa. Riprova",
     cantApproveInitiative: 'Non è stato possibile inviare la  revisione. Riprova.',
+    cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
   },
 };

@@ -19,9 +19,11 @@ import MuiAlert from '@mui/material/Alert';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import { BASE_ROUTE } from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 // import { initiativeIdSelector } from '../../redux/slices/initiativeSlice';
+import { updateInitiativePublishedStatus } from '../../services/intitativeService';
+import ConfirmPublishInitiativeModal from '../initiativeDetail/components/ConfirmPublishInitiativemModal/ConfirmPublishInitiativeModal';
 import InitiativeOverviewDeleteModal from './initiativeOverviewDeleteModal';
 
 const InitiativeOverview = () => {
@@ -33,6 +35,7 @@ const InitiativeOverview = () => {
   const [openInitiativeOverviewDeleteModal, setOpenInitiativeOverviewDeleteModal] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(true);
   const [statusFile, setStatusFile] = useState('');
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
   // const location = useLocation();
 
   const handleCloseSnackBar = () => setOpenSnackBar(false);
@@ -58,6 +61,23 @@ const InitiativeOverview = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
+
+  const publishInitiative = (id: string) => {
+    if (initiativeSel.status === 'APPROVED') {
+      updateInitiativePublishedStatus(id)
+        .then((_res) => history.replace(ROUTES.HOME))
+        .catch((error) => ({
+          id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred publishing initiative',
+          displayableDescription: t('errors.cantPublishInitiative'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        }));
+    }
+  };
 
   const handleCloseInitiativeOverviewDeleteModal = () =>
     setOpenInitiativeOverviewDeleteModal(false);
@@ -338,10 +358,20 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.next.status.subtitleApproved')}
             </Box>
             <Box sx={{ gridColumn: 'span 8' }}>
-              <Button variant="contained" startIcon={<PublishIcon />}>
+              <Button
+                variant="contained"
+                startIcon={<PublishIcon />}
+                onClick={() => setPublishModalOpen(true)}
+              >
                 {t('pages.initiativeOverview.next.status.approved')}
               </Button>
             </Box>
+            <ConfirmPublishInitiativeModal
+              publishModalOpen={publishModalOpen}
+              setPublishModalOpen={setPublishModalOpen}
+              id={initiativeSel.initiativeId}
+              handlePusblishInitiative={publishInitiative}
+            />
           </>
         );
       case 'PUBLISHED':
