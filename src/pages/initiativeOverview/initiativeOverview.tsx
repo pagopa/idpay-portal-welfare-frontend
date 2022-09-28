@@ -531,9 +531,9 @@ const InitiativeOverview = () => {
                 {t('pages.initiativeList.actions.update')}
               </ButtonNaked>
             </Box>
-            <InitiativeOverviewDeleteModal
-              openInitiativeOverviewDeleteModal={openInitiativeOverviewDeleteModal}
-              handleCloseInitiativeOverviewDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+            <DeleteInitiativeModal
+              openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+              handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
             />
             <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
               <ButtonNaked
