@@ -31,6 +31,7 @@ import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
+import { useIDPayUser } from '../../hooks/useIDPayUser';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
@@ -52,6 +53,7 @@ const InitiativeOverview = () => {
   const [statusFile, setStatusFile] = useState('');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const addError = useErrorDispatcher();
+  const user = useIDPayUser();
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_OVERVIEW],
@@ -508,7 +510,47 @@ const InitiativeOverview = () => {
           </>
         );
       case 'APPROVED':
-        return;
+        return (
+          <>
+            <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
+              <ButtonNaked
+                size="small"
+                target="_blank"
+                startIcon={<EditIcon />}
+                sx={{ color: 'primary.main', padding: 0, fontWeight: 700 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-custom-test"
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleUpdateInitiative(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+              >
+                {t('pages.initiativeList.actions.update')}
+              </ButtonNaked>
+            </Box>
+            <DeleteInitiativeModal
+              openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+              handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+            />
+            <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
+              <ButtonNaked
+                size="small"
+                onClick={handleOpenInitiativeOverviewDeleteModal}
+                target="_blank"
+                startIcon={<DeleteOutlineIcon color="error" />}
+                sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-delete-test"
+              >
+                {t('pages.initiativeList.actions.delete')}
+              </ButtonNaked>
+            </Box>
+          </>
+        );
       // eslint-disable-next-line sonarjs/no-duplicated-branches
       case 'DRAFT':
         return (
@@ -564,112 +606,191 @@ const InitiativeOverview = () => {
   };
 
   const renderTypeSnackBarStatus = (status: string) => {
-    switch (status) {
-      case 'OK':
-        return (
-          <Snackbar
-            open={openSnackbar}
-            sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
-          >
-            <MuiAlert
-              sx={{
-                gridColumn: 'span 10',
-                mb: 3,
-                width: '100%',
-                gridTemplateColumns: 'repeat(10, 1fr)',
-              }}
-              severity="info"
-              elevation={6}
-              variant="outlined"
-              action={
-                <>
-                  <ButtonNaked
-                    size="medium"
-                    target="_blank"
-                    sx={{
-                      padding: 0,
-                      color: 'primary.main',
-                      fontWeight: 700,
-                      gridColumn: 'span 1',
-                    }}
-                    weight="default"
-                    variant="contained"
-                    data-testid="view-users-test"
-                  >
-                    {t('pages.initiativeOverview.snackBar.users')}
-                  </ButtonNaked>
-                  <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
-                    <CloseIcon />
-                  </IconButton>
-                </>
-              }
+    if (user.org_role === 'ope_base') {
+      switch (status) {
+        case 'OK':
+          return (
+            <Snackbar
+              open={openSnackbar}
+              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
             >
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}>
-                <Typography sx={{ gridColumn: 'span 5' }}>
-                  {t('pages.initiativeOverview.snackBar.approved')}{' '}
-                </Typography>
-                <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
-                  {peopleReached(
-                    initiativeSel.generalInfo.budget,
-                    initiativeSel.generalInfo.beneficiaryBudget
-                  )}
-                </Typography>
-                <Typography sx={{ gridColumn: 'span 5' }}>
-                  {t('pages.initiativeOverview.snackBar.recipients')}
-                </Typography>
-              </Box>
-            </MuiAlert>
-          </Snackbar>
-        );
-      case 'VALIDATE':
-      case 'PROCESSING':
-      case 'TO_SCHEDULE':
-        return (
-          <Snackbar open={openSnackbar} sx={{ position: 'initial', gridColumn: 'span 10' }}>
-            <MuiAlert
-              sx={{
-                gridColumn: 'span 10',
-                mb: 3,
-                width: '100%',
-                gridTemplateColumns: 'repeat(10, 1fr)',
-              }}
-              severity="info"
-              elevation={6}
-              variant="outlined"
-              icon={<SyncIcon />}
+              <MuiAlert
+                sx={{
+                  gridColumn: 'span 10',
+                  mb: 3,
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(10, 1fr)',
+                }}
+                severity="info"
+                elevation={6}
+                variant="outlined"
+                action={
+                  <>
+                    <ButtonNaked
+                      size="medium"
+                      target="_blank"
+                      sx={{
+                        padding: 0,
+                        color: 'primary.main',
+                        fontWeight: 700,
+                        gridColumn: 'span 1',
+                      }}
+                      weight="default"
+                      variant="contained"
+                      data-testid="view-users-test"
+                    >
+                      {t('pages.initiativeOverview.snackBar.users')}
+                    </ButtonNaked>
+                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
+                      <CloseIcon />
+                    </IconButton>
+                  </>
+                }
+              >
+                <Box
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}
+                >
+                  <Typography sx={{ gridColumn: 'span 5' }}>
+                    {t('pages.initiativeOverview.snackBar.approved')}{' '}
+                  </Typography>
+                  <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
+                    {peopleReached(
+                      initiativeSel.generalInfo.budget,
+                      initiativeSel.generalInfo.beneficiaryBudget
+                    )}
+                  </Typography>
+                  <Typography sx={{ gridColumn: 'span 5' }}>
+                    {t('pages.initiativeOverview.snackBar.recipients')}
+                  </Typography>
+                </Box>
+              </MuiAlert>
+            </Snackbar>
+          );
+        case 'VALIDATE':
+        case 'PROCESSING':
+        case 'TO_SCHEDULE':
+          return (
+            <Snackbar
+              open={openSnackbar}
+              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
             >
-              {t('pages.initiativeOverview.snackBar.pending')}
-            </MuiAlert>
-          </Snackbar>
-        );
-      case 'KO':
-      case 'PROC_KO':
-        return (
-          <Snackbar open={openSnackbar} sx={{ position: 'initial', gridColumn: 'span 10' }}>
-            <MuiAlert
-              sx={{
-                gridColumn: 'span 10',
-                mb: 3,
-                width: '100%',
-                gridTemplateColumns: 'repeat(10, 1fr)',
-              }}
-              severity="error"
-              elevation={6}
-              variant="outlined"
-              action={
-                <>
-                  <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
-                    <CloseIcon />
-                  </IconButton>
-                </>
-              }
+              <MuiAlert
+                sx={{
+                  gridColumn: 'span 10',
+                  mb: 3,
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(10, 1fr)',
+                }}
+                severity="info"
+                elevation={6}
+                variant="outlined"
+                icon={<SyncIcon />}
+              >
+                {t('pages.initiativeOverview.snackBar.pending')}
+              </MuiAlert>
+            </Snackbar>
+          );
+        case 'KO':
+        case 'PROC_KO':
+          return (
+            <Snackbar
+              open={openSnackbar}
+              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
             >
-              {t('pages.initiativeOverview.snackBar.uploadFailed')}
-            </MuiAlert>
-          </Snackbar>
-        );
-      default:
-        return null;
+              <MuiAlert
+                sx={{
+                  gridColumn: 'span 10',
+                  mb: 3,
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(10, 1fr)',
+                }}
+                severity="error"
+                elevation={6}
+                variant="outlined"
+                action={
+                  <>
+                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
+                      <CloseIcon />
+                    </IconButton>
+                  </>
+                }
+              >
+                {t('pages.initiativeOverview.snackBar.uploadFailed')}
+              </MuiAlert>
+            </Snackbar>
+          );
+        default:
+          return null;
+      }
+    } else {
+      switch (status) {
+        case 'OK':
+          return (
+            <Snackbar
+              open={openSnackbar}
+              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
+            >
+              <MuiAlert
+                sx={{
+                  gridColumn: 'span 10',
+                  mb: 3,
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(10, 1fr)',
+                }}
+                severity="info"
+                elevation={6}
+                variant="outlined"
+                action={
+                  <>
+                    <ButtonNaked
+                      size="medium"
+                      target="_blank"
+                      sx={{
+                        padding: 0,
+                        color: 'primary.main',
+                        fontWeight: 700,
+                        gridColumn: 'span 1',
+                      }}
+                      weight="default"
+                      variant="contained"
+                      data-testid="view-users-test"
+                    >
+                      {t('pages.initiativeOverview.snackBar.users')}
+                    </ButtonNaked>
+                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
+                      <CloseIcon />
+                    </IconButton>
+                  </>
+                }
+              >
+                <Box
+                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}
+                >
+                  <Typography sx={{ gridColumn: 'span 5' }}>
+                    {t('pages.initiativeOverview.snackBar.approved')}{' '}
+                  </Typography>
+                  <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
+                    {peopleReached(
+                      initiativeSel.generalInfo.budget,
+                      initiativeSel.generalInfo.beneficiaryBudget
+                    )}
+                  </Typography>
+                  <Typography sx={{ gridColumn: 'span 5' }}>
+                    {t('pages.initiativeOverview.snackBar.recipients')}
+                  </Typography>
+                </Box>
+              </MuiAlert>
+            </Snackbar>
+          );
+        case 'VALIDATE':
+        case 'PROCESSING':
+        case 'TO_SCHEDULE':
+        case 'KO':
+        case 'PROC_KO':
+          return;
+        default:
+          return null;
+      }
     }
   };
 
