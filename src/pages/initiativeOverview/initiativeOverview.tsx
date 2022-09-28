@@ -21,33 +21,42 @@ import SyncIcon from '@mui/icons-material/Sync';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { useHistory /* , useLocation */ } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MuiAlert from '@mui/material/Alert';
+import { matchPath } from 'react-router';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
-// import { initiativeIdSelector } from '../../redux/slices/initiativeSlice';
 import { updateInitiativePublishedStatus } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../initiativeDetail/components/ConfirmPublishInitiativemModal/ConfirmPublishInitiativeModal';
 import InitiativeOverviewDeleteModal from './initiativeOverviewDeleteModal';
+
+interface MatchParams {
+  id: string;
+}
 
 const InitiativeOverview = () => {
   const { t } = useTranslation();
 
   const initiativeSel = useAppSelector(initiativeSelector);
-  // const initiativeId = useAppSelector(initiativeIdSelector);
   const history = useHistory();
   const [openInitiativeOverviewDeleteModal, setOpenInitiativeOverviewDeleteModal] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(true);
   const [statusFile, setStatusFile] = useState('');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
-  // const location = useLocation();
+  const addError = useErrorDispatcher();
+
+  const match = matchPath(location.pathname, {
+    path: [ROUTES.INITIATIVE_OVERVIEW],
+    exact: true,
+    strict: false,
+  });
 
   useInitiative();
 
@@ -56,23 +65,41 @@ const InitiativeOverview = () => {
   const handleOpenSnackBar = () => setOpenSnackBar(true);
 
   useEffect(() => {
-    console.log('BENEFICIARY KNOWN ', initiativeSel.generalInfo.beneficiaryKnown);
-    console.log('INITIATIVE ID ', initiativeSel.initiativeId);
-
-    if (initiativeSel.generalInfo.beneficiaryKnown === 'true' && initiativeSel.initiativeId) {
-      getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
-        .then((res) => {
-          const statusFileRes = res.status || '';
-          setStatusFile(statusFileRes);
-          handleOpenSnackBar();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
-      handleCloseSnackBar();
+    // eslint-disable-next-line no-prototype-builtins
+    if (match !== null && match.params.hasOwnProperty('id')) {
+      const { id } = match.params as MatchParams;
+      if (
+        initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
+        initiativeSel.initiativeId === id
+      ) {
+        getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
+          .then((res) => {
+            const statusFileRes = res.status || '';
+            setStatusFile(statusFileRes);
+            handleOpenSnackBar();
+          })
+          .catch((error) => {
+            addError({
+              id: 'GET_UPLOADED_FILE_DATA_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred getting groups file info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getFileDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+      } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
+        handleCloseSnackBar();
+      }
     }
-  }, [initiativeSel.initiativeId, JSON.stringify(initiativeSel.generalInfo)]);
+  }, [
+    JSON.stringify(match),
+    initiativeSel.initiativeId,
+    JSON.stringify(initiativeSel.generalInfo),
+  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
