@@ -51,10 +51,6 @@ export default function SideMenu() {
     return history.location.pathname;
   });
 
-  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
-  };
-
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_OVERVIEW],
     exact: true,
@@ -87,7 +83,6 @@ export default function SideMenu() {
   useEffect(() => {
     // eslint-disable-next-line no-prototype-builtins
     if (match !== null && match.params.hasOwnProperty('id')) {
-      // eslint-disable-next-line no-prototype-builtins
       const { id } = match.params as MatchParams;
       const itemExpanded = `panel-${id}`;
       setExpanded(itemExpanded);
@@ -97,7 +92,11 @@ export default function SideMenu() {
         : false;
       setExpanded(firstItemExpanded);
     }
-  }, [match, initiativeSummaryList]);
+  }, [JSON.stringify(match), initiativeSummaryList]);
+
+  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded ? panel : false);
+  };
 
   return (
     <Box display="grid" mt={1}>
@@ -132,7 +131,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeOveview.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={
@@ -145,7 +144,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
@@ -156,7 +155,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={
