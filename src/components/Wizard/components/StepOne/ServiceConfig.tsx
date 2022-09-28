@@ -33,6 +33,7 @@ import {
 import {
   initiativeIdSelector,
   additionalInfoSelector,
+  initiativeStatusSelector,
   setInitiativeId,
   setAdditionalInfo,
 } from '../../../../redux/slices/initiativeSlice';
@@ -47,6 +48,7 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
+  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
 const ServiceConfig = ({
@@ -55,10 +57,12 @@ const ServiceConfig = ({
   currentStep,
   setCurrentStep,
   setDisabledNext,
+  setDraftEnabled,
 }: Props) => {
   const { t } = useTranslation();
   const initiativeId = useAppSelector(initiativeIdSelector);
   const additionalInfo = useAppSelector(additionalInfoSelector);
+  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const [openInitiativeNotOnIOModal, setOpenInitiativeNotOnIOModal] = useState(false);
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
@@ -70,6 +74,10 @@ const ServiceConfig = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setDraftEnabled(initiativeStatus !== 'APPROVED');
+  }, [initiativeStatus]);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {

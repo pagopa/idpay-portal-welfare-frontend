@@ -18,7 +18,7 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import { useInitiative } from '../../hooks/useInitiative';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useIDPayUser } from '../../hooks/useIDPayUser';
 import {
   updateInitiativeApprovedStatus,
@@ -63,6 +63,7 @@ const InitiativeDetail = () => {
   ]);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [disabledButons, setDisabledButtons] = useState(true);
+
   const user = useIDPayUser();
   const addError = useErrorDispatcher();
 
@@ -372,6 +373,26 @@ const InitiativeDetail = () => {
               onClick={() => approveInitiative(initiativeDetail.initiativeId)}
             >
               {t('pages.initiativeDetail.accordion.buttons.approve')}
+            </Button>
+          </Box>
+        )}
+
+        {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
+          <Box sx={{ gridArea: 'reject', justifySelf: 'end' }}>
+            <Button variant="outlined" color="error" onClick={() => console.log('TODO ELIMINA')}>
+              {t('pages.initiativeDetail.accordion.buttons.delete')}
+            </Button>
+          </Box>
+        )}
+        {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
+          <Box sx={{ gridArea: 'approve', justifySelf: 'end' }}>
+            <Button
+              variant="contained"
+              onClick={() =>
+                history.replace(`${BASE_ROUTE}/iniziativa/${initiativeDetail.initiativeId}`)
+              }
+            >
+              {t('pages.initiativeDetail.accordion.buttons.edit')}
             </Button>
           </Box>
         )}

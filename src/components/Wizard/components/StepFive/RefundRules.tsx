@@ -27,6 +27,7 @@ import {
   initiativeRefundRulesSelector,
   saveRefundRule,
   generalInfoSelector,
+  initiativeStatusSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
 import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
@@ -41,13 +42,15 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisableNext: Dispatch<SetStateAction<boolean>>;
+  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
-const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
+const RefundRules = ({ action, setAction, setDisableNext, setDraftEnabled }: Props) => {
   const { t } = useTranslation();
   const [_isChecked, setIsChecked] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
   const generalInfo = useAppSelector(generalInfoSelector);
+  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const budgetPerPerson = generalInfo.beneficiaryBudget;
   const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
@@ -57,6 +60,10 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setDraftEnabled(initiativeStatus !== 'APPROVED');
+  }, [initiativeStatus]);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
