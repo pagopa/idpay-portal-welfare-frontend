@@ -36,7 +36,7 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 import { updateInitiativePublishedStatus } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
-import InitiativeOverviewDeleteModal from '../components/initiativeOverviewDeleteModal';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 
 interface MatchParams {
   id: string;
@@ -486,9 +486,9 @@ const InitiativeOverview = () => {
         return (
           <>
             <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
-              <InitiativeOverviewDeleteModal
-                openInitiativeOverviewDeleteModal={openInitiativeOverviewDeleteModal}
-                handleCloseInitiativeOverviewDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+              <DeleteInitiativeModal
+                openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
               />
               <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
                 <ButtonNaked
@@ -514,9 +514,9 @@ const InitiativeOverview = () => {
         return (
           <>
             <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
-              <InitiativeOverviewDeleteModal
-                openInitiativeOverviewDeleteModal={openInitiativeOverviewDeleteModal}
-                handleCloseInitiativeOverviewDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+              <DeleteInitiativeModal
+                openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
               />
               <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
                 <ButtonNaked

@@ -24,6 +24,7 @@ import {
   updateInitiativeApprovedStatus,
   updateInitiativeToCheckStatus,
 } from '../../services/intitativeService';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import SummaryContentBody from './components/Summary/SummaryContentBody';
 import AdditionalInfoContentBody from './components/StepOne/AdditionalInfoContentBody';
 import GeneralInfoContentBody from './components/StepTwo/GeneralInfoContentBody';
@@ -63,6 +64,9 @@ const InitiativeDetail = () => {
   ]);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [disabledButons, setDisabledButtons] = useState(true);
+  const [openInitiativeDeleteModal, setOpenInitiativeDeleteModal] = useState(false);
+  const handleCloseInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(false);
+  const handleOpenInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(true);
 
   const user = useIDPayUser();
   const addError = useErrorDispatcher();
@@ -379,9 +383,13 @@ const InitiativeDetail = () => {
 
         {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
           <Box sx={{ gridArea: 'reject', justifySelf: 'end' }}>
-            <Button variant="outlined" color="error" onClick={() => console.log('TODO ELIMINA')}>
+            <Button variant="outlined" color="error" onClick={handleOpenInitiativeDeleteModal}>
               {t('pages.initiativeDetail.accordion.buttons.delete')}
             </Button>
+            <DeleteInitiativeModal
+              openInitiativeDeleteModal={openInitiativeDeleteModal}
+              handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
+            />
           </Box>
         )}
         {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
