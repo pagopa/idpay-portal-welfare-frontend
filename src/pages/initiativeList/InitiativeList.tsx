@@ -34,6 +34,8 @@ import { resetInitiative } from '../../redux/slices/initiativeSlice';
 import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
 import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { useIDPayUser } from '../../hooks/useIDPayUser';
+import { IDPayUser } from '../../model/IDPayUser';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -114,8 +116,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 type ActionsMenuProps = {
   id: string;
   status: string;
+  user: IDPayUser;
 };
-const ActionMenu = ({ id, status }: ActionsMenuProps) => {
+const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
@@ -129,9 +132,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   type RenderActionProps = {
     id: string;
     status: string;
+    user: IDPayUser;
   };
 
-  const RenderDetail = ({ id, status }: RenderActionProps) => {
+  const RenderDetail = ({ id, status, user }: RenderActionProps) => {
     const history = useHistory();
     const handleViewInitiativeDetail = (id: string) => {
       history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
@@ -143,7 +147,9 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
       case 'APPROVED':
         return (
           <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
-            {t('pages.initiativeList.actions.details')}
+            {status === 'IN_REVISION' && user.org_role === 'ope_base'
+              ? t('pages.initiativeList.actions.check')
+              : t('pages.initiativeList.actions.details')}
           </MenuItem>
         );
       case 'DRAFT':
@@ -228,10 +234,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           'aria-labelledby': `actions_button-${id}`,
         }}
       >
-        <RenderDetail id={id} status={status} />
-        <RenderSuspend id={id} status={status} />
-        <RenderUpdate id={id} status={status} />
-        <RenderDelete id={id} status={status} />
+        <RenderDetail id={id} status={status} user={user} />
+        <RenderSuspend id={id} status={status} user={user} />
+        <RenderUpdate id={id} status={status} user={user} />
+        <RenderDelete id={id} status={status} user={user} />
       </Menu>
     </TableCell>
   );
@@ -332,6 +338,8 @@ const InitiativeList = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const user = useIDPayUser();
+
   return (
     <Box sx={{ width: '100%', px: 2 }}>
       <TitleBox
@@ -409,7 +417,7 @@ const InitiativeList = () => {
                         <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-                        <ActionMenu id={row.initiativeId} status={row.status} />
+                        <ActionMenu id={row.initiativeId} status={row.status} user={user} />
                       </TableRow>
                     );
                   }

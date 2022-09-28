@@ -76,6 +76,7 @@ export default {
         delete: 'Elimina',
         details: 'Dettagli',
         suspend: 'Sospendi',
+        check: 'Controlla',
       },
     },
     initiativeOverview: {

@@ -1,40 +1,20 @@
-import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Chip, Divider, Typography } from '@mui/material';
-// import StatusChip from '../../../../components/StatusChip/StatusChip';
 import { Initiative } from '../../../../model/Initiative';
-import { getGroupOfBeneficiaryStatusAndDetail } from '../../../../services/groupsService';
 
 type Props = {
   initiativeDetail: Initiative;
+  fileProcessingOutcomeStatus: string | undefined;
 };
 
-const BeneficiaryListContentBody = ({ initiativeDetail }: Props) => {
+const BeneficiaryListContentBody = ({ initiativeDetail, fileProcessingOutcomeStatus }: Props) => {
   const { t } = useTranslation();
-  const [fileProcessingOutcomeStatus, setFileProcessingOutcomeStatus] = useState<
-    string | undefined
-  >(undefined);
 
   const printBeneficiaryNumberAsString = (totalBudget: string, budgetPerPerson: string): string => {
     const totalBudgetInt = parseInt(totalBudget, 10);
     const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
     return Math.floor(totalBudgetInt / budgetPerPersonInt).toString();
   };
-
-  useEffect(() => {
-    if (
-      initiativeDetail.generalInfo.beneficiaryKnown === 'true' &&
-      typeof initiativeDetail.initiativeId === 'string'
-    ) {
-      getGroupOfBeneficiaryStatusAndDetail(initiativeDetail.initiativeId)
-        .then((res) => {
-          setFileProcessingOutcomeStatus(res.status);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  }, [initiativeDetail.generalInfo.beneficiaryKnown, initiativeDetail.initiativeId]);
 
   return (
     <Box

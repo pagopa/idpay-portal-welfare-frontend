@@ -25,6 +25,7 @@ import {
   updateInitiativeToCheckStatus,
 } from '../../services/intitativeService';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 import SummaryContentBody from './components/Summary/SummaryContentBody';
 import AdditionalInfoContentBody from './components/StepOne/AdditionalInfoContentBody';
 import GeneralInfoContentBody from './components/StepTwo/GeneralInfoContentBody';
@@ -64,9 +65,13 @@ const InitiativeDetail = () => {
   ]);
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [disabledButons, setDisabledButtons] = useState(true);
+  const [disabledApprove, setDisabledApprove] = useState(false);
   const [openInitiativeDeleteModal, setOpenInitiativeDeleteModal] = useState(false);
   const handleCloseInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(false);
   const handleOpenInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(true);
+  const [fileProcessingOutcomeStatus, setFileProcessingOutcomeStatus] = useState<
+    string | undefined
+  >(undefined);
 
   const user = useIDPayUser();
   const addError = useErrorDispatcher();
@@ -90,6 +95,22 @@ const InitiativeDetail = () => {
     );
     setDisabledButtons(!allTouched);
   }, [panelsExpanded]);
+
+  useEffect(() => {
+    if (
+      initiativeDetail.generalInfo.beneficiaryKnown === 'true' &&
+      typeof initiativeDetail.initiativeId === 'string'
+    ) {
+      getGroupOfBeneficiaryStatusAndDetail(initiativeDetail.initiativeId)
+        .then((res) => {
+          setFileProcessingOutcomeStatus(res.status);
+          setDisabledApprove(res.status !== 'OK');
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [initiativeDetail.generalInfo.beneficiaryKnown, initiativeDetail.initiativeId]);
 
   const accordionSx = {
     borderRadius: 4,
@@ -280,7 +301,10 @@ const InitiativeDetail = () => {
             </AccordionSummary>
             <AccordionDetails>
               {initiativeDetail.generalInfo.beneficiaryKnown === 'true' ? (
-                <BeneficiaryListContentBody initiativeDetail={initiativeDetail} />
+                <BeneficiaryListContentBody
+                  initiativeDetail={initiativeDetail}
+                  fileProcessingOutcomeStatus={fileProcessingOutcomeStatus}
+                />
               ) : (
                 <BeneficiaryRuleContentBody initiativeDetail={initiativeDetail} />
               )}
@@ -373,7 +397,7 @@ const InitiativeDetail = () => {
           <Box sx={{ gridArea: 'approve', justifySelf: 'end' }}>
             <Button
               variant="contained"
-              disabled={disabledButons}
+              disabled={disabledButons || disabledApprove}
               onClick={() => approveInitiative(initiativeDetail.initiativeId)}
             >
               {t('pages.initiativeDetail.accordion.buttons.approve')}
