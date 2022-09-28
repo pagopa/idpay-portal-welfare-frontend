@@ -274,6 +274,8 @@ export default {
           back: 'Indietro',
           reject: 'Rifiuta',
           approve: 'Approva',
+          edit: 'Modifica',
+          delete: 'Elimina',
         },
         modal: {
           title: 'Vuoi procedere?',

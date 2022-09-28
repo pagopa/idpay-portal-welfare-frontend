@@ -5,13 +5,13 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 
 type Props = {
-  openInitiativeOverviewDeleteModal: boolean;
-  handleCloseInitiativeOverviewDeleteModal: MouseEventHandler;
+  openInitiativeDeleteModal: boolean;
+  handleCloseInitiativeDeleteModal: MouseEventHandler;
 };
 
-const InitiativeOverviewDeleteModal = ({
-  openInitiativeOverviewDeleteModal,
-  handleCloseInitiativeOverviewDeleteModal,
+const DeleteInitiativeModal = ({
+  openInitiativeDeleteModal,
+  handleCloseInitiativeDeleteModal,
 }: Props) => {
   const { t } = useTranslation();
   const initiativeSel = useAppSelector(initiativeSelector);
@@ -22,16 +22,16 @@ const InitiativeOverviewDeleteModal = ({
 
   return (
     <Modal
-      aria-labelledby="initiative-overview-delete-modal-title"
-      aria-describedby="initiative-overview-delete-modal-description"
-      open={openInitiativeOverviewDeleteModal}
-      onClose={handleCloseInitiativeOverviewDeleteModal}
+      aria-labelledby="initiative-delete-modal-title"
+      aria-describedby="initiative-delete-modal-description"
+      open={openInitiativeDeleteModal}
+      onClose={handleCloseInitiativeDeleteModal}
       BackdropComponent={Backdrop}
       BackdropProps={{
         timeout: 500,
       }}
     >
-      <Fade in={openInitiativeOverviewDeleteModal}>
+      <Fade in={openInitiativeDeleteModal}>
         <Box
           sx={{
             position: 'absolute',
@@ -61,7 +61,7 @@ const InitiativeOverviewDeleteModal = ({
             <Button
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
-              onClick={handleCloseInitiativeOverviewDeleteModal}
+              onClick={handleCloseInitiativeDeleteModal}
             >
               {t('pages.initiativeOverview.modal.cancel')}
             </Button>
@@ -72,7 +72,7 @@ const InitiativeOverviewDeleteModal = ({
                 handleDelete(
                   typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
                 );
-                handleCloseInitiativeOverviewDeleteModal(e);
+                handleCloseInitiativeDeleteModal(e);
               }}
             >
               {t('pages.initiativeOverview.modal.delete')}
@@ -84,4 +84,4 @@ const InitiativeOverviewDeleteModal = ({
   );
 };
 
-export default InitiativeOverviewDeleteModal;
+export default DeleteInitiativeModal;
