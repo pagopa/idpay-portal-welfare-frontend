@@ -1,4 +1,14 @@
-import { Paper, Box, Typography, Button, Divider, Snackbar, IconButton, Chip } from '@mui/material';
+import {
+  Paper,
+  Box,
+  Typography,
+  Button,
+  Divider,
+  Snackbar,
+  IconButton,
+  Chip,
+  Breadcrumbs,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
@@ -10,6 +20,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 // import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -28,7 +39,7 @@ import InitiativeOverviewDeleteModal from './initiativeOverviewDeleteModal';
 
 const InitiativeOverview = () => {
   const { t } = useTranslation();
-  useInitiative();
+
   const initiativeSel = useAppSelector(initiativeSelector);
   // const initiativeId = useAppSelector(initiativeIdSelector);
   const history = useHistory();
@@ -38,11 +49,16 @@ const InitiativeOverview = () => {
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   // const location = useLocation();
 
+  useInitiative();
+
   const handleCloseSnackBar = () => setOpenSnackBar(false);
 
   const handleOpenSnackBar = () => setOpenSnackBar(true);
 
   useEffect(() => {
+    console.log('BENEFICIARY KNOWN ', initiativeSel.generalInfo.beneficiaryKnown);
+    console.log('INITIATIVE ID ', initiativeSel.initiativeId);
+
     if (initiativeSel.generalInfo.beneficiaryKnown === 'true' && initiativeSel.initiativeId) {
       getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
         .then((res) => {
@@ -56,7 +72,7 @@ const InitiativeOverview = () => {
     } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
       handleCloseSnackBar();
     }
-  }, [initiativeSel.generalInfo]);
+  }, [initiativeSel.initiativeId, JSON.stringify(initiativeSel.generalInfo)]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -616,6 +632,25 @@ const InitiativeOverview = () => {
             alignItems: 'center',
           }}
         >
+          <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
+            <Breadcrumbs aria-label="breadcrumb">
+              <ButtonNaked
+                component="button"
+                onClick={() => history.replace(ROUTES.HOME)}
+                startIcon={<ArrowBackIcon />}
+                sx={{ color: 'primary.main' }}
+                weight="default"
+              >
+                {t('breadcrumbs.exit')}
+              </ButtonNaked>
+              <Typography color="text.primary" variant="body2">
+                {t('breadcrumbs.initiatives')}
+              </Typography>
+              <Typography color="text.primary" variant="body2">
+                {initiativeSel.initiativeName}
+              </Typography>
+            </Breadcrumbs>
+          </Box>
           <Box sx={{ gridColumn: 'span 8' }}>
             <TitleBox
               title={
