@@ -97,7 +97,7 @@ export default {
       next: {
         title: 'What’s next?',
         stats: 'Statistiche',
-        lastUpdate: 'Ultimo aggiornamento:',
+        lastUpdate: 'Ultimo aggiornamento: {{lastUpdate}}',
         join: 'Hanno aderito',
         budgetExhausted: 'Budget speso',
         ViewUsers: 'Vedi utenti',
