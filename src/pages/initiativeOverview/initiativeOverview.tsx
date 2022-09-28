@@ -1,4 +1,14 @@
-import { Paper, Box, Typography, Button, Divider, Snackbar, IconButton, Chip } from '@mui/material';
+import {
+  Paper,
+  Box,
+  Typography,
+  Button,
+  Divider,
+  Snackbar,
+  IconButton,
+  Chip,
+  Breadcrumbs,
+} from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
@@ -10,53 +20,113 @@ import CloseIcon from '@mui/icons-material/Close';
 import SyncIcon from '@mui/icons-material/Sync';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-// import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+// import EuroIcon from '@mui/icons-material/Euro';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import MuiAlert from '@mui/material/Alert';
+import { matchPath } from 'react-router';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import { BASE_ROUTE } from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
-import { initiativeIdSelector } from '../../redux/slices/initiativeSlice';
-import InitiativeOverviewDeleteModal from './initiativeOverviewDeleteModal';
+import { updateInitiativePublishedStatus } from '../../services/intitativeService';
+import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+
+interface MatchParams {
+  id: string;
+}
 
 const InitiativeOverview = () => {
   const { t } = useTranslation();
-  useInitiative();
+
   const initiativeSel = useAppSelector(initiativeSelector);
-  const initiativeId = useAppSelector(initiativeIdSelector);
   const history = useHistory();
   const [openInitiativeOverviewDeleteModal, setOpenInitiativeOverviewDeleteModal] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(true);
   const [statusFile, setStatusFile] = useState('');
+  const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const addError = useErrorDispatcher();
+
+  const match = matchPath(location.pathname, {
+    path: [ROUTES.INITIATIVE_OVERVIEW],
+    exact: true,
+    strict: false,
+  });
+
+  useInitiative();
+
+  const handleCloseSnackBar = () => setOpenSnackBar(false);
+
+  const handleOpenSnackBar = () => setOpenSnackBar(true);
 
   useEffect(() => {
-    if (initiativeSel.generalInfo.beneficiaryKnown === 'true' && initiativeId) {
-      getGroupOfBeneficiaryStatusAndDetail(initiativeId)
-        .then((res) => {
-          const statusFileRes = res.status || '';
-          setStatusFile(statusFileRes);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    // eslint-disable-next-line no-prototype-builtins
+    if (match !== null && match.params.hasOwnProperty('id')) {
+      const { id } = match.params as MatchParams;
+      if (
+        initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
+        initiativeSel.initiativeId === id
+      ) {
+        getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
+          .then((res) => {
+            const statusFileRes = res.status || '';
+            setStatusFile(statusFileRes);
+            handleOpenSnackBar();
+          })
+          .catch((error) => {
+            addError({
+              id: 'GET_UPLOADED_FILE_DATA_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred getting groups file info',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getFileDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+      } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
+        handleCloseSnackBar();
+      }
     }
-  }, []);
+  }, [
+    JSON.stringify(match),
+    initiativeSel.initiativeId,
+    JSON.stringify(initiativeSel.generalInfo),
+  ]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [initiativeSel.initiativeId]);
+
+  const publishInitiative = (id: string | undefined) => {
+    if (initiativeSel.status === 'APPROVED' && typeof id === 'string') {
+      updateInitiativePublishedStatus(id)
+        .then((_res) => history.replace(ROUTES.HOME))
+        .catch((error) => ({
+          id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred publishing initiative',
+          displayableDescription: t('errors.cantPublishInitiative'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        }));
+    }
+  };
 
   const handleCloseInitiativeOverviewDeleteModal = () =>
     setOpenInitiativeOverviewDeleteModal(false);
 
   const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
-
-  const handleCloseSnackBar = () => setOpenSnackBar(false);
 
   const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
     const totalBudgetInt = parseInt(totalBudget, 10);
@@ -95,7 +165,7 @@ const InitiativeOverview = () => {
       case 'APPROVED':
         return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
       case 'CLOSED':
         return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
@@ -105,6 +175,7 @@ const InitiativeOverview = () => {
     }
   };
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderConditionalInfoStatus = (status: string) => {
     switch (status) {
       case 'DRAFT':
@@ -172,6 +243,25 @@ const InitiativeOverview = () => {
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
             </Box>
+            <Box sx={{ gridColumn: 'span 3' }}>
+              <ButtonNaked
+                size="small"
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleViewDetails(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+                target="_blank"
+                startIcon={<AssignmentIcon />}
+                sx={{ color: 'primary.main', padding: 0 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-datails-test"
+              >
+                {t('pages.initiativeOverview.info.otherinfo.details')}
+              </ButtonNaked>
+            </Box>
           </Box>
         );
       case 'PUBLISHED':
@@ -217,6 +307,25 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.info.otherinfo.start')}{' '}
               {typeof initiativeSel.generalInfo.startDate === 'object' &&
                 initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE')}
+            </Box>
+            <Box sx={{ gridColumn: 'span 3' }}>
+              <ButtonNaked
+                size="small"
+                // eslint-disable-next-line sonarjs/no-identical-functions
+                onClick={() =>
+                  handleViewDetails(
+                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
+                  )
+                }
+                target="_blank"
+                startIcon={<AssignmentIcon />}
+                sx={{ color: 'primary.main', padding: 0 }}
+                weight="default"
+                variant="contained"
+                data-testid="view-datails-test"
+              >
+                {t('pages.initiativeOverview.info.otherinfo.details')}
+              </ButtonNaked>
             </Box>
           </Box>
         );
@@ -293,19 +402,36 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.next.status.subtitleApproved')}
             </Box>
             <Box sx={{ gridColumn: 'span 8' }}>
-              <Button variant="contained" startIcon={<PublishIcon />}>
+              <Button
+                variant="contained"
+                startIcon={<PublishIcon />}
+                onClick={() => setPublishModalOpen(true)}
+              >
                 {t('pages.initiativeOverview.next.status.approved')}
               </Button>
             </Box>
+            <ConfirmPublishInitiativeModal
+              publishModalOpen={publishModalOpen}
+              setPublishModalOpen={setPublishModalOpen}
+              id={initiativeSel.initiativeId}
+              handlePusblishInitiative={publishInitiative}
+            />
           </>
         );
       case 'PUBLISHED':
         // return (
         //   <>
-        //     <Box sx={{ gridColumn: 'span 8', color: '#5C6F82' }}>
-        //       {t('pages.initiativeOverview.next.lastUpdate')}
+        //     <Box sx={{ gridColumn: 'span 10', color: '#5C6F82' }}>
+        //       {t('pages.initiativeOverview.next.lastUpdate', {
+        //         lastUpdate: initiativeSel.updateDate
+        //           ? typeof initiativeSel.updateDate === 'object' &&
+        //             initiativeSel.updateDate.toLocaleString('fr-BE')
+        //           : '-',
+        //       })}
         //     </Box>
-        //     <Box sx={{ gridColumn: 'span 2' }}>{t('pages.initiativeOverview.next.join')}</Box>
+        //     <Box sx={{ gridColumn: 'span 2', lineHeight: 2 }}>
+        //       {t('pages.initiativeOverview.next.join')}
+        //     </Box>
         //     <Box
         //       sx={{
         //         gridColumn: 'span 1',
@@ -316,30 +442,31 @@ const InitiativeOverview = () => {
         //     >
         //       /
         //     </Box>
-        //     <Box sx={{ gridColumn: 'span 5', fontWeight: '600' }}>
-        //       {peopleReached(
-        //         initiativeSel.generalInfo.budget,
-        //         initiativeSel.generalInfo.beneficiaryBudget
-        //       )}
+        //     <Box sx={{ gridColumn: 'span 7' }}>
+        //       <Typography sx={{ fontWeight: '600', lineHeight: 2 }}>
+        //         {peopleReached(
+        //           initiativeSel.generalInfo.budget,
+        //           initiativeSel.generalInfo.beneficiaryBudget
+        //         )}
+        //       </Typography>
         //     </Box>
-        //     <Box sx={{ gridColumn: 'span 2' }}>
+        //     <Box sx={{ gridColumn: 'span 2', lineHeight: 2 }}>
         //       {t('pages.initiativeOverview.next.budgetExhausted')}
         //     </Box>
         //     <Box
         //       sx={{
-        //         gridColumn: 'span 1',
+        //         gridColumn: 'span 2',
         //       }}
         //     >
-        //       <Typography sx={{ fontWeight: 600, fontSize: '24px' }}>
-        //         /
-        //         <EuroSymbolIcon fontSize="small" />
+        //       <Typography sx={{ fontWeight: 600, fontSize: '24px', textAlign: 'center' }}>
+        //         123
+        //         <EuroIcon fontSize="small" />
         //       </Typography>
         //     </Box>
-        //     <Box sx={{ gridColumn: 'span 5' }}>
-        //       <Typography sx={{ fontWeight: 600 }}>
-        //         {initiativeSel.generalInfo.budget}
-
-        //         <EuroSymbolIcon fontSize="small" />
+        //     <Box sx={{ gridColumn: 'span 6' }}>
+        //       <Typography sx={{ fontWeight: 600, lineHeight: 2, textAlign: 'start' }}>
+        //         / {initiativeSel.generalInfo.budget}
+        //         <EuroIcon fontSize="small" />
         //       </Typography>
         //     </Box>
         //   </>
@@ -356,47 +483,55 @@ const InitiativeOverview = () => {
   const renderConditionalActionsStatus = (status: string) => {
     switch (status) {
       case 'TO_CHECK':
+        return (
+          <>
+            <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+              <DeleteInitiativeModal
+                openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+              />
+              <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+                <ButtonNaked
+                  size="small"
+                  onClick={handleOpenInitiativeOverviewDeleteModal}
+                  target="_blank"
+                  startIcon={<DeleteOutlineIcon color="error" />}
+                  sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
+                  weight="default"
+                  variant="contained"
+                  data-testid="view-delete-test"
+                >
+                  {t('pages.initiativeList.actions.delete')}
+                </ButtonNaked>
+              </Box>
+            </Box>
+          </>
+        );
       case 'APPROVED':
+        return;
+      // eslint-disable-next-line sonarjs/no-duplicated-branches
       case 'DRAFT':
         return (
           <>
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
-              <ButtonNaked
-                size="small"
-                target="_blank"
-                startIcon={<EditIcon />}
-                sx={{ color: 'primary.main', padding: 0, fontWeight: 700 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-custom-test"
-                // eslint-disable-next-line sonarjs/no-identical-functions
-                onClick={() =>
-                  handleUpdateInitiative(
-                    typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
-                  )
-                }
-              >
-                {t('pages.initiativeList.actions.update')}
-              </ButtonNaked>
-            </Box>
-
-            <InitiativeOverviewDeleteModal
-              openInitiativeOverviewDeleteModal={openInitiativeOverviewDeleteModal}
-              handleCloseInitiativeOverviewDeleteModal={handleCloseInitiativeOverviewDeleteModal}
-            />
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
-              <ButtonNaked
-                size="small"
-                onClick={handleOpenInitiativeOverviewDeleteModal}
-                target="_blank"
-                startIcon={<DeleteOutlineIcon color="error" />}
-                sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-delete-test"
-              >
-                {t('pages.initiativeList.actions.delete')}
-              </ButtonNaked>
+            <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+              <DeleteInitiativeModal
+                openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+              />
+              <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+                <ButtonNaked
+                  size="small"
+                  onClick={handleOpenInitiativeOverviewDeleteModal}
+                  target="_blank"
+                  startIcon={<DeleteOutlineIcon color="error" />}
+                  sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
+                  weight="default"
+                  variant="contained"
+                  data-testid="view-delete-test"
+                >
+                  {t('pages.initiativeList.actions.delete')}
+                </ButtonNaked>
+              </Box>
             </Box>
           </>
         );
@@ -469,12 +604,20 @@ const InitiativeOverview = () => {
                 </>
               }
             >
-              {t('pages.initiativeOverview.snackBar.approved')}{' '}
-              {peopleReached(
-                initiativeSel.generalInfo.budget,
-                initiativeSel.generalInfo.beneficiaryBudget
-              )}{' '}
-              {t('pages.initiativeOverview.snackBar.recipients')}
+              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}>
+                <Typography sx={{ gridColumn: 'span 5' }}>
+                  {t('pages.initiativeOverview.snackBar.approved')}{' '}
+                </Typography>
+                <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
+                  {peopleReached(
+                    initiativeSel.generalInfo.budget,
+                    initiativeSel.generalInfo.beneficiaryBudget
+                  )}
+                </Typography>
+                <Typography sx={{ gridColumn: 'span 5' }}>
+                  {t('pages.initiativeOverview.snackBar.recipients')}
+                </Typography>
+              </Box>
             </MuiAlert>
           </Snackbar>
         );
@@ -541,6 +684,25 @@ const InitiativeOverview = () => {
             alignItems: 'center',
           }}
         >
+          <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
+            <Breadcrumbs aria-label="breadcrumb">
+              <ButtonNaked
+                component="button"
+                onClick={() => history.replace(ROUTES.HOME)}
+                startIcon={<ArrowBackIcon />}
+                sx={{ color: 'primary.main' }}
+                weight="default"
+              >
+                {t('breadcrumbs.exit')}
+              </ButtonNaked>
+              <Typography color="text.primary" variant="body2">
+                {t('breadcrumbs.initiatives')}
+              </Typography>
+              <Typography color="text.primary" variant="body2">
+                {initiativeSel.initiativeName}
+              </Typography>
+            </Breadcrumbs>
+          </Box>
           <Box sx={{ gridColumn: 'span 8' }}>
             <TitleBox
               title={
@@ -619,12 +781,12 @@ const InitiativeOverview = () => {
               gridTemplateRows: 'auto',
               gridColumn: 'span 1',
               display: 'grid',
-              gridTemplateColumns: 'repeat(8, 1fr)',
+              gridTemplateColumns: 'repeat(10, 1fr)',
               alignContent: 'start',
               rowGap: 3,
             }}
           >
-            <Box sx={{ pt: 3, gridColumn: 'span 8' }}>
+            <Box sx={{ pt: 3, gridColumn: 'span 10' }}>
               {initiativeSel.status === 'PUBLISHED' ? (
                 <Typography variant="h6">{t('pages.initiativeOverview.next.stats')}</Typography>
               ) : (

@@ -159,11 +159,22 @@ export const updateInitialAutomatedCriteriaOnSelector = (
 export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria: Array<any>) => {
   const criteriaToSave: Array<AutomatedCriteriaItem> = [];
   automatedCriteria.forEach((c) => {
-    if (c.checked === true) {
+    if (c.checked === true && c.code !== 'ISEE') {
       const criteria = {
         authority: c.authority,
         code: c.code,
         field: c.field,
+        operator: c.operator,
+        value: c.value,
+        value2: c.value2,
+      };
+      // eslint-disable-next-line functional/immutable-data
+      criteriaToSave.push({ ...criteria });
+    }
+    if (c.checked === true && c.code === 'ISEE') {
+      const criteria = {
+        authority: c.authority,
+        code: c.code,
         operator: c.operator,
         value: c.value,
         value2: c.value2,

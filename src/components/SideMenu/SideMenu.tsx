@@ -15,17 +15,30 @@ import GroupIcon from '@mui/icons-material/Group';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { useEffect, useState } from 'react';
-
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { matchPath } from 'react-router';
+import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useAppSelector } from '../../redux/hooks';
-import { initiativeSummarySelector } from '../../redux/slices/initiativeSummarySlice';
+import {
+  initiativeSummarySelector,
+  setInitiativeSummaryList,
+} from '../../redux/slices/initiativeSummarySlice';
+import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { getInitativeSummary } from '../../services/intitativeService';
 import SidenavItem from './SidenavItem';
+
+interface MatchParams {
+  id: string;
+}
 
 /** The side menu of the application */
 export default function SideMenu() {
   const { t } = useTranslation();
   const history = useHistory();
   const onExit = useUnloadEventOnExit();
+  const dispatch = useAppDispatch();
+  const addError = useErrorDispatcher();
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
   const [pathname, setPathName] = useState(() => {
@@ -38,16 +51,52 @@ export default function SideMenu() {
     return history.location.pathname;
   });
 
+  const match = matchPath(location.pathname, {
+    path: [ROUTES.INITIATIVE_OVERVIEW],
+    exact: true,
+    strict: false,
+  });
+
+  useEffect(() => {
+    if (!initiativeSummaryList) {
+      getInitativeSummary()
+        .then((response: InitiativeSummaryArrayDTO) => response)
+        .then((responseT) => {
+          dispatch(setInitiativeSummaryList(responseT));
+        })
+        .catch((error: any) => {
+          addError({
+            id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting initiative summary list',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  }, []);
+
+  useEffect(() => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (match !== null && match.params.hasOwnProperty('id')) {
+      const { id } = match.params as MatchParams;
+      const itemExpanded = `panel-${id}`;
+      setExpanded(itemExpanded);
+    } else {
+      const firstItemExpanded = Array.isArray(initiativeSummaryList)
+        ? `panel-${initiativeSummaryList[0].initiativeId}`
+        : false;
+      setExpanded(firstItemExpanded);
+    }
+  }, [JSON.stringify(match), initiativeSummaryList]);
+
   const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
   };
-
-  useEffect(() => {
-    const firstItemExpanded = Array.isArray(initiativeSummaryList)
-      ? `panel-${initiativeSummaryList[0].initiativeId}`
-      : false;
-    setExpanded(firstItemExpanded);
-  }, [initiativeSummaryList]);
 
   return (
     <Box display="grid" mt={1}>
@@ -82,7 +131,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeOveview.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={
@@ -95,7 +144,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
@@ -106,7 +155,7 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
                       onExit(() =>
-                        history.push(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
+                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
                       )
                     }
                     isSelected={

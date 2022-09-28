@@ -33,6 +33,7 @@ import {
 import {
   initiativeIdSelector,
   additionalInfoSelector,
+  initiativeStatusSelector,
   setInitiativeId,
   setAdditionalInfo,
 } from '../../../../redux/slices/initiativeSlice';
@@ -47,6 +48,7 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
+  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
 const ServiceConfig = ({
@@ -55,10 +57,12 @@ const ServiceConfig = ({
   currentStep,
   setCurrentStep,
   setDisabledNext,
+  setDraftEnabled,
 }: Props) => {
   const { t } = useTranslation();
   const initiativeId = useAppSelector(initiativeIdSelector);
   const additionalInfo = useAppSelector(additionalInfoSelector);
+  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const [openInitiativeNotOnIOModal, setOpenInitiativeNotOnIOModal] = useState(false);
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
@@ -70,6 +74,10 @@ const ServiceConfig = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    setDraftEnabled(initiativeStatus !== 'APPROVED');
+  }, [initiativeStatus]);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -136,7 +144,7 @@ const ServiceConfig = ({
       assistanceChannels: [...additionalInfo.assistanceChannels],
     },
     validationSchema,
-    validateOnMount: true,
+    // validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -524,86 +532,99 @@ const ServiceConfig = ({
             mt: 3,
           }}
         >
-          {formik.values.assistanceChannels.map((_o, i) => {
-            const channelErrors =
-              (formik.errors.assistanceChannels?.length && formik.errors.assistanceChannels[i]) ||
-              {};
-            const channelTouched =
-              (formik.touched.assistanceChannels?.length && formik.touched.assistanceChannels[i]) ||
-              {};
+          {
+            // eslint-disable-next-line sonarjs/cognitive-complexity
+            formik.values.assistanceChannels.map((_o, i) => {
+              const channelErrors =
+                (formik.errors.assistanceChannels?.length && formik.errors.assistanceChannels[i]) ||
+                {};
+              const channelTouched =
+                (formik.touched.assistanceChannels?.length &&
+                  formik.touched.assistanceChannels[i]) ||
+                {};
 
-            const typeError = typeof channelErrors === 'string' ? '' : channelErrors.type;
-            const typeTouched = channelTouched.type;
-            const contactError = typeof channelErrors === 'string' ? '' : channelErrors.contact;
-            const contactTouched = channelTouched.contact;
-            return (
-              <Box
-                key={i}
-                sx={{
-                  gridColumn: 'span 24',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(24, 1fr)',
-                  mb: 2,
-                  gap: 2,
-                }}
-              >
-                {i !== 0 && (
-                  <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
-                    <RemoveCircleOutlineIcon
-                      color="error"
-                      sx={{
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => deleteAssistanceChannel(i, formik.values, formik.setValues)}
-                      id={`remove_assistanceChannel_${i}`}
-                    />
-                  </Box>
-                )}
-                <FormControl
-                  sx={{ gridColumn: 'span 5' }}
-                  error={typeTouched && Boolean(typeError)}
-                  size="small"
+              const typeError = typeof channelErrors === 'string' ? '' : channelErrors.type;
+              const typeTouched = channelTouched.type;
+              const contactError = typeof channelErrors === 'string' ? '' : channelErrors.contact;
+              const contactTouched = channelTouched.contact;
+              return (
+                <Box
+                  key={i}
+                  sx={{
+                    gridColumn: 'span 24',
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(24, 1fr)',
+                    mb: 2,
+                    gap: 2,
+                  }}
                 >
-                  <InputLabel id={`assistanceChannels[${i}].type_label`}>
-                    {t('components.wizard.stepOne.form.channelType')}
-                  </InputLabel>
-                  <Select
-                    id={`assistanceChannels${i}_type`}
-                    labelId={`assistanceChannels[${i}].type_label`}
-                    name={`assistanceChannels[${i}].type`}
-                    label={t('components.wizard.stepOne.form.channelType')}
-                    value={formik.values.assistanceChannels[i].type}
-                    onChange={(e) => handleContactSelect(e, formik.setValues, i, formik.values)}
+                  {i !== 0 && (
+                    <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
+                      <RemoveCircleOutlineIcon
+                        color="error"
+                        sx={{
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => deleteAssistanceChannel(i, formik.values, formik.setValues)}
+                        id={`remove_assistanceChannel_${i}`}
+                      />
+                    </Box>
+                  )}
+                  <FormControl
+                    sx={{ gridColumn: 'span 7' }}
                     error={typeTouched && Boolean(typeError)}
-                  >
-                    {contacts.map(({ name, value }, id) => (
-                      <MenuItem key={id} value={value}>
-                        {name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                  <FormHelperText>{typeTouched && typeError}</FormHelperText>
-                </FormControl>
-                <FormControl sx={{ gridColumn: 'span 10' }}>
-                  <TextField
-                    id={`assistanceChannels_${i}_contact`}
-                    name={`assistanceChannels[${i}].contact`}
-                    variant="outlined"
-                    label={t('components.wizard.stepOne.form.indicateChannel')}
-                    sx={{ gridColumn: 'span 10', gridArea: 'Channel' }}
-                    placeholder={t('components.wizard.stepOne.form.indicateChannel')}
-                    value={formik.values.assistanceChannels[i].contact}
-                    onChange={(e) => handleTypeChange(e, i, formik.values, formik.setValues)}
-                    error={contactTouched && Boolean(contactError)}
-                    helperText={contactTouched && contactError}
-                    required
-                    InputLabelProps={{ required: false }}
                     size="small"
-                  />
-                </FormControl>
-              </Box>
-            );
-          })}
+                  >
+                    <InputLabel id={`assistanceChannels[${i}].type_label`}>
+                      {t('components.wizard.stepOne.form.channelType')}
+                    </InputLabel>
+                    <Select
+                      id={`assistanceChannels${i}_type`}
+                      labelId={`assistanceChannels[${i}].type_label`}
+                      name={`assistanceChannels[${i}].type`}
+                      label={t('components.wizard.stepOne.form.channelType')}
+                      value={formik.values.assistanceChannels[i].type}
+                      onChange={(e) => handleContactSelect(e, formik.setValues, i, formik.values)}
+                      error={typeTouched && Boolean(typeError)}
+                    >
+                      {contacts.map(({ name, value }, id) => (
+                        <MenuItem key={id} value={value}>
+                          {name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>{typeTouched && typeError}</FormHelperText>
+                  </FormControl>
+                  <FormControl
+                    sx={{
+                      gridColumn:
+                        formik.values.assistanceChannels[i].type === 'web' && i !== 0
+                          ? 'span 16'
+                          : formik.values.assistanceChannels[i].type === 'web' && i === 0
+                          ? 'span 17'
+                          : 'span 10',
+                    }}
+                  >
+                    <TextField
+                      id={`assistanceChannels_${i}_contact`}
+                      name={`assistanceChannels[${i}].contact`}
+                      variant="outlined"
+                      label={t('components.wizard.stepOne.form.indicateChannel')}
+                      sx={{ gridColumn: 'span 10', gridArea: 'Channel' }}
+                      placeholder={t('components.wizard.stepOne.form.indicateChannel')}
+                      value={formik.values.assistanceChannels[i].contact}
+                      onChange={(e) => handleTypeChange(e, i, formik.values, formik.setValues)}
+                      error={contactTouched && Boolean(contactError)}
+                      helperText={contactTouched && contactError}
+                      required
+                      InputLabelProps={{ required: false }}
+                      size="small"
+                    />
+                  </FormControl>
+                </Box>
+              );
+            })
+          }
         </Box>
         <Box sx={{ gridColumn: 'span 24' }}>
           <ButtonNaked

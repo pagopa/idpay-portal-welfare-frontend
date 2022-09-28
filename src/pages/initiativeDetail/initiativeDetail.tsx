@@ -11,13 +11,20 @@ import {
 import { ButtonNaked } from '@pagopa/mui-italia';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
-import { SyntheticEvent, useState } from 'react';
+import { SyntheticEvent, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useHistory } from 'react-router-dom';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
+import { useIDPayUser } from '../../hooks/useIDPayUser';
+import {
+  updateInitiativeApprovedStatus,
+  updateInitiativeToCheckStatus,
+} from '../../services/intitativeService';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import SummaryContentBody from './components/Summary/SummaryContentBody';
 import AdditionalInfoContentBody from './components/StepOne/AdditionalInfoContentBody';
 import GeneralInfoContentBody from './components/StepTwo/GeneralInfoContentBody';
@@ -25,6 +32,7 @@ import BeneficiaryListContentBody from './components/StepThree/BeneficiaryListCo
 import BeneficiaryRuleContentBody from './components/StepThree/BeneficiaryRuleContentBody';
 import ShopRuleContentBody from './components/StepFour/ShopRuleContentBody';
 import RefundRuleContentBody from './components/StepFive/RefundRuleContentBody';
+import ConfirmRejectInitiativeModal from './components/ConfirmRejectInitiativeModal/ConfirmRejectInitiativeModal';
 
 const InitiativeDetail = () => {
   const { t } = useTranslation();
@@ -32,10 +40,56 @@ const InitiativeDetail = () => {
   useInitiative();
   const initiativeDetail = useAppSelector(initiativeSelector);
   const [expanded, setExpanded] = useState<string | boolean>(false);
+  const [panelsExpanded, setPanelsExpanded] = useState<Array<{ name: string; expanded: boolean }>>([
+    {
+      name: 'panel1',
+      expanded: false,
+    },
+    {
+      name: 'panel2',
+      expanded: false,
+    },
+    {
+      name: 'panel3',
+      expanded: false,
+    },
+    {
+      name: 'panel4',
+      expanded: false,
+    },
+    {
+      name: 'panel5',
+      expanded: false,
+    },
+  ]);
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [disabledButons, setDisabledButtons] = useState(true);
+  const [openInitiativeDeleteModal, setOpenInitiativeDeleteModal] = useState(false);
+  const handleCloseInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(false);
+  const handleOpenInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(true);
+
+  const user = useIDPayUser();
+  const addError = useErrorDispatcher();
 
   const handleChange = (panel: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
+    const newPanelsExpanded = panelsExpanded.map((t) => {
+      if (t.name === panel) {
+        return { ...t, expanded: true };
+      } else {
+        return { ...t };
+      }
+    });
+    setPanelsExpanded([...newPanelsExpanded]);
   };
+
+  useEffect(() => {
+    const boolValues = panelsExpanded.map((p) => p.expanded);
+    const allTouched = boolValues.reduce(
+      (previousValue, currentValue) => previousValue && currentValue
+    );
+    setDisabledButtons(!allTouched);
+  }, [panelsExpanded]);
 
   const accordionSx = {
     borderRadius: 4,
@@ -55,13 +109,51 @@ const InitiativeDetail = () => {
       case 'APPROVED':
         return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
       case 'CLOSED':
         return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
         return <Chip label={t('pages.initiativeList.status.suspended')} color="error" />;
       default:
         return null;
+    }
+  };
+
+  const approveInitiative = (initiativeId: string | undefined) => {
+    if (typeof initiativeId === 'string') {
+      updateInitiativeApprovedStatus(initiativeId)
+        .then((_res) => history.replace(ROUTES.HOME))
+        .catch((error) => {
+          addError({
+            id: 'UPDATE_INITIATIVE_TO_APPROVED_STATUS_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred approving initiative',
+            displayableDescription: t('errors.cantApproveInitiative'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  };
+
+  const rejectInitiative = (initiativeId: string | undefined) => {
+    if (typeof initiativeId === 'string') {
+      updateInitiativeToCheckStatus(initiativeId)
+        .then((_res) => history.replace(ROUTES.HOME))
+        .catch((error) => {
+          addError({
+            id: 'UPDATE_INITIATIVE_TO_REJECTED_STATUS_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred rejecting initiative',
+            displayableDescription: t('errors.cantRejectInitiative'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
   };
 
@@ -242,12 +334,76 @@ const InitiativeDetail = () => {
           </Accordion>
         </Box>
       </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 2, mt: 2 }}>
-        <Box sx={{ gridColumn: 'span 1' }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gridColumn: 'span 12',
+          gap: 2,
+          mt: 2,
+          gridTemplateRows: 'auto',
+          gridTemplateAreas: `"back . . . reject approve"`,
+        }}
+      >
+        <Box sx={{ gridArea: 'back' }}>
           <Button variant="outlined" onClick={() => history.replace(ROUTES.HOME)}>
-            {t('components.wizard.common.buttons.back')}
+            {t('pages.initiativeDetail.accordion.buttons.back')}
           </Button>
         </Box>
+
+        {user.org_role === 'ope_base' && initiativeDetail.status === 'IN_REVISION' && (
+          <Box sx={{ gridArea: 'reject', justifySelf: 'end' }}>
+            <Button
+              variant="outlined"
+              color="error"
+              disabled={disabledButons}
+              onClick={() => setRejectModalOpen(true)}
+            >
+              {t('pages.initiativeDetail.accordion.buttons.reject')}
+            </Button>
+            <ConfirmRejectInitiativeModal
+              rejectModalOpen={rejectModalOpen}
+              setRejectModalOpen={setRejectModalOpen}
+              initiativeId={initiativeDetail.initiativeId}
+              handleRejectInitiative={rejectInitiative}
+            />
+          </Box>
+        )}
+        {user.org_role === 'ope_base' && initiativeDetail.status === 'IN_REVISION' && (
+          <Box sx={{ gridArea: 'approve', justifySelf: 'end' }}>
+            <Button
+              variant="contained"
+              disabled={disabledButons}
+              onClick={() => approveInitiative(initiativeDetail.initiativeId)}
+            >
+              {t('pages.initiativeDetail.accordion.buttons.approve')}
+            </Button>
+          </Box>
+        )}
+
+        {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
+          <Box sx={{ gridArea: 'reject', justifySelf: 'end' }}>
+            <Button variant="outlined" color="error" onClick={handleOpenInitiativeDeleteModal}>
+              {t('pages.initiativeDetail.accordion.buttons.delete')}
+            </Button>
+            <DeleteInitiativeModal
+              openInitiativeDeleteModal={openInitiativeDeleteModal}
+              handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
+            />
+          </Box>
+        )}
+        {user.org_role !== 'ope_base' && initiativeDetail.status === 'APPROVED' && (
+          <Box sx={{ gridArea: 'approve', justifySelf: 'end' }}>
+            <Button
+              variant="contained"
+              onClick={() =>
+                history.replace(`${BASE_ROUTE}/iniziativa/${initiativeDetail.initiativeId}`)
+              }
+            >
+              {t('pages.initiativeDetail.accordion.buttons.edit')}
+            </Button>
+          </Box>
+        )}
       </Box>
     </Box>
   );

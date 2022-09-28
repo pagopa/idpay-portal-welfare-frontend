@@ -27,14 +27,12 @@ import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 // import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
-
 import { resetInitiative } from '../../redux/slices/initiativeSlice';
 import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
-
 import { useAppDispatch } from '../../redux/hooks';
-
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
@@ -133,39 +131,48 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
     status: string;
   };
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  const RenderAction = ({ id, status }: RenderActionProps) => {
+  const RenderDetail = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const handleUpdateInitiative = (id: string) => {
-      history.push(`${BASE_ROUTE}/iniziativa/${id}`);
-    };
-
     const handleViewInitiativeDetail = (id: string) => {
       history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
     };
 
     switch (status) {
+      case 'IN_REVISION':
+      case 'PUBLISHED':
+      case 'APPROVED':
+        return (
+          <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
+            {t('pages.initiativeList.actions.details')}
+          </MenuItem>
+        );
+      case 'DRAFT':
+      case 'TO_CHECK':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const RenderUpdate = ({ id, status }: RenderActionProps) => {
+    const history = useHistory();
+    const handleUpdateInitiative = (id: string) => {
+      history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+    };
+    switch (status) {
       case 'DRAFT':
       case 'APPROVED':
+      case 'TO_CHECK':
         return (
           <MenuItem onClick={() => handleUpdateInitiative(id)}>
             {t('pages.initiativeList.actions.update')}
           </MenuItem>
         );
       case 'IN_REVISION':
-        return (
-          <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
-            {t('pages.initiativeList.actions.details')}
-          </MenuItem>
-        );
-      case 'TO_CHECK':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'PUBLISHED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'CLOSED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'SUSPENDED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       default:
         return null;
     }
@@ -174,9 +181,28 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   const RenderDelete = ({ status }: RenderActionProps) => {
     switch (status) {
       case 'DRAFT':
+      case 'TO_CHECK':
+      case 'APPROVED':
+        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>;
+      case 'IN_REVISION':
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const RenderSuspend = ({ status }: RenderActionProps) => {
+    switch (status) {
+      case 'PUBLISHED':
+        return <MenuItem>{t('pages.initiativeList.actions.suspend')}</MenuItem>;
+      case 'DRAFT':
       case 'APPROVED':
       case 'TO_CHECK':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>;
+      case 'IN_REVISION':
+      case 'CLOSED':
+      case 'SUSPENDED':
       default:
         return null;
     }
@@ -202,7 +228,9 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           'aria-labelledby': `actions_button-${id}`,
         }}
       >
-        <RenderAction id={id} status={status} />
+        <RenderDetail id={id} status={status} />
+        <RenderSuspend id={id} status={status} />
+        <RenderUpdate id={id} status={status} />
         <RenderDelete id={id} status={status} />
       </Menu>
     </TableCell>
@@ -285,7 +313,7 @@ const InitiativeList = () => {
       case 'APPROVED':
         return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
       case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="secondary" />;
+        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
       case 'CLOSED':
         return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
       case 'SUSPENDED':
@@ -365,9 +393,17 @@ const InitiativeList = () => {
                     return (
                       <TableRow tabIndex={-1} key={row.id} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
-                          <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
+                          <ButtonNaked
+                            component="button"
+                            sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1em' }}
+                            onClick={() =>
+                              history.replace(
+                                `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
+                              )
+                            }
+                          >
                             {row.initiativeName}
-                          </Typography>
+                          </ButtonNaked>
                         </TableCell>
                         <TableCell>{row.creationDate}</TableCell>
                         <TableCell>{row.updateDate}</TableCell>

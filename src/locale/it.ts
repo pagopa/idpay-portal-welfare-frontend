@@ -65,7 +65,7 @@ export default {
       status: {
         draft: 'In bozza',
         inRevision: 'In revisione',
-        toCheck: 'Da controllare',
+        toCheck: 'Modifiche richieste',
         approved: 'Approvata',
         published: 'In corso',
         closed: 'Terminata',
@@ -97,7 +97,7 @@ export default {
       next: {
         title: 'What’s next?',
         stats: 'Statistiche',
-        lastUpdate: 'Ultimo aggiornamento:',
+        lastUpdate: 'Ultimo aggiornamento: {{lastUpdate}}',
         join: 'Hanno aderito',
         budgetExhausted: 'Budget speso',
         ViewUsers: 'Vedi utenti',
@@ -113,6 +113,12 @@ export default {
           subtitleModify:
             'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
           modify: 'Modifica iniziativa',
+        },
+
+        modalPublish: {
+          title: 'Pubblica iniziativa',
+          subtitle:
+            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che <n> utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
         },
       },
       modal: {
@@ -263,6 +269,17 @@ export default {
             balanceExhausted: 'A saldo esaurito',
             certainThreshold: 'Al  raggiungimento di una determinata soglia',
           },
+        },
+        buttons: {
+          back: 'Indietro',
+          reject: 'Rifiuta',
+          approve: 'Approva',
+          edit: 'Modifica',
+          delete: 'Elimina',
+        },
+        modal: {
+          title: 'Vuoi procedere?',
+          subtitle: 'Avverti l’ente via email di eventuali segnalazioni o note.',
         },
       },
     },
@@ -537,5 +554,8 @@ export default {
     invalidDataDescription: 'Controllare i dati inseriti',
     getDataDescription: 'Riprovare',
     getFileDataDescription: 'Caricare nuovamente il file',
+    cantRejectInitiative: "Non è stato possibile rifiutare l'iniziativa. Riprova",
+    cantApproveInitiative: 'Non è stato possibile inviare la  revisione. Riprova.',
+    cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
   },
 };
