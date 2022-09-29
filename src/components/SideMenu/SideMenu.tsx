@@ -150,6 +150,7 @@ export default function SideMenu() {
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
                     icon={GroupIcon}
                     level={2}
+                    disabled={true}
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
@@ -163,6 +164,7 @@ export default function SideMenu() {
                     }
                     icon={EuroSymbolIcon}
                     level={2}
+                    disabled={true}
                   />
                 </List>
               </AccordionDetails>

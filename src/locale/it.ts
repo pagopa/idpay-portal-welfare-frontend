@@ -119,7 +119,7 @@ export default {
         modalPublish: {
           title: 'Pubblica iniziativa',
           subtitle:
-            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che <n> utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
+            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
         },
       },
       modal: {

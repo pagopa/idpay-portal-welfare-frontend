@@ -6,7 +6,7 @@ import { userActions } from '@pagopa/selfcare-common-frontend/redux/slices/userS
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { parseJwt } from '../utils/jwt-utils';
 import { JWTUser } from '../model/JwtUser';
-import { getUserPermission } from '../services/rolePermissionService';
+// import { getUserPermission } from '../services/rolePermissionService';
 
 const mockedUser = {
   uid: '0',
@@ -41,9 +41,9 @@ export const useLogin = () => {
       setUser(mockedUser);
       storageTokenOps.write(CONFIG.TEST.JWT);
       storageUserOps.write(mockedUser);
-      getUserPermission()
-        .then((res) => console.log(res))
-        .catch((error) => console.log(error));
+      // getUserPermission()
+      //   .then((res) => console.log(res))
+      //   .catch((error) => console.log(error));
       return;
     }
 
@@ -65,15 +65,15 @@ export const useLogin = () => {
       const user: User = userFromJwtToken(token);
       storageUserOps.write(user);
       setUser(user);
-      getUserPermission()
-        .then((res) => console.log(res))
-        .catch((error) => console.log(error));
+      // getUserPermission()
+      //   .then((res) => console.log(res))
+      //   .catch((error) => console.log(error));
     } else {
       // Otherwise, set the user to the one stored in the storage
       setUser(sessionStorageUser);
-      getUserPermission()
-        .then((res) => console.log(res))
-        .catch((error) => console.log(error));
+      // getUserPermission()
+      //   .then((res) => console.log(res))
+      //   .catch((error) => console.log(error));
     }
   };
 

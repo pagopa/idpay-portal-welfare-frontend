@@ -189,7 +189,7 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
       case 'DRAFT':
       case 'TO_CHECK':
       case 'APPROVED':
-        return <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>;
+        return <MenuItem disabled>{t('pages.initiativeList.actions.delete')}</MenuItem>;
       case 'IN_REVISION':
       case 'PUBLISHED':
       case 'CLOSED':
@@ -202,7 +202,7 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
   const RenderSuspend = ({ status }: RenderActionProps) => {
     switch (status) {
       case 'PUBLISHED':
-        return <MenuItem>{t('pages.initiativeList.actions.suspend')}</MenuItem>;
+        return <MenuItem disabled>{t('pages.initiativeList.actions.suspend')}</MenuItem>;
       case 'DRAFT':
       case 'APPROVED':
       case 'TO_CHECK':
@@ -351,41 +351,79 @@ const InitiativeList = () => {
         variantTitle="h4"
         variantSubTitle="body1"
       />
-      <Box
+      {user.org_role !== 'ope_base' ? (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            columnGap: 2,
+            justifyContent: 'center',
+            width: '100%',
+            mb: 5,
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
+            <TextField
+              id="search-initiative"
+              placeholder={t('pages.initiativeList.search')}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e) => {
+                handleSearchInitiatives(e.target.value);
+              }}
+            />
+          </Box>
+          <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
+            <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
+              {t('pages.initiativeList.createNew')}
+            </Button>
+          </Box>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            columnGap: 2,
+            justifyContent: 'center',
+            width: '100%',
+            mb: 5,
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 12', backgroundColor: 'white' }}>
+            <TextField
+              id="search-initiative"
+              placeholder={t('pages.initiativeList.search')}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e) => {
+                handleSearchInitiatives(e.target.value);
+              }}
+            />
+          </Box>
+        </Box>
+      )}
+
+      <Paper
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          columnGap: 2,
-          justifyContent: 'center',
           width: '100%',
-          mb: 5,
+          mb: 2,
+          p: 3,
+          backgroundColor: grey.A200,
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
-          <TextField
-            id="search-initiative"
-            placeholder={t('pages.initiativeList.search')}
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={(e) => {
-              handleSearchInitiatives(e.target.value);
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-          <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
-            {t('pages.initiativeList.createNew')}
-          </Button>
-        </Box>
-      </Box>
-
-      <Paper sx={{ width: '100%', mb: 2, backgroundColor: grey.A200, p: 3 }}>
         <TableContainer>
           {initiativeListFiltered.length > 0 ? (
             <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -446,25 +484,27 @@ const InitiativeList = () => {
                 <Typography sx={{ display: 'inline' }}>
                   {t('pages.initiativeList.emptyList')}
                 </Typography>
-                <Button
-                  sx={[
-                    {
-                      justifyContent: 'start',
-                      padding: 0,
-                      fontSize: '1em',
-                    },
-                    {
-                      '&:hover': { backgroundColor: 'transparent' },
-                    },
-                  ]}
-                  size="small"
-                  variant="text"
-                  onClick={goToNewInitiative}
-                  disableRipple={true}
-                  disableFocusRipple={true}
-                >
-                  {t('pages.initiativeList.createNew')}
-                </Button>
+                {user.org_role !== 'ope_base' && (
+                  <Button
+                    sx={[
+                      {
+                        justifyContent: 'start',
+                        padding: 0,
+                        fontSize: '1em',
+                      },
+                      {
+                        '&:hover': { backgroundColor: 'transparent' },
+                      },
+                    ]}
+                    size="small"
+                    variant="text"
+                    onClick={goToNewInitiative}
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                  >
+                    {t('pages.initiativeList.createNew')}
+                  </Button>
+                )}
               </Box>
             </Box>
           )}

@@ -20,6 +20,12 @@ const ConfirmPublishInitiativeModal = ({
   const { t } = useTranslation();
   const initiativeSel = useAppSelector(initiativeSelector);
 
+  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
+    const totalBudgetInt = parseInt(totalBudget, 10);
+    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
+    return Math.floor(totalBudgetInt / budgetPerPersonInt);
+  };
+
   return (
     <Modal
       aria-labelledby="confirm-publish-initiative-modal-title"
@@ -51,6 +57,10 @@ const ConfirmPublishInitiativeModal = ({
           <Typography variant="body1" sx={{ my: 2 }}>
             {t('pages.initiativeOverview.next.modalPublish.subtitle', {
               initiativeName: initiativeSel.initiativeName,
+              usersNumber: peopleReached(
+                initiativeSel.generalInfo.budget,
+                initiativeSel.generalInfo.beneficiaryBudget
+              ),
             })}
           </Typography>
           <Box
