@@ -1,82 +1,247 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testExecutions version="1">
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx">
-    <testCase name="&lt;AdmissionCriteria /&gt; should display the second step, with validation on input data" duration="136"/>
-    <testCase name="&lt;AdmissionCriteria /&gt; call the submit event when form is submitted" duration="1057"/>
-    <testCase name="&lt;AdmissionCriteria /&gt; draf action makes the dispatch" duration="414"/>
-    <testCase name="&lt;AdmissionCriteria /&gt; Test onClick of &quot;Sfoglia Criteri&quot; to open the modal must be true" duration="20">
-      <failure message="Error: expect(received).not.toBeInTheDocument()"><![CDATA[Error: expect(received).not.toBeInTheDocument()
-
-received value must be an HTMLElement or an SVGElement.
-Received has type:  object
-Received has value: <AdmissionCriteriaModal criteriaToRender={[]} handleCloseModal={[Function handleCloseModal]} handleCriteriaAdded={[Function handleCriteriaAdded]} openModal={false} setCriteriaToRender={[Function setCriteriaToRender]} />
-    at __EXTERNAL_MATCHER_TRAP__ (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\expect\build\index.js:386:30)
-    at Object.toBeInTheDocument (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\expect\build\index.js:387:15)
-    at C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:148:35
-    at batchedUpdates$1 (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom.development.js:22380:12)
-    at act (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom-test-utils.development.js:1042:14)
-    at C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:147:13
-    at batchedUpdates$1 (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom.development.js:22380:12)
-    at act (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\react-dom\cjs\react-dom-test-utils.development.js:1042:14)
-    at Object.<anonymous> (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\AdmissionCriteria.test.tsx:74:11)
-    at Promise.then.completed (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\utils.js:391:28)
-    at new Promise (<anonymous>)
-    at callAsyncCircusFn (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\utils.js:316:10)
-    at _callCircusTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:218:40)
-    at _runTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:155:3)
-    at _runTestsForDescribeBlock (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:66:9)
-    at _runTestsForDescribeBlock (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:60:9)
-    at run (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\run.js:25:3)
-    at runAndTransformResultsToJestFormat (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:170:21)
-    at jestAdapter (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:82:19)
-    at runTestInternal (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-runner\build\runTest.js:389:16)
-    at runTest (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\node_modules\jest-runner\build\runTest.js:475:34)]]></failure>
-    </testCase>
-  </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\__tests__\App.test.tsx">
-    <testCase name="Test rendering" duration="197"/>
-    <testCase name="Test rendering dashboard parties loaded" duration="40"/>
-    <testCase name="Test routing " duration="60"/>
-  </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\__test__\StepOneForm.test.tsx">
-    <testCase name="&lt;StepOneForm /&gt; should display the first form, with validation on input data" duration="599"/>
-    <testCase name="&lt;StepOneForm /&gt; call the submit event when form is submitted" duration="592"/>
-    <testCase name="&lt;StepOneForm /&gt; draft action makes the dispatch" duration="373"/>
-    <testCase name="&lt;StepOneForm /&gt; Form Fields not null" duration="248"/>
-    <testCase name="&lt;StepOneForm /&gt; BeneficiaryTypes / BeneficiaryKnowns have the correct values" duration="393"/>
-    <testCase name="&lt;StepOneForm /&gt; Total Budget / Budget per Person Test" duration="558"/>
-    <testCase name="&lt;StepOneForm /&gt; Date Join / Spend Test" duration="760"/>
-  </file>
   <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedParty.test.tsx">
-    <testCase name="Test default behavior when no parties" duration="73"/>
-    <testCase name="Test party not active" duration="60"/>
-  </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withLogin.test.tsx">
-    <testCase name="Test no auth session" duration="19"/>
-    <testCase name="Test auth session" duration="6"/>
+    <testCase name="Test default behavior when no parties" duration="97">
+      <failure message="Error: expect(received).toStrictEqual(expected) // deep equality"><![CDATA[Error: expect(received).toStrictEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+@@ -9,12 +9,12 @@
+    "originId": "originId5",
+    "partyId": "2f63a151-da4e-4e1e-acf9-adecc0c4d727",
+    "registeredOffice": "Piazza della Scala, 2 - 20121 Milano",
+    "roles": Array [
+      Object {
+-       "partyRole": "ADMIN",
+-       "roleKey": "admin",
++       "partyRole": "OPERATOR",
++       "roleKey": "ope_base",
+      },
+    ],
+    "status": "ACTIVE",
+    "typology": "Pubblica Amministrazione",
+    "urlLogo": "https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png",
+    at verifyFetchPartyDetailsMockExecution (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__mocks__\partyService.ts:214:17)
+    at checkSelectedParty (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedParty.test.tsx:69:3)
+    at Object.<anonymous> (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedParty.test.tsx:46:3)]]></failure>
+    </testCase>
+    <testCase name="Test party not active" duration="68"/>
   </file>
   <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedPartyProducts.test.tsx">
-    <testCase name="Test default behavior when no parties" duration="74"/>
+    <testCase name="Test default behavior when no parties" duration="96">
+      <failure message="Error: expect(received).toStrictEqual(expected) // deep equality"><![CDATA[Error: expect(received).toStrictEqual(expected) // deep equality
+
+- Expected  - 2
++ Received  + 2
+
+@@ -9,12 +9,12 @@
+    "originId": "originId5",
+    "partyId": "2f63a151-da4e-4e1e-acf9-adecc0c4d727",
+    "registeredOffice": "Piazza della Scala, 2 - 20121 Milano",
+    "roles": Array [
+      Object {
+-       "partyRole": "ADMIN",
+-       "roleKey": "admin",
++       "partyRole": "OPERATOR",
++       "roleKey": "ope_base",
+      },
+    ],
+    "status": "ACTIVE",
+    "typology": "Pubblica Amministrazione",
+    "urlLogo": "https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png",
+    at verifyFetchPartyDetailsMockExecution (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__mocks__\partyService.ts:214:17)
+    at checkSelectedParty (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedPartyProducts.test.tsx:60:3)
+    at Object.<anonymous> (C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withSelectedPartyProducts.test.tsx:50:3)]]></failure>
+    </testCase>
   </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\pages\auth\__tests__\Auth.test.tsx">
-    <testCase name="test login success" duration="19"/>
-    <testCase name="test login success no token" duration="23"/>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepOne\__test__\ServiceConfig.test.tsx">
+    <testCase name="&lt;ServiceConfig /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;ServiceConfig /&gt; should display the first form, with validation on input data" duration="461"/>
+    <testCase name="&lt;ServiceConfig /&gt; call the formik handleSubmit event when form is submitted" duration="164"/>
+    <testCase name="&lt;ServiceConfig /&gt; call the submit event when form is submitted" duration="525"/>
+    <testCase name="&lt;ServiceConfig /&gt; draft action makes the dispatch" duration="269"/>
+    <testCase name="&lt;ServiceConfig /&gt; form fields not to be null" duration="208"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepTwo\__test__\Generalnfo.test.tsx">
+    <testCase name="&lt;Genaralnfo /&gt; renders without crashing" duration="2"/>
+    <testCase name="&lt;Genaralnfo /&gt; should display the first form, with validation on input data" duration="633"/>
+    <testCase name="&lt;Genaralnfo /&gt; call the formik handleSubmit event when form is submitted" duration="227"/>
+    <testCase name="&lt;Genaralnfo /&gt; call the submit event when form is submitted" duration="851"/>
+    <testCase name="&lt;Genaralnfo /&gt; draft action makes the dispatch" duration="277"/>
+    <testCase name="&lt;Genaralnfo /&gt; Form Fields not null" duration="205"/>
+    <testCase name="&lt;Genaralnfo /&gt; BeneficiaryTypes / BeneficiaryKnowns have the correct values" duration="264"/>
+    <testCase name="&lt;Genaralnfo /&gt; Total Budget / Budget per Person Test" duration="467"/>
+    <testCase name="&lt;Genaralnfo /&gt; Date Join / Spend Test" duration="604"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\ResidencyCriteriaItem.test.tsx">
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Should display the Residency item and must have a correct validation" duration="195"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; call the submit event when form is submitted" duration="538"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Test on ResidencyCriteriaItem" duration="90"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Test DateOfBirthCriteriaItem onClick delete button" duration="157"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Test DateOfBirthCriteriaItem Select onChange" duration="125"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Test DateOfBirthCriteriaItem RelationSelect onChange" duration="84"/>
+    <testCase name="&lt;ResidencyCriteriaItem /&gt; Test ResidencyCriteria TextField residencyValue" duration="185"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\TimeLimitItem.test.tsx">
+    <testCase name="&lt;TimeLimitItem /&gt; renders without crashing" duration="0"/>
+    <testCase name="&lt;TimeLimitItem /&gt; should render correctly the TimeLimitItem component" duration="225"/>
+    <testCase name="&lt;TimeLimitItem /&gt; call the submit event when form is submitted" duration="576"/>
+    <testCase name="&lt;TimeLimitItem /&gt; draf action makes the dispatch" duration="207"/>
+    <testCase name="&lt;TimeLimitItem /&gt; test on handleSubmit" duration="67"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\SpendingLimitItem.test.tsx">
+    <testCase name="&lt;SpendingLimitItem /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;SpendingLimitItem /&gt; should render correctly the SpendingLimitItem component" duration="174"/>
+    <testCase name="&lt;SpendingLimitItem /&gt; call the submit event when form is submitted" duration="493"/>
+    <testCase name="&lt;SpendingLimitItem /&gt; draf action makes the dispatch" duration="214"/>
+    <testCase name="&lt;SpendingLimitItem /&gt; test on handleSubmit" duration="70"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFive\__test__\RefundRules.test.tsx">
+    <testCase name="&lt;RefundRules /&gt; renders without crashing" duration="0"/>
+    <testCase name="&lt;RefundRules /&gt; should display the third step component" duration="176"/>
+    <testCase name="&lt;RefundRules /&gt; call the submit event when form is submitted" duration="506"/>
+    <testCase name="&lt;RefundRules /&gt; draf action makes the dispatch" duration="195"/>
+    <testCase name="&lt;RefundRules /&gt; test on handleSubmit" duration="70"/>
+    <testCase name="&lt;RefundRules /&gt; form fields not null" duration="72"/>
+    <testCase name="&lt;RefundRules /&gt; Test AccumulatedAmount Select onChange" duration="287"/>
+    <testCase name="&lt;RefundRules /&gt; Test TimeParameter Select onChange" duration="437"/>
+    <testCase name="&lt;RefundRules /&gt; Test AdditionalInfo onChange" duration="175"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\ManualCriteria.test.tsx">
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Should display ManualCriteria and must have a correct validation" duration="225"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; call the submit event when form is submitted" duration="537"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test DateOfBirthCriteriaItem onClick delete button" duration="95"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test manualCriteriaSelectName Select onChange" duration="65"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test manualCriteriaSelectName TextFields" duration="58"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test Add/Remove Manual criteria Multi item" duration="64"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\DateOfBirthCriteriaItem.test.tsx">
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; renders without crashing" duration="3"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Should display the DateOfBirth item and must have a correct validation" duration="338"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; call the submit event when form is submitted" duration="1057"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test on DateOfBirthCriteriaItem" duration="171"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test DateOfBirthCriteriaItem onClick delete button" duration="145"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test DateOfBirthCriteriaItem Select onChange" duration="123"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test DateOfBirthCriteriaItem RelationSelect onChange" duration="140"/>
+    <testCase name="&lt;DateOfBirthCriteriaItem /&gt; Test DateOfBirthCriteriaItem TextField dateOfBirthStartValue/dateOfBirthEndValue" duration="173"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\TransactionNumberItem.test.tsx">
+    <testCase name="&lt;TransactionNumberItem /&gt; renders without crashing" duration="2"/>
+    <testCase name="&lt;TransactionNumberItem /&gt; should render correctly the TransactionNumberItem component" duration="252"/>
+    <testCase name="&lt;TransactionNumberItem /&gt; call the submit event when form is submitted" duration="536"/>
+    <testCase name="&lt;TransactionNumberItem /&gt; draf action makes the dispatch" duration="196"/>
+    <testCase name="&lt;TransactionNumberItem /&gt; test on handleSubmit" duration="79"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\MCCItem.test.tsx">
+    <testCase name="&lt;MCCItem /&gt; renders without crashing" duration="2"/>
+    <testCase name="&lt;MCCItem /&gt; should render correctly the MCCItem component" duration="430"/>
+    <testCase name="&lt;MCCItem /&gt; call the submit event when form is submitted" duration="427"/>
+    <testCase name="&lt;MCCItem /&gt; draf action makes the dispatch" duration="219"/>
+    <testCase name="&lt;MCCItem /&gt; test on handleSubmit" duration="74"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\AdmissionCriteria.test.tsx">
+    <testCase name="&lt;AdmissionCriteria /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; should display the second step, with validation on input data" duration="104"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; call the submit event when form is submitted" duration="628"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; draf action makes the dispatch" duration="237"/>
+    <testCase name="&lt;AdmissionCriteria /&gt; Test onClick of &quot;Sfoglia Criteri&quot; to open the modal must be true" duration="246"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\ShopRules.test.tsx">
+    <testCase name="&lt;RefundRules /&gt; renders without crashing" duration="2"/>
+    <testCase name="&lt;RefundRules /&gt; should render correctly the ShopRules component" duration="198"/>
+    <testCase name="&lt;RefundRules /&gt; call the submit event when form is submitted" duration="459"/>
+    <testCase name="&lt;RefundRules /&gt; draf action makes the dispatch" duration="222"/>
+    <testCase name="&lt;RefundRules /&gt; test on handleSubmit" duration="56"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\__tests__\App.test.tsx">
+    <testCase name="Test rendering" duration="416"/>
+    <testCase name="Test rendering dashboard parties loaded" duration="80"/>
+    <testCase name="Test routing " duration="99"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\PercentageRecognizedItem.test.tsx">
+    <testCase name="&lt;PercentageRecognizedItem /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;PercentageRecognizedItem /&gt; should render correctly the PercentageRecognizedItem component" duration="113"/>
+    <testCase name="&lt;PercentageRecognizedItem /&gt; call the submit event when form is submitted" duration="411"/>
+    <testCase name="&lt;PercentageRecognizedItem /&gt; draf action makes the dispatch" duration="193"/>
+    <testCase name="&lt;PercentageRecognizedItem /&gt; test on handleSubmit" duration="30"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\TransactionTimeItem.test.tsx">
+    <testCase name="&lt;TransactionTimeItem /&gt; renders without crashing" duration="1"/>
+    <testCase name="&lt;TransactionTimeItem /&gt; should render correctly the TransactionTimeItem component" duration="233"/>
+    <testCase name="&lt;TransactionTimeItem /&gt; call the submit event when form is submitted" duration="406"/>
+    <testCase name="&lt;TransactionTimeItem /&gt; draf action makes the dispatch" duration="201"/>
+    <testCase name="&lt;TransactionTimeItem /&gt; test on handleSubmit" duration="108"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\Wizard.test.tsx">
+    <testCase name="&lt;RefundRules /&gt; renders without crashing" duration="2"/>
+    <testCase name="&lt;RefundRules /&gt; should display the Wizard component" duration="575"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\IseeCriteriaItem.test.tsx">
+    <testCase name="&lt;IseeCriteriaItem /&gt; Should display the Isee item and must have a correct validation" duration="181"/>
+    <testCase name="&lt;IseeCriteriaItem /&gt; Test on IseeCriteriaItem" duration="50"/>
+    <testCase name="&lt;IseeCriteriaItem /&gt; Test iseeCriteria onClick delete button" duration="116"/>
+    <testCase name="&lt;IseeCriteriaItem /&gt; Test iseeCriteria Select onChange" duration="79"/>
+    <testCase name="&lt;IseeCriteriaItem /&gt; Test iseeCriteria TextField iseeStartValue/IseeEndValue" duration="75"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\MCCModal.test.tsx">
+    <testCase name="&lt;MCCModal /&gt; should render correctly the MCCModal component" duration="30"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepFour\__test__\ShopRulesModal.test.tsx">
+    <testCase name="&lt;ShopRulesModal /&gt; should render correctly the ShopRulesModal component" duration="28"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\components\Wizard\components\StepThree\__test__\AdmissionCriteriaModal.test.tsx">
+    <testCase name="&lt;AdmissionCriteriaModal /&gt; Should display the Modal" duration="25"/>
+    <testCase name="&lt;AdmissionCriteriaModal /&gt; CheckBox Admission Criteria test" duration="21"/>
+    <testCase name="&lt;AdmissionCriteriaModal /&gt; test Search Criteria TextField" duration="6"/>
   </file>
   <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withParties.test.tsx">
-    <testCase name="Test" duration="87"/>
+    <testCase name="Test" duration="100"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\decorators\__tests__\withLogin.test.tsx">
+    <testCase name="Test no auth session" duration="25"/>
+    <testCase name="Test auth session" duration="8"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\pages\auth\__tests__\Auth.test.tsx">
+    <testCase name="test login success" duration="27"/>
+    <testCase name="test login success no token" duration="29"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__tests__\initiativeService.test.ts">
+    <testCase name="test get initiative summary" duration="2"/>
+    <testCase name="test get initiative by id" duration="1"/>
+    <testCase name="create initiative" duration="1"/>
+    <testCase name="update initiative (service info)" duration="1"/>
+    <testCase name="update initiative (general info)" duration="0"/>
+    <testCase name="update initiative draft (general info)" duration="1"/>
+    <testCase name="update initiative (beneficiary rule)" duration="1"/>
+    <testCase name="update initiative draft (beneficiary rule)" duration="0"/>
+    <testCase name="update initiative (reward rules)" duration="1"/>
+    <testCase name="update initiative draft (reward rules)" duration="1"/>
+    <testCase name="update initiative (Refund Rules)" duration="1"/>
+    <testCase name="update initiative draft (Refund Rules)" duration="1"/>
+    <testCase name="test trascodeRewardRule using RewardGroupDTO" duration="1"/>
+    <testCase name="test trascodeRewardRule using RewardValueDTO" duration="0"/>
+    <testCase name="test trascodeRewardRule using null" duration="1"/>
+    <testCase name="test trascodeRewardRule using invalid type" duration="0"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Party.test.ts">
+    <testCase name="Test institutionResource2Party" duration="1"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Product.test.ts">
+    <testCase name="Test institutionInfo2Party" duration="0"/>
+  </file>
+  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\utils\__tests__\io-utils.test.ts">
+    <testCase name="test decode successful" duration="4"/>
+    <testCase name="test decode with error" duration="1"/>
   </file>
   <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__tests__\partyService.test.ts">
-    <testCase name="Test fetchParties" duration="0"/>
+    <testCase name="Test fetchParties" duration="2"/>
     <testCase name="Test fetchPartyDetails Test no parties as cache" duration="0"/>
     <testCase name="Test fetchPartyDetails Test parties as cache" duration="0"/>
   </file>
   <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\services\__tests__\productService.test.ts">
     <testCase name="Test fetchProducts" duration="1"/>
-  </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Product.test.ts">
-    <testCase name="Test institutionInfo2Party" duration="0"/>
-  </file>
-  <file path="C:\Users\fgrazian\Desktop\Lavoro\idpay-portal-welfare-frontend\src\model\__tests__\Party.test.ts">
-    <testCase name="Test institutionResource2Party" duration="0"/>
   </file>
 </testExecutions>

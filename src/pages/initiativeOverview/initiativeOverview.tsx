@@ -644,7 +644,7 @@ const InitiativeOverview = () => {
           return (
             <Snackbar
               open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
+              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
             >
               <MuiAlert
                 sx={{
@@ -704,7 +704,7 @@ const InitiativeOverview = () => {
           return (
             <Snackbar
               open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
+              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
             >
               <MuiAlert
                 sx={{
@@ -727,7 +727,7 @@ const InitiativeOverview = () => {
           return (
             <Snackbar
               open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
+              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
             >
               <MuiAlert
                 sx={{
@@ -760,7 +760,7 @@ const InitiativeOverview = () => {
           return (
             <Snackbar
               open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 10', zIndex: 0 }}
+              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
             >
               <MuiAlert
                 sx={{
@@ -833,11 +833,11 @@ const InitiativeOverview = () => {
           sx={{
             display: 'grid',
             width: '100%',
-            gridTemplateColumns: 'repeat(10, 1fr)',
+            gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
             <Breadcrumbs aria-label="breadcrumb">
               <ButtonNaked
                 component="button"
@@ -856,7 +856,7 @@ const InitiativeOverview = () => {
               </Typography>
             </Breadcrumbs>
           </Box>
-          <Box sx={{ gridColumn: 'span 8' }}>
+          <Box sx={{ gridColumn: 'span 10' }}>
             <TitleBox
               title={
                 typeof initiativeSel.initiativeName === 'string' ? initiativeSel.initiativeName : ''
@@ -938,6 +938,7 @@ const InitiativeOverview = () => {
                 gridTemplateColumns: 'repeat(24, 1fr)',
                 alignContent: 'start',
                 rowGap: 3,
+                opacity: 0.3,
               }}
             >
               <Box sx={{ pt: 3, gridColumn: 'span 24' }}>

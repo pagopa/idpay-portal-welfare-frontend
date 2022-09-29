@@ -404,7 +404,9 @@ const Generalnfo = ({
               component="span"
               sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
             >
-              {peopleReached(formik.values.budget, formik.values.beneficiaryBudget)}
+              {peopleReached(formik.values.budget, formik.values.beneficiaryBudget) !== Infinity
+                ? peopleReached(formik.values.budget, formik.values.beneficiaryBudget)
+                : '-'}
             </Typography>
             <Tooltip
               title={t('components.wizard.stepTwo.form.reachedUsersTooltip')}

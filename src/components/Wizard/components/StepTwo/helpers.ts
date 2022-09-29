@@ -1,9 +1,10 @@
 import { addDays } from 'date-fns';
 import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
-export const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
+export const peopleReached = (totalBudget: string, budgetPerPerson: string): any => {
   const totalBudgetInt = parseInt(totalBudget, 10);
   const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
+
   return Math.floor(totalBudgetInt / budgetPerPersonInt);
 };
 
