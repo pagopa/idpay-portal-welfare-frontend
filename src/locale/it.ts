@@ -93,6 +93,7 @@ export default {
           details: 'Vedi dettagli',
           start: 'Inizia il',
           expiration: 'giorni rimanenti',
+          closed: 'Terminato',
         },
       },
       next: {
@@ -114,6 +115,7 @@ export default {
           subtitleModify:
             'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
           modify: 'Modifica iniziativa',
+          checkInitiative: 'Controlla l’iniziativa',
         },
 
         modalPublish: {
