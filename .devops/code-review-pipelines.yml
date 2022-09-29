@@ -140,7 +140,7 @@ stages:
 
           - script: |
               yarn generate
-              yarn test:coverage --watchAll
+              yarn test:coverage --watchAll=false
             displayName: 'Unit tests execution'
 
           - script: yarn lint
