@@ -137,10 +137,10 @@ stages:
                 sonar.javascript.lcov.reportPaths=coverage/lcov.info
                 sonar.typescript.tsconfigPath=tsconfig.json
                 sonar.eslint.reportPaths=eslint-report.json
-                
+
           - script: |
               yarn generate
-              yarn test:coverage --watchAll=false
+              yarn test:coverage --watchAll
             displayName: 'Unit tests execution'
 
           - script: yarn lint
