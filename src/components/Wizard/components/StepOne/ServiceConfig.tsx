@@ -94,14 +94,12 @@ const ServiceConfig = ({
     privacyPolicyUrl: Yup.string()
       .required(t('validation.required'))
       .matches(
-        // /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
         /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
         t('validation.web')
       ),
     termsAndConditions: Yup.string()
       .required(t('validation.required'))
       .matches(
-        // /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
         /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
         t('validation.web')
       ),
@@ -115,7 +113,6 @@ const ServiceConfig = ({
               return Yup.string()
                 .required(t('validation.required'))
                 .matches(
-                  // /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/,
                   /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
                   t('validation.webValid')
                 );

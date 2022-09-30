@@ -413,9 +413,8 @@ const InitiativeOverview = () => {
     </>
   );
 
-  const renderConditionalStatusPublished = (status: string | undefined) => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    status === 'PUBLISHED' ? (
+  const renderConditionalStatusPublished = (status: string | undefined) =>
+    status === 'PUBLISHED' && (
       <>
         <Box sx={{ gridColumn: 'span 24', color: '#5C6F82' }}>
           {t('pages.initiativeOverview.next.lastUpdate', {
@@ -476,8 +475,7 @@ const InitiativeOverview = () => {
           </Button>
         </Box>
       </>
-    ) : null;
-  };
+    );
 
   const renderConditionalActions = (status: string | undefined) => (
     <Box
