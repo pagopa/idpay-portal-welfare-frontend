@@ -480,54 +480,66 @@ const InitiativeOverview = () => {
   };
 
   const renderConditionalActions = (status: string | undefined) => (
-    <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+    <Box
+      sx={{
+        gridColumn: 'span 2',
+        textAlign: 'end',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        display: 'grid',
+        alignItems: 'center',
+      }}
+    >
       {status === 'APPROVED' ? (
         <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
           <ButtonNaked
             size="small"
-            target="_blank"
             startIcon={<EditIcon />}
             sx={{ color: 'primary.main', padding: 0, fontWeight: 700 }}
             weight="default"
             variant="contained"
             data-testid="view-custom-test"
-            // eslint-disable-next-line sonarjs/no-identical-functions
             onClick={() => handleUpdateInitiative(initiativeSel.initiativeId)}
           >
             {t('pages.initiativeList.actions.update')}
           </ButtonNaked>
         </Box>
       ) : null}
-      {status === 'TO_CHECK' ? (
-        <DeleteInitiativeModal
-          openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
-          handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
-        />
-      ) : null}
-      <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
-        <ButtonNaked
-          disabled
-          size="small"
-          onClick={status !== 'PUBLISHED' ? handleOpenInitiativeOverviewDeleteModal : null}
-          target="_blank"
-          startIcon={
-            status !== 'PUBLISHED' ? (
-              <DeleteOutlineIcon color="disabled" />
-            ) : (
-              <HighlightOffIcon color="disabled" />
-            )
-          }
-          sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
-          weight="default"
-          // variant="contained"
-          variant="naked"
-          data-testid="view-action-button-test"
-        >
-          {status !== 'PUBLISHED'
-            ? t('pages.initiativeList.actions.delete')
-            : t('pages.initiativeList.actions.suspend')}
-        </ButtonNaked>
-      </Box>
+
+      {status !== 'PUBLISHED' ? (
+        <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
+          <ButtonNaked
+            disabled
+            size="small"
+            onClick={handleOpenInitiativeOverviewDeleteModal}
+            startIcon={<DeleteOutlineIcon color="disabled" />}
+            sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
+            weight="default"
+            variant="naked"
+            data-testid="view-action-button-test"
+          >
+            {t('pages.initiativeList.actions.delete')}
+          </ButtonNaked>
+          <DeleteInitiativeModal
+            openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
+            handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
+          />
+        </Box>
+      ) : (
+        <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
+          <ButtonNaked
+            disabled
+            size="small"
+            onClick={null} // TODO IN NEXT SPRINT
+            startIcon={<HighlightOffIcon color="disabled" />}
+            sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
+            weight="default"
+            variant="naked"
+            data-testid="view-action-button-test"
+          >
+            {t('pages.initiativeList.actions.suspend')}
+          </ButtonNaked>
+        </Box>
+      )}
     </Box>
   );
 
@@ -719,135 +731,131 @@ const InitiativeOverview = () => {
   };
 
   return (
-    <>
-      <Box sx={{ width: '100%', px: 2 }}>
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-            <Breadcrumbs aria-label="breadcrumb">
-              <ButtonNaked
-                component="button"
-                onClick={() => history.replace(ROUTES.HOME)}
-                startIcon={<ArrowBackIcon />}
-                sx={{ color: 'primary.main' }}
-                weight="default"
-              >
-                {t('breadcrumbs.exit')}
-              </ButtonNaked>
-              <Typography color="text.primary" variant="body2">
-                {t('breadcrumbs.initiatives')}
-              </Typography>
-              <Typography color="text.primary" variant="body2">
-                {initiativeSel.initiativeName}
-              </Typography>
-            </Breadcrumbs>
-          </Box>
-          <Box sx={{ gridColumn: 'span 10' }}>
-            <TitleBox
-              title={
-                typeof initiativeSel.initiativeName === 'string' ? initiativeSel.initiativeName : ''
-              }
-              mbTitle={3}
-              mtTitle={3}
-              variantTitle="h4"
-              variantSubTitle="body1"
-            />
-          </Box>
-          {renderConditionalActions(initiativeSel.status)}
-          {renderTypeSnackBarStatus(statusFile)}
-        </Box>
-
-        <Box
-          sx={{
-            width: '100%',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 1fr)',
-            alignItems: 'start',
-            columnGap: 2,
-          }}
-        >
-          <Paper
-            sx={{
-              width: '100%',
-              px: 3,
-              pb: 3,
-              gridTemplateRows: 'auto',
-              gridColumn: 'span 1',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(8, 1fr)',
-              alignContent: 'start',
-              rowGap: 3,
-            }}
-          >
-            <Box sx={{ pt: 3, gridColumn: 'span 8' }}>
-              <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.idCode')}</Box>
-            <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>{initiativeSel.initiativeId} </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.creationData')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
-              {typeof initiativeSel.creationDate === 'object' &&
-                initiativeSel.creationDate.toLocaleDateString('fr-BE')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.lastModify')}</Box>
-            <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
-              {initiativeSel.updateDate
-                ? typeof initiativeSel.updateDate === 'object' &&
-                  initiativeSel.updateDate.toLocaleDateString('fr-BE')
-                : '-'}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.initiativeState')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 5' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
-            <Box sx={{ gridColumn: 'span 8' }}>
-              {renderConditionalInfoStatus(initiativeSel.status)}
-            </Box>
-          </Paper>
-          <Paper
-            sx={{
-              width: '100%',
-              px: 3,
-              pb: 3,
-              gridTemplateRows: 'auto',
-              gridColumn: 'span 1',
-              display: 'grid',
-              gridTemplateColumns:
-                initiativeSel.status === 'PUBLISHED' ? 'repeat(24, 1fr)' : 'repeat(10, 1fr)',
-              alignContent: 'start',
-              rowGap: 3,
-            }}
-          >
-            <Box
-              sx={{
-                pt: 3,
-                gridColumn: initiativeSel.status === 'PUBLISHED' ? 'span 24' : 'span 10',
-              }}
+    <Box sx={{ width: '100%', px: 2 }}>
+      <Box
+        sx={{
+          display: 'grid',
+          width: '100%',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          alignItems: 'center',
+        }}
+      >
+        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
+          <Breadcrumbs aria-label="breadcrumb">
+            <ButtonNaked
+              component="button"
+              onClick={() => history.replace(ROUTES.HOME)}
+              startIcon={<ArrowBackIcon />}
+              sx={{ color: 'primary.main' }}
+              weight="default"
             >
-              {initiativeSel.status === 'PUBLISHED' ? (
-                <Typography variant="h6">{t('pages.initiativeOverview.next.stats')}</Typography>
-              ) : (
-                <Typography variant="h6">{t('pages.initiativeOverview.next.title')}</Typography>
-              )}
-            </Box>
-            {initiativeSel.status === 'DRAFT' ||
-            initiativeSel.status === 'IN_REVISION' ||
-            initiativeSel.status === 'TO_CHECK' ||
-            initiativeSel.status === 'APPROVED'
-              ? renderNextStatus(initiativeSel.status)
-              : renderConditionalStatusPublished(initiativeSel.status)}
-          </Paper>
+              {t('breadcrumbs.exit')}
+            </ButtonNaked>
+            <Typography color="text.primary" variant="body2">
+              {t('breadcrumbs.initiatives')}
+            </Typography>
+            <Typography color="text.primary" variant="body2">
+              {initiativeSel.initiativeName}
+            </Typography>
+          </Breadcrumbs>
         </Box>
+        <Box sx={{ gridColumn: 'span 10' }}>
+          <TitleBox
+            title={
+              typeof initiativeSel.initiativeName === 'string' ? initiativeSel.initiativeName : ''
+            }
+            mbTitle={3}
+            mtTitle={3}
+            variantTitle="h4"
+            variantSubTitle="body1"
+          />
+        </Box>
+        {renderConditionalActions(initiativeSel.status)}
+        {renderTypeSnackBarStatus(statusFile)}
       </Box>
-    </>
+
+      <Box
+        sx={{
+          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(2, 1fr)',
+          alignItems: 'start',
+          columnGap: 2,
+        }}
+      >
+        <Paper
+          sx={{
+            width: '100%',
+            px: 3,
+            pb: 3,
+            gridTemplateRows: 'auto',
+            gridColumn: 'span 1',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(8, 1fr)',
+            alignContent: 'start',
+            rowGap: 3,
+          }}
+        >
+          <Box sx={{ pt: 3, gridColumn: 'span 8' }}>
+            <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.idCode')}</Box>
+          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>{initiativeSel.initiativeId} </Box>
+          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.creationData')}</Box>
+          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
+            {typeof initiativeSel.creationDate === 'object' &&
+              initiativeSel.creationDate.toLocaleDateString('fr-BE')}
+          </Box>
+          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.lastModify')}</Box>
+          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
+            {initiativeSel.updateDate
+              ? typeof initiativeSel.updateDate === 'object' &&
+                initiativeSel.updateDate.toLocaleDateString('fr-BE')
+              : '-'}
+          </Box>
+          <Box sx={{ gridColumn: 'span 3' }}>
+            {t('pages.initiativeOverview.info.initiativeState')}
+          </Box>
+          <Box sx={{ gridColumn: 'span 5' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
+          <Box sx={{ gridColumn: 'span 8' }}>
+            {renderConditionalInfoStatus(initiativeSel.status)}
+          </Box>
+        </Paper>
+        <Paper
+          sx={{
+            width: '100%',
+            px: 3,
+            pb: 3,
+            gridTemplateRows: 'auto',
+            gridColumn: 'span 1',
+            display: 'grid',
+            gridTemplateColumns:
+              initiativeSel.status === 'PUBLISHED' ? 'repeat(24, 1fr)' : 'repeat(10, 1fr)',
+            alignContent: 'start',
+            rowGap: 3,
+          }}
+        >
+          <Box
+            sx={{
+              pt: 3,
+              gridColumn: initiativeSel.status === 'PUBLISHED' ? 'span 24' : 'span 10',
+            }}
+          >
+            {initiativeSel.status === 'PUBLISHED' ? (
+              <Typography variant="h6">{t('pages.initiativeOverview.next.stats')}</Typography>
+            ) : (
+              <Typography variant="h6">{t('pages.initiativeOverview.next.title')}</Typography>
+            )}
+          </Box>
+          {initiativeSel.status === 'DRAFT' ||
+          initiativeSel.status === 'IN_REVISION' ||
+          initiativeSel.status === 'TO_CHECK' ||
+          initiativeSel.status === 'APPROVED'
+            ? renderNextStatus(initiativeSel.status)
+            : renderConditionalStatusPublished(initiativeSel.status)}
+        </Paper>
+      </Box>
+    </Box>
   );
 };
 
