@@ -6,6 +6,16 @@ import { createStore } from '../../redux/store';
 import withLogin from '../withLogin';
 import { testToken } from '../../utils/constants';
 
+export interface IDPayUser {
+  uid: string;
+  taxCode: string;
+  name: string;
+  surname: string;
+  email: string;
+  org_party_role: string;
+  org_role: string;
+}
+
 const oldWindowLocation = global.window.location;
 const mockedLocation = {
   assign: jest.fn(),
@@ -40,13 +50,15 @@ const renderApp = () => {
   return store;
 };
 
-const mockUser = (): User => {
-  const user: User = {
+const mockUser = (): IDPayUser => {
+  const user: IDPayUser = {
     name: 'NAME',
     surname: 'SURNAME',
     uid: 'UID',
     taxCode: 'AAAAAA00A00A000A',
     email: 'a@a.aa',
+    org_party_role: 'ADMIN',
+    org_role: 'admin',
   };
 
   storageUserOps.write(user);
