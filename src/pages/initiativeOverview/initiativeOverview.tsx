@@ -30,7 +30,6 @@ import { useEffect, useState } from 'react';
 import MuiAlert from '@mui/material/Alert';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-// import { FactCheck } from '@mui/icons-material';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { useIDPayUser } from '../../hooks/useIDPayUser';
@@ -56,9 +55,6 @@ const InitiativeOverview = () => {
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const addError = useErrorDispatcher();
   const user = useIDPayUser();
-  // const startDateMessage =
-  //   typeof initiativeSel.generalInfo.startDate === 'object' &&
-  //   initiativeSel.generalInfo.startDate.toLocaleDateString('fr-BE');
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_OVERVIEW],
@@ -154,11 +150,11 @@ const InitiativeOverview = () => {
   };
 
   const handleUpdateInitiative = (id: string | undefined) => {
-    history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+    history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
   };
 
   const handleViewDetails = (id: string | undefined) => {
-    history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+    history.replace(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
   };
 
   const renderInitiativeStatus = (status: string | undefined) => {
@@ -182,11 +178,8 @@ const InitiativeOverview = () => {
     }
   };
 
-  const formatDate = (date: Date | undefined | string) => {
-    console.log(date);
-    console.log(typeof date);
-    return typeof date === 'object' && date.toLocaleDateString('fr-BE');
-  };
+  const formatDate = (date: Date | undefined | string) =>
+    typeof date === 'object' && date.toLocaleDateString('fr-BE');
 
   const chooseDateToFormat = (
     startDate: Date | undefined | string,
@@ -202,8 +195,6 @@ const InitiativeOverview = () => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderConditionalInfoStatus = (status: string | undefined) => {
     switch (status) {
-      case 'DRAFT':
-        return;
       case 'IN_REVISION':
         if (user.org_role !== 'ope_base') {
           return (
@@ -211,7 +202,6 @@ const InitiativeOverview = () => {
               <ButtonNaked
                 size="small"
                 onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-                target="_blank"
                 startIcon={<AssignmentIcon />}
                 sx={{ color: 'primary.main', padding: 0 }}
                 weight="default"
@@ -225,8 +215,6 @@ const InitiativeOverview = () => {
         } else {
           return;
         }
-      case 'TO_CHECK':
-        return;
       case 'APPROVED':
         return (
           <Box
@@ -275,7 +263,6 @@ const InitiativeOverview = () => {
                 size="small"
                 // eslint-disable-next-line sonarjs/no-identical-functions
                 onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-                target="_blank"
                 startIcon={<AssignmentIcon />}
                 sx={{ color: 'primary.main', padding: 0 }}
                 weight="default"
@@ -339,7 +326,6 @@ const InitiativeOverview = () => {
                 size="small"
                 // eslint-disable-next-line sonarjs/no-identical-functions
                 onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-                target="_blank"
                 startIcon={<AssignmentIcon />}
                 sx={{ color: 'primary.main', padding: 0 }}
                 weight="default"
@@ -351,9 +337,10 @@ const InitiativeOverview = () => {
             </Box>
           </Box>
         );
+      case 'DRAFT':
+      case 'TO_CHECK':
       case 'CLOSED':
       case 'SUSPENDED':
-        return;
       default:
         return null;
     }
@@ -567,7 +554,6 @@ const InitiativeOverview = () => {
                   <>
                     <ButtonNaked
                       size="medium"
-                      target="_blank"
                       sx={{
                         padding: 0,
                         color: 'primary.main',
@@ -683,7 +669,6 @@ const InitiativeOverview = () => {
                   <>
                     <ButtonNaked
                       size="medium"
-                      target="_blank"
                       sx={{
                         padding: 0,
                         color: 'primary.main',
