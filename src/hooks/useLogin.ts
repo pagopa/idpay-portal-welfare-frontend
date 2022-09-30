@@ -14,8 +14,8 @@ const mockedUser = {
   name: 'loggedName',
   surname: 'loggedSurname',
   email: 'loggedEmail@aa.aa',
-  org_party_role: 'OPERATOR',
-  org_role: 'ope_base',
+  org_party_role: 'ADMIN',
+  org_role: 'admin',
 };
 
 export const userFromJwtToken: (token: string) => User = function (token: string) {
