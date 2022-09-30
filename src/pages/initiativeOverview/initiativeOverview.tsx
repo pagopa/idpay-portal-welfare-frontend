@@ -585,20 +585,20 @@ const InitiativeOverview = () => {
                 }
               >
                 <Box
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}
+                  sx={{
+                    display: 'inline-flex',
+                    gridTemplateColumns: 'repeat(11, 1fr)',
+                    width: '100%',
+                  }}
                 >
-                  <Typography sx={{ gridColumn: 'span 5' }}>
-                    {t('pages.initiativeOverview.snackBar.approved')}{' '}
-                  </Typography>
-                  <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
+                  <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
+                  <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
                     {peopleReached(
                       initiativeSel.generalInfo.budget,
                       initiativeSel.generalInfo.beneficiaryBudget
                     )}
                   </Typography>
-                  <Typography sx={{ gridColumn: 'span 5' }}>
-                    {t('pages.initiativeOverview.snackBar.recipients')}
-                  </Typography>
+                  <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
                 </Box>
               </MuiAlert>
             </Snackbar>
@@ -700,20 +700,20 @@ const InitiativeOverview = () => {
                 }
               >
                 <Box
-                  sx={{ display: 'grid', gridTemplateColumns: 'repeat(11, 1fr)', width: '100%' }}
+                  sx={{
+                    display: 'inline-flex',
+                    gridTemplateColumns: 'repeat(11, 1fr)',
+                    width: '100%',
+                  }}
                 >
-                  <Typography sx={{ gridColumn: 'span 5' }}>
-                    {t('pages.initiativeOverview.snackBar.approved')}{' '}
-                  </Typography>
-                  <Typography sx={{ gridColumn: 'span 1', fontWeight: 600, textAlign: 'center' }}>
+                  <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
+                  <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
                     {peopleReached(
                       initiativeSel.generalInfo.budget,
                       initiativeSel.generalInfo.beneficiaryBudget
                     )}
                   </Typography>
-                  <Typography sx={{ gridColumn: 'span 5' }}>
-                    {t('pages.initiativeOverview.snackBar.recipients')}
-                  </Typography>
+                  <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
                 </Box>
               </MuiAlert>
             </Snackbar>
@@ -833,6 +833,7 @@ const InitiativeOverview = () => {
               initiativeSel.status === 'PUBLISHED' ? 'repeat(24, 1fr)' : 'repeat(10, 1fr)',
             alignContent: 'start',
             rowGap: 3,
+            opacity: initiativeSel.status === 'PUBLISHED' ? 0.3 : 1,
           }}
         >
           <Box
