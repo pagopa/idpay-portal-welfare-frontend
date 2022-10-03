@@ -6,6 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Initiative } from '../../../model/Initiative';
+import { peopleReached } from '../helpers';
 
 type Props = {
   openSnackBar: boolean;
@@ -56,12 +57,6 @@ const StatusSnackBar = ({ openSnackBar, setOpenSnackBar, fileStatus, initiative 
       default:
         return null;
     }
-  };
-
-  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt);
   };
 
   const renderAlertBody = (fileStatus: string | undefined, initiative: Initiative) => {

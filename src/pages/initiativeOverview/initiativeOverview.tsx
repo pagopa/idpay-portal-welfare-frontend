@@ -1,12 +1,10 @@
-import { Paper, Box, Typography, Button, Divider, Chip, Breadcrumbs } from '@mui/material';
+import { Paper, Box, Typography, Button, Chip, Breadcrumbs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import UpdateIcon from '@mui/icons-material/Update';
 import PublishIcon from '@mui/icons-material/Publish';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EuroIcon from '@mui/icons-material/Euro';
@@ -27,6 +25,8 @@ import { updateInitiativePublishedStatus } from '../../services/intitativeServic
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import StatusSnackBar from './components/StatusSnackBar';
+import { peopleReached } from './helpers';
+import DateReference from './components/DateReference';
 
 interface MatchParams {
   id: string;
@@ -119,24 +119,6 @@ const InitiativeOverview = () => {
 
   const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
 
-  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt);
-  };
-
-  const timeRemainingToJoin = () => {
-    const expirationDate =
-      typeof initiativeSel.generalInfo.rankingEndDate === 'object'
-        ? initiativeSel.generalInfo.rankingEndDate.getTime()
-        : 0;
-    const startDate =
-      typeof initiativeSel.generalInfo.rankingStartDate === 'object'
-        ? initiativeSel.generalInfo.rankingStartDate.getTime()
-        : 0;
-    return (expirationDate - startDate) / (1000 * 60 * 60 * 24);
-  };
-
   const handleUpdateInitiative = (id: string | undefined) => {
     history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
   };
@@ -166,101 +148,6 @@ const InitiativeOverview = () => {
     }
   };
 
-  const formatDate = (date: Date | undefined | string) =>
-    typeof date === 'object' && date.toLocaleDateString('fr-BE');
-
-  const chooseDateToFormat = (
-    startDate: Date | undefined | string,
-    rankingStart: Date | undefined | string
-  ) => {
-    if (typeof rankingStart === 'string' && rankingStart.length === 0) {
-      return formatDate(startDate);
-    } else {
-      return formatDate(rankingStart);
-    }
-  };
-
-  const dateMessageStatusApproved = (status: string | undefined) => {
-    if (status === 'APPROVED') {
-      return t('pages.initiativeOverview.info.otherinfo.start', {
-        date: chooseDateToFormat(
-          initiativeSel.generalInfo.startDate,
-          initiativeSel.generalInfo.rankingStartDate
-        ),
-      });
-    } else {
-      if (initiativeSel.generalInfo.rankingStartDate && initiativeSel.generalInfo.rankingEndDate) {
-        if (timeRemainingToJoin() <= 0) {
-          return t('pages.initiativeOverview.info.otherinfo.closed');
-        } else {
-          return t('pages.initiativeOverview.info.otherinfo.expiration', {
-            days: timeRemainingToJoin(),
-          });
-        }
-      } else {
-        return t('pages.initiativeOverview.info.otherinfo.start', {
-          date: formatDate(initiativeSel.generalInfo.startDate),
-        });
-      }
-    }
-  };
-
-  const renderDatesReference = (status: string | undefined) => (
-    <Box
-      sx={{
-        width: '100%',
-        gridTemplateRows: 'auto',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(8, 1fr)',
-        rowGap: 3,
-        alignContent: 'start',
-      }}
-    >
-      <Divider sx={{ gridColumn: 'span 8' }} />
-      <Box sx={{ gridColumn: 'span 8' }}>
-        <Typography variant="subtitle1">
-          {t('pages.initiativeOverview.info.otherinfo.title')}
-        </Typography>
-      </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>
-        {t('pages.initiativeOverview.info.otherinfo.adhesion')}
-      </Box>
-      <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        {status === 'APPROVED' ? (
-          <AccessTimeFilledIcon color="action" />
-        ) : (
-          <HourglassTopIcon color="action" />
-        )}
-      </Box>
-      <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-        {dateMessageStatusApproved(initiativeSel.status)}
-      </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.otherinfo.spend')}</Box>
-      <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        <AccessTimeFilledIcon color="action" />
-      </Box>
-      <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-        {t('pages.initiativeOverview.info.otherinfo.start', {
-          date: formatDate(initiativeSel.generalInfo.startDate),
-        })}
-      </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>
-        <ButtonNaked
-          size="small"
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-          startIcon={<AssignmentIcon />}
-          sx={{ color: 'primary.main', padding: 0 }}
-          weight="default"
-          variant="contained"
-          data-testid="view-datails-test"
-        >
-          {t('pages.initiativeOverview.info.otherinfo.details')}
-        </ButtonNaked>
-      </Box>
-    </Box>
-  );
-
   const renderConditionalInfoStatus = (status: string | undefined) => {
     switch (status) {
       case 'IN_REVISION':
@@ -284,9 +171,8 @@ const InitiativeOverview = () => {
           return;
         }
       case 'APPROVED':
-        return renderDatesReference(initiativeSel.status);
       case 'PUBLISHED':
-        return renderDatesReference(initiativeSel.status);
+        return <DateReference initiative={initiativeSel} handleViewDetails={handleViewDetails} />;
       case 'DRAFT':
       case 'TO_CHECK':
       case 'CLOSED':
