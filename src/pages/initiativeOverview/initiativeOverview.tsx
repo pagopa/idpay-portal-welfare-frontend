@@ -1,24 +1,10 @@
-import {
-  Paper,
-  Box,
-  Typography,
-  Button,
-  Divider,
-  Snackbar,
-  IconButton,
-  Chip,
-  Breadcrumbs,
-} from '@mui/material';
+import { Paper, Box, Typography, Button, Chip, Breadcrumbs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
-import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import UpdateIcon from '@mui/icons-material/Update';
 import PublishIcon from '@mui/icons-material/Publish';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import CloseIcon from '@mui/icons-material/Close';
-import SyncIcon from '@mui/icons-material/Sync';
-import HourglassTopIcon from '@mui/icons-material/HourglassTop';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EuroIcon from '@mui/icons-material/Euro';
@@ -27,7 +13,6 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import MuiAlert from '@mui/material/Alert';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -39,6 +24,8 @@ import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsServi
 import { updateInitiativePublishedStatus } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+import StatusSnackBar from './components/StatusSnackBar';
+import DateReference from './components/DateReference';
 
 interface MatchParams {
   id: string;
@@ -74,7 +61,8 @@ const InitiativeOverview = () => {
       const { id } = match.params as MatchParams;
       if (
         initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
-        initiativeSel.initiativeId === id
+        initiativeSel.initiativeId === id &&
+        initiativeSel.status !== 'DRAFT'
       ) {
         getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
           .then((res) => {
@@ -126,28 +114,16 @@ const InitiativeOverview = () => {
     }
   };
 
-  const handleCloseInitiativeOverviewDeleteModal = () =>
-    setOpenInitiativeOverviewDeleteModal(false);
-
-  const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
-
   const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
     const totalBudgetInt = parseInt(totalBudget, 10);
     const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
     return Math.floor(totalBudgetInt / budgetPerPersonInt);
   };
 
-  const timeRemainingToJoin = () => {
-    const expirationDate =
-      typeof initiativeSel.generalInfo.rankingEndDate === 'object'
-        ? initiativeSel.generalInfo.rankingEndDate.getTime()
-        : 0;
-    const startDate =
-      typeof initiativeSel.generalInfo.rankingStartDate === 'object'
-        ? initiativeSel.generalInfo.rankingStartDate.getTime()
-        : 0;
-    return (expirationDate - startDate) / (1000 * 60 * 60 * 24);
-  };
+  const handleCloseInitiativeOverviewDeleteModal = () =>
+    setOpenInitiativeOverviewDeleteModal(false);
+
+  const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
 
   const handleUpdateInitiative = (id: string | undefined) => {
     history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
@@ -178,21 +154,6 @@ const InitiativeOverview = () => {
     }
   };
 
-  const formatDate = (date: Date | undefined | string) =>
-    typeof date === 'object' && date.toLocaleDateString('fr-BE');
-
-  const chooseDateToFormat = (
-    startDate: Date | undefined | string,
-    rankingStart: Date | undefined | string
-  ) => {
-    if (typeof rankingStart === 'string' && rankingStart.length === 0) {
-      return formatDate(startDate);
-    } else {
-      return formatDate(rankingStart);
-    }
-  };
-
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderConditionalInfoStatus = (status: string | undefined) => {
     switch (status) {
       case 'IN_REVISION':
@@ -216,129 +177,84 @@ const InitiativeOverview = () => {
           return;
         }
       case 'APPROVED':
-        return (
-          <Box
-            sx={{
-              width: '100%',
-              gridTemplateRows: 'auto',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(8, 1fr)',
-              rowGap: 3,
-              alignContent: 'start',
-            }}
-          >
-            <Divider sx={{ gridColumn: 'span 8' }} />
-            <Box sx={{ gridColumn: 'span 8' }}>
-              <Typography variant="subtitle1">
-                {t('pages.initiativeOverview.info.otherinfo.title')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.otherinfo.adhesion')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-              <AccessTimeFilledIcon color="action" />
-            </Box>
-            <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-              {t('pages.initiativeOverview.info.otherinfo.start', {
-                date: chooseDateToFormat(
-                  initiativeSel.generalInfo.startDate,
-                  initiativeSel.generalInfo.rankingStartDate
-                ),
-              })}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.otherinfo.spend')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-              <AccessTimeFilledIcon color="action" />
-            </Box>
-            <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-              {t('pages.initiativeOverview.info.otherinfo.start', {
-                date: formatDate(initiativeSel.generalInfo.startDate),
-              })}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              <ButtonNaked
-                size="small"
-                // eslint-disable-next-line sonarjs/no-identical-functions
-                onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-                startIcon={<AssignmentIcon />}
-                sx={{ color: 'primary.main', padding: 0 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-datails-test"
-              >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
-              </ButtonNaked>
-            </Box>
-          </Box>
-        );
       case 'PUBLISHED':
-        return (
-          <Box
-            sx={{
-              width: '100%',
-              gridTemplateRows: 'auto',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(8, 1fr)',
-              rowGap: 3,
-              alignContent: 'start',
-            }}
-          >
-            <Divider sx={{ gridColumn: 'span 8' }} />
-            <Box sx={{ gridColumn: 'span 8' }}>
-              <Typography variant="subtitle1">
-                {t('pages.initiativeOverview.info.otherinfo.title')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.otherinfo.adhesion')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-              <HourglassTopIcon color="action" />
-            </Box>
-            <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-              {initiativeSel.generalInfo.rankingStartDate &&
-              initiativeSel.generalInfo.rankingEndDate
-                ? timeRemainingToJoin() <= 0
-                  ? t('pages.initiativeOverview.info.otherinfo.closed')
-                  : t('pages.initiativeOverview.info.otherinfo.expiration', {
-                      days: timeRemainingToJoin(),
-                    })
-                : t('pages.initiativeOverview.info.otherinfo.start', {
-                    date: formatDate(initiativeSel.generalInfo.startDate),
-                  })}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeOverview.info.otherinfo.spend')}
-            </Box>
-            <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-              <AccessTimeFilledIcon color="action" />
-            </Box>
-            <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-              {t('pages.initiativeOverview.info.otherinfo.start', {
-                date: formatDate(initiativeSel.generalInfo.startDate),
-              })}
-            </Box>
-            <Box sx={{ gridColumn: 'span 3' }}>
-              <ButtonNaked
-                size="small"
-                // eslint-disable-next-line sonarjs/no-identical-functions
-                onClick={() => handleViewDetails(initiativeSel.initiativeId)}
-                startIcon={<AssignmentIcon />}
-                sx={{ color: 'primary.main', padding: 0 }}
-                weight="default"
-                variant="contained"
-                data-testid="view-datails-test"
-              >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
-              </ButtonNaked>
-            </Box>
-          </Box>
-        );
+        return <DateReference initiative={initiativeSel} handleViewDetails={handleViewDetails} />;
       case 'DRAFT':
       case 'TO_CHECK':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionalSubtitleRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return t('pages.initiativeOverview.next.status.subtitleDraft');
+      case 'IN_REVISION':
+        return t('pages.initiativeOverview.next.status.subtitleReview');
+      case 'TO_CHECK':
+        return t('pages.initiativeOverview.next.status.subtitleModify');
+      case 'APPROVED':
+        return t('pages.initiativeOverview.next.status.subtitleApproved');
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionalStartIconRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return <EditIcon />;
+      case 'IN_REVISION':
+        return user.org_role === 'ope_base' ? null : <UpdateIcon color="disabled" />;
+      case 'TO_CHECK':
+        return <EditIcon />;
+      case 'APPROVED':
+        return <PublishIcon />;
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionalOnClickRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return handleUpdateInitiative(initiativeSel.initiativeId);
+      case 'IN_REVISION':
+        return handleViewDetails(initiativeSel.initiativeId);
+      case 'TO_CHECK':
+        return handleUpdateInitiative(initiativeSel.initiativeId);
+      case 'APPROVED':
+        return setPublishModalOpen(true);
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionaButtonNameRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return t('pages.initiativeOverview.next.status.draft');
+      case 'IN_REVISION':
+        return user.org_role === 'ope_base'
+          ? t('pages.initiativeOverview.next.status.checkInitiative')
+          : t('pages.initiativeOverview.next.status.review');
+      case 'TO_CHECK':
+        return t('pages.initiativeOverview.next.status.modify');
+      case 'APPROVED':
+        return t('pages.initiativeOverview.next.status.approved');
+      case 'PUBLISHED':
       case 'CLOSED':
       case 'SUSPENDED':
       default:
@@ -349,57 +265,15 @@ const InitiativeOverview = () => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderNextStatus = (status: string) => (
     <>
-      <Box sx={{ gridColumn: 'span 8' }}>
-        {status === 'DRAFT'
-          ? t('pages.initiativeOverview.next.status.subtitleDraft')
-          : status === 'IN_REVISION'
-          ? t('pages.initiativeOverview.next.status.subtitleReview')
-          : status === 'TO_CHECK'
-          ? t('pages.initiativeOverview.next.status.subtitleModify')
-          : status === 'APPROVED'
-          ? t('pages.initiativeOverview.next.status.subtitleApproved')
-          : null}
-      </Box>
+      <Box sx={{ gridColumn: 'span 8' }}>{conditionalSubtitleRendering(initiativeSel.status)}</Box>
       <Box sx={{ gridColumn: 'span 8' }}>
         <Button
           disabled={status === 'IN_REVISION' ? true : false}
           variant="contained"
-          startIcon={
-            status === 'DRAFT' ? (
-              <EditIcon />
-            ) : status === 'IN_REVISION' && user.org_role === 'ope_base' ? null : status ===
-              'IN_REVISION' ? (
-              <UpdateIcon color="disabled" />
-            ) : status === 'TO_CHECK' ? (
-              <EditIcon />
-            ) : status === 'APPROVED' ? (
-              <PublishIcon />
-            ) : null
-          }
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            status === 'DRAFT'
-              ? handleUpdateInitiative(initiativeSel.initiativeId)
-              : status === 'IN_REVISION'
-              ? handleViewDetails(initiativeSel.initiativeId)
-              : status === 'TO_CHECK'
-              ? handleUpdateInitiative(initiativeSel.initiativeId)
-              : status === 'APPROVED'
-              ? setPublishModalOpen(true)
-              : null;
-          }}
+          startIcon={conditionalStartIconRendering(initiativeSel.status)}
+          onClick={() => conditionalOnClickRendering(initiativeSel.status)}
         >
-          {status === 'DRAFT'
-            ? t('pages.initiativeOverview.next.status.draft')
-            : status === 'IN_REVISION' && user.org_role === 'ope_base'
-            ? t('pages.initiativeOverview.next.status.checkInitiative')
-            : status === 'IN_REVISION'
-            ? t('pages.initiativeOverview.next.status.review')
-            : status === 'TO_CHECK'
-            ? t('pages.initiativeOverview.next.status.modify')
-            : status === 'APPROVED'
-            ? t('pages.initiativeOverview.next.status.approved')
-            : null}
+          {conditionaButtonNameRendering(initiativeSel.status)}
         </Button>
         {status === 'APPROVED' ? (
           <ConfirmPublishInitiativeModal
@@ -543,185 +417,30 @@ const InitiativeOverview = () => {
 
   const renderTypeSnackBarStatus = (status: string) => {
     if (user.org_role === 'ope_base') {
-      switch (status) {
-        case 'OK':
-          return (
-            <Snackbar
-              open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
-            >
-              <MuiAlert
-                sx={{
-                  gridColumn: 'span 10',
-                  mb: 3,
-                  width: '100%',
-                  gridTemplateColumns: 'repeat(10, 1fr)',
-                }}
-                severity="info"
-                elevation={6}
-                variant="outlined"
-                action={
-                  <>
-                    <ButtonNaked
-                      size="medium"
-                      sx={{
-                        padding: 0,
-                        color: 'primary.main',
-                        fontWeight: 700,
-                        gridColumn: 'span 1',
-                      }}
-                      weight="default"
-                      variant="contained"
-                      data-testid="view-users-test"
-                    >
-                      {t('pages.initiativeOverview.snackBar.users')}
-                    </ButtonNaked>
-                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
-                      <CloseIcon />
-                    </IconButton>
-                  </>
-                }
-              >
-                <Box
-                  sx={{
-                    display: 'inline-flex',
-                    gridTemplateColumns: 'repeat(11, 1fr)',
-                    width: '100%',
-                  }}
-                >
-                  <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
-                  <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
-                    {peopleReached(
-                      initiativeSel.generalInfo.budget,
-                      initiativeSel.generalInfo.beneficiaryBudget
-                    )}
-                  </Typography>
-                  <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
-                </Box>
-              </MuiAlert>
-            </Snackbar>
-          );
-        case 'VALIDATE':
-        case 'PROCESSING':
-        case 'TO_SCHEDULE':
-          return (
-            <Snackbar
-              open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
-            >
-              <MuiAlert
-                sx={{
-                  gridColumn: 'span 10',
-                  mb: 3,
-                  width: '100%',
-                  gridTemplateColumns: 'repeat(10, 1fr)',
-                }}
-                severity="info"
-                elevation={6}
-                variant="outlined"
-                icon={<SyncIcon />}
-              >
-                {t('pages.initiativeOverview.snackBar.pending')}
-              </MuiAlert>
-            </Snackbar>
-          );
-        case 'KO':
-        case 'PROC_KO':
-          return (
-            <Snackbar
-              open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
-            >
-              <MuiAlert
-                sx={{
-                  gridColumn: 'span 10',
-                  mb: 3,
-                  width: '100%',
-                  gridTemplateColumns: 'repeat(10, 1fr)',
-                }}
-                severity="error"
-                elevation={6}
-                variant="outlined"
-                action={
-                  <>
-                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
-                      <CloseIcon />
-                    </IconButton>
-                  </>
-                }
-              >
-                {t('pages.initiativeOverview.snackBar.uploadFailed')}
-              </MuiAlert>
-            </Snackbar>
-          );
-        default:
-          return null;
-      }
+      return (
+        <StatusSnackBar
+          openSnackBar={openSnackbar}
+          setOpenSnackBar={setOpenSnackBar}
+          fileStatus={status}
+          initiative={initiativeSel}
+        />
+      );
     } else {
       switch (status) {
         case 'OK':
           return (
-            <Snackbar
-              open={openSnackbar}
-              sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}
-            >
-              <MuiAlert
-                sx={{
-                  gridColumn: 'span 10',
-                  mb: 3,
-                  width: '100%',
-                  gridTemplateColumns: 'repeat(10, 1fr)',
-                }}
-                severity="info"
-                elevation={6}
-                variant="outlined"
-                action={
-                  <>
-                    <ButtonNaked
-                      size="medium"
-                      sx={{
-                        padding: 0,
-                        color: 'primary.main',
-                        fontWeight: 700,
-                        gridColumn: 'span 1',
-                      }}
-                      weight="default"
-                      variant="contained"
-                      data-testid="view-users-test"
-                    >
-                      {t('pages.initiativeOverview.snackBar.users')}
-                    </ButtonNaked>
-                    <IconButton aria-label="close" onClick={handleCloseSnackBar} sx={{ mx: 1 }}>
-                      <CloseIcon />
-                    </IconButton>
-                  </>
-                }
-              >
-                <Box
-                  sx={{
-                    display: 'inline-flex',
-                    gridTemplateColumns: 'repeat(11, 1fr)',
-                    width: '100%',
-                  }}
-                >
-                  <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
-                  <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
-                    {peopleReached(
-                      initiativeSel.generalInfo.budget,
-                      initiativeSel.generalInfo.beneficiaryBudget
-                    )}
-                  </Typography>
-                  <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
-                </Box>
-              </MuiAlert>
-            </Snackbar>
+            <StatusSnackBar
+              openSnackBar={openSnackbar}
+              setOpenSnackBar={setOpenSnackBar}
+              fileStatus={status}
+              initiative={initiativeSel}
+            />
           );
         case 'VALIDATE':
         case 'PROCESSING':
         case 'TO_SCHEDULE':
         case 'KO':
         case 'PROC_KO':
-          return;
         default:
           return null;
       }

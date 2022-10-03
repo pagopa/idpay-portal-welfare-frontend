@@ -9,7 +9,7 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
   it('renders without crashing', () => {
