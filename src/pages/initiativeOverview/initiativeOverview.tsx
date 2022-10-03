@@ -377,13 +377,12 @@ const InitiativeOverview = () => {
         </Box>
       ) : null}
 
-      {status !== 'PUBLISHED' ? (
+      {status !== 'PUBLISHED' && status !== 'IN_REVISION' ? (
         <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
           <ButtonNaked
-            disabled
             size="small"
             onClick={handleOpenInitiativeOverviewDeleteModal}
-            startIcon={<DeleteOutlineIcon color="disabled" />}
+            startIcon={<DeleteOutlineIcon />}
             sx={{ padding: 0, color: 'error.main', fontWeight: 700 }}
             weight="default"
             variant="naked"
@@ -396,7 +395,7 @@ const InitiativeOverview = () => {
             handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
           />
         </Box>
-      ) : (
+      ) : status === 'PUBLISHED' ? (
         <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
           <ButtonNaked
             disabled
@@ -411,7 +410,7 @@ const InitiativeOverview = () => {
             {t('pages.initiativeList.actions.suspend')}
           </ButtonNaked>
         </Box>
-      )}
+      ) : null}
     </Box>
   );
 

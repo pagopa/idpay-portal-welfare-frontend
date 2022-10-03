@@ -89,3 +89,6 @@ export const updateInitiativeToCheckStatus = (id: string): Promise<void> =>
 
 export const updateInitiativePublishedStatus = (id: string): Promise<void> =>
   InitiativeApi.updateInitiativePublishedStatus(id).then((res) => res);
+
+export const logicallyDeleteInitiative = (id: string): Promise<void> =>
+  InitiativeApi.logicallyDeleteInitiative(id).then((res) => res);

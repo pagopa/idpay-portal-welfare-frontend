@@ -184,4 +184,9 @@ export const InitiativeApi = {
     const result = await apiClient.updateInitiativePublishedStatus({ initiativeId: id });
     return extractResponse(result, 204, onRedirectToLogin);
   },
+
+  logicallyDeleteInitiative: async (id: string): Promise<void> => {
+    const result = await apiClient.logicallyDeleteInitiative({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
 };

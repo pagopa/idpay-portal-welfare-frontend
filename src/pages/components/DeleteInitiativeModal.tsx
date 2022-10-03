@@ -1,8 +1,11 @@
 import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
 import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
+import ROUTES from '../../routes';
+import { logicallyDeleteInitiative } from '../../services/intitativeService';
 
 type Props = {
   openInitiativeDeleteModal: boolean;
@@ -15,9 +18,27 @@ const DeleteInitiativeModal = ({
 }: Props) => {
   const { t } = useTranslation();
   const initiativeSel = useAppSelector(initiativeSelector);
+  const history = useHistory();
 
-  const handleDelete = (id: string) => {
-    console.log(id);
+  const handleDeleteInitiative = (id: string | undefined) => {
+    if (
+      initiativeSel.status !== 'PUBLISHED' &&
+      initiativeSel.status !== 'IN_REVISION' &&
+      typeof id === 'string'
+    ) {
+      logicallyDeleteInitiative(id)
+        .then((_res) => history.replace(ROUTES.HOME))
+        .catch((error) => ({
+          id: 'DELETE_INITIATIVE_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred deleting initiative',
+          displayableDescription: t('errors.cantDeleteInitiative'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        }));
+    }
   };
 
   return (
@@ -69,9 +90,7 @@ const DeleteInitiativeModal = ({
               variant="contained"
               sx={{ gridArea: 'deleteBtn', justifySelf: 'end' }}
               onClick={(e) => {
-                handleDelete(
-                  typeof initiativeSel.initiativeId === 'string' ? initiativeSel.initiativeId : ''
-                );
+                handleDeleteInitiative(initiativeSel.initiativeId);
                 handleCloseInitiativeDeleteModal(e);
               }}
             >
