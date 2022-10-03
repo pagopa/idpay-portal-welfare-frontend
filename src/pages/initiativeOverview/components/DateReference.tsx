@@ -87,7 +87,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         {t('pages.initiativeOverview.info.otherinfo.adhesion')}
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        {status === 'APPROVED' ? (
+        {initiative.status === 'APPROVED' ? (
           <AccessTimeFilledIcon color="action" />
         ) : (
           <HourglassTopIcon color="action" />
