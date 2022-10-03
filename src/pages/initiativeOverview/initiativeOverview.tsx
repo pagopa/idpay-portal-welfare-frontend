@@ -25,7 +25,6 @@ import { updateInitiativePublishedStatus } from '../../services/intitativeServic
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import StatusSnackBar from './components/StatusSnackBar';
-import { peopleReached } from './helpers';
 import DateReference from './components/DateReference';
 
 interface MatchParams {
@@ -62,7 +61,8 @@ const InitiativeOverview = () => {
       const { id } = match.params as MatchParams;
       if (
         initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
-        initiativeSel.initiativeId === id
+        initiativeSel.initiativeId === id &&
+        initiativeSel.status !== 'DRAFT'
       ) {
         getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
           .then((res) => {
@@ -112,6 +112,12 @@ const InitiativeOverview = () => {
           showCloseIcon: true,
         }));
     }
+  };
+
+  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
+    const totalBudgetInt = parseInt(totalBudget, 10);
+    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
+    return Math.floor(totalBudgetInt / budgetPerPersonInt);
   };
 
   const handleCloseInitiativeOverviewDeleteModal = () =>
@@ -182,60 +188,92 @@ const InitiativeOverview = () => {
     }
   };
 
+  const conditionalSubtitleRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return t('pages.initiativeOverview.next.status.subtitleDraft');
+      case 'IN_REVISION':
+        return t('pages.initiativeOverview.next.status.subtitleReview');
+      case 'TO_CHECK':
+        return t('pages.initiativeOverview.next.status.subtitleModify');
+      case 'APPROVED':
+        return t('pages.initiativeOverview.next.status.subtitleApproved');
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionalStartIconRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return <EditIcon />;
+      case 'IN_REVISION':
+        return user.org_role === 'ope_base' ? null : <UpdateIcon color="disabled" />;
+      case 'TO_CHECK':
+        return <EditIcon />;
+      case 'APPROVED':
+        return <PublishIcon />;
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionalOnClickRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return handleUpdateInitiative(initiativeSel.initiativeId);
+      case 'IN_REVISION':
+        return handleViewDetails(initiativeSel.initiativeId);
+      case 'TO_CHECK':
+        return handleUpdateInitiative(initiativeSel.initiativeId);
+      case 'APPROVED':
+        return setPublishModalOpen(true);
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const conditionaButtonNameRendering = (status: string | undefined) => {
+    switch (status) {
+      case 'DRAFT':
+        return t('pages.initiativeOverview.next.status.draft');
+      case 'IN_REVISION':
+        return user.org_role === 'ope_base'
+          ? t('pages.initiativeOverview.next.status.checkInitiative')
+          : t('pages.initiativeOverview.next.status.review');
+      case 'TO_CHECK':
+        return t('pages.initiativeOverview.next.status.modify');
+      case 'APPROVED':
+        return t('pages.initiativeOverview.next.status.approved');
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderNextStatus = (status: string) => (
     <>
-      <Box sx={{ gridColumn: 'span 8' }}>
-        {status === 'DRAFT'
-          ? t('pages.initiativeOverview.next.status.subtitleDraft')
-          : status === 'IN_REVISION'
-          ? t('pages.initiativeOverview.next.status.subtitleReview')
-          : status === 'TO_CHECK'
-          ? t('pages.initiativeOverview.next.status.subtitleModify')
-          : status === 'APPROVED'
-          ? t('pages.initiativeOverview.next.status.subtitleApproved')
-          : null}
-      </Box>
+      <Box sx={{ gridColumn: 'span 8' }}>{conditionalSubtitleRendering(initiativeSel.status)}</Box>
       <Box sx={{ gridColumn: 'span 8' }}>
         <Button
           disabled={status === 'IN_REVISION' ? true : false}
           variant="contained"
-          startIcon={
-            status === 'DRAFT' ? (
-              <EditIcon />
-            ) : status === 'IN_REVISION' && user.org_role === 'ope_base' ? null : status ===
-              'IN_REVISION' ? (
-              <UpdateIcon color="disabled" />
-            ) : status === 'TO_CHECK' ? (
-              <EditIcon />
-            ) : status === 'APPROVED' ? (
-              <PublishIcon />
-            ) : null
-          }
-          onClick={() => {
-            // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-            status === 'DRAFT'
-              ? handleUpdateInitiative(initiativeSel.initiativeId)
-              : status === 'IN_REVISION'
-              ? handleViewDetails(initiativeSel.initiativeId)
-              : status === 'TO_CHECK'
-              ? handleUpdateInitiative(initiativeSel.initiativeId)
-              : status === 'APPROVED'
-              ? setPublishModalOpen(true)
-              : null;
-          }}
+          startIcon={conditionalStartIconRendering(initiativeSel.status)}
+          onClick={() => conditionalOnClickRendering(initiativeSel.status)}
         >
-          {status === 'DRAFT'
-            ? t('pages.initiativeOverview.next.status.draft')
-            : status === 'IN_REVISION' && user.org_role === 'ope_base'
-            ? t('pages.initiativeOverview.next.status.checkInitiative')
-            : status === 'IN_REVISION'
-            ? t('pages.initiativeOverview.next.status.review')
-            : status === 'TO_CHECK'
-            ? t('pages.initiativeOverview.next.status.modify')
-            : status === 'APPROVED'
-            ? t('pages.initiativeOverview.next.status.approved')
-            : null}
+          {conditionaButtonNameRendering(initiativeSel.status)}
         </Button>
         {status === 'APPROVED' ? (
           <ConfirmPublishInitiativeModal
