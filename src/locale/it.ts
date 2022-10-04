@@ -560,5 +560,6 @@ export default {
     cantRejectInitiative: "Non è stato possibile rifiutare l'iniziativa. Riprova",
     cantApproveInitiative: 'Non è stato possibile inviare la  revisione. Riprova.',
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
+    cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
   },
 };
