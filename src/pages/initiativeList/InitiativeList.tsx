@@ -36,6 +36,7 @@ import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { useIDPayUser } from '../../hooks/useIDPayUser';
 import { IDPayUser } from '../../model/IDPayUser';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -128,6 +129,7 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
   const handleCloseActionsMenu = () => {
     setAnchorEl(null);
   };
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   type RenderActionProps = {
     id: string;
@@ -184,12 +186,26 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
     }
   };
 
+  const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+  const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+
   const RenderDelete = ({ status }: RenderActionProps) => {
     switch (status) {
       case 'DRAFT':
       case 'TO_CHECK':
       case 'APPROVED':
-        return <MenuItem disabled>{t('pages.initiativeList.actions.delete')}</MenuItem>;
+        return (
+          <>
+            <MenuItem onClick={handleOpenDeleteModal}>
+              {t('pages.initiativeList.actions.delete')}
+            </MenuItem>
+            <DeleteInitiativeModal
+              openInitiativeDeleteModal={openDeleteModal}
+              handleCloseInitiativeDeleteModal={handleCloseDeleteModal}
+            />
+          </>
+        );
       case 'IN_REVISION':
       case 'PUBLISHED':
       case 'CLOSED':

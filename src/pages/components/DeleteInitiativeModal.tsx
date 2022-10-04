@@ -2,6 +2,7 @@ import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
 import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES from '../../routes';
@@ -19,6 +20,7 @@ const DeleteInitiativeModal = ({
   const { t } = useTranslation();
   const initiativeSel = useAppSelector(initiativeSelector);
   const history = useHistory();
+  const addError = useErrorDispatcher();
 
   const handleDeleteInitiative = (id: string | undefined) => {
     if (
@@ -27,17 +29,22 @@ const DeleteInitiativeModal = ({
       typeof id === 'string'
     ) {
       logicallyDeleteInitiative(id)
-        .then((_res) => history.replace(ROUTES.HOME))
-        .catch((error) => ({
-          id: 'DELETE_INITIATIVE_ERROR',
-          blocking: false,
-          error,
-          techDescription: 'An error occurred deleting initiative',
-          displayableDescription: t('errors.cantDeleteInitiative'),
-          toNotify: true,
-          component: 'Toast',
-          showCloseIcon: true,
-        }));
+        .then((_res) =>
+          ROUTES.HOME ? history.replace(ROUTES.INITIATIVE_LIST) : history.replace(ROUTES.HOME)
+        )
+        .catch((error) =>
+          addError({
+            id: 'DELETE_INITIATIVE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred deleting initiative',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.cantDeleteInitiative'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        );
     }
   };
 
