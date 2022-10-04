@@ -29,9 +29,7 @@ const DeleteInitiativeModal = ({
       typeof id === 'string'
     ) {
       logicallyDeleteInitiative(id)
-        .then((_res) =>
-          ROUTES.HOME ? history.replace(ROUTES.INITIATIVE_LIST) : history.replace(ROUTES.HOME)
-        )
+        .then((_res) => history.replace(ROUTES.INITIATIVE_LIST))
         .catch((error) =>
           addError({
             id: 'DELETE_INITIATIVE_ERROR',
