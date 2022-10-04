@@ -47,9 +47,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
             criteriaToSubmit={[]}
             // eslint-disable-next-line react/jsx-no-bind
             setCriteriaToSubmit={function (
-              value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
-              console.log(value);
+              //
             }}
           />
         </Provider>
@@ -86,9 +86,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -134,9 +134,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -166,9 +166,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -199,9 +199,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -234,9 +234,9 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );

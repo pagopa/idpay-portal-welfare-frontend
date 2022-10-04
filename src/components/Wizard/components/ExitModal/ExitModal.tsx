@@ -28,8 +28,9 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
       BackdropProps={{
         timeout: 500,
       }}
+      data-testid="exit-modal-test"
     >
-      <Fade in={openExitModal}>
+      <Fade in={openExitModal} data-testid="fade-test">
         <Box
           sx={{
             position: 'absolute',

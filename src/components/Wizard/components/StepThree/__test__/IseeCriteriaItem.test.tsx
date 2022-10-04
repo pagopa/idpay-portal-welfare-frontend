@@ -41,9 +41,9 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
             criteriaToSubmit={[]}
             // eslint-disable-next-line react/jsx-no-bind
             setCriteriaToSubmit={function (
-              value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
-              console.log(value);
+              //
             }}
           />
         </Provider>
@@ -62,9 +62,9 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -91,9 +91,9 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -173,9 +173,9 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );

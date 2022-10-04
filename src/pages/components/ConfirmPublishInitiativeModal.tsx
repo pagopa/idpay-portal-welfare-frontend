@@ -36,8 +36,9 @@ const ConfirmPublishInitiativeModal = ({
       BackdropProps={{
         timeout: 500,
       }}
+      data-testid="confirm-modal-publish"
     >
-      <Fade in={publishModalOpen}>
+      <Fade in={publishModalOpen} data-testid="fade-test">
         <Box
           sx={{
             position: 'absolute',

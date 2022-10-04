@@ -26,17 +26,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -56,17 +56,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -138,17 +138,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -187,17 +187,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -259,17 +259,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         <Generalnfo
           action={''}
           // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (value: SetStateAction<string>) {
-            console.log(value);
+          setAction={function (_value: SetStateAction<string>): void {
+            //
           }}
           currentStep={0}
           // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (value: SetStateAction<number>) {
-            console.log(value);
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
           }}
           // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (value: SetStateAction<boolean>): void {
-            console.log(value);
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
           }}
           // eslint-disable-next-line react/jsx-no-bind
           setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -312,17 +312,17 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           <Generalnfo
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={0}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -424,21 +424,25 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
 //     const { getByTestId, getByRole, container } = render(
 //       <Provider store={store}>
 //         <Generalnfo
-//           action={''}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setAction={function (value: SetStateAction<string>): void {
-//             console.log(value);
-//           }}
-//           currentStep={0}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setCurrentStep={function (value: SetStateAction<number>): void {
-//             console.log(value);
-//           }}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setDisabledNext={function (value: SetStateAction<boolean>): void {
-//             console.log(value);
-//           }}
-//         />
+//   action={''}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setAction={function (_value: SetStateAction<string>): void {
+//     //
+//   }}
+//   currentStep={0}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setCurrentStep={function (_value: SetStateAction<number>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+// />
 //       </Provider>
 //     );
 
@@ -529,22 +533,26 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
 //     const fn = jest.fn();
 //     const { getByRole } = render(
 //       <Provider store={store}>
-//         <Generalnfo
-//           action={''}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setAction={function (value: SetStateAction<string>): void {
-//             console.log(value);
-//           }}
-//           currentStep={0}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setCurrentStep={function (value: SetStateAction<number>): void {
-//             console.log(value);
-//           }}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setDisabledNext={function (value: SetStateAction<boolean>): void {
-//             console.log(value);
-//           }}
-//         />
+//       <Generalnfo
+//   action={''}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setAction={function (_value: SetStateAction<string>): void {
+//     //
+//   }}
+//   currentStep={0}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setCurrentStep={function (_value: SetStateAction<number>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+// />
 //       </Provider>
 //     );
 
@@ -566,21 +574,25 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
 //     const { container } = render(
 //       <Provider store={store}>
 //         <Generalnfo
-//           action={''}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setAction={function (value: SetStateAction<string>): void {
-//             console.log(value);
-//           }}
-//           currentStep={0}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setCurrentStep={function (value: SetStateAction<number>): void {
-//             console.log(value);
-//           }}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setDisabledNext={function (value: SetStateAction<boolean>): void {
-//             console.log(value);
-//           }}
-//         />
+//            action={''}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setAction={function (_value: SetStateAction<string>): void {
+//     //
+//   }}
+//   currentStep={0}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setCurrentStep={function (_value: SetStateAction<number>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+// />
 //       </Provider>
 //     );
 
@@ -597,21 +609,25 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
 //     const { container } = render(
 //       <Provider store={store}>
 //         <Generalnfo
-//           action={''}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setAction={function (value: SetStateAction<string>): void {
-//             console.log(value);
-//           }}
-//           currentStep={0}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setCurrentStep={function (value: SetStateAction<number>): void {
-//             console.log(value);
-//           }}
-//           // eslint-disable-next-line react/jsx-no-bind
-//           setDisabledNext={function (value: SetStateAction<boolean>): void {
-//             console.log(value);
-//           }}
-//         />
+//   action={''}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setAction={function (_value: SetStateAction<string>): void {
+//     //
+//   }}
+//   currentStep={0}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setCurrentStep={function (_value: SetStateAction<number>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+//   // eslint-disable-next-line react/jsx-no-bind
+//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
+//     //
+//   }}
+// />
 //       </Provider>
 //     );
 //     type TestElement = Document | Element | Window | Node;

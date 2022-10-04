@@ -56,8 +56,9 @@ const DeleteInitiativeModal = ({
       BackdropProps={{
         timeout: 500,
       }}
+      data-testid="delete-modal-test"
     >
-      <Fade in={openInitiativeDeleteModal}>
+      <Fade in={openInitiativeDeleteModal} data-testid="fade-test">
         <Box
           sx={{
             position: 'absolute',

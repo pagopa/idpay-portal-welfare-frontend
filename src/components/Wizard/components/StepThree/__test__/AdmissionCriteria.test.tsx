@@ -29,17 +29,17 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
           <AdmissionCriteria
             action={''}
             // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (value: SetStateAction<string>): void {
-              console.log(value);
+            setAction={function (_value: SetStateAction<string>): void {
+              //
             }}
             currentStep={1}
             // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (value: SetStateAction<number>): void {
-              console.log(value);
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (value: SetStateAction<boolean>): void {
-              console.log(value);
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDraftEnabled={function (_value: SetStateAction<boolean>): void {
@@ -86,17 +86,17 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         <AdmissionCriteria
           action={''}
           // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (value: SetStateAction<string>): void {
-            console.log(value);
+          setAction={function (_value: SetStateAction<string>): void {
+            //
           }}
           currentStep={1}
           // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (value: SetStateAction<number>): void {
-            console.log(value);
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
           }}
           // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (value: SetStateAction<boolean>): void {
-            console.log(value);
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
           }}
           // eslint-disable-next-line react/jsx-no-bind
           setDraftEnabled={function (_value: SetStateAction<boolean>): void {

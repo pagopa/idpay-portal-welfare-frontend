@@ -47,16 +47,16 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
             manualCriteriaToRender={[]}
             // eslint-disable-next-line react/jsx-no-bind
             setManualCriteriaToRender={function (
-              value: SetStateAction<Array<ManualCriteriaItem>>
+              _value: SetStateAction<Array<ManualCriteriaItem>>
             ): void {
-              console.log(value);
+              //
             }}
             criteriaToSubmit={[]}
             // eslint-disable-next-line react/jsx-no-bind
             setCriteriaToSubmit={function (
-              value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
-              console.log(value);
+              //
             }}
           />
         </Provider>
@@ -92,16 +92,16 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         manualCriteriaToRender={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setManualCriteriaToRender={function (
-          value: SetStateAction<Array<ManualCriteriaItem>>
+          _value: SetStateAction<Array<ManualCriteriaItem>>
         ): void {
-          console.log(value);
+          //
         }}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -130,16 +130,16 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         manualCriteriaToRender={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setManualCriteriaToRender={function (
-          value: SetStateAction<Array<ManualCriteriaItem>>
+          _value: SetStateAction<Array<ManualCriteriaItem>>
         ): void {
-          console.log(value);
+          //
         }}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -188,16 +188,16 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         manualCriteriaToRender={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setManualCriteriaToRender={function (
-          value: SetStateAction<Array<ManualCriteriaItem>>
+          _value: SetStateAction<Array<ManualCriteriaItem>>
         ): void {
-          console.log(value);
+          //
         }}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
@@ -260,16 +260,16 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         manualCriteriaToRender={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setManualCriteriaToRender={function (
-          value: SetStateAction<Array<ManualCriteriaItem>>
+          _value: SetStateAction<Array<ManualCriteriaItem>>
         ): void {
-          console.log(value);
+          //
         }}
         criteriaToSubmit={[]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
-          console.log(value);
+          //
         }}
       />
     );
