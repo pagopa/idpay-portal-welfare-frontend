@@ -36,6 +36,8 @@ import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { useIDPayUser } from '../../hooks/useIDPayUser';
 import { IDPayUser } from '../../model/IDPayUser';
+import { usePermissions } from '../../hooks/usePermissions';
+import { USER_PERMISSIONS } from '../../utils/constants';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -254,6 +256,8 @@ const InitiativeList = () => {
   const addError = useErrorDispatcher();
   // const setLoading = useLoading('GET_INITIATIVE_LIST');
 
+  const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
+
   useEffect(() => {
     // setLoading(true);
     getInitativeSummary()
@@ -351,7 +355,7 @@ const InitiativeList = () => {
         variantTitle="h4"
         variantSubTitle="body1"
       />
-      {user.org_role !== 'ope_base' ? (
+      {userCanCreateInitiative ? (
         <Box
           sx={{
             display: 'grid',
@@ -484,7 +488,7 @@ const InitiativeList = () => {
                 <Typography sx={{ display: 'inline' }}>
                   {t('pages.initiativeList.emptyList')}
                 </Typography>
-                {user.org_role !== 'ope_base' && (
+                {userCanCreateInitiative && (
                   <Button
                     sx={[
                       {

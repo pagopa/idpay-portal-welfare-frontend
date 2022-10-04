@@ -4,9 +4,12 @@ import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
 import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { userActions } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { Dispatch } from 'react';
 import { parseJwt } from '../utils/jwt-utils';
 import { JWTUser } from '../model/JwtUser';
-// import { getUserPermission } from '../services/rolePermissionService';
+import { getUserPermission } from '../services/rolePermissionService';
+import { setUserRole, setPermissionsList } from '../redux/slices/permissionsSlice';
+import { Permission } from '../model/Permission';
 
 const mockedUser = {
   uid: '0',
@@ -31,6 +34,15 @@ export const userFromJwtToken: (token: string) => User = function (token: string
   };
 };
 
+const saveUserPermissions = (dispatch: Dispatch<any>) => {
+  getUserPermission()
+    .then((res) => {
+      dispatch(setUserRole(res.role as string));
+      dispatch(setPermissionsList(res.permissions as Array<Permission>));
+    })
+    .catch((error) => console.log(error));
+};
+
 /** A custom hook used to obtain a function to check if there is a valid JWT token, loading into redux the logged user object */
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -41,9 +53,7 @@ export const useLogin = () => {
       setUser(mockedUser);
       storageTokenOps.write(CONFIG.TEST.JWT);
       storageUserOps.write(mockedUser);
-      // getUserPermission()
-      //   .then((res) => console.log(res))
-      //   .catch((error) => console.log(error));
+      saveUserPermissions(dispatch);
       return;
     }
 
@@ -65,15 +75,11 @@ export const useLogin = () => {
       const user: User = userFromJwtToken(token);
       storageUserOps.write(user);
       setUser(user);
-      // getUserPermission()
-      //   .then((res) => console.log(res))
-      //   .catch((error) => console.log(error));
+      saveUserPermissions(dispatch);
     } else {
       // Otherwise, set the user to the one stored in the storage
       setUser(sessionStorageUser);
-      // getUserPermission()
-      //   .then((res) => console.log(res))
-      //   .catch((error) => console.log(error));
+      saveUserPermissions(dispatch);
     }
   };
 
