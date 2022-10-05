@@ -7,6 +7,8 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES from '../../routes';
 import { logicallyDeleteInitiative } from '../../services/intitativeService';
+import { USER_PERMISSIONS } from '../../utils/constants';
+import { usePermissions } from '../../hooks/usePermissions';
 
 type Props = {
   openInitiativeDeleteModal: boolean;
@@ -21,9 +23,11 @@ const DeleteInitiativeModal = ({
   const initiativeSel = useAppSelector(initiativeSelector);
   const history = useHistory();
   const addError = useErrorDispatcher();
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   const handleDeleteInitiative = (id: string | undefined) => {
     if (
+      userCanDeleteInitiative &&
       initiativeSel.status !== 'PUBLISHED' &&
       initiativeSel.status !== 'IN_REVISION' &&
       typeof id === 'string'

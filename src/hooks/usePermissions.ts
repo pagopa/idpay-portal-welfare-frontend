@@ -6,20 +6,11 @@ import { Permission } from '../model/Permission';
 export const usePermissions = (action: USER_PERMISSIONS): boolean => {
   const permissionsList = useAppSelector(permissionsSelector);
   if (Array.isArray(permissionsList)) {
-    // eslint-disable-next-line functional/no-let
-    let selectedPermission: Permission = {
-      name: '',
-      description: '',
-      mode: '',
-    };
-    permissionsList.forEach((p) => {
-      if (p.name === action) {
-        selectedPermission = { ...p };
-      }
-    });
-    return selectedPermission.mode === 'enabled';
+    const selectedPermission: Permission | undefined = permissionsList.find(
+      (p) => p.name === action
+    );
+    return typeof selectedPermission === 'object' ? selectedPermission.mode === 'enabled' : false;
   } else {
-    // TODO? handle error
     return false;
   }
 };

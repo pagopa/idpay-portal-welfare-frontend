@@ -1,13 +1,6 @@
 import { addDays } from 'date-fns';
 import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
-export const peopleReached = (totalBudget: string, budgetPerPerson: string): any => {
-  const totalBudgetInt = parseInt(totalBudget, 10);
-  const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-
-  return Math.floor(totalBudgetInt / budgetPerPersonInt);
-};
-
 export const getMinDate = (date: Date | string | undefined) => {
   if (date !== undefined && date instanceof Date) {
     return addDays(date, 1);

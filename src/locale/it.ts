@@ -142,6 +142,7 @@ export default {
     },
     initiativeDetail: {
       subtitle: 'Visualizza l’iniziativa di welfare da erogare ai cittadini.',
+      alertText: 'Controlla le informazioni inserite dall’ente e approva o rifiuta la richiesta.',
       accordion: {
         step1: {
           heading: 'Step 1',
@@ -561,5 +562,6 @@ export default {
     cantApproveInitiative: 'Non è stato possibile inviare la  revisione. Riprova.',
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
     cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
+    contactAdmin: "Contattare l'amministratore",
   },
 };

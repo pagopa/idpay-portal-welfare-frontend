@@ -1,6 +1,7 @@
 import { Backdrop, Modal, Fade, Box, Typography, Button } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { peopleReached } from '../../helpers';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 
@@ -9,6 +10,7 @@ type Props = {
   setPublishModalOpen: Dispatch<SetStateAction<boolean>>;
   id: string | undefined;
   handlePusblishInitiative: any;
+  userCanPublishInitiative: boolean;
 };
 
 const ConfirmPublishInitiativeModal = ({
@@ -16,15 +18,10 @@ const ConfirmPublishInitiativeModal = ({
   setPublishModalOpen,
   id,
   handlePusblishInitiative,
+  userCanPublishInitiative,
 }: Props) => {
   const { t } = useTranslation();
   const initiativeSel = useAppSelector(initiativeSelector);
-
-  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt);
-  };
 
   return (
     <Modal
@@ -84,7 +81,7 @@ const ConfirmPublishInitiativeModal = ({
               variant="contained"
               sx={{ gridArea: 'pubBtn', justifySelf: 'end' }}
               onClick={() => {
-                handlePusblishInitiative(id);
+                handlePusblishInitiative(id, userCanPublishInitiative);
                 setPublishModalOpen(false);
               }}
             >
