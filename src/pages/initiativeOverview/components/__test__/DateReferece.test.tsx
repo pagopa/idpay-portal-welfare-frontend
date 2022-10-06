@@ -20,15 +20,15 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
 
   test('should display the DateReference component with his functions', async () => {
     await act(async () => {
-      jest.mock(
-        'c:/Users/fmaiocch/Desktop/React_Project/idpay-portal-welfare-frontend/src/pages/initiativeOverview/components/DateReference',
-        () => ({
-          formatDate: jest.fn(),
-          timeRemainingToJoin: jest.fn(),
-          chooseDateToFormat: jest.fn(),
-          dateMessageStatusApproved: jest.fn(),
-        })
-      );
+      // jest.mock(
+      //   'c:/Users/fmaiocch/Desktop/React_Project/idpay-portal-welfare-frontend/src/pages/initiativeOverview/components/DateReference',
+      //   () => ({
+      //     formatDate: jest.fn(),
+      //     timeRemainingToJoin: jest.fn(),
+      //     chooseDateToFormat: jest.fn(),
+      //     dateMessageStatusApproved: jest.fn(),
+      //   })
+      // );
       render(
         <Provider store={store}>
           <DateReference initiative={initiative} handleViewDetails={undefined} />
