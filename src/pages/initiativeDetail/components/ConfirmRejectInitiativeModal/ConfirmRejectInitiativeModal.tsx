@@ -45,8 +45,10 @@ const ConfirmRejectInitiativeModal = ({
             p: 4,
           }}
         >
-          <Typography variant="h6">{t('pages.initiativeDetail.accordion.modal.title')}</Typography>
-          <Typography variant="body1" sx={{ my: 2 }}>
+          <Typography variant="h6" data-testid="title-modal-test">
+            {t('pages.initiativeDetail.accordion.modal.title')}
+          </Typography>
+          <Typography variant="body1" sx={{ my: 2 }} data-testid="subtitle-modal-test">
             {t('pages.initiativeDetail.accordion.modal.subtitle')}
           </Typography>
           <Box
@@ -63,6 +65,8 @@ const ConfirmRejectInitiativeModal = ({
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={() => setRejectModalOpen(false)}
+              data-testid="cancel-button-test"
+              id="cancel-button-test"
             >
               {t('components.wizard.stepOne.modal.cancelBtn')}
             </Button>
@@ -73,6 +77,7 @@ const ConfirmRejectInitiativeModal = ({
                 handleRejectInitiative(initiativeId, userCanRejectInitiative);
                 setRejectModalOpen(false);
               }}
+              data-testid="reject-button-test"
             >
               {t('components.wizard.stepOne.modal.continueBtn')}
             </Button>

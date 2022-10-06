@@ -20,12 +20,9 @@ describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createS
 
   test('should display the RefundRuleContentBody component with his functions', async () => {
     await act(async () => {
-      jest.mock(
-        'c:/Users/fmaiocch/Desktop/React_Project/idpay-portal-welfare-frontend/src/pages/initiativeDetail/components/StepFive/RefundRuleContentBody',
-        () => ({
-          printRefundParameterAsString: jest.fn(),
-        })
-      );
+      // jest.mock('src/pages/initiativeDetail/components/StepFive/RefundRuleContentBody.tsx', () => ({
+      //   printRefundParameterAsString: jest.fn(),
+      // }));
       render(
         <Provider store={store}>
           <RefundRuleContentBody initiativeDetail={initiative} />
