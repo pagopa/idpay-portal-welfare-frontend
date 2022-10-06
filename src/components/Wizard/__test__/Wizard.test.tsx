@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { createStore } from '../../redux/store';
-import Wizard from './Wizard';
+import { createStore } from '../../../redux/store';
+import Wizard from '../Wizard';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({

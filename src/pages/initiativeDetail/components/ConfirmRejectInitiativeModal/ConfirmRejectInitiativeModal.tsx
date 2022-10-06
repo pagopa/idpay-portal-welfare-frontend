@@ -27,8 +27,9 @@ const ConfirmRejectInitiativeModal = ({
       BackdropProps={{
         timeout: 500,
       }}
+      data-testid="reject-modal-test"
     >
-      <Fade in={rejectModalOpen}>
+      <Fade in={rejectModalOpen} data-testid="fade-test">
         <Box
           sx={{
             position: 'absolute',

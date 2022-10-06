@@ -11,6 +11,10 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+jest.mock('react-router-dom', () => ({
+  useHistory: () => {},
+}));
+
 describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const closeWithoutSaving = jest.fn();

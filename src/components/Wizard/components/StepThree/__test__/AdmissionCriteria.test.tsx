@@ -2,12 +2,10 @@ import { fireEvent, render, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-// import { ManualCriteriaItem } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import AdmissionCriteria from '../AdmissionCriteria';
-// import ManualCriteria from '../ManualCriteria';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
