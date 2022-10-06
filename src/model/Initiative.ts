@@ -120,3 +120,51 @@ export interface Initiative {
   };
   refundRule: RefundRule;
 }
+
+export const initiativeGeneral2GeneralInfo = (resources: GeneralInfo) => ({
+  beneficiaryType: resources.beneficiaryType,
+  beneficiaryKnown: resources.beneficiaryKnown,
+  budget: resources.budget,
+  beneficiaryBudget: resources.beneficiaryBudget,
+  startDate: resources.startDate,
+  endDate: resources.endDate,
+  rankingStartDate: resources.rankingStartDate,
+  rankingEndDate: resources.rankingEndDate,
+});
+
+export const InitiativeAdditional2AdditionalInfo = (resources: AdditionalInfo) => ({
+  initiativeOnIO: resources.initiativeOnIO,
+  serviceName: resources.serviceName,
+  serviceArea: resources.serviceArea,
+  serviceDescription: resources.serviceDescription,
+  privacyPolicyUrl: resources.privacyPolicyUrl,
+  termsAndConditions: resources.termsAndConditions,
+  assistanceChannels: resources.assistanceChannels?.map((r) => ({
+    type: r.type,
+    contact: r.contact,
+  })),
+});
+
+export const automatedCriteria2AutomatedCriteriaItem = (resources: AutomatedCriteriaItem) => ({
+  authority: resources.authority,
+  code: resources.code,
+  field: resources.field,
+  operator: resources.operator,
+  value: resources.value,
+  value2: resources.value2,
+});
+
+// export const Initiative2Initiative = (resources: Initiative) => ({
+//   initiativeId: resources.initiativeId,
+//   organizationId: resources.organizationId,
+//   status: resources.status,
+//   initiativeName: resources.initiativeName,
+//   creationDate: resources.creationDate,
+//   updateDate: resources.updateDate,
+//   generalInfo: resources.generalInfo,
+//   additionalInfo: resources.additionalInfo,
+//   beneficiaryRule: resources.beneficiaryRule,
+//   rewardRule: resources.rewardRule,
+//   trxRule: resources.trxRule,
+//   refundRule: resources.refundRule,
+// });
