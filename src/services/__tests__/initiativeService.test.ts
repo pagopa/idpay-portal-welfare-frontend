@@ -15,6 +15,10 @@ import {
   updateInitiativeGeneralInfoDraft,
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
+  updateInitiativeApprovedStatus,
+  updateInitiativeToCheckStatus,
+  updateInitiativePublishedStatus,
+  logicallyDeleteInitiative,
 } from '../intitativeService';
 import {
   mockedInitiativeBeneficiaryRuleBody,
@@ -42,6 +46,10 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'initiativeTrxAndRewardRulesPutDraft');
   jest.spyOn(InitiativeApi, 'updateInitiativeRefundRulePut');
   jest.spyOn(InitiativeApi, 'updateInitiativeRefundRuleDraftPut');
+  jest.spyOn(InitiativeApi, 'updateInitiativeApprovedStatus');
+  jest.spyOn(InitiativeApi, 'updateInitiativeToCheckStatus');
+  jest.spyOn(InitiativeApi, 'updateInitiativePublishedStatus');
+  jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
 });
 
 test('test get initiative summary', async () => {
@@ -129,6 +137,26 @@ test('update initiative draft (Refund Rules)', async () => {
     mockedInitiativeId,
     mockedRefundRules
   );
+});
+
+test('update initiative status (Approved)', async () => {
+  await updateInitiativeApprovedStatus(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativeApprovedStatus).toBeCalledWith(mockedInitiativeId);
+});
+
+test('update initiative status (To Check)', async () => {
+  await updateInitiativeToCheckStatus(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativeToCheckStatus).toBeCalledWith(mockedInitiativeId);
+});
+
+test('update initiative status (Published)', async () => {
+  await updateInitiativePublishedStatus(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativePublishedStatus).toBeCalledWith(mockedInitiativeId);
+});
+
+test('delete initiative', async () => {
+  await logicallyDeleteInitiative(mockedInitiativeId);
+  expect(InitiativeApi.logicallyDeleteInitiative).toBeCalledWith(mockedInitiativeId);
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {

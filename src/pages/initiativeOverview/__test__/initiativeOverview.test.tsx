@@ -28,16 +28,6 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock(
-  'c:/Users/fmaiocch/Desktop/React_Project/idpay-portal-welfare-frontend/src/hooks/useIDPayUser',
-  () => ({
-    ...jest.requireActual('react-router-dom'),
-    useIDPayUser: () => ({
-      org_rule: 'ope_base',
-    }),
-  })
-);
-
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

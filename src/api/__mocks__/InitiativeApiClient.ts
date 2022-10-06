@@ -66,4 +66,16 @@ export const InitiativeApi = {
     _id: string,
     _data: InitiativeGeneralDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeApprovedStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativeToCheckStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativePublishedStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  logicallyDeleteInitiative: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };
