@@ -36,6 +36,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
               console.log(event);
             }}
+            userCanPublishInitiative={false}
           />
         </Provider>
       );
@@ -54,6 +55,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             }}
             id={undefined}
             handlePusblishInitiative={handlePusblishInitiative}
+            userCanPublishInitiative={false}
           />
         </Provider>
       );
@@ -78,6 +80,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
               console.log(event);
             }}
+            userCanPublishInitiative={false}
           />
         </Provider>
       );

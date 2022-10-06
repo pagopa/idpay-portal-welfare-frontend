@@ -30,6 +30,7 @@ describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof 
             }}
             initiativeId={undefined}
             handleRejectInitiative={undefined}
+            userCanRejectInitiative={false}
           />
         </Provider>
       );
