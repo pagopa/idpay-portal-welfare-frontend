@@ -15,7 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Chip,
+  // Chip,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -34,9 +34,10 @@ import { resetInitiative } from '../../redux/slices/initiativeSlice';
 import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
 import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
-import { useIDPayUser } from '../../hooks/useIDPayUser';
-import { IDPayUser } from '../../model/IDPayUser';
+import { usePermissions } from '../../hooks/usePermissions';
+import { USER_PERMISSIONS } from '../../utils/constants';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+import { renderInitiativeStatus } from '../../helpers';
 import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -117,9 +118,8 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 type ActionsMenuProps = {
   id: string;
   status: string;
-  user: IDPayUser;
 };
-const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
+const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const { t } = useTranslation();
@@ -130,17 +130,17 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
     setAnchorEl(null);
   };
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
 
   type RenderActionProps = {
     id: string;
     status: string;
-    user: IDPayUser;
   };
 
-  const RenderDetail = ({ id, status, user }: RenderActionProps) => {
+  const RenderDetail = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
     const handleViewInitiativeDetail = (id: string) => {
-      history.push(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+      history.replace(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
     };
 
     switch (status) {
@@ -149,7 +149,7 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
       case 'APPROVED':
         return (
           <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
-            {status === 'IN_REVISION' && user.org_role === 'ope_base'
+            {status === 'IN_REVISION' && userCanReviewInitiative
               ? t('pages.initiativeList.actions.check')
               : t('pages.initiativeList.actions.details')}
           </MenuItem>
@@ -165,15 +165,20 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
 
   const RenderUpdate = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const handleUpdateInitiative = (id: string) => {
-      history.push(`${BASE_ROUTE}/iniziativa/${id}`);
+    const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+
+    const handleUpdateInitiative = (id: string, userCanUpdateInitiative: boolean) => {
+      if (userCanUpdateInitiative) {
+        history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
+      }
     };
+
     switch (status) {
       case 'DRAFT':
       case 'APPROVED':
       case 'TO_CHECK':
         return (
-          <MenuItem onClick={() => handleUpdateInitiative(id)}>
+          <MenuItem onClick={() => handleUpdateInitiative(id, userCanUpdateInitiative)}>
             {t('pages.initiativeList.actions.update')}
           </MenuItem>
         );
@@ -250,10 +255,10 @@ const ActionMenu = ({ id, status, user }: ActionsMenuProps) => {
           'aria-labelledby': `actions_button-${id}`,
         }}
       >
-        <RenderDetail id={id} status={status} user={user} />
-        <RenderSuspend id={id} status={status} user={user} />
-        <RenderUpdate id={id} status={status} user={user} />
-        <RenderDelete id={id} status={status} user={user} />
+        <RenderDetail id={id} status={status} />
+        <RenderSuspend id={id} status={status} />
+        <RenderUpdate id={id} status={status} />
+        <RenderDelete id={id} status={status} />
       </Menu>
     </TableCell>
   );
@@ -269,6 +274,8 @@ const InitiativeList = () => {
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   // const setLoading = useLoading('GET_INITIATIVE_LIST');
+
+  const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
 
   useEffect(() => {
     // setLoading(true);
@@ -324,27 +331,6 @@ const InitiativeList = () => {
     }
   };
 
-  const renderInitiativeStatus = (status: string) => {
-    switch (status) {
-      case 'DRAFT':
-        return <Chip label={t('pages.initiativeList.status.draft')} color="default" />;
-      case 'IN_REVISION':
-        return <Chip label={t('pages.initiativeList.status.inRevision')} color="warning" />;
-      case 'TO_CHECK':
-        return <Chip label={t('pages.initiativeList.status.toCheck')} color="error" />;
-      case 'APPROVED':
-        return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
-      case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
-      case 'CLOSED':
-        return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
-      case 'SUSPENDED':
-        return <Chip label={t('pages.initiativeList.status.suspended')} color="error" />;
-      default:
-        return null;
-    }
-  };
-
   const goToNewInitiative = () => {
     dispatch(resetInitiative());
     history.replace(routes.NEW_INITIATIVE);
@@ -353,8 +339,6 @@ const InitiativeList = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  const user = useIDPayUser();
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
@@ -367,7 +351,7 @@ const InitiativeList = () => {
         variantTitle="h4"
         variantSubTitle="body1"
       />
-      {user.org_role !== 'ope_base' ? (
+      {userCanCreateInitiative ? (
         <Box
           sx={{
             display: 'grid',
@@ -471,7 +455,7 @@ const InitiativeList = () => {
                         <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-                        <ActionMenu id={row.initiativeId} status={row.status} user={user} />
+                        <ActionMenu id={row.initiativeId} status={row.status} />
                       </TableRow>
                     );
                   }
@@ -500,7 +484,7 @@ const InitiativeList = () => {
                 <Typography sx={{ display: 'inline' }}>
                   {t('pages.initiativeList.emptyList')}
                 </Typography>
-                {user.org_role !== 'ope_base' && (
+                {userCanCreateInitiative && (
                   <Button
                     sx={[
                       {

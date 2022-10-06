@@ -7,6 +7,7 @@ type Props = {
   setRejectModalOpen: Dispatch<SetStateAction<boolean>>;
   initiativeId: string | undefined;
   handleRejectInitiative: any;
+  userCanRejectInitiative: boolean;
 };
 
 const ConfirmRejectInitiativeModal = ({
@@ -14,6 +15,7 @@ const ConfirmRejectInitiativeModal = ({
   setRejectModalOpen,
   initiativeId,
   handleRejectInitiative,
+  userCanRejectInitiative,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -68,7 +70,7 @@ const ConfirmRejectInitiativeModal = ({
               variant="contained"
               sx={{ gridArea: 'exitBtn', justifySelf: 'end' }}
               onClick={() => {
-                handleRejectInitiative(initiativeId);
+                handleRejectInitiative(initiativeId, userCanRejectInitiative);
                 setRejectModalOpen(false);
               }}
             >

@@ -76,7 +76,17 @@ const RefundRules = ({ action, setAction, setDisableNext, setDraftEnabled }: Pro
             dispatch(saveRefundRule(formik.values));
           })
           .catch((error) => {
-            console.log(error);
+            addError({
+              id: 'EDIT_REFUND_RULES_SAVE_DRAFT_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing draft initiative transaction rules',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
           });
       }
       return;
@@ -156,7 +166,7 @@ const RefundRules = ({ action, setAction, setDisableNext, setDraftEnabled }: Pro
         putRefundRule(initiativeId, body)
           .then((_res) => {
             dispatch(saveRefundRule(values));
-            history.push(ROUTES.INITIATIVE_LIST);
+            history.replace(ROUTES.INITIATIVE_LIST);
           })
           .catch((error) => {
             addError({

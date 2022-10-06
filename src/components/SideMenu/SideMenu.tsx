@@ -104,7 +104,7 @@ export default function SideMenu() {
         <List>
           <SidenavItem
             title={t('sideMenu.initiativeList.title')}
-            handleClick={() => onExit(() => history.push(ROUTES.HOME))}
+            handleClick={() => onExit(() => history.replace(ROUTES.HOME))}
             isSelected={pathname === ROUTES.HOME}
             icon={ListAltIcon}
             level={0}

@@ -38,12 +38,8 @@ import {
   updateInitiativeGeneralInfo,
   updateInitiativeGeneralInfoDraft,
 } from '../../../../services/intitativeService';
-import {
-  getMinDate,
-  peopleReached,
-  parseValuesFormToInitiativeGeneralDTO,
-  getYesterday,
-} from './helpers';
+import { peopleReached } from '../../../../helpers';
+import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 
 interface Props {
   action: string;

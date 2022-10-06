@@ -6,6 +6,7 @@ import { LOG_REDUX_ACTIONS } from '../utils/constants';
 import { partiesReducer } from './slices/partiesSlice';
 import { initiativeReducer } from './slices/initiativeSlice';
 import { initiativeSummaryReducer } from './slices/initiativeSummarySlice';
+import { permissionsReducer } from './slices/permissionsSlice';
 
 const additionalMiddlewares = [LOG_REDUX_ACTIONS ? logger : undefined];
 
@@ -14,6 +15,7 @@ export const createStore = () =>
     reducer: {
       parties: partiesReducer,
       user: userReducer,
+      permissions: permissionsReducer,
       appState: appStateReducer,
       initiative: initiativeReducer,
       initiativeSummary: initiativeSummaryReducer,

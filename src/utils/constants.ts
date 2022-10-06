@@ -15,6 +15,20 @@ export const LOADING_TASK_SEARCH_PARTIES = 'SEARCH_PARTIES';
 export const LOADING_TASK_SEARCH_PARTY = 'SEARCH_PARTY';
 export const LOADING_TASK_SEARCH_PRODUCTS = 'SEARCH_PRODUCTS';
 
+export enum USER_PERMISSIONS {
+  READ_INITIATIVE_LIST = 'readIntitativeList',
+  CREATE_INITIATIVE = 'createInitiative',
+  UPDATE_INITIATIVE = 'updateInitiative',
+  PUBLISH_INITIATIVE = 'publishInitiative',
+  DRAFT_INITIATIVE = 'draftInitiative',
+  SUSPEND_INITIATIVE = 'suspendInitiative',
+  DELETE_INITIATIVE = 'deleteInitiative',
+  READ_TRANSACTIONS_LIST = 'readTransactionsList',
+  DOWNLOAD_REWARD_FILE = 'downloadRewardFile',
+  DOWNLOAD_PAID_REWARD_FILE = 'downloadPaidRewardFile',
+  REVIEW_INITIATIVE = 'reviewInitiative',
+}
+
 export enum WIZARD_ACTIONS {
   SUBMIT = 'SUBMIT',
   DRAFT = 'DRAFT',

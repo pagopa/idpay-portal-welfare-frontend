@@ -136,9 +136,21 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {printAssistanceChannelLabel(a.type)}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {a.contact}
-            </Typography>
+            {a.type !== 'web' ? (
+              <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                {a.contact}
+              </Typography>
+            ) : (
+              <ButtonNaked
+                size="medium"
+                href={a.contact}
+                target="_blank"
+                sx={{ color: 'primary.main', gridColumn: 'span 7', justifyContent: 'start' }}
+                weight="default"
+              >
+                {a.contact}
+              </ButtonNaked>
+            )}
           </Fragment>
         ))}
       </Box>

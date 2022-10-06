@@ -1,4 +1,4 @@
-import { Paper, Box, Typography, Button, Chip, Breadcrumbs } from '@mui/material';
+import { Paper, Box, Typography, Button, Breadcrumbs } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -17,13 +17,15 @@ import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
-import { useIDPayUser } from '../../hooks/useIDPayUser';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 import { updateInitiativePublishedStatus } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+import { USER_PERMISSIONS } from '../../utils/constants';
+import { usePermissions } from '../../hooks/usePermissions';
+import { peopleReached, renderInitiativeStatus } from '../../helpers';
 import StatusSnackBar from './components/StatusSnackBar';
 import DateReference from './components/DateReference';
 
@@ -41,7 +43,10 @@ const InitiativeOverview = () => {
   const [statusFile, setStatusFile] = useState('');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const addError = useErrorDispatcher();
-  const user = useIDPayUser();
+
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  const userCanPublishInitiative = usePermissions(USER_PERMISSIONS.PUBLISH_INITIATIVE);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_OVERVIEW],
@@ -97,8 +102,8 @@ const InitiativeOverview = () => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
 
-  const publishInitiative = (id: string | undefined) => {
-    if (initiativeSel.status === 'APPROVED' && typeof id === 'string') {
+  const publishInitiative = (id: string | undefined, userCanPublishInitiative: boolean) => {
+    if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {
       updateInitiativePublishedStatus(id)
         .then((_res) => history.replace(ROUTES.HOME))
         .catch((error) => ({
@@ -114,50 +119,25 @@ const InitiativeOverview = () => {
     }
   };
 
-  const peopleReached = (totalBudget: string, budgetPerPerson: string) => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt);
-  };
-
   const handleCloseInitiativeOverviewDeleteModal = () =>
     setOpenInitiativeOverviewDeleteModal(false);
 
   const handleOpenInitiativeOverviewDeleteModal = () => setOpenInitiativeOverviewDeleteModal(true);
 
   const handleUpdateInitiative = (id: string | undefined) => {
-    history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
+    if (userCanUpdateInitiative) {
+      history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
+    }
   };
 
   const handleViewDetails = (id: string | undefined) => {
     history.replace(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
   };
 
-  const renderInitiativeStatus = (status: string | undefined) => {
-    switch (status) {
-      case 'DRAFT':
-        return <Chip label={t('pages.initiativeList.status.draft')} color="default" />;
-      case 'IN_REVISION':
-        return <Chip label={t('pages.initiativeList.status.inRevision')} color="warning" />;
-      case 'TO_CHECK':
-        return <Chip label={t('pages.initiativeList.status.toCheck')} color="error" />;
-      case 'APPROVED':
-        return <Chip label={t('pages.initiativeList.status.approved')} color="success" />;
-      case 'PUBLISHED':
-        return <Chip label={t('pages.initiativeList.status.published')} color="indigo" />;
-      case 'CLOSED':
-        return <Chip label={t('pages.initiativeList.status.closed')} color="default" />;
-      case 'SUSPENDED':
-        return <Chip label={t('pages.initiativeList.status.suspended')} color="error" />;
-      default:
-        return null;
-    }
-  };
-
   const renderConditionalInfoStatus = (status: string | undefined) => {
     switch (status) {
       case 'IN_REVISION':
-        if (user.org_role !== 'ope_base') {
+        if (!userCanReviewInitiative) {
           return (
             <Box sx={{ gridColumn: 'span 3' }}>
               <ButtonNaked
@@ -211,7 +191,7 @@ const InitiativeOverview = () => {
       case 'DRAFT':
         return <EditIcon />;
       case 'IN_REVISION':
-        return user.org_role === 'ope_base' ? null : <UpdateIcon color="disabled" />;
+        return userCanReviewInitiative ? null : <UpdateIcon color="disabled" />;
       case 'TO_CHECK':
         return <EditIcon />;
       case 'APPROVED':
@@ -247,7 +227,7 @@ const InitiativeOverview = () => {
       case 'DRAFT':
         return t('pages.initiativeOverview.next.status.draft');
       case 'IN_REVISION':
-        return user.org_role === 'ope_base'
+        return userCanReviewInitiative
           ? t('pages.initiativeOverview.next.status.checkInitiative')
           : t('pages.initiativeOverview.next.status.review');
       case 'TO_CHECK':
@@ -268,7 +248,7 @@ const InitiativeOverview = () => {
       <Box sx={{ gridColumn: 'span 8' }}>{conditionalSubtitleRendering(initiativeSel.status)}</Box>
       <Box sx={{ gridColumn: 'span 8' }}>
         <Button
-          disabled={status === 'IN_REVISION' ? true : false}
+          disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
           variant="contained"
           startIcon={conditionalStartIconRendering(initiativeSel.status)}
           onClick={() => conditionalOnClickRendering(initiativeSel.status)}
@@ -281,6 +261,7 @@ const InitiativeOverview = () => {
             setPublishModalOpen={setPublishModalOpen}
             id={initiativeSel.initiativeId}
             handlePusblishInitiative={publishInitiative}
+            userCanPublishInitiative={userCanPublishInitiative}
           />
         ) : null}
       </Box>
@@ -415,7 +396,7 @@ const InitiativeOverview = () => {
   );
 
   const renderTypeSnackBarStatus = (status: string) => {
-    if (user.org_role === 'ope_base') {
+    if (userCanReviewInitiative) {
       return (
         <StatusSnackBar
           openSnackBar={openSnackbar}
