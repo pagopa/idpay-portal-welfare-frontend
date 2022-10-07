@@ -154,17 +154,17 @@ export const automatedCriteria2AutomatedCriteriaItem = (resources: AutomatedCrit
   value2: resources.value2,
 });
 
-// export const Initiative2Initiative = (resources: Initiative) => ({
-//   initiativeId: resources.initiativeId,
-//   organizationId: resources.organizationId,
-//   status: resources.status,
-//   initiativeName: resources.initiativeName,
-//   creationDate: resources.creationDate,
-//   updateDate: resources.updateDate,
-//   generalInfo: resources.generalInfo,
-//   additionalInfo: resources.additionalInfo,
-//   beneficiaryRule: resources.beneficiaryRule,
-//   rewardRule: resources.rewardRule,
-//   trxRule: resources.trxRule,
-//   refundRule: resources.refundRule,
-// });
+export const Initiative2Initiative = (resources: Initiative) => ({
+  initiativeId: resources.initiativeId,
+  organizationId: resources.organizationId,
+  status: resources.status,
+  initiativeName: resources.initiativeName,
+  creationDate: resources.creationDate,
+  updateDate: resources.updateDate,
+  generalInfo: resources.generalInfo,
+  additionalInfo: resources.additionalInfo,
+  beneficiaryRule: resources.beneficiaryRule,
+  rewardRule: resources.rewardRule,
+  trxRule: resources.trxRule,
+  refundRule: resources.refundRule,
+});
