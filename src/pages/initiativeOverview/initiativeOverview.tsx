@@ -106,16 +106,19 @@ const InitiativeOverview = () => {
     if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {
       updateInitiativePublishedStatus(id)
         .then((_res) => history.replace(ROUTES.HOME))
-        .catch((error) => ({
-          id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
-          blocking: false,
-          error,
-          techDescription: 'An error occurred publishing initiative',
-          displayableDescription: t('errors.cantPublishInitiative'),
-          toNotify: true,
-          component: 'Toast',
-          showCloseIcon: true,
-        }));
+        .catch((error) => {
+          setPublishModalOpen(false);
+          addError({
+            id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred publishing initiative',
+            displayableDescription: t('errors.cantPublishInitiative'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
   };
 
