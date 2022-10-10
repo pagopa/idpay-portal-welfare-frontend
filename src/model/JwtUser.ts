@@ -30,3 +30,14 @@ export type JWTUser = {
   org_party_role: string;
   org_role: string;
 };
+
+export const jwt2JWTUser = (resources: JWTUser) => ({
+  uid: resources.uid,
+  name: resources.name,
+  family_name: resources.family_name,
+  email: resources.email,
+  org_id: resources.org_id,
+  org_vat: resources.org_vat,
+  org_party_role: resources.org_party_role,
+  org_role: resources.org_role,
+});

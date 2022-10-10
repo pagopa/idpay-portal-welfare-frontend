@@ -3,3 +3,9 @@ export interface MccCodesModel {
   description: string;
   checked: boolean;
 }
+
+export const mccCodes2MccCodesModel = (resources: MccCodesModel) => ({
+  code: resources.code,
+  description: resources.description,
+  checked: resources.checked,
+});

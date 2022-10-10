@@ -20,6 +20,8 @@ import {
   updateInitiativePublishedStatus,
   logicallyDeleteInitiative,
 } from '../intitativeService';
+
+import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 import {
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
@@ -50,6 +52,7 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'updateInitiativeToCheckStatus');
   jest.spyOn(InitiativeApi, 'updateInitiativePublishedStatus');
   jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
+  jest.spyOn(InitiativeApi, 'getEligibilityCriteriaForSidebar');
 });
 
 test('test get initiative summary', async () => {
@@ -157,6 +160,11 @@ test('update initiative status (Published)', async () => {
 test('delete initiative', async () => {
   await logicallyDeleteInitiative(mockedInitiativeId);
   expect(InitiativeApi.logicallyDeleteInitiative).toBeCalledWith(mockedInitiativeId);
+});
+
+test('eligibility criteria for sidebar', async () => {
+  await fetchAdmissionCriteria();
+  expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {
