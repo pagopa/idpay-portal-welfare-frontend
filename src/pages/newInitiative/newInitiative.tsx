@@ -9,14 +9,12 @@ import { useInitiative } from '../../hooks/useInitiative';
 import ExitModal from '../../components/Wizard/components/ExitModal/ExitModal';
 
 const NewInitiative = () => {
-  const { t } = useTranslation();
+  useInitiative();
   const [openExitModal, setOpenExitModal] = useState(false);
-
+  const handleOpenExitModal = () => setOpenExitModal(true);
   const handleCloseExitModal = () => setOpenExitModal(false);
 
-  const handleOpenExitModal = () => setOpenExitModal(true);
-
-  useInitiative();
+  const { t } = useTranslation();
 
   return (
     <Box width="100%" px={2}>
@@ -27,6 +25,7 @@ const NewInitiative = () => {
           startIcon={<ArrowBackIcon />}
           sx={{ color: 'primary.main' }}
           weight="default"
+          data-testid="exit-button-test"
         >
           {t('breadcrumbs.exit')}
         </ButtonNaked>

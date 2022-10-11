@@ -8,6 +8,11 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'getInitiativeById');
 });
 
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useInitiative: jest.fn(),
+}));
+
 test('test get initiative detail', async () => {
   await getInitiativeDetail(mockedInitiativeId);
   expect(InitiativeApi.getInitiativeById).toBeCalled();

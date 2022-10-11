@@ -10,9 +10,8 @@ type Props = {
 };
 
 const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
-  const { t } = useTranslation();
   const history = useHistory();
-
+  const { t } = useTranslation();
   const closeWithoutSaving = (e: any) => {
     history.replace(ROUTES.HOME);
     handleCloseExitModal(e);

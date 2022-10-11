@@ -1,10 +1,11 @@
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { User } from '@pagopa/selfcare-common-frontend/model/User';
+// import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { createStore } from '../../redux/store';
 import withLogin from '../withLogin';
 import { testToken } from '../../utils/constants';
+import React from 'react';
 
 export interface IDPayUser {
   uid: string;
@@ -37,6 +38,11 @@ afterEach(() => {
   storageUserOps.delete();
   mockedLocation.assign.mockReset();
 });
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}));
 
 const renderApp = () => {
   const store = createStore();

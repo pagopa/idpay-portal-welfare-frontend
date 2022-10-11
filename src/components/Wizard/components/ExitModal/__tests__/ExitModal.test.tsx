@@ -44,7 +44,7 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
       render(
         <Provider store={store}>
           <ExitModal
-            openExitModal={false}
+            openExitModal={true}
             handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
               console.log(event);
             }}
@@ -52,6 +52,11 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
         </Provider>
       );
 
+      const setCloseExitModal = jest.fn();
+      const useStateMock: any = (closeExitModal: boolean) => [closeExitModal, setCloseExitModal];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+      expect(setCloseExitModal).toBeDefined();
       expect(closeWithoutSaving).toBeDefined();
     });
   });
