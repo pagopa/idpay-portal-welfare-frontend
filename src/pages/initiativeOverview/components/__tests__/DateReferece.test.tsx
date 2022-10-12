@@ -10,7 +10,7 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const initiative = store.getState().initiative;
   it('renders without crashing', () => {

@@ -15,7 +15,6 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  // Chip,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { visuallyHidden } from '@mui/utils';
@@ -131,6 +130,8 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   };
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   type RenderActionProps = {
     id: string;
@@ -165,7 +166,6 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 
   const RenderUpdate = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
 
     const handleUpdateInitiative = (id: string, userCanUpdateInitiative: boolean) => {
       if (userCanUpdateInitiative) {
@@ -177,11 +177,15 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
       case 'DRAFT':
       case 'APPROVED':
       case 'TO_CHECK':
-        return (
-          <MenuItem onClick={() => handleUpdateInitiative(id, userCanUpdateInitiative)}>
-            {t('pages.initiativeList.actions.update')}
-          </MenuItem>
-        );
+        if (userCanUpdateInitiative) {
+          return (
+            <MenuItem onClick={() => handleUpdateInitiative(id, userCanUpdateInitiative)}>
+              {t('pages.initiativeList.actions.update')}
+            </MenuItem>
+          );
+        } else {
+          return null;
+        }
       case 'IN_REVISION':
       case 'PUBLISHED':
       case 'CLOSED':
@@ -195,22 +199,28 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 
   const handleOpenDeleteModal = () => setOpenDeleteModal(true);
 
-  const RenderDelete = ({ status }: RenderActionProps) => {
+  const RenderDelete = ({ id, status }: RenderActionProps) => {
     switch (status) {
       case 'DRAFT':
       case 'TO_CHECK':
       case 'APPROVED':
-        return (
-          <>
-            <MenuItem onClick={handleOpenDeleteModal}>
-              {t('pages.initiativeList.actions.delete')}
-            </MenuItem>
-            <DeleteInitiativeModal
-              openInitiativeDeleteModal={openDeleteModal}
-              handleCloseInitiativeDeleteModal={handleCloseDeleteModal}
-            />
-          </>
-        );
+        if (userCanDeleteInitiative) {
+          return (
+            <>
+              <MenuItem onClick={handleOpenDeleteModal}>
+                {t('pages.initiativeList.actions.delete')}
+              </MenuItem>
+              <DeleteInitiativeModal
+                initiativeId={id}
+                initiativeStatus={status}
+                openInitiativeDeleteModal={openDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseDeleteModal}
+              />
+            </>
+          );
+        } else {
+          return null;
+        }
       case 'IN_REVISION':
       case 'PUBLISHED':
       case 'CLOSED':
@@ -276,6 +286,9 @@ const InitiativeList = () => {
   // const setLoading = useLoading('GET_INITIATIVE_LIST');
 
   const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   useEffect(() => {
     // setLoading(true);
@@ -339,6 +352,20 @@ const InitiativeList = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const showActionMenu = (status: string) => {
+    if (status !== 'TO_CHECK') {
+      return true;
+    } else if (
+      userCanUpdateInitiative === false &&
+      userCanDeleteInitiative === false &&
+      userCanReviewInitiative === true
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
@@ -455,7 +482,11 @@ const InitiativeList = () => {
                         <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-                        <ActionMenu id={row.initiativeId} status={row.status} />
+                        {showActionMenu(row.status) ? (
+                          <ActionMenu id={row.initiativeId} status={row.status} />
+                        ) : (
+                          <TableCell></TableCell>
+                        )}
                       </TableRow>
                     );
                   }

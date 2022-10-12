@@ -1,8 +1,15 @@
 /* eslint-disable react/jsx-no-bind */
 import { render, waitFor } from '@testing-library/react';
+import React from 'react';
 // import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { groupsApi } from '../../../api/groupsApiClient';
 import { createStore } from '../../../redux/store';
+// import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
+import {
+  getGroupOfBeneficiaryStatusAndDetails,
+  mockedInitiativeId,
+} from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
 
 function mockFunction() {
@@ -47,11 +54,35 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
 
   test('should display the InitiativeOverview component', async () => {
     await waitFor(async () => {
-      render(
+      const _app = render(
         <Provider store={store}>
           <InitiativeOverview />
         </Provider>
       );
+
+      const setUseState = jest.fn();
+      const useStateMock: any = (useState: any) => [useState, setUseState];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+      expect(useStateMock).toBeDefined();
     });
+  });
+
+  beforeEach(() => {
+    jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
+  });
+
+  jest.mock('../../../api/groupsApiClient');
+
+  it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
+    jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
+
+    render(
+      <Provider store={store}>
+        <InitiativeOverview />
+      </Provider>
+    );
+
+    getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
+    expect(getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId)).toBeDefined();
   });
 });

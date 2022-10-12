@@ -3,34 +3,36 @@ import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import { useAppSelector } from '../../redux/hooks';
-import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES from '../../routes';
 import { logicallyDeleteInitiative } from '../../services/intitativeService';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
 
 type Props = {
+  initiativeId: string | undefined;
+  initiativeStatus: string | undefined;
   openInitiativeDeleteModal: boolean;
   handleCloseInitiativeDeleteModal: MouseEventHandler;
 };
 
 const DeleteInitiativeModal = ({
+  initiativeId,
+  initiativeStatus,
   openInitiativeDeleteModal,
   handleCloseInitiativeDeleteModal,
 }: Props) => {
   const { t } = useTranslation();
-  const initiativeSel = useAppSelector(initiativeSelector);
   const history = useHistory();
   const addError = useErrorDispatcher();
   const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
-  const handleDeleteInitiative = (id: string | undefined) => {
+  const handleDeleteInitiative = (id: string | undefined, status: string | undefined) => {
     if (
       userCanDeleteInitiative &&
-      initiativeSel.status !== 'PUBLISHED' &&
-      initiativeSel.status !== 'IN_REVISION' &&
-      typeof id === 'string'
+      typeof id === 'string' &&
+      typeof status === 'string' &&
+      status !== 'PUBLISHED' &&
+      status !== 'IN_REVISION'
     ) {
       logicallyDeleteInitiative(id)
         .then((_res) => history.replace(ROUTES.INITIATIVE_LIST))
@@ -100,7 +102,7 @@ const DeleteInitiativeModal = ({
               variant="contained"
               sx={{ gridArea: 'deleteBtn', justifySelf: 'end' }}
               onClick={(e) => {
-                handleDeleteInitiative(initiativeSel.initiativeId);
+                handleDeleteInitiative(initiativeId, initiativeStatus);
                 handleCloseInitiativeDeleteModal(e);
               }}
             >

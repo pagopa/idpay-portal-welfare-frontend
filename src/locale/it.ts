@@ -116,12 +116,20 @@ export default {
             'Controlla i commenti che team di PagoPA ha lasciato durante la revisione dell’iniziativa',
           modify: 'Modifica iniziativa',
           checkInitiative: 'Controlla l’iniziativa',
+          waitForPublish:
+            'Hai approvato l’iniziativa, attendi la pubblicazione da parte dell’ente.',
+          waitForReview: 'Attendi che l’ente corregga le modifiche segnalate nell’iniziativa.',
+          reviewInitiative: 'È richiesta una revisione da parte tua.',
         },
 
         modalPublish: {
           title: 'Pubblica iniziativa',
           subtitle:
             'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
+          initiativeWithGroupsSubtitle:
+            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO.',
+          initiativeWithoutGroupsSubtitle:
+            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}} e che il servizio sarà visible in app.',
         },
       },
       modal: {
@@ -222,6 +230,8 @@ export default {
             statusOk: 'Corretto',
             statusKo: 'Fallito',
             statusLoading: 'In corso',
+            fileUploadedErrorMessage:
+              'L’anonimizzazione del file non è andata a buon fine. Segnala all’ente di dover ricaricare il file corretto per poter procedere con l’approvazione dell’iniziativa.',
           },
         },
         step4: {

@@ -7,7 +7,6 @@ import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
   beneficiaryRuleSelector,
-  initiativeStatusSelector,
   initiativeIdSelector,
   saveAutomatedCriteria,
   saveManualCriteria,
@@ -36,7 +35,6 @@ type Props = {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
-  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 };
 
 const AdmissionCriteria = ({
@@ -45,7 +43,6 @@ const AdmissionCriteria = ({
   currentStep,
   setCurrentStep,
   setDisabledNext,
-  setDraftEnabled,
 }: Props) => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
@@ -60,15 +57,10 @@ const AdmissionCriteria = ({
   );
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
-  const initiativeStatus = useAppSelector(initiativeStatusSelector);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    setDraftEnabled(initiativeStatus !== 'APPROVED');
-  }, [initiativeStatus]);
 
   useEffect(() => {
     fetchAdmissionCriteria()

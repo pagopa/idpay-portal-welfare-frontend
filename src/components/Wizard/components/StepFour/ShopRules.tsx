@@ -16,7 +16,6 @@ import {
   initiativeRewardRuleSelector,
   initiativeThresholdSelector,
   initiativeTrxCountSelector,
-  initiativeStatusSelector,
   saveDaysOfWeekIntervals,
   saveMccFilter,
   saveRewardLimits,
@@ -52,17 +51,9 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
-  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
-const ShopRules = ({
-  action,
-  setAction,
-  currentStep,
-  setCurrentStep,
-  setDisabledNext,
-  setDraftEnabled,
-}: Props) => {
+const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
   const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
@@ -76,7 +67,6 @@ const ShopRules = ({
   const trxCount = useAppSelector(initiativeTrxCountSelector);
   const daysOfWeekIntervals = useAppSelector(initiativeDaysOfWeekIntervalsSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
-  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const [rewardRuleData, setRewardRuleData] = useState(rewardRule);
   const [mccFilterData, setMccFilterData] = useState(mccFilter);
   const [rewardLimitsData, setRewardLimitsData] = useState(rewardLimits);
@@ -90,10 +80,6 @@ const ShopRules = ({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    setDraftEnabled(initiativeStatus !== 'APPROVED');
-  }, [initiativeStatus]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {

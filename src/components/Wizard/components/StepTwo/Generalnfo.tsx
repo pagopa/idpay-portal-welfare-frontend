@@ -31,7 +31,6 @@ import {
   generalInfoSelector,
   setGeneralInfo,
   initiativeIdSelector,
-  initiativeStatusSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
@@ -47,31 +46,18 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
-  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
-const Generalnfo = ({
-  action,
-  setAction,
-  currentStep,
-  setCurrentStep,
-  setDisabledNext,
-  setDraftEnabled,
-}: Props) => {
+const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
-  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const { t } = useTranslation();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    setDraftEnabled(initiativeStatus !== 'APPROVED');
-  }, [initiativeStatus]);
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {

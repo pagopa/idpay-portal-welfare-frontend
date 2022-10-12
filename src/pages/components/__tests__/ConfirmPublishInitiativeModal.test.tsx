@@ -2,13 +2,22 @@ import { render, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { InitiativeApi } from '../../../api/InitiativeApiClient';
 import { createStore } from '../../../redux/store';
+import { updateInitiativePublishedStatus } from '../../../services/intitativeService';
+import { mockedInitiativeId } from '../../../services/__mocks__/initiativeService';
 import ConfirmPublishInitiativeModal from '../ConfirmPublishInitiativeModal';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
+
+jest.mock('../../../api/InitiativeApiClient');
+
+beforeEach(() => {
+  jest.spyOn(InitiativeApi, 'updateInitiativePublishedStatus');
+});
 
 describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
@@ -90,6 +99,30 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
 
       const fade = document.querySelector('[data-testid="fade-test"]') as HTMLElement;
       expect(fade).toBeInTheDocument();
+    });
+  });
+
+  test('test handle publish initiative', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <ConfirmPublishInitiativeModal
+            publishModalOpen={true}
+            // eslint-disable-next-line react/jsx-no-bind
+            setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
+              //
+            }}
+            id={undefined}
+            // eslint-disable-next-line react/jsx-no-bind
+            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
+              console.log(event);
+            }}
+            userCanPublishInitiative={true}
+          />
+        </Provider>
+      );
+      await updateInitiativePublishedStatus(mockedInitiativeId);
+      expect(InitiativeApi.updateInitiativePublishedStatus).toBeCalledWith(mockedInitiativeId);
     });
   });
 });
