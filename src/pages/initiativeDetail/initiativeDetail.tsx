@@ -68,6 +68,7 @@ const InitiativeDetail = () => {
   const [rejectModalOpen, setRejectModalOpen] = useState(false);
   const [disabledButons, setDisabledButtons] = useState(true);
   const [disabledApprove, setDisabledApprove] = useState(false);
+  const [disabledReject, setDisabledReject] = useState(false);
   const [openInitiativeDeleteModal, setOpenInitiativeDeleteModal] = useState(false);
   const handleCloseInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(false);
   const handleOpenInitiativeDeleteModal = () => setOpenInitiativeDeleteModal(true);
@@ -110,6 +111,7 @@ const InitiativeDetail = () => {
         .then((res) => {
           setFileProcessingOutcomeStatus(res.status);
           setDisabledApprove(res.status !== 'OK');
+          setDisabledReject(res.status !== 'OK');
         })
         .catch((error) => {
           addError({
@@ -392,7 +394,7 @@ const InitiativeDetail = () => {
             <Button
               variant="outlined"
               color="error"
-              disabled={disabledButons}
+              disabled={disabledButons || disabledReject}
               onClick={() => setRejectModalOpen(true)}
             >
               {t('pages.initiativeDetail.accordion.buttons.reject')}
@@ -426,6 +428,8 @@ const InitiativeDetail = () => {
               {t('pages.initiativeDetail.accordion.buttons.delete')}
             </Button>
             <DeleteInitiativeModal
+              initiativeId={initiativeDetail.initiativeId}
+              initiativeStatus={initiativeDetail.status}
               openInitiativeDeleteModal={openInitiativeDeleteModal}
               handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
             />

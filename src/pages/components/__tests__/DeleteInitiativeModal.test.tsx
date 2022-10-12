@@ -34,6 +34,8 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
       render(
         <Provider store={store}>
           <DeleteInitiativeModal
+            initiativeId={undefined}
+            initiativeStatus={undefined}
             openInitiativeDeleteModal={false}
             handleCloseInitiativeDeleteModal={function (event: React.MouseEvent<Element>): void {
               console.log(event);
@@ -49,6 +51,8 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
       render(
         <Provider store={store}>
           <DeleteInitiativeModal
+            initiativeId={undefined}
+            initiativeStatus={undefined}
             openInitiativeDeleteModal={false}
             handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
           />
@@ -64,6 +68,8 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
       render(
         <Provider store={store}>
           <DeleteInitiativeModal
+            initiativeId={undefined}
+            initiativeStatus={undefined}
             openInitiativeDeleteModal={true}
             handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
           />

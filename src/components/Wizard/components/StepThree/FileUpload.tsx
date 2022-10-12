@@ -25,10 +25,7 @@ import {
   getGroupOfBeneficiaryStatusAndDetail,
   uploadGroupOfBeneficiaryPut,
 } from '../../../../services/groupsService';
-import {
-  initiativeIdSelector,
-  initiativeStatusSelector,
-} from '../../../../redux/slices/initiativeSlice';
+import { initiativeIdSelector } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../../../redux/hooks';
 
 interface Props {
@@ -37,17 +34,9 @@ interface Props {
   currentStep: number;
   setCurrentStep: Dispatch<SetStateAction<number>>;
   setDisabledNext: Dispatch<SetStateAction<boolean>>;
-  setDraftEnabled: Dispatch<SetStateAction<boolean>>;
 }
 
-const FileUpload = ({
-  action,
-  setAction,
-  currentStep,
-  setCurrentStep,
-  setDisabledNext,
-  setDraftEnabled,
-}: Props) => {
+const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileRejected, setFileRejected] = useState(false);
@@ -57,16 +46,11 @@ const FileUpload = ({
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
-  const initiativeStatus = useAppSelector(initiativeStatusSelector);
   const addError = useErrorDispatcher();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
-  useEffect(() => {
-    setDraftEnabled(initiativeStatus !== 'APPROVED');
-  }, [initiativeStatus]);
 
   useEffect(() => {
     if (initiativeId) {

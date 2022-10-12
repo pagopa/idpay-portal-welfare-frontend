@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import { Box, Chip, Divider, Typography } from '@mui/material';
+import { Alert, Box, Chip, Divider, Typography } from '@mui/material';
 import { Initiative } from '../../../../model/Initiative';
+import { usePermissions } from '../../../../hooks/usePermissions';
+import { USER_PERMISSIONS } from '../../../../utils/constants';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -15,6 +17,8 @@ const BeneficiaryListContentBody = ({ initiativeDetail, fileProcessingOutcomeSta
     const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
     return Math.floor(totalBudgetInt / budgetPerPersonInt).toString();
   };
+
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
 
   return (
     <Box
@@ -81,6 +85,16 @@ const BeneficiaryListContentBody = ({ initiativeDetail, fileProcessingOutcomeSta
             />
           )}
         </Typography>
+
+        {userCanReviewInitiative && fileProcessingOutcomeStatus === 'PROC_KO' && (
+          <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
+            <Alert severity="error" elevation={6}>
+              <Typography variant="body2">
+                {t('pages.initiativeDetail.accordion.step3.content.fileUploadedErrorMessage')}
+              </Typography>
+            </Alert>
+          </Box>
+        )}
       </Box>
     </Box>
   );

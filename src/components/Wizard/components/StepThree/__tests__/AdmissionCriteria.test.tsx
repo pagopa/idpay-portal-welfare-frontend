@@ -39,10 +39,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
             setDisabledNext={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
           />
         </Provider>
       );
@@ -94,10 +90,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
           }}
           // eslint-disable-next-line react/jsx-no-bind
           setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDraftEnabled={function (_value: SetStateAction<boolean>): void {
             //
           }}
         />
