@@ -41,6 +41,8 @@ import { JWTUser } from '../model/JwtUser';
 
 export type PartyJwtConfig = {
   partyId: string;
+  partyName: string;
+  partyVat: string;
   roles: Array<{
     partyRole: string;
     roleKey: string;
@@ -52,6 +54,8 @@ export const retrieveSelectedPartyIdConfig = (): PartyJwtConfig | null => {
   if (organization.org_id && organization.org_party_role && organization.org_role) {
     return {
       partyId: organization.org_id,
+      partyName: organization.org_name,
+      partyVat: organization.org_vat,
       roles: [
         {
           partyRole: organization.org_party_role,
@@ -96,22 +100,42 @@ export const useSelectedParty = (): (() => Promise<Party>) => {
 
   const fetchParty = (partyId: string): Promise<Party> =>
     fetchPartyDetails(partyId, parties).then((party) => {
+      const partyRoles =
+        partyJwtConfig?.roles.map((r) => ({
+          partyRole: r.partyRole,
+          roleKey: r.roleKey,
+        })) ?? [];
+
       if (party) {
         if (party.status !== 'ACTIVE') {
           throw new Error(`INVALID_PARTY_STATE_${party.status}`);
         }
         const partyToSave = {
           ...party,
-          roles:
-            partyJwtConfig?.roles.map((r) => ({
-              partyRole: r.partyRole,
-              roleKey: r.roleKey,
-            })) ?? [],
+          roles: partyRoles,
         };
         setParty(partyToSave);
         return partyToSave;
       } else {
-        throw new Error(`Cannot find partyId ${partyId}`);
+        if (!partyJwtConfig) {
+          throw new Error(`Cannot find partyId ${partyId}`);
+        }
+        trackEvent('PARTY_ID_NOT_FOUND', { partyId });
+        const partyToSave: Party = {
+          partyId,
+          externalId: '',
+          originId: '',
+          origin: '',
+          description: partyJwtConfig.partyName,
+          digitalAddress: '',
+          status: 'ACTIVE',
+          roles: partyRoles,
+          fiscalCode: partyJwtConfig.partyVat,
+          registeredOffice: '',
+          typology: '',
+        };
+        setParty(partyToSave);
+        return partyToSave;
       }
     });
 
