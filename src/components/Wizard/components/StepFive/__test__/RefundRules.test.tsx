@@ -41,10 +41,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
             setDisableNext={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
           />
         </Provider>
       );
@@ -110,10 +106,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
             setDisableNext={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
           />
         </Provider>
       );
@@ -139,10 +131,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
             }}
             // eslint-disable-next-line react/jsx-no-bind
             setDisableNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDraftEnabled={function (_value: SetStateAction<boolean>): void {
               //
             }}
           />
@@ -194,10 +182,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           }}
           // eslint-disable-next-line react/jsx-no-bind
           setDisableNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDraftEnabled={function (_value: SetStateAction<boolean>): void {
             //
           }}
         />
@@ -276,10 +260,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           setDisableNext={function (_value: SetStateAction<boolean>): void {
             //
           }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
         />
       </Provider>
     );
@@ -348,10 +328,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           }}
           // eslint-disable-next-line react/jsx-no-bind
           setDisableNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDraftEnabled={function (_value: SetStateAction<boolean>): void {
             //
           }}
         />

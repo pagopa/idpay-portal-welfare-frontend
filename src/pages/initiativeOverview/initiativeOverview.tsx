@@ -8,6 +8,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EuroIcon from '@mui/icons-material/Euro';
+import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -47,6 +48,8 @@ const InitiativeOverview = () => {
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
   const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
   const userCanPublishInitiative = usePermissions(USER_PERMISSIONS.PUBLISH_INITIATIVE);
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
+  const userCanSuspendInitiative = usePermissions(USER_PERMISSIONS.SUSPEND_INITIATIVE);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_OVERVIEW],
@@ -174,13 +177,21 @@ const InitiativeOverview = () => {
   const conditionalSubtitleRendering = (status: string | undefined) => {
     switch (status) {
       case 'DRAFT':
-        return t('pages.initiativeOverview.next.status.subtitleDraft');
+        return userCanUpdateInitiative
+          ? t('pages.initiativeOverview.next.status.subtitleDraft')
+          : null;
       case 'IN_REVISION':
-        return t('pages.initiativeOverview.next.status.subtitleReview');
+        return userCanReviewInitiative
+          ? t('pages.initiativeOverview.next.status.reviewInitiative')
+          : t('pages.initiativeOverview.next.status.subtitleReview');
       case 'TO_CHECK':
-        return t('pages.initiativeOverview.next.status.subtitleModify');
+        return userCanReviewInitiative
+          ? t('pages.initiativeOverview.next.status.waitForReview')
+          : t('pages.initiativeOverview.next.status.subtitleModify');
       case 'APPROVED':
-        return t('pages.initiativeOverview.next.status.subtitleApproved');
+        return userCanPublishInitiative
+          ? t('pages.initiativeOverview.next.status.subtitleApproved')
+          : t('pages.initiativeOverview.next.status.waitForPublish');
       case 'PUBLISHED':
       case 'CLOSED':
       case 'SUSPENDED':
@@ -196,7 +207,7 @@ const InitiativeOverview = () => {
       case 'IN_REVISION':
         return userCanReviewInitiative ? null : <UpdateIcon color="disabled" />;
       case 'TO_CHECK':
-        return <EditIcon />;
+        return userCanReviewInitiative ? null : <ArticleIcon />;
       case 'APPROVED':
         return <PublishIcon />;
       case 'PUBLISHED':
@@ -234,7 +245,9 @@ const InitiativeOverview = () => {
           ? t('pages.initiativeOverview.next.status.checkInitiative')
           : t('pages.initiativeOverview.next.status.review');
       case 'TO_CHECK':
-        return t('pages.initiativeOverview.next.status.modify');
+        return userCanReviewInitiative
+          ? t('pages.initiativeOverview.next.status.checkInitiative')
+          : t('pages.initiativeOverview.next.status.modify');
       case 'APPROVED':
         return t('pages.initiativeOverview.next.status.approved');
       case 'PUBLISHED':
@@ -250,23 +263,55 @@ const InitiativeOverview = () => {
     <>
       <Box sx={{ gridColumn: 'span 8' }}>{conditionalSubtitleRendering(initiativeSel.status)}</Box>
       <Box sx={{ gridColumn: 'span 8' }}>
-        <Button
-          disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
-          variant="contained"
-          startIcon={conditionalStartIconRendering(initiativeSel.status)}
-          onClick={() => conditionalOnClickRendering(initiativeSel.status)}
-        >
-          {conditionaButtonNameRendering(initiativeSel.status)}
-        </Button>
-        {status === 'APPROVED' ? (
-          <ConfirmPublishInitiativeModal
-            publishModalOpen={publishModalOpen}
-            setPublishModalOpen={setPublishModalOpen}
-            id={initiativeSel.initiativeId}
-            handlePusblishInitiative={publishInitiative}
-            userCanPublishInitiative={userCanPublishInitiative}
-          />
-        ) : null}
+        {status === 'IN_REVISION' && (
+          <Button
+            disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
+            variant="contained"
+            startIcon={conditionalStartIconRendering(initiativeSel.status)}
+            onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+          >
+            {conditionaButtonNameRendering(initiativeSel.status)}
+          </Button>
+        )}
+        {status === 'DRAFT' && userCanUpdateInitiative && (
+          <Button
+            variant="contained"
+            startIcon={conditionalStartIconRendering(initiativeSel.status)}
+            onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+          >
+            {conditionaButtonNameRendering(initiativeSel.status)}
+          </Button>
+        )}
+
+        {status === 'TO_CHECK' && (
+          <Button
+            disabled={userCanReviewInitiative ? true : false}
+            variant="contained"
+            startIcon={conditionalStartIconRendering(initiativeSel.status)}
+            onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+          >
+            {conditionaButtonNameRendering(initiativeSel.status)}
+          </Button>
+        )}
+        {userCanPublishInitiative && status === 'APPROVED' && (
+          <>
+            <Button
+              variant="contained"
+              startIcon={conditionalStartIconRendering(initiativeSel.status)}
+              onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            >
+              {conditionaButtonNameRendering(initiativeSel.status)}
+            </Button>
+
+            <ConfirmPublishInitiativeModal
+              publishModalOpen={publishModalOpen}
+              setPublishModalOpen={setPublishModalOpen}
+              id={initiativeSel.initiativeId}
+              handlePusblishInitiative={publishInitiative}
+              userCanPublishInitiative={userCanPublishInitiative}
+            />
+          </>
+        )}
       </Box>
     </>
   );
@@ -335,7 +380,7 @@ const InitiativeOverview = () => {
       </>
     );
 
-  const renderConditionalActions = (status: string | undefined) => (
+  const renderConditionalActions = (id: string | undefined, status: string | undefined) => (
     <Box
       sx={{
         gridColumn: 'span 2',
@@ -345,7 +390,7 @@ const InitiativeOverview = () => {
         alignItems: 'center',
       }}
     >
-      {status === 'APPROVED' ? (
+      {userCanUpdateInitiative && status === 'APPROVED' ? (
         <Box sx={{ gridColumn: 'span 1', textAlign: 'end' }}>
           <ButtonNaked
             size="small"
@@ -361,7 +406,7 @@ const InitiativeOverview = () => {
         </Box>
       ) : null}
 
-      {status !== 'PUBLISHED' && status !== 'IN_REVISION' ? (
+      {userCanDeleteInitiative && status !== 'PUBLISHED' && status !== 'IN_REVISION' ? (
         <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
           <ButtonNaked
             size="small"
@@ -375,11 +420,13 @@ const InitiativeOverview = () => {
             {t('pages.initiativeList.actions.delete')}
           </ButtonNaked>
           <DeleteInitiativeModal
+            initiativeId={id}
+            initiativeStatus={status}
             openInitiativeDeleteModal={openInitiativeOverviewDeleteModal}
             handleCloseInitiativeDeleteModal={handleCloseInitiativeOverviewDeleteModal}
           />
         </Box>
-      ) : status === 'PUBLISHED' ? (
+      ) : userCanSuspendInitiative && status === 'PUBLISHED' ? (
         <Box sx={{ gridColumn: 'span 2', textAlign: 'end' }}>
           <ButtonNaked
             disabled
@@ -411,6 +458,8 @@ const InitiativeOverview = () => {
     } else {
       switch (status) {
         case 'OK':
+        case 'KO':
+        case 'PROC_KO':
           return (
             <StatusSnackBar
               openSnackBar={openSnackbar}
@@ -422,8 +471,6 @@ const InitiativeOverview = () => {
         case 'VALIDATE':
         case 'PROCESSING':
         case 'TO_SCHEDULE':
-        case 'KO':
-        case 'PROC_KO':
         default:
           return null;
       }
@@ -470,7 +517,7 @@ const InitiativeOverview = () => {
             variantSubTitle="body1"
           />
         </Box>
-        {renderConditionalActions(initiativeSel.status)}
+        {renderConditionalActions(initiativeSel.initiativeId, initiativeSel.status)}
         {renderTypeSnackBarStatus(statusFile)}
       </Box>
 

@@ -23,7 +23,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
   const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
   const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
-  const [draftEnabled, setDraftEnabled] = useState(true);
 
   useEffect(() => {
     if (selectedCriteria) {
@@ -67,7 +66,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             currentStep={activeStep}
             setCurrentStep={setActiveStep}
             setDisabledNext={setDisabledNext}
-            setDraftEnabled={setDraftEnabled}
           />
         );
       case 1:
@@ -78,7 +76,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             currentStep={activeStep}
             setCurrentStep={setActiveStep}
             setDisabledNext={setDisabledNext}
-            setDraftEnabled={setDraftEnabled}
           />
         );
       case 2:
@@ -90,7 +87,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
               currentStep={activeStep}
               setCurrentStep={setActiveStep}
               setDisabledNext={setDisabledNext}
-              setDraftEnabled={setDraftEnabled}
             />
           );
         } else if (beneficiaryKnown === 'false') {
@@ -101,7 +97,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
               currentStep={activeStep}
               setCurrentStep={setActiveStep}
               setDisabledNext={setDisabledNext}
-              setDraftEnabled={setDraftEnabled}
             />
           );
         }
@@ -114,7 +109,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             currentStep={activeStep}
             setCurrentStep={setActiveStep}
             setDisabledNext={setDisabledNext}
-            setDraftEnabled={setDraftEnabled}
           />
         );
       case 4:
@@ -125,7 +119,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             currentStep={activeStep}
             setCurrentStep={setActiveStep}
             setDisableNext={setDisabledNext}
-            setDraftEnabled={setDraftEnabled}
           />
         );
       default:
@@ -160,17 +153,15 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
               </Button>
             </Box>
             <Box sx={{ gridArea: 'draft', justifySelf: 'end' }}>
-              {draftEnabled && (
-                <Button
-                  variant="text"
-                  startIcon={<SaveIcon />}
-                  onClick={handleDraft}
-                  data-testid="skip-action-test"
-                  sx={{ display: activeStep > 0 ? 'inline-flex' : 'none' }}
-                >
-                  {t('components.wizard.common.buttons.skip')}
-                </Button>
-              )}
+              <Button
+                variant="text"
+                startIcon={<SaveIcon />}
+                onClick={handleDraft}
+                data-testid="skip-action-test"
+                sx={{ display: activeStep > 0 ? 'inline-flex' : 'none' }}
+              >
+                {t('components.wizard.common.buttons.skip')}
+              </Button>
             </Box>
             <Box sx={{ gridArea: 'continue', justifySelf: 'end' }}>
               <Button
