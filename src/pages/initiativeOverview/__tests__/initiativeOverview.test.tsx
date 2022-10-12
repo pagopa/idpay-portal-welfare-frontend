@@ -6,7 +6,10 @@ import { Provider } from 'react-redux';
 import { groupsApi } from '../../../api/groupsApiClient';
 import { createStore } from '../../../redux/store';
 // import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
-// import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
+import {
+  getGroupOfBeneficiaryStatusAndDetails,
+  mockedInitiativeId,
+} from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
 
 function mockFunction() {
@@ -64,11 +67,11 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
     });
   });
 
-  jest.mock('../../../api/groupsApiClient');
-
   beforeEach(() => {
     jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
   });
+
+  jest.mock('../../../api/groupsApiClient');
 
   it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
     jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
@@ -79,7 +82,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
       </Provider>
     );
 
-    // await getGroupOfBeneficiaryStatusAndDetail(mockedInitiativeId);
-    // expect(groupsApi.getGroupOfBeneficiaryStatusAndDetails).toBeCalled();
+    getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
+    expect(getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId)).toBeDefined();
   });
 });
