@@ -53,13 +53,17 @@ const ConfirmPublishInitiativeModal = ({
             {t('pages.initiativeOverview.next.modalPublish.title')}
           </Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('pages.initiativeOverview.next.modalPublish.subtitle', {
-              initiativeName: initiativeSel.initiativeName,
-              usersNumber: peopleReached(
-                initiativeSel.generalInfo.budget,
-                initiativeSel.generalInfo.beneficiaryBudget
-              ),
-            })}
+            {initiativeSel.generalInfo.beneficiaryKnown === 'true'
+              ? t('pages.initiativeOverview.next.modalPublish.initiativeWithGroupsSubtitle', {
+                  initiativeName: initiativeSel.initiativeName,
+                  usersNumber: peopleReached(
+                    initiativeSel.generalInfo.budget,
+                    initiativeSel.generalInfo.beneficiaryBudget
+                  ),
+                })
+              : t('pages.initiativeOverview.next.modalPublish.initiativeWithoutGroupsSubtitle', {
+                  initiativeName: initiativeSel.initiativeName,
+                })}
           </Typography>
           <Box
             sx={{

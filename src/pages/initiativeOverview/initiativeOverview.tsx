@@ -445,35 +445,39 @@ const InitiativeOverview = () => {
     </Box>
   );
 
-  const renderTypeSnackBarStatus = (status: string) => {
-    if (userCanReviewInitiative) {
-      return (
-        <StatusSnackBar
-          openSnackBar={openSnackbar}
-          setOpenSnackBar={setOpenSnackBar}
-          fileStatus={status}
-          initiative={initiativeSel}
-        />
-      );
-    } else {
-      switch (status) {
-        case 'OK':
-        case 'KO':
-        case 'PROC_KO':
-          return (
-            <StatusSnackBar
-              openSnackBar={openSnackbar}
-              setOpenSnackBar={setOpenSnackBar}
-              fileStatus={status}
-              initiative={initiativeSel}
-            />
-          );
-        case 'VALIDATE':
-        case 'PROCESSING':
-        case 'TO_SCHEDULE':
-        default:
-          return null;
+  const renderTypeSnackBarStatus = (status: string, initiativeStatus: string | undefined) => {
+    if (typeof initiativeStatus === 'string' && initiativeStatus !== 'TO_CHECK') {
+      if (userCanReviewInitiative) {
+        return (
+          <StatusSnackBar
+            openSnackBar={openSnackbar}
+            setOpenSnackBar={setOpenSnackBar}
+            fileStatus={status}
+            initiative={initiativeSel}
+          />
+        );
+      } else {
+        switch (status) {
+          case 'OK':
+          case 'KO':
+          case 'PROC_KO':
+            return (
+              <StatusSnackBar
+                openSnackBar={openSnackbar}
+                setOpenSnackBar={setOpenSnackBar}
+                fileStatus={status}
+                initiative={initiativeSel}
+              />
+            );
+          case 'VALIDATE':
+          case 'PROCESSING':
+          case 'TO_SCHEDULE':
+          default:
+            return null;
+        }
       }
+    } else {
+      return null;
     }
   };
 
@@ -518,7 +522,7 @@ const InitiativeOverview = () => {
           />
         </Box>
         {renderConditionalActions(initiativeSel.initiativeId, initiativeSel.status)}
-        {renderTypeSnackBarStatus(statusFile)}
+        {renderTypeSnackBarStatus(statusFile, initiativeSel.status)}
       </Box>
 
       <Box
