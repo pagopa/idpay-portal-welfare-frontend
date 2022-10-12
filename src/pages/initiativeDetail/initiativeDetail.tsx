@@ -111,7 +111,13 @@ const InitiativeDetail = () => {
         .then((res) => {
           setFileProcessingOutcomeStatus(res.status);
           setDisabledApprove(res.status !== 'OK');
-          setDisabledReject(res.status !== 'OK');
+          setDisabledReject(res.status !== 'OK' && res.status !== 'PROC_KO');
+
+          // if (res.status !== 'OK' && res.status !== 'PROC_KO') {
+          //   setDisabledReject(true);
+          // } else {
+          //   setDisabledReject(false);
+          // }
         })
         .catch((error) => {
           addError({
