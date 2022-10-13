@@ -10,7 +10,8 @@ export default {
     'incaricato-ente-creditore': 'Incaricato Ente Creditore',
     'referente-legale': 'Referente Legale',
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
-    admin: 'admin',
+    admin: 'Amministratore',
+    ope_base: 'Operatore PagoPA',
   },
   sideMenu: {
     home: {
@@ -125,11 +126,11 @@ export default {
         modalPublish: {
           title: 'Pubblica iniziativa',
           subtitle:
-            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
+            'Stai per pubblicare l’iniziativa {{initiativeName}}, il servizio sarà visible in app e {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
           initiativeWithGroupsSubtitle:
-            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}}, che il servizio sarà visible in app e che {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO.',
+            'Stai per pubblicare l’iniziativa {{initiativeName}}, il servizio sarà visible in app e {{usersNumber}} utenti saranno avvisati tramite un messaggio su IO. Vuoi procedere con la pubblicazione?',
           initiativeWithoutGroupsSubtitle:
-            'Qui diciamo all’ente che sta per pubblicare l’iniziativa {{initiativeName}} e che il servizio sarà visible in app.',
+            'Stai per pubblicare l’iniziativa {{initiativeName}}. Il servizio sarà visible in app. Vuoi procedere con la pubblicazione?',
         },
       },
       modal: {
