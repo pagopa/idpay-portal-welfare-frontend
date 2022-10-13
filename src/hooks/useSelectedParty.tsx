@@ -1,7 +1,7 @@
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsService';
-import { Party /* PartyRole, UserRole */ } from '../model/Party';
+import { Party /* PartyRole, UserRole */, PLACEHOLDER_PARTY_LOGO } from '../model/Party';
 import { useAppDispatch, useAppSelector } from '../redux/hooks';
 import { partiesActions, partiesSelectors } from '../redux/slices/partiesSlice';
 import { fetchPartyDetails } from '../services/partyService';
@@ -130,6 +130,7 @@ export const useSelectedParty = (): (() => Promise<Party>) => {
           digitalAddress: '',
           status: 'ACTIVE',
           roles: partyRoles,
+          urlLogo: PLACEHOLDER_PARTY_LOGO,
           fiscalCode: partyJwtConfig.partyVat,
           registeredOffice: '',
           typology: '',

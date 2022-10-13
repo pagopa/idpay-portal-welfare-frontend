@@ -145,7 +145,7 @@ const InitiativeOverview = () => {
       case 'IN_REVISION':
         if (!userCanReviewInitiative) {
           return (
-            <Box sx={{ gridColumn: 'span 3' }}>
+            <Box sx={{ gridColumn: 'span 4' }}>
               <ButtonNaked
                 size="small"
                 onClick={() => handleViewDetails(initiativeSel.initiativeId)}
@@ -261,7 +261,11 @@ const InitiativeOverview = () => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderNextStatus = (status: string) => (
     <>
-      <Box sx={{ gridColumn: 'span 8' }}>{conditionalSubtitleRendering(initiativeSel.status)}</Box>
+      <Box sx={{ gridColumn: 'span 8' }}>
+        <Typography variant="body2">
+          {conditionalSubtitleRendering(initiativeSel.status)}
+        </Typography>
+      </Box>
       <Box sx={{ gridColumn: 'span 8' }}>
         {status === 'IN_REVISION' && (
           <Button
@@ -319,16 +323,18 @@ const InitiativeOverview = () => {
   const renderConditionalStatusPublished = (status: string | undefined) =>
     status === 'PUBLISHED' && (
       <>
-        <Box sx={{ gridColumn: 'span 24', color: '#5C6F82' }}>
-          {t('pages.initiativeOverview.next.lastUpdate', {
-            lastUpdate: initiativeSel.updateDate
-              ? typeof initiativeSel.updateDate === 'object' &&
-                initiativeSel.updateDate.toLocaleString('fr-BE')
-              : '-',
-          })}
+        <Box sx={{ gridColumn: 'span 24' }}>
+          <Typography variant="body2" sx={{ color: '#5C6F82' }}>
+            {t('pages.initiativeOverview.next.lastUpdate', {
+              lastUpdate: initiativeSel.updateDate
+                ? typeof initiativeSel.updateDate === 'object' &&
+                  initiativeSel.updateDate.toLocaleString('fr-BE')
+                : '-',
+            })}
+          </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 5', lineHeight: 2 }}>
-          {t('pages.initiativeOverview.next.join')}
+          <Typography variant="body2">{t('pages.initiativeOverview.next.join')}</Typography>
         </Box>
         <Box
           sx={{
@@ -446,38 +452,46 @@ const InitiativeOverview = () => {
   );
 
   const renderTypeSnackBarStatus = (status: string, initiativeStatus: string | undefined) => {
-    if (typeof initiativeStatus === 'string' && initiativeStatus !== 'TO_CHECK') {
-      if (userCanReviewInitiative) {
-        return (
-          <StatusSnackBar
-            openSnackBar={openSnackbar}
-            setOpenSnackBar={setOpenSnackBar}
-            fileStatus={status}
-            initiative={initiativeSel}
-          />
-        );
-      } else {
-        switch (status) {
-          case 'OK':
-          case 'KO':
-          case 'PROC_KO':
-            return (
-              <StatusSnackBar
-                openSnackBar={openSnackbar}
-                setOpenSnackBar={setOpenSnackBar}
-                fileStatus={status}
-                initiative={initiativeSel}
-              />
-            );
-          case 'VALIDATE':
-          case 'PROCESSING':
-          case 'TO_SCHEDULE':
-          default:
-            return null;
-        }
+    if (userCanReviewInitiative) {
+      switch (initiativeStatus) {
+        case 'IN_REVISION':
+        case 'APPROVED':
+          return (
+            <StatusSnackBar
+              openSnackBar={openSnackbar}
+              setOpenSnackBar={setOpenSnackBar}
+              fileStatus={status}
+              initiative={initiativeSel}
+            />
+          );
+        case 'DRAFT':
+        case 'TO_CHECK':
+        case 'PUBLISHED':
+        case 'CLOSED':
+        case 'SUSPENDED':
+        default:
+          return null;
       }
     } else {
-      return null;
+      switch (initiativeStatus) {
+        case 'IN_REVISION':
+        case 'APPROVED':
+        case 'PUBLISHED':
+          return (
+            <StatusSnackBar
+              openSnackBar={openSnackbar}
+              setOpenSnackBar={setOpenSnackBar}
+              fileStatus={status}
+              initiative={initiativeSel}
+            />
+          );
+        case 'DRAFT':
+        case 'TO_CHECK':
+        case 'CLOSED':
+        case 'SUSPENDED':
+        default:
+          return null;
+      }
     }
   };
 
@@ -542,33 +556,51 @@ const InitiativeOverview = () => {
             gridTemplateRows: 'auto',
             gridColumn: 'span 1',
             display: 'grid',
-            gridTemplateColumns: 'repeat(8, 1fr)',
+            gridTemplateColumns: 'repeat(12, 1fr)',
             alignContent: 'start',
             rowGap: 3,
           }}
         >
-          <Box sx={{ pt: 3, gridColumn: 'span 8' }}>
+          <Box sx={{ pt: 3, gridColumn: 'span 12' }}>
             <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.idCode')}</Box>
-          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>{initiativeSel.initiativeId} </Box>
-          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.creationData')}</Box>
-          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
-            {typeof initiativeSel.creationDate === 'object' &&
-              initiativeSel.creationDate.toLocaleDateString('fr-BE')}
+          <Box sx={{ gridColumn: 'span 4' }}>
+            <Typography variant="body2">{t('pages.initiativeOverview.info.idCode')}</Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.lastModify')}</Box>
-          <Box sx={{ gridColumn: 'span 5', fontWeight: 600 }}>
-            {initiativeSel.updateDate
-              ? typeof initiativeSel.updateDate === 'object' &&
-                initiativeSel.updateDate.toLocaleDateString('fr-BE')
-              : '-'}
-          </Box>
-          <Box sx={{ gridColumn: 'span 3' }}>
-            {t('pages.initiativeOverview.info.initiativeState')}
-          </Box>
-          <Box sx={{ gridColumn: 'span 5' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
           <Box sx={{ gridColumn: 'span 8' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {initiativeSel.initiativeId}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 4' }}>
+            <Typography variant="body2">
+              {t('pages.initiativeOverview.info.creationData')}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 8' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {typeof initiativeSel.creationDate === 'object' &&
+                initiativeSel.creationDate.toLocaleDateString('fr-BE')}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 4' }}>
+            <Typography variant="body2">{t('pages.initiativeOverview.info.lastModify')}</Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 8' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {initiativeSel.updateDate
+                ? typeof initiativeSel.updateDate === 'object' &&
+                  initiativeSel.updateDate.toLocaleDateString('fr-BE')
+                : '-'}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 4' }}>
+            <Typography variant="body2">
+              {t('pages.initiativeOverview.info.initiativeState')}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 8' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
+          <Box sx={{ gridColumn: 'span 12' }}>
             {renderConditionalInfoStatus(initiativeSel.status)}
           </Box>
         </Paper>
@@ -580,8 +612,7 @@ const InitiativeOverview = () => {
             gridTemplateRows: 'auto',
             gridColumn: 'span 1',
             display: 'grid',
-            gridTemplateColumns:
-              initiativeSel.status === 'PUBLISHED' ? 'repeat(24, 1fr)' : 'repeat(10, 1fr)',
+            gridTemplateColumns: 'repeat(24, 1fr)',
             alignContent: 'start',
             rowGap: 3,
             opacity: initiativeSel.status === 'PUBLISHED' ? 0.3 : 1,
@@ -590,7 +621,7 @@ const InitiativeOverview = () => {
           <Box
             sx={{
               pt: 3,
-              gridColumn: initiativeSel.status === 'PUBLISHED' ? 'span 24' : 'span 10',
+              gridColumn: 'span 24',
             }}
           >
             {initiativeSel.status === 'PUBLISHED' ? (
