@@ -87,9 +87,10 @@ export default function SideMenu() {
       const itemExpanded = `panel-${id}`;
       setExpanded(itemExpanded);
     } else {
-      const firstItemExpanded = Array.isArray(initiativeSummaryList)
-        ? `panel-${initiativeSummaryList[0].initiativeId}`
-        : false;
+      const firstItemExpanded =
+        Array.isArray(initiativeSummaryList) && initiativeSummaryList.length > 0
+          ? `panel-${initiativeSummaryList[0].initiativeId}`
+          : false;
       setExpanded(firstItemExpanded);
     }
   }, [JSON.stringify(match), initiativeSummaryList]);
