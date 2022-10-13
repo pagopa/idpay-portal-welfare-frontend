@@ -5,6 +5,7 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
+import React from 'react';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -157,5 +158,35 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       expect(termsAndConditions).not.toBeNull();
       expect(termsAndConditions).toBeInTheDocument();
     });
+  });
+
+  it('Test of setting true/false of modal', async () => {
+    render(
+      <Provider store={store}>
+        <ServiceConfig
+          action={''}
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={0}
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    const setOpenInitiativeNotOnIOModal = jest.fn();
+    const useStateMock: any = (openInitiativeNotOnIOModal: boolean) => [
+      openInitiativeNotOnIOModal,
+      setOpenInitiativeNotOnIOModal,
+    ];
+    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+    expect(setOpenInitiativeNotOnIOModal).toBeDefined();
+    expect(useStateMock).toBeDefined();
   });
 });

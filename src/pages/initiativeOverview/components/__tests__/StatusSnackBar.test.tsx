@@ -5,6 +5,7 @@ import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import StatusSnackBar from '../StatusSnackBar';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
