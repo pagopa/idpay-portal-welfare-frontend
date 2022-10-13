@@ -16,6 +16,7 @@ import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -44,6 +45,7 @@ const InitiativeOverview = () => {
   const [statusFile, setStatusFile] = useState('');
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('PUBLISH_INITIATIVE');
 
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
   const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
@@ -107,10 +109,15 @@ const InitiativeOverview = () => {
 
   const publishInitiative = (id: string | undefined, userCanPublishInitiative: boolean) => {
     if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {
+      setLoading(true);
       updateInitiativePublishedStatus(id)
-        .then((_res) => history.replace(ROUTES.HOME))
+        .then((_res) => {
+          setLoading(false);
+          history.replace(ROUTES.HOME);
+        })
         .catch((error) => {
           setPublishModalOpen(false);
+          setLoading(false);
           addError({
             id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
             blocking: false,
