@@ -127,7 +127,7 @@ stages:
               extraProperties: |
                 sonar.javascript.file.suffixes=.js,.jsx
                 sonar.typescript.file.suffixes=.ts,.tsx
-                sonar.sources=.
+                sonar.sources=src
                 sonar.exclusions=**/__tests__/**,**/__mocks__/**
                 sonar.tests=src
                 sonar.test.inclusions=**/__tests__/**
