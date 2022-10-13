@@ -112,12 +112,6 @@ const InitiativeDetail = () => {
           setFileProcessingOutcomeStatus(res.status);
           setDisabledApprove(res.status !== 'OK');
           setDisabledReject(res.status !== 'OK' && res.status !== 'PROC_KO');
-
-          // if (res.status !== 'OK' && res.status !== 'PROC_KO') {
-          //   setDisabledReject(true);
-          // } else {
-          //   setDisabledReject(false);
-          // }
         })
         .catch((error) => {
           addError({
@@ -182,6 +176,10 @@ const InitiativeDetail = () => {
         });
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Box
