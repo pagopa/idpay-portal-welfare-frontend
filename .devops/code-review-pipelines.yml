@@ -128,7 +128,7 @@ stages:
                 sonar.javascript.file.suffixes=.js,.jsx
                 sonar.typescript.file.suffixes=.ts,.tsx
                 sonar.sources=src
-                sonar.exclusions=**/__tests__/**,**/__mocks__/**
+                sonar.exclusions=**/__tests__/**,**/__mocks__/**,**/locale/**,**/utils/**,**/*bootstrap.tsx,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.js,**/*reportWebVitals.ts
                 sonar.tests=src
                 sonar.test.inclusions=**/__tests__/**
                 sonar.testExecutionReportPaths=test-report.xml
