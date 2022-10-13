@@ -261,12 +261,12 @@ const InitiativeOverview = () => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderNextStatus = (status: string) => (
     <>
-      <Box sx={{ gridColumn: 'span 8' }}>
+      <Box sx={{ gridColumn: 'span 24' }}>
         <Typography variant="body2">
           {conditionalSubtitleRendering(initiativeSel.status)}
         </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 8' }}>
+      <Box sx={{ gridColumn: 'span 24' }}>
         {status === 'IN_REVISION' && (
           <Button
             disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
