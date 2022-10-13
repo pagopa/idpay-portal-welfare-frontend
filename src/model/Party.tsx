@@ -27,6 +27,9 @@ export type UserRole = {
   roleKey: string;
 };
 
+export const PLACEHOLDER_PARTY_LOGO =
+  'https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png';
+
 // const buildUrlLog = (partyId: string) =>
 //   `${ENV.URL_INSTITUTION_LOGO.PREFIX}${partyId}${ENV.URL_INSTITUTION_LOGO.SUFFIX}`;
 
