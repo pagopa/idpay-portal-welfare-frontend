@@ -72,19 +72,21 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         width: '100%',
         gridTemplateRows: 'auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(8, 1fr)',
+        gridTemplateColumns: 'repeat(12, 1fr)',
         rowGap: 3,
         alignContent: 'start',
       }}
     >
-      <Divider sx={{ gridColumn: 'span 8' }} />
-      <Box sx={{ gridColumn: 'span 8' }}>
+      <Divider sx={{ gridColumn: 'span 12' }} />
+      <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="subtitle1">
           {t('pages.initiativeOverview.info.otherinfo.title')}
         </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>
-        {t('pages.initiativeOverview.info.otherinfo.adhesion')}
+      <Box sx={{ gridColumn: 'span 4' }}>
+        <Typography variant="body2">
+          {t('pages.initiativeOverview.info.otherinfo.adhesion')}
+        </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
         {initiative.status === 'APPROVED' ? (
@@ -93,19 +95,27 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
           <HourglassTopIcon color="action" />
         )}
       </Box>
-      <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-        {dateMessageStatusApproved(initiative)}
+      <Box sx={{ gridColumn: 'span 7' }}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          {dateMessageStatusApproved(initiative)}
+        </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>{t('pages.initiativeOverview.info.otherinfo.spend')}</Box>
+      <Box sx={{ gridColumn: 'span 4' }}>
+        <Typography variant="body2">
+          {t('pages.initiativeOverview.info.otherinfo.spend')}
+        </Typography>
+      </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
         <AccessTimeFilledIcon color="action" />
       </Box>
-      <Box sx={{ gridColumn: 'span 4', fontWeight: 600 }}>
-        {t('pages.initiativeOverview.info.otherinfo.start', {
-          date: formatDate(initiative.generalInfo.startDate),
-        })}
+      <Box sx={{ gridColumn: 'span 7' }}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          {t('pages.initiativeOverview.info.otherinfo.start', {
+            date: formatDate(initiative.generalInfo.startDate),
+          })}
+        </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 3' }}>
+      <Box sx={{ gridColumn: 'span 4' }}>
         <ButtonNaked
           size="small"
           // eslint-disable-next-line sonarjs/no-identical-functions
