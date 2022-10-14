@@ -95,8 +95,8 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
           </Fragment>
         )}
 
-      {typeof initiativeDetail.trxRule.trxCount?.from === 'string' &&
-        typeof initiativeDetail.trxRule.trxCount?.to === 'string' && (
+      {typeof initiativeDetail.trxRule.trxCount?.from === 'number' &&
+        typeof initiativeDetail.trxRule.trxCount?.to === 'number' && (
           <Fragment>
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
