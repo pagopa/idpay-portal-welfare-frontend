@@ -66,8 +66,8 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
         {printRewardRuleAsString(initiativeDetail.rewardRule)}
       </Typography>
 
-      {typeof initiativeDetail.trxRule.threshold?.from === 'string' &&
-        typeof initiativeDetail.trxRule.threshold?.to === 'string' && (
+      {typeof initiativeDetail.trxRule.threshold?.from === 'number' &&
+        typeof initiativeDetail.trxRule.threshold?.to === 'number' && (
           <Fragment>
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step4.content.spentLimit')}
