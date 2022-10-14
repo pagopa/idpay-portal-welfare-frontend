@@ -32,3 +32,5 @@ export const verifyFetchAdmissionCriteriasMockExecution = (
 
 export const fetchAdmissionCriteria = () =>
   new Promise((resolve) => resolve(mockedAdmissionCriteria));
+
+export const getEligibilityCriteriaForSidebar = () => new Promise((resolve) => resolve);
