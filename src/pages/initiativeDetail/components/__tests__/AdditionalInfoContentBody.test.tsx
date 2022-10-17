@@ -1,16 +1,16 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
-import RefundRuleContentBody from '../StepFive/RefundRuleContentBody';
+import React from 'react';
+import AdditionalInfoContentBody from '../StepOne/AdditionalInfoContentBody';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<AdditionalInfoContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const initiative = store.getState().initiative;
   it('renders without crashing', () => {
@@ -18,11 +18,11 @@ describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createS
     window.scrollTo = jest.fn();
   });
 
-  test('should display the RefundRuleContentBody component with his functions', async () => {
+  test('should display the AdditionalInfoContentBody component with his functions', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <RefundRuleContentBody initiativeDetail={initiative} />
+          <AdditionalInfoContentBody initiativeDetail={initiative} />
         </Provider>
       );
     });
