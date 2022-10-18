@@ -87,7 +87,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
       render(
         <Provider store={store}>
           <ConfirmPublishInitiativeModal
-            publishModalOpen={false}
+            publishModalOpen={true}
             // eslint-disable-next-line react/jsx-no-bind
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
