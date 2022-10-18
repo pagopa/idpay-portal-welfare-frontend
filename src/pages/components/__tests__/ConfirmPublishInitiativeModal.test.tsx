@@ -1,4 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
+import React from 'react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -30,6 +31,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
   const peopleReached = jest.fn();
   const handlePusblishInitiative = jest.fn();
 
+  const initiative = store.getState().initiative;
+
   test('should display the ConfirmPublishInitiativeModal component', async () => {
     await act(async () => {
       render(
@@ -40,7 +43,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            id={undefined}
+            initiative={initiative}
+            beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
             handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
               console.log(event);
@@ -62,8 +66,12 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            id={undefined}
-            handlePusblishInitiative={handlePusblishInitiative}
+            initiative={initiative}
+            beneficiaryReached={25}
+            // eslint-disable-next-line react/jsx-no-bind
+            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
+              console.log(event);
+            }}
             userCanPublishInitiative={false}
           />
         </Provider>
@@ -79,12 +87,13 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
       render(
         <Provider store={store}>
           <ConfirmPublishInitiativeModal
-            publishModalOpen={true}
+            publishModalOpen={false}
             // eslint-disable-next-line react/jsx-no-bind
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            id={undefined}
+            initiative={initiative}
+            beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
             handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
               console.log(event);
@@ -107,17 +116,18 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
       render(
         <Provider store={store}>
           <ConfirmPublishInitiativeModal
-            publishModalOpen={true}
+            publishModalOpen={false}
             // eslint-disable-next-line react/jsx-no-bind
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
             }}
-            id={undefined}
+            initiative={initiative}
+            beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
             handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
               console.log(event);
             }}
-            userCanPublishInitiative={true}
+            userCanPublishInitiative={false}
           />
         </Provider>
       );
