@@ -1,22 +1,18 @@
 import { useTranslation } from 'react-i18next';
 import { Alert, Box, Chip, Divider, Typography } from '@mui/material';
-import { Initiative } from '../../../../model/Initiative';
 import { usePermissions } from '../../../../hooks/usePermissions';
 import { USER_PERMISSIONS } from '../../../../utils/constants';
 
 type Props = {
-  initiativeDetail: Initiative;
   fileProcessingOutcomeStatus: string | undefined;
+  fileBeneficiaryReached: number | undefined;
 };
 
-const BeneficiaryListContentBody = ({ initiativeDetail, fileProcessingOutcomeStatus }: Props) => {
+const BeneficiaryListContentBody = ({
+  fileProcessingOutcomeStatus,
+  fileBeneficiaryReached,
+}: Props) => {
   const { t } = useTranslation();
-
-  const printBeneficiaryNumberAsString = (totalBudget: string, budgetPerPerson: string): string => {
-    const totalBudgetInt = parseInt(totalBudget, 10);
-    const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
-    return Math.floor(totalBudgetInt / budgetPerPersonInt).toString();
-  };
 
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
 
@@ -48,10 +44,7 @@ const BeneficiaryListContentBody = ({ initiativeDetail, fileProcessingOutcomeSta
           {t('pages.initiativeDetail.accordion.step3.content.beneficiaryNumber')}
         </Typography>
         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-          {printBeneficiaryNumberAsString(
-            initiativeDetail.generalInfo.budget,
-            initiativeDetail.generalInfo.beneficiaryBudget
-          )}
+          {fileBeneficiaryReached}
         </Typography>
 
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>

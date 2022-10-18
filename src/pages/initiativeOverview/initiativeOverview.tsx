@@ -43,6 +43,7 @@ const InitiativeOverview = () => {
   const [openInitiativeOverviewDeleteModal, setOpenInitiativeOverviewDeleteModal] = useState(false);
   const [openSnackbar, setOpenSnackBar] = useState(true);
   const [statusFile, setStatusFile] = useState('');
+  const [beneficiaryReached, setBeneficiaryReached] = useState<number | undefined>(undefined);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
   const addError = useErrorDispatcher();
   const setLoading = useLoading('PUBLISH_INITIATIVE');
@@ -77,7 +78,9 @@ const InitiativeOverview = () => {
         getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
           .then((res) => {
             const statusFileRes = res.status || '';
+            const beneficiaryReachedRes = res.beneficiariesReached || undefined;
             setStatusFile(statusFileRes);
+            setBeneficiaryReached(beneficiaryReachedRes);
             handleOpenSnackBar();
           })
           .catch((error) => {
@@ -266,7 +269,7 @@ const InitiativeOverview = () => {
   };
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  const renderNextStatus = (status: string) => (
+  const renderNextStatus = (status: string, beneficiaryReached: number | undefined) => (
     <>
       <Box sx={{ gridColumn: 'span 24' }}>
         <Typography variant="body2">
@@ -317,7 +320,8 @@ const InitiativeOverview = () => {
             <ConfirmPublishInitiativeModal
               publishModalOpen={publishModalOpen}
               setPublishModalOpen={setPublishModalOpen}
-              id={initiativeSel.initiativeId}
+              initiative={initiativeSel}
+              beneficiaryReached={beneficiaryReached}
               handlePusblishInitiative={publishInitiative}
               userCanPublishInitiative={userCanPublishInitiative}
             />
@@ -458,7 +462,11 @@ const InitiativeOverview = () => {
     </Box>
   );
 
-  const renderTypeSnackBarStatus = (status: string, initiativeStatus: string | undefined) => {
+  const renderTypeSnackBarStatus = (
+    status: string,
+    beneficiaryReached: number | undefined,
+    initiativeStatus: string | undefined
+  ) => {
     if (userCanReviewInitiative) {
       switch (initiativeStatus) {
         case 'IN_REVISION':
@@ -468,7 +476,7 @@ const InitiativeOverview = () => {
               openSnackBar={openSnackbar}
               setOpenSnackBar={setOpenSnackBar}
               fileStatus={status}
-              initiative={initiativeSel}
+              beneficiaryReached={beneficiaryReached}
             />
           );
         case 'DRAFT':
@@ -489,7 +497,7 @@ const InitiativeOverview = () => {
               openSnackBar={openSnackbar}
               setOpenSnackBar={setOpenSnackBar}
               fileStatus={status}
-              initiative={initiativeSel}
+              beneficiaryReached={beneficiaryReached}
             />
           );
         case 'DRAFT':
@@ -543,7 +551,7 @@ const InitiativeOverview = () => {
           />
         </Box>
         {renderConditionalActions(initiativeSel.initiativeId, initiativeSel.status)}
-        {renderTypeSnackBarStatus(statusFile, initiativeSel.status)}
+        {renderTypeSnackBarStatus(statusFile, beneficiaryReached, initiativeSel.status)}
       </Box>
 
       <Box
@@ -641,7 +649,7 @@ const InitiativeOverview = () => {
           initiativeSel.status === 'IN_REVISION' ||
           initiativeSel.status === 'TO_CHECK' ||
           initiativeSel.status === 'APPROVED'
-            ? renderNextStatus(initiativeSel.status)
+            ? renderNextStatus(initiativeSel.status, beneficiaryReached)
             : renderConditionalStatusPublished(initiativeSel.status)}
         </Paper>
       </Box>

@@ -1,14 +1,13 @@
 import { Backdrop, Modal, Fade, Box, Typography, Button } from '@mui/material';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { peopleReached } from '../../helpers';
-import { useAppSelector } from '../../redux/hooks';
-import { initiativeSelector } from '../../redux/slices/initiativeSlice';
+import { Initiative } from '../../model/Initiative';
 
 type Props = {
   publishModalOpen: boolean;
   setPublishModalOpen: Dispatch<SetStateAction<boolean>>;
-  id: string | undefined;
+  initiative: Initiative;
+  beneficiaryReached: number | undefined;
   handlePusblishInitiative: any;
   userCanPublishInitiative: boolean;
 };
@@ -16,12 +15,12 @@ type Props = {
 const ConfirmPublishInitiativeModal = ({
   publishModalOpen,
   setPublishModalOpen,
-  id,
+  initiative,
+  beneficiaryReached,
   handlePusblishInitiative,
   userCanPublishInitiative,
 }: Props) => {
   const { t } = useTranslation();
-  const initiativeSel = useAppSelector(initiativeSelector);
 
   return (
     <Modal
@@ -53,16 +52,13 @@ const ConfirmPublishInitiativeModal = ({
             {t('pages.initiativeOverview.next.modalPublish.title')}
           </Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {initiativeSel.generalInfo.beneficiaryKnown === 'true'
+            {initiative.generalInfo.beneficiaryKnown === 'true'
               ? t('pages.initiativeOverview.next.modalPublish.initiativeWithGroupsSubtitle', {
-                  initiativeName: initiativeSel.initiativeName,
-                  usersNumber: peopleReached(
-                    initiativeSel.generalInfo.budget,
-                    initiativeSel.generalInfo.beneficiaryBudget
-                  ),
+                  initiativeName: initiative.initiativeName,
+                  usersNumber: beneficiaryReached,
                 })
               : t('pages.initiativeOverview.next.modalPublish.initiativeWithoutGroupsSubtitle', {
-                  initiativeName: initiativeSel.initiativeName,
+                  initiativeName: initiative.initiativeName,
                 })}
           </Typography>
           <Box
@@ -86,7 +82,7 @@ const ConfirmPublishInitiativeModal = ({
               variant="contained"
               sx={{ gridArea: 'pubBtn', justifySelf: 'end' }}
               onClick={() => {
-                handlePusblishInitiative(id, userCanPublishInitiative);
+                handlePusblishInitiative(initiative.initiativeId, userCanPublishInitiative);
                 setPublishModalOpen(false);
               }}
             >
