@@ -15,7 +15,7 @@ describe('<ShopRulesContentBody />', (injectedStore?: ReturnType<typeof createSt
   const store = injectedStore ? injectedStore : createStore();
   const initiative = store.getState().initiative;
   const printRewardRuleAsString = jest.fn();
-  const printMccFilterAsString = jest.fn();
+  // const printMccFilterAsString = jest.fn();
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
@@ -28,8 +28,8 @@ describe('<ShopRulesContentBody />', (injectedStore?: ReturnType<typeof createSt
           <ShopRulesContentBody initiativeDetail={initiative} />
         </Provider>
       );
-      expect(printRewardRuleAsString).toBeDefined();
-      expect(printMccFilterAsString).toBeDefined();
+      expect(printRewardRuleAsString.mockReturnValue).toBeDefined();
+      // expect(printMccFilterAsString).toMatchSnapshot();
     });
   });
 });

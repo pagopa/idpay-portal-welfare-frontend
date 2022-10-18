@@ -3,14 +3,14 @@ import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
-import AdditionalInfoContentBody from '../StepOne/AdditionalInfoContentBody';
+import GeneralInfoContentBody from '../StepTwo/GeneralInfoContentBody';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<AdditionalInfoContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<GeneralInfoContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const initiative = store.getState().initiative;
   const printAssistanceChannelLabel = jest.fn();
@@ -19,15 +19,13 @@ describe('<AdditionalInfoContentBody />', (injectedStore?: ReturnType<typeof cre
     window.scrollTo = jest.fn();
   });
 
-  test('should display the AdditionalInfoContentBody component with his functions', async () => {
+  test('should display the GeneralInfoContentBody component with his functions', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
-          <AdditionalInfoContentBody initiativeDetail={initiative} />
+          <GeneralInfoContentBody initiativeDetail={initiative} />
         </Provider>
       );
-
-      expect(printAssistanceChannelLabel).toBeDefined();
     });
   });
 });
