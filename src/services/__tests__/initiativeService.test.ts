@@ -19,9 +19,11 @@ import {
   updateInitiativePublishedStatus,
   logicallyDeleteInitiative,
   updateInitiativeServiceInfo,
+  getEligibilityCriteriaForSidebar,
 } from '../intitativeService';
 
-import { fetchAdmissionCriteria } from '../admissionCriteriaService';
+import {} from '../admissionCriteriaService';
+
 import {
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
@@ -32,7 +34,6 @@ import {
 } from '../__mocks__/initiativeService';
 
 import { InitiativeApi } from '../../api/InitiativeApiClient';
-import { mockedAdmissionCriteria } from '../__mocks__/admissionCriteriaService';
 
 jest.mock('../../api/InitiativeApiClient');
 
@@ -163,10 +164,10 @@ test('delete initiative', async () => {
   expect(InitiativeApi.logicallyDeleteInitiative).toBeCalledWith(mockedInitiativeId);
 });
 
-// test('eligibility criteria for sidebar', async () => {
-//   await getEligibilityCriteriaForSidebar();
-//   expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
-// });
+test('eligibility criteria for sidebar', async () => {
+  await getEligibilityCriteriaForSidebar();
+  expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
+});
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {
   const value: InitiativeRewardAndTrxRulesDTORewardRule = {

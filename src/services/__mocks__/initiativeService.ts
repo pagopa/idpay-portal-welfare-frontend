@@ -12,6 +12,8 @@ import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/Initia
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
+import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { mockedAdmissionCriteria } from './admissionCriteriaService';
 
 export const mockedInitiativeSummary = [
   {
@@ -189,3 +191,6 @@ export const putBeneficiaryRuleDraftService = (
 
 export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
   new Promise((resolve) => resolve());
+
+export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
+  new Promise((resolve) => resolve(mockedAdmissionCriteria));
