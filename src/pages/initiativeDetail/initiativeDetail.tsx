@@ -75,6 +75,9 @@ const InitiativeDetail = () => {
   const [fileProcessingOutcomeStatus, setFileProcessingOutcomeStatus] = useState<
     string | undefined
   >(undefined);
+  const [fileBeneficiaryReached, setFileBeneficiaryReached] = useState<number | undefined>(
+    undefined
+  );
 
   const addError = useErrorDispatcher();
 
@@ -110,6 +113,7 @@ const InitiativeDetail = () => {
       getGroupOfBeneficiaryStatusAndDetail(initiativeDetail.initiativeId)
         .then((res) => {
           setFileProcessingOutcomeStatus(res.status);
+          setFileBeneficiaryReached(res.beneficiariesReached);
           setDisabledApprove(res.status !== 'OK');
           setDisabledReject(res.status !== 'OK' && res.status !== 'PROC_KO');
         })
@@ -320,8 +324,8 @@ const InitiativeDetail = () => {
             <AccordionDetails>
               {initiativeDetail.generalInfo.beneficiaryKnown === 'true' ? (
                 <BeneficiaryListContentBody
-                  initiativeDetail={initiativeDetail}
                   fileProcessingOutcomeStatus={fileProcessingOutcomeStatus}
+                  fileBeneficiaryReached={fileBeneficiaryReached}
                 />
               ) : (
                 <BeneficiaryRuleContentBody initiativeDetail={initiativeDetail} />

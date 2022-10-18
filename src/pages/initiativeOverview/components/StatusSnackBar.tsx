@@ -5,17 +5,20 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Initiative } from '../../../model/Initiative';
-import { peopleReached } from '../../../helpers';
 
 type Props = {
   openSnackBar: boolean;
   setOpenSnackBar: Dispatch<SetStateAction<boolean>>;
   fileStatus: string | undefined;
-  initiative: Initiative;
+  beneficiaryReached: number | undefined;
 };
 
-const StatusSnackBar = ({ openSnackBar, setOpenSnackBar, fileStatus, initiative }: Props) => {
+const StatusSnackBar = ({
+  openSnackBar,
+  setOpenSnackBar,
+  fileStatus,
+  beneficiaryReached,
+}: Props) => {
   const { t } = useTranslation();
   const handleAlertSeverity = (fileStatus: string | undefined) =>
     fileStatus === 'KO' || fileStatus === 'PROC_KO' ? 'error' : 'info';
@@ -59,7 +62,10 @@ const StatusSnackBar = ({ openSnackBar, setOpenSnackBar, fileStatus, initiative 
     }
   };
 
-  const renderAlertBody = (fileStatus: string | undefined, initiative: Initiative) => {
+  const renderAlertBody = (
+    fileStatus: string | undefined,
+    beneficiaryReached: number | undefined
+  ) => {
     switch (fileStatus) {
       case 'OK':
         return (
@@ -72,10 +78,7 @@ const StatusSnackBar = ({ openSnackBar, setOpenSnackBar, fileStatus, initiative 
           >
             <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
             <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
-              {peopleReached(
-                initiative.generalInfo.budget,
-                initiative.generalInfo.beneficiaryBudget
-              )}
+              {beneficiaryReached}
             </Typography>
             <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
           </Box>
@@ -107,7 +110,7 @@ const StatusSnackBar = ({ openSnackBar, setOpenSnackBar, fileStatus, initiative 
         icon={handleIconType(fileStatus)}
         action={handleTypeAction(fileStatus)}
       >
-        {renderAlertBody(fileStatus, initiative)}
+        {renderAlertBody(fileStatus, beneficiaryReached)}
       </MuiAlert>
     </Snackbar>
   );
