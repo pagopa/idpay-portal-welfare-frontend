@@ -538,6 +538,7 @@ export default {
     integer: 'Il campo deve contenere un valore intero',
     positive: 'Il campo deve contenere un valore positivo',
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
+    outJoinFrom: 'La data di inizio adesione non può essere antecedente ad oggi',
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',

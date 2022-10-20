@@ -26,6 +26,7 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { parse } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   generalInfoSelector,
@@ -108,10 +109,26 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return schema;
       }),
-    rankingStartDate: Yup.date().nullable().typeError(t('validation.invalidDate')),
+    rankingStartDate: Yup.date()
+      .nullable()
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
+      .typeError(t('validation.invalidDate'))
+      .min(new Date(), t('validation.outJoinFrom')),
     // eslint-disable-next-line sonarjs/no-identical-functions
     rankingEndDate: Yup.date()
       .nullable()
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
       .typeError(t('validation.invalidDate'))
       .when('rankingStartDate', (rankingStartDate, _schema) => {
         const timestamp = Date.parse(rankingStartDate);
@@ -127,6 +144,13 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     startDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
       .typeError(t('validation.invalidDate'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('rankingEndDate', (rankingEndDate, _schema) => {
@@ -147,6 +171,13 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     endDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
       .typeError(t('validation.invalidDate'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('startDate', (startDate, schema) => {
