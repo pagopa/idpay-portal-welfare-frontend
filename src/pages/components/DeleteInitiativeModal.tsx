@@ -95,6 +95,7 @@ const DeleteInitiativeModal = ({
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={handleCloseInitiativeDeleteModal}
+              data-testid="cancel-button-test"
             >
               {t('pages.initiativeOverview.modal.cancel')}
             </Button>
@@ -105,6 +106,7 @@ const DeleteInitiativeModal = ({
                 handleDeleteInitiative(initiativeId, initiativeStatus);
                 handleCloseInitiativeDeleteModal(e);
               }}
+              data-testid="delete-button-test"
             >
               {t('pages.initiativeOverview.modal.delete')}
             </Button>

@@ -44,6 +44,7 @@ const ConfirmRejectInitiativeModal = ({
             boxShadow: 24,
             p: 4,
           }}
+          data-testid="body-modal-test"
         >
           <Typography variant="h6" data-testid="title-modal-test">
             {t('pages.initiativeDetail.accordion.modal.title')}

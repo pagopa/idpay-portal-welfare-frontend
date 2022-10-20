@@ -75,6 +75,7 @@ const ConfirmPublishInitiativeModal = ({
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={() => setPublishModalOpen(false)}
+              data-testid="cancel-button-test"
             >
               {t('components.wizard.stepOne.modal.cancelBtn')}
             </Button>
@@ -85,6 +86,7 @@ const ConfirmPublishInitiativeModal = ({
                 handlePusblishInitiative(initiative.initiativeId, userCanPublishInitiative);
                 setPublishModalOpen(false);
               }}
+              data-testid="publish-button-test"
             >
               {t('pages.initiativeOverview.next.status.approved')}
             </Button>
