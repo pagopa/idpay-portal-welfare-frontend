@@ -19,6 +19,7 @@ import InitiativeDetail from './pages/initiativeDetail/initiativeDetail';
 
 import { USER_PERMISSIONS } from './utils/constants';
 import { usePermissions } from './hooks/usePermissions';
+import Assistance from './pages/assistance/assistance';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -48,6 +49,9 @@ const SecuredRoutes = withLogin(
           </Route>
           <Route path={routes.HOME} exact={true}>
             <InitiativeList />
+          </Route>
+          <Route path={routes.ASSISTANCE} exact={true}>
+            <Assistance />
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />

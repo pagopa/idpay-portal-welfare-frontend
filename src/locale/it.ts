@@ -298,6 +298,24 @@ export default {
         },
       },
     },
+    assistance: {
+      title: 'Assistenza',
+      subtitle:
+        'Come possiamo aiutarti? Compila e invia il modulo: ti ricontatteremo al più presto.',
+      form: {
+        subject: 'Oggetto del messaggio',
+        message: 'Descrivi il motivo della tua richiesta',
+        sendBtn: 'Iniva',
+      },
+      exitModal: {
+        body: 'Se esci, la richiesta di assistenza andrà persa.',
+      },
+    },
+    thankyouPage: {
+      title: 'Abbiamo ricevuto la tua <1/> richiesta',
+      description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
+      buttonLabel: 'Chiudi',
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
@@ -538,12 +556,14 @@ export default {
     integer: 'Il campo deve contenere un valore intero',
     positive: 'Il campo deve contenere un valore positivo',
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
+    outJoinFrom: 'La data di inizio adesione non può essere antecedente ad oggi',
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
+    maxFiveHundred: 'Max 500 caratteri',
     maxDescriptionChar: 'La descrizione del servizio può contenere massimo 350 caratteri',
     maxServiceNameChar: 'Il nome del servizio può contenere massimo 50 caratteri',
     maxArgumentsChar: 'L’argomento può contenere massimo 100 caratteri',
@@ -563,6 +583,7 @@ export default {
     uniqueInterval: 'Non è possibile inserire due intervalli uguali per lo stesso giorno',
     notValidMccLis: 'Sono stati inseriti valori non validi',
     maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
+    indicateAssistanceSubject: 'Indicaci l’argomento della tua richiesta',
   },
   errors: {
     title: 'Si è verificato un errore',
