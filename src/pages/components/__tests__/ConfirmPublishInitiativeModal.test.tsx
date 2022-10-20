@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
@@ -30,6 +30,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
 
   const peopleReached = jest.fn();
   const handlePusblishInitiative = jest.fn();
+  const setOpenPublishModal = jest.fn();
 
   const initiative = store.getState().initiative;
 
@@ -56,12 +57,12 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
     });
   });
 
-  it('the functions should be defined', async () => {
+  it('Test handleFunction & setter', async () => {
     await act(async () => {
-      render(
+      const { queryByTestId } = render(
         <Provider store={store}>
           <ConfirmPublishInitiativeModal
-            publishModalOpen={false}
+            publishModalOpen={true}
             // eslint-disable-next-line react/jsx-no-bind
             setPublishModalOpen={function (_value: SetStateAction<boolean>): void {
               //
@@ -79,6 +80,28 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
 
       expect(peopleReached).toBeDefined();
       expect(handlePusblishInitiative).toBeDefined();
+
+      const useStateMock: any = (openPublishModal: boolean) => [
+        openPublishModal,
+        setOpenPublishModal,
+      ];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+      await waitFor(async () => {
+        const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
+        fireEvent.click(cancelBtn);
+        setOpenPublishModal();
+        expect(setOpenPublishModal).toHaveBeenCalled();
+      });
+
+      await waitFor(async () => {
+        const publishlBtn = queryByTestId('publish-button-test') as HTMLButtonElement;
+        fireEvent.click(publishlBtn);
+        handlePusblishInitiative(initiative, true);
+        setOpenPublishModal();
+        expect(handlePusblishInitiative).toHaveBeenCalled();
+        expect(setOpenPublishModal).toHaveBeenCalled();
+      });
     });
   });
 
