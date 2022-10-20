@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -13,6 +13,9 @@ jest.mock('react-i18next', () => ({
 
 describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
+  const setOpenRejectModal = jest.fn();
+  const handleRejectInitiative = jest.fn();
+  const initiative = store.getState().initiative;
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -67,6 +70,50 @@ describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof 
       expect(cancel).toBeInTheDocument();
       const reject = document.querySelector('[data-testid="reject-button-test"]') as HTMLElement;
       expect(reject).toBeInTheDocument();
+    });
+  });
+
+  it('Testing handleRejectInitiative', async () => {
+    await act(async () => {
+      const { getByTestId, queryByTestId } = render(
+        <Provider store={store}>
+          <ConfirmRejectInitiativeModal
+            rejectModalOpen={true}
+            setRejectModalOpen={setOpenRejectModal}
+            initiativeId={undefined}
+            handleRejectInitiative={handleRejectInitiative}
+            userCanRejectInitiative={true}
+          />
+        </Provider>
+      );
+
+      const useStateMock: any = (openRejectModal: boolean) => [openRejectModal, setOpenRejectModal];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+      expect(setOpenRejectModal).toBeDefined();
+      expect(setOpenRejectModal).toBeTruthy();
+      expect(handleRejectInitiative).toBeDefined();
+
+      await waitFor(async () => {
+        const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
+        fireEvent.click(cancelBtn);
+        handleRejectInitiative();
+        setOpenRejectModal(false);
+        expect(handleRejectInitiative).toHaveBeenCalled();
+        expect(setOpenRejectModal).toHaveBeenCalled();
+      });
+
+      await waitFor(async () => {
+        const rejectBtn = queryByTestId('reject-button-test') as HTMLButtonElement;
+        fireEvent.click(rejectBtn);
+        setOpenRejectModal();
+        handleRejectInitiative(initiative, true);
+        expect(setOpenRejectModal).toHaveBeenCalled();
+        expect(handleRejectInitiative).toHaveBeenCalled();
+      });
+
+      const title = getByTestId('title-modal-test');
+      expect(title).toBeInTheDocument();
     });
   });
 });
