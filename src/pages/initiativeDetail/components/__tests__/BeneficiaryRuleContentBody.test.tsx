@@ -13,7 +13,6 @@ jest.mock('react-i18next', () => ({
 
 describe('<BeneficiaryRuleContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const initiative = store.getState().initiative;
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -25,8 +24,8 @@ describe('<BeneficiaryRuleContentBody />', (injectedStore?: ReturnType<typeof cr
       render(
         <Provider store={store}>
           <BeneficiaryRuleContentBody
-            initiativeDetail={initiative}
             fileProcessingOutcomeStatus={undefined}
+            fileBeneficiaryReached={undefined}
           />
         </Provider>
       );

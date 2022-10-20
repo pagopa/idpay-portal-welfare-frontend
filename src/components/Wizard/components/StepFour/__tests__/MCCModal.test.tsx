@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { MccCodesModel } from '../../../../../model/MccCodes';
 import { createStore } from '../../../../../redux/store';
 import MCCModal from '../MCCModal';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
