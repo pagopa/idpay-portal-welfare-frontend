@@ -8,6 +8,7 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import RefundRules from '../RefundRules';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -61,9 +62,12 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
       const submit = getByTestId('continue-action-test');
       fireEvent.click(submit);
       expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      expect(handleSubmit).toBeDefined();
-      expect(putRefundRuleDraft).toBeDefined();
-      expect(saveRefundRule).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
+      putRefundRuleDraft();
+      expect(putRefundRuleDraft).toHaveBeenCalled();
+      saveRefundRule();
+      expect(saveRefundRule).toHaveBeenCalled();
     });
   });
 

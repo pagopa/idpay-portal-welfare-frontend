@@ -1,4 +1,4 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
@@ -18,6 +18,13 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   const store = injectedStore ? injectedStore : createStore();
+  const initiativeOnIO = store.getState().initiative.additionalInfo.initiativeOnIO;
+  const handleSumbit = jest.fn();
+  const handleOpenInitiativeNotOnIOModal = jest.fn();
+  const sendValues = jest.fn();
+  const values = jest.mock('../InitiativeNotOnIOModal.tsx');
+  let currentStep: number;
+  const setCurrentStep = jest.fn();
 
   test('should display the first form, with validation on input data', async () => {
     await act(async () => {
@@ -46,7 +53,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
 
   it('call the formik handleSubmit event when form is submitted', async () => {
     await act(async () => {
-      const handleSumbit = jest.fn();
       render(
         <Provider store={store}>
           <ServiceConfig
@@ -67,26 +73,57 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
           />
         </Provider>
       );
-      expect(handleSumbit).toBeDefined();
+      handleSumbit();
+      expect(handleSumbit).toHaveBeenCalled();
     });
   });
 
   it('call the submit event when form is submitted', async () => {
     await act(async () => {
-      const handleOpenInitiativeNotOnIOModal = jest.fn();
-      const sendValues = jest.fn();
       const { getByTestId } = render(
         <Provider store={store}>
           <Wizard handleOpenExitModal={() => console.log('exit modal')} />
         </Provider>
       );
 
-      const submit = getByTestId('continue-action-test');
-      await act(async () => {
+      await waitFor(async () => {
+        const submit = getByTestId('continue-action-test');
         expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
+        fireEvent.click(submit);
+        sendValues(values, currentStep, setCurrentStep);
+        expect(sendValues).toHaveBeenCalled();
       });
-      fireEvent.click(submit);
-      expect(handleOpenInitiativeNotOnIOModal || sendValues).toBeDefined();
+    });
+  });
+
+  it('Test of functions of component', async () => {
+    render(
+      <Provider store={store}>
+        <ServiceConfig
+          action={''}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={currentStep}
+          setCurrentStep={setCurrentStep}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    await waitFor(async () => {
+      const useStateMock: any = (openInitiativeOnIOModal: boolean) => [
+        openInitiativeOnIOModal,
+        handleOpenInitiativeNotOnIOModal,
+      ];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+      jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
+      handleOpenInitiativeNotOnIOModal();
+      expect(handleOpenInitiativeNotOnIOModal).toHaveBeenCalled();
     });
   });
 
