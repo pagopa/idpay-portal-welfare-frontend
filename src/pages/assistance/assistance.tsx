@@ -2,11 +2,14 @@ import { Box, Typography, Paper, FormControl, TextField, Divider, Button } from 
 import { useTranslation, Trans } from 'react-i18next';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import CheckIllustrationIcon from '@pagopa/selfcare-common-frontend/components/icons/CheckIllustrationIcon';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useHistory } from 'react-router-dom';
-
 import ROUTES from '../../routes';
+import { getInstitutionProductUserInfo, sendEmail } from '../../services/emailNotificationService';
+import { ENV } from '../../utils/env';
+import { EmailMessageDTO } from '../../api/generated/email-notification/EmailMessageDTO';
 import ExitModal from './components/ExitModal/ExitModal';
 
 const Assistance = () => {
@@ -15,7 +18,30 @@ const Assistance = () => {
   const handleOpenExitModal = () => setOpenExitModal(true);
   const handleCloseExitModal = () => setOpenExitModal(false);
   const [viewThxPage, setThxPage] = useState(false);
+  const [senderEmail, setSenderEmail] = useState<string | undefined>(undefined);
   const history = useHistory();
+  const addError = useErrorDispatcher();
+  const recipientEmail = ENV.ASSISTANCE.EMAIL;
+
+  useEffect(() => {
+    getInstitutionProductUserInfo()
+      .then((res) => {
+        setSenderEmail(res.email);
+      })
+      .catch((error) => {
+        addError({
+          id: 'GET_INSTITUTIONAL_USER_EMAIL',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting institutional user email',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      });
+  }, []);
 
   const validationSchema = Yup.object().shape({
     assistanceSubject: Yup.string().required(t('validation.required')),
@@ -27,13 +53,32 @@ const Assistance = () => {
   const formik = useFormik({
     initialValues: {
       assistanceSubject: '',
-      assistanceEmailFrom: 'test@test.it',
+      assistanceEmailFrom: senderEmail,
       assistanceMessage: '',
     },
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-      setThxPage(true);
+      const body: EmailMessageDTO = {
+        subject: values.assistanceSubject,
+        content: values.assistanceMessage,
+        senderEmail: values.assistanceEmailFrom,
+        recipientEmail,
+      };
+      sendEmail(body)
+        .then(() => setThxPage(true))
+        .catch((error) => {
+          addError({
+            id: 'SEND_ASSISTENCE_EMAIL',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred sending assistance email',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     },
   });
 

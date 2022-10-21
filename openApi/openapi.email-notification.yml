@@ -6,8 +6,8 @@ info:
 servers:
   - url: https://api-io.dev.cstar.pagopa.it/idpay/email-notification
 tags:
-- name: email-notification-manager
-  description: Email Notification Manager operations
+  - name: email-notification-manager
+    description: Email Notification Manager operations
 paths:
   /notify:
     post:
@@ -22,7 +22,7 @@ paths:
             schema:
               $ref: '#/components/schemas/EmailMessageDTO'
       responses:
-        "204":
+        '204':
           description: No Content
           content:
             application/json: {}
@@ -128,7 +128,7 @@ components:
     EmailMessageDTO:
       type: object
       properties:
-        template:
+        templateName:
           type: string
         subject:
           type: string
