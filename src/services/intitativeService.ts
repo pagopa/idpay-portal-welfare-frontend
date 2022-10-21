@@ -13,6 +13,7 @@ import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeR
 import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeStatisticsDTO';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
@@ -96,3 +97,8 @@ export const logicallyDeleteInitiative = (id: string): Promise<void> =>
 
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
+
+export const getGroupOfBeneficiaryStatusAndDetails = (
+  id: string
+): Promise<InitiativeStatisticsDTO> =>
+  InitiativeApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);

@@ -15,6 +15,7 @@ import { InitiativeRewardAndTrxRulesDTO } from './generated/initiative/Initiativ
 import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
+import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -188,5 +189,10 @@ export const InitiativeApi = {
   logicallyDeleteInitiative: async (id: string): Promise<void> => {
     const result = await apiClient.logicallyDeleteInitiative({ initiativeId: id });
     return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
+    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };
