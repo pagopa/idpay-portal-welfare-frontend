@@ -48,8 +48,8 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
         <Provider store={store}>
           <ExitModal
             openExitModal={true}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handleCloseExitModal={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
           />
         </Provider>

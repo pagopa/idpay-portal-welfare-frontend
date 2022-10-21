@@ -283,6 +283,7 @@ const InitiativeOverview = () => {
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -292,6 +293,7 @@ const InitiativeOverview = () => {
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -303,6 +305,7 @@ const InitiativeOverview = () => {
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -313,6 +316,7 @@ const InitiativeOverview = () => {
               variant="contained"
               startIcon={conditionalStartIconRendering(initiativeSel.status)}
               onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+              data-testid="contion-onclick-test"
             >
               {conditionaButtonNameRendering(initiativeSel.status)}
             </Button>
