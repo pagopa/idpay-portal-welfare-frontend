@@ -626,6 +626,7 @@ const ServiceConfig = ({
             startIcon={<AddIcon />}
             sx={{ color: 'primary.main' }}
             weight="default"
+            data-testid="add-channel-test"
           >
             {t('components.wizard.stepOne.form.addChannel')}
           </ButtonNaked>

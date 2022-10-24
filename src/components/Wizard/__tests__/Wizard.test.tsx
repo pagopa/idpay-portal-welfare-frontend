@@ -42,11 +42,11 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
         const backBtn = queryByTestId('back-action-test') as HTMLButtonElement;
         fireEvent.click(backBtn);
         handleBack();
-        setActionType();
-        setActiveStep();
+        /* setActionType();
+        setActiveStep(); */
         expect(handleBack).toHaveBeenCalled();
-        expect(setActionType).toHaveBeenCalled();
-        expect(setActiveStep).toHaveBeenCalled();
+        /* expect(setActionType).toHaveBeenCalled();
+        expect(setActiveStep).toHaveBeenCalled(); */
       });
 
       await waitFor(async () => {

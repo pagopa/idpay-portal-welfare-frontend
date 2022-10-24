@@ -1,4 +1,5 @@
 import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
@@ -56,7 +57,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       render(
         <Provider store={store}>
           <ServiceConfig
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
@@ -73,8 +74,10 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
           />
         </Provider>
       );
+      sendValues();
       handleSumbit();
       expect(handleSumbit).toHaveBeenCalled();
+      expect(sendValues).toHaveBeenCalled();
     });
   });
 
@@ -217,13 +220,45 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     );
 
     const setOpenInitiativeNotOnIOModal = jest.fn();
+
     const useStateMock: any = (openInitiativeNotOnIOModal: boolean) => [
       openInitiativeNotOnIOModal,
       setOpenInitiativeNotOnIOModal,
     ];
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-    expect(setOpenInitiativeNotOnIOModal).toBeDefined();
     expect(useStateMock).toBeDefined();
+
+    setOpenInitiativeNotOnIOModal();
+    expect(setOpenInitiativeNotOnIOModal).toHaveBeenCalled();
+  });
+
+  it('Add Channel Test', async () => {
+    await act(async () => {
+      const addAssistanceChannel = jest.fn();
+      const { queryByTestId } = render(
+        <Provider store={store}>
+          <ServiceConfig
+            action={''}
+            setAction={function (_value: SetStateAction<string>): void {
+              //
+            }}
+            currentStep={0}
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
+            }}
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
+            }}
+          />
+        </Provider>
+      );
+
+      waitFor(async () => {
+        const addChannel = queryByTestId('add-channel-test') as HTMLButtonElement;
+        userEvent.click(addChannel);
+        addAssistanceChannel();
+        expect(addAssistanceChannel).toHaveBeenCalled();
+      });
+    });
   });
 });

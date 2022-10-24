@@ -96,7 +96,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
       render(
         <Provider store={store}>
           <RefundRules
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
@@ -113,8 +113,8 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           />
         </Provider>
       );
-
-      expect(handleSubmit).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
 

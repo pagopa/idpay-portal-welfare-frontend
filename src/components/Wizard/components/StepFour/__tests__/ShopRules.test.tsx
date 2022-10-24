@@ -7,6 +7,7 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import ShopRules from '../ShopRules';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -80,7 +81,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
       render(
         <Provider store={store}>
           <ShopRules
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
@@ -94,10 +95,12 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           />
         </Provider>
       );
-
-      expect(handleSubmit).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
+
+  it('Testing functions', async () => {});
 
   //   it('form fields not null', async () => {
   //     await act(async () => {

@@ -87,7 +87,7 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             shopRulesToSubmit={[]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -101,8 +101,8 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
           />
         </Provider>
       );
-
-      expect(handleSubmit).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
 
