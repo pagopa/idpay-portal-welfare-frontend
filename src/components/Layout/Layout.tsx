@@ -68,7 +68,7 @@ const Layout = ({ children }: Props) => {
           </Box>
           <Box
             gridColumn="auto"
-            sx={{ backgroundColor: '#F5F6F7' }}
+            sx={{ backgroundColor: '#F5F5F5' }}
             display="grid"
             justifyContent="center"
             pb={16}

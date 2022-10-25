@@ -86,7 +86,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   ];
 
   return (
-    <TableHead sx={{ backgroundColor: grey.A200 }}>
+    <TableHead sx={{ backgroundColor: grey.A100 }}>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -448,7 +448,7 @@ const InitiativeList = () => {
           width: '100%',
           mb: 2,
           p: 3,
-          backgroundColor: grey.A200,
+          backgroundColor: grey.A100,
         }}
       >
         <TableContainer>
