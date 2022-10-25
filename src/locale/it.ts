@@ -82,7 +82,7 @@ export default {
     },
     initiativeOverview: {
       info: {
-        title: 'Informativa',
+        title: 'Informazioni',
         idCode: 'Codice identificativo',
         creationData: 'Data creazione',
         lastModify: 'Ultima modifica',
