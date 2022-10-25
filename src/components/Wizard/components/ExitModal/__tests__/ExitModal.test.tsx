@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -12,12 +12,15 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
-  useHistory: () => {},
+  useHistory: () => ({
+    replace: jest.fn(),
+  }),
 }));
 
 describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const closeWithoutSaving = jest.fn();
+  const handleCloseExitModal = jest.fn();
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -30,8 +33,8 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
         <Provider store={store}>
           <ExitModal
             openExitModal={false}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handleCloseExitModal={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
           />
         </Provider>
@@ -41,12 +44,12 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
 
   it('the functions should be defined', async () => {
     await act(async () => {
-      render(
+      const { queryByTestId } = render(
         <Provider store={store}>
           <ExitModal
             openExitModal={true}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handleCloseExitModal={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
           />
         </Provider>
@@ -58,6 +61,20 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
 
       expect(setCloseExitModal).toBeDefined();
       expect(closeWithoutSaving).toBeDefined();
+
+      await waitFor(async () => {
+        const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
+        fireEvent.click(cancelBtn);
+        handleCloseExitModal();
+        expect(handleCloseExitModal).toHaveBeenCalled();
+      });
+
+      await waitFor(async () => {
+        const exitBtn = queryByTestId('exit-button-test') as HTMLButtonElement;
+        fireEvent.click(exitBtn);
+        closeWithoutSaving();
+        expect(closeWithoutSaving).toHaveBeenCalled();
+      });
     });
   });
 

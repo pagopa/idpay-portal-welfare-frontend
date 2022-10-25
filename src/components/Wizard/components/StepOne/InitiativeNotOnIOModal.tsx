@@ -31,8 +31,9 @@ const InitiativeNotOnIOModal = ({
       BackdropProps={{
         timeout: 500,
       }}
+      data-testid="notOnIO-modal-test"
     >
-      <Fade in={openInitiativeNotOnIOModal}>
+      <Fade in={openInitiativeNotOnIOModal} data-testid="fade-test">
         <Box
           sx={{
             position: 'absolute',
@@ -65,6 +66,7 @@ const InitiativeNotOnIOModal = ({
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={handleCloseInitiativeNotOnIOModal}
+              data-testid="cancel-button-test"
             >
               {t('components.wizard.stepOne.modal.cancelBtn')}
             </Button>
@@ -75,6 +77,7 @@ const InitiativeNotOnIOModal = ({
                 sendValues(values, currentStep, setCurrentStep);
                 handleCloseInitiativeNotOnIOModal(e);
               }}
+              data-testid="exit-button-test"
             >
               {t('components.wizard.stepOne.modal.continueBtn')}
             </Button>

@@ -45,7 +45,12 @@ const StatusSnackBar = ({
             >
               {t('pages.initiativeOverview.snackBar.users')}
             </ButtonNaked>
-            <IconButton aria-label="close" onClick={() => setOpenSnackBar(false)} sx={{ mx: 1 }}>
+            <IconButton
+              aria-label="close"
+              onClick={() => setOpenSnackBar(false)}
+              sx={{ mx: 1 }}
+              data-testid="close-bar-test"
+            >
               <CloseIcon />
             </IconButton>
           </>
@@ -53,7 +58,12 @@ const StatusSnackBar = ({
       case 'KO':
       case 'PROC_KO':
         return (
-          <IconButton aria-label="close" onClick={() => setOpenSnackBar(false)} sx={{ mx: 1 }}>
+          <IconButton
+            aria-label="close"
+            onClick={() => setOpenSnackBar(false)}
+            sx={{ mx: 1 }}
+            data-testid="close-bar-test"
+          >
             <CloseIcon />
           </IconButton>
         );

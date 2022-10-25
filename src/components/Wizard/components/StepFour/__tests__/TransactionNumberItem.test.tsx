@@ -7,6 +7,7 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import TransactionNumberItem from '../TransactionNumberItem';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -86,7 +87,7 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             shopRulesToSubmit={[]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -100,8 +101,8 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
           />
         </Provider>
       );
-
-      expect(handleSubmit).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
 

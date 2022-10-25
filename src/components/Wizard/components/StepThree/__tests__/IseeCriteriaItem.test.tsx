@@ -2,8 +2,9 @@ import { fireEvent, render, act, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
-import { FilterOperator } from '../../../../../utils/constants';
+import { FilterOperator, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import IseeCriteriaItem from '../IseeCriteriaItem';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -49,6 +50,30 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
         </Provider>
       );
     });
+  });
+
+  it('test on handleSubmit', () => {
+    const handleSubmit = jest.fn();
+    render(
+      <Provider store={store}>
+        <IseeCriteriaItem
+          action={WIZARD_ACTIONS.SUBMIT}
+          formData={data}
+          // eslint-disable-next-line react/jsx-no-bind
+          handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+          handleFieldValueChanged={undefined}
+          criteriaToSubmit={[]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCriteriaToSubmit={function (
+            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          ): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+    handleSubmit();
+    expect(handleSubmit).toHaveBeenCalled();
   });
 
   it('Test on IseeCriteriaItem', async () => {

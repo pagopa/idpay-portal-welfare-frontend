@@ -60,6 +60,7 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={handleCloseExitModal}
+              data-testid="cancel-button-test"
             >
               {t('components.exitModal.cancelBtn')}
             </Button>
@@ -67,6 +68,7 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
               variant="contained"
               sx={{ gridArea: 'exitBtn', justifySelf: 'end' }}
               onClick={(e) => closeWithoutSaving(e)}
+              data-testid="exit-button-test"
             >
               {t('components.exitModal.exitBtn')}
             </Button>

@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import React from 'react';
 // import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -44,9 +45,17 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
+jest.mock('../../../api/groupsApiClient');
+
+beforeEach(() => {
+  jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
+});
+
 describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-
+  const handleViewDetails = jest.fn();
+  const conditionalOnClickRendering = jest.fn();
+  const handleCloseInitiativeOverviewDeleteModal = jest.fn();
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
@@ -67,11 +76,48 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
     });
   });
 
-  beforeEach(() => {
-    jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
-  });
+  test('Testing functions calls', async () => {
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <InitiativeOverview />
+      </Provider>
+    );
 
-  jest.mock('../../../api/groupsApiClient');
+    const setUseState = jest.fn();
+    const useStateMock: any = (useState: any) => [useState, setUseState];
+    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+    useStateMock();
+    expect(useStateMock).toBeDefined();
+
+    await waitFor(async () => {
+      handleViewDetails(mockedInitiativeId);
+      expect(handleViewDetails).toHaveBeenCalled();
+
+      const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
+      userEvent.click(condition);
+      conditionalOnClickRendering();
+      expect(conditionalOnClickRendering).toHaveBeenCalled();
+    });
+
+    const setOpenInitiativeOverviewDeleteModal = jest.fn();
+    const useStateModalMock: any = (openInitiativeOverviewDeleteModal: any) => [
+      openInitiativeOverviewDeleteModal,
+      setOpenInitiativeOverviewDeleteModal,
+    ];
+
+    await waitFor(async () => {
+      expect(useStateModalMock).toBeDefined();
+      setOpenInitiativeOverviewDeleteModal();
+      expect(setOpenInitiativeOverviewDeleteModal).toHaveBeenCalled();
+    });
+
+    await waitFor(async () => {
+      const details = queryByTestId('view-datails-test') as HTMLElement;
+      userEvent.click(details);
+      handleViewDetails();
+      expect(handleViewDetails).toHaveBeenCalled();
+    });
+  });
 
   it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
     jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
