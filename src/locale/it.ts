@@ -319,6 +319,30 @@ export default {
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+      form: {
+        search: 'Cerca per Codice fiscale',
+        from: 'Da',
+        to: 'A',
+        status: 'Stato',
+        all: 'Tutti gli stati',
+        waiting: 'In Attesa',
+        registered: 'Iscritto',
+        suitable: 'Idoneo',
+        notSuitable: 'Non idoneo',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        beneficiary: 'Beneficiario',
+        updateStatusDate: 'Data e ora',
+        beneficiaryState: 'Stato',
+      },
+      status: {
+        waiting: 'In Attesa',
+        registered: 'Iscritto',
+        suitable: 'Idoneo',
+        notSuitable: 'Non idoneo',
+      },
     },
   },
   breadcrumbs: {

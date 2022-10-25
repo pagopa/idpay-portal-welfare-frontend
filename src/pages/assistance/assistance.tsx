@@ -18,7 +18,7 @@ const Assistance = () => {
   const handleOpenExitModal = () => setOpenExitModal(true);
   const handleCloseExitModal = () => setOpenExitModal(false);
   const [viewThxPage, setThxPage] = useState(false);
-  const [senderEmail, setSenderEmail] = useState<string | undefined>(undefined);
+  const [senderEmail, setSenderEmail] = useState<string | undefined>('');
   const history = useHistory();
   const addError = useErrorDispatcher();
   const recipientEmail = ENV.ASSISTANCE.EMAIL;
@@ -56,6 +56,7 @@ const Assistance = () => {
       assistanceEmailFrom: senderEmail,
       assistanceMessage: '',
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
       const body: EmailMessageDTO = {

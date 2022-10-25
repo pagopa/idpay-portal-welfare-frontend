@@ -1,3 +1,24 @@
+export interface InitiativeUser {
+  beneficiary: string;
+  updateStatusDate: Date | string;
+  beneficiaryState: string;
+}
+
+export interface InitiativeUserToDisplay {
+  id: number;
+  beneficiary: string;
+  updateStatusDate: string;
+  beneficiaryState: string;
+}
+
+export interface InitiativeUsersResponse {
+  pageNo: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  oggetti: Array<InitiativeUser>;
+}
+
 export const mockedInitiativeUsers = {
   pageNo: 1,
   pageSize: 15,
@@ -7,77 +28,77 @@ export const mockedInitiativeUsers = {
     {
       beneficiary: 'AOISFN73R54B745Z',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAAHMD77P30Z330S',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAAMRO82C23Z330C',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAEBNR90E20Z216W',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAEKKK44D42Z219I',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAEKSR79L06Z249S',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAEMRD84E66Z216B',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'WAITING',
     },
     {
       beneficiary: 'BAICLD60M12F205M',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAICLD79L54A089Y',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAICNH82A02Z210D',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAICNL90L30Z129Z',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAICRI60R13F839M',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAIDNL73C60E202V',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAIGNE51S23F465N',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     {
       beneficiary: 'BAIGPP69L63A064W',
       updateStatusDate: new Date(),
-      beneficiaryState: '',
+      beneficiaryState: 'REGISTERED',
     },
     // {
     //   beneficiary: 'BAIGRG96R70H501Y',
@@ -157,4 +178,5 @@ export const mockedInitiativeUsers = {
   ],
 };
 
-export const fetchInitiativeUsers = () => new Promise((resolve) => resolve(mockedInitiativeUsers));
+export const fetchInitiativeUsers = () =>
+  new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsers));

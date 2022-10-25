@@ -70,8 +70,10 @@ const TransactionTimeItem = ({
             if (val && val.length > 0) {
               const minTime = this.parent.startTime;
               if (minTime && minTime.length > 0) {
-                const minTimeAsNumber = parseInt(minTime.replace('/:/g', ''), 10);
-                const maxTimeAsNumber = parseInt(val.replace('/:/g', ''), 10);
+                const minTimeTrim = minTime.replace(':', '');
+                const minTimeAsNumber = parseInt(minTimeTrim, 10);
+                const maxTimeTrim = val.replace(':', '');
+                const maxTimeAsNumber = parseInt(maxTimeTrim, 10);
                 return minTimeAsNumber < maxTimeAsNumber;
               }
               return true;
