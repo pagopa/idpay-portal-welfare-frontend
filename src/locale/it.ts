@@ -297,6 +297,9 @@ export default {
           subtitle: 'Avverti l’ente via email di eventuali segnalazioni o note.',
         },
       },
+      alert: {
+        approved: 'Operazione completata.',
+      },
     },
     assistance: {
       title: 'Assistenza',

@@ -15,6 +15,7 @@ import { SyntheticEvent, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useHistory } from 'react-router-dom';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import { useLoading } from '@pagopa/selfcare-common-frontend';
 import { useInitiative } from '../../hooks/useInitiative';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
@@ -36,6 +37,7 @@ import BeneficiaryRuleContentBody from './components/StepThree/BeneficiaryRuleCo
 import ShopRuleContentBody from './components/StepFour/ShopRuleContentBody';
 import RefundRuleContentBody from './components/StepFive/RefundRuleContentBody';
 import ConfirmRejectInitiativeModal from './components/ConfirmRejectInitiativeModal/ConfirmRejectInitiativeModal';
+import ApprovedToast from './components/Alert/ApprovedToast';
 
 const InitiativeDetail = () => {
   const { t } = useTranslation();
@@ -78,12 +80,19 @@ const InitiativeDetail = () => {
   const [fileBeneficiaryReached, setFileBeneficiaryReached] = useState<number | undefined>(
     undefined
   );
-
+  const setLoading = useLoading('APPROVED_INITIATIVE');
   const addError = useErrorDispatcher();
 
   const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
   const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const [openToast, setOpenToast] = useState(false);
+
+  const handleOpenToast = () => setOpenToast(true);
+  const handleCloseToast = () => {
+    setOpenToast(false);
+    history.replace(ROUTES.HOME);
+  };
 
   const handleChange = (panel: string) => (_event: SyntheticEvent, isExpanded: boolean) => {
     setExpanded(isExpanded ? panel : false);
@@ -145,9 +154,14 @@ const InitiativeDetail = () => {
     userCanApproveInitiative: boolean
   ) => {
     if (userCanApproveInitiative && typeof initiativeId === 'string') {
+      setLoading(true);
       updateInitiativeApprovedStatus(initiativeId)
-        .then((_res) => history.replace(ROUTES.HOME))
+        .then((_res) => {
+          setLoading(false);
+          handleOpenToast();
+        })
         .catch((error) => {
+          setLoading(false);
           addError({
             id: 'UPDATE_INITIATIVE_TO_APPROVED_STATUS_ERROR',
             blocking: false,
@@ -378,6 +392,7 @@ const InitiativeDetail = () => {
               <RefundRuleContentBody initiativeDetail={initiativeDetail} />
             </AccordionDetails>
           </Accordion>
+          <ApprovedToast openToast={openToast} handleClose={handleCloseToast} />
         </Box>
       </Box>
       <Box
