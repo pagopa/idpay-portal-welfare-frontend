@@ -82,7 +82,7 @@ export default {
     },
     initiativeOverview: {
       info: {
-        title: 'Informativa',
+        title: 'Informazioni',
         idCode: 'Codice identificativo',
         creationData: 'Data creazione',
         lastModify: 'Ultima modifica',
@@ -296,6 +296,9 @@ export default {
           title: 'Vuoi procedere?',
           subtitle: 'Avverti l’ente via email di eventuali segnalazioni o note.',
         },
+      },
+      alert: {
+        approved: 'Operazione completata.',
       },
     },
     assistance: {
