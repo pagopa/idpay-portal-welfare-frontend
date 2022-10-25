@@ -56,7 +56,12 @@ export const useInitiative = () => {
   // const setLoading = useLoading('GET_INITIATIVE_DETAIL');
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE, ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_DETAIL],
+    path: [
+      ROUTES.INITIATIVE,
+      ROUTES.INITIATIVE_OVERVIEW,
+      ROUTES.INITIATIVE_DETAIL,
+      ROUTES.INITIATIVE_USERS,
+    ],
     exact: true,
     strict: false,
   });

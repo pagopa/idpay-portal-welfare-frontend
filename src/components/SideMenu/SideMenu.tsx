@@ -52,7 +52,7 @@ export default function SideMenu() {
   });
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_OVERVIEW],
+    path: [ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_USERS],
     exact: true,
     strict: false,
   });
@@ -151,7 +151,7 @@ export default function SideMenu() {
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
                     icon={GroupIcon}
                     level={2}
-                    disabled={true}
+                    disabled={false}
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}

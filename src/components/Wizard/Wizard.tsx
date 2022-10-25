@@ -148,7 +148,11 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
             }}
           >
             <Box sx={{ gridArea: 'back' }}>
-              <Button variant="outlined" onClick={(e) => handleBack(e)}>
+              <Button
+                variant="outlined"
+                onClick={(e) => handleBack(e)}
+                data-testid="back-action-test"
+              >
                 {t('components.wizard.common.buttons.back')}
               </Button>
             </Box>

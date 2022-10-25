@@ -7,6 +7,7 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import PercentageRecognizedItem from '../PercentageRecognizedItem';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -82,7 +83,7 @@ describe('<PercentageRecognizedItem />', (injectedStore?: ReturnType<typeof crea
         <Provider store={store}>
           <PercentageRecognizedItem
             code={''}
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             shopRulesToSubmit={[]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -96,8 +97,8 @@ describe('<PercentageRecognizedItem />', (injectedStore?: ReturnType<typeof crea
           />
         </Provider>
       );
-
-      expect(handleSubmit).toBeDefined();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
 

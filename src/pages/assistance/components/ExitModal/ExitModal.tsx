@@ -45,7 +45,7 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
         >
           <Typography variant="h6">{t('components.exitModal.title')}</Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('components.exitModal.body')}
+            {t('pages.assistance.exitModal.body')}
           </Typography>
           <Box
             sx={{
@@ -60,7 +60,6 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
               variant="outlined"
               sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
               onClick={handleCloseExitModal}
-              data-testid="cancel-button-test"
             >
               {t('components.exitModal.cancelBtn')}
             </Button>
@@ -68,7 +67,6 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
               variant="contained"
               sx={{ gridArea: 'exitBtn', justifySelf: 'end' }}
               onClick={(e) => closeWithoutSaving(e)}
-              data-testid="exit-button-test"
             >
               {t('components.exitModal.exitBtn')}
             </Button>

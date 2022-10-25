@@ -1,4 +1,5 @@
-import { act, fireEvent, render } from '@testing-library/react';
+import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
@@ -7,6 +8,7 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import Generalnfo from '../Generalnfo';
 import { createStore } from '../../../../../redux/store';
+import React from 'react';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -50,7 +52,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       render(
         <Provider store={store}>
           <Generalnfo
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
@@ -67,34 +69,42 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
           />
         </Provider>
       );
-
-      expect(handleSumbit).toBeDefined();
+      handleSumbit();
+      expect(handleSumbit).toHaveBeenCalled();
     });
   });
 
   it('call the submit event when form is submitted', async () => {
     await act(async () => {
-      const handleSubmit = jest.fn();
       const parseValuesFormToInitiativeGeneralDTO = jest.fn();
-      const saveGeneralInfoService = jest.fn();
       const setGeneralInfo = jest.fn();
-      const setAdditionalInfo = jest.fn();
-      const { getByTestId } = render(
+      const updateInitiativeGeneralInfoDraft = jest.fn();
+      render(
         <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
+          <Generalnfo
+            action={WIZARD_ACTIONS.DRAFT}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (_value: SetStateAction<string>): void {
+              //
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
+            }}
+          />
         </Provider>
       );
-
-      const submit = getByTestId('continue-action-test');
-      await act(async () => {
-        expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      });
-      fireEvent.click(submit);
-      expect(parseValuesFormToInitiativeGeneralDTO).toBeDefined();
-      expect(saveGeneralInfoService).toBeDefined();
-      expect(setGeneralInfo).toBeDefined();
-      expect(setAdditionalInfo).toBeDefined();
-      expect(handleSubmit).toBeDefined();
+      parseValuesFormToInitiativeGeneralDTO();
+      setGeneralInfo();
+      updateInitiativeGeneralInfoDraft();
+      expect(parseValuesFormToInitiativeGeneralDTO).toHaveBeenCalled();
+      expect(setGeneralInfo).toHaveBeenCalled();
+      expect(updateInitiativeGeneralInfoDraft).toHaveBeenCalled();
     });
   });
 
@@ -387,6 +397,37 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('22/07/2022');
       });
+    });
+  });
+
+  it('Test beneficiary type onChange', async () => {
+    const setFieldValue = jest.fn();
+    const { queryByTestId, queryByRole } = render(
+      <Provider store={store}>
+        <Generalnfo
+          action={WIZARD_ACTIONS.SUBMIT}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={0}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    waitFor(async () => {
+      const beneficiaryType = queryByTestId('beneficiary-radio-test') as HTMLInputElement;
+      userEvent.click(beneficiaryType);
+      setFieldValue();
+      expect(setFieldValue).toHaveBeenCalled();
     });
   });
 });

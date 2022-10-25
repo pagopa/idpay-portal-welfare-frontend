@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLocation } from 'react-router-dom';
@@ -25,6 +25,7 @@ const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
   const location = useLocation();
+  const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
 
   const match = matchPath(location.pathname, {
     path: [
@@ -37,6 +38,10 @@ const Layout = ({ children }: Props) => {
     strict: false,
   });
 
+  useEffect(() => {
+    setShowAssistanceInfo(location.pathname !== ROUTES.ASSISTANCE);
+  }, [location.pathname]);
+
   return (
     <Box
       display="grid"
@@ -48,7 +53,12 @@ const Layout = ({ children }: Props) => {
       minHeight="100vh"
     >
       <Box gridArea="header">
-        <Header onExit={onExit} loggedUser={loggedUser} parties={[]} />
+        <Header
+          withSecondHeader={showAssistanceInfo}
+          onExit={onExit}
+          loggedUser={loggedUser}
+          parties={[]}
+        />
         {/* <Header onExit={onExit} loggedUser={loggedUser} parties={parties} /> */}
       </Box>
       {match !== null ? (
@@ -58,7 +68,7 @@ const Layout = ({ children }: Props) => {
           </Box>
           <Box
             gridColumn="auto"
-            sx={{ backgroundColor: '#F5F6F7' }}
+            sx={{ backgroundColor: '#F5F5F5' }}
             display="grid"
             justifyContent="center"
             pb={16}

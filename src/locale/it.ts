@@ -82,7 +82,7 @@ export default {
     },
     initiativeOverview: {
       info: {
-        title: 'Informativa',
+        title: 'Informazioni',
         idCode: 'Codice identificativo',
         creationData: 'Data creazione',
         lastModify: 'Ultima modifica',
@@ -100,7 +100,7 @@ export default {
       next: {
         title: 'What’s next?',
         stats: 'Statistiche',
-        lastUpdate: 'Ultimo aggiornamento: {{lastUpdate}}',
+        lastUpdate: 'Ultimo aggiornamento: ',
         join: 'Hanno aderito',
         budgetExhausted: 'Budget speso',
         ViewUsers: 'Vedi utenti',
@@ -296,6 +296,55 @@ export default {
           title: 'Vuoi procedere?',
           subtitle: 'Avverti l’ente via email di eventuali segnalazioni o note.',
         },
+      },
+      alert: {
+        approved: 'Operazione completata.',
+      },
+    },
+    assistance: {
+      title: 'Assistenza',
+      subtitle:
+        'Come possiamo aiutarti? Compila e invia il modulo: ti ricontatteremo al più presto.',
+      form: {
+        subject: 'Oggetto del messaggio',
+        message: 'Descrivi il motivo della tua richiesta',
+        sendBtn: 'Iniva',
+      },
+      exitModal: {
+        body: 'Se esci, la richiesta di assistenza andrà persa.',
+      },
+    },
+    thankyouPage: {
+      title: 'Abbiamo ricevuto la tua <1/> richiesta',
+      description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
+      buttonLabel: 'Chiudi',
+    },
+    initiativeUsers: {
+      title: 'Utenti',
+      subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+      form: {
+        search: 'Cerca per Codice fiscale',
+        from: 'Da',
+        to: 'A',
+        status: 'Stato',
+        all: 'Tutti gli stati',
+        waiting: 'In Attesa',
+        registered: 'Iscritto',
+        suitable: 'Idoneo',
+        notSuitable: 'Non idoneo',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        beneficiary: 'Beneficiario',
+        updateStatusDate: 'Data e ora',
+        beneficiaryState: 'Stato',
+      },
+      status: {
+        waiting: 'In Attesa',
+        registered: 'Iscritto',
+        suitable: 'Idoneo',
+        notSuitable: 'Non idoneo',
       },
     },
   },
@@ -545,6 +594,7 @@ export default {
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
+    maxFiveHundred: 'Max 500 caratteri',
     maxDescriptionChar: 'La descrizione del servizio può contenere massimo 350 caratteri',
     maxServiceNameChar: 'Il nome del servizio può contenere massimo 50 caratteri',
     maxArgumentsChar: 'L’argomento può contenere massimo 100 caratteri',
@@ -564,6 +614,7 @@ export default {
     uniqueInterval: 'Non è possibile inserire due intervalli uguali per lo stesso giorno',
     notValidMccLis: 'Sono stati inseriti valori non validi',
     maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
+    indicateAssistanceSubject: 'Indicaci l’argomento della tua richiesta',
   },
   errors: {
     title: 'Si è verificato un errore',

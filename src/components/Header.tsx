@@ -14,6 +14,7 @@ import { Party } from '../model/Party';
 import { ENV } from './../utils/env';
 
 type Props = WithPartiesProps & {
+  withSecondHeader: boolean;
   onExit: (exitAction: () => void) => void;
   loggedUser?: User;
 };
@@ -26,7 +27,12 @@ const welfareProduct: ProductEntity = {
   linkType: 'internal',
 };
 
-const Header = ({ onExit, loggedUser /* , parties */ }: Props) => {
+const Header = ({
+  withSecondHeader,
+  onExit,
+  loggedUser,
+}: /* , parties */
+Props) => {
   const { t } = useTranslation();
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
@@ -54,7 +60,7 @@ const Header = ({ onExit, loggedUser /* , parties */ }: Props) => {
   return (
     <CommonHeader
       onExit={onExit}
-      withSecondHeader={true}
+      withSecondHeader={withSecondHeader}
       selectedPartyId={selectedParty?.partyId}
       selectedProductId={welfareProduct.id}
       addSelfcareProduct={true} // TODO verify if returned from API

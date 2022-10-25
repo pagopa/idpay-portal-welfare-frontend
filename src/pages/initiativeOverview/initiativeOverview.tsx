@@ -7,7 +7,6 @@ import PublishIcon from '@mui/icons-material/Publish';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import EuroIcon from '@mui/icons-material/Euro';
 import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
@@ -22,12 +21,16 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
-import { updateInitiativePublishedStatus } from '../../services/intitativeService';
+import {
+  getGroupOfBeneficiaryStatusAndDetails,
+  updateInitiativePublishedStatus,
+} from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
-import { peopleReached, renderInitiativeStatus } from '../../helpers';
+import { renderInitiativeStatus } from '../../helpers';
+import { Initiative } from '../../model/Initiative';
 import StatusSnackBar from './components/StatusSnackBar';
 import DateReference from './components/DateReference';
 
@@ -45,6 +48,10 @@ const InitiativeOverview = () => {
   const [statusFile, setStatusFile] = useState('');
   const [beneficiaryReached, setBeneficiaryReached] = useState<number | undefined>(undefined);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
+  const [accruedRewards, setAccruedRewards] = useState('');
+  const [onboardedCitizenCount, setOnboardedCitizenCount] = useState(0);
+  const [lastUpdatedDateTime, setLastUpdatedDateTime] = useState('');
+
   const addError = useErrorDispatcher();
   const setLoading = useLoading('PUBLISH_INITIATIVE');
 
@@ -105,6 +112,46 @@ const InitiativeOverview = () => {
     initiativeSel.initiativeId,
     JSON.stringify(initiativeSel.generalInfo),
   ]);
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
+  useEffect(() => {
+    // eslint-disable-next-line no-prototype-builtins
+    if (match !== null && match.params.hasOwnProperty('id')) {
+      const { id } = match.params as MatchParams;
+      if (initiativeSel.initiativeId === id && initiativeSel.status === 'PUBLISHED') {
+        getGroupOfBeneficiaryStatusAndDetails(id)
+          .then((res) => {
+            if (typeof res.accruedRewards === 'string') {
+              setAccruedRewards(res.accruedRewards);
+            }
+            if (typeof res.onboardedCitizenCount === 'number') {
+              setOnboardedCitizenCount(res.onboardedCitizenCount);
+            }
+            if (typeof res.lastUpdatedDateTime === 'object') {
+              const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
+              const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
+                0,
+                lastUpdateDateTimeStr.length - 3
+              );
+              setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+            }
+          })
+          .catch((error) => {
+            addError({
+              id: 'GET_GROUP_OF_BENEFICIARY_STATUS_AND_DETAIL_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred getting groups of beneficiary status and detail',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+      }
+    }
+  }, [JSON.stringify(match), initiativeSel.initiativeId, initiativeSel.status]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -271,18 +318,19 @@ const InitiativeOverview = () => {
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const renderNextStatus = (status: string, beneficiaryReached: number | undefined) => (
     <>
-      <Box sx={{ gridColumn: 'span 24' }}>
+      <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2">
           {conditionalSubtitleRendering(initiativeSel.status)}
         </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 24' }}>
+      <Box sx={{ gridColumn: 'span 12' }}>
         {status === 'IN_REVISION' && (
           <Button
             disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -292,6 +340,7 @@ const InitiativeOverview = () => {
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -303,6 +352,7 @@ const InitiativeOverview = () => {
             variant="contained"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+            data-testid="contion-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -313,10 +363,10 @@ const InitiativeOverview = () => {
               variant="contained"
               startIcon={conditionalStartIconRendering(initiativeSel.status)}
               onClick={() => conditionalOnClickRendering(initiativeSel.status)}
+              data-testid="contion-onclick-test"
             >
               {conditionaButtonNameRendering(initiativeSel.status)}
             </Button>
-
             <ConfirmPublishInitiativeModal
               publishModalOpen={publishModalOpen}
               setPublishModalOpen={setPublishModalOpen}
@@ -331,65 +381,50 @@ const InitiativeOverview = () => {
     </>
   );
 
-  const renderConditionalStatusPublished = (status: string | undefined) =>
-    status === 'PUBLISHED' && (
+  const renderConditionalStatusPublished = (
+    initiative: Initiative,
+    beneficiariesReached: number | undefined
+  ) =>
+    initiative.status === 'PUBLISHED' && (
       <>
-        <Box sx={{ gridColumn: 'span 24' }}>
+        <Box sx={{ gridColumn: 'span 12', display: 'inline-flex' }}>
           <Typography variant="body2" sx={{ color: '#5C6F82' }}>
-            {t('pages.initiativeOverview.next.lastUpdate', {
-              lastUpdate: initiativeSel.updateDate
-                ? typeof initiativeSel.updateDate === 'object' &&
-                  initiativeSel.updateDate.toLocaleString('fr-BE')
-                : '-',
-            })}
+            {t('pages.initiativeOverview.next.lastUpdate')}
+          </Typography>
+          &nbsp;
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+            {lastUpdatedDateTime}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 5', lineHeight: 2 }}>
-          <Typography variant="body2">{t('pages.initiativeOverview.next.join')}</Typography>
+        <Box sx={{ gridColumn: 'span 3' }}>
+          <Typography variant="body2">{t('pages.initiativeOverview.next.join')} </Typography>
         </Box>
-        <Box
-          sx={{
-            gridColumn: 'span 3',
-            fontWeight: '600',
-            fontSize: '24px',
-            textAlign: 'start',
-          }}
-        >
-          1000
-        </Box>
-        <Box sx={{ gridColumn: 'span 14' }}>
-          <Typography sx={{ fontWeight: '600', lineHeight: 2 }}>
-            /{' '}
-            {peopleReached(
-              initiativeSel.generalInfo.budget,
-              initiativeSel.generalInfo.beneficiaryBudget
-            )}
+        <Box sx={{ gridColumn: 'span 9', display: 'inline-flex' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            {onboardedCitizenCount}
+          </Typography>
+          &nbsp;
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            {typeof beneficiariesReached === 'number' ?? ` /  ${beneficiaryReached}`}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 5', lineHeight: 2 }}>
-          {t('pages.initiativeOverview.next.budgetExhausted')}
-        </Box>
-        <Box
-          sx={{
-            gridColumn: 'span 5',
-          }}
-        >
-          <Typography sx={{ fontWeight: 600, fontSize: '24px', textAlign: 'start' }}>
-            12345678
+
+        <Box sx={{ gridColumn: 'span 3' }}>
+          <Typography variant="body2">
+            {t('pages.initiativeOverview.next.budgetExhausted')}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 1', alignSelf: 'self-end' }}>
-          <EuroIcon fontSize="small" />
-        </Box>
-        <Box sx={{ gridColumn: 'span 4' }}>
-          <Typography sx={{ fontWeight: 600, lineHeight: 2, textAlign: 'start', fontSize: '18px' }}>
-            / {initiativeSel.generalInfo.budget}
+        <Box sx={{ gridColumn: 'span 9', display: 'inline-flex' }}>
+          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+            {`${accruedRewards} € `}
+          </Typography>
+          &nbsp;
+          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+            {` /  ${initiativeSel.generalInfo.budget} €`}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 1', alignSelf: 'self-end' }}>
-          <EuroIcon fontSize="small" />
-        </Box>
-        <Box sx={{ gridColumn: 'span 24' }}>
+
+        <Box sx={{ gridColumn: 'span 12' }}>
           <Button variant="contained" startIcon={<FactCheckIcon />}>
             {t('pages.initiativeOverview.next.ViewUsers')}
           </Button>
@@ -627,16 +662,15 @@ const InitiativeOverview = () => {
             gridTemplateRows: 'auto',
             gridColumn: 'span 1',
             display: 'grid',
-            gridTemplateColumns: 'repeat(24, 1fr)',
+            gridTemplateColumns: 'repeat(12, 1fr)',
             alignContent: 'start',
             rowGap: 3,
-            opacity: initiativeSel.status === 'PUBLISHED' ? 0.3 : 1,
           }}
         >
           <Box
             sx={{
               pt: 3,
-              gridColumn: 'span 24',
+              gridColumn: 'span 12',
             }}
           >
             {initiativeSel.status === 'PUBLISHED' ? (
@@ -650,7 +684,7 @@ const InitiativeOverview = () => {
           initiativeSel.status === 'TO_CHECK' ||
           initiativeSel.status === 'APPROVED'
             ? renderNextStatus(initiativeSel.status, beneficiaryReached)
-            : renderConditionalStatusPublished(initiativeSel.status)}
+            : renderConditionalStatusPublished(initiativeSel, beneficiaryReached)}
         </Paper>
       </Box>
     </Box>

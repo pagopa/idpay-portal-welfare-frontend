@@ -118,7 +118,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
       .typeError(t('validation.invalidDate'))
-      .min(new Date(), t('validation.outJoinFrom')),
+      .min(getYesterday(), t('validation.outJoinFrom')),
     // eslint-disable-next-line sonarjs/no-identical-functions
     rankingEndDate: Yup.date()
       .nullable()
@@ -266,8 +266,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         >
           <FormControlLabel
             value="PF"
+            name="person"
             control={<Radio />}
             label={t('components.wizard.stepTwo.form.person')}
+            data-testid="beneficiary-radio-test"
           />
           <FormControlLabel
             sx={{ ml: 2 }}
