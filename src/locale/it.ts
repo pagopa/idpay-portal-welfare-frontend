@@ -316,6 +316,10 @@ export default {
       description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
       buttonLabel: 'Chiudi',
     },
+    initiativeUsers: {
+      title: 'Utenti',
+      subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
