@@ -23,9 +23,14 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('@pagopa/selfcare-common-frontend', () => ({
+  useLoading: jest.fn(),
+}));
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
+  withTranslation: jest.fn(),
 }));
 
 describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>) => {
