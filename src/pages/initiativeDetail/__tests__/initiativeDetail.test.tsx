@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { InitiativeApi } from '../../../api/InitiativeApiClient';
 import { createStore } from '../../../redux/store';
@@ -73,5 +73,19 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
   test('test get initiative detail', async () => {
     await getInitiativeDetail(mockedInitiativeId);
     expect(InitiativeApi.getInitiativeById).toBeCalled();
+  });
+
+  it('Test on close of snackbar', async () => {
+    await waitFor(async () => {
+      const handleClose = jest.fn();
+      render(
+        <Provider store={store}>
+          <InitiativeDetail />
+        </Provider>
+      );
+
+      handleClose();
+      expect(handleClose).toHaveBeenCalled();
+    });
   });
 });

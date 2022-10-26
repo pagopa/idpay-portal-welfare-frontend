@@ -52,12 +52,38 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
     });
   });
 
-  it('test on handleSubmit', () => {
-    const handleSubmit = jest.fn();
-    render(
-      <Provider store={store}>
+  it('test on handleSubmit', async () => {
+    await act(async () => {
+      const handleSubmit = jest.fn();
+      render(
+        <Provider store={store}>
+          <IseeCriteriaItem
+            action={WIZARD_ACTIONS.SUBMIT}
+            formData={data}
+            // eslint-disable-next-line react/jsx-no-bind
+            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+            handleFieldValueChanged={undefined}
+            criteriaToSubmit={[]}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCriteriaToSubmit={function (
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+            ): void {
+              //
+            }}
+          />
+        </Provider>
+      );
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
+    });
+  });
+
+  it('Test on IseeCriteriaItem', async () => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    await act(async () => {
+      const { queryByTestId } = render(
         <IseeCriteriaItem
-          action={WIZARD_ACTIONS.SUBMIT}
+          action={''}
           formData={data}
           // eslint-disable-next-line react/jsx-no-bind
           handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
@@ -70,35 +96,12 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
             //
           }}
         />
-      </Provider>
-    );
-    handleSubmit();
-    expect(handleSubmit).toHaveBeenCalled();
-  });
+      );
 
-  it('Test on IseeCriteriaItem', async () => {
-    const { queryByTestId } = render(
-      <IseeCriteriaItem
-        action={''}
-        formData={data}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        handleFieldValueChanged={undefined}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
-    );
+      const iseeRelationSelect = queryByTestId('isee-realtion-select');
+      const iseeStartValue = queryByTestId('isee-start-value');
+      const iseeEndValue = queryByTestId('isee-end-value');
 
-    const iseeRelationSelect = queryByTestId('isee-realtion-select');
-    const iseeStartValue = queryByTestId('isee-start-value');
-    const iseeEndValue = queryByTestId('isee-end-value');
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    await act(async () => {
       expect(iseeRelationSelect).not.toBeNull();
       expect(iseeStartValue).not.toBeNull();
       expect(iseeEndValue).not.toBeNull();

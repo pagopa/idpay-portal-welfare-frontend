@@ -47,7 +47,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   it('call the formik handleSubmit event when form is submitted', async () => {
-    await act(async () => {
+    await waitFor(async () => {
       const handleSumbit = jest.fn();
       render(
         <Provider store={store}>
@@ -121,9 +121,9 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
 
       const skip = getByTestId('skip-action-test');
-      await act(async () => {
-        expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-      });
+
+      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+
       fireEvent.click(skip);
       expect(parseValuesFormToInitiativeGeneralDTO).toBeDefined();
       expect(saveGeneralInfoService).toBeDefined();
@@ -401,29 +401,29 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   it('Test beneficiary type onChange', async () => {
-    const setFieldValue = jest.fn();
-    const { queryByTestId, queryByRole } = render(
-      <Provider store={store}>
-        <Generalnfo
-          action={WIZARD_ACTIONS.SUBMIT}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={0}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
+    await waitFor(async () => {
+      const setFieldValue = jest.fn();
+      const { queryByTestId, queryByRole } = render(
+        <Provider store={store}>
+          <Generalnfo
+            action={WIZARD_ACTIONS.SUBMIT}
+            // eslint-disable-next-line react/jsx-no-bind
+            setAction={function (_value: SetStateAction<string>): void {
+              //
+            }}
+            currentStep={0}
+            // eslint-disable-next-line react/jsx-no-bind
+            setCurrentStep={function (_value: SetStateAction<number>): void {
+              //
+            }}
+            // eslint-disable-next-line react/jsx-no-bind
+            setDisabledNext={function (_value: SetStateAction<boolean>): void {
+              //
+            }}
+          />
+        </Provider>
+      );
 
-    waitFor(async () => {
       const beneficiaryType = queryByTestId('beneficiary-radio-test') as HTMLInputElement;
       userEvent.click(beneficiaryType);
       setFieldValue();
