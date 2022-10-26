@@ -58,26 +58,28 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
     });
   });
 
-  it('test on handleSubmit', () => {
-    const handleSubmit = jest.fn();
-    render(
-      <ResidencyCriteriaItem
-        action={WIZARD_ACTIONS.SUBMIT}
-        formData={data}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        handleFieldValueChanged={undefined}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
-    );
-    handleSubmit();
-    expect(handleSubmit).toHaveBeenCalled();
+  it('test on handleSubmit', async () => {
+    await act(async () => {
+      const handleSubmit = jest.fn();
+      render(
+        <ResidencyCriteriaItem
+          action={WIZARD_ACTIONS.SUBMIT}
+          formData={data}
+          // eslint-disable-next-line react/jsx-no-bind
+          handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+          handleFieldValueChanged={undefined}
+          criteriaToSubmit={[]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCriteriaToSubmit={function (
+            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          ): void {
+            //
+          }}
+        />
+      );
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
+    });
   });
 
   it('call the submit event when form is submitted', async () => {

@@ -25,8 +25,8 @@ describe('<BeneficiaryListContentBody />', (injectedStore?: ReturnType<typeof cr
       render(
         <Provider store={store}>
           <BeneficiaryListContentBody
-            initiativeDetail={initiative}
             fileProcessingOutcomeStatus={undefined}
+            fileBeneficiaryReached={undefined}
           />
         </Provider>
       );

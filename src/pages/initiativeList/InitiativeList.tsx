@@ -333,7 +333,7 @@ const InitiativeList = () => {
     if (search.length > 0) {
       const listFiltered: Array<Data> = [];
       initiativeList.forEach((record) => {
-        if (record.initiativeName.toLowerCase().startsWith(search)) {
+        if (record.initiativeName.toLowerCase().includes(search)) {
           // eslint-disable-next-line functional/immutable-data
           listFiltered.push(record);
         }

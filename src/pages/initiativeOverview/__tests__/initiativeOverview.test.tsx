@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-// import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { groupsApi } from '../../../api/groupsApiClient';
 import { createStore } from '../../../redux/store';
@@ -77,19 +76,19 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
   });
 
   test('Testing functions calls', async () => {
-    const { queryByTestId } = render(
-      <Provider store={store}>
-        <InitiativeOverview />
-      </Provider>
-    );
-
-    const setUseState = jest.fn();
-    const useStateMock: any = (useState: any) => [useState, setUseState];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-    useStateMock();
-    expect(useStateMock).toBeDefined();
-
     await waitFor(async () => {
+      const { queryByTestId } = render(
+        <Provider store={store}>
+          <InitiativeOverview />
+        </Provider>
+      );
+
+      const setUseState = jest.fn();
+      const useStateMock: any = (useState: any) => [useState, setUseState];
+      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+      useStateMock();
+      expect(useStateMock).toBeDefined();
+
       handleViewDetails(mockedInitiativeId);
       expect(handleViewDetails).toHaveBeenCalled();
 
@@ -97,21 +96,16 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
       userEvent.click(condition);
       conditionalOnClickRendering();
       expect(conditionalOnClickRendering).toHaveBeenCalled();
-    });
 
-    const setOpenInitiativeOverviewDeleteModal = jest.fn();
-    const useStateModalMock: any = (openInitiativeOverviewDeleteModal: any) => [
-      openInitiativeOverviewDeleteModal,
-      setOpenInitiativeOverviewDeleteModal,
-    ];
-
-    await waitFor(async () => {
+      const setOpenInitiativeOverviewDeleteModal = jest.fn();
+      const useStateModalMock: any = (openInitiativeOverviewDeleteModal: any) => [
+        openInitiativeOverviewDeleteModal,
+        setOpenInitiativeOverviewDeleteModal,
+      ];
       expect(useStateModalMock).toBeDefined();
       setOpenInitiativeOverviewDeleteModal();
       expect(setOpenInitiativeOverviewDeleteModal).toHaveBeenCalled();
-    });
 
-    await waitFor(async () => {
       const details = queryByTestId('view-datails-test') as HTMLElement;
       userEvent.click(details);
       handleViewDetails();

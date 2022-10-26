@@ -47,8 +47,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             initiative={initiative}
             beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
-            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handlePusblishInitiative={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
             userCanPublishInitiative={false}
           />
@@ -70,8 +70,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             initiative={initiative}
             beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
-            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handlePusblishInitiative={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
             userCanPublishInitiative={false}
           />
@@ -118,8 +118,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             initiative={initiative}
             beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
-            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handlePusblishInitiative={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
             userCanPublishInitiative={false}
           />
@@ -147,8 +147,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
             initiative={initiative}
             beneficiaryReached={25}
             // eslint-disable-next-line react/jsx-no-bind
-            handlePusblishInitiative={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handlePusblishInitiative={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
             userCanPublishInitiative={false}
           />

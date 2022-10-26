@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React, { Dispatch, SetStateAction } from 'react';
 import { InitiativeApi } from '../../../api/InitiativeApiClient';
 import { createStore } from '../../../redux/store';
@@ -23,9 +23,14 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+jest.mock('@pagopa/selfcare-common-frontend', () => ({
+  useLoading: jest.fn(),
+}));
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
+  withTranslation: jest.fn(),
 }));
 
 describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>) => {
@@ -68,5 +73,19 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
   test('test get initiative detail', async () => {
     await getInitiativeDetail(mockedInitiativeId);
     expect(InitiativeApi.getInitiativeById).toBeCalled();
+  });
+
+  it('Test on close of snackbar', async () => {
+    await waitFor(async () => {
+      const handleClose = jest.fn();
+      render(
+        <Provider store={store}>
+          <InitiativeDetail />
+        </Provider>
+      );
+
+      handleClose();
+      expect(handleClose).toHaveBeenCalled();
+    });
   });
 });

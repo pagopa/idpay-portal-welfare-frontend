@@ -328,7 +328,7 @@ export default {
         to: 'A',
         status: 'Stato',
         all: 'Tutti gli stati',
-        waiting: 'In Attesa',
+        waiting: 'In attesa',
         registered: 'Iscritto',
         suitable: 'Idoneo',
         notSuitable: 'Non idoneo',
@@ -341,7 +341,7 @@ export default {
         beneficiaryState: 'Stato',
       },
       status: {
-        waiting: 'In Attesa',
+        waiting: 'In attesa',
         registered: 'Iscritto',
         suitable: 'Idoneo',
         notSuitable: 'Non idoneo',

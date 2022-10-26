@@ -195,6 +195,7 @@ stages:
               REACT_APP_URL_API_INITIATIVE: '$(react_app_url_api_initiative)'
               REACT_APP_URL_API_GROUPS: '$(react_app_url_api_groups)'
               REACT_APP_URL_API_ROLE_PERMISSION: '$(react_app_url_api_role_permission)'
+              REACT_APP_URL_API_EMAIL_NOTIFICATION: '$(react_app_url_api_email_notification)'
 
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
 

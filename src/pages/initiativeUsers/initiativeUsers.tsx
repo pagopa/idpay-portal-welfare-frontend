@@ -30,6 +30,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { itIT } from '@mui/material/locale';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -55,6 +57,8 @@ const InitiativeUsers = () => {
   const [rows, setRows] = useState<Array<InitiativeUserToDisplay>>([]);
   const [rowsPerPage, setRowsPerPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+
+  const theme = createTheme(itIT);
 
   // const columns = [
   //   { field: 'id', hide: true },
@@ -106,10 +110,10 @@ const InitiativeUsers = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [JSON.stringify(match), initiativeSel.initiativeId]);
+  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
 
   useEffect(() => {
-    fetchInitiativeUsers()
+    fetchInitiativeUsers(page)
       .then((res: InitiativeUsersResponse) => {
         setPage(res.pageNo - 1);
         const rowsData = res.oggetti.map((row, index) => ({
@@ -124,7 +128,7 @@ const InitiativeUsers = () => {
         setTotalElements(res.totalElements);
       })
       .catch((error) => console.log(error));
-  }, [JSON.stringify(match)]);
+  }, [JSON.stringify(match), page]);
 
   const renderUserStatus = (status: string) => {
     switch (status) {
@@ -141,11 +145,18 @@ const InitiativeUsers = () => {
     }
   };
 
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
   const formik = useFormik({
     initialValues: {
       searchUser: '',
-      searchFrom: undefined,
-      searchTo: undefined,
+      searchFrom: '',
+      searchTo: '',
       filterStatus: '',
     },
     onSubmit: (values) => {
@@ -224,8 +235,7 @@ const InitiativeUsers = () => {
               label={t('pages.initiativeUsers.form.from')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(e) => formik.handleChange(e)}
-              // minDate={new Date()}
+              onChange={(value) => formik.setFieldValue('searchFrom', value)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -234,6 +244,8 @@ const InitiativeUsers = () => {
                   name="searchFrom"
                   type="date"
                   size="small"
+                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
+                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
                 />
               )}
             />
@@ -245,8 +257,7 @@ const InitiativeUsers = () => {
               label={t('pages.initiativeUsers.form.to')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(e) => formik.handleChange(e)}
-              // minDate={new Date()}
+              onChange={(value) => formik.setFieldValue('searchTo', value)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -255,6 +266,8 @@ const InitiativeUsers = () => {
                   name="searchTo"
                   type="date"
                   size="small"
+                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
+                  helperText={formik.touched.searchTo && formik.errors.searchTo}
                 />
               )}
             />
@@ -281,11 +294,12 @@ const InitiativeUsers = () => {
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 1' }}>
           <Button
-            sx={{ py: 2 }}
+            sx={{ py: 2, height: '44px' }}
             variant="outlined"
             size="small"
             onClick={() => console.log('apply filters')}
             data-testid="apply-filters-test"
+            disabled
           >
             {t('pages.initiativeUsers.form.filterBtn')}
           </Button>
@@ -293,8 +307,9 @@ const InitiativeUsers = () => {
         <FormControl sx={{ gridColumn: 'span 1' }}>
           <ButtonNaked
             component="button"
-            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
+            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={() => console.log('reset filters')}
+            disabled
           >
             {t('pages.initiativeUsers.form.resetFiltersBtn')}
           </ButtonNaked>
@@ -339,8 +354,8 @@ const InitiativeUsers = () => {
                     </TableCell>
                     <TableCell>{r.updateStatusDate}</TableCell>
                     <TableCell>{renderUserStatus(r.beneficiaryState)}</TableCell>
-                    <TableCell>
-                      <IconButton>
+                    <TableCell align="right">
+                      <IconButton disabled>
                         <ArrowForwardIosIcon color="primary" />
                       </IconButton>
                     </TableCell>
@@ -348,14 +363,16 @@ const InitiativeUsers = () => {
                 ))}
               </TableBody>
             </Table>
-            <TablePagination
-              component="div"
-              onPageChange={() => console.log('page changed')}
-              page={page}
-              count={totalElements}
-              rowsPerPage={rowsPerPage}
-              rowsPerPageOptions={[rowsPerPage]}
-            />
+            <ThemeProvider theme={theme}>
+              <TablePagination
+                component="div"
+                onPageChange={handleChangePage}
+                page={page}
+                count={totalElements}
+                rowsPerPage={rowsPerPage}
+                rowsPerPageOptions={[rowsPerPage]}
+              />
+            </ThemeProvider>
           </Box>
         </Box>
       </Box>

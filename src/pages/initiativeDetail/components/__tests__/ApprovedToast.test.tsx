@@ -5,8 +5,8 @@ import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
-import StatusSnackBar from '../StatusSnackBar';
 import React from 'react';
+import ApprovedToast from '../Alert/ApprovedToast';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -15,8 +15,7 @@ jest.mock('react-i18next', () => ({
 describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const user = userEvent.setup();
-  const initiativeStatus = store.getState().initiative.status;
-  const setOpenSnackBar = jest.fn();
+  const handleClose = jest.fn();
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -27,13 +26,11 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
     await act(async () => {
       render(
         <Provider store={store}>
-          <StatusSnackBar
-            openSnackBar={true}
-            setOpenSnackBar={function (_value: SetStateAction<boolean>): void {
+          <ApprovedToast
+            openToast={false}
+            handleClose={function (): void {
               //
             }}
-            fileStatus={initiativeStatus}
-            beneficiaryReached={25}
           />
         </Provider>
       );
@@ -42,24 +39,14 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
 
   it('Test on close of snackbar', async () => {
     await act(async () => {
-      const { queryByTestId } = render(
+      render(
         <Provider store={store}>
-          <StatusSnackBar
-            openSnackBar={true}
-            setOpenSnackBar={setOpenSnackBar}
-            fileStatus={initiativeStatus}
-            beneficiaryReached={25}
-          />
+          <ApprovedToast openToast={true} handleClose={handleClose} />
         </Provider>
       );
 
-      const useStateMock: any = (openSnackBar: boolean) => [openSnackBar, setOpenSnackBar];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-      const closeBtn = queryByTestId('close-bar-test') as HTMLElement;
-      user.click(closeBtn);
-      setOpenSnackBar();
-      expect(setOpenSnackBar).toHaveBeenCalled();
+      handleClose();
+      expect(handleClose).toHaveBeenCalled();
     });
   });
 });
