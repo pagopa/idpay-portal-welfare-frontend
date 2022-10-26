@@ -12,7 +12,7 @@ import {
 } from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
 
-function mockFunction() {
+export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
   return {
     ...original,
@@ -26,7 +26,7 @@ function mockFunction() {
   };
 }
 
-jest.mock('react-router-dom', () => mockFunction());
+jest.mock('react-router-dom', () => mockLocationFunction());
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
