@@ -5,12 +5,15 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import CloseIcon from '@mui/icons-material/Close';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import { BASE_ROUTE } from '../../../routes';
 
 type Props = {
   openSnackBar: boolean;
   setOpenSnackBar: Dispatch<SetStateAction<boolean>>;
   fileStatus: string | undefined;
   beneficiaryReached: number | undefined;
+  initiativeId: string | undefined;
 };
 
 const StatusSnackBar = ({
@@ -18,8 +21,12 @@ const StatusSnackBar = ({
   setOpenSnackBar,
   fileStatus,
   beneficiaryReached,
+  initiativeId,
 }: Props) => {
+  console.log(initiativeId);
+
   const { t } = useTranslation();
+  const history = useHistory();
   const handleAlertSeverity = (fileStatus: string | undefined) =>
     fileStatus === 'KO' || fileStatus === 'PROC_KO' ? 'error' : 'info';
 
@@ -42,6 +49,7 @@ const StatusSnackBar = ({
               weight="default"
               variant="contained"
               data-testid="view-users-test"
+              onClick={() => history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiativeId}`)}
             >
               {t('pages.initiativeOverview.snackBar.users')}
             </ButtonNaked>

@@ -519,7 +519,8 @@ const InitiativeOverview = () => {
   const renderTypeSnackBarStatus = (
     status: string,
     beneficiaryReached: number | undefined,
-    initiativeStatus: string | undefined
+    initiativeStatus: string | undefined,
+    initiativeId: string | undefined
   ) => {
     if (userCanReviewInitiative) {
       switch (initiativeStatus) {
@@ -531,6 +532,7 @@ const InitiativeOverview = () => {
               setOpenSnackBar={setOpenSnackBar}
               fileStatus={status}
               beneficiaryReached={beneficiaryReached}
+              initiativeId={initiativeId}
             />
           );
         case 'DRAFT':
@@ -552,6 +554,7 @@ const InitiativeOverview = () => {
               setOpenSnackBar={setOpenSnackBar}
               fileStatus={status}
               beneficiaryReached={beneficiaryReached}
+              initiativeId={initiativeId}
             />
           );
         case 'DRAFT':
@@ -605,7 +608,12 @@ const InitiativeOverview = () => {
           />
         </Box>
         {renderConditionalActions(initiativeSel.initiativeId, initiativeSel.status)}
-        {renderTypeSnackBarStatus(statusFile, beneficiaryReached, initiativeSel.status)}
+        {renderTypeSnackBarStatus(
+          statusFile,
+          beneficiaryReached,
+          initiativeSel.status,
+          initiativeSel.initiativeId
+        )}
       </Box>
 
       <Box
