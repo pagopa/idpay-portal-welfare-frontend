@@ -157,6 +157,18 @@ const InitiativeOverview = () => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
 
+  const numberWithCommas = (x: number | string | undefined) => {
+    if (typeof x === 'string' && x.length > 0) {
+      const xFormatted = x.replace(/\./g, '').replace(/,/g, '.');
+      const xFloat = parseFloat(xFormatted);
+      return xFloat.toLocaleString('de-DE');
+    }
+    if (typeof x === 'number') {
+      return x.toLocaleString('de-DE');
+    }
+    return '0';
+  };
+
   const publishInitiative = (id: string | undefined, userCanPublishInitiative: boolean) => {
     if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {
       setLoading(true);
@@ -401,11 +413,12 @@ const InitiativeOverview = () => {
         </Box>
         <Box sx={{ gridColumn: 'span 9', display: 'inline-flex' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {onboardedCitizenCount}
+            {numberWithCommas(onboardedCitizenCount)}
           </Typography>
           &nbsp;
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            {typeof beneficiariesReached === 'number' ?? ` /  ${beneficiaryReached}`}
+            {initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
+              ` /  ${numberWithCommas(beneficiariesReached)}`}
           </Typography>
         </Box>
 
@@ -416,16 +429,22 @@ const InitiativeOverview = () => {
         </Box>
         <Box sx={{ gridColumn: 'span 9', display: 'inline-flex' }}>
           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-            {`${accruedRewards} € `}
+            {`${numberWithCommas(accruedRewards)} € `}
           </Typography>
           &nbsp;
           <Typography variant="body1" sx={{ fontWeight: 600 }}>
-            {` /  ${initiativeSel.generalInfo.budget} €`}
+            {` /  ${numberWithCommas(initiativeSel.generalInfo.budget)} €`}
           </Typography>
         </Box>
 
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button variant="contained" startIcon={<FactCheckIcon />}>
+          <Button
+            variant="contained"
+            startIcon={<FactCheckIcon />}
+            onClick={() =>
+              history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiative.initiativeId}`)
+            }
+          >
             {t('pages.initiativeOverview.next.ViewUsers')}
           </Button>
         </Box>
