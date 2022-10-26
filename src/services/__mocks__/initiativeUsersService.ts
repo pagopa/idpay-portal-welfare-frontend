@@ -19,7 +19,7 @@ export interface InitiativeUsersResponse {
   oggetti: Array<InitiativeUser>;
 }
 
-export const mockedInitiativeUsers = {
+export const mockedInitiativeUsersPage1 = {
   pageNo: 1,
   pageSize: 15,
   totalElements: 30,
@@ -100,83 +100,97 @@ export const mockedInitiativeUsers = {
       updateStatusDate: new Date(),
       beneficiaryState: 'REGISTERED',
     },
-    // {
-    //   beneficiary: 'BAIGRG96R70H501Y',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIHNN88T51Z330L',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIHSN70S23Z352B',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAILRA61S60I625H',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMLB77D52F912F',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMNC71A64L157Q',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRA46M10H537K',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRC53L56G972Q',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRK76P01H501R',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRK76P01H501R',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRO63S13E152B',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMRS68B49H501V',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAIMTF79D04Z240X',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAINRN76H11F205N',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
-    // {
-    //   beneficiary: 'BAINTN66B06F895L',
-    //   updateStatusDate: new Date(),
-    //   beneficiaryState: '',
-    // },
   ],
 };
 
-export const fetchInitiativeUsers = () =>
-  new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsers));
+export const mockedInitiativeUsersPage2 = {
+  pageNo: 2,
+  pageSize: 15,
+  totalElements: 30,
+  totalPages: 2,
+  oggetti: [
+    {
+      beneficiary: 'BAIGRG96R70H501Y',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIHNN88T51Z330L',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIHSN70S23Z352B',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAILRA61S60I625H',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIMLB77D52F912F',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIMNC71A64L157Q',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIMRA46M10H537K',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+    {
+      beneficiary: 'BAIMRC53L56G972Q',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAIMRK76P01H501R',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAIMRK76P01H501R',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAIMRO63S13E152B',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAIMRS68B49H501V',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAIMTF79D04Z240X',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAINRN76H11F205N',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'REGISTERED',
+    },
+    {
+      beneficiary: 'BAINTN66B06F895L',
+      updateStatusDate: new Date(),
+      beneficiaryState: 'WAITING',
+    },
+  ],
+};
+
+export const fetchInitiativeUsers = (page: number) => {
+  if (page === 0) {
+    return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage1));
+  } else {
+    return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
+  }
+};
