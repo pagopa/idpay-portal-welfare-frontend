@@ -23,8 +23,6 @@ const StatusSnackBar = ({
   beneficiaryReached,
   initiativeId,
 }: Props) => {
-  console.log(initiativeId);
-
   const { t } = useTranslation();
   const history = useHistory();
   const handleAlertSeverity = (fileStatus: string | undefined) =>

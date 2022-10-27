@@ -350,6 +350,7 @@ export default {
   },
   breadcrumbs: {
     exit: 'Esci',
+    back: 'Indietro',
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',

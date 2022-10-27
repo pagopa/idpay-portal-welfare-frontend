@@ -137,17 +137,20 @@ const InitiativeOverview = () => {
             }
           })
           .catch((error) => {
-            addError({
-              id: 'GET_GROUP_OF_BENEFICIARY_STATUS_AND_DETAIL_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred getting groups of beneficiary status and detail',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.getDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
+            if (Object.keys(error).length > 0) {
+              addError({
+                id: 'GET_GROUP_OF_BENEFICIARY_STATUS_AND_DETAIL_ERROR',
+                blocking: false,
+                error,
+                techDescription:
+                  'An error occurred getting groups of beneficiary status and detail',
+                displayableTitle: t('errors.title'),
+                displayableDescription: t('errors.getDataDescription'),
+                toNotify: true,
+                component: 'Toast',
+                showCloseIcon: true,
+              });
+            }
           });
       }
     }
@@ -583,10 +586,10 @@ const InitiativeOverview = () => {
               component="button"
               onClick={() => history.replace(ROUTES.HOME)}
               startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main' }}
+              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
             >
-              {t('breadcrumbs.exit')}
+              {t('breadcrumbs.back')}
             </ButtonNaked>
             <Typography color="text.primary" variant="body2">
               {t('breadcrumbs.initiatives')}

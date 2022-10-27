@@ -447,7 +447,7 @@ const InitiativeList = () => {
         sx={{
           width: '100%',
           mb: 2,
-          p: 3,
+          py: 3,
           backgroundColor: grey.A100,
         }}
       >
