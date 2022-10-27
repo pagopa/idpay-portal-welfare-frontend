@@ -23,7 +23,7 @@ const NewInitiative = () => {
           component="button"
           onClick={handleOpenExitModal}
           startIcon={<ArrowBackIcon />}
-          sx={{ color: 'primary.main' }}
+          sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
           weight="default"
           data-testid="exit-button-test"
         >

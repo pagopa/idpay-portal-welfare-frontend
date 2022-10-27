@@ -12,10 +12,23 @@ export const initiativeSummarySlice = createSlice({
   name: 'initiativeSummary',
   initialState,
   reducers: {
-    setInitiativeSummaryList: (state, action: PayloadAction<InitiativeSummaryArrayDTO>) => ({
-      ...state,
-      list: [...action.payload],
-    }),
+    setInitiativeSummaryList: (state, action: PayloadAction<InitiativeSummaryArrayDTO>) => {
+      if (Array.isArray(action.payload)) {
+        // eslint-disable-next-line functional/immutable-data
+        const orderedList = action.payload.sort((a, b) =>
+          a.initiativeName > b.initiativeName ? 1 : b.initiativeName > a.initiativeName ? -1 : 0
+        );
+        return {
+          ...state,
+          list: [...orderedList],
+        };
+      } else {
+        return {
+          ...state,
+          list: [...action.payload],
+        };
+      }
+    },
   },
 });
 

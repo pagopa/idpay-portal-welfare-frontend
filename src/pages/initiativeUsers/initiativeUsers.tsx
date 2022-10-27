@@ -180,10 +180,10 @@ const InitiativeUsers = () => {
               component="button"
               onClick={() => history.replace(ROUTES.HOME)}
               startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main' }}
+              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
             >
-              {t('breadcrumbs.exit')}
+              {t('breadcrumbs.back')}
             </ButtonNaked>
             <Typography color="text.primary" variant="body2">
               {t('breadcrumbs.initiatives')}
