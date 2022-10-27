@@ -65,18 +65,18 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
     });
   });
 
-  // it('Test on renderActiveStepBox', async () => {
-  //   const renderActiveStepBox = jest.fn();
-  //   render(
-  //     <Provider store={store}>
-  //       <Wizard
-  //         handleOpenExitModal={function (_event: React.MouseEvent<Element, MouseEvent>): void {
-  //           //
-  //         }}
-  //       />
-  //     </Provider>
-  //   );
-  //   renderActiveStepBox();
-  //   expect(renderActiveStepBox).toHaveBeenCalled();
-  // });
+  it('Test on renderActiveStepBox', async () => {
+    const renderActiveStepBox = jest.fn();
+    render(
+      <Provider store={store}>
+        <Wizard
+          handleOpenExitModal={function (_event: React.MouseEvent<Element, MouseEvent>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+    renderActiveStepBox();
+    expect(renderActiveStepBox).toHaveBeenCalled();
+  });
 });
