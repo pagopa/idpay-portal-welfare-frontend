@@ -126,9 +126,6 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
     }
   };
 
-  // eslint-disable-next-line functional/immutable-data
-  module.exports = renderActiveStepBox;
-
   return (
     <Box>
       <Stepper sx={{ my: 2 }} activeStep={activeStep} alternativeLabel>
