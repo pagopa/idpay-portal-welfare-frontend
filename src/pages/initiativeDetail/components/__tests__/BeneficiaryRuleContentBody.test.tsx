@@ -11,6 +11,11 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 describe('<BeneficiaryRuleContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
@@ -20,15 +25,13 @@ describe('<BeneficiaryRuleContentBody />', (injectedStore?: ReturnType<typeof cr
   });
 
   test('should render the BeneficiaryRuleContentBody component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <BeneficiaryRuleContentBody
-            fileProcessingOutcomeStatus={undefined}
-            fileBeneficiaryReached={undefined}
-          />
-        </Provider>
-      );
-    });
+    render(
+      <Provider store={store}>
+        <BeneficiaryRuleContentBody
+          fileProcessingOutcomeStatus={undefined}
+          fileBeneficiaryReached={undefined}
+        />
+      </Provider>
+    );
   });
 });

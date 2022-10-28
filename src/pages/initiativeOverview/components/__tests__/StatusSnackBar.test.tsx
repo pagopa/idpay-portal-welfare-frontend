@@ -12,10 +12,16 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const user = userEvent.setup();
   const initiativeStatus = store.getState().initiative.status;
+  const initiativeId = store.getState().initiative.initiativeId;
   const setOpenSnackBar = jest.fn();
 
   it('renders without crashing', () => {
@@ -34,6 +40,7 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
             }}
             fileStatus={initiativeStatus}
             beneficiaryReached={25}
+            initiativeId={initiativeId}
           />
         </Provider>
       );
@@ -49,6 +56,7 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
             setOpenSnackBar={setOpenSnackBar}
             fileStatus={initiativeStatus}
             beneficiaryReached={25}
+            initiativeId={initiativeId}
           />
         </Provider>
       );
