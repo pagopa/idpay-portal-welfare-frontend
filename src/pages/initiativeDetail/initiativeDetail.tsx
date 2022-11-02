@@ -119,6 +119,7 @@ const InitiativeDetail = () => {
       initiativeDetail.generalInfo.beneficiaryKnown === 'true' &&
       typeof initiativeDetail.initiativeId === 'string'
     ) {
+      setLoading(true);
       getGroupOfBeneficiaryStatusAndDetail(initiativeDetail.initiativeId)
         .then((res) => {
           setFileProcessingOutcomeStatus(res.status);
@@ -138,7 +139,8 @@ const InitiativeDetail = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [initiativeDetail.generalInfo.beneficiaryKnown, initiativeDetail.initiativeId]);
 
@@ -157,11 +159,9 @@ const InitiativeDetail = () => {
       setLoading(true);
       updateInitiativeApprovedStatus(initiativeId)
         .then((_res) => {
-          setLoading(false);
           handleOpenToast();
         })
         .catch((error) => {
-          setLoading(false);
           addError({
             id: 'UPDATE_INITIATIVE_TO_APPROVED_STATUS_ERROR',
             blocking: false,
@@ -172,12 +172,14 @@ const InitiativeDetail = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   };
 
   const rejectInitiative = (initiativeId: string | undefined, userCanRejectInitiative: boolean) => {
     if (userCanRejectInitiative && typeof initiativeId === 'string') {
+      setLoading(true);
       updateInitiativeToCheckStatus(initiativeId)
         .then((_res) => history.replace(ROUTES.HOME))
         .catch((error) => {
@@ -191,7 +193,8 @@ const InitiativeDetail = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   };
 

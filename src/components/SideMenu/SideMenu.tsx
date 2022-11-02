@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { useHistory } from 'react-router-dom';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useTranslation } from 'react-i18next';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -39,6 +40,7 @@ export default function SideMenu() {
   const onExit = useUnloadEventOnExit();
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
   const [pathname, setPathName] = useState(() => {
@@ -59,6 +61,7 @@ export default function SideMenu() {
 
   useEffect(() => {
     if (!initiativeSummaryList) {
+      setLoading(true);
       getInitativeSummary()
         .then((response: InitiativeSummaryArrayDTO) => response)
         .then((responseT) => {
@@ -76,7 +79,8 @@ export default function SideMenu() {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, []);
 

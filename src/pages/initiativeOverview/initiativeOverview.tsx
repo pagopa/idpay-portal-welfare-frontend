@@ -82,6 +82,7 @@ const InitiativeOverview = () => {
         initiativeSel.initiativeId === id &&
         initiativeSel.status !== 'DRAFT'
       ) {
+        setLoading(true);
         getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
           .then((res) => {
             const statusFileRes = res.status || '';
@@ -102,7 +103,8 @@ const InitiativeOverview = () => {
               component: 'Toast',
               showCloseIcon: true,
             });
-          });
+          })
+          .finally(() => setLoading(false));
       } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {
         handleCloseSnackBar();
       }
@@ -119,6 +121,7 @@ const InitiativeOverview = () => {
     if (match !== null && match.params.hasOwnProperty('id')) {
       const { id } = match.params as MatchParams;
       if (initiativeSel.initiativeId === id && initiativeSel.status === 'PUBLISHED') {
+        setLoading(true);
         getGroupOfBeneficiaryStatusAndDetails(id)
           .then((res) => {
             if (typeof res.accruedRewards === 'string') {
@@ -151,7 +154,8 @@ const InitiativeOverview = () => {
                 showCloseIcon: true,
               });
             }
-          });
+          })
+          .finally(() => setLoading(false));
       }
     }
   }, [JSON.stringify(match), initiativeSel.initiativeId, initiativeSel.status]);
@@ -177,12 +181,10 @@ const InitiativeOverview = () => {
       setLoading(true);
       updateInitiativePublishedStatus(id)
         .then((_res) => {
-          setLoading(false);
           history.replace(ROUTES.HOME);
         })
         .catch((error) => {
           setPublishModalOpen(false);
-          setLoading(false);
           addError({
             id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
             blocking: false,
@@ -193,7 +195,8 @@ const InitiativeOverview = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   };
 

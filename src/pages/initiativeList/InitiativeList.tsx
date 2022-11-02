@@ -25,7 +25,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-// import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
@@ -283,7 +283,7 @@ const InitiativeList = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
-  // const setLoading = useLoading('GET_INITIATIVE_LIST');
+  const setLoading = useLoading('GET_INITIATIVE_LIST');
 
   const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
@@ -291,7 +291,7 @@ const InitiativeList = () => {
   const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   useEffect(() => {
-    // setLoading(true);
+    setLoading(true);
     getInitativeSummary()
       .then((response: InitiativeSummaryArrayDTO) => response)
       .then((responseT) => {
@@ -304,7 +304,6 @@ const InitiativeList = () => {
         dispatch(setInitiativeSummaryList(responseT));
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
-        // setLoading(false);
       })
       .catch((error: any) => {
         addError({
@@ -318,8 +317,8 @@ const InitiativeList = () => {
           component: 'Toast',
           showCloseIcon: true,
         });
-        // setLoading(false);
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof Data) => {

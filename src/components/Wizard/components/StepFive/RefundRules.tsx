@@ -21,6 +21,7 @@ import * as Yup from 'yup';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useHistory } from 'react-router-dom';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
@@ -53,6 +54,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const history = useHistory();
+  const setLoading = useLoading('PUT_REFUND_RULES');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -64,6 +66,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       const body = mapDataToSend(formik.values);
       if (initiativeId) {
+        setLoading(true);
         putRefundRuleDraft(initiativeId, body)
           .then((_res) => {
             dispatch(saveRefundRule(formik.values));
@@ -80,7 +83,8 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
               component: 'Toast',
               showCloseIcon: true,
             });
-          });
+          })
+          .finally(() => setLoading(false));
       }
       return;
     }
