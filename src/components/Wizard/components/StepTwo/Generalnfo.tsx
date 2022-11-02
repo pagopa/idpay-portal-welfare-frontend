@@ -26,6 +26,7 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { parse } from 'date-fns';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
@@ -55,6 +56,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
   const { t } = useTranslation();
+  const setLoading = useLoading('UPDATE_GENERAL_INFO');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -67,6 +69,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(formik.values);
       dispatch(setGeneralInfo(formik.values));
       if (initiativeIdSel) {
+        setLoading(true);
         updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed)
           .then((_res) => {})
           .catch((error) => {
@@ -81,7 +84,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               component: 'Toast',
               showCloseIcon: true,
             });
-          });
+          })
+          .finally(() => setLoading(false));
       }
     }
     setAction('');
@@ -212,6 +216,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       const formValuesParsed = parseValuesFormToInitiativeGeneralDTO(values);
       dispatch(setGeneralInfo(values));
       if (initiativeIdSel) {
+        setLoading(true);
         updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed)
           .then((_res) => {
             setCurrentStep(currentStep + 1);
@@ -228,7 +233,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               component: 'Toast',
               showCloseIcon: true,
             });
-          });
+          })
+          .finally(() => setLoading(false));
       }
     },
   });

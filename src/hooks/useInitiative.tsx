@@ -6,7 +6,7 @@ import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-// import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import ROUTES from '../routes';
 import { getInitiativeDetail } from '../services/intitativeService';
 import { useAppDispatch } from '../redux/hooks';
@@ -53,7 +53,7 @@ export const useInitiative = () => {
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const { t } = useTranslation();
-  // const setLoading = useLoading('GET_INITIATIVE_DETAIL');
+  const setLoading = useLoading('GET_INITIATIVE_DETAIL');
 
   const match = matchPath(location.pathname, {
     path: [
@@ -71,8 +71,9 @@ export const useInitiative = () => {
     // eslint-disable-next-line no-prototype-builtins
     if (match !== null && match.params.hasOwnProperty('id')) {
       const { id } = match.params as MatchParams;
-      // setLoading(true);
+      setLoading(true);
       dispatch(resetInitiative());
+
       getInitiativeDetail(id)
         .then((response) => {
           dispatch(setInitiativeId(response.initiativeId));
@@ -97,7 +98,6 @@ export const useInitiative = () => {
           parseDaysOfWeekIntervals(response, dispatch);
           const refundRule = parseRefundRule(response.refundRule);
           dispatch(saveRefundRule(refundRule));
-          // setLoading(false);
         })
         .catch((error) => {
           addError({
@@ -111,8 +111,8 @@ export const useInitiative = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-          // setLoading(false);
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, [location.pathname]);
 };

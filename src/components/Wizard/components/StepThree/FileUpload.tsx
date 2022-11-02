@@ -19,6 +19,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import CloseIcon from '@mui/icons-material/Close';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
@@ -47,6 +48,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const [alertDescription, setAlertDescription] = useState('');
   const initiativeId = useAppSelector(initiativeIdSelector);
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_STATUS_AND_DETAIL');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -54,6 +56,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   useEffect(() => {
     if (initiativeId) {
+      setLoading(true);
       getGroupOfBeneficiaryStatusAndDetail(initiativeId)
         .then((res) => {
           const fileNameRes = res.fileName || '';
@@ -82,7 +85,8 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               showCloseIcon: true,
             });
           }
-        });
+        })
+        .finally(() => setLoading(false));
     }
   }, []);
 
@@ -98,6 +102,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       setAlertDescription('');
       setFileIsLoading(true);
       if (initiativeId) {
+        setLoading(true);
         uploadGroupOfBeneficiaryPut(initiativeId, files[0])
           .then((res) => {
             setFileIsLoading(false);
@@ -169,7 +174,8 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
             setFileRejected(true);
             setFileAccepted(false);
             setDisabledNext(true);
-          });
+          })
+          .finally(() => setLoading(false));
       }
     },
     onDropRejected: (files) => {

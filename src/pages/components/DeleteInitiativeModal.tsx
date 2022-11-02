@@ -3,6 +3,7 @@ import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import ROUTES from '../../routes';
 import { logicallyDeleteInitiative } from '../../services/intitativeService';
 import { USER_PERMISSIONS } from '../../utils/constants';
@@ -25,6 +26,7 @@ const DeleteInitiativeModal = ({
   const history = useHistory();
   const addError = useErrorDispatcher();
   const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
+  const setLoading = useLoading('DELETE_INITIATIVE');
 
   const handleDeleteInitiative = (id: string | undefined, status: string | undefined) => {
     if (
@@ -34,6 +36,7 @@ const DeleteInitiativeModal = ({
       status !== 'PUBLISHED' &&
       status !== 'IN_REVISION'
     ) {
+      setLoading(true);
       logicallyDeleteInitiative(id)
         .then((_res) => history.replace(ROUTES.INITIATIVE_LIST))
         .catch((error) =>
@@ -48,7 +51,8 @@ const DeleteInitiativeModal = ({
             component: 'Toast',
             showCloseIcon: true,
           })
-        );
+        )
+        .finally(() => setLoading(false));
     }
   };
 

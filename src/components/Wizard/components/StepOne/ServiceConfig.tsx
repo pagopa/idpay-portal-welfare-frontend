@@ -25,6 +25,7 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import * as Yup from 'yup';
 import { CallMade } from '@mui/icons-material';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
@@ -62,6 +63,7 @@ const ServiceConfig = ({
   const [openInitiativeNotOnIOModal, setOpenInitiativeNotOnIOModal] = useState(false);
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
+  const setLoading = useLoading('SAVE_INITIATIVE_SERVICE');
 
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
@@ -164,6 +166,7 @@ const ServiceConfig = ({
     const data = parseDataToSend(values);
     dispatch(setAdditionalInfo(values));
     if (!initiativeId) {
+      setLoading(true);
       createInitiativeServiceInfo(data)
         .then((res) => {
           dispatch(setInitiativeId(res?.initiativeId));
@@ -181,8 +184,10 @@ const ServiceConfig = ({
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     } else {
+      setLoading(true);
       updateInitiativeServiceInfo(initiativeId, data)
         .then((_res) => {
           setCurrentStep(currentStep + 1);
@@ -199,7 +204,8 @@ const ServiceConfig = ({
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
   };
 

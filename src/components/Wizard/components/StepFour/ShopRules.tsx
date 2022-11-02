@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
@@ -76,6 +77,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const [modalButtonVisible, setModalButtonVisible] = useState(true);
+  const setLoading = useLoading('GET_TRANSACTION_RULES');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -83,6 +85,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
+    setLoading(true);
     setDisabledNext(false);
     fetchTransactionRules()
       .then((response) => {
@@ -182,7 +185,8 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           component: 'Toast',
           showCloseIcon: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleCloseModal = () => setOpenModal(false);
@@ -307,6 +311,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           daysOfWeekIntervalsData
         ),
       };
+      setLoading(true);
       putTrxAndRewardRules(initiativeId, body)
         .then((_response) => {
           dispatch(saveRewardRule(rewardRuleData));
@@ -339,7 +344,8 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
@@ -353,6 +359,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           daysOfWeekIntervalsData
         ),
       };
+      setLoading(true);
       putTrxAndRewardRulesDraft(initiativeId, body)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((_response) => {
@@ -385,7 +392,8 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
     setAction('');
   }, [action, JSON.stringify(shopRulesToSubmit)]);

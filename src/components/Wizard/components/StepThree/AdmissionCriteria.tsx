@@ -3,6 +3,7 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
@@ -57,12 +58,14 @@ const AdmissionCriteria = ({
   );
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
+  const setLoading = useLoading('GET_ADMISSION_CRITERIA');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     fetchAdmissionCriteria()
       .then((response) => {
         const responseData = mapResponse(response);
@@ -105,7 +108,8 @@ const AdmissionCriteria = ({
           component: 'Toast',
           showCloseIcon: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
@@ -260,6 +264,7 @@ const AdmissionCriteria = ({
     }
     if (toSubmit && typeof initiativeId === 'string') {
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      setLoading(true);
       putBeneficiaryRuleService(initiativeId, body)
         .then((_response) => {
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
@@ -278,11 +283,13 @@ const AdmissionCriteria = ({
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
@@ -300,7 +307,8 @@ const AdmissionCriteria = ({
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     }
     setAction('');
   }, [action, criteriaToSubmit]);

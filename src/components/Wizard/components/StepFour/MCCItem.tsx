@@ -17,6 +17,7 @@ import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { fetchMccCodes } from '../../../../services/mccCodesService';
 import { MccCodesModel } from '../../../../model/MccCodes';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
@@ -51,8 +52,10 @@ const MCCItem = ({
   const [openModalMcc, setOpenModalMcc] = useState(false);
   const [mccCodesList, setMccCodesList] = useState(Array<MccCodesModel>);
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_MCC_LIST');
 
   useEffect(() => {
+    setLoading(true);
     fetchMccCodes()
       .then((response) => {
         const responseData = [...response];
@@ -80,7 +83,8 @@ const MCCItem = ({
           component: 'Toast',
           showCloseIcon: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   useEffect(() => {
