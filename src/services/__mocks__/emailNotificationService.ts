@@ -8,10 +8,10 @@ export const mockedBody: EmailMessageDTO = {
   recipientEmail: '',
 };
 
-export const mockedEmail: UserInstitutionInfoDTO = {
-  email: '',
+export const mockedInstitutionInfo: UserInstitutionInfoDTO = {
+  email: 'test@test.it',
 };
 
-export const getInstitutionProductUserInfo = () => new Promise((resolve) => resolve);
-
-export const sendEmail = (_data: EmailMessageDTO) => new Promise((resolve) => resolve(mockedBody));
+export const getInstitutionProductUserInfo = () =>
+  new Promise<UserInstitutionInfoDTO>((resolve) => resolve(mockedInstitutionInfo));
+export const sendEmail = (_data: EmailMessageDTO) => new Promise<void>((resolve) => resolve());

@@ -30,7 +30,6 @@ describe('Group Service', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   test('', () => {
-    const store = injectedStore ? injectedStore : createStore();
     const actions = store.dispatch(
       appStateActions.addError({
         id: '',

@@ -14,6 +14,11 @@ const expectedPartyId: string = '2f63a151-da4e-4e1e-acf9-adecc0c4d727';
 let fetchPartyDetailsSpy: jest.SpyInstance;
 
 beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+beforeEach(() => {
   fetchPartyDetailsSpy = jest.spyOn(require('../../services/partyService'), 'fetchPartyDetails');
 
   storageTokenOps.write(testToken); // party with partyId="onboarded"

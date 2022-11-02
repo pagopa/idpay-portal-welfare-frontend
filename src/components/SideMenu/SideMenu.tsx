@@ -102,13 +102,14 @@ export default function SideMenu() {
   return (
     <Box display="grid" mt={1}>
       <Box gridColumn="auto">
-        <List>
+        <List data-testid="list-test">
           <SidenavItem
             title={t('sideMenu.initiativeList.title')}
             handleClick={() => onExit(() => history.replace(ROUTES.HOME))}
             isSelected={pathname === ROUTES.HOME}
             icon={ListAltIcon}
             level={0}
+            data-testid="initiativeList-click-test"
           />
           {initiativeSummaryList?.map((item) => (
             <Accordion
@@ -140,6 +141,7 @@ export default function SideMenu() {
                     }
                     icon={DashboardIcon}
                     level={2}
+                    data-testid="initiativeOveview-click-test"
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeUsers.title')}
@@ -152,6 +154,7 @@ export default function SideMenu() {
                     icon={GroupIcon}
                     level={2}
                     disabled={false}
+                    data-testid="initiativeUsers-click-test"
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
@@ -166,6 +169,7 @@ export default function SideMenu() {
                     icon={EuroSymbolIcon}
                     level={2}
                     disabled={true}
+                    data-testid="initiativeRefunds-click-test"
                   />
                 </List>
               </AccordionDetails>

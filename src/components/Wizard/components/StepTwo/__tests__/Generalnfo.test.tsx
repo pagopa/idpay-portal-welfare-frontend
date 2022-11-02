@@ -14,6 +14,11 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data

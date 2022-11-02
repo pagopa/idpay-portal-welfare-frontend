@@ -19,6 +19,11 @@ afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 test('test login success', () => {
   render(<Auth />);
 

@@ -26,6 +26,11 @@ export function mockLocationFunction() {
   };
 }
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 jest.mock('react-router-dom', () => mockLocationFunction());
 
 jest.mock('react-router-dom', () => ({

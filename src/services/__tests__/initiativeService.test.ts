@@ -22,7 +22,7 @@ import {
   getEligibilityCriteriaForSidebar,
 } from '../intitativeService';
 
-import {} from '../admissionCriteriaService';
+import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 
 import {
   mockedInitiativeBeneficiaryRuleBody,
@@ -34,6 +34,7 @@ import {
 } from '../__mocks__/initiativeService';
 
 import { InitiativeApi } from '../../api/InitiativeApiClient';
+import { mockedAdmissionCriteria } from '../__mocks__/admissionCriteriaService';
 
 jest.mock('../../api/InitiativeApiClient');
 
@@ -164,9 +165,21 @@ test('delete initiative', async () => {
   expect(InitiativeApi.logicallyDeleteInitiative).toBeCalledWith(mockedInitiativeId);
 });
 
-test('eligibility criteria for sidebar', async () => {
-  await getEligibilityCriteriaForSidebar();
-  expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
+test('fetch admission criteria get eligibility criteria for sidebar', async () => {
+  await fetchAdmissionCriteria();
+  if (process.env.REACT_APP_API_MOCK_ADMISSION_CRITERIA === 'false') {
+    await getEligibilityCriteriaForSidebar();
+    expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
+  }
+});
+
+test('test fetch admission criteria mocked Admission', async () => {
+  await fetchAdmissionCriteria();
+  if (process.env.REACT_APP_API_MOCK_ADMISSION_CRITERIA === 'true') {
+    expect(new Promise((resolve) => resolve(mockedAdmissionCriteria))).toStrictEqual(
+      new Promise(() => ({}))
+    );
+  }
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {
