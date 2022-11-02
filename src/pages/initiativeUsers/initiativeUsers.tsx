@@ -186,10 +186,10 @@ const InitiativeUsers = () => {
               {t('breadcrumbs.back')}
             </ButtonNaked>
             <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiatives')}
+              {initiativeSel.initiativeName}
             </Typography>
             <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
+              {t('breadcrumbs.initiativeUsers')}
             </Typography>
           </Breadcrumbs>
         </Box>

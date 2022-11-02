@@ -347,6 +347,19 @@ export default {
         notSuitable: 'Non idoneo',
       },
     },
+    initiativeRefunds: {
+      title: 'Rimborsi',
+      subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
+      form: {
+        from: 'Da',
+        to: 'A',
+        status: 'Stato',
+        completed: 'Completato',
+        toLoad: 'Esiti da caricare',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
@@ -354,6 +367,8 @@ export default {
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',
+    initiativeUsers: 'Utenti',
+    initiativeRefunds: 'Rimborsi',
   },
   components: {
     wizard: {
