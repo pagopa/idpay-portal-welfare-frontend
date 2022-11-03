@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import Assistance from '../assistance';
@@ -31,21 +31,51 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
   });
 
   test('Should render the Assistance component', async () => {
-    const { queryByTestId } = render(
+    render(
       <Provider store={store}>
         <Assistance />
       </Provider>
     );
   });
 
-  it('Test of form fields', () => {
-    const { getByTestId } = render(
+  const setup = () => {
+    const utils = render(
       <Provider store={store}>
         <Assistance />
       </Provider>
     );
+    const assSubject = utils.getByLabelText('pages.assistance.form.subject') as HTMLInputElement;
+    const assMessage = utils.getByLabelText('pages.assistance.form.message') as HTMLInputElement;
+    const sendBtn = utils.getByTestId('sendAssistenceRequest-test') as HTMLButtonElement;
+    const handleClick = jest.fn();
+    return {
+      assSubject,
+      assMessage,
+      sendBtn,
+      handleClick,
+      ...utils,
+    };
+  };
 
-    const assSubject = getByTestId('assistanceSubject-test');
-    expect(assSubject).not.toBeNull();
+  it('Test of form fields', async () => {
+    const { assSubject, assMessage, sendBtn, handleClick } = setup();
+
+    await waitFor(async () => {
+      //Assistance subject test
+      fireEvent.change(assSubject, { target: { value: 'assistance subject' } });
+      expect(assSubject.value).toBe('assistance subject');
+      fireEvent.change(assSubject, { target: { value: '' } });
+      expect(assSubject.value).toBe('');
+      //Assistance message test
+      fireEvent.change(assMessage, { target: { value: 'assistance message' } });
+      expect(assMessage.value).toBe('assistance message');
+      fireEvent.change(assMessage, { target: { value: '' } });
+      expect(assMessage.value).toBe('');
+      //Send button test
+      expect(sendBtn).toBeInTheDocument();
+      fireEvent.click(sendBtn);
+      handleClick();
+      expect(handleClick).toHaveBeenCalled();
+    });
   });
 });
