@@ -7,7 +7,6 @@ import {
 import { InitiativeBeneficiaryRuleDTO } from '../../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
-// import { InitiativeInfoDTO } from '../../api/generated/initiative/InitiativeInfoDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
@@ -149,6 +148,35 @@ export const mockedRefundRules = {
   additionalInfo: { identificationCode: 'test', timeParameter: TimeTypeEnum.CLOSED },
 };
 
+export interface InitiativeRefund {
+  id: string;
+  notificationDate: Date;
+  typology: string;
+  rewardsExported: number;
+  rewardsResults: number;
+  successPercentage: number;
+  status: string;
+}
+
+export interface InitiativeRefundToDisplay {
+  id: string;
+  notificationDate: string;
+  typology: string;
+  rewardsExported: string;
+  rewardsResults: string;
+  successPercentage: string;
+  status: string;
+  filePath: string;
+}
+
+export interface InitiativeRefundsResponse {
+  pageNo: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  list: Array<InitiativeRefund>;
+}
+
 export const mockedTrxAndRewardRules = {
   rewardRule: { _type: 'rewardValue', rewardValue: 1 },
 };
@@ -194,3 +222,213 @@ export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Prom
 
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   new Promise((resolve) => resolve(mockedAdmissionCriteria));
+
+export const mockedInitiativeRefundsPage1 = {
+  pageNo: 1,
+  pageSize: 10,
+  totalElements: 20,
+  totalPages: 2,
+  list: [
+    {
+      id: '00000',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'READ',
+    },
+    {
+      id: '00001',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '00010',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '00011',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '00100',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '00101',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '00110',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '00111',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'READ',
+    },
+    {
+      id: '01000',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '01001',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'READ',
+    },
+  ],
+};
+
+export const mockedInitiativeRefundsPage2 = {
+  pageNo: 2,
+  pageSize: 10,
+  totalElements: 20,
+  totalPages: 2,
+  list: [
+    {
+      id: '01010',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'READ',
+    },
+    {
+      id: '01011',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '01100',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '01101',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'COMPLETE',
+    },
+    {
+      id: '01110',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '01111',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '10000',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '10001',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'READ',
+    },
+    {
+      id: '10010',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED ',
+    },
+    {
+      id: '10011',
+      notificationDate: new Date(),
+      typology: 'Ordinario',
+      rewardsExported: 1000,
+      rewardsResults: 30,
+      successPercentage: 99,
+      status: 'EXPORTED',
+    },
+  ],
+};
+
+export const fetchInitiativeRefunds = (page: number) => {
+  if (page === 0) {
+    return new Promise<InitiativeRefundsResponse>((resolve) =>
+      resolve(mockedInitiativeRefundsPage1)
+    );
+  } else {
+    return new Promise<InitiativeRefundsResponse>((resolve) =>
+      resolve(mockedInitiativeRefundsPage2)
+    );
+  }
+};

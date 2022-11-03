@@ -14,6 +14,7 @@ import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeA
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeStatisticsDTO';
+import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
@@ -102,3 +103,6 @@ export const getGroupOfBeneficiaryStatusAndDetails = (
   id: string
 ): Promise<InitiativeStatisticsDTO> =>
   InitiativeApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);
+
+export const getExportsPaged = (id: string, page: number): Promise<PageRewardExportsDTO> =>
+  InitiativeApi.getExportsPaged(id, page).then((res) => res);

@@ -16,6 +16,7 @@ import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefund
 import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
+import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -193,7 +194,11 @@ export const InitiativeApi = {
 
   getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
     const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
-    console.log(result);
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getExportsPaged: async (id: string, page: number): Promise<PageRewardExportsDTO> => {
+    const result = await apiClient.getRewardNotificationExportsPaged({ initiativeId: id, page });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

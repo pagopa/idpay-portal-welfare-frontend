@@ -350,6 +350,7 @@ export default {
     initiativeRefunds: {
       title: 'Rimborsi',
       subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
+      noData: 'Non sono presenti rimborsi.',
       form: {
         from: 'Da',
         to: 'A',
@@ -358,6 +359,15 @@ export default {
         toLoad: 'Esiti da caricare',
         filterBtn: 'Filtra',
         resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        creationDate: 'Data di creazione',
+        typology: 'Tipologia',
+        amount: 'Importo',
+        refunds: 'Rimborsi',
+        successPercentage: '% Successo',
+        status: 'Stato',
+        typeOrdinary: 'Ordinario',
       },
     },
   },
