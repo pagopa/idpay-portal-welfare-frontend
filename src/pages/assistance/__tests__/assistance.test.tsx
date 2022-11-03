@@ -46,19 +46,26 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
     );
     const assSubject = utils.getByLabelText('pages.assistance.form.subject') as HTMLInputElement;
     const assMessage = utils.getByLabelText('pages.assistance.form.message') as HTMLInputElement;
-    const sendBtn = utils.getByTestId('sendAssistenceRequest-test') as HTMLButtonElement;
-    const handleClick = jest.fn();
+    const sendBtn = utils.queryByTestId('sendAssistenceRequest-test') as HTMLButtonElement;
+    const exitBtn = utils.queryByTestId('open-exit-test') as HTMLButtonElement;
+    const handleSubmit = jest.fn();
+    const closeWithoutSaving = jest.fn();
+    const thxPage = utils.queryByTestId('thx-page-test') as HTMLElement;
     return {
       assSubject,
       assMessage,
       sendBtn,
-      handleClick,
+      exitBtn,
+      handleSubmit,
+      closeWithoutSaving,
+      thxPage,
       ...utils,
     };
   };
 
-  it('Test of form fields', async () => {
-    const { assSubject, assMessage, sendBtn, handleClick } = setup();
+  test('Test of form fields', async () => {
+    const { assSubject, assMessage, sendBtn, exitBtn, handleSubmit, closeWithoutSaving, thxPage } =
+      setup();
 
     await waitFor(async () => {
       //Assistance subject test
@@ -71,11 +78,34 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
       expect(assMessage.value).toBe('assistance message');
       fireEvent.change(assMessage, { target: { value: '' } });
       expect(assMessage.value).toBe('');
-      //Send button test
-      expect(sendBtn).toBeInTheDocument();
-      fireEvent.click(sendBtn);
-      handleClick();
-      expect(handleClick).toHaveBeenCalled();
     });
+
+    const initialValues = {
+      assistanceSubject: '',
+      assistanceEmailFrom: '',
+      assistanceMessage: '',
+    };
+
+    await waitFor(async () => {
+      //Send button test
+      fireEvent.click(sendBtn);
+      expect(handleSubmit).toBeDefined();
+      handleSubmit(initialValues);
+      expect(sendBtn).toBeInTheDocument();
+      expect(handleSubmit).toHaveBeenCalledWith(initialValues);
+      //Exit button test
+      fireEvent.click(exitBtn);
+      expect(closeWithoutSaving).toBeDefined();
+      expect(exitBtn).toBeInTheDocument();
+      closeWithoutSaving();
+      expect(closeWithoutSaving).toHaveBeenCalled();
+    });
+
+    const setThxPage = jest.fn();
+    const useStateMock: any = (viewThxPage: boolean) => [viewThxPage, setThxPage];
+    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+    expect(setThxPage).toBeDefined();
+
+    expect(thxPage).not.toBeInTheDocument();
   });
 });

@@ -209,6 +209,7 @@ const Assistance = () => {
             py: 2,
             gap: 3,
           }}
+          data-testid="thx-page-test"
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
             <CheckIllustrationIcon sx={{ width: '70px', height: '70px' }} />
