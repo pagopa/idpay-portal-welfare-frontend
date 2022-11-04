@@ -1,3 +1,4 @@
+/* eslint-disable functional/no-let */
 import {
   Box,
   Breadcrumbs,
@@ -47,6 +48,13 @@ const InitiativeRefunds = () => {
   const [totalElements, setTotalElements] = useState(0);
   const [rows, setRows] = useState<Array<InitiativeRefundToDisplay>>([]);
   const theme = createTheme(itIT);
+  const [filterByNotificationDateFrom, setFilterByNotificationDateFrom] = useState<
+    string | undefined
+  >();
+  const [filterByNotificationDateTo, setFilterByNotificationDateTo] = useState<
+    string | undefined
+  >();
+  const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USERS],
@@ -54,10 +62,23 @@ const InitiativeRefunds = () => {
     strict: false,
   });
 
+  const calcSuccessPercentage = (rewardsResulted: number, rewardsNotified: number): string => {
+    if (rewardsResulted > 0 && rewardsNotified > 0) {
+      return `${(rewardsResulted / rewardsNotified) * 100}%`;
+    }
+    return '';
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof initiativeSel.initiativeId === 'string') {
-      getExportsPaged(initiativeSel.initiativeId, page)
+      getExportsPaged(
+        initiativeSel.initiativeId,
+        page,
+        filterByNotificationDateFrom,
+        filterByNotificationDateTo,
+        filterByStatus
+      )
         .then((res) => {
           if (typeof res.totalElements === 'number') {
             setTotalElements(res.totalElements);
@@ -70,7 +91,7 @@ const InitiativeRefunds = () => {
               typology: t('pages.initiativeRefunds.table.typeOrdinary'),
               rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
               rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
-              successPercentage: `${(r.rewardsResults / r.rewardsNotified) * 100}%`,
+              successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
               filePath: r.filePath,
             }));
             setRows([...rowsData]);
@@ -94,12 +115,71 @@ const InitiativeRefunds = () => {
 
   const formik = useFormik({
     initialValues: {
-      searchFrom: '',
-      searchTo: '',
+      searchFrom: null,
+      searchTo: null,
       filterStatus: '',
     },
+    enableReinitialize: true,
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     onSubmit: (values) => {
-      console.log(values);
+      let searchFromStr;
+      let searchToStr;
+      if (typeof initiativeSel.initiativeId === 'string') {
+        if (values.searchFrom) {
+          const searchFrom = values.searchFrom as unknown as Date;
+          searchFromStr =
+            searchFrom.toLocaleString('fr-BE').split(' ')[0].length > 0
+              ? searchFrom.toLocaleString('fr-BE').split(' ')[0]
+              : undefined;
+          setFilterByNotificationDateFrom(searchFromStr);
+        }
+        if (values.searchTo) {
+          const searchTo = values.searchTo as unknown as Date;
+          searchToStr =
+            searchTo.toLocaleString('fr-BE').split(' ')[0].length > 0
+              ? searchTo.toLocaleString('fr-BE').split(' ')[0]
+              : undefined;
+
+          setFilterByNotificationDateTo(searchToStr);
+        }
+        const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
+        setFilterByStatus(filterStatus);
+        getExportsPaged(initiativeSel.initiativeId, 0, searchFromStr, searchToStr, filterStatus)
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          .then((res) => {
+            if (typeof res.totalElements === 'number') {
+              setTotalElements(res.totalElements);
+            }
+            if (Array.isArray(res.content) && res.content.length > 0) {
+              // eslint-disable-next-line sonarjs/no-identical-functions
+              const rowsData = res.content.map((r) => ({
+                ...r,
+                id: r.id,
+                notificationDate: r.notificationDate.toLocaleString('fr-BE').split(' ')[0],
+                typology: t('pages.initiativeRefunds.table.typeOrdinary'),
+                rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
+                rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
+                successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
+                filePath: r.filePath,
+              }));
+              setRows([...rowsData]);
+            }
+          })
+          // eslint-disable-next-line sonarjs/no-identical-functions
+          .catch((error) => {
+            addError({
+              id: 'GET_EXPORTS_PAGED_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred getting export paged data',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.getDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          });
+      }
     },
   });
 
@@ -108,6 +188,14 @@ const InitiativeRefunds = () => {
     newPage: number
   ) => {
     setPage(newPage);
+  };
+
+  const resetForm = () => {
+    const initialValues = { searchFrom: null, searchTo: null, filterStatus: '' };
+    formik.resetForm({ values: initialValues });
+    setFilterByNotificationDateFrom(undefined);
+    setFilterByNotificationDateTo(undefined);
+    setFilterByStatus(undefined);
   };
 
   return (
@@ -230,9 +318,8 @@ const InitiativeRefunds = () => {
               sx={{ py: 2, height: '44px' }}
               variant="outlined"
               size="small"
-              onClick={() => console.log('apply filters')}
+              onClick={() => formik.handleSubmit()}
               data-testid="apply-filters-test"
-              disabled
             >
               {t('pages.initiativeRefunds.form.filterBtn')}
             </Button>
@@ -241,8 +328,7 @@ const InitiativeRefunds = () => {
             <ButtonNaked
               component="button"
               sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
-              onClick={() => console.log('reset filters')}
-              disabled
+              onClick={resetForm}
             >
               {t('pages.initiativeRefunds.form.resetFiltersBtn')}
             </ButtonNaked>
@@ -277,8 +363,8 @@ const InitiativeRefunds = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
-                  {rows.map((r) => (
-                    <TableRow key={r.id}>
+                  {rows.map((r, i) => (
+                    <TableRow key={i}>
                       <TableCell>{r.notificationDate}</TableCell>
                       <TableCell>{r.typology}</TableCell>
                       <TableCell>{r.rewardsExported}</TableCell>

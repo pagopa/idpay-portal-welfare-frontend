@@ -193,12 +193,24 @@ export const InitiativeApi = {
   },
 
   getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
-    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
+    const result = await apiClient.initiativeStatistics({ initiativeId: id });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getExportsPaged: async (id: string, page: number): Promise<PageRewardExportsDTO> => {
-    const result = await apiClient.getRewardNotificationExportsPaged({ initiativeId: id, page });
+  getExportsPaged: async (
+    id: string,
+    page: number,
+    notificationDateFrom?: string,
+    notificationDateTo?: string,
+    status?: string
+  ): Promise<PageRewardExportsDTO> => {
+    const result = await apiClient.getRewardNotificationExportsPaged({
+      initiativeId: id,
+      page,
+      notificationDateFrom,
+      notificationDateTo,
+      status,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

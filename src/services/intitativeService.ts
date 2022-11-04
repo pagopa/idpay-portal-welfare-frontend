@@ -104,5 +104,13 @@ export const getGroupOfBeneficiaryStatusAndDetails = (
 ): Promise<InitiativeStatisticsDTO> =>
   InitiativeApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);
 
-export const getExportsPaged = (id: string, page: number): Promise<PageRewardExportsDTO> =>
-  InitiativeApi.getExportsPaged(id, page).then((res) => res);
+export const getExportsPaged = (
+  id: string,
+  page: number,
+  notificationDateFrom?: string,
+  notificationDateTo?: string,
+  status?: string
+): Promise<PageRewardExportsDTO> =>
+  InitiativeApi.getExportsPaged(id, page, notificationDateFrom, notificationDateTo, status).then(
+    (res) => res
+  );
