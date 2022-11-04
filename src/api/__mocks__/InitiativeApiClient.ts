@@ -78,4 +78,6 @@ export const InitiativeApi = {
 
   logicallyDeleteInitiative: async (_id: string): Promise<void> =>
     new Promise((resolve) => resolve()),
+
+  getTransactionConfigRules: async (): Promise<void> => new Promise((resolve) => resolve()),
 };
