@@ -26,7 +26,6 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
   const store = injectedStore ? injectedStore : createStore();
 
   it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 

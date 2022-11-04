@@ -336,7 +336,9 @@ const ServiceConfig = ({
               error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
               helperText={formik.touched.serviceName && formik.errors.serviceName}
               size="small"
-              data-testid="serviceName-test"
+              inputProps={{
+                'data-testid': 'service-name-test',
+              }}
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 12' }} size="small">
@@ -345,6 +347,7 @@ const ServiceConfig = ({
               id="serviceArea"
               data-testid="service-area-select"
               name="serviceArea"
+              aria-labelledby="serviceArea"
               label={t('components.wizard.stepOne.form.serviceArea')}
               placeholder={t('components.wizard.stepOne.form.serviceArea')}
               onChange={async (e) => {
@@ -376,7 +379,7 @@ const ServiceConfig = ({
               placeholder={t('components.wizard.stepOne.form.serviceDescription')}
               name="serviceDescription"
               aria-label="service-description"
-              data-testid="serviceDescription-test"
+              data-testid="service-description-test"
               role="input"
               value={formik.values.serviceDescription}
               onChange={(e) => formik.handleChange(e)}
@@ -433,7 +436,7 @@ const ServiceConfig = ({
               error={formik.touched.privacyPolicyUrl && Boolean(formik.errors.privacyPolicyUrl)}
               helperText={formik.touched.privacyPolicyUrl && formik.errors.privacyPolicyUrl}
               size="small"
-              data-testid="privacyPolicyUrl-test"
+              data-testid="privacy-policy-url-test"
             />
           </FormControl>
 
@@ -470,7 +473,7 @@ const ServiceConfig = ({
               error={formik.touched.termsAndConditions && Boolean(formik.errors.termsAndConditions)}
               helperText={formik.touched.termsAndConditions && formik.errors.termsAndConditions}
               size="small"
-              data-testid="termsAndConditions-test"
+              data-testid="terms-and-conditions-test"
             />
           </FormControl>
 
