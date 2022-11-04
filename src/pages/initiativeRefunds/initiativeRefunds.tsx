@@ -30,6 +30,7 @@ import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -48,6 +49,7 @@ const InitiativeRefunds = () => {
   const [totalElements, setTotalElements] = useState(0);
   const [rows, setRows] = useState<Array<InitiativeRefundToDisplay>>([]);
   const theme = createTheme(itIT);
+  const setLoading = useLoading('GET_INITIATIVE_REFUNDS');
   const [filterByNotificationDateFrom, setFilterByNotificationDateFrom] = useState<
     string | undefined
   >();
@@ -69,47 +71,59 @@ const InitiativeRefunds = () => {
     return '';
   };
 
+  const getTableData = (
+    initiativeId: string,
+    page: number,
+    searchFrom: string | undefined,
+    searchTo: string | undefined,
+    filterStatus: string | undefined
+  ) => {
+    setLoading(true);
+    getExportsPaged(initiativeId, page, searchFrom, searchTo, filterStatus)
+      .then((res) => {
+        if (typeof res.totalElements === 'number') {
+          setTotalElements(res.totalElements);
+        }
+        if (Array.isArray(res.content) && res.content.length > 0) {
+          const rowsData = res.content.map((r) => ({
+            ...r,
+            id: r.id,
+            notificationDate: r.notificationDate.toLocaleString('fr-BE').split(' ')[0],
+            typology: t('pages.initiativeRefunds.table.typeOrdinary'),
+            rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
+            rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
+            successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
+            filePath: r.filePath,
+          }));
+          setRows([...rowsData]);
+        }
+      })
+      .catch((error) => {
+        addError({
+          id: 'GET_EXPORTS_PAGED_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting export paged data',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof initiativeSel.initiativeId === 'string') {
-      getExportsPaged(
+      getTableData(
         initiativeSel.initiativeId,
         page,
         filterByNotificationDateFrom,
         filterByNotificationDateTo,
         filterByStatus
-      )
-        .then((res) => {
-          if (typeof res.totalElements === 'number') {
-            setTotalElements(res.totalElements);
-          }
-          if (Array.isArray(res.content) && res.content.length > 0) {
-            const rowsData = res.content.map((r) => ({
-              ...r,
-              id: r.id,
-              notificationDate: r.notificationDate.toLocaleString('fr-BE').split(' ')[0],
-              typology: t('pages.initiativeRefunds.table.typeOrdinary'),
-              rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
-              rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
-              successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
-              filePath: r.filePath,
-            }));
-            setRows([...rowsData]);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_PAGED_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export paged data',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
+      );
     }
   }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
 
@@ -120,7 +134,6 @@ const InitiativeRefunds = () => {
       filterStatus: '',
     },
     enableReinitialize: true,
-    // eslint-disable-next-line sonarjs/cognitive-complexity
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
@@ -144,41 +157,7 @@ const InitiativeRefunds = () => {
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getExportsPaged(initiativeSel.initiativeId, 0, searchFromStr, searchToStr, filterStatus)
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          .then((res) => {
-            if (typeof res.totalElements === 'number') {
-              setTotalElements(res.totalElements);
-            }
-            if (Array.isArray(res.content) && res.content.length > 0) {
-              // eslint-disable-next-line sonarjs/no-identical-functions
-              const rowsData = res.content.map((r) => ({
-                ...r,
-                id: r.id,
-                notificationDate: r.notificationDate.toLocaleString('fr-BE').split(' ')[0],
-                typology: t('pages.initiativeRefunds.table.typeOrdinary'),
-                rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
-                rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
-                successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
-                filePath: r.filePath,
-              }));
-              setRows([...rowsData]);
-            }
-          })
-          // eslint-disable-next-line sonarjs/no-identical-functions
-          .catch((error) => {
-            addError({
-              id: 'GET_EXPORTS_PAGED_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred getting export paged data',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.getDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
-          });
+        getTableData(initiativeSel.initiativeId, 0, searchFromStr, searchToStr, filterStatus);
       }
     },
   });
@@ -196,6 +175,9 @@ const InitiativeRefunds = () => {
     setFilterByNotificationDateFrom(undefined);
     setFilterByNotificationDateTo(undefined);
     setFilterByStatus(undefined);
+    if (typeof initiativeSel.initiativeId === 'string') {
+      getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined);
+    }
   };
 
   return (
