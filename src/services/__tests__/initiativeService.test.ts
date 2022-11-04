@@ -22,8 +22,6 @@ import {
   getEligibilityCriteriaForSidebar,
 } from '../intitativeService';
 
-import { fetchTransactionRules } from '../transactionRuleService';
-
 import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 
 import {
