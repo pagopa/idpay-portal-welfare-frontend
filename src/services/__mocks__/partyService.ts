@@ -185,7 +185,29 @@ export const mockedParties: Array<Party> = [
     roles: [
       {
         partyRole: 'ADMIN',
-        roleKey: 'API', // TODO use real product role
+        roleKey: 'admin', // TODO use real product role
+      },
+    ],
+    description: 'Comune di Jesolo',
+    urlLogo: 'https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png',
+    status: 'ACTIVE',
+    partyId: '2f63a151-da4e-4e1e-acf9-adecc0c4d727',
+    digitalAddress: 'comune.onboarded@pec.it',
+    fiscalCode: '00608720272',
+    category: 'Comuni e loro Consorzi e Associazioni',
+    registeredOffice: 'Piazza della Scala, 2 - 20121 Milano',
+    typology: 'Pubblica Amministrazione',
+    externalId: 'externalId5',
+    originId: 'originId5',
+    origin: 'MOCK',
+    institutionType: 'GSP',
+  },
+  {
+    // if change these roles, change them also in testToken
+    roles: [
+      {
+        partyRole: 'OPERATOR',
+        roleKey: 'ope_base', // TODO use real product role
       },
     ],
     description: 'Comune di Jesolo',

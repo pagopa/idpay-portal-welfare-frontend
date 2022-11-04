@@ -6,23 +6,23 @@ type Props = {
   title: string;
   isSelected?: boolean;
   icon: SvgIconComponent;
+  level: number;
+  disabled?: boolean;
 };
 
-export default function SidenavItem({ handleClick, title, isSelected, icon }: Props) {
+export default function SidenavItem({
+  handleClick,
+  title,
+  isSelected,
+  icon,
+  level,
+  disabled = false,
+}: Props) {
   return (
-    <ListItemButton
-      selected={isSelected}
-      onClick={handleClick}
-      sx={{
-        height: '100%',
-        maxWidth: 360,
-        backgroundColor: 'background.paper',
-      }}
-    >
-      <ListItemIcon>
+    <ListItemButton selected={isSelected} disabled={disabled} onClick={handleClick}>
+      <ListItemIcon sx={{ ml: level }}>
         <Icon component={icon} />
       </ListItemIcon>
-
       <ListItemText primary={title} />
     </ListItemButton>
   );

@@ -1,4 +1,4 @@
-//  import {
+// import {
 //   InstitutionResource,
 //   InstitutionTypeEnum,
 // } from '../../api/generated/portal/InstitutionResource';

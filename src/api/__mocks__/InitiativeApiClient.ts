@@ -1,27 +1,81 @@
-export const dummy = 'TODO';
-
-/* import { IdentityTokenResource } from '../generated/portal/IdentityTokenResource';
+import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
+import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
+// import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
+import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
 import {
-  InstitutionResource,
-} from '../generated/portal/InstitutionResource';
-import {
-  ProductRoleMappingsResource,
-} from '../generated/portal/ProductRoleMappingsResource';
-import { ProductsResource } from '../generated/portal/ProductsResource'; */
+  mockedInitiativeDetail,
+  mockedInitiativeSummary,
+} from '../../services/__mocks__/initiativeService';
+import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
+import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { InitiativeRefundRuleDTO } from '../generated/initiative/InitiativeRefundRuleDTO';
+import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeGeneralDTO } from '../generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRewardAndTrxRulesDTO } from '../generated/initiative/InitiativeRewardAndTrxRulesDTO';
 
-/* export const PortalApi = {
-  getInstitutions: async (): Promise<Array<InstitutionResource>> =>
-    new Promise((resolve) => resolve(mockedInstitutionResources)),
+export const InitiativeApi = {
+  getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
+    new Promise((resolve) => resolve(mockedInitiativeSummary)),
 
-  getInstitution: async (_partyId: string): Promise<InstitutionResource> =>
-    new Promise((resolve) => resolve(mockedInstitutionResources[0])),
+  getInitiativeById: async (_id: string): Promise<InitiativeDTO> =>
+    new Promise((resolve) => resolve(mockedInitiativeDetail)),
 
-  getProducts: async (): Promise<Array<ProductsResource>> =>
-    new Promise((resolve) => resolve(mockedProductResources)),
+  saveInitiativeServiceInfo: async (_data: InitiativeAdditionalDTO): Promise<InitiativeDTO> =>
+    new Promise((resolve) => resolve({})),
 
-  getTokenExchange: async (_partyId: string, _productId: string): Promise<IdentityTokenResource> =>
-    new Promise((resolve) => resolve({ token: 'DUMMYTOKEN' })),
+  updateInitiativeServiceInfo: async (_id: string, _data: InitiativeAdditionalDTO): Promise<void> =>
+    new Promise((resolve) => resolve()),
 
-  getProductRoles: async (_productId: string): Promise<Array<ProductRoleMappingsResource>> =>
-    new Promise((resolve) => resolve(mockedProductRoles)),
-}; */
+  initiativeBeneficiaryRulePut: async (
+    _id: string,
+    _data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  initiativeBeneficiaryRulePutDraft: async (
+    _id: string,
+    _data: InitiativeBeneficiaryRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
+    new Promise((resolve) => resolve(mockedAdmissionCriteria)),
+
+  initiativeTrxAndRewardRulesPut: async (
+    _id: string,
+    _data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  initiativeTrxAndRewardRulesPutDraft: async (
+    _id: string,
+    _data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRulePut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRuleDraftPut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeGeneralInfo: async (_id: string, _data: InitiativeGeneralDTO): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativeGeneralInfoDraft: async (
+    _id: string,
+    _data: InitiativeGeneralDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeApprovedStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativeToCheckStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  updateInitiativePublishedStatus: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  logicallyDeleteInitiative: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+};

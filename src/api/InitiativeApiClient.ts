@@ -4,11 +4,18 @@ import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { InitiativeInfoDTO } from './generated/initiative/InitiativeInfoDTO';
 import { InitiativeDTO } from './generated/initiative/InitiativeDTO';
 import { createClient, WithDefaultsT } from './generated/initiative/client';
 import { InitiativeBeneficiaryRuleDTO } from './generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeSummaryArrayDTO } from './generated/initiative/InitiativeSummaryArrayDTO';
+import { ConfigBeneficiaryRuleArrayDTO } from './generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { ConfigTrxRuleArrayDTO } from './generated/initiative/ConfigTrxRuleArrayDTO';
+import { ConfigMccArrayDTO } from './generated/initiative/ConfigMccArrayDTO';
+import { InitiativeRewardAndTrxRulesDTO } from './generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefundRuleDTO';
+import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
+import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -49,22 +56,32 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  initiativeGeneralPost: async (data: InitiativeInfoDTO): Promise<InitiativeDTO> => {
-    const result = await apiClient.saveInitiativeGeneralInfo({
-      body: {
-        general: {
-          ...data.general,
-        },
-        additionalInfo: {
-          ...data.additionalInfo,
-        },
-      },
-    });
+  saveInitiativeServiceInfo: async (data: InitiativeAdditionalDTO): Promise<InitiativeDTO> => {
+    const result = await apiClient.saveInitiativeServiceInfo({ body: { ...data } });
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  initiativeGeneralPut: async (id: string, data: InitiativeInfoDTO): Promise<void> => {
+  updateInitiativeServiceInfo: async (id: string, data: InitiativeAdditionalDTO): Promise<void> => {
+    const result = await apiClient.updateInitiativeServiceInfo({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeGeneralInfo: async (id: string, data: InitiativeGeneralDTO): Promise<void> => {
     const result = await apiClient.updateInitiativeGeneralInfo({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeGeneralInfoDraft: async (
+    id: string,
+    data: InitiativeGeneralDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeGeneralInfoDraft({
       initiativeId: id,
       body: { ...data },
     });
@@ -93,5 +110,90 @@ export const InitiativeApi = {
       body: { ...data },
     });
     return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> => {
+    const result = await apiClient.getBeneficiaryConfigRules({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getTransactionConfigRules: async (): Promise<ConfigTrxRuleArrayDTO> => {
+    const result = await apiClient.getTransactionConfigRules({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMccConfig: async (): Promise<ConfigMccArrayDTO> => {
+    const result = await apiClient.getMccConfig({});
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  initiativeTrxAndRewardRulesPut: async (
+    id: string,
+    data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateTrxAndRewardRules({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  initiativeTrxAndRewardRulesPutDraft: async (
+    id: string,
+    data: InitiativeRewardAndTrxRulesDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateTrxAndRewardRulesDraft({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeRefundRulePut: async (
+    id: string,
+    data: InitiativeRefundRuleDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeRefundRule({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeRefundRuleDraftPut: async (
+    id: string,
+    data: InitiativeRefundRuleDTO
+  ): Promise<void> => {
+    const result = await apiClient.updateInitiativeRefundRuleDraft({
+      initiativeId: id,
+      body: { ...data },
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeApprovedStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativeApprovedStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativeToCheckStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativeToCheckStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  updateInitiativePublishedStatus: async (id: string): Promise<void> => {
+    const result = await apiClient.updateInitiativePublishedStatus({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  logicallyDeleteInitiative: async (id: string): Promise<void> => {
+    const result = await apiClient.logicallyDeleteInitiative({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
+    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
+    console.log(result);
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };

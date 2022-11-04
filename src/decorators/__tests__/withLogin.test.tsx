@@ -1,10 +1,21 @@
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { User } from '@pagopa/selfcare-common-frontend/model/User';
+// import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { createStore } from '../../redux/store';
 import withLogin from '../withLogin';
 import { testToken } from '../../utils/constants';
+import React from 'react';
+
+export interface IDPayUser {
+  uid: string;
+  taxCode: string;
+  name: string;
+  surname: string;
+  email: string;
+  org_party_role: string;
+  org_role: string;
+}
 
 const oldWindowLocation = global.window.location;
 const mockedLocation = {
@@ -28,6 +39,11 @@ afterEach(() => {
   mockedLocation.assign.mockReset();
 });
 
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}));
+
 const renderApp = () => {
   const store = createStore();
   const Component = () => <></>;
@@ -40,13 +56,15 @@ const renderApp = () => {
   return store;
 };
 
-const mockUser = (): User => {
-  const user: User = {
+const mockUser = (): IDPayUser => {
+  const user: IDPayUser = {
     name: 'NAME',
     surname: 'SURNAME',
     uid: 'UID',
     taxCode: 'AAAAAA00A00A000A',
     email: 'a@a.aa',
+    org_party_role: 'ADMIN',
+    org_role: 'admin',
   };
 
   storageUserOps.write(user);

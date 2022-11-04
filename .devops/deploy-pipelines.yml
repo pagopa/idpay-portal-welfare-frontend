@@ -31,11 +31,15 @@ variables:
 
     react_app_url_cdn: '$(UAT_REACT_APP_URL_CDN)'
 
+    react_app_url_fe_pre_login: '$(UAT_REACT_APP_URL_FE_PRE_LOGIN)'
     react_app_url_fe_auth: '$(UAT_REACT_APP_URL_FE_LOGIN)'
     react_app_url_fe_landing: '$(UAT_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(UAT_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_initiative: '$(UAT_REACT_APP_URL_API_INITIATIVE)'
+    react_app_url_api_groups: '$(UAT_REACT_APP_URL_API_GROUPS)'
+    react_app_url_api_role_permission: '$(UAT_REACT_APP_URL_API_ROLE_PERMISSION)'
+    react_app_url_api_email_notification: '$(UAT_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
 
     react_app_url_storage: '$(UAT_REACT_APP_URL_STORAGE)'
 
@@ -55,11 +59,15 @@ variables:
 
     react_app_url_cdn: '$(PROD_REACT_APP_URL_CDN)'
 
+    react_app_url_fe_pre_login: '$(PROD_REACT_APP_URL_FE_PRE_LOGIN)'
     react_app_url_fe_auth: '$(PROD_REACT_APP_URL_FE_LOGIN)'
     react_app_url_fe_landing: '$(PROD_REACT_APP_URL_FE_LANDING)'
     react_app_url_fe_assistance: '$(PROD_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_initiative: '$(PROD_REACT_APP_URL_API_INITIATIVE)'
+    react_app_url_api_groups: '$(PROD_REACT_APP_URL_API_GROUPS)'
+    react_app_url_api_role_permission: '$(PROD_REACT_APP_URL_API_ROLE_PERMISSION)'
+    react_app_url_api_email_notification: '$(PROD_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
 
     react_app_url_storage: '$(PROD_REACT_APP_URL_STORAGE)'
 
@@ -87,6 +95,9 @@ variables:
     react_app_url_fe_assistance: '$(DEV_REACT_APP_URL_FE_ASSISTANCE)'
 
     react_app_url_api_initiative: '$(DEV_REACT_APP_URL_API_INITIATIVE)'
+    react_app_url_api_groups: '$(DEV_REACT_APP_URL_API_GROUPS)'
+    react_app_url_api_role_permission: '$(DEV_REACT_APP_URL_API_ROLE_PERMISSION)'
+    react_app_url_api_email_notification: '$(DEV_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
 
     react_app_url_storage: '$(DEV_REACT_APP_URL_STORAGE)'
 
@@ -174,11 +185,15 @@ stages:
             env:
               INLINE_RUNTIME_CHUNK: 'false'
               REACT_APP_ENV: '$(environment)'
+              REACT_APP_URL_FE_PRE_LOGIN: '$(react_app_url_fe_pre_login)'
               REACT_APP_URL_FE_LOGIN: '$(react_app_url_fe_auth)/login'
               REACT_APP_URL_FE_LOGOUT: '$(react_app_url_fe_auth)/logout'
               REACT_APP_URL_FE_LANDING: '$(react_app_url_fe_landing)'
               REACT_APP_URL_FE_ASSISTANCE: '$(react_app_url_fe_assistance)'
               REACT_APP_URL_API_INITIATIVE: '$(react_app_url_api_initiative)'
+              REACT_APP_URL_API_GROUPS: '$(react_app_url_api_groups)'
+              REACT_APP_URL_API_ROLE_PERMISSION: '$(react_app_url_api_role_permission)'
+              REACT_APP_URL_API_EMAIL_NOTIFICATION: '$(react_app_url_api_email_notification)'
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
               REACT_APP_URL_INSTITUTION_LOGO_PREFIX: '$(react_app_url_storage)/institutions/'
               REACT_APP_ANALYTICS_ENABLE: '$(react_app_analytics_enabled)'

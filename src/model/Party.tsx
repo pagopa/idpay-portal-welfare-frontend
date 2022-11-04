@@ -1,3 +1,6 @@
+// import { InstitutionResource } from '../api/generated/portal/InstitutionResource';
+// import { ENV } from '../utils/env';
+
 export type SelfcareRole = 'ADMIN' | 'LIMITED';
 export type PartyRole = 'DELEGATE' | 'MANAGER' | 'OPERATOR' | 'SUB_DELEGATE';
 export type UserStatus = 'PENDING' | 'ACTIVE' | 'SUSPENDED';
@@ -24,30 +27,33 @@ export type UserRole = {
   roleKey: string;
 };
 
+export const PLACEHOLDER_PARTY_LOGO =
+  'https://selcdcheckoutsa.z6.web.core.windows.net/institutions/onboarded/logo.png';
+
 // const buildUrlLog = (partyId: string) =>
 //   `${ENV.URL_INSTITUTION_LOGO.PREFIX}${partyId}${ENV.URL_INSTITUTION_LOGO.SUFFIX}`;
 
-/* export const institutionResource2Party = (institutionResource: InstitutionResource): Party => {
-  const urlLogo = institutionResource.id && buildUrlLog(institutionResource.id);
-  return {
-    partyId: institutionResource.id,
-    externalId: institutionResource.externalId,
-    originId: institutionResource.originId,
-    origin: institutionResource.origin,
-    description: institutionResource.name,
-    digitalAddress: institutionResource.mailAddress,
-    status: institutionResource.status as 'ACTIVE' | 'PENDING',
-    roles: [
-      {
-        partyRole: (institutionResource as any).partyRole, // TODO maybe it will be added
-        roleKey: institutionResource.userRole,
-      },
-    ],
-    category: institutionResource.category,
-    urlLogo,
-    fiscalCode: institutionResource.fiscalCode,
-    registeredOffice: institutionResource.address,
-    typology: 'TODO', // it will represent the taxonomy of the party
-    institutionType: institutionResource.institutionType,
-  };
-}; */
+// export const institutionResource2Party = (institutionResource: InstitutionResource): Party => {
+//   const urlLogo = institutionResource.id && buildUrlLog(institutionResource.id);
+//   return {
+//     partyId: institutionResource.id,
+//     externalId: institutionResource.externalId,
+//     originId: institutionResource.originId,
+//     origin: institutionResource.origin,
+//     description: institutionResource.name,
+//     digitalAddress: institutionResource.mailAddress,
+//     status: institutionResource.status as 'ACTIVE' | 'PENDING',
+//     roles: [
+//       {
+//         partyRole: (institutionResource as any).partyRole, // TODO maybe it will be added
+//         roleKey: institutionResource.userRole,
+//       },
+//     ],
+//     category: institutionResource.category,
+//     urlLogo,
+//     fiscalCode: institutionResource.fiscalCode,
+//     registeredOffice: institutionResource.address,
+//     typology: 'TODO', // it will represent the taxonomy of the party
+//     institutionType: institutionResource.institutionType,
+//   };
+// };

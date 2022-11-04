@@ -25,32 +25,19 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import { getInitativeSummary, getInitiativeDetail } from '../../services/intitativeService';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { ButtonNaked } from '@pagopa/mui-italia';
+import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
-
-import {
-  resetInitiative,
-  saveAutomatedCriteria,
-  saveManualCriteria,
-  setAdditionalInfo,
-  setGeneralInfo,
-  setInitiativeId,
-  setOrganizationId,
-  setStatus,
-} from '../../redux/slices/initiativeSlice';
-
+import { resetInitiative } from '../../redux/slices/initiativeSlice';
+import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
 import { useAppDispatch } from '../../redux/hooks';
-import { AutomatedCriteriaItem, ManualCriteriaItem } from '../../model/Initiative';
-import {
-  EnhancedTableProps,
-  Data,
-  Order,
-  stableSort,
-  getComparator,
-  HeadCell,
-  parseGeneralInfo,
-  parseAdditionalInfo,
-} from './helpers';
+import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { usePermissions } from '../../hooks/usePermissions';
+import { USER_PERMISSIONS } from '../../utils/constants';
+import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
+import { renderInitiativeStatus } from '../../helpers';
+import { EnhancedTableProps, Data, Order, stableSort, getComparator, HeadCell } from './helpers';
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { order, orderBy, onRequestSort } = props;
@@ -99,7 +86,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   ];
 
   return (
-    <TableHead sx={{ backgroundColor: grey.A200 }}>
+    <TableHead sx={{ backgroundColor: grey.A100 }}>
       <TableRow>
         {headCells.map((headCell) => (
           <TableCell
@@ -127,23 +114,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
   );
 }
 
-type ChipProps = {
-  label: string;
-  color: string;
-};
-const StatusChip = ({ label, color }: ChipProps) => (
-  <span
-    style={{
-      backgroundColor: color,
-      padding: '7px 14px',
-      borderRadius: '16px',
-      fontWeight: 600,
-    }}
-  >
-    {label}
-  </span>
-);
-
 type ActionsMenuProps = {
   id: string;
   status: string;
@@ -158,114 +128,118 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
   const handleCloseActionsMenu = () => {
     setAnchorEl(null);
   };
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   type RenderActionProps = {
     id: string;
     status: string;
   };
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
-  const RenderAction = ({ id, status }: RenderActionProps) => {
+  const RenderDetail = ({ id, status }: RenderActionProps) => {
     const history = useHistory();
-    const dispatch = useAppDispatch();
-    const addError = useErrorDispatcher();
-    const handleUpdateInitiative = (id: string) => {
-      getInitiativeDetail(id)
-        .then((response) => {
-          dispatch(resetInitiative());
-          dispatch(setInitiativeId(response.initiativeId));
-          dispatch(setOrganizationId(response.organizationId));
-          dispatch(setStatus(response.status));
-          const generalInfo = parseGeneralInfo(response.general);
-          dispatch(setGeneralInfo(generalInfo));
-          const additionalInfo = parseAdditionalInfo(response.additionalInfo);
-          dispatch(setAdditionalInfo(additionalInfo));
-          // eslint-disable-next-line functional/no-let
-          let automatedCriteria: Array<AutomatedCriteriaItem> = [];
-          // eslint-disable-next-line sonarjs/no-unused-collection
-          const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
-          if (
-            response.beneficiaryRule &&
-            response.beneficiaryRule.automatedCriteria &&
-            Object.keys(response.beneficiaryRule.automatedCriteria).length !== 0
-          ) {
-            automatedCriteria = [...response.beneficiaryRule.automatedCriteria];
-          }
+    const handleViewInitiativeDetail = (id: string) => {
+      history.replace(`${BASE_ROUTE}/dettagli-iniziativa/${id}`);
+    };
 
-          if (
-            response.beneficiaryRule &&
-            response.beneficiaryRule.selfDeclarationCriteria &&
-            Object.keys(response.beneficiaryRule.selfDeclarationCriteria).length !== 0
-          ) {
-            const manualCriteriaFetched: Array<{
-              _type?: string;
-              description?: string;
-              value?: boolean | Array<string>;
-              code?: string;
-            }> = [...response.beneficiaryRule.selfDeclarationCriteria];
+    switch (status) {
+      case 'IN_REVISION':
+      case 'PUBLISHED':
+      case 'APPROVED':
+        return (
+          <MenuItem onClick={() => handleViewInitiativeDetail(id)}>
+            {status === 'IN_REVISION' && userCanReviewInitiative
+              ? t('pages.initiativeList.actions.check')
+              : t('pages.initiativeList.actions.details')}
+          </MenuItem>
+        );
+      case 'DRAFT':
+      case 'TO_CHECK':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
 
-            manualCriteriaFetched.forEach((m) => {
-              if (typeof m.value === 'boolean') {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: m.value,
-                  multiValue: [],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              } else if (Array.isArray(m.value)) {
-                // eslint-disable-next-line functional/immutable-data
-                selfDeclarationCriteria.push({
-                  // eslint-disable-next-line no-underscore-dangle
-                  _type: m._type,
-                  boolValue: true,
-                  multiValue: [...m.value],
-                  description: m.description || '',
-                  code: m.code || '',
-                });
-              }
-            });
-          }
-          dispatch(saveAutomatedCriteria(automatedCriteria));
-          dispatch(saveManualCriteria(selfDeclarationCriteria));
-          history.push(`${BASE_ROUTE}/iniziativa/${id}`);
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_INITIATIVE_DETAIL_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting initiative data',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
+  const RenderUpdate = ({ id, status }: RenderActionProps) => {
+    const history = useHistory();
+
+    const handleUpdateInitiative = (id: string, userCanUpdateInitiative: boolean) => {
+      if (userCanUpdateInitiative) {
+        history.replace(`${BASE_ROUTE}/iniziativa/${id}`);
+      }
     };
 
     switch (status) {
       case 'DRAFT':
-        return (
-          <MenuItem onClick={() => handleUpdateInitiative(id)}>
-            {t('pages.initiativeList.actions.update')}
-          </MenuItem>
-        );
-      case 'IN_REVISION':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>;
-      case 'TO_CHECK':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'APPROVED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      case 'TO_CHECK':
+        if (userCanUpdateInitiative) {
+          return (
+            <MenuItem onClick={() => handleUpdateInitiative(id, userCanUpdateInitiative)}>
+              {t('pages.initiativeList.actions.update')}
+            </MenuItem>
+          );
+        } else {
+          return null;
+        }
+      case 'IN_REVISION':
       case 'PUBLISHED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'CLOSED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
       case 'SUSPENDED':
-        return <MenuItem>{t('pages.initiativeList.actions.details')}</MenuItem>; // TBD
+      default:
+        return null;
+    }
+  };
+
+  const handleCloseDeleteModal = () => setOpenDeleteModal(false);
+
+  const handleOpenDeleteModal = () => setOpenDeleteModal(true);
+
+  const RenderDelete = ({ id, status }: RenderActionProps) => {
+    switch (status) {
+      case 'DRAFT':
+      case 'TO_CHECK':
+      case 'APPROVED':
+        if (userCanDeleteInitiative) {
+          return (
+            <>
+              <MenuItem onClick={handleOpenDeleteModal}>
+                {t('pages.initiativeList.actions.delete')}
+              </MenuItem>
+              <DeleteInitiativeModal
+                initiativeId={id}
+                initiativeStatus={status}
+                openInitiativeDeleteModal={openDeleteModal}
+                handleCloseInitiativeDeleteModal={handleCloseDeleteModal}
+              />
+            </>
+          );
+        } else {
+          return null;
+        }
+      case 'IN_REVISION':
+      case 'PUBLISHED':
+      case 'CLOSED':
+      case 'SUSPENDED':
+      default:
+        return null;
+    }
+  };
+
+  const RenderSuspend = ({ status }: RenderActionProps) => {
+    switch (status) {
+      case 'PUBLISHED':
+        return <MenuItem disabled>{t('pages.initiativeList.actions.suspend')}</MenuItem>;
+      case 'DRAFT':
+      case 'APPROVED':
+      case 'TO_CHECK':
+      case 'IN_REVISION':
+      case 'CLOSED':
+      case 'SUSPENDED':
       default:
         return null;
     }
@@ -280,7 +254,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClickActionsMenu}
       >
-        <MoreIcon />
+        <MoreIcon color="primary" />
       </IconButton>
       <Menu
         id={`actions-menu_${id}`}
@@ -291,8 +265,10 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
           'aria-labelledby': `actions_button-${id}`,
         }}
       >
-        <RenderAction id={id} status={status} />
-        <MenuItem>{t('pages.initiativeList.actions.delete')}</MenuItem>
+        <RenderDetail id={id} status={status} />
+        <RenderSuspend id={id} status={status} />
+        <RenderUpdate id={id} status={status} />
+        <RenderDelete id={id} status={status} />
       </Menu>
     </TableCell>
   );
@@ -307,17 +283,25 @@ const InitiativeList = () => {
   const history = useHistory();
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_INITIATIVE_LIST');
+
+  const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
+  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   useEffect(() => {
+    setLoading(true);
     getInitativeSummary()
-      .then((response: any) => response)
+      .then((response: InitiativeSummaryArrayDTO) => response)
       .then((responseT) => {
         const data = responseT.map((r: any, i: any) => ({
           ...r,
-          creationDate: r.creationDate.toLocaleDateString(),
-          updateDate: r.updateDate.toLocaleDateString(),
+          creationDate: r.creationDate.toLocaleDateString('fr-BE'),
+          updateDate: r.updateDate.toLocaleDateString('fr-BE'),
           id: i,
         }));
+        dispatch(setInitiativeSummaryList(responseT));
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
       })
@@ -333,7 +317,8 @@ const InitiativeList = () => {
           component: 'Toast',
           showCloseIcon: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleRequestSort = (_event: React.MouseEvent<unknown>, property: keyof Data) => {
@@ -347,7 +332,7 @@ const InitiativeList = () => {
     if (search.length > 0) {
       const listFiltered: Array<Data> = [];
       initiativeList.forEach((record) => {
-        if (record.initiativeName.toLowerCase().startsWith(search)) {
+        if (record.initiativeName.toLowerCase().includes(search)) {
           // eslint-disable-next-line functional/immutable-data
           listFiltered.push(record);
         }
@@ -358,47 +343,27 @@ const InitiativeList = () => {
     }
   };
 
-  const renderInitiativeStatus = (status: string) => {
-    /* eslint-disable functional/no-let */
-    let statusLabel = '';
-    let statusColor = '';
-    switch (status) {
-      case 'DRAFT':
-        statusLabel = t('pages.initiativeList.status.draft');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'IN_REVISION':
-        statusLabel = t('pages.initiativeList.status.inRevision');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'TO_CHECK':
-        statusLabel = t('pages.initiativeList.status.toCheck');
-        statusColor = '#FE7A7A';
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'APPROVED':
-        statusLabel = t('pages.initiativeList.status.approved');
-        statusColor = '#7FCD7D';
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'PUBLISHED':
-        statusLabel = t('pages.initiativeList.status.published');
-        statusColor = '#7ED5FC';
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'CLOSED':
-        statusLabel = t('pages.initiativeList.status.closed');
-        statusColor = grey.A200;
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      case 'SUSPENDED':
-        statusLabel = t('pages.initiativeList.status.suspended');
-        statusColor = '#FFD25E';
-        return <StatusChip label={statusLabel} color={statusColor} />;
-      default:
-        return <span>{status}</span>;
-    }
-  };
-
   const goToNewInitiative = () => {
     dispatch(resetInitiative());
-    history.push(routes.NEW_INITIATIVE);
+    history.replace(routes.NEW_INITIATIVE);
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const showActionMenu = (status: string) => {
+    if (status !== 'TO_CHECK') {
+      return true;
+    } else if (
+      userCanUpdateInitiative === false &&
+      userCanDeleteInitiative === false &&
+      userCanReviewInitiative === true
+    ) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
@@ -412,41 +377,79 @@ const InitiativeList = () => {
         variantTitle="h4"
         variantSubTitle="body1"
       />
-      <Box
+      {userCanCreateInitiative ? (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            columnGap: 2,
+            justifyContent: 'center',
+            width: '100%',
+            mb: 5,
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
+            <TextField
+              id="search-initiative"
+              placeholder={t('pages.initiativeList.search')}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e) => {
+                handleSearchInitiatives(e.target.value);
+              }}
+            />
+          </Box>
+          <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
+            <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
+              {t('pages.initiativeList.createNew')}
+            </Button>
+          </Box>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            columnGap: 2,
+            justifyContent: 'center',
+            width: '100%',
+            mb: 5,
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 12', backgroundColor: 'white' }}>
+            <TextField
+              id="search-initiative"
+              placeholder={t('pages.initiativeList.search')}
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={(e) => {
+                handleSearchInitiatives(e.target.value);
+              }}
+            />
+          </Box>
+        </Box>
+      )}
+
+      <Paper
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          columnGap: 2,
-          justifyContent: 'center',
           width: '100%',
-          mb: 5,
+          mb: 2,
+          py: 3,
+          backgroundColor: grey.A100,
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
-          <TextField
-            id="search-initiative"
-            placeholder={t('pages.initiativeList.search')}
-            variant="outlined"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            onChange={(e) => {
-              handleSearchInitiatives(e.target.value);
-            }}
-          />
-        </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-          <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
-            {t('pages.initiativeList.createNew')}
-          </Button>
-        </Box>
-      </Box>
-
-      <Paper sx={{ width: '100%', mb: 2, backgroundColor: grey.A200, p: 3 }}>
         <TableContainer>
           {initiativeListFiltered.length > 0 ? (
             <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle">
@@ -462,16 +465,27 @@ const InitiativeList = () => {
                     return (
                       <TableRow tabIndex={-1} key={row.id} sx={{}}>
                         <TableCell component="th" id={labelId} scope="row">
-                          <Typography sx={{ color: '#0073E6', fontWeight: 600 }}>
+                          <ButtonNaked
+                            component="button"
+                            sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1em' }}
+                            onClick={() =>
+                              history.replace(
+                                `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
+                              )
+                            }
+                          >
                             {row.initiativeName}
-                          </Typography>
+                          </ButtonNaked>
                         </TableCell>
                         <TableCell>{row.creationDate}</TableCell>
                         <TableCell>{row.updateDate}</TableCell>
                         <TableCell>{row.initiativeId}</TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-
-                        <ActionMenu id={row.initiativeId} status={row.status} />
+                        {showActionMenu(row.status) ? (
+                          <ActionMenu id={row.initiativeId} status={row.status} />
+                        ) : (
+                          <TableCell></TableCell>
+                        )}
                       </TableRow>
                     );
                   }
@@ -500,25 +514,27 @@ const InitiativeList = () => {
                 <Typography sx={{ display: 'inline' }}>
                   {t('pages.initiativeList.emptyList')}
                 </Typography>
-                <Button
-                  sx={[
-                    {
-                      justifyContent: 'start',
-                      padding: 0,
-                      fontSize: '1em',
-                    },
-                    {
-                      '&:hover': { backgroundColor: 'transparent' },
-                    },
-                  ]}
-                  size="small"
-                  variant="text"
-                  onClick={goToNewInitiative}
-                  disableRipple={true}
-                  disableFocusRipple={true}
-                >
-                  {t('pages.initiativeList.createNew')}
-                </Button>
+                {userCanCreateInitiative && (
+                  <Button
+                    sx={[
+                      {
+                        justifyContent: 'start',
+                        padding: 0,
+                        fontSize: '1em',
+                      },
+                      {
+                        '&:hover': { backgroundColor: 'transparent' },
+                      },
+                    ]}
+                    size="small"
+                    variant="text"
+                    onClick={goToNewInitiative}
+                    disableRipple={true}
+                    disableFocusRipple={true}
+                  >
+                    {t('pages.initiativeList.createNew')}
+                  </Button>
+                )}
               </Box>
             </Box>
           )}

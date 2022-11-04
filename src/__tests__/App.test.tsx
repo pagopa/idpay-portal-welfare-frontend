@@ -21,6 +21,11 @@ jest.mock('../decorators/withParties');
 jest.mock('../decorators/withSelectedParty');
 jest.mock('../decorators/withSelectedPartyProducts');
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 const renderApp = (
   injectedStore?: ReturnType<typeof createStore>,
   injectedHistory?: ReturnType<typeof createMemoryHistory>
@@ -62,7 +67,7 @@ test('Test rendering dashboard parties loaded', () => {
 
 test('Test routing ', async () => {
   const { history } = renderApp();
-  await waitFor(() => expect(history.location.pathname).toBe('/'));
+  await waitFor(() => expect(history.location.pathname).toBe('/portale-enti'));
 });
 // function verifyPartiesMockExecution(arg0: {
 //   parties: PartiesState;

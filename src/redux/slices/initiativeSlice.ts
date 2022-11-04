@@ -5,17 +5,34 @@ import {
   GeneralInfo,
   AdditionalInfo,
   AutomatedCriteriaItem,
-  // SelfDeclarationCriteriaBoolItem,
-  // SelfDeclarationCriteriaMultiItem,
   ManualCriteriaItem,
+  RewardLimit,
+  Threshold,
+  TrxCount,
+  DaysOfWeekInterval,
+  RewardRule,
+  RefundRule,
 } from '../../model/Initiative';
-// import { ManualCriteriaOptions } from '../../utils/constants';
+
 import { BeneficiaryTypeEnum } from '../../utils/constants';
+import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
   organizationId: undefined,
   status: undefined,
+  initiativeName: undefined,
+  creationDate: undefined,
+  updateDate: undefined,
+  additionalInfo: {
+    initiativeOnIO: true,
+    serviceName: '',
+    serviceArea: '',
+    serviceDescription: '',
+    privacyPolicyUrl: '',
+    termsAndConditions: '',
+    assistanceChannels: [{ type: 'web', contact: '' }],
+  },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
@@ -26,16 +43,30 @@ const initialState: Initiative = {
     rankingStartDate: '',
     rankingEndDate: '',
   },
-  additionalInfo: {
-    serviceId: '',
-    serviceName: '',
-    argument: '',
-    description: '',
-    channels: [{ type: 'web', contact: '' }],
-  },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
     automatedCriteria: [],
+  },
+  rewardRule: {
+    _type: 'rewardValue',
+    rewardValue: undefined,
+  },
+  trxRule: {
+    mccFilter: {
+      allowedList: true,
+      values: [],
+    },
+    rewardLimits: [{ frequency: 'DAILY', rewardLimit: undefined }],
+    threshold: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
+    trxCount: { from: undefined, fromIncluded: true, to: undefined, toIncluded: true },
+    daysOfWeekIntervals: [{ daysOfWeek: 'MONDAY', startTime: '', endTime: '' }],
+  },
+  refundRule: {
+    reimbursmentQuestionGroup: '',
+    timeParameter: '',
+    accumulatedAmount: '',
+    additionalInfo: '',
+    reimbursementThreshold: '',
   },
 };
 
@@ -63,6 +94,18 @@ export const initiativeSlice = createSlice({
     setStatus: (state, action: PayloadAction<string | undefined>) => ({
       ...state,
       status: action.payload,
+    }),
+    setInitiativeName: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      initiativeName: action.payload,
+    }),
+    setInitiativeCreationDate: (state, action: PayloadAction<Date | undefined>) => ({
+      ...state,
+      creationDate: action.payload,
+    }),
+    setInitiativeUpdateDate: (state, action: PayloadAction<Date | undefined>) => ({
+      ...state,
+      updateDate: action.payload,
     }),
     setGeneralInfo: (state, action: PayloadAction<GeneralInfo>) => ({
       ...state,
@@ -122,16 +165,83 @@ export const initiativeSlice = createSlice({
       } else {
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
-
-      // state.beneficiaryRule.selfDeclarationCriteria = [
-      //   ...state.beneficiaryRule.selfDeclarationCriteria,
-      //   action.payload,
-      // ];
     },
     saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
       state.beneficiaryRule.selfDeclarationCriteria = [];
       state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
     },
+    saveRewardRule: (
+      state,
+      action: PayloadAction<{ _type: string; rewardValue: number | undefined }>
+    ) => ({
+      ...state,
+      rewardRule: {
+        // eslint-disable-next-line no-underscore-dangle
+        _type: action.payload._type,
+        // eslint-disable-next-line no-prototype-builtins
+        rewardValue: action.payload.hasOwnProperty('rewardValue')
+          ? action.payload.rewardValue
+          : undefined,
+      },
+    }),
+    saveMccFilter: (state, action: PayloadAction<MccFilterDTO>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        mccFilter: {
+          allowedList: action.payload.allowedList,
+          values: action.payload.values,
+        },
+      },
+    }),
+    saveRewardLimits: (state, action: PayloadAction<Array<RewardLimit>>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        rewardLimits: [...action.payload],
+      },
+    }),
+    saveThreshold: (state, action: PayloadAction<Threshold>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        threshold: {
+          from: action.payload.from,
+          fromIncluded: action.payload.fromIncluded,
+          to: action.payload.to,
+          toIncluded: action.payload.toIncluded,
+        },
+      },
+    }),
+    saveTrxCount: (state, action: PayloadAction<TrxCount>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        trxCount: {
+          from: action.payload.from,
+          fromIncluded: action.payload.fromIncluded,
+          to: action.payload.to,
+          toIncluded: action.payload.toIncluded,
+        },
+      },
+    }),
+    saveDaysOfWeekIntervals: (state, action: PayloadAction<Array<DaysOfWeekInterval>>) => ({
+      ...state,
+      trxRule: {
+        ...state.trxRule,
+        daysOfWeekIntervals: [...action.payload],
+      },
+    }),
+    saveRefundRule: (state, action: PayloadAction<RefundRule>) => ({
+      ...state,
+      refundRule: {
+        reimbursmentQuestionGroup: action.payload.reimbursmentQuestionGroup,
+        timeParameter: action.payload.timeParameter,
+        accumulatedAmount: action.payload.accumulatedAmount,
+        additionalInfo: action.payload.additionalInfo,
+        reimbursementThreshold: action.payload.reimbursementThreshold,
+      },
+    }),
   },
 });
 
@@ -141,13 +251,24 @@ export const {
   setInitiativeId,
   setOrganizationId,
   setStatus,
+  setInitiativeName,
+  setInitiativeCreationDate,
+  setInitiativeUpdateDate,
   setGeneralInfo,
   setAdditionalInfo,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,
   saveManualCriteria,
+  saveRewardRule,
+  saveMccFilter,
+  saveRewardLimits,
+  saveThreshold,
+  saveTrxCount,
+  saveDaysOfWeekIntervals,
+  saveRefundRule,
 } = initiativeSlice.actions;
+
 export const initiativeReducer = initiativeSlice.reducer;
 export const initiativeSelector = (state: RootState): Initiative => state.initiative;
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
@@ -163,3 +284,20 @@ export const beneficiaryRuleSelector = (
 } => state.initiative.beneficiaryRule;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
+export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
+  state.initiative.rewardRule;
+export const initiativeMccFilterSelector = (state: RootState): MccFilterDTO | undefined =>
+  state.initiative.trxRule.mccFilter;
+export const initiativeRewardLimitsSelector = (state: RootState): Array<RewardLimit> | undefined =>
+  state.initiative.trxRule.rewardLimits;
+export const initiativeThresholdSelector = (state: RootState): Threshold | undefined =>
+  state.initiative.trxRule.threshold;
+export const initiativeTrxCountSelector = (state: RootState): TrxCount | undefined =>
+  state.initiative.trxRule.trxCount;
+export const initiativeDaysOfWeekIntervalsSelector = (
+  state: RootState
+): Array<DaysOfWeekInterval> | undefined => state.initiative.trxRule.daysOfWeekIntervals;
+export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
+  state.initiative.refundRule;
+export const initiativeStatusSelector = (state: RootState): string | undefined =>
+  state.initiative.status;
