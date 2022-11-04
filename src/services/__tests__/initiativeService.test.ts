@@ -22,6 +22,8 @@ import {
   getEligibilityCriteriaForSidebar,
 } from '../intitativeService';
 
+import { fetchTransactionRules } from '../transactionRuleService';
+
 import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 
 import {
@@ -173,6 +175,11 @@ test('fetch admission criteria get eligibility criteria for sidebar', async () =
     await getEligibilityCriteriaForSidebar();
     expect(InitiativeApi.getEligibilityCriteriaForSidebar).toBeCalled();
   }
+});
+
+test('get transaction config rules', async () => {
+  await fetchTransactionRules();
+  expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
 });
 
 test('test fetch admission criteria mocked Admission', async () => {
