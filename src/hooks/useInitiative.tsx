@@ -116,7 +116,7 @@ export const useInitiative = () => {
   }, [location.pathname]);
 };
 
-const parseAdditionalInfo = (data: any): AdditionalInfo => {
+export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   const dataT = {
     initiativeOnIO: false,
     serviceName: '',
@@ -160,7 +160,7 @@ const parseAdditionalInfo = (data: any): AdditionalInfo => {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const parseGeneralInfo = (data: any): GeneralInfo => {
+export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
@@ -210,7 +210,7 @@ const parseGeneralInfo = (data: any): GeneralInfo => {
   return dataT;
 };
 
-const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
+export const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
   // eslint-disable-next-line functional/no-let
   let automatedCriteria: Array<AutomatedCriteriaItem> = [];
   if (
@@ -223,7 +223,7 @@ const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteri
   return automatedCriteria;
 };
 
-const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem> => {
+export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem> => {
   const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
   if (
     response.beneficiaryRule &&
@@ -269,7 +269,7 @@ const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem>
   return selfDeclarationCriteria;
 };
 
-const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.rewardRule &&
     typeof response.rewardRule !== undefined &&
@@ -436,7 +436,7 @@ const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined): RefundRule => {
+export const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined): RefundRule => {
   const dataT = {
     reimbursmentQuestionGroup: '',
     timeParameter: '',

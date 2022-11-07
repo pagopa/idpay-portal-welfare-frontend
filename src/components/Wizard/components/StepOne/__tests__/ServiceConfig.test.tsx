@@ -29,11 +29,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     window.scrollTo = jest.fn();
   });
 
-  beforeEach(() => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-    jest.spyOn(console, 'warn').mockImplementation(() => {});
-  });
-
   const setUpServiceConfig = () => {
     const currentStep: number = 0;
     const utils = render(
