@@ -4,17 +4,26 @@ import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import Generalnfo from '../Generalnfo';
 import { createStore } from '../../../../../redux/store';
 import React from 'react';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
+import { updateInitiativeGeneralInfoDraft } from '../../../../../services/intitativeService';
+import {
+  mockedInitiativeId,
+  mockedInitiativeGeneralBody,
+} from '../../../../../services/__mocks__/initiativeService';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+jest.mock('../../../../../api/InitiativeApiClient');
+
 beforeEach(() => {
+  jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
@@ -83,7 +92,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     await act(async () => {
       const parseValuesFormToInitiativeGeneralDTO = jest.fn();
       const setGeneralInfo = jest.fn();
-      const updateInitiativeGeneralInfoDraft = jest.fn();
+
       render(
         <Provider store={store}>
           <Generalnfo
@@ -106,10 +115,13 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
       parseValuesFormToInitiativeGeneralDTO();
       setGeneralInfo();
-      updateInitiativeGeneralInfoDraft();
       expect(parseValuesFormToInitiativeGeneralDTO).toHaveBeenCalled();
       expect(setGeneralInfo).toHaveBeenCalled();
-      expect(updateInitiativeGeneralInfoDraft).toHaveBeenCalled();
+
+      if (mockedInitiativeId) {
+        await updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
+        expect(InitiativeApi.updateInitiativeGeneralInfoDraft).toBeCalled();
+      }
     });
   });
 
@@ -207,7 +219,6 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
 
       /* Test of value of radio button */
-
       const beneficiaryType = getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
       const beneficiaryType1 = getByLabelText(/components.wizard.stepTwo.form.person/);
       const beneficiaryType2 = getByLabelText(/components.wizard.stepTwo.form.family/);
@@ -229,25 +240,14 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         expect(beneficiaryType2).toBeDisabled();
       });
 
-      fireEvent.click(beneficiaryKnown1);
-
       await act(async () => {
-        expect(beneficiaryKnown1.checked).toEqual(true);
-      });
-      await act(async () => {
-        expect(beneficiaryKnown2.checked).toEqual(false);
-      });
-
-      fireEvent.click(beneficiaryKnown2);
-
-      await act(async () => {
+        fireEvent.click(beneficiaryKnown1);
+        expect(beneficiaryKnown1.checked).toEqual(false);
         expect(beneficiaryKnown2.checked).toEqual(true);
-      });
-      await act(async () => {
+        fireEvent.click(beneficiaryKnown2);
+        expect(beneficiaryKnown2.checked).toEqual(true);
         expect(beneficiaryKnown1.checked).toEqual(false);
       });
-
-      fireEvent.change(beneficiaryType);
       expect(fn).not.toBeCalled();
     });
   });
@@ -408,7 +408,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('Test beneficiary type onChange', async () => {
     await waitFor(async () => {
       const setFieldValue = jest.fn();
-      const { queryByTestId, queryByRole } = render(
+      const { queryByTestId, getByLabelText } = render(
         <Provider store={store}>
           <Generalnfo
             action={WIZARD_ACTIONS.SUBMIT}
@@ -430,9 +430,28 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
 
       const beneficiaryType = queryByTestId('beneficiary-radio-test') as HTMLInputElement;
-      userEvent.click(beneficiaryType);
-      setFieldValue();
-      expect(setFieldValue).toHaveBeenCalled();
+      const beneficiaryType1 = getByLabelText(
+        /components.wizard.stepTwo.form.person/
+      ) as HTMLInputElement;
+      const beneficiaryType2 = getByLabelText(
+        /components.wizard.stepTwo.form.family/
+      ) as HTMLInputElement;
+
+      waitFor(async () => {
+        fireEvent.click(beneficiaryType1);
+        expect(beneficiaryType1).toBeChecked();
+        expect(beneficiaryType1.value).toBe('true');
+        expect(beneficiaryType2).not.toBeChecked();
+        fireEvent.click(beneficiaryType2);
+        expect(beneficiaryType2).toBeChecked();
+        expect(beneficiaryType2.value).toBe('true');
+        expect(beneficiaryType1).not.toBeChecked();
+
+        fireEvent.change(beneficiaryType, { target: { value: BeneficiaryTypeEnum.PF } });
+        expect(beneficiaryType.value).toBe('PF');
+        fireEvent.change(beneficiaryType, { target: { value: BeneficiaryTypeEnum.PG } });
+        expect(beneficiaryType.value).toBe('PG');
+      });
     });
   });
 });

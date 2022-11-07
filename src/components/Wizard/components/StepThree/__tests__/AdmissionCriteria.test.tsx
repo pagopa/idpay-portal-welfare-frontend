@@ -6,6 +6,9 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import AdmissionCriteria from '../AdmissionCriteria';
+import React from 'react';
+import { mapResponse } from '../helpers';
+import { mockedMapResponse } from './helpers.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -14,6 +17,7 @@ jest.mock('react-i18next', () => ({
 
 describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
+  const arrOptions = ['ISEE', 'BIRTHDATE', 'RESIDENCE', '', undefined];
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -128,5 +132,21 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       expect(ManuallyAdded).toBeInTheDocument();
       expect(ManuallyAdded).toBeVisible();
     });
+  });
+
+  it('Test on mapResponse', () => {
+    arrOptions.forEach((item) => {
+      expect(mapResponse(mockedMapResponse(item))).not.toBeNull();
+    });
+    expect(
+      mapResponse([
+        {
+          authority: 'string',
+          checked: true,
+          field: 'string',
+          operator: 'string',
+        },
+      ])
+    ).toBeDefined();
   });
 });

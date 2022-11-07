@@ -7,10 +7,20 @@ import Wizard from '../../../Wizard';
 import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
 import React from 'react';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
+import { createInitiativeServiceInfo } from '../../../../../services/intitativeService';
+import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
+import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
+
+jest.mock('../../../../../api/InitiativeApiClient.ts');
+
+beforeEach(() => {
+  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
+});
 
 describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
@@ -171,11 +181,31 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
 
   it('Test onChange of form input', async () => {
     const servName = document.getElementById('service-name-test') as HTMLInputElement;
+    const servArea = document.getElementById('service-area-select') as HTMLSelectElement;
+
     waitFor(async () => {
       fireEvent.change(servName, { target: { value: 'name' } });
       expect(servName.value).toBe('name');
       fireEvent.change(servName, { target: { value: '' } });
       expect(servName.value).toBe('');
+    });
+
+    const mockCallback = jest.fn();
+
+    const locale = document.getElementById('serviceScopeLocal-test');
+    const nazionale = document.getElementById('serviceScopeNational-test');
+
+    waitFor(async () => {
+      expect(locale).toBeInTheDocument();
+      expect(nazionale).toBeInTheDocument();
+
+      const servAreaSelect = servArea.childNodes[0];
+
+      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.LOCAL } });
+      expect(servAreaSelect).toBe(ServiceScopeEnum.LOCAL);
+      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.NATIONAL } });
+      expect(servAreaSelect).toBe(ServiceScopeEnum.NATIONAL);
+      expect(mockCallback.mock.calls).toHaveLength(1);
     });
   });
 
@@ -197,5 +227,10 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       addAssistanceChannel();
       expect(addAssistanceChannel).toHaveBeenCalled();
     });
+  });
+
+  test('create initiative', async () => {
+    await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
+    expect(InitiativeApi.saveInitiativeServiceInfo).toBeCalled();
   });
 });
