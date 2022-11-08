@@ -5,6 +5,7 @@ import {
   Button,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   Table,
@@ -22,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -31,6 +33,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import * as Yup from 'yup';
+import { parse } from 'date-fns';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -127,12 +131,47 @@ const InitiativeRefunds = () => {
     }
   }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
 
+  const validationSchema = Yup.object().shape({
+    searchFrom: Yup.date()
+      .nullable()
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
+      .typeError(t('validation.invalidDate')),
+    searchTo: Yup.date()
+      .nullable()
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
+      .typeError(t('validation.invalidDate'))
+      .when('searchFrom', (searchFrom, _schema) => {
+        const timestamp = Date.parse(searchFrom);
+        if (isNaN(timestamp) === false) {
+          return Yup.date()
+            .nullable()
+            .min(searchFrom, t('validation.outDateTo'))
+            .typeError(t('validation.invalidDate'));
+        } else {
+          return Yup.date().nullable().typeError(t('validation.invalidDate'));
+        }
+      }),
+  });
+
   const formik = useFormik({
     initialValues: {
       searchFrom: null,
       searchTo: null,
       filterStatus: '',
     },
+    validationSchema,
+    validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
       let searchFromStr;
@@ -227,7 +266,7 @@ const InitiativeRefunds = () => {
             display: 'grid',
             width: '100%',
             gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
+            alignItems: 'baseline',
             gap: 2,
             mb: 4,
           }}
@@ -342,6 +381,7 @@ const InitiativeRefunds = () => {
                       {t('pages.initiativeRefunds.table.successPercentage')}
                     </TableCell>
                     <TableCell width="15%">{t('pages.initiativeRefunds.table.status')}</TableCell>
+                    <TableCell width="10%"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -353,6 +393,11 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{r.status}</TableCell>
+                      <TableCell align="right">
+                        <Link href={r.filePath} download target="_blank">
+                          <ArrowForwardIosIcon color="primary" />
+                        </Link>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -641,6 +641,7 @@ export default {
     notValidMccLis: 'Sono stati inseriti valori non validi',
     maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
     indicateAssistanceSubject: 'Indicaci l’argomento della tua richiesta',
+    outDateTo: 'La data di fine deve essere successiva a quella di inizio',
   },
   errors: {
     title: 'Si è verificato un errore',
