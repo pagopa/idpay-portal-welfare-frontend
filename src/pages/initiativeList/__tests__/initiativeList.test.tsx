@@ -4,7 +4,6 @@ import { createStore } from '../../../redux/store';
 import { getInitativeSummary } from '../../../services/intitativeService';
 import InitiativeList from '../InitiativeList';
 import React from 'react';
-import { render } from 'react-dom';
 
 jest.mock('../../../api/InitiativeApiClient');
 
