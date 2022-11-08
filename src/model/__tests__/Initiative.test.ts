@@ -43,7 +43,7 @@ const mockedAutomatedCriteria: AutomatedCriteriaItem = {
   value2: '',
 };
 
-const mockedInitiative: Initiative = {
+export const mockedInitiative: Initiative = {
   initiativeId: '62e29002aac2e94cfa3763dd',
   initiativeName: 'prova313',
   organizationId: '2f63a151-da4e-4e1e-acf9-adecc0c4d727',
