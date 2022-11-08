@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { Fragment, useState, useEffect } from 'react';
 import CheckIllustrationIcon from '@pagopa/selfcare-common-frontend/components/icons/CheckIllustrationIcon';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useHistory } from 'react-router-dom';
 import ROUTES from '../../routes';
 import { getInstitutionProductUserInfo, sendEmail } from '../../services/emailNotificationService';
@@ -22,8 +23,10 @@ const Assistance = () => {
   const history = useHistory();
   const addError = useErrorDispatcher();
   const recipientEmail = ENV.ASSISTANCE.EMAIL;
+  const setLoading = useLoading('GET_INSTITUTION_PROD_USER_INFO');
 
   useEffect(() => {
+    setLoading(true);
     getInstitutionProductUserInfo()
       .then((res) => {
         setSenderEmail(res.email);
@@ -40,7 +43,8 @@ const Assistance = () => {
           component: 'Toast',
           showCloseIcon: true,
         });
-      });
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const validationSchema = Yup.object().shape({
@@ -65,6 +69,7 @@ const Assistance = () => {
         senderEmail: values.assistanceEmailFrom,
         recipientEmail,
       };
+      setLoading(true);
       sendEmail(body)
         .then(() => setThxPage(true))
         .catch((error) => {
@@ -79,7 +84,8 @@ const Assistance = () => {
             component: 'Toast',
             showCloseIcon: true,
           });
-        });
+        })
+        .finally(() => setLoading(false));
     },
   });
 
