@@ -85,12 +85,18 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
     expect(
       parseAdditionalInfo({
         initiativeOnIO: false,
-        serviceName: '',
-        serviceArea: '',
-        serviceDescription: '',
-        privacyPolicyUrl: '',
-        termsAndConditions: '',
+        serviceName: 'name',
+        serviceArea: 'area',
+        serviceScope: 'scope',
+        serviceDescription: 'description',
+        privacyPolicyUrl: 'privacy',
+        termsAndConditions: 'terms',
         assistanceChannels: [{ type: 'web', contact: '' }],
+        channels: 'channels',
+        tcLink: 'link',
+        privacyLink: 'privacy link',
+        description: 'data description',
+        serviceIO: 'serviceIo',
       })
     ).not.toBeNull();
   });
