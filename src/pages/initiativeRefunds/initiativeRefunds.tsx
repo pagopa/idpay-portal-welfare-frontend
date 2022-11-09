@@ -3,6 +3,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   Link,
@@ -23,7 +24,9 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -42,6 +45,7 @@ import ROUTES from '../../routes';
 import { numberWithCommas } from '../../helpers';
 import { getExportsPaged } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
+import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -68,11 +72,40 @@ const InitiativeRefunds = () => {
     strict: false,
   });
 
-  const calcSuccessPercentage = (rewardsResulted: number, rewardsNotified: number): string => {
-    if (rewardsResulted > 0 && rewardsNotified > 0) {
-      return `${(rewardsResulted / rewardsNotified) * 100}%`;
+  const getRefundStatus = (status: {
+    status: string | undefined;
+    percentageResulted: string | undefined;
+  }) => {
+    switch (status.status) {
+      case 'EXPORTED':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.exported')}
+            color="warning"
+          />
+        );
+      case 'PARTIAL':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.partial', {
+              percentage: status?.percentageResulted || '',
+            })}
+            color="error"
+          />
+        );
+      case 'COMPLETE':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.complete')}
+            color="default"
+          />
+        );
+      default:
+        return null;
     }
-    return '';
   };
 
   const getTableData = (
@@ -89,14 +122,19 @@ const InitiativeRefunds = () => {
           setTotalElements(res.totalElements);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
-          const rowsData = res.content.map((r) => ({
+          const rowsData = res.content.map((r: RewardExportsDTO) => ({
             ...r,
             id: r.id,
-            notificationDate: r.notificationDate.toLocaleString('fr-BE').split(' ')[0],
+            notificationDate:
+              typeof r.notificationDate === 'object'
+                ? r.notificationDate.toLocaleString('fr-BE').split(' ')[0]
+                : '',
             typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
-            successPercentage: calcSuccessPercentage(r.rewardsResulted, r.rewardsNotified),
+            successPercentage: r.percentageResultedOk,
+            percentageResulted: r.percentageResulted,
+            status: { status: r.status, percentageResulted: r.percentageResulted },
             filePath: r.filePath,
           }));
           setRows([...rowsData]);
@@ -248,7 +286,7 @@ const InitiativeRefunds = () => {
             </Typography>
           </Breadcrumbs>
         </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeRefunds.title')}
             subTitle={t('pages.initiativeRefunds.subtitle')}
@@ -258,6 +296,11 @@ const InitiativeRefunds = () => {
             variantTitle="h4"
             variantSubTitle="body1"
           />
+        </Box>
+        <Box sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}>
+          <Button variant="contained" size="small" disabled startIcon={<FileUploadIcon />}>
+            {t('pages.initiativeRefunds.uploadBtn')}
+          </Button>
         </Box>
       </Box>
       {rows.length > 0 && (
@@ -392,10 +435,10 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.rewardsExported}</TableCell>
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
-                      <TableCell>{r.status}</TableCell>
+                      <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <Link href={r.filePath} download target="_blank">
-                          <ArrowForwardIosIcon color="primary" />
+                          <FileDownloadIcon color="primary" />
                         </Link>
                       </TableCell>
                     </TableRow>

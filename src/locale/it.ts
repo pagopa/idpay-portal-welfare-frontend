@@ -351,6 +351,7 @@ export default {
       title: 'Rimborsi',
       subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
       noData: 'Non sono presenti rimborsi.',
+      uploadBtn: 'Carica esiti',
       form: {
         from: 'Da',
         to: 'A',
@@ -368,6 +369,11 @@ export default {
         successPercentage: '% Successo',
         status: 'Stato',
         typeOrdinary: 'Ordinario',
+      },
+      status: {
+        exported: 'Esiti da caricare',
+        partial: 'Esiti parziali ({{percentage}})',
+        complete: 'Completato',
       },
     },
   },

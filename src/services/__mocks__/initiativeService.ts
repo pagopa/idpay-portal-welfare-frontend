@@ -159,14 +159,14 @@ export interface InitiativeRefund {
 }
 
 export interface InitiativeRefundToDisplay {
-  id: string;
-  notificationDate: string;
-  typology: string;
-  rewardsExported: string;
-  rewardsResults: string;
-  successPercentage: string;
-  status: string;
-  filePath: string;
+  id: string | undefined;
+  notificationDate: string | undefined;
+  typology: string | undefined;
+  rewardsExported: string | undefined;
+  rewardsResults: string | undefined;
+  successPercentage: string | undefined;
+  status: { status: string | undefined; percentageResulted: string | undefined };
+  filePath: string | undefined;
 }
 
 export interface InitiativeRefundsResponse {
