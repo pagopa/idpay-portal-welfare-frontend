@@ -388,6 +388,15 @@ export default {
           cancelBtn: 'Annulla',
           continueBtn: 'Continua',
         },
+        uploadIcon: {
+          dragAreaText: 'Trascina qui il logo del servizio o',
+          dragAreaLink: 'selezionalo dal tuo computer.',
+          helperText:
+            'Opzionale. Inserisci un’immagine in formato PNG, 300x300 pixel, con sfondo bianco o trasparente.',
+          IconIsLoading: 'Caricamento in corso...',
+          validIcon: 'File valido',
+          changeIcon: 'Sostituisci Logo',
+        },
       },
       stepTwo: {
         title: 'Informazioni generali',

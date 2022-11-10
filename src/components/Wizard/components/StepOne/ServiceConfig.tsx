@@ -41,6 +41,7 @@ import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
+import UploadServiceIcon from './UploadServiceIcon';
 
 interface Props {
   action: string;
@@ -395,6 +396,7 @@ const ServiceConfig = ({
               InputLabelProps={{ required: false }}
               size="small"
             />
+            <UploadServiceIcon />
           </FormControl>
         </Box>
       </Box>
