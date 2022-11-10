@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 // import {FilterOperator} from "../../../../../utils/constants";
 const setterFunction = jest.fn();
-const mockedMapResponse = (stringOrUndefined: string | undefined) => {
+export const mockedMapResponse = (stringOrUndefined: string | undefined) => {
   return [
     {
       authority: 'string',

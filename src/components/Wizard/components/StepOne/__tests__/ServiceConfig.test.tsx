@@ -7,225 +7,204 @@ import Wizard from '../../../Wizard';
 import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
 import React from 'react';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
+import { createInitiativeServiceInfo } from '../../../../../services/intitativeService';
+import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
+import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+jest.mock('../../../../../api/InitiativeApiClient.ts');
+
 beforeEach(() => {
-  jest.spyOn(console, 'error').mockImplementation(() => {});
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
 });
 
 describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) => {
+  const store = injectedStore ? injectedStore : createStore();
+
   it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
-  const store = injectedStore ? injectedStore : createStore();
-  const initiativeOnIO = store.getState().initiative.additionalInfo.initiativeOnIO;
-  const handleSumbit = jest.fn();
-  const handleOpenInitiativeNotOnIOModal = jest.fn();
-  const sendValues = jest.fn();
-  const values = jest.mock('../InitiativeNotOnIOModal.tsx');
-  let currentStep: number;
-  const setCurrentStep = jest.fn();
+  const setUpServiceConfig = () => {
+    const currentStep: number = 0;
+    const utils = render(
+      <Provider store={store}>
+        <ServiceConfig
+          action={''}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={0}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
 
-  test('should display the first form, with validation on input data', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
+    const handleSubmit = jest.fn();
+    const handleOpenInitiativeNotOnIOModal = jest.fn();
+    const sendValues = jest.fn();
+    const values = jest.mock('../InitiativeNotOnIOModal.tsx');
+    const setCurrentStep = jest.fn();
+    const serviceName = utils.getAllByLabelText('components.wizard.stepOne.form.serviceName');
+    // const serviceArea = document.getElementById('[data-testid="service-area-select"]');
+    const serviceDescription = utils.getAllByLabelText(
+      'components.wizard.stepOne.form.serviceDescription'
+    );
+    const privacyPolicyUrl = utils.getAllByLabelText(
+      'components.wizard.stepOne.form.privacyPolicyUrl'
+    );
+    const termsAndConditions = utils.getAllByLabelText(
+      'components.wizard.stepOne.form.termsAndConditions'
+    );
+    const addChannel = document.querySelector(
+      '[data-testid="add-channel-test"]'
+    ) as HTMLButtonElement;
+    const setOpenInitiativeNotOnIOModal = jest.fn();
+    const addAssistanceChannel = jest.fn();
+
+    return {
+      handleSubmit,
+      handleOpenInitiativeNotOnIOModal,
+      sendValues,
+      values,
+      currentStep,
+      setCurrentStep,
+      serviceName,
+      // serviceArea,
+      serviceDescription,
+      privacyPolicyUrl,
+      termsAndConditions,
+      addChannel,
+      setOpenInitiativeNotOnIOModal,
+      addAssistanceChannel,
+      ...utils,
+    };
+  };
+
+  const setUpWizard = () => {
+    const utilsWizard = render(
+      <Provider store={store}>
+        <Wizard handleOpenExitModal={() => console.log('exit modal')} />
+      </Provider>
+    );
+
+    const submit = utilsWizard.queryByTestId('continue-action-test') as HTMLButtonElement;
+    const skip = utilsWizard.queryByTestId('skip-action-test') as HTMLButtonElement;
+    return {
+      submit,
+      skip,
+      ...utilsWizard,
+    };
+  };
+
+  const { submit, skip } = setUpWizard();
+  const {
+    sendValues,
+    handleSubmit,
+    values,
+    currentStep,
+    setCurrentStep,
+    handleOpenInitiativeNotOnIOModal,
+    serviceName,
+    // serviceArea,
+    serviceDescription,
+    privacyPolicyUrl,
+    termsAndConditions,
+    setOpenInitiativeNotOnIOModal,
+    addAssistanceChannel,
+    addChannel,
+  } = setUpServiceConfig();
 
   it('call the formik handleSubmit event when form is submitted', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      sendValues();
-      handleSumbit();
-      expect(handleSumbit).toHaveBeenCalled();
+    waitFor(async () => {
+      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
+      fireEvent.click(submit);
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
+      sendValues(values, currentStep, setCurrentStep);
       expect(sendValues).toHaveBeenCalled();
     });
   });
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      await waitFor(async () => {
-        const submit = getByTestId('continue-action-test');
-        expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-        fireEvent.click(submit);
-        sendValues(values, currentStep, setCurrentStep);
-        expect(sendValues).toHaveBeenCalled();
-      });
-    });
-  });
-
   it('Test of functions of component', async () => {
-    render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
+    const useStateMock: any = (openInitiativeOnIOModal: boolean) => [
+      openInitiativeOnIOModal,
+      handleOpenInitiativeNotOnIOModal,
+    ];
+    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+    jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
 
-    await waitFor(async () => {
-      const useStateMock: any = (openInitiativeOnIOModal: boolean) => [
-        openInitiativeOnIOModal,
-        handleOpenInitiativeNotOnIOModal,
-      ];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
-      handleOpenInitiativeNotOnIOModal();
-      expect(handleOpenInitiativeNotOnIOModal).toHaveBeenCalled();
-    });
+    handleOpenInitiativeNotOnIOModal();
+    expect(handleOpenInitiativeNotOnIOModal).toHaveBeenCalled();
   });
 
   it('draft action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      await act(async () => {
-        expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-      });
+    waitFor(async () => {
+      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
       fireEvent.click(skip);
     });
   });
 
-  it('form fields not to be null', async () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={0}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
+  it('form fields not to be null & to be Defined', async () => {
+    expect(serviceName).not.toBeNull();
+    expect(serviceName).toBeDefined();
 
-    const serviceName = getByTestId('serviceName-test');
-    const serviceArea = getByTestId('service-area-select');
-    const serviceDescription = getByTestId('serviceDescription-test');
-    const privacyPolicyUrl = getByTestId('privacyPolicyUrl-test');
-    const termsAndConditions = getByTestId('termsAndConditions-test');
+    // expect(serviceArea).not.toBeNull();
+    // expect(serviceArea).toBeInTheDocument();
 
-    await act(async () => {
-      expect(serviceName).not.toBeNull();
-      expect(serviceName).toBeInTheDocument();
+    expect(serviceDescription).not.toBeNull();
+    expect(serviceDescription).toBeDefined();
+
+    expect(privacyPolicyUrl).not.toBeNull();
+    expect(privacyPolicyUrl).toBeDefined();
+
+    expect(termsAndConditions).not.toBeNull();
+    expect(termsAndConditions).toBeDefined();
+  });
+
+  it('Test onChange of form input', async () => {
+    const servName = document.getElementById('service-name-test') as HTMLInputElement;
+    const servArea = document.getElementById('service-area-select') as HTMLSelectElement;
+
+    waitFor(async () => {
+      fireEvent.change(servName, { target: { value: 'name' } });
+      expect(servName.value).toBe('name');
+      fireEvent.change(servName, { target: { value: '' } });
+      expect(servName.value).toBe('');
     });
 
-    await act(async () => {
-      expect(serviceArea).not.toBeNull();
-      expect(serviceArea).toBeInTheDocument();
-    });
+    const mockCallback = jest.fn();
 
-    await act(async () => {
-      expect(serviceDescription).not.toBeNull();
-      expect(serviceDescription).toBeInTheDocument();
-    });
+    const locale = document.getElementById('serviceScopeLocal-test');
+    const nazionale = document.getElementById('serviceScopeNational-test');
 
-    await act(async () => {
-      expect(privacyPolicyUrl).not.toBeNull();
-      expect(privacyPolicyUrl).toBeInTheDocument();
-    });
+    waitFor(async () => {
+      expect(locale).toBeInTheDocument();
+      expect(nazionale).toBeInTheDocument();
 
-    await act(async () => {
-      expect(termsAndConditions).not.toBeNull();
-      expect(termsAndConditions).toBeInTheDocument();
+      const servAreaSelect = servArea.childNodes[0];
+
+      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.LOCAL } });
+      expect(servAreaSelect).toBe(ServiceScopeEnum.LOCAL);
+      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.NATIONAL } });
+      expect(servAreaSelect).toBe(ServiceScopeEnum.NATIONAL);
+      expect(mockCallback.mock.calls).toHaveLength(1);
     });
   });
 
   it('Test of setting true/false of modal', async () => {
-    render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={0}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
-
-    const setOpenInitiativeNotOnIOModal = jest.fn();
-
     const useStateMock: any = (openInitiativeNotOnIOModal: boolean) => [
       openInitiativeNotOnIOModal,
       setOpenInitiativeNotOnIOModal,
@@ -238,32 +217,15 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   it('Add Channel Test', async () => {
-    await act(async () => {
-      const addAssistanceChannel = jest.fn();
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={''}
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-
-      waitFor(async () => {
-        const addChannel = queryByTestId('add-channel-test') as HTMLButtonElement;
-        userEvent.click(addChannel);
-        addAssistanceChannel();
-        expect(addAssistanceChannel).toHaveBeenCalled();
-      });
+    await waitFor(async () => {
+      userEvent.click(addChannel);
+      addAssistanceChannel();
+      expect(addAssistanceChannel).toHaveBeenCalled();
     });
+  });
+
+  test('create initiative', async () => {
+    await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
+    expect(InitiativeApi.saveInitiativeServiceInfo).toBeCalled();
   });
 });

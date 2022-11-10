@@ -35,6 +35,7 @@ import {
 
 import { InitiativeApi } from '../../api/InitiativeApiClient';
 import { mockedAdmissionCriteria } from '../__mocks__/admissionCriteriaService';
+import { fetchTransactionRules } from '../transactionRuleService';
 
 jest.mock('../../api/InitiativeApiClient');
 
@@ -56,6 +57,7 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'updateInitiativePublishedStatus');
   jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
   jest.spyOn(InitiativeApi, 'getEligibilityCriteriaForSidebar');
+  jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
 });
 
 test('test get initiative summary', async () => {
@@ -173,6 +175,11 @@ test('fetch admission criteria get eligibility criteria for sidebar', async () =
   }
 });
 
+test('get transaction config rules', async () => {
+  await fetchTransactionRules();
+  expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
+});
+
 test('test fetch admission criteria mocked Admission', async () => {
   await fetchAdmissionCriteria();
   if (process.env.REACT_APP_API_MOCK_ADMISSION_CRITERIA === 'true') {
@@ -180,6 +187,11 @@ test('test fetch admission criteria mocked Admission', async () => {
       new Promise(() => ({}))
     );
   }
+});
+
+test(' get transaction config rules', async () => {
+  await fetchTransactionRules();
+  expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {

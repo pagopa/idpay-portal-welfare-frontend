@@ -195,7 +195,7 @@ const Assistance = () => {
             </Paper>
           </Box>
           <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-            <Button variant="outlined" onClick={handleOpenExitModal}>
+            <Button variant="outlined" onClick={handleOpenExitModal} data-testid="open-exit-test">
               {t('components.wizard.common.buttons.back')}
             </Button>
             <ExitModal openExitModal={openExitModal} handleCloseExitModal={handleCloseExitModal} />
@@ -215,6 +215,7 @@ const Assistance = () => {
             py: 2,
             gap: 3,
           }}
+          data-testid="thx-page-test"
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
             <CheckIllustrationIcon sx={{ width: '70px', height: '70px' }} />

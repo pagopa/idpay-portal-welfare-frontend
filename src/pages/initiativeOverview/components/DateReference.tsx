@@ -96,7 +96,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         )}
       </Box>
       <Box sx={{ gridColumn: 'span 7' }}>
-        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+        <Typography variant="body2" sx={{ fontWeight: 600 }} data-testid="date-message-status">
           {dateMessageStatusApproved(initiative)}
         </Typography>
       </Box>

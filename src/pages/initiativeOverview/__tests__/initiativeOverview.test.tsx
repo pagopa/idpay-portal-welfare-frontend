@@ -4,6 +4,10 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { groupsApi } from '../../../api/groupsApiClient';
+import { Initiative } from '../../../model/Initiative';
+import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { useAppSelector } from '../../../redux/hooks';
+import { initiativeSelector } from '../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../redux/store';
 // import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
 import {
@@ -67,7 +71,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
 
   test('should display the InitiativeOverview component', async () => {
     await waitFor(async () => {
-      const _app = render(
+      const { queryByTestId } = render(
         <Provider store={store}>
           <InitiativeOverview />
         </Provider>
@@ -130,4 +134,21 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
     getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
     expect(getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId)).toBeDefined();
   });
+/*
+  test('test conditional render', () => {
+    // const initiativeSel = useAppSelector(initiativeSelector);
+    const mockedInitiativeSelected = mockedInitiative;
+    const { queryByTestId, debug } = render(
+      <Provider store={store}>
+        <InitiativeOverview  />
+      </Provider>
+    );
+    const titleInitative = queryByTestId('button-overview') as HTMLElement;
+    const typographyIniName = queryByTestId('typography-initiativeName') as HTMLElement;
+    debug();
+    expect(titleInitative).toBeInTheDocument();
+    expect(typographyIniName).toBeInTheDocument();
+    
+  });
+  */
 });

@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -8,8 +8,17 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import ShopRules from '../ShopRules';
 import React from 'react';
+import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
+beforeEach(() => {
+  jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
+});
+
+jest.mock('../../../../../api/InitiativeApiClient.ts');
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -95,9 +104,22 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
           />
         </Provider>
       );
+
+      await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
+      // await waitFor(() => expect(getByTestId('mcc-item-test')).toBeNull());
+
       handleSubmit();
       expect(handleSubmit).toHaveBeenCalled();
     });
+  });
+
+  test('get transaction config rules', async () => {
+    const resetStateOnItemRemoved = jest.fn();
+
+    await fetchTransactionRules();
+    expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
+    expect(resetStateOnItemRemoved).not.toBeNull();
+    expect(InitiativeApi.getTransactionConfigRules).not.toBeNull();
   });
 
   it('Testing functions', async () => {});
