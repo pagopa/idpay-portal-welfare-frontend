@@ -5,18 +5,18 @@ export interface InitiativeUser {
 }
 
 export interface InitiativeUserToDisplay {
-  id: number;
-  beneficiary: string;
-  updateStatusDate: string;
-  beneficiaryState: string;
+  id: number | undefined;
+  beneficiary: string | undefined;
+  updateStatusDate: string | undefined;
+  beneficiaryState: string | undefined;
 }
 
 export interface InitiativeUsersResponse {
-  pageNo: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-  oggetti: Array<InitiativeUser>;
+  pageNo?: number | undefined;
+  pageSize?: number | undefined;
+  totalElements?: number | undefined;
+  totalPages?: number | undefined;
+  content: Array<InitiativeUser>;
 }
 
 export const mockedInitiativeUsersPage1 = {
@@ -187,10 +187,10 @@ export const mockedInitiativeUsersPage2 = {
   ],
 };
 
-export const fetchInitiativeUsers = (page: number) => {
-  if (page === 0) {
-    return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage1));
-  } else {
-    return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
-  }
-};
+// export const fetchInitiativeUsers = (page: number) => {
+//   if (page === 0) {
+//     return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage1));
+//   } else {
+//     return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
+//   }
+// };

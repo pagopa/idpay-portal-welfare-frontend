@@ -322,6 +322,7 @@ export default {
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+      noData: 'Non sono presenti utenti.',
       form: {
         search: 'Cerca per Codice fiscale',
         from: 'Da',
@@ -341,10 +342,11 @@ export default {
         beneficiaryState: 'Stato',
       },
       status: {
-        waiting: 'In attesa',
-        registered: 'Iscritto',
-        suitable: 'Idoneo',
-        notSuitable: 'Non idoneo',
+        acceptedTc: 'In corso',
+        inactive: 'Disinscritto',
+        onEvaluation: 'In attesa',
+        invited: 'Idoneo',
+        onboardingOk: 'Iscritto',
       },
     },
     initiativeRefunds: {
@@ -358,6 +360,7 @@ export default {
         status: 'Stato',
         completed: 'Completato',
         toLoad: 'Esiti da caricare',
+        partial: 'Esiti parziali',
         filterBtn: 'Filtra',
         resetFiltersBtn: 'Annulla filtri',
       },

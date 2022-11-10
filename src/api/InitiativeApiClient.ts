@@ -17,6 +17,8 @@ import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditi
 import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
 import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
+import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
+import { SasToken } from './generated/initiative/SasToken';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -207,9 +209,35 @@ export const InitiativeApi = {
     const result = await apiClient.getRewardNotificationExportsPaged({
       initiativeId: id,
       page,
+      size: 10,
       notificationDateFrom,
       notificationDateTo,
       status,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardFileDownload: async (initiativeId: string, filePath: string): Promise<SasToken> => {
+    const result = await apiClient.getRewardFileDownload({ initiativeId, filename: filePath });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  getOnboardingStatus: async (
+    id: string,
+    page: number,
+    beneficiary?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    state?: string
+  ): Promise<OnboardingDTO> => {
+    const result = await apiClient.getOnboardingStatus({
+      initiativeId: id,
+      page,
+      size: 10,
+      beneficiary,
+      dateFrom,
+      dateTo,
+      state,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

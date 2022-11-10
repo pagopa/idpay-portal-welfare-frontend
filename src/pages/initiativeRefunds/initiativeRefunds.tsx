@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 /* eslint-disable functional/no-let */
 import {
   Box,
@@ -5,8 +6,8 @@ import {
   Button,
   Chip,
   FormControl,
+  IconButton,
   InputLabel,
-  Link,
   MenuItem,
   Select,
   Table,
@@ -43,9 +44,10 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import { getExportsPaged } from '../../services/intitativeService';
+import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
+import { SasToken } from '../../api/generated/initiative/SasToken';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -132,12 +134,14 @@ const InitiativeRefunds = () => {
             typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsResults)} €`,
-            successPercentage: r.percentageResultedOk,
+            successPercentage: `${r.percentageResultedOk}%`,
             percentageResulted: r.percentageResulted,
             status: { status: r.status, percentageResulted: r.percentageResulted },
-            filePath: r.filePath,
+            filePath: { initiativeId: r.initiativeId, filePath: r.filePath },
           }));
-          setRows([...rowsData]);
+          setRows(rowsData);
+        } else {
+          setRows([]);
         }
       })
       .catch((error) => {
@@ -168,6 +172,15 @@ const InitiativeRefunds = () => {
       );
     }
   }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+
+  const downloadURI = (uri: string) => {
+    const link = document.createElement('a');
+    link.download = 'download';
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const validationSchema = Yup.object().shape({
     searchFrom: Yup.date()
@@ -218,18 +231,17 @@ const InitiativeRefunds = () => {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr =
-            searchFrom.toLocaleString('fr-BE').split(' ')[0].length > 0
-              ? searchFrom.toLocaleString('fr-BE').split(' ')[0]
+            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
+              ? `${searchFrom.toLocaleString('en-CA').split(',')[0]}`
               : undefined;
           setFilterByNotificationDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
           searchToStr =
-            searchTo.toLocaleString('fr-BE').split(' ')[0].length > 0
-              ? searchTo.toLocaleString('fr-BE').split(' ')[0]
+            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
+              ? `${searchTo.toLocaleString('en-CA').split(',')[0]}`
               : undefined;
-
           setFilterByNotificationDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
@@ -254,6 +266,33 @@ const InitiativeRefunds = () => {
     setFilterByStatus(undefined);
     if (typeof initiativeSel.initiativeId === 'string') {
       getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined);
+    }
+  };
+
+  const handleDownloadFile = (data: {
+    initiativeId: string | undefined;
+    filePath: string | undefined;
+  }) => {
+    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
+      getRewardFileDownload(data.initiativeId, data.filePath)
+        .then((res: SasToken) => {
+          if (typeof res.sas === 'string') {
+            downloadURI(res.sas);
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_FILE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting export file',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
   };
 
@@ -303,102 +342,105 @@ const InitiativeRefunds = () => {
           </Button>
         </Box>
       </Box>
-      {rows.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'baseline',
-            gap: 2,
-            mb: 4,
-          }}
-        >
-          <FormControl sx={{ gridColumn: 'span 2' }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDatePicker
-                label={t('pages.initiativeRefunds.form.from')}
-                inputFormat="dd/MM/yyyy"
-                value={formik.values.searchFrom}
-                onChange={(value) => formik.setFieldValue('searchFrom', value)}
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    id="searchFrom"
-                    data-testid="searchFrom-test"
-                    name="searchFrom"
-                    type="date"
-                    size="small"
-                    error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                    helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-          </FormControl>
-          <FormControl sx={{ gridColumn: 'span 2' }}>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <DesktopDatePicker
-                label={t('pages.initiativeRefunds.form.to')}
-                inputFormat="dd/MM/yyyy"
-                value={formik.values.searchTo}
-                onChange={(value) => formik.setFieldValue('searchTo', value)}
-                renderInput={(props) => (
-                  <TextField
-                    {...props}
-                    id="searchTo"
-                    data-testid="searchTo-test"
-                    name="searchTo"
-                    type="date"
-                    size="small"
-                    error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                    helperText={formik.touched.searchTo && formik.errors.searchTo}
-                  />
-                )}
-              />
-            </LocalizationProvider>
-          </FormControl>
-          <FormControl sx={{ gridColumn: 'span 2' }} size="small">
-            <InputLabel>{t('pages.initiativeRefunds.form.status')}</InputLabel>
-            <Select
-              id="filterStatus"
-              data-testid="filterStatus-select"
-              name="filterStatus"
-              label={t('pages.initiativeRefunds.form.status')}
-              placeholder={t('pages.initiativeRefunds.form.status')}
-              onChange={(e) => formik.handleChange(e)}
-              value={formik.values.filterStatus}
-            >
-              <MenuItem value="COMPLETED" data-testid="filterStatusWaiting-test">
-                {t('pages.initiativeRefunds.form.completed')}
-              </MenuItem>
-              <MenuItem value="TO_LOAD" data-testid="filterStatusRegistered-test">
-                {t('pages.initiativeRefunds.form.toLoad')}
-              </MenuItem>
-            </Select>
-          </FormControl>
-          <FormControl sx={{ gridColumn: 'span 1' }}>
-            <Button
-              sx={{ py: 2, height: '44px' }}
-              variant="outlined"
-              size="small"
-              onClick={() => formik.handleSubmit()}
-              data-testid="apply-filters-test"
-            >
-              {t('pages.initiativeRefunds.form.filterBtn')}
-            </Button>
-          </FormControl>
-          <FormControl sx={{ gridColumn: 'span 1' }}>
-            <ButtonNaked
-              component="button"
-              sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
-              onClick={resetForm}
-            >
-              {t('pages.initiativeRefunds.form.resetFiltersBtn')}
-            </ButtonNaked>
-          </FormControl>
-        </Box>
-      )}
+
+      <Box
+        sx={{
+          display: 'grid',
+          width: '100%',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          alignItems: 'baseline',
+          gap: 2,
+          mb: 4,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 2' }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label={t('pages.initiativeRefunds.form.from')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.searchFrom}
+              onChange={(value) => formik.setFieldValue('searchFrom', value)}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="searchFrom"
+                  data-testid="searchFrom-test"
+                  name="searchFrom"
+                  type="date"
+                  size="small"
+                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
+                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <DesktopDatePicker
+              label={t('pages.initiativeRefunds.form.to')}
+              inputFormat="dd/MM/yyyy"
+              value={formik.values.searchTo}
+              onChange={(value) => formik.setFieldValue('searchTo', value)}
+              renderInput={(props) => (
+                <TextField
+                  {...props}
+                  id="searchTo"
+                  data-testid="searchTo-test"
+                  name="searchTo"
+                  type="date"
+                  size="small"
+                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
+                  helperText={formik.touched.searchTo && formik.errors.searchTo}
+                />
+              )}
+            />
+          </LocalizationProvider>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 2' }} size="small">
+          <InputLabel>{t('pages.initiativeRefunds.form.status')}</InputLabel>
+          <Select
+            id="filterStatus"
+            data-testid="filterStatus-select"
+            name="filterStatus"
+            label={t('pages.initiativeRefunds.form.status')}
+            placeholder={t('pages.initiativeRefunds.form.status')}
+            onChange={(e) => formik.handleChange(e)}
+            value={formik.values.filterStatus}
+          >
+            <MenuItem value="EXPORTED" data-testid="filterStatusRegistered-test">
+              {t('pages.initiativeRefunds.form.toLoad')}
+            </MenuItem>
+            <MenuItem value="PARTIAL" data-testid="filterStatusPartial-test">
+              {t('pages.initiativeRefunds.form.partial')}
+            </MenuItem>
+            <MenuItem value="COMPLETE" data-testid="filterStatusWaiting-test">
+              {t('pages.initiativeRefunds.form.completed')}
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
+          <Button
+            sx={{ py: 2, height: '44px' }}
+            variant="outlined"
+            size="small"
+            onClick={() => formik.handleSubmit()}
+            data-testid="apply-filters-test"
+          >
+            {t('pages.initiativeRefunds.form.filterBtn')}
+          </Button>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
+          <ButtonNaked
+            component="button"
+            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
+            onClick={resetForm}
+          >
+            {t('pages.initiativeRefunds.form.resetFiltersBtn')}
+          </ButtonNaked>
+        </FormControl>
+      </Box>
+
       {rows.length > 0 ? (
         <Box
           sx={{
@@ -437,9 +479,9 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
-                        <Link href={r.filePath} download target="_blank">
+                        <IconButton onClick={() => handleDownloadFile(r.filePath)}>
                           <FileDownloadIcon color="primary" />
-                        </Link>
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

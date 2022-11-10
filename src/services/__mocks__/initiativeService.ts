@@ -166,7 +166,7 @@ export interface InitiativeRefundToDisplay {
   rewardsResults: string | undefined;
   successPercentage: string | undefined;
   status: { status: string | undefined; percentageResulted: string | undefined };
-  filePath: string | undefined;
+  filePath: { initiativeId: string | undefined; filePath: string | undefined };
 }
 
 export interface InitiativeRefundsResponse {

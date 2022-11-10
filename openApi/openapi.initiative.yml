@@ -240,7 +240,7 @@ paths:
   /{initiativeId}/onboardings:
     get:
       tags:
-        - initiative
+        - initiative-onboarding
       summary: Returns the onbordings status
       description: Returns the onbordings status
       operationId: getOnboardingStatus
@@ -283,6 +283,12 @@ paths:
         - name: dateTo
           in: query
           description: End date
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          description: onboarding state
           required: false
           schema:
             type: string
@@ -1173,7 +1179,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/reward/notification/exports:
+  /{initiativeId}/reward/exports:
     get:
       tags:
         - initiative-reward
@@ -1270,8 +1276,77 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/reward/exports/{filename}:
+    get:
+      tags:
+        - initiative-reward
+      summary: Return the requested filename
+      operationId: getRewardFileDownload
+      parameters:
+        - name: initiativeId
+          in: path
+          description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: filename
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SasToken'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
 components:
   schemas:
+    SasToken:
+      type: object
+      properties:
+        sas:
+          type: string
     InitiativeAdditionalDTO:
       type: object
       properties:
@@ -1746,18 +1821,6 @@ components:
           format: int32
         accruedRewards:
           type: string
-    Pageable:
-      title: Pageable
-      type: object
-      properties:
-        page:
-          type: integer
-          format: int32
-        size:
-          type: integer
-          format: int32
-        sort:
-          type: string
     PageRewardExportsDTO:
       title: PageRewardExportsDTO
       type: object
@@ -1766,8 +1829,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/RewardExportsDTO'
-        pageable:
-          $ref: '#/components/schemas/Pageable'
         totalElements:
           type: integer
           format: int64
@@ -1791,7 +1852,7 @@ components:
           type: string
         notificationDate:
           type: string
-          format: date-time
+          format: date
         organizationId:
           type: string
         percentageResulted:
