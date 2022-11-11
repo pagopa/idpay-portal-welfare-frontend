@@ -131,3 +131,6 @@ export const getOnboardingStatus = (
   InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then(
     (res) => res
   );
+
+export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> =>
+  InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);

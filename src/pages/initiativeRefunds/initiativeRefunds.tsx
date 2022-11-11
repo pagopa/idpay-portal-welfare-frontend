@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -39,12 +40,17 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
+import { useDropzone } from 'react-dropzone';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
+import {
+  getExportsPaged,
+  getRewardFileDownload,
+  putDispFileUpload,
+} from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
@@ -67,6 +73,8 @@ const InitiativeRefunds = () => {
     string | undefined
   >();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
+
+  const [fileUploadFeedback, setFileUploadFeedback] = useState<string>('');
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USERS],
@@ -296,6 +304,43 @@ const InitiativeRefunds = () => {
     }
   };
 
+  const { getRootProps, getInputProps, open } = useDropzone({
+    noClick: true,
+    noKeyboard: true,
+    maxFiles: 1,
+    maxSize: 2097152,
+    accept:
+      'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
+    onDrop: () => {
+      setFileUploadFeedback('');
+    },
+    onDropAccepted: (files) => {
+      const fileName = files[0].name;
+      if (typeof initiativeSel.initiativeId === 'string') {
+        putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
+          .then((_res) => {
+            setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackOk'));
+            setTimeout(() => {
+              setFileUploadFeedback('');
+            }, 5000);
+          })
+          .catch((_error) => {
+            setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
+            setTimeout(() => {
+              setFileUploadFeedback('');
+            }, 5000);
+          });
+      }
+    },
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    onDropRejected: (_files) => {
+      setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
+      setTimeout(() => {
+        setFileUploadFeedback('');
+      }, 5000);
+    },
+  });
+
   return (
     <Box sx={{ width: '100%', px: 2 }}>
       <Box
@@ -336,10 +381,15 @@ const InitiativeRefunds = () => {
             variantSubTitle="body1"
           />
         </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}>
-          <Button variant="contained" size="small" disabled startIcon={<FileUploadIcon />}>
+        <Box
+          sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}
+          {...getRootProps({ className: 'dropzone' })}
+        >
+          <input {...getInputProps()} />
+          <Button variant="contained" size="small" startIcon={<FileUploadIcon />} onClick={open}>
             {t('pages.initiativeRefunds.uploadBtn')}
           </Button>
+          <FormHelperText>{fileUploadFeedback}</FormHelperText>
         </Box>
       </Box>
 

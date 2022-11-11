@@ -378,6 +378,10 @@ export default {
         partial: 'Esiti parziali ({{percentage}})',
         complete: 'Completato',
       },
+      uploadFile: {
+        feedbackOk: 'File caricato correttamente',
+        feedbackKo: 'Errore nel caricamento del file',
+      },
     },
   },
   breadcrumbs: {

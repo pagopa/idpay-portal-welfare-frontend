@@ -241,4 +241,9 @@ export const InitiativeApi = {
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
+  putDispFileUpload: async (id: string, filename: string, file: File): Promise<void> => {
+    const result = await apiClient.putDispFileUpload({ initiativeId: id, filename, file });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
 };
