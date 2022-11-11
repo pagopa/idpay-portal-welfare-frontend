@@ -304,6 +304,13 @@ const InitiativeRefunds = () => {
     }
   };
 
+  const handleUploadFeedback = (msg: string) => {
+    setFileUploadFeedback(msg);
+    setTimeout(() => {
+      setFileUploadFeedback('');
+    }, 5000);
+  };
+
   const { getRootProps, getInputProps, open } = useDropzone({
     noClick: true,
     noKeyboard: true,
@@ -319,25 +326,15 @@ const InitiativeRefunds = () => {
       if (typeof initiativeSel.initiativeId === 'string') {
         putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
           .then((_res) => {
-            setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackOk'));
-            setTimeout(() => {
-              setFileUploadFeedback('');
-            }, 5000);
+            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackOk'));
           })
           .catch((_error) => {
-            setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-            setTimeout(() => {
-              setFileUploadFeedback('');
-            }, 5000);
+            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
           });
       }
     },
-    // eslint-disable-next-line sonarjs/no-identical-functions
     onDropRejected: (_files) => {
-      setFileUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-      setTimeout(() => {
-        setFileUploadFeedback('');
-      }, 5000);
+      handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
     },
   });
 
