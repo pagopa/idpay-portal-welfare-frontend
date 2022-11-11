@@ -343,7 +343,7 @@ export default {
       },
       status: {
         acceptedTc: 'In corso',
-        inactive: 'Disinscritto',
+        inactive: 'Disiscritto',
         onEvaluation: 'In attesa',
         invited: 'Idoneo',
         onboardingOk: 'Iscritto',
