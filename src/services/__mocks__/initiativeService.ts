@@ -223,6 +223,25 @@ export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Prom
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   new Promise((resolve) => resolve(mockedAdmissionCriteria));
 
+export const getGroupOfBeneficiaryStatusAndDetails = (_id: string): Promise<void> =>
+  new Promise((resolve) => resolve());
+
+export const getExportsPaged = (
+  _id: string,
+  _page: number,
+  _notificationDateFrom: string | undefined,
+  _notificationDateTo: string | undefined,
+  _status: string | undefined
+): Promise<void> => new Promise((resolve) => resolve());
+
+export const mockedExportsPaged = {
+  id: mockedInitiativeId,
+  page: 10,
+  status: 'EXPORTED',
+  notificationDateFrom: '11/11/2022',
+  notificationDateTo: '11/11/2022',
+};
+
 export const mockedInitiativeRefundsPage1 = {
   pageNo: 1,
   pageSize: 10,

@@ -20,11 +20,14 @@ import {
   logicallyDeleteInitiative,
   updateInitiativeServiceInfo,
   getEligibilityCriteriaForSidebar,
+  getGroupOfBeneficiaryStatusAndDetails,
+  getExportsPaged,
 } from '../intitativeService';
 
 import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 
 import {
+  mockedExportsPaged,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
@@ -58,6 +61,8 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
   jest.spyOn(InitiativeApi, 'getEligibilityCriteriaForSidebar');
   jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
+  jest.spyOn(InitiativeApi, 'getGroupOfBeneficiaryStatusAndDetails');
+  jest.spyOn(InitiativeApi, 'getExportsPaged');
 });
 
 test('test get initiative summary', async () => {
@@ -187,6 +192,30 @@ test('test fetch admission criteria mocked Admission', async () => {
       new Promise(() => ({}))
     );
   }
+});
+
+test('get Group Of Beneficiary Status And Details', async () => {
+  await getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
+  expect(InitiativeApi.getGroupOfBeneficiaryStatusAndDetails).toHaveBeenCalledWith(
+    mockedInitiativeId
+  );
+});
+
+test('get Exports Paged', async () => {
+  await getExportsPaged(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.notificationDateFrom,
+    mockedExportsPaged.notificationDateTo,
+    mockedExportsPaged.status
+  );
+  expect(InitiativeApi.getExportsPaged).toHaveBeenCalledWith(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.notificationDateFrom,
+    mockedExportsPaged.notificationDateTo,
+    mockedExportsPaged.status
+  );
 });
 
 test(' get transaction config rules', async () => {

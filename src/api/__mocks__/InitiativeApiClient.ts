@@ -80,4 +80,15 @@ export const InitiativeApi = {
     new Promise((resolve) => resolve()),
 
   getTransactionConfigRules: async (): Promise<void> => new Promise((resolve) => resolve()),
+
+  getGroupOfBeneficiaryStatusAndDetails: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  getExportsPaged: async (
+    _id: string,
+    _page: number,
+    _notificationDateFrom: string | undefined,
+    _notificationDateTo: string | undefined,
+    _status: string | undefined
+  ): Promise<void> => new Promise((resolve) => resolve()),
 };
