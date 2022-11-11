@@ -54,7 +54,7 @@ export default function SideMenu() {
   });
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_USERS],
+    path: [ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_USERS, ROUTES.INITIATIVE_REFUNDS],
     exact: true,
     strict: false,
   });
@@ -157,7 +157,6 @@ export default function SideMenu() {
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
                     icon={GroupIcon}
                     level={2}
-                    disabled={false}
                     data-testid="initiativeUsers-click-test"
                   />
                   <SidenavItem
@@ -172,7 +171,6 @@ export default function SideMenu() {
                     }
                     icon={EuroSymbolIcon}
                     level={2}
-                    disabled={true}
                     data-testid="initiativeRefunds-click-test"
                   />
                 </List>

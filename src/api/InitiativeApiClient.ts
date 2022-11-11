@@ -16,6 +16,9 @@ import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefund
 import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
+import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
+import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
+import { SasToken } from './generated/initiative/SasToken';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -192,8 +195,55 @@ export const InitiativeApi = {
   },
 
   getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
-    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
-    console.log(result);
+    const result = await apiClient.initiativeStatistics({ initiativeId: id });
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getExportsPaged: async (
+    id: string,
+    page: number,
+    notificationDateFrom?: string,
+    notificationDateTo?: string,
+    status?: string
+  ): Promise<PageRewardExportsDTO> => {
+    const result = await apiClient.getRewardNotificationExportsPaged({
+      initiativeId: id,
+      page,
+      size: 10,
+      notificationDateFrom,
+      notificationDateTo,
+      status,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardFileDownload: async (initiativeId: string, filePath: string): Promise<SasToken> => {
+    const result = await apiClient.getRewardFileDownload({ initiativeId, filename: filePath });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  getOnboardingStatus: async (
+    id: string,
+    page: number,
+    beneficiary?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    state?: string
+  ): Promise<OnboardingDTO> => {
+    const result = await apiClient.getOnboardingStatus({
+      initiativeId: id,
+      page,
+      size: 10,
+      beneficiary,
+      dateFrom,
+      dateTo,
+      state,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  putDispFileUpload: async (id: string, filename: string, file: File): Promise<void> => {
+    const result = await apiClient.putDispFileUpload({ initiativeId: id, filename, file });
+    return extractResponse(result, 201, onRedirectToLogin);
   },
 };
