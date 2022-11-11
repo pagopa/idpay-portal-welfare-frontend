@@ -1,4 +1,4 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
@@ -12,6 +12,8 @@ import { createInitiativeServiceInfo } from '../../../../../services/intitativeS
 import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
+window.scrollTo = jest.fn();
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -20,14 +22,12 @@ jest.mock('../../../../../api/InitiativeApiClient.ts');
 
 beforeEach(() => {
   jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
 describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-
-  it('renders without crashing', () => {
-    window.scrollTo = jest.fn();
-  });
 
   const setUpServiceConfig = () => {
     const currentStep: number = 0;
@@ -128,7 +128,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   } = setUpServiceConfig();
 
   it('call the formik handleSubmit event when form is submitted', async () => {
-    waitFor(async () => {
+    await waitFor(async () => {
       expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
       fireEvent.click(submit);
       handleSubmit();
@@ -151,7 +151,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   it('draft action makes the dispatch', async () => {
-    waitFor(async () => {
+    await waitFor(async () => {
       expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
       fireEvent.click(skip);
     });
@@ -175,22 +175,38 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   it('Test onChange of form input', async () => {
-    const servName = document.getElementById('service-name-test') as HTMLInputElement;
+    const { container } = render(
+      <Provider store={store}>
+        <ServiceConfig
+          action={''}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={0}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+    const servName = container.querySelector('#service-name-test') as HTMLInputElement;
     const servArea = document.getElementById('service-area-select') as HTMLSelectElement;
+    const mockCallback = jest.fn();
+    const locale = document.getElementById('serviceScopeLocal-test');
+    const nazionale = document.getElementById('serviceScopeNational-test');
 
     waitFor(async () => {
       fireEvent.change(servName, { target: { value: 'name' } });
       expect(servName.value).toBe('name');
       fireEvent.change(servName, { target: { value: '' } });
       expect(servName.value).toBe('');
-    });
 
-    const mockCallback = jest.fn();
-
-    const locale = document.getElementById('serviceScopeLocal-test');
-    const nazionale = document.getElementById('serviceScopeNational-test');
-
-    waitFor(async () => {
       expect(locale).toBeInTheDocument();
       expect(nazionale).toBeInTheDocument();
 
