@@ -22,12 +22,17 @@ import {
   getEligibilityCriteriaForSidebar,
   getGroupOfBeneficiaryStatusAndDetails,
   getExportsPaged,
+  getRewardFileDownload,
+  getOnboardingStatus,
+  putDispFileUpload,
 } from '../intitativeService';
 
 import { fetchAdmissionCriteria } from '../admissionCriteriaService';
 
 import {
   mockedExportsPaged,
+  mockedFileName,
+  mockedFilePath,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
@@ -39,6 +44,7 @@ import {
 import { InitiativeApi } from '../../api/InitiativeApiClient';
 import { mockedAdmissionCriteria } from '../__mocks__/admissionCriteriaService';
 import { fetchTransactionRules } from '../transactionRuleService';
+import { mockedFile } from '../__mocks__/groupService';
 
 jest.mock('../../api/InitiativeApiClient');
 
@@ -63,6 +69,9 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
   jest.spyOn(InitiativeApi, 'getGroupOfBeneficiaryStatusAndDetails');
   jest.spyOn(InitiativeApi, 'getExportsPaged');
+  jest.spyOn(InitiativeApi, 'getRewardFileDownload');
+  jest.spyOn(InitiativeApi, 'getOnboardingStatus');
+  jest.spyOn(InitiativeApi, 'putDispFileUpload');
 });
 
 test('test get initiative summary', async () => {
@@ -191,6 +200,9 @@ test('test fetch admission criteria mocked Admission', async () => {
     expect(new Promise((resolve) => resolve(mockedAdmissionCriteria))).toStrictEqual(
       new Promise(() => ({}))
     );
+  } else {
+    await getEligibilityCriteriaForSidebar();
+    expect(InitiativeApi.getEligibilityCriteriaForSidebar).toHaveBeenCalled();
   }
 });
 
@@ -221,6 +233,42 @@ test('get Exports Paged', async () => {
 test(' get transaction config rules', async () => {
   await fetchTransactionRules();
   expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
+});
+
+test('get reward file download', async () => {
+  await getRewardFileDownload(mockedInitiativeId, mockedFilePath);
+  expect(InitiativeApi.getRewardFileDownload).toHaveBeenCalledWith(
+    mockedInitiativeId,
+    mockedFilePath
+  );
+});
+
+test('get Onboarding Status', async () => {
+  await getOnboardingStatus(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.notificationDateFrom,
+    mockedExportsPaged.notificationDateTo,
+    mockedExportsPaged.status,
+    mockedExportsPaged.beneficiary
+  );
+  expect(InitiativeApi.getOnboardingStatus).toHaveBeenCalledWith(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.notificationDateFrom,
+    mockedExportsPaged.notificationDateTo,
+    mockedExportsPaged.status,
+    mockedExportsPaged.beneficiary
+  );
+});
+
+test('put Disp File Upload', async () => {
+  await putDispFileUpload(mockedInitiativeId, mockedFileName, mockedFile);
+  expect(InitiativeApi.putDispFileUpload).toHaveBeenCalledWith(
+    mockedInitiativeId,
+    mockedFileName,
+    mockedFile
+  );
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {

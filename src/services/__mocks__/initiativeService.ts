@@ -234,13 +234,32 @@ export const getExportsPaged = (
   _status: string | undefined
 ): Promise<void> => new Promise((resolve) => resolve());
 
+export const getRewardFileDownload = (_id: string, _filePath: string): Promise<void> =>
+  new Promise((resolve) => resolve());
+
+export const getOnboardingStatus = (
+  _id: string,
+  _page: number,
+  _notificationDateFrom: string | undefined,
+  _notificationDateTo: string | undefined,
+  _status: string | undefined
+): Promise<void> => new Promise((resolve) => resolve());
+
+export const putDispFileUpload = (_id: string, _filename: string, _file: File): Promise<void> =>
+  new Promise((resolve) => resolve());
+
 export const mockedExportsPaged = {
-  id: mockedInitiativeId,
+  id: '62e29002aac2e94cfa3763dd',
   page: 10,
   status: 'EXPORTED',
   notificationDateFrom: '11/11/2022',
   notificationDateTo: '11/11/2022',
+  beneficiary: 'MCCGRL01C25M052R',
 };
+
+export const mockedFilePath = 'download';
+
+export const mockedFileName = 'name';
 
 export const mockedInitiativeRefundsPage1 = {
   pageNo: 1,

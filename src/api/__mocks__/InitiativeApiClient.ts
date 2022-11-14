@@ -91,4 +91,18 @@ export const InitiativeApi = {
     _notificationDateTo: string | undefined,
     _status: string | undefined
   ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getOnboardingStatus: async (
+    _id: string,
+    _page: number,
+    _notificationDateFrom: string | undefined,
+    _notificationDateTo: string | undefined,
+    _status: string | undefined
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getRewardFileDownload: async (_id: string, _filePath: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  putDispFileUpload: async (_id: string, _filename: string, _file: File): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };
