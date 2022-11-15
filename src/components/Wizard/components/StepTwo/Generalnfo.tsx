@@ -271,6 +271,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     setValue(newValue);
   };
 
+  const introductionArrayOptions = () => [
+    formik.values.introductionTextIT,
+    formik.values.introductionTextEN,
+    formik.values.introductionTextFR,
+    formik.values.introductionTextDE,
+    formik.values.introductionTextSL,
+  ];
+  
   return (
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -615,22 +623,24 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               <Tab label={t('components.wizard.common.languages.slovenian')} />
             </Tabs>
           </Box>
-          <IntrudoctionTabPanel value={value} index={0}>
-            <FormControl
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 2fr 1fr)',
-                rowGap: 3,
-                mt: 3,
-                mb: 5,
-              }}
-            >
+
+          <FormControl
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(1, 2fr 1fr)',
+              rowGap: 3,
+              mt: 3,
+              mb: 5,
+            }}
+          >
+            <IntrudoctionTabPanel value={value} index={0}>
               <TextField
                 id="introductionTextIT"
                 label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextIT"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
+                fullWidth
                 value={formik.values.introductionTextIT}
                 onChange={(e) => {
                   formik.handleChange(e);
@@ -646,25 +656,15 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-              <IntroductionMarkdown textToRender={formik.values} />
-            </FormControl>
-          </IntrudoctionTabPanel>
-          <IntrudoctionTabPanel value={value} index={1}>
-            <FormControl
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 2fr 1fr)',
-                rowGap: 3,
-                mt: 3,
-                mb: 5,
-              }}
-            >
+            </IntrudoctionTabPanel>
+            <IntrudoctionTabPanel value={value} index={1}>
               <TextField
                 id="introductionTextEN"
                 label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextEN"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
+                fullWidth
                 value={formik.values.introductionTextEN}
                 onChange={(e) => {
                   formik.handleChange(e);
@@ -678,30 +678,20 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-              <IntroductionMarkdown textToRender={formik.values.introductionTextEN} />
-            </FormControl>
-          </IntrudoctionTabPanel>
-          <IntrudoctionTabPanel value={value} index={2}>
-            <FormControl
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 2fr 1fr)',
-                rowGap: 3,
-                mt: 3,
-                mb: 5,
-              }}
-            >
+            </IntrudoctionTabPanel>
+            <IntrudoctionTabPanel value={value} index={2}>
               <TextField
                 id="introductionTextFR"
                 label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextFR"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
+                fullWidth
                 value={formik.values.introductionTextFR}
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductiveInfo-test"
+                data-testid="introductionTextFR-test"
                 size="small"
                 minRows={3}
                 multiline
@@ -710,31 +700,21 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-              <IntroductionMarkdown textToRender={formik.values.introductionTextFR} />
-            </FormControl>
-          </IntrudoctionTabPanel>
+            </IntrudoctionTabPanel>
 
-          <IntrudoctionTabPanel value={value} index={3}>
-            <FormControl
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 2fr 1fr)',
-                rowGap: 3,
-                mt: 3,
-                mb: 5,
-              }}
-            >
+            <IntrudoctionTabPanel value={value} index={3}>
               <TextField
                 id="introductionTextDE"
                 label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextDE"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
+                fullWidth
                 value={formik.values.introductionTextDE}
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductiveInfo-test"
+                data-testid="introductionTextDE-test"
                 size="small"
                 minRows={3}
                 multiline
@@ -743,30 +723,20 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-              <IntroductionMarkdown textToRender={formik.values.introductionTextDE} />
-            </FormControl>
-          </IntrudoctionTabPanel>
-          <IntrudoctionTabPanel value={value} index={4}>
-            <FormControl
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(1, 2fr 1fr)',
-                rowGap: 3,
-                mt: 3,
-                mb: 5,
-              }}
-            >
+            </IntrudoctionTabPanel>
+            <IntrudoctionTabPanel value={value} index={4}>
               <TextField
                 id="introductionTextSL"
                 label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextSL"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
+                fullWidth
                 value={formik.values.introductionTextSL}
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductiveInfo-test"
+                data-testid="introductionTextSL-test"
                 size="small"
                 minRows={3}
                 multiline
@@ -775,9 +745,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-              <IntroductionMarkdown textToRender={formik.values.introductionTextSL} />
-            </FormControl>
-          </IntrudoctionTabPanel>
+            </IntrudoctionTabPanel>
+            <IntroductionMarkdown textToRender={introductionArrayOptions()} />
+          </FormControl>
         </Box>
       </Paper>
     </>
