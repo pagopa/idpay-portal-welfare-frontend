@@ -343,7 +343,7 @@ export default {
       },
       status: {
         acceptedTc: 'In corso',
-        inactive: 'Disinscritto',
+        inactive: 'Disiscritto',
         onEvaluation: 'In attesa',
         invited: 'Idoneo',
         onboardingOk: 'Iscritto',
@@ -375,7 +375,7 @@ export default {
       },
       status: {
         exported: 'Esiti da caricare',
-        partial: 'Esiti parziali ({{percentage}})',
+        partial: 'Esiti parziali ({{percentage}}%)',
         complete: 'Completato',
       },
       uploadFile: {
