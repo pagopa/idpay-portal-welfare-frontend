@@ -329,11 +329,12 @@ const InitiativeOverview = () => {
           {conditionalSubtitleRendering(initiativeSel.status)}
         </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 12' }}>
+      <Box sx={{ gridColumn: 'span 12', mt: 1 }}>
         {status === 'IN_REVISION' && (
           <Button
             disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
             data-testid="contion-onclick-test"
@@ -344,6 +345,7 @@ const InitiativeOverview = () => {
         {status === 'DRAFT' && userCanUpdateInitiative && (
           <Button
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
             data-testid="contion-onclick-test"
@@ -356,6 +358,7 @@ const InitiativeOverview = () => {
           <Button
             disabled={userCanReviewInitiative ? true : false}
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
             data-testid="contion-onclick-test"
@@ -367,6 +370,7 @@ const InitiativeOverview = () => {
           <>
             <Button
               variant="contained"
+              size="small"
               startIcon={conditionalStartIconRendering(initiativeSel.status)}
               onClick={() => conditionalOnClickRendering(initiativeSel.status)}
               data-testid="contion-onclick-test"
@@ -393,12 +397,12 @@ const InitiativeOverview = () => {
   ) =>
     initiative.status === 'PUBLISHED' && (
       <>
-        <Box sx={{ gridColumn: 'span 12', display: 'inline-flex' }}>
-          <Typography variant="body2" sx={{ color: '#5C6F82' }}>
+        <Box sx={{ gridColumn: 'span 12', display: 'inline-flex', mb: 1, mt: -1 }}>
+          <Typography variant="body2" sx={{ color: '#5C6F82', fontSize: '0.875rem' }}>
             {t('pages.initiativeOverview.next.lastUpdate')}
           </Typography>
           &nbsp;
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography variant="caption-semibold" sx={{ fontWeight: 600 }}>
             {lastUpdatedDateTime}
           </Typography>
         </Box>
@@ -431,9 +435,10 @@ const InitiativeOverview = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ gridColumn: 'span 12' }}>
+        <Box sx={{ gridColumn: 'span 12', mt: 1 }}>
           <Button
             variant="contained"
+            size="small"
             startIcon={<FactCheckIcon />}
             onClick={() =>
               history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiative.initiativeId}`)
@@ -562,7 +567,7 @@ const InitiativeOverview = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -629,10 +634,10 @@ const InitiativeOverview = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignContent: 'start',
-            rowGap: 3,
+            rowGap: 2,
           }}
         >
-          <Box sx={{ pt: 3, gridColumn: 'span 12' }}>
+          <Box sx={{ pt: 3, gridColumn: 'span 12', pb: 1 }}>
             <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 4' }}>
@@ -670,7 +675,9 @@ const InitiativeOverview = () => {
               {t('pages.initiativeOverview.info.initiativeState')}
             </Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 8' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
+          <Box sx={{ gridColumn: 'span 8', alignItems: 'baseline' }}>
+            {renderInitiativeStatus(initiativeSel.status)}
+          </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             {renderConditionalInfoStatus(initiativeSel.status)}
           </Box>
@@ -684,8 +691,8 @@ const InitiativeOverview = () => {
             gridColumn: 'span 1',
             display: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
-            alignContent: 'start',
-            rowGap: 3,
+            alignItems: 'center',
+            rowGap: 2,
           }}
         >
           <Box

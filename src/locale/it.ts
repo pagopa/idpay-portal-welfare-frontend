@@ -383,6 +383,26 @@ export default {
         feedbackKo: 'Errore nel caricamento del file',
       },
     },
+    initiativeRefundsOutcome: {
+      title: 'Gestione esiti',
+      uploadPaper: {
+        title: 'Carica un nuovo file',
+        subtitle:
+          'Una volta caricato, il file verrà elaborato così da aggiornare lo stato dei rimborsi.',
+        findOut: 'Scopri di più',
+        dragAreaText: 'Trascina qui il file .zip contenente la lista degli esiti o ',
+        dragAreaLink: 'selezionalo dal tuo computer.',
+        fileUploadHelpText: 'Non sai come preparare il file?',
+        fileUuploadHelpFileLinkLabel: 'Scarica il file .zip di esempio',
+        fileIsLoading: 'Caricamento in corso...',
+        validFile: 'File valido',
+        changeFile: 'Sostituisci file',
+        invalidFileTitle: 'Il file caricato non è valido',
+        invalidFileDescription: 'Errore',
+        invalidFileTypeDescription: 'Sono ammessi solamente file .zip',
+        overMaxUploadDescription: 'La dimensione massima supportata è di 2MB',
+      },
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
@@ -392,6 +412,7 @@ export default {
     initiativeDetail: 'Dettagli iniziativa',
     initiativeUsers: 'Utenti',
     initiativeRefunds: 'Rimborsi',
+    initiativeRefundsOutcome: 'Gestione esiti',
   },
   components: {
     wizard: {
@@ -466,6 +487,7 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
+
           form: {
             year: 'Anno',
             age: 'Età',

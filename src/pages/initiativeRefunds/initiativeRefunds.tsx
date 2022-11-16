@@ -6,7 +6,7 @@ import {
   Button,
   Chip,
   FormControl,
-  FormHelperText,
+  // FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -26,7 +26,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
@@ -40,17 +39,12 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
-import { useDropzone } from 'react-dropzone';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import {
-  getExportsPaged,
-  getRewardFileDownload,
-  putDispFileUpload,
-} from '../../services/intitativeService';
+import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
@@ -73,8 +67,6 @@ const InitiativeRefunds = () => {
     string | undefined
   >();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
-
-  const [fileUploadFeedback, setFileUploadFeedback] = useState<string>('');
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USERS],
@@ -165,7 +157,9 @@ const InitiativeRefunds = () => {
           showCloseIcon: true,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -304,42 +298,14 @@ const InitiativeRefunds = () => {
     }
   };
 
-  const handleUploadFeedback = (msg: string) => {
-    setFileUploadFeedback(msg);
-    setTimeout(() => {
-      setFileUploadFeedback('');
-    }, 5000);
+  const goToRefundsOutcome = (initiativeId: string | undefined) => {
+    if (typeof initiativeId === 'string') {
+      history.replace(`${BASE_ROUTE}/esiti-rimborsi-iniziativa/${initiativeId}`);
+    }
   };
 
-  const { getRootProps, getInputProps, open } = useDropzone({
-    noClick: true,
-    noKeyboard: true,
-    maxFiles: 1,
-    maxSize: 2097152,
-    accept:
-      'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
-    onDrop: () => {
-      setFileUploadFeedback('');
-    },
-    onDropAccepted: (files) => {
-      const fileName = files[0].name;
-      if (typeof initiativeSel.initiativeId === 'string') {
-        putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
-          .then((_res) => {
-            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackOk'));
-          })
-          .catch((_error) => {
-            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-          });
-      }
-    },
-    onDropRejected: (_files) => {
-      handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-    },
-  });
-
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -352,7 +318,9 @@ const InitiativeRefunds = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() => history.replace(ROUTES.HOME)}
+              onClick={() =>
+                history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${initiativeSel.initiativeId}`)
+              }
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -378,15 +346,15 @@ const InitiativeRefunds = () => {
             variantSubTitle="body1"
           />
         </Box>
-        <Box
-          sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}
-          {...getRootProps({ className: 'dropzone' })}
-        >
-          <input {...getInputProps()} />
-          <Button variant="contained" size="small" startIcon={<FileUploadIcon />} onClick={open}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<FileUploadIcon />}
+            onClick={() => goToRefundsOutcome(initiativeSel.initiativeId)}
+          >
             {t('pages.initiativeRefunds.uploadBtn')}
           </Button>
-          <FormHelperText>{fileUploadFeedback}</FormHelperText>
         </Box>
       </Box>
 

@@ -73,12 +73,12 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         gridTemplateRows: 'auto',
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
-        rowGap: 3,
+        rowGap: 2,
         alignContent: 'start',
       }}
     >
       <Divider sx={{ gridColumn: 'span 12' }} />
-      <Box sx={{ gridColumn: 'span 12' }}>
+      <Box sx={{ gridColumn: 'span 12', pb: 1 }}>
         <Typography variant="subtitle1">
           {t('pages.initiativeOverview.info.otherinfo.title')}
         </Typography>
@@ -90,9 +90,9 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
         {initiative.status === 'APPROVED' ? (
-          <AccessTimeFilledIcon color="action" />
+          <AccessTimeFilledIcon color="action" sx={{ fontSize: '22px' }} />
         ) : (
-          <HourglassTopIcon color="action" />
+          <HourglassTopIcon color="action" sx={{ fontSize: '22px' }} />
         )}
       </Box>
       <Box sx={{ gridColumn: 'span 7' }}>
@@ -106,7 +106,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        <AccessTimeFilledIcon color="action" />
+        <AccessTimeFilledIcon color="action" sx={{ fontSize: '22px' }} />
       </Box>
       <Box sx={{ gridColumn: 'span 7' }}>
         <Typography variant="body2" sx={{ fontWeight: 600 }}>

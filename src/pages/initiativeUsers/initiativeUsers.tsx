@@ -8,7 +8,7 @@ import {
   Button,
   Chip,
   FormControl,
-  IconButton,
+  // IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +26,7 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -39,7 +39,7 @@ import { parse } from 'date-fns';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { InitiativeUserToDisplay } from '../../services/__mocks__/initiativeUsersService';
 import { getOnboardingStatus } from '../../services/intitativeService';
 
@@ -339,7 +339,7 @@ const InitiativeUsers = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -352,7 +352,9 @@ const InitiativeUsers = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() => history.replace(ROUTES.HOME)}
+              onClick={() =>
+                history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${initiativeSel.initiativeId}`)
+              }
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -513,16 +515,16 @@ const InitiativeUsers = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="30%">
+                    <TableCell width="50%">
                       {t('pages.initiativeUsers.table.beneficiary')}
                     </TableCell>
-                    <TableCell width="30%">
+                    <TableCell width="40%">
                       {t('pages.initiativeUsers.table.updateStatusDate')}
                     </TableCell>
-                    <TableCell width="30%">
+                    <TableCell width="10%">
                       {t('pages.initiativeUsers.table.beneficiaryState')}
                     </TableCell>
-                    <TableCell width="10%"></TableCell>
+                    {/* <TableCell width="10%"></TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -539,11 +541,11 @@ const InitiativeUsers = () => {
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState)}</TableCell>
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
