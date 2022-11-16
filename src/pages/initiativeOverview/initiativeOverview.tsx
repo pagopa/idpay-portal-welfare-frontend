@@ -22,7 +22,7 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 import {
-  getGroupOfBeneficiaryStatusAndDetails,
+  initiativeStatistics,
   updateInitiativePublishedStatus,
 } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
@@ -122,7 +122,7 @@ const InitiativeOverview = () => {
       const { id } = match.params as MatchParams;
       if (initiativeSel.initiativeId === id && initiativeSel.status === 'PUBLISHED') {
         setLoading(true);
-        getGroupOfBeneficiaryStatusAndDetails(id)
+        initiativeStatistics(id)
           .then((res) => {
             if (typeof res.accruedRewards === 'string') {
               setAccruedRewards(res.accruedRewards);

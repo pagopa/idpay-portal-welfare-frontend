@@ -27,6 +27,13 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   rankingEndDate: parseDate(values.rankingEndDate),
   startDate: parseDate(values.startDate),
   endDate: parseDate(values.endDate),
+  descriptionMap: {
+    it: values.introductionTextIT,
+    en: values.introductionTextEN,
+    fr: values.introductionTextEN,
+    de: values.introductionTextDE,
+    sl: values.introductionTextSL,
+  },
 });
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>

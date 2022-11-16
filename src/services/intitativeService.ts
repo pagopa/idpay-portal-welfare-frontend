@@ -98,7 +98,7 @@ export const logicallyDeleteInitiative = (id: string): Promise<void> =>
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
 
-export const getGroupOfBeneficiaryStatusAndDetails = (
+export const initiativeStatistics = (
   id: string
 ): Promise<InitiativeStatisticsDTO> =>
-  InitiativeApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);
+  InitiativeApi.initiativeStatistics(id).then((res) => res);

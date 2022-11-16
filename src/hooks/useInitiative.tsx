@@ -170,6 +170,11 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   };
   if (data && Object.keys(data).length !== 0) {
     if (typeof data.beneficiaryType !== undefined) {
@@ -204,6 +209,31 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.rankingEndDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEndDate = data.rankingEndDate;
+    }
+
+    if (typeof data.descriptionMap.introductionTextIT !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.introductionTextIT = data.descriptionMap.introductionTextIT;
+    }
+
+    if (typeof data.descriptionMap.introductionTextEN !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.introductionTextEN = data.descriptionMap.introductionTextEN;
+    }
+
+    if (typeof data.descriptionMap.introductionTextFR !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.introductionTextFR = data.descriptionMap.introductionTextFR;
+    }
+
+    if (typeof data.descriptionMap.introductionTextDE !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.introductionTextDE = data.descriptionMap.introductionTextDE;
+    }
+
+    if (typeof data.descriptionMap.introductionTextSL !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.introductionTextSL = data.descriptionMap.introductionTextSL;
     }
   }
 

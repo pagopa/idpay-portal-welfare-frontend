@@ -191,8 +191,8 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
-    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
+  initiativeStatistics: async (id: string): Promise<InitiativeStatisticsDTO> => {
+    const result = await apiClient.initiativeStatistics({ initiativeId: id });
     console.log(result);
     return extractResponse(result, 200, onRedirectToLogin);
   },

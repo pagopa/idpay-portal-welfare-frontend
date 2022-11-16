@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 /* eslint-disable sonarjs/cognitive-complexity */
 import {
   Paper,
@@ -222,11 +223,11 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       rankingEndDate: generalInfoForm.rankingEndDate,
       startDate: generalInfoForm.startDate,
       endDate: generalInfoForm.endDate,
-      introductionTextIT: '',
-      introductionTextEN: '',
-      introductionTextFR: '',
-      introductionTextDE: '',
-      introductionTextSL: '',
+      introductionTextIT: generalInfoForm.introductionTextIT,
+      introductionTextEN: generalInfoForm.introductionTextEN,
+      introductionTextFR: generalInfoForm.introductionTextFR,
+      introductionTextDE: generalInfoForm.introductionTextDE,
+      introductionTextSL: generalInfoForm.introductionTextSL,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -271,7 +272,50 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     setValue(newValue);
   };
 
-  const introductionArrayOptions = () => [
+  const introductionArrayOptions = () => {
+    const optionList: Array<{ label: string; formikValue: string }> = [];
+
+    if (typeof formik.values.introductionTextIT === 'string') {
+      optionList.push({
+        label: t('components.wizard.common.languages.italian'),
+        formikValue: formik.values.introductionTextIT,
+      });
+    }
+
+    if (typeof formik.values.introductionTextEN === 'string') {
+      optionList.push({
+        label: t('components.wizard.common.languages.english'),
+        formikValue: formik.values.introductionTextEN,
+      });
+    }
+
+    if (typeof formik.values.introductionTextFR === 'string') {
+      optionList.push({
+        label: t('components.wizard.common.languages.french'),
+        formikValue: formik.values.introductionTextFR,
+      });
+    }
+
+    if (typeof formik.values.introductionTextDE === 'string') {
+      optionList.push({
+        label: t('components.wizard.common.languages.german'),
+        formikValue: formik.values.introductionTextDE,
+      });
+    }
+
+    if (typeof formik.values.introductionTextSL === 'string') {
+      optionList.push({
+        label: t('components.wizard.common.languages.slovenian'),
+        formikValue: formik.values.introductionTextSL,
+      });
+    }
+
+    return optionList;
+  };
+
+  /*
+     [
+
     {
       label: t('components.wizard.common.languages.italian'),
       formikValue: formik.values.introductionTextIT,
@@ -292,7 +336,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       label: t('components.wizard.common.languages.slovenian'),
       formikValue: formik.values.introductionTextSL,
     },
-  ];
+  ]; */
 
   return (
     <>
