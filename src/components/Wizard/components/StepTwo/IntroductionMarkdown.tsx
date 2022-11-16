@@ -170,8 +170,7 @@ const IntroductionMarkdown = ({
                 {t('components.wizard.stepTwo.previewModal.title')}
               </Typography>
               <Alert severity="info" variant="standard">
-                Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori
-                informazioni,
+              {t('components.wizard.stepTwo.previewModal.alertDescription')}
                 <Link
                   href="#"
                   target="_blank"
