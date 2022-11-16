@@ -16,31 +16,38 @@ import { useTranslation } from 'react-i18next';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import IntrudoctionTabPanel from './IntrudoctionTabPanel';
 
-interface IntroductionMarkdownProps {
-  textToRender: Array<string>;
+interface Obj {
+  label: string;
+  formikValue: string;
 }
 
-const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
+interface IntroductionMarkdownProps {
+  textToRender: Array<Obj>;
+  serviceName: string | undefined;
+  selectedParty: string | undefined;
+}
+
+const IntroductionMarkdown = ({
+  textToRender,
+  serviceName,
+  selectedParty,
+}: IntroductionMarkdownProps) => {
   const [showMarkdown, setShowMarkdown] = useState(false);
   const [value, setValue] = useState(0);
+
+  const { t } = useTranslation();
 
   const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
-  const { t } = useTranslation();
 
   const handleClick = () => {
     setShowMarkdown(true);
-    console.log('textToRender', textToRender);
-    const fiteredForEmptyString = textToRender.filter((item) => item !== '' && item !== undefined);
-    console.log('textToRender', fiteredForEmptyString, fiteredForEmptyString.length);
-    console.log('textToRenderKeys', Object.keys(textToRender));
-    
   };
 
-  // check if array has undefined or empty string
+  // check if array.value has undefined or empty string. return object with label and formik value
   const fiteredForEmptyString = () =>
-    textToRender.filter((item) => item !== '' && item !== undefined);
+    textToRender.filter((item) => item?.formikValue !== '' && item?.formikValue !== undefined);
 
   // check how many text fields have been compiled
   const moreThanOneTextAreaCompiled = (): boolean => {
@@ -97,7 +104,7 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
                 p: 4,
               }}
             >
-              <Typography sx={{ py: 3 }} variant="h6" component="h6">
+              <Typography variant="h6" component="h6">
                 Anteprima testo introduttivo
               </Typography>
               <Tabs
@@ -107,14 +114,13 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
                 aria-label="tabs"
                 sx={{ py: 3 }}
               >
-                {fiteredForEmptyString().map((_item, index) => (
-                  <Tab key={index} label={index} />
+                {fiteredForEmptyString().map((item, index) => (
+                  <Tab key={index} label={item.label} />
                 ))}
               </Tabs>
 
               <Alert severity="info" variant="standard" sx={{ py: 3 }}>
-                Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori
-                informazioni,
+                {t('components.wizard.stepTwo.previewModal.alertDescription')}
                 <Link
                   href="#"
                   target="_blank"
@@ -122,17 +128,17 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
                   // variant="body2"
                   sx={{ fontSize: '1rem', fontWeight: 600 }}
                 >
-                  consulta la guida.
+                  {t('components.wizard.stepTwo.previewModal.checkGuide')}
                 </Link>
               </Alert>
-              <Typography variant="h4" component="h4" sx={{ py: 3 }}>
-                18app
+              <Typography variant="h4" component="h4" sx={{ pt: 3 }}>
+                {serviceName ?? ''}
               </Typography>
-              <Typography variant="body1">Ministero della Cultura</Typography>
+              <Typography variant="body1">{selectedParty ?? ''}</Typography>
 
               {fiteredForEmptyString().map((item, index) => (
                 <IntrudoctionTabPanel key={index} value={value} index={index} {...a11yProps(index)}>
-                  <ReactMarkdown>{item}</ReactMarkdown>
+                  <ReactMarkdown>{item?.formikValue ?? ''}</ReactMarkdown>
                 </IntrudoctionTabPanel>
               ))}
 
@@ -161,7 +167,7 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
               }}
             >
               <Typography sx={{ py: 3 }} variant="h6" component="h6">
-                Anteprima testo introduttivo
+                {t('components.wizard.stepTwo.previewModal.title')}
               </Typography>
               <Alert severity="info" variant="standard">
                 Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori
@@ -173,15 +179,15 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
                   // variant="body2"
                   sx={{ fontSize: '1rem', fontWeight: 600 }}
                 >
-                  consulta la guida.
+                  {t('components.wizard.stepTwo.previewModal.checkGuide')}
                 </Link>
               </Alert>
-              <Typography variant="h4" component="h4" sx={{ py: 3 }}>
-                18app
+              <Typography variant="h4" component="h4" sx={{ pt: 3 }}>
+                {serviceName ?? ''}
               </Typography>
-              <Typography variant="body1">Ministero della Cultura</Typography>
+              <Typography variant="body1">{selectedParty ?? ''}</Typography>
 
-              <ReactMarkdown>{fiteredForEmptyString()[0]}</ReactMarkdown>
+              <ReactMarkdown>{fiteredForEmptyString()[0]?.formikValue ?? ''}</ReactMarkdown>
 
               <Box sx={{ display: 'grid' }}>
                 <Button
@@ -189,7 +195,7 @@ const IntroductionMarkdown = ({ textToRender }: IntroductionMarkdownProps) => {
                   sx={{ justifySelf: 'right' }}
                   onClick={() => setShowMarkdown(false)}
                 >
-                  Chiudi
+                  {t('components.wizard.stepTwo.previewModal.closeBtn')}
                 </Button>
               </Box>
             </Box>

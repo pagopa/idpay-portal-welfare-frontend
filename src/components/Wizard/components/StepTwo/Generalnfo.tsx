@@ -37,6 +37,7 @@ import {
   generalInfoSelector,
   setGeneralInfo,
   initiativeIdSelector,
+  additionalInfoSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
@@ -44,6 +45,7 @@ import {
   updateInitiativeGeneralInfoDraft,
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
+import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntrudoctionTabPanel from './IntrudoctionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
@@ -62,6 +64,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const addError = useErrorDispatcher();
   const generalInfoForm = useAppSelector(generalInfoSelector, shallowEqual);
   const initiativeIdSel = useAppSelector(initiativeIdSelector, shallowEqual);
+  const initiativeAdditionalInfoSel = useAppSelector(additionalInfoSelector);
+  const selectedPartySel = useAppSelector(partiesSelectors.selectPartySelected);
   const [value, setValue] = useState(0);
   const { t } = useTranslation();
   const setLoading = useLoading('UPDATE_GENERAL_INFO');
@@ -206,10 +210,6 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     introductionTextIT: Yup.string().required(
       t('components.wizard.stepTwo.form.requiredItalianIntroduction')
     ),
-    introductionTextEN: Yup.string().notRequired(),
-    introductionTextFR: Yup.string().notRequired(),
-    introductionTextDE: Yup.string().notRequired(),
-    introductionTextSL: Yup.string().notRequired(),
   });
 
   const formik = useFormik({
@@ -272,13 +272,28 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   };
 
   const introductionArrayOptions = () => [
-    formik.values.introductionTextIT,
-    formik.values.introductionTextEN,
-    formik.values.introductionTextFR,
-    formik.values.introductionTextDE,
-    formik.values.introductionTextSL,
+    {
+      label: t('components.wizard.common.languages.italian'),
+      formikValue: formik.values.introductionTextIT,
+    },
+    {
+      label: t('components.wizard.common.languages.english'),
+      formikValue: formik.values.introductionTextEN,
+    },
+    {
+      label: t('components.wizard.common.languages.french'),
+      formikValue: formik.values.introductionTextFR,
+    },
+    {
+      label: t('components.wizard.common.languages.german'),
+      formikValue: formik.values.introductionTextDE,
+    },
+    {
+      label: t('components.wizard.common.languages.slovenian'),
+      formikValue: formik.values.introductionTextSL,
+    },
   ];
-  
+
   return (
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
@@ -613,7 +628,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </Box>
         </Box>
 
-        <Box sx={{ width: '100%', pt: 3 }}>
+        <Box sx={{ width: '100%', pt: 2 }}>
           <Box>
             <Tabs value={value} onChange={handleTabChange} aria-label="tabs">
               <Tab label={t('components.wizard.common.languages.italian')} />
@@ -746,7 +761,11 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
             </IntrudoctionTabPanel>
-            <IntroductionMarkdown textToRender={introductionArrayOptions()} />
+            <IntroductionMarkdown
+              textToRender={introductionArrayOptions()}
+              serviceName={initiativeAdditionalInfoSel.serviceName}
+              selectedParty={selectedPartySel?.description}
+            />
           </FormControl>
         </Box>
       </Paper>
