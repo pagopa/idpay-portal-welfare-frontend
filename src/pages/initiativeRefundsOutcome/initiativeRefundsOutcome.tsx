@@ -60,20 +60,23 @@ const InitiativeRefundsOutcome = () => {
       setFileRejected(false);
     },
     onDropAccepted: (files) => {
-      const uploadedFileName = files[0].name;
-      const uploadedFileDate = new Date(files[0].lastModified).toLocaleString('fr-BE');
-      setFileName(uploadedFileName);
-      setFileDate(uploadedFileDate);
       setFileIsLoading(true);
       if (typeof initiativeSel.initiativeId === 'string') {
         putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
           .then((_res) => {
+            const uploadedFileName = files[0].name;
+            const uploadedFileDate = new Date(files[0].lastModified).toLocaleString('fr-BE');
+            setFileName(uploadedFileName);
+            setFileDate(uploadedFileDate);
             setFileIsLoading(false);
             setFileRejected(false);
             setFileAccepted(true);
           })
           .catch((error) => {
-            console.log(error);
+            setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
+            setAlertDescription(
+              t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
+            );
             addError({
               id: 'PUT_DISP_FILE_ERROR',
               blocking: false,
@@ -108,7 +111,9 @@ const InitiativeRefundsOutcome = () => {
           break;
         default:
           setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
-          setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription'));
+          setAlertDescription(
+            t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
+          );
           break;
       }
       setFileIsLoading(false);
