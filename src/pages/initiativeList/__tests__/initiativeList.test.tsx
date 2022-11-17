@@ -1,15 +1,7 @@
 import { Provider } from 'react-redux';
-import { InitiativeApi } from '../../../api/InitiativeApiClient';
 import { createStore } from '../../../redux/store';
-import { getInitativeSummary } from '../../../services/intitativeService';
 import InitiativeList from '../InitiativeList';
 import React from 'react';
-
-jest.mock('../../../api/InitiativeApiClient');
-
-beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'getInitativeSummary');
-});
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -38,10 +30,5 @@ describe('<InitiativeList />', (injectedStore?: ReturnType<typeof createStore>) 
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
     expect(EnhancedTableHead).toBeDefined();
-  });
-
-  test('test get initiative summary', async () => {
-    await getInitativeSummary();
-    expect(InitiativeApi.getInitativeSummary).toBeCalled();
   });
 });

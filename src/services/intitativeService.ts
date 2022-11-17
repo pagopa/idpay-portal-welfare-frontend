@@ -17,22 +17,44 @@ import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeS
 import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
+import { mockedInitiativeDetail, mockedInitiativeSummary } from './__mocks__/initiativeService';
 
-export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
-  InitiativeApi.getInitativeSummary().then((res) => res);
+export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return new Promise((resolve) => resolve(mockedInitiativeSummary));
+  } else {
+    return InitiativeApi.getInitativeSummary().then((res) => res);
+  }
+};
 
-export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>
-  InitiativeApi.getInitiativeById(id).then((res) => res);
+export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return new Promise((resolve) => resolve(mockedInitiativeDetail));
+  } else {
+    return InitiativeApi.getInitiativeById(id).then((res) => res);
+  }
+};
 
 export const createInitiativeServiceInfo = (
   data: InitiativeAdditionalDTO
-): Promise<InitiativeDTO | void | undefined> =>
-  InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
+): Promise<InitiativeDTO | void | undefined> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return new Promise((resolve) => resolve({}));
+  } else {
+    return InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
+  }
+};
 
 export const updateInitiativeServiceInfo = (
   id: string,
   data: InitiativeAdditionalDTO
-): Promise<void> => InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
+): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return new Promise((resolve) => resolve());
+  } else {
+    return InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
+  }
+};
 
 export const updateInitiativeGeneralInfo = (
   id: string,

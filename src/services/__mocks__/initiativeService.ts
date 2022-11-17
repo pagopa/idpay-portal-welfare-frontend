@@ -12,6 +12,7 @@ import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { InitiativeApi } from '../../api/__mocks__/InitiativeApiClient';
 import { mockedAdmissionCriteria } from './admissionCriteriaService';
 
 export const mockedInitiativeSummary = [
@@ -187,16 +188,23 @@ export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
 ) => expect(initiativeSummary).toStrictEqual(mockedInitiativeSummary);
 
-export const getInitativeSummary = () => new Promise((resolve) => resolve(mockedInitiativeSummary));
+export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
+  InitiativeApi.getInitativeSummary();
 
 export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: InitiativeDTO) =>
   expect(initiativeDetail).toStrictEqual(mockedInitiativeDetail);
 
-export const getInitiativeDetail = (_id: string) =>
-  new Promise((resolve) => resolve(mockedInitiativeDetail));
+export const getInitiativeDetail = (_id: string): Promise<InitiativeDTO> =>
+  InitiativeApi.getInitiativeById(mockedInitiativeId);
 
-export const createInitiativeServiceInfo = (_mockedServiceInfoData: InitiativeAdditionalDTO) =>
-  new Promise((resolve) => resolve(mockedInitiativeId));
+export const createInitiativeServiceInfo = (_data: InitiativeAdditionalDTO) =>
+  InitiativeApi.saveInitiativeServiceInfo({});
+
+export const updateInitiativeServiceInfo = (
+  _id: string,
+  _data: InitiativeAdditionalDTO
+): Promise<void> =>
+  InitiativeApi.updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
 
 // export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
 //   expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);
