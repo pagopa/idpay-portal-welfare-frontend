@@ -17,6 +17,47 @@ export const parseDate = (d: string) => {
   }
 };
 
+export const parseDescriptionMap = (values: any) => {
+  // eslint-disable-next-line functional/no-let
+  let descriptionMap = {};
+
+  if (typeof values.introductionTextIT === 'string' && values.introductionTextIT.length > 0) {
+    descriptionMap = {
+      ...descriptionMap,
+      it: values.introductionTextIT,
+    };
+  }
+
+  if (typeof values.introductionTextEN === 'string' && values.introductionTextEN.length > 0) {
+    descriptionMap = {
+      ...descriptionMap,
+      en: values.introductionTextEN,
+    };
+  }
+
+  if (typeof values.introductionTextFR === 'string' && values.introductionTextFR.length > 0) {
+    descriptionMap = {
+      ...descriptionMap,
+      fr: values.introductionTextFR,
+    };
+  }
+
+  if (typeof values.introductionTextDE === 'string' && values.introductionTextDE.length > 0) {
+    descriptionMap = {
+      ...descriptionMap,
+      de: values.introductionTextDE,
+    };
+  }
+
+  if (typeof values.introductionTextSL === 'string' && values.introductionTextSL.length > 0) {
+    descriptionMap = {
+      ...descriptionMap,
+      sl: values.introductionTextSL,
+    };
+  }
+  return descriptionMap;
+};
+
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   beneficiaryType:
     values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
@@ -27,13 +68,7 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   rankingEndDate: parseDate(values.rankingEndDate),
   startDate: parseDate(values.startDate),
   endDate: parseDate(values.endDate),
-  descriptionMap: {
-    it: values.introductionTextIT,
-    en: values.introductionTextEN,
-    fr: values.introductionTextFR,
-    de: values.introductionTextDE,
-    sl: values.introductionTextSL,
-  },
+  descriptionMap: { ...parseDescriptionMap(values) },
   rankingEnabled: false, // TEMP
 });
 
