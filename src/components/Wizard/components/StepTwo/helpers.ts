@@ -30,10 +30,11 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   descriptionMap: {
     it: values.introductionTextIT,
     en: values.introductionTextEN,
-    fr: values.introductionTextEN,
+    fr: values.introductionTextFR,
     de: values.introductionTextDE,
     sl: values.introductionTextSL,
   },
+  rankingEnabled: false, // TEMP
 });
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>
