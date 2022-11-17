@@ -211,29 +211,31 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       dataT.rankingEndDate = data.rankingEndDate;
     }
 
-    if (typeof data.descriptionMap.introductionTextIT !== undefined) {
-      // eslint-disable-next-line functional/immutable-data
-      dataT.introductionTextIT = data.descriptionMap.introductionTextIT;
-    }
+    if (data.descriptionMap) {
+      if (typeof data.descriptionMap.introductionTextIT !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextIT = data.descriptionMap.introductionTextIT;
+      }
 
-    if (typeof data.descriptionMap.introductionTextEN !== undefined) {
-      // eslint-disable-next-line functional/immutable-data
-      dataT.introductionTextEN = data.descriptionMap.introductionTextEN;
-    }
+      if (typeof data.descriptionMap.introductionTextEN !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextEN = data.descriptionMap.introductionTextEN;
+      }
 
-    if (typeof data.descriptionMap.introductionTextFR !== undefined) {
-      // eslint-disable-next-line functional/immutable-data
-      dataT.introductionTextFR = data.descriptionMap.introductionTextFR;
-    }
+      if (typeof data.descriptionMap.introductionTextFR !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextFR = data.descriptionMap.introductionTextFR;
+      }
 
-    if (typeof data.descriptionMap.introductionTextDE !== undefined) {
-      // eslint-disable-next-line functional/immutable-data
-      dataT.introductionTextDE = data.descriptionMap.introductionTextDE;
-    }
+      if (typeof data.descriptionMap.introductionTextDE !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextDE = data.descriptionMap.introductionTextDE;
+      }
 
-    if (typeof data.descriptionMap.introductionTextSL !== undefined) {
-      // eslint-disable-next-line functional/immutable-data
-      dataT.introductionTextSL = data.descriptionMap.introductionTextSL;
+      if (typeof data.descriptionMap.introductionTextSL !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextSL = data.descriptionMap.introductionTextSL;
+      }
     }
   }
 

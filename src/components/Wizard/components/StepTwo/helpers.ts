@@ -17,6 +17,47 @@ export const parseDate = (d: string) => {
   }
 };
 
+
+
+export const parseDescriptionMap = (values: any) => {
+  const descriptionMap = {
+   /*
+    it: '',
+    en: '',
+    fr: '',
+    de: '',
+    sl: '',
+    */
+  };
+
+  if (typeof values.introductionTextIT !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    descriptionMap.it = values.introductionTextIT;
+  }
+
+  if (typeof values.introductionTextEN !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    descriptionMap.en = values.introductionTextEN;
+  }
+
+  if (typeof values.introductionTextFR !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    descriptionMap.fr = values.introductionTextFR;
+  }
+
+  if (typeof values.introductionTextDE !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    descriptionMap.de = values.introductionTextDE;
+  }
+
+  if (typeof values.introductionTextSL !== undefined) {
+    // eslint-disable-next-line functional/immutable-data
+    descriptionMap.sl = values.introductionTextSL;
+  }
+
+  return descriptionMap;
+};
+
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   beneficiaryType:
     values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
@@ -27,13 +68,8 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   rankingEndDate: parseDate(values.rankingEndDate),
   startDate: parseDate(values.startDate),
   endDate: parseDate(values.endDate),
-  descriptionMap: {
-    it: values.introductionTextIT,
-    en: values.introductionTextEN,
-    fr: values.introductionTextEN,
-    de: values.introductionTextDE,
-    sl: values.introductionTextSL,
-  },
+  descriptionMap: parseDescriptionMap(values),
+  rankingEnabled: false, // TEMP
 });
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>
