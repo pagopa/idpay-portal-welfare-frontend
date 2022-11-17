@@ -388,7 +388,7 @@ const InitiativeList = () => {
             mb: 5,
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
             <TextField
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}
@@ -422,7 +422,7 @@ const InitiativeList = () => {
             mb: 5,
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', backgroundColor: 'white' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
             <TextField
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}

@@ -14,6 +14,9 @@ import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeA
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeStatisticsDTO';
+import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
+import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
+import { SasToken } from '../api/generated/initiative/SasToken';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
@@ -98,7 +101,34 @@ export const logicallyDeleteInitiative = (id: string): Promise<void> =>
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
 
-export const initiativeStatistics = (
-  id: string
-): Promise<InitiativeStatisticsDTO> =>
+export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> =>
   InitiativeApi.initiativeStatistics(id).then((res) => res);
+
+export const getExportsPaged = (
+  id: string,
+  page: number,
+  notificationDateFrom?: string,
+  notificationDateTo?: string,
+  status?: string
+): Promise<PageRewardExportsDTO> =>
+  InitiativeApi.getExportsPaged(id, page, notificationDateFrom, notificationDateTo, status).then(
+    (res) => res
+  );
+
+export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> =>
+  InitiativeApi.getRewardFileDownload(id, filePath).then((res) => res);
+
+export const getOnboardingStatus = (
+  id: string,
+  page: number,
+  beneficiary?: string,
+  dateFrom?: string,
+  dateTo?: string,
+  state?: string
+): Promise<OnboardingDTO> =>
+  InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then(
+    (res) => res
+  );
+
+export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> =>
+  InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);

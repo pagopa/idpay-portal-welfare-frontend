@@ -29,7 +29,7 @@ import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativ
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
-import { renderInitiativeStatus } from '../../helpers';
+import { numberWithCommas, renderInitiativeStatus } from '../../helpers';
 import { Initiative } from '../../model/Initiative';
 import StatusSnackBar from './components/StatusSnackBar';
 import DateReference from './components/DateReference';
@@ -163,18 +163,6 @@ const InitiativeOverview = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
-
-  const numberWithCommas = (x: number | string | undefined) => {
-    if (typeof x === 'string' && x.length > 0) {
-      const xFormatted = x.replace(/\./g, '').replace(/,/g, '.');
-      const xFloat = parseFloat(xFormatted);
-      return xFloat.toLocaleString('de-DE');
-    }
-    if (typeof x === 'number') {
-      return x.toLocaleString('de-DE');
-    }
-    return '0';
-  };
 
   const publishInitiative = (id: string | undefined, userCanPublishInitiative: boolean) => {
     if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {

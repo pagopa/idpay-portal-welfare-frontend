@@ -342,7 +342,7 @@ paths:
           multipart/form-data:
             schema:
               required:
-              - file
+                - file
               type: object
               properties:
                 file:
@@ -1366,7 +1366,7 @@ paths:
         '201':
           description: Created
           content:
-           application/json:
+            application/json:
               schema:
                 $ref: '#/components/schemas/SasToken'
         '400':
@@ -1431,7 +1431,7 @@ paths:
           multipart/form-data:
             schema:
               required:
-              - file
+                - file
               type: object
               properties:
                 file:
@@ -1808,12 +1808,12 @@ components:
       properties:
         startTime:
           type: string
-          description: "hours:minutes:seconds.nano"
-          example: "00:16:00.000"
+          description: 'hours:minutes:seconds.nano'
+          example: '00:16:00.000'
         endTime:
           type: string
-          description: "hours:minutes:seconds.nano"
-          example: "02:00:00.000"
+          description: 'hours:minutes:seconds.nano'
+          example: '02:00:00.000'
     MccFilterDTO:
       type: object
       properties:
@@ -1885,7 +1885,7 @@ components:
           type: number
         toIncluded:
           type: boolean
-    
+
     TrxCountDTO:
       type: object
       properties:
@@ -1933,25 +1933,25 @@ components:
             - WEEKLY
             - MONTHLY
             - QUARTERLY
-            
+
     OnboardingDTO:
       type: object
       properties:
         content:
-            type: array
-            items:
-              $ref: '#/components/schemas/StatusOnboardingDTOS'
+          type: array
+          items:
+            $ref: '#/components/schemas/StatusOnboardingDTOS'
         pageNo:
-          type:  integer
+          type: integer
           format: int32
         pageSize:
-          type:  integer
+          type: integer
           format: int32
         totalElements:
-          type:  integer
+          type: integer
           format: int32
         totalPages:
-          type:  integer
+          type: integer
           format: int32
     StatusOnboardingDTOS:
       type: object
@@ -1977,7 +1977,7 @@ components:
           type: string
           format: date-time
         onboardedCitizenCount:
-          type:  integer
+          type: integer
           format: int32
         accruedRewards:
           type: string
@@ -1996,31 +1996,32 @@ components:
           type: integer
           format: int32
     DescriptionMap:
-          type: object
-          additionalProperties:
-            type: string
-          example:
-            it: Ciao!
-            en: Hello!
-            fr: Salut!
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        it: Ciao!
+        en: Hello!
+        fr: Salut!
     RewardExportsDTO:
       title: RewardExportsDTO
-      required: [
-        "id",
-        "organizationId",
-        "initiativeId",
-        "initiativeName",
-        "filePath",
-        "status",
-        "notificationDate",
-        "percentageResulted",
-        "percentageResults",
-        "rewardsExported",
-        "rewardsNotified",
-        "rewardsResulted",
-        "rewardsResultedOk",
-        "rewardsResults"
-      ]
+      required:
+        [
+          'id',
+          'organizationId',
+          'initiativeId',
+          'initiativeName',
+          'filePath',
+          'status',
+          'notificationDate',
+          'percentageResulted',
+          'percentageResults',
+          'rewardsExported',
+          'rewardsNotified',
+          'rewardsResulted',
+          'rewardsResultedOk',
+          'rewardsResults',
+        ]
       type: object
       properties:
         feedbackDate:
