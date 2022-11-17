@@ -3,7 +3,7 @@ import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
 export const getMinDate = (date: Date | string | undefined) => {
   if (date !== undefined && date instanceof Date) {
-    return addDays(date, 1);
+    return addDays(date, 10);
   }
   return new Date();
 };
@@ -69,7 +69,7 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   startDate: parseDate(values.startDate),
   endDate: parseDate(values.endDate),
   descriptionMap: { ...parseDescriptionMap(values) },
-  rankingEnabled: false, // TEMP
+  rankingEnabled: values.rankingEnabled === 'true' ? true : false,
 });
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>

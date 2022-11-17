@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/no-identical-functions */
 /* eslint-disable functional/immutable-data */
 /* eslint-disable sonarjs/cognitive-complexity */
 import {
@@ -15,7 +16,7 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  Button,
+  Link,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -48,7 +49,7 @@ import {
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
-import IntrudoctionTabPanel from './IntrudoctionTabPanel';
+import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
 
 interface Props {
@@ -104,9 +105,16 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     setAction('');
   }, [action]);
 
+  const setDateOffset = (date: Date): Date => {
+    const offset = 10;
+    const ms = date.getTime() + 86400000 * offset;
+    return new Date(ms);
+  };
+
   const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
     beneficiaryKnown: Yup.string().required(t('validation.required')),
+    rankingEnabled: Yup.string().required(t('validation.required')),
     budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
@@ -134,47 +142,66 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
-      .typeError(t('validation.invalidDate'))
-      .min(getYesterday(), t('validation.outJoinFrom')),
-    // eslint-disable-next-line sonarjs/no-identical-functions
+      .min(getYesterday(), t('validation.outJoinFrom'))
+      .when('rankingEnabled', {
+        is: 'true',
+        then: Yup.date()
+          .nullable()
+          .required(t('validation.required'))
+          .transform(function (value, originalValue) {
+            if (this.isType(value)) {
+              return value;
+            }
+            return parse(originalValue, 'dd/MM/yyyy', new Date());
+          }),
+      })
+      .typeError(t('validation.invalidDate')),
     rankingEndDate: Yup.date()
       .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .transform(function (value, originalValue) {
         if (this.isType(value)) {
           return value;
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
-      .typeError(t('validation.invalidDate'))
       .when('rankingStartDate', (rankingStartDate, _schema) => {
         const timestamp = Date.parse(rankingStartDate);
         if (isNaN(timestamp) === false) {
           return Yup.date()
-            .min(rankingStartDate, t('validation.outJoinTo'))
+            .min(setDateOffset(rankingStartDate), t('validation.outJoinTo'))
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         } else {
           return Yup.date().nullable().default(undefined).typeError(t('validation.invalidDate'));
         }
-      }),
+      })
+      .when('rankingEnabled', {
+        is: 'true',
+        then: Yup.date()
+          .nullable()
+          .required(t('validation.required'))
+          .transform(function (value, originalValue) {
+            if (this.isType(value)) {
+              return value;
+            }
+            return parse(originalValue, 'dd/MM/yyyy', new Date());
+          }),
+      })
+      .typeError(t('validation.invalidDate')),
     startDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .transform(function (value, originalValue) {
         if (this.isType(value)) {
           return value;
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
-      .typeError(t('validation.invalidDate'))
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .when('rankingEndDate', (rankingEndDate, _schema) => {
         const timestamp = Date.parse(rankingEndDate);
         if (isNaN(timestamp) === false) {
           return Yup.date()
-            .min(rankingEndDate, t('validation.outSpendFrom'))
+            .min(setDateOffset(rankingEndDate), t('validation.outSpendFrom'))
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         } else {
@@ -184,30 +211,29 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         }
-      }),
+      })
+      .typeError(t('validation.invalidDate')),
     endDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .transform(function (value, originalValue) {
         if (this.isType(value)) {
           return value;
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
-      .typeError(t('validation.invalidDate'))
-      // eslint-disable-next-line sonarjs/no-identical-functions
       .when('startDate', (startDate, schema) => {
         const timestamp = Date.parse(startDate);
         if (isNaN(timestamp) === false) {
           return Yup.date()
             .nullable()
-            .min(startDate, t('validation.outSpendTo'))
+            .min(setDateOffset(startDate), t('validation.outSpendTo'))
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         }
         return schema;
-      }),
+      })
+      .typeError(t('validation.invalidDate')),
     introductionTextIT: Yup.string().required(
       t('components.wizard.stepTwo.form.requiredItalianIntroduction')
     ),
@@ -217,6 +243,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     initialValues: {
       beneficiaryType: generalInfoForm.beneficiaryType,
       beneficiaryKnown: generalInfoForm.beneficiaryKnown,
+      rankingEnabled: generalInfoForm.rankingEnabled,
       budget: generalInfoForm.budget,
       beneficiaryBudget: generalInfoForm.beneficiaryBudget,
       rankingStartDate: generalInfoForm.rankingStartDate,
@@ -313,30 +340,13 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     return optionList;
   };
 
-  /*
-     [
-
-    {
-      label: t('components.wizard.common.languages.italian'),
-      formikValue: formik.values.introductionTextIT,
-    },
-    {
-      label: t('components.wizard.common.languages.english'),
-      formikValue: formik.values.introductionTextEN,
-    },
-    {
-      label: t('components.wizard.common.languages.french'),
-      formikValue: formik.values.introductionTextFR,
-    },
-    {
-      label: t('components.wizard.common.languages.german'),
-      formikValue: formik.values.introductionTextDE,
-    },
-    {
-      label: t('components.wizard.common.languages.slovenian'),
-      formikValue: formik.values.introductionTextSL,
-    },
-  ]; */
+  const setRankingEnabled = (newValue: string, formik: any) => {
+    if (newValue === 'true') {
+      formik.setFieldValue('rankingEnabled', 'false');
+    } else {
+      formik.setFieldValue('rankingEnabled', 'true');
+    }
+  };
 
   return (
     <>
@@ -398,7 +408,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             name="beneficiaryKnown"
             value={formik.values.beneficiaryKnown}
             defaultValue={formik.values.beneficiaryKnown}
-            onChange={(e) => formik.setFieldValue('beneficiaryKnown', e.target.value, false)}
+            onChange={async (e) => {
+              await formik.setFieldValue('beneficiaryKnown', e.target.value, false);
+              setRankingEnabled(e.target.value, formik);
+            }}
             data-testid="beneficiary-known-test"
           >
             <FormControlLabel
@@ -420,6 +433,46 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {formik.touched.beneficiaryKnown && formik.errors.beneficiaryKnown}
           </FormHelperText>
         </FormControl>
+
+        {formik.values.beneficiaryKnown === 'false' && (
+          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+            <Typography
+              sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
+              id="witRanking--label"
+            >
+              {t('components.wizard.stepTwo.form.withRanking')}
+            </Typography>
+            <RadioGroup
+              sx={{ gridColumn: 'span 12' }}
+              row
+              aria-labelledby="witRanking--label"
+              name="witRanking--label"
+              value={formik.values.rankingEnabled}
+              defaultValue={formik.values.rankingEnabled}
+              onChange={(e) => formik.setFieldValue('rankingEnabled', e.target.value, false)}
+              data-testid="witRanking-test"
+            >
+              <FormControlLabel
+                value="true"
+                control={<Radio />}
+                label={t('components.wizard.stepTwo.form.yes')}
+              />
+              <FormControlLabel
+                sx={{ ml: 2 }}
+                value="false"
+                control={<Radio />}
+                label={t('components.wizard.stepTwo.form.no')}
+              />
+            </RadioGroup>
+            <FormHelperText
+              error={formik.touched.rankingEnabled && Boolean(formik.errors.rankingEnabled)}
+              sx={{ gridColumn: 'span 12' }}
+            >
+              {formik.touched.rankingEnabled && formik.errors.rankingEnabled}
+            </FormHelperText>
+          </FormControl>
+        )}
+
         <FormControl
           sx={{
             display: 'grid',
@@ -659,16 +712,22 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </Typography>
         </Box>
 
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
           <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body1">
+            <Typography variant="body2">
               {t('components.wizard.stepTwo.form.introductionSubTitle')}
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
-            <Button size="small" sx={{ p: 0 }}>
+            <Link
+              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+              href="#"
+              target="_blank"
+              underline="none"
+              variant="body2"
+            >
               {t('components.wizard.common.links.findOut')}
-            </Button>
+            </Link>
           </Box>
         </Box>
 
@@ -686,16 +745,15 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           <FormControl
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(1, 2fr 1fr)',
+              gridTemplateColumns: 'repeat(1, 3fr 1fr)',
               rowGap: 3,
-              mt: 3,
-              mb: 5,
+              mt: 1,
+              alignItems: 'baseline',
             }}
           >
-            <IntrudoctionTabPanel value={value} index={0}>
+            <IntroductionTabPanel value={value} index={0}>
               <TextField
                 id="introductionTextIT"
-                label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextIT"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
@@ -715,11 +773,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-            </IntrudoctionTabPanel>
-            <IntrudoctionTabPanel value={value} index={1}>
+            </IntroductionTabPanel>
+            <IntroductionTabPanel value={value} index={1}>
               <TextField
                 id="introductionTextEN"
-                label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextEN"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
@@ -737,11 +794,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-            </IntrudoctionTabPanel>
-            <IntrudoctionTabPanel value={value} index={2}>
+            </IntroductionTabPanel>
+            <IntroductionTabPanel value={value} index={2}>
               <TextField
                 id="introductionTextFR"
-                label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextFR"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
@@ -759,12 +815,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-            </IntrudoctionTabPanel>
-
-            <IntrudoctionTabPanel value={value} index={3}>
+            </IntroductionTabPanel>
+            <IntroductionTabPanel value={value} index={3}>
               <TextField
                 id="introductionTextDE"
-                label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextDE"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
@@ -782,11 +836,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-            </IntrudoctionTabPanel>
-            <IntrudoctionTabPanel value={value} index={4}>
+            </IntroductionTabPanel>
+            <IntroductionTabPanel value={value} index={4}>
               <TextField
                 id="introductionTextSL"
-                label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 placeholder={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
                 name="introductionTextSL"
                 aria-label={t('components.wizard.stepTwo.form.introductiveInfoLabel')}
@@ -804,7 +857,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 }
                 helperText={formik.touched.introductionTextIT && formik.errors.introductionTextIT}
               />
-            </IntrudoctionTabPanel>
+            </IntroductionTabPanel>
             <IntroductionMarkdown
               textToRender={introductionArrayOptions()}
               serviceName={initiativeAdditionalInfoSel.serviceName}

@@ -436,6 +436,9 @@ export default {
           beneficiaryKnown: 'Conosci già i destinatari?',
           taxCodeList: 'Si, ho una lista di codici fiscali',
           manualSelection: "No, imposterò dei criteri d'ammissione",
+          withRanking: 'È prevista una graduatoria?',
+          yes: 'Sì',
+          no: 'No',
           budgetTitle: 'Qual è il tuo budget?',
           reachedUsers: 'Utenti raggiungibili',
           reachedUsersTooltip:
@@ -647,10 +650,12 @@ export default {
     positive: 'Il campo deve contenere un valore positivo',
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
     outJoinFrom: 'La data di inizio adesione non può essere antecedente ad oggi',
-    outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
+    outJoinTo:
+      'Devono intercorrere almeno 10 giorni tra la data di inizio adesione e quella di fine',
     outSpendFrom:
-      'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
-    outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
+      'Tra la data di fine adesione e quella di inizio spendibilità devono intercorrere almeno 10 giorni',
+    outSpendTo:
+      'Devono intercorrere almeno 10 giorni tra la data di inizio del periodo di spesa e quella di fine',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
     maxFiveHundred: 'Max 500 caratteri',
