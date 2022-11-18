@@ -69,6 +69,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const initiativeAdditionalInfoSel = useAppSelector(additionalInfoSelector);
   const selectedPartySel = useAppSelector(partiesSelectors.selectPartySelected);
   const [value, setValue] = useState(0);
+  const [dateOffset, setDateOffset] = useState(1);
   const { t } = useTranslation();
   const setLoading = useLoading('UPDATE_GENERAL_INFO');
 
@@ -105,12 +106,6 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     setAction('');
   }, [action]);
 
-  const setDateOffset = (date: Date): Date => {
-    const offset = 10;
-    const ms = date.getTime() + 86400000 * offset;
-    return new Date(ms);
-  };
-
   const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
     beneficiaryKnown: Yup.string().required(t('validation.required')),
@@ -142,20 +137,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
+      .typeError(t('validation.invalidDate'))
       .min(getYesterday(), t('validation.outJoinFrom'))
+      .typeError(t('validation.invalidDate'))
       .when('rankingEnabled', {
         is: 'true',
-        then: Yup.date()
-          .nullable()
-          .required(t('validation.required'))
-          .transform(function (value, originalValue) {
-            if (this.isType(value)) {
-              return value;
-            }
-            return parse(originalValue, 'dd/MM/yyyy', new Date());
-          }),
-      })
-      .typeError(t('validation.invalidDate')),
+        then: Yup.date().required(t('validation.required')).typeError(t('validation.invalidDate')),
+        otherwise: Yup.date().nullable().typeError(t('validation.invalidDate')),
+      }),
     rankingEndDate: Yup.date()
       .nullable()
       .transform(function (value, originalValue) {
@@ -164,30 +153,23 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
+      .typeError(t('validation.invalidDate'))
       .when('rankingStartDate', (rankingStartDate, _schema) => {
         const timestamp = Date.parse(rankingStartDate);
         if (isNaN(timestamp) === false) {
           return Yup.date()
-            .min(setDateOffset(rankingStartDate), t('validation.outJoinTo'))
+            .min(getMinDate(rankingStartDate, 1), t('validation.outJoinTo'))
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         } else {
-          return Yup.date().nullable().default(undefined).typeError(t('validation.invalidDate'));
+          return Yup.date().nullable().typeError(t('validation.invalidDate'));
         }
       })
       .when('rankingEnabled', {
         is: 'true',
-        then: Yup.date()
-          .nullable()
-          .required(t('validation.required'))
-          .transform(function (value, originalValue) {
-            if (this.isType(value)) {
-              return value;
-            }
-            return parse(originalValue, 'dd/MM/yyyy', new Date());
-          }),
-      })
-      .typeError(t('validation.invalidDate')),
+        then: Yup.date().required(t('validation.required')).typeError(t('validation.invalidDate')),
+        otherwise: Yup.date().nullable().typeError(t('validation.invalidDate')),
+      }),
     startDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
@@ -197,22 +179,62 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
-      .when('rankingEndDate', (rankingEndDate, _schema) => {
-        const timestamp = Date.parse(rankingEndDate);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .min(setDateOffset(rankingEndDate), t('validation.outSpendFrom'))
-            .required(t('validation.required'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date()
-            .nullable()
-            .min(getYesterday())
-            .required(t('validation.required'))
-            .typeError(t('validation.invalidDate'));
-        }
-      })
-      .typeError(t('validation.invalidDate')),
+      .typeError(t('validation.invalidDate'))
+      .when('rankingEnabled', {
+        is: 'true',
+        then: Yup.date()
+          .nullable()
+          .required(t('validation.required'))
+          .transform(function (value, originalValue) {
+            if (this.isType(value)) {
+              return value;
+            }
+            return parse(originalValue, 'dd/MM/yyyy', new Date());
+          })
+          .typeError(t('validation.invalidDate'))
+          .when('rankingEndDate', (rankingEndDate, _schema) => {
+            const timestamp = Date.parse(rankingEndDate);
+            if (isNaN(timestamp) === false) {
+              return Yup.date()
+                .min(getMinDate(rankingEndDate, 10), t('validation.outSpendFromWithRanking'))
+                .required(t('validation.required'))
+                .typeError(t('validation.invalidDate'));
+            } else {
+              return Yup.date()
+                .nullable()
+                .min(getYesterday())
+                .required(t('validation.required'))
+                .typeError(t('validation.invalidDate'));
+            }
+          })
+          .typeError(t('validation.invalidDate')),
+        otherwise: Yup.date()
+          .nullable()
+          .required(t('validation.required'))
+          .transform(function (value, originalValue) {
+            if (this.isType(value)) {
+              return value;
+            }
+            return parse(originalValue, 'dd/MM/yyyy', new Date());
+          })
+          .typeError(t('validation.invalidDate'))
+          .when('rankingEndDate', (rankingEndDate, _schema) => {
+            const timestamp = Date.parse(rankingEndDate);
+            if (isNaN(timestamp) === false) {
+              return Yup.date()
+                .min(getMinDate(rankingEndDate, 1), t('validation.outSpendFrom'))
+                .required(t('validation.required'))
+                .typeError(t('validation.invalidDate'));
+            } else {
+              return Yup.date()
+                .nullable()
+                .min(getYesterday())
+                .required(t('validation.required'))
+                .typeError(t('validation.invalidDate'));
+            }
+          })
+          .typeError(t('validation.invalidDate')),
+      }),
     endDate: Yup.date()
       .nullable()
       .required(t('validation.required'))
@@ -222,12 +244,13 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }
         return parse(originalValue, 'dd/MM/yyyy', new Date());
       })
+      .typeError(t('validation.invalidDate'))
       .when('startDate', (startDate, schema) => {
         const timestamp = Date.parse(startDate);
         if (isNaN(timestamp) === false) {
           return Yup.date()
             .nullable()
-            .min(setDateOffset(startDate), t('validation.outSpendTo'))
+            .min(getMinDate(startDate, 1), t('validation.outSpendTo'))
             .required(t('validation.required'))
             .typeError(t('validation.invalidDate'));
         }
@@ -286,6 +309,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       }
     },
   });
+
+  useEffect(() => {
+    if (formik.values.rankingEnabled === 'true') {
+      setDateOffset(10);
+    } else {
+      setDateOffset(1);
+    }
+  }, [formik.values]);
 
   useEffect(() => {
     if (formik.dirty || formik.isValid) {
@@ -449,7 +480,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               name="witRanking--label"
               value={formik.values.rankingEnabled}
               defaultValue={formik.values.rankingEnabled}
-              onChange={(e) => formik.setFieldValue('rankingEnabled', e.target.value, false)}
+              onBlur={(e) => formik.handleBlur(e)}
+              onChange={async (e) =>
+                await formik.setFieldValue('rankingEnabled', e.target.value, false)
+              }
               data-testid="witRanking-test"
             >
               <FormControlLabel
@@ -626,7 +660,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
               onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
-              minDate={getMinDate(formik.values.rankingStartDate)}
+              minDate={getMinDate(formik.values.rankingStartDate, 1)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -663,7 +697,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               inputFormat="dd/MM/yyyy"
               value={formik.values.startDate}
               onChange={(value) => formik.setFieldValue('startDate', value)}
-              minDate={getMinDate(formik.values.rankingEndDate)}
+              minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
               renderInput={(props) => (
                 <TextField
                   {...props}
@@ -685,7 +719,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               inputFormat="dd/MM/yyyy"
               value={formik.values.endDate}
               onChange={(value) => formik.setFieldValue('endDate', value)}
-              minDate={getMinDate(formik.values.startDate)}
+              minDate={getMinDate(formik.values.startDate, 1)}
               renderInput={(props) => (
                 <TextField
                   {...props}

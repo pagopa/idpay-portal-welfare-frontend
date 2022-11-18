@@ -650,12 +650,12 @@ export default {
     positive: 'Il campo deve contenere un valore positivo',
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
     outJoinFrom: 'La data di inizio adesione non può essere antecedente ad oggi',
-    outJoinTo:
-      'Devono intercorrere almeno 10 giorni tra la data di inizio adesione e quella di fine',
+    outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
-      'Tra la data di fine adesione e quella di inizio spendibilità devono intercorrere almeno 10 giorni',
-    outSpendTo:
-      'Devono intercorrere almeno 10 giorni tra la data di inizio del periodo di spesa e quella di fine',
+      'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
+    outSpendFromWithRanking:
+      'Deve intercorrere un intervallo di almeno 10 giorni tra la data di fine adesione e quella di inizio spendibilità',
+    outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
     maxFiveHundred: 'Max 500 caratteri',

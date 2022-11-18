@@ -1,9 +1,9 @@
 import { addDays } from 'date-fns';
 import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
-export const getMinDate = (date: Date | string | undefined) => {
+export const getMinDate = (date: Date | string | undefined, offset: number) => {
   if (date !== undefined && date instanceof Date) {
-    return addDays(date, 10);
+    return addDays(date, offset);
   }
   return new Date();
 };
