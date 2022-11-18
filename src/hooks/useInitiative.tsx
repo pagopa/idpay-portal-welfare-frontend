@@ -331,7 +331,7 @@ export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch):
   }
 };
 
-const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.threshold &&
@@ -364,7 +364,7 @@ const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.mccFilter &&
@@ -374,7 +374,7 @@ const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.trxCount &&
@@ -407,7 +407,7 @@ const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => 
   }
 };
 
-const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.rewardLimits &&
@@ -428,7 +428,7 @@ const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void
   }
 };
 
-const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.daysOfWeek &&

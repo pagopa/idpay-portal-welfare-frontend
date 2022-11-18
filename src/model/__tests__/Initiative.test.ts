@@ -22,6 +22,11 @@ const mockedGeneralBody: GeneralInfo = {
   rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
   startDate: new Date('2022-10-01T00:00:00.000Z'),
   endDate: new Date('2023-01-31T00:00:00.000Z'),
+  introductionTextIT: undefined,
+  introductionTextEN: undefined,
+  introductionTextFR: undefined,
+  introductionTextDE: undefined,
+  introductionTextSL: undefined
 };
 
 const mockedAdditionalInfo: AdditionalInfo = {
@@ -59,6 +64,11 @@ export const mockedInitiative: Initiative = {
     rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
     startDate: new Date('2022-10-01T00:00:00.000Z'),
     endDate: new Date('2023-01-31T00:00:00.000Z'),
+    introductionTextIT: 'string',
+    introductionTextEN: 'string',
+    introductionTextFR: 'string',
+    introductionTextDE: 'string',
+    introductionTextSL: 'string',
   },
   additionalInfo: {
     initiativeOnIO: true,
@@ -162,6 +172,11 @@ test('Test initiative2Initiative', () => {
       rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
       startDate: new Date('2022-10-01T00:00:00.000Z'),
       endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'string',
+      introductionTextEN: 'string',
+      introductionTextFR: 'string',
+      introductionTextDE: 'string',
+      introductionTextSL: 'string',
     },
     additionalInfo: {
       initiativeOnIO: true,
