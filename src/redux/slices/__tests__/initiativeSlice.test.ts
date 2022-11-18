@@ -78,6 +78,7 @@ describe('use Initiative slice', () => {
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
+      rankingEnabled: 'true',
       introductionTextDE: '',
       introductionTextEN: '',
       introductionTextFR: '',
@@ -120,11 +121,12 @@ describe('use Initiative slice', () => {
     endDate: mockedDate,
     rankingStartDate: mockedDate,
     rankingEndDate: mockedDate,
+    rankingEnabled: 'true',
     introductionTextIT: '',
     introductionTextEN: '',
     introductionTextFR: '',
     introductionTextDE: '',
-    introductionTextSL: ''
+    introductionTextSL: '',
   };
   const mockedAdditionalInfo: AdditionalInfo = {
     initiativeOnIO: undefined,
