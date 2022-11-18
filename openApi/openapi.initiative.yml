@@ -323,6 +323,72 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/logo:
+    put:
+      tags:
+        - initiative
+      summary: Upload and update Logo
+      description: Upload and update Logo
+      operationId: uploadAndUpdateLogo
+      parameters:
+        - name: initiativeId
+          in: path
+          description: The initiative ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - file
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '204':
+          description: No Content
+          content:
+            application/json: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   /{initiativeId}:
     get:
       tags:
@@ -368,7 +434,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-
     delete:
       tags:
         - initiative
@@ -1474,6 +1539,10 @@ components:
           description: Start date
           format: date
           example: '2022-01-30'
+        rankingEnabled:
+          type: boolean
+        descriptionMap:
+          $ref: '#/components/schemas/DescriptionMap'
     AutomatedCriteriaDTO:
       type: object
       properties:
@@ -1487,6 +1556,8 @@ components:
           type: string
         value:
           type: string
+        orderEnabled:
+          type: boolean
     InitiativeDTO:
       type: object
       properties:
@@ -1526,6 +1597,15 @@ components:
           $ref: '#/components/schemas/InitiativeTrxConditionsDTO'
         refundRule:
           $ref: '#/components/schemas/InitiativeRefundRuleDTO'
+    DescriptionLanguageMap:
+      type: object
+      properties:
+        language:
+          type: string
+        description:
+          type: string
+      items:
+        $ref: '#/components/schemas/DescriptionLanguageMap'
     InitiativeSummaryArrayDTO:
       type: array
       items:
@@ -1744,6 +1824,13 @@ components:
           type: array
           items:
             type: string
+    LogoDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        url:
+          type: string
     RewardGroupDTO:
       type: object
       properties:
@@ -1798,6 +1885,7 @@ components:
           type: number
         toIncluded:
           type: boolean
+
     TrxCountDTO:
       type: object
       properties:
@@ -1845,6 +1933,7 @@ components:
             - WEEKLY
             - MONTHLY
             - QUARTERLY
+
     OnboardingDTO:
       type: object
       properties:
@@ -1906,6 +1995,14 @@ components:
         totalPages:
           type: integer
           format: int32
+    DescriptionMap:
+      type: object
+      additionalProperties:
+        type: string
+      example:
+        it: Ciao!
+        en: Hello!
+        fr: Salut!
     RewardExportsDTO:
       title: RewardExportsDTO
       required:
