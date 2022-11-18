@@ -1,9 +1,9 @@
 import { addDays } from 'date-fns';
 import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
-export const getMinDate = (date: Date | string | undefined) => {
+export const getMinDate = (date: Date | string | undefined, offset: number) => {
   if (date !== undefined && date instanceof Date) {
-    return addDays(date, 1);
+    return addDays(date, offset);
   }
   return new Date();
 };
@@ -69,7 +69,7 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   startDate: parseDate(values.startDate),
   endDate: parseDate(values.endDate),
   descriptionMap: { ...parseDescriptionMap(values) },
-  rankingEnabled: false, // TEMP
+  rankingEnabled: values.rankingEnabled === 'true' ? true : false,
 });
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>

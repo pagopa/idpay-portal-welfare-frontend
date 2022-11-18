@@ -5,6 +5,7 @@ import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 export interface GeneralInfo {
   beneficiaryType: BeneficiaryTypeEnum;
   beneficiaryKnown: string | undefined;
+  rankingEnabled: string | undefined;
   budget: string;
   beneficiaryBudget: string;
   startDate: Date | string | undefined;

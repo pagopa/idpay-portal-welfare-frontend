@@ -14,7 +14,7 @@ import {
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import IntrudoctionTabPanel from './IntrudoctionTabPanel';
+import IntrudoctionTabPanel from './IntroductionTabPanel';
 
 interface Obj {
   label: string;
@@ -67,11 +67,11 @@ const IntroductionMarkdown = ({
 
   return (
     <Box>
-      <Box>
+      <Box sx={{ textAlign: 'center' }}>
         <ButtonNaked
           size="small"
           component="button"
-          sx={{ color: 'primary.main', ml: '35px', mt: '25px' }}
+          sx={{ color: 'primary.main', fontWeight: 700 }}
           weight="default"
           onClick={handleClick}
         >
@@ -105,7 +105,7 @@ const IntroductionMarkdown = ({
               }}
             >
               <Typography variant="h6" component="h6">
-                Anteprima testo introduttivo
+                {t('components.wizard.stepTwo.previewModal.title')}
               </Typography>
               <Tabs
                 variant="fullWidth"
@@ -148,7 +148,7 @@ const IntroductionMarkdown = ({
                   sx={{ justifySelf: 'right' }}
                   onClick={() => setShowMarkdown(false)}
                 >
-                  Chiudi
+                  {t('components.wizard.stepTwo.previewModal.closeBtn')}
                 </Button>
               </Box>
             </Box>
@@ -170,7 +170,7 @@ const IntroductionMarkdown = ({
                 {t('components.wizard.stepTwo.previewModal.title')}
               </Typography>
               <Alert severity="info" variant="standard">
-              {t('components.wizard.stepTwo.previewModal.alertDescription')}
+                {t('components.wizard.stepTwo.previewModal.alertDescription')}
                 <Link
                   href="#"
                   target="_blank"
