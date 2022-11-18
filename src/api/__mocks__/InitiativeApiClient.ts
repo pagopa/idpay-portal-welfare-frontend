@@ -36,6 +36,16 @@ export const InitiativeApi = {
     _data: InitiativeBeneficiaryRuleDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
 
+  updateInitiativeRefundRulePut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRuleDraftPut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
   getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
     new Promise((resolve) => resolve(mockedAdmissionCriteria)),
 
@@ -47,16 +57,6 @@ export const InitiativeApi = {
   initiativeTrxAndRewardRulesPutDraft: async (
     _id: string,
     _data: InitiativeRewardAndTrxRulesDTO
-  ): Promise<void> => new Promise((resolve) => resolve()),
-
-  updateInitiativeRefundRulePut: async (
-    _id: string,
-    _data: InitiativeRefundRuleDTO
-  ): Promise<void> => new Promise((resolve) => resolve()),
-
-  updateInitiativeRefundRuleDraftPut: async (
-    _id: string,
-    _data: InitiativeRefundRuleDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
 
   updateInitiativeGeneralInfo: async (_id: string, _data: InitiativeGeneralDTO): Promise<void> =>
