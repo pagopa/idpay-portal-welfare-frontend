@@ -1505,6 +1505,11 @@ components:
           type: string
         channels:
           $ref: '#/components/schemas/ChannelArrayDTO'
+        logoFileName:
+          type: string
+        logoUploadDate:
+          type: string
+          format: date-time
     InitiativeGeneralDTO:
       type: object
       properties:
