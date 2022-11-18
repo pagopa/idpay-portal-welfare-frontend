@@ -30,6 +30,7 @@ import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
   updateInitiativeServiceInfo,
+  uploadAndUpdateLogo,
 } from '../../../../services/intitativeService';
 import {
   initiativeIdSelector,
@@ -65,6 +66,9 @@ const ServiceConfig = ({
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
   const setLoading = useLoading('SAVE_INITIATIVE_SERVICE');
+  const [uploadFile, setUploadFile] = useState<File>();
+  const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
+  // const [fileUplodedKo, setFileUploadedKo] = useState(false);
 
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
@@ -159,6 +163,32 @@ const ServiceConfig = ({
     }
   }, [formik]);
 
+  const sendUploadFile = (
+    id: string | undefined,
+    file: File | undefined,
+    currentStep: number,
+    setCurrentStep: Dispatch<SetStateAction<number>>
+  ) => {
+    console.log('ID', id);
+    if (typeof id !== 'undefined' && typeof file !== 'undefined') {
+      uploadAndUpdateLogo(id, file)
+        .then((res) => {
+          setFileUploadedOk(true);
+          // setFileUploadedKo(false);
+          console.log(res);
+          console.log('STO ANDANDO AVANTI');
+          // setCurrentStep(currentStep + 1);
+        })
+        .catch((err) => {
+          console.log(err);
+          setFileUploadedOk(false);
+          // setFileUploadedKo(true);
+        });
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
   const sendValues = (
     values: any,
     currentStep: number,
@@ -171,7 +201,8 @@ const ServiceConfig = ({
       createInitiativeServiceInfo(data)
         .then((res) => {
           dispatch(setInitiativeId(res?.initiativeId));
-          setCurrentStep(currentStep + 1);
+          // setCurrentStep(currentStep + 1);
+          sendUploadFile(res?.initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -191,7 +222,8 @@ const ServiceConfig = ({
       setLoading(true);
       updateInitiativeServiceInfo(initiativeId, data)
         .then((_res) => {
-          setCurrentStep(currentStep + 1);
+          // setCurrentStep(currentStep + 1);
+          sendUploadFile(initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -396,7 +428,13 @@ const ServiceConfig = ({
               InputLabelProps={{ required: false }}
               size="small"
             />
-            <UploadServiceIcon />
+            {formik.values.initiativeOnIO ? (
+              <UploadServiceIcon
+                uploadFile={uploadFile}
+                setUploadFile={setUploadFile}
+                fileUplodedOk={fileUplodedOk}
+              />
+            ) : null}
           </FormControl>
         </Box>
       </Box>

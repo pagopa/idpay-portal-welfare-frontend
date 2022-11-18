@@ -13,44 +13,54 @@ import {
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { useState } from 'react';
+import { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
 
-const UploadServiceIcon = () => {
-  const { t } = useTranslation();
-  const [iconIsLoading, setIconIsLoading] = useState(false);
-  const [iconIsAcceppted, setIconIsAcceppted] = useState(false);
-  const [iconIsRejected, setIconIsRejected] = useState(false);
+interface Props {
+  uploadFile: File | undefined;
+  setUploadFile: Dispatch<SetStateAction<File | undefined>>;
+  fileUplodedOk: boolean;
+}
 
-  const load = () => setIconIsLoading(false);
-  const reject = () => setIconIsRejected(true);
+const UploadServiceIcon = ({ uploadFile, setUploadFile, fileUplodedOk }: Props) => {
+  const { t } = useTranslation();
+  const [fileIsLoading, setFileIsLoading] = useState(false);
+  const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
+  const [fileIsRejected, setFileIsRejected] = useState(false);
+
+  useEffect(() => {
+    if (fileUplodedOk) {
+      setFileIsLoading(false);
+      setFileIsRejected(false);
+      setFileIsAcceppted(true);
+    }
+  }, [fileUplodedOk]);
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
     maxSize: 2097152,
     accept: 'image/png',
     onDrop: () => {
-      setIconIsLoading(true);
+      setFileIsLoading(true);
     },
-    onDropAccepted: () => {
-      setTimeout(load, 3000);
-      setIconIsRejected(false);
-      setIconIsAcceppted(true);
+    onDropAccepted: (files) => {
+      setUploadFile(files[0]);
     },
     onDropRejected: () => {
-      setTimeout(load, 3000);
-      setTimeout(reject, 3000);
-      setIconIsAcceppted(false);
+      setFileIsLoading(false);
+      setFileIsRejected(true);
+      setFileIsAcceppted(false);
     },
   });
 
   const resetStatus = () => {
-    setIconIsLoading(false);
-    setIconIsRejected(false);
-    setIconIsAcceppted(false);
+    setFileIsLoading(false);
+    setFileIsRejected(false);
+    setFileIsAcceppted(false);
+    setUploadFile(undefined);
   };
 
-  const loadingIconPartial = (
+  const loadingFilePartial = (
     <Box
       sx={{
         display: 'grid',
@@ -79,7 +89,7 @@ const UploadServiceIcon = () => {
     </Box>
   );
 
-  const IconAcceptedPartial = (
+  const FileAcceptedPartial = (
     <Box
       sx={{
         display: 'grid',
@@ -101,15 +111,18 @@ const UploadServiceIcon = () => {
         <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
           <CheckCircleIcon color="success" />
         </Box>
-        <Box sx={{ gridColumn: 'span 4' }}>
+        <Box sx={{ gridColumn: 'span 3' }}>
           <Typography variant="body2" fontWeight={600}>
-            Icona
+            {uploadFile?.name}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
-          <Typography variant="body2"></Typography>
+        <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
+          <Typography variant="body2">
+            {typeof uploadFile?.lastModified !== 'undefined' &&
+              new Date(uploadFile?.lastModified).toLocaleString('fr-BE')}
+          </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
+        <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>
           <Chip label={t('components.wizard.stepOne.uploadIcon.validIcon')} color="success" />
         </Box>
       </Box>
@@ -174,7 +187,7 @@ const UploadServiceIcon = () => {
 
   return (
     <Box sx={{ display: 'grid', width: '100%', pt: 2 }}>
-      {iconIsRejected && (
+      {fileIsRejected && (
         <Alert
           severity="error"
           action={
@@ -183,7 +196,7 @@ const UploadServiceIcon = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                setIconIsRejected(false);
+                setFileIsRejected(false);
               }}
             >
               <CloseIcon color="primary" fontSize="inherit" />
@@ -191,15 +204,17 @@ const UploadServiceIcon = () => {
           }
           sx={{ mb: 2 }}
         >
-          <AlertTitle>Il file caricato non è valido</AlertTitle>
-          <Typography variant="body2">Errore</Typography>
+          <AlertTitle>{t('components.wizard.stepThree.upload.invalidFileTitle')}</AlertTitle>
+          <Typography variant="body2">
+            {t('components.wizard.stepThree.upload.invalidFileDescription')}
+          </Typography>
         </Alert>
       )}
 
-      {iconIsLoading
-        ? loadingIconPartial
-        : iconIsAcceppted
-        ? IconAcceptedPartial
+      {fileIsLoading
+        ? loadingFilePartial
+        : fileIsAcceppted
+        ? FileAcceptedPartial
         : InitStatusPartial}
     </Box>
   );

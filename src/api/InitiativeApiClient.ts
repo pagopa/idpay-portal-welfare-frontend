@@ -192,8 +192,16 @@ export const InitiativeApi = {
   },
 
   getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
-    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
+    const result = await apiClient.initiativeStatistics({ initiativeId: id });
     console.log(result);
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  uploadAndUpdateLogo: async (id: string, file: File): Promise<void> => {
+    const result = await apiClient.uploadAndUpdateLogo({
+      initiativeId: id,
+      file,
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 };

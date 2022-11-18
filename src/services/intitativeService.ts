@@ -102,3 +102,6 @@ export const getGroupOfBeneficiaryStatusAndDetails = (
   id: string
 ): Promise<InitiativeStatisticsDTO> =>
   InitiativeApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);
+
+export const uploadAndUpdateLogo = (id: string, file: File): Promise<void> =>
+  InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
