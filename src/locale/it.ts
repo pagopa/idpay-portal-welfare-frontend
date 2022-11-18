@@ -400,7 +400,7 @@ export default {
         invalidFileTitle: 'Il file caricato non è valido',
         invalidFileDescription: 'Errore',
         invalidFileTypeDescription: 'Sono ammessi solamente file .zip',
-        overMaxUploadDescription: 'La dimensione massima supportata è di 2MB',
+        overMaxUploadDescription: 'La dimensione massima supportata è di 175MB',
       },
     },
   },

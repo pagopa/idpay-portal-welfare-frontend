@@ -8,14 +8,10 @@ import {
   Link,
   LinearProgress,
   Chip,
-  Alert,
-  IconButton,
-  AlertTitle,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CloseIcon from '@mui/icons-material/Close';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +20,8 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useDropzone } from 'react-dropzone';
 import { useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -53,7 +51,7 @@ const InitiativeRefundsOutcome = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
-    maxSize: 2097152,
+    maxSize: 183500800,
     accept:
       'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
     onDrop: () => {
@@ -89,7 +87,6 @@ const InitiativeRefundsOutcome = () => {
               showCloseIcon: true,
             });
             setFileIsLoading(false);
-            setFileRejected(true);
             setFileAccepted(false);
           });
       }
@@ -338,24 +335,18 @@ const InitiativeRefundsOutcome = () => {
         </Box>
 
         {fileRejected && (
-          <Alert
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setFileRejected(false);
-                }}
-              >
-                <CloseIcon color="primary" fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            <AlertTitle>{t(alertTitle)}</AlertTitle>
-            <Typography variant="body2">{t(alertDescription)}</Typography>
-          </Alert>
+          <Toast
+            open={fileRejected}
+            title={t(alertTitle)}
+            message={t(alertDescription)}
+            onCloseToast={() => {
+              setFileRejected(false);
+            }}
+            logo={InfoOutlinedIcon}
+            leftBorderColor="#FE6666"
+            toastColorIcon="#FE6666"
+            showToastCloseIcon={true}
+          />
         )}
 
         {fileIsLoading
