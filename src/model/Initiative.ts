@@ -11,6 +11,11 @@ export interface GeneralInfo {
   endDate: Date | string | undefined;
   rankingStartDate: Date | string | undefined;
   rankingEndDate: Date | string | undefined;
+  introductionTextIT: string | undefined;
+  introductionTextEN: string | undefined;
+  introductionTextFR: string | undefined;
+  introductionTextDE: string | undefined;
+  introductionTextSL: string | undefined;
 }
 
 export interface AdditionalInfo {

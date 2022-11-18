@@ -78,6 +78,11 @@ describe('use Initiative slice', () => {
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
+      introductionTextDE: '',
+      introductionTextEN: '',
+      introductionTextFR: '',
+      introductionTextIT: '',
+      introductionTextSL: '',
     },
     beneficiaryRule: {
       selfDeclarationCriteria: [],
@@ -115,6 +120,11 @@ describe('use Initiative slice', () => {
     endDate: mockedDate,
     rankingStartDate: mockedDate,
     rankingEndDate: mockedDate,
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: ''
   };
   const mockedAdditionalInfo: AdditionalInfo = {
     initiativeOnIO: undefined,
