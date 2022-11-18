@@ -69,3 +69,15 @@ export const peopleReached = (totalBudget: string, budgetPerPerson: string): any
   const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
   return Math.floor(totalBudgetInt / budgetPerPersonInt);
 };
+
+export const numberWithCommas = (x: number | string | undefined) => {
+  if (typeof x === 'string' && x.length > 0) {
+    const xFormatted = x.replace(/\./g, '').replace(/,/g, '.');
+    const xFloat = parseFloat(xFormatted);
+    return xFloat.toLocaleString('de-DE');
+  }
+  if (typeof x === 'number') {
+    return x.toLocaleString('de-DE');
+  }
+  return '0';
+};

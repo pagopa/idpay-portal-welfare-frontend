@@ -322,6 +322,7 @@ export default {
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+      noData: 'Non sono presenti utenti.',
       form: {
         search: 'Cerca per Codice fiscale',
         from: 'Da',
@@ -341,10 +342,45 @@ export default {
         beneficiaryState: 'Stato',
       },
       status: {
-        waiting: 'In attesa',
-        registered: 'Iscritto',
-        suitable: 'Idoneo',
-        notSuitable: 'Non idoneo',
+        acceptedTc: 'In corso',
+        inactive: 'Disiscritto',
+        onEvaluation: 'In attesa',
+        invited: 'Idoneo',
+        onboardingOk: 'Iscritto',
+      },
+    },
+    initiativeRefunds: {
+      title: 'Rimborsi',
+      subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
+      noData: 'Non sono presenti rimborsi.',
+      uploadBtn: 'Carica esiti',
+      form: {
+        from: 'Da',
+        to: 'A',
+        status: 'Stato',
+        completed: 'Completato',
+        toLoad: 'Esiti da caricare',
+        partial: 'Esiti parziali',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        creationDate: 'Data di creazione',
+        typology: 'Tipologia',
+        amount: 'Importo',
+        refunds: 'Rimborsi',
+        successPercentage: '% Successo',
+        status: 'Stato',
+        typeOrdinary: 'Ordinario',
+      },
+      status: {
+        exported: 'Esiti da caricare',
+        partial: 'Esiti parziali ({{percentage}}%)',
+        complete: 'Completato',
+      },
+      uploadFile: {
+        feedbackOk: 'File caricato correttamente',
+        feedbackKo: 'Errore nel caricamento del file',
       },
     },
   },
@@ -354,6 +390,8 @@ export default {
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',
+    initiativeUsers: 'Utenti',
+    initiativeRefunds: 'Rimborsi',
   },
   components: {
     wizard: {
@@ -419,6 +457,19 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
+          preview: 'Vedi anteprima',
+          introductionTitle: 'Testo introduttivo',
+          introductionSubTitle:
+            'Serve a introdurre l’inziativa all’utente che aderisce tramite l’app IO, illustrando in maniera sintetica le regole.',
+          introductiveInfoLabel: "Descrivi le regole dell'iniziativa",
+          requiredItalianIntroduction: 'Campo italiano obbligatorio',
+        },
+        previewModal: {
+          title: 'Anteprima testo introduttivo',
+          closeBtn: 'Chiudi',
+          checkGuide: ` consulta la guida.`,
+          alertDescription:
+            'Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori informazioni,',
         },
       },
       stepThree: {
@@ -582,6 +633,13 @@ export default {
         links: {
           findOut: 'Scopri di più',
         },
+        languages: {
+          italian: 'Italiano',
+          english: 'Inglese',
+          french: 'Francese',
+          german: 'Tesdesco',
+          slovenian: 'Sloveno',
+        },
       },
     },
     exitModal: {
@@ -625,6 +683,7 @@ export default {
     notValidMccLis: 'Sono stati inseriti valori non validi',
     maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
     indicateAssistanceSubject: 'Indicaci l’argomento della tua richiesta',
+    outDateTo: 'La data di fine deve essere successiva a quella di inizio',
   },
   errors: {
     title: 'Si è verificato un errore',

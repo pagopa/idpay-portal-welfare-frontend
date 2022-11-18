@@ -1,8 +1,7 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
-import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import StatusSnackBar from '../StatusSnackBar';
@@ -73,7 +72,7 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
     jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
     const closeBtn = queryByTestId('close-bar-test') as HTMLElement;
-    act(() => {
+    await act(async () => {
       fireEvent.click(closeBtn);
     });
     expect(setOpenSnackBar).toBeCalled();
@@ -97,29 +96,26 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
 
       const currentPath = history.location.pathname;
       const viewBtn = queryByTestId('view-users-test') as HTMLElement;
-      act(() => {
-        fireEvent.click(viewBtn);
-      });
+      fireEvent.click(viewBtn);
       expect(currentPath !== history.location.pathname).toBeTruthy();
     });
   });
 
   const statusOptions = ['OK', 'KO', 'PROC_KO', '', 'TO_SHEDULE'];
   statusOptions.forEach((item) => {
-    it('Test render of snackbar', async () => {
-      await act(async () => {
-        const { queryByTestId } = render(
-          <Provider store={store}>
-            <StatusSnackBar
-              openSnackBar={true}
-              setOpenSnackBar={setOpenSnackBar}
-              fileStatus={item}
-              beneficiaryReached={25}
-              initiativeId={initiativeId}
-            />
-          </Provider>
-        );
-        /*
+    it('Test render of snackbar', () => {
+      render(
+        <Provider store={store}>
+          <StatusSnackBar
+            openSnackBar={true}
+            setOpenSnackBar={setOpenSnackBar}
+            fileStatus={item}
+            beneficiaryReached={25}
+            initiativeId={initiativeId}
+          />
+        </Provider>
+      );
+      /*
       const useStateMock: any = (openSnackBar: boolean) => [openSnackBar, setOpenSnackBar];
       jest.spyOn(React, 'useState').mockImplementation(useStateMock);
 
@@ -128,7 +124,6 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
       setOpenSnackBar();
       expect(setOpenSnackBar).toHaveBeenCalled();
       */
-      });
     });
   });
 });

@@ -61,6 +61,7 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_OVERVIEW,
       ROUTES.INITIATIVE_DETAIL,
       ROUTES.INITIATIVE_USERS,
+      ROUTES.INITIATIVE_REFUNDS,
     ],
     exact: true,
     strict: false,
@@ -159,7 +160,7 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   return dataT;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
+// eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
@@ -170,6 +171,11 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   };
   if (data && Object.keys(data).length !== 0) {
     if (typeof data.beneficiaryType !== undefined) {
@@ -204,6 +210,33 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.rankingEndDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEndDate = data.rankingEndDate;
+    }
+
+    if (data.descriptionMap) {
+      if (data.descriptionMap.it && typeof data.descriptionMap.it !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextIT = data.descriptionMap.it;
+      }
+
+      if (data.descriptionMap.en && typeof data.descriptionMap.en !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextEN = data.descriptionMap.en;
+      }
+
+      if (data.descriptionMap.fr && typeof data.descriptionMap.fr !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextFR = data.descriptionMap.fr;
+      }
+
+      if (data.descriptionMap.de && typeof data.descriptionMap.de !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextDE = data.descriptionMap.de;
+      }
+
+      if (data.descriptionMap.sl && typeof data.descriptionMap.sl !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextSL = data.descriptionMap.sl;
+      }
     }
   }
 
