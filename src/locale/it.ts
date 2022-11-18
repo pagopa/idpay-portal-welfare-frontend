@@ -469,6 +469,19 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
+          preview: 'Vedi anteprima',
+          introductionTitle: 'Testo introduttivo',
+          introductionSubTitle:
+            'Serve a introdurre l’inziativa all’utente che aderisce tramite l’app IO, illustrando in maniera sintetica le regole.',
+          introductiveInfoLabel: "Descrivi le regole dell'iniziativa",
+          requiredItalianIntroduction: 'Campo italiano obbligatorio',
+        },
+        previewModal: {
+          title: 'Anteprima testo introduttivo',
+          closeBtn: 'Chiudi',
+          checkGuide: ` consulta la guida.`,
+          alertDescription:
+            'Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori informazioni,',
         },
       },
       stepThree: {
@@ -632,6 +645,13 @@ export default {
         },
         links: {
           findOut: 'Scopri di più',
+        },
+        languages: {
+          italian: 'Italiano',
+          english: 'Inglese',
+          french: 'Francese',
+          german: 'Tesdesco',
+          slovenian: 'Sloveno',
         },
       },
     },

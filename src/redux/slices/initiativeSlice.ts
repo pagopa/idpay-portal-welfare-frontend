@@ -42,6 +42,11 @@ const initialState: Initiative = {
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
@@ -118,6 +123,11 @@ export const initiativeSlice = createSlice({
         endDate: action.payload.endDate || '',
         rankingStartDate: action.payload.rankingStartDate || '',
         rankingEndDate: action.payload.rankingEndDate || '',
+        introductionTextIT: action.payload.introductionTextIT || '',
+        introductionTextEN: action.payload.introductionTextEN || '',
+        introductionTextFR: action.payload.introductionTextFR || '',
+        introductionTextDE: action.payload.introductionTextDE || '',
+        introductionTextSL: action.payload.introductionTextSL || '',
       },
     }),
     setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => ({
