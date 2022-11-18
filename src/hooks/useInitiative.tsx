@@ -188,7 +188,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
     }
-    if (typeof data.rankingEnabled !== undefined) {
+    if (data.rankingEnabled && typeof data.rankingEnabled !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
@@ -259,7 +259,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       }
     }
   }
-
+  console.log(dataT);
   return dataT;
 };
 
