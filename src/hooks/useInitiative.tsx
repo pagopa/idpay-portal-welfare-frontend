@@ -84,6 +84,7 @@ export const useInitiative = () => {
           dispatch(setInitiativeUpdateDate(response.updateDate));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
+          console.log(response.general);
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
@@ -165,6 +166,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
+    rankingEnabled: 'true',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -186,6 +188,10 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+    }
+    if (data.rankingEnabled && typeof data.rankingEnabled !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
     if (typeof data.budget !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -239,7 +245,6 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       }
     }
   }
-
   return dataT;
 };
 
