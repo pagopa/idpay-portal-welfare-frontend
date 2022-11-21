@@ -22,6 +22,9 @@ export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
   serviceName: string | undefined;
   serviceArea: ServiceScopeEnum | string | undefined;
+  logoFileName: string;
+  logoURL: string;
+  logoUploadDate: string;
   serviceDescription: string | undefined;
   privacyPolicyUrl: string | undefined;
   termsAndConditions: string | undefined;

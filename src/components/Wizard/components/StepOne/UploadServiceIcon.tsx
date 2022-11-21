@@ -17,12 +17,13 @@ import { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
 
 interface Props {
-  uploadFile: File | undefined;
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
   fileUplodedOk: boolean;
+  fileName: string | undefined;
+  fileUploadDate: string | undefined;
 }
 
-const UploadServiceIcon = ({ uploadFile, setUploadFile, fileUplodedOk }: Props) => {
+const UploadServiceIcon = ({ setUploadFile, fileUplodedOk, fileName, fileUploadDate }: Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
@@ -113,13 +114,12 @@ const UploadServiceIcon = ({ uploadFile, setUploadFile, fileUplodedOk }: Props) 
         </Box>
         <Box sx={{ gridColumn: 'span 3' }}>
           <Typography variant="body2" fontWeight={600}>
-            {uploadFile?.name}
+            {fileName}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
           <Typography variant="body2">
-            {typeof uploadFile?.lastModified !== 'undefined' &&
-              new Date(uploadFile?.lastModified).toLocaleString('fr-BE')}
+            {fileUploadDate}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>

@@ -123,6 +123,9 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',
     assistanceChannels: [{ type: 'web', contact: '' }],
@@ -155,6 +158,18 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   if (typeof data.channels !== 'undefined') {
     // eslint-disable-next-line functional/immutable-data
     dataT.assistanceChannels = [...data.channels];
+  }
+  if (typeof data.logoFileName !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoFileName = data.logoFileName;
+  }
+  if (typeof data.logoURL !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoURL = data.logoURL;
+  }
+  if (typeof data.logoUploadDate !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoUploadDate = data.logoUploadDate.toLocaleString('fr-BE');
   }
 
   return dataT;

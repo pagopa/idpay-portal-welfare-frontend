@@ -68,6 +68,8 @@ const ServiceConfig = ({
   const setLoading = useLoading('SAVE_INITIATIVE_SERVICE');
   const [uploadFile, setUploadFile] = useState<File>();
   const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
+  const [fileName, setFileName] = useState('');
+  const [fileUploadDate, setUploadDate] = useState('');
   // const [fileUplodedKo, setFileUploadedKo] = useState(false);
 
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
@@ -84,6 +86,14 @@ const ServiceConfig = ({
     }
     setAction('');
   }, [action]);
+
+  useEffect(() => {
+    if (additionalInfo.logoFileName.length > 0 && additionalInfo.logoUploadDate.length > 0) {
+      setFileName(additionalInfo.logoFileName);
+      setUploadDate(additionalInfo.logoUploadDate);
+      setFileUploadedOk(true);
+    }
+  }, [JSON.stringify(additionalInfo)]);
 
   const validationSchema = Yup.object().shape({
     initiativeOnIO: Yup.boolean(),
@@ -169,7 +179,6 @@ const ServiceConfig = ({
     currentStep: number,
     setCurrentStep: Dispatch<SetStateAction<number>>
   ) => {
-    console.log('ID', id);
     if (typeof id !== 'undefined' && typeof file !== 'undefined') {
       uploadAndUpdateLogo(id, file)
         .then((res) => {
@@ -430,9 +439,10 @@ const ServiceConfig = ({
             />
             {formik.values.initiativeOnIO ? (
               <UploadServiceIcon
-                uploadFile={uploadFile}
                 setUploadFile={setUploadFile}
                 fileUplodedOk={fileUplodedOk}
+                fileName={fileName}
+                fileUploadDate={fileUploadDate}
               />
             ) : null}
           </FormControl>

@@ -19,6 +19,7 @@ import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatis
 import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
 import { SasToken } from './generated/initiative/SasToken';
+import { LogoDTO } from './generated/initiative/LogoDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -247,7 +248,7 @@ export const InitiativeApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  uploadAndUpdateLogo: async (id: string, file: File): Promise<void> => {
+  uploadAndUpdateLogo: async (id: string, file: File): Promise<LogoDTO> => {
     const result = await apiClient.uploadAndUpdateLogo({
       initiativeId: id,
       file,
