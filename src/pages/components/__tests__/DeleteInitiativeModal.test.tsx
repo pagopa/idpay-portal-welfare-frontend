@@ -6,19 +6,19 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
 import DeleteInitiativeModal from '../DeleteInitiativeModal';
 import { mockedInitiativeId } from '../../../services/__mocks__/initiativeService';
-import { InitiativeApi } from '../../../api/InitiativeApiClient';
-import { logicallyDeleteInitiative } from '../../../services/intitativeService';
+// import { InitiativeApi } from '../../../api/InitiativeApiClient';
+// import { logicallyDeleteInitiative } from '../../../services/intitativeService';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('../../../api/InitiativeApiClient');
+// jest.mock('../../../api/InitiativeApiClient');
 
-beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
-});
+// beforeEach(() => {
+//   jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
+// });
 
 describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();

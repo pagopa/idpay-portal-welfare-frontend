@@ -17,12 +17,13 @@ import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeS
 import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
-import { mockedInitiativeDetail, mockedInitiativeSummary } from './__mocks__/initiativeService';
+import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
+import { mockedInitiativeId } from './__mocks__/initiativeService';
 import { mockedAdmissionCriteria } from './__mocks__/admissionCriteriaService';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve(mockedInitiativeSummary));
+    return InitiativeApiMocked.getInitativeSummary();
   } else {
     return InitiativeApi.getInitativeSummary().then((res) => res);
   }
@@ -30,7 +31,7 @@ export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
 
 export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve(mockedInitiativeDetail));
+    return InitiativeApiMocked.getInitiativeById(mockedInitiativeId);
   } else {
     return InitiativeApi.getInitiativeById(id).then((res) => res);
   }

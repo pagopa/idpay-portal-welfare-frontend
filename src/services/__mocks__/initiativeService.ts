@@ -12,56 +12,59 @@ import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
-import { InitiativeApi } from '../../api/__mocks__/InitiativeApiClient';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 
 export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
 ) => expect(initiativeSummary).toStrictEqual(mockedInitiativeSummary);
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
-  InitiativeApi.getInitativeSummary();
+  InitiativeApiMocked.getInitativeSummary();
 
 export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: InitiativeDTO) =>
   expect(initiativeDetail).toStrictEqual(mockedInitiativeDetail);
 
 export const getInitiativeDetail = (_id: string): Promise<InitiativeDTO> =>
-  InitiativeApi.getInitiativeById(mockedInitiativeId);
+  InitiativeApiMocked.getInitiativeById(mockedInitiativeId);
 
 export const createInitiativeServiceInfo = (_data: InitiativeAdditionalDTO) =>
-  InitiativeApi.saveInitiativeServiceInfo({});
+  InitiativeApiMocked.saveInitiativeServiceInfo({});
 
 export const updateInitiativeGeneralInfo = (_id: string, _data: InitiativeGeneralDTO) =>
-  InitiativeApi.updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
+  InitiativeApiMocked.updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
 
 export const updateInitiativeGeneralInfoDraft = (_id: string, _data: InitiativeGeneralDTO) =>
-  InitiativeApi.updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
+  InitiativeApiMocked.updateInitiativeGeneralInfoDraft(
+    mockedInitiativeId,
+    mockedInitiativeGeneralBody
+  );
 
 export const updateInitiativeServiceInfo = (
   _id: string,
   _data: InitiativeAdditionalDTO
 ): Promise<void> =>
-  InitiativeApi.updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
+  InitiativeApiMocked.updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
 
 export const putBeneficiaryRuleService = (_id: string, _data: InitiativeBeneficiaryRuleDTO) =>
-  InitiativeApi.initiativeBeneficiaryRulePut(
+  InitiativeApiMocked.initiativeBeneficiaryRulePut(
     mockedInitiativeId,
     mockedInitiativeBeneficiaryRuleBody
   );
 
 export const putBeneficiaryRuleDraftService = (_id: string, _data: InitiativeBeneficiaryRuleDTO) =>
-  InitiativeApi.initiativeBeneficiaryRulePutDraft(
+  InitiativeApiMocked.initiativeBeneficiaryRulePutDraft(
     mockedInitiativeId,
     mockedInitiativeBeneficiaryRuleBody
   );
 
 export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
-  InitiativeApi.updateInitiativeRefundRulePut(mockedInitiativeId, mockedRefundRules);
+  InitiativeApiMocked.updateInitiativeRefundRulePut(mockedInitiativeId, mockedRefundRules);
 
 export const putRefundRuleDraftPut = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
-  InitiativeApi.updateInitiativeRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
+  InitiativeApiMocked.updateInitiativeRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
 
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
-  InitiativeApi.getEligibilityCriteriaForSidebar();
+  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
 
 export const getGroupOfBeneficiaryStatusAndDetails = (_id: string): Promise<void> =>
   new Promise((resolve) => resolve());

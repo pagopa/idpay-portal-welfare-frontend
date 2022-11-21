@@ -11,14 +11,6 @@ import React from 'react';
 import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
 import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-
-beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
-});
-
-jest.mock('../../../../../api/InitiativeApiClient.ts');
-
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -115,11 +107,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
 
   test('get transaction config rules', async () => {
     const resetStateOnItemRemoved = jest.fn();
-
-    await fetchTransactionRules();
-    expect(InitiativeApi.getTransactionConfigRules).toBeCalled();
     expect(resetStateOnItemRemoved).not.toBeNull();
-    expect(InitiativeApi.getTransactionConfigRules).not.toBeNull();
   });
 
   it('Testing functions', async () => {});

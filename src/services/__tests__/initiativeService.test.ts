@@ -1,4 +1,4 @@
-import { InitiativeApi } from '../../api/__mocks__/InitiativeApiClient';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import {
   createInitiativeServiceInfo,
   getInitativeSummary,
@@ -12,9 +12,9 @@ import {
 } from '../__mocks__/initiativeService';
 
 beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'getInitativeSummary');
-  jest.spyOn(InitiativeApi, 'getInitiativeById');
-  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
+  jest.spyOn(InitiativeApiMocked, 'getInitativeSummary');
+  jest.spyOn(InitiativeApiMocked, 'getInitiativeById');
+  jest.spyOn(InitiativeApiMocked, 'saveInitiativeServiceInfo');
 });
 
 test('test get initiative summary', async () => {
@@ -22,9 +22,9 @@ test('test get initiative summary', async () => {
   expect(result).toBe(mockedInitiativeSummary);
 });
 
-test('test get initiative summary', async () => {
+test('test get initiative by id', async () => {
   const result = await getInitiativeDetail(mockedInitiativeId);
-  expect(result).toBe(mockedInitiativeDetail);
+  expect(result).toEqual(mockedInitiativeDetail);
 });
 
 test('test create Initiative Service Info', async () => {
@@ -38,7 +38,7 @@ test('update Initiative Service Info', async () => {
 });
 
 test('update initiative general info', async () => {
-  const result = await InitiativeApi.updateInitiativeGeneralInfo(
+  const result = await InitiativeApiMocked.updateInitiativeGeneralInfo(
     mockedInitiativeId,
     mockedInitiativeGeneralBody
   );

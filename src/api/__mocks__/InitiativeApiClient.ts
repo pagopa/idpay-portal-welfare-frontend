@@ -13,7 +13,7 @@ import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAddit
 import { InitiativeGeneralDTO } from '../generated/initiative/InitiativeGeneralDTO';
 import { InitiativeRewardAndTrxRulesDTO } from '../generated/initiative/InitiativeRewardAndTrxRulesDTO';
 
-export const InitiativeApi = {
+export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
     new Promise((resolve) => resolve(mockedInitiativeSummary)),
 
