@@ -16,6 +16,7 @@ import {
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
+import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -135,7 +136,11 @@ export const initiativeSlice = createSlice({
     }),
     setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => ({
       ...state,
-      additionalInfo: { ...action.payload },
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
+    }),
+    setInitiativeLogo: (state, action: PayloadAction<LogoDTO>) => ({
+      ...state,
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
     }),
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
@@ -269,6 +274,7 @@ export const {
   setInitiativeUpdateDate,
   setGeneralInfo,
   setAdditionalInfo,
+  setInitiativeLogo,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,

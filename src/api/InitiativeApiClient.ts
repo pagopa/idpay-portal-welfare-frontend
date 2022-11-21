@@ -248,11 +248,11 @@ export const InitiativeApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
-  uploadAndUpdateLogo: async (id: string, file: File): Promise<LogoDTO> => {
+  uploadAndUpdateLogo: async (id: string, logo: File): Promise<LogoDTO> => {
     const result = await apiClient.uploadAndUpdateLogo({
       initiativeId: id,
-      file,
+      logo,
     });
-    return extractResponse(result, 204, onRedirectToLogin);
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };

@@ -37,6 +37,7 @@ import {
   additionalInfoSelector,
   setInitiativeId,
   setAdditionalInfo,
+  setInitiativeLogo,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
@@ -187,10 +188,23 @@ const ServiceConfig = ({
           console.log(res);
           console.log('STO ANDANDO AVANTI');
           // setCurrentStep(currentStep + 1);
+          // const data = { ...res, logoUploadDate: res.logoUploadDate?.toLocaleString('fr-BE')};
+          dispatch(setInitiativeLogo(res));
         })
-        .catch((err) => {
-          console.log(err);
+        .catch((error) => {
           setFileUploadedOk(false);
+          addError({
+            id: 'UPLOAD_AND_UPDATE_LOGO',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred uploading logo',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+
           // setFileUploadedKo(true);
         });
     } else {
@@ -440,6 +454,7 @@ const ServiceConfig = ({
             {formik.values.initiativeOnIO ? (
               <UploadServiceIcon
                 setUploadFile={setUploadFile}
+                setFileUploadedOk={setFileUploadedOk}
                 fileUplodedOk={fileUplodedOk}
                 fileName={fileName}
                 fileUploadDate={fileUploadDate}

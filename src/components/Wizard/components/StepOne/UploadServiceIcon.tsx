@@ -18,12 +18,19 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
+  setFileUploadedOk: Dispatch<SetStateAction<boolean>>;
   fileUplodedOk: boolean;
   fileName: string | undefined;
   fileUploadDate: string | undefined;
 }
 
-const UploadServiceIcon = ({ setUploadFile, fileUplodedOk, fileName, fileUploadDate }: Props) => {
+const UploadServiceIcon = ({
+  setUploadFile,
+  setFileUploadedOk,
+  fileUplodedOk,
+  fileName,
+  fileUploadDate,
+}: Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
@@ -59,6 +66,7 @@ const UploadServiceIcon = ({ setUploadFile, fileUplodedOk, fileName, fileUploadD
     setFileIsRejected(false);
     setFileIsAcceppted(false);
     setUploadFile(undefined);
+    setFileUploadedOk(false);
   };
 
   const loadingFilePartial = (
@@ -118,9 +126,7 @@ const UploadServiceIcon = ({ setUploadFile, fileUplodedOk, fileName, fileUploadD
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
-          <Typography variant="body2">
-            {fileUploadDate}
-          </Typography>
+          <Typography variant="body2">{fileUploadDate}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>
           <Chip label={t('components.wizard.stepOne.uploadIcon.validIcon')} color="success" />
