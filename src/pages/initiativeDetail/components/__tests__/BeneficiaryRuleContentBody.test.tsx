@@ -3,8 +3,9 @@ import { render } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 import { createStore } from '../../../../redux/store';
-import BeneficiaryRuleContentBody from '../StepThree/BeneficiaryListContentBody';
+import BeneficiaryRuleContentBody from '../StepThree/BeneficiaryRuleContentBody';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -24,13 +25,10 @@ describe('<BeneficiaryRuleContentBody />', (injectedStore?: ReturnType<typeof cr
     window.scrollTo = jest.fn();
   });
 
-  test('should render the BeneficiaryRuleContentBody component', async () => {
+  test('should render with props', async () => {
     render(
       <Provider store={store}>
-        <BeneficiaryRuleContentBody
-          fileProcessingOutcomeStatus={undefined}
-          fileBeneficiaryReached={undefined}
-        />
+        <BeneficiaryRuleContentBody initiativeDetail={mockedInitiative} />
       </Provider>
     );
   });

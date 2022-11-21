@@ -153,7 +153,7 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
         </Fragment>
       ))}
       {initiativeDetail.beneficiaryRule.selfDeclarationCriteria.map((sd) => (
-        <Fragment key={sd.code}>
+        <Fragment data-testId={`selfDeclarationCriteria-${sd.code}`} key={sd.code}>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
             {`${t('pages.initiativeDetail.accordion.step3.content.manual')} ${sd.code}`}
           </Typography>
