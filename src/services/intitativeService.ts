@@ -17,6 +17,7 @@ import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeS
 import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
+import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApi.getInitativeSummary().then((res) => res);
@@ -132,3 +133,9 @@ export const getOnboardingStatus = (
 
 export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> =>
   InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);
+
+export const getRewardNotificationImportsPaged = (
+  id: string,
+  page: number
+): Promise<PageRewardImportsDTO> =>
+  InitiativeApi.getRewardNotificationImportsPaged(id, page).then((res) => res);

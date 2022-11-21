@@ -7,26 +7,40 @@ import {
   Typography,
   Link,
   LinearProgress,
-  Chip,
+  // Chip,
+  Table,
+  TableBody,
+  TableRow,
+  TableCell,
+  TablePagination,
+  Alert,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useDropzone } from 'react-dropzone';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { itIT } from '@mui/material/locale';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import SyncIcon from '@mui/icons-material/Sync';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import { putDispFileUpload } from '../../services/intitativeService';
+import {
+  getRewardNotificationImportsPaged,
+  putDispFileUpload,
+} from '../../services/intitativeService';
+import { InitiativeRefundImports } from '../../services/__mocks__/initiativeService';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -36,18 +50,20 @@ const InitiativeRefundsOutcome = () => {
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileRejected, setFileRejected] = useState(false);
   const [fileAccepted, setFileAccepted] = useState(false);
-  const [fileName, setFileName] = useState('');
-  const [fileDate, setFileDate] = useState('');
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
+  const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [rows, setRows] = useState<Array<InitiativeRefundImports>>([]);
+  const theme = createTheme(itIT);
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_INITIATIVE_REWARD_IMPORTS');
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_REFUNDS_OUTCOME],
     exact: true,
     strict: false,
   });
-  console.log(match);
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
@@ -59,13 +75,10 @@ const InitiativeRefundsOutcome = () => {
     },
     onDropAccepted: (files) => {
       setFileIsLoading(true);
+      const uploadedFileName = files[0].name;
       if (typeof initiativeSel.initiativeId === 'string') {
-        putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
+        putDispFileUpload(initiativeSel.initiativeId, uploadedFileName, files[0])
           .then((_res) => {
-            const uploadedFileName = files[0].name;
-            const uploadedFileDate = new Date(files[0].lastModified).toLocaleString('fr-BE');
-            setFileName(uploadedFileName);
-            setFileDate(uploadedFileDate);
             setFileIsLoading(false);
             setFileRejected(false);
             setFileAccepted(true);
@@ -118,14 +131,6 @@ const InitiativeRefundsOutcome = () => {
       setFileAccepted(false);
     },
   });
-
-  const setIntiStatus = () => {
-    setAlertTitle('');
-    setAlertDescription('');
-    setFileIsLoading(false);
-    setFileRejected(false);
-    setFileAccepted(false);
-  };
 
   const InitStatusPartial = (
     <Box
@@ -219,56 +224,118 @@ const InitiativeRefundsOutcome = () => {
     </Box>
   );
 
-  const FileAcceptedPartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-        my: 1,
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          px: 2,
-          py: 1,
-          borderRadius: '10px',
-          border: '1px solid #E3E7EB',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
-          <CheckCircleIcon color="success" />
-        </Box>
-        <Box sx={{ gridColumn: 'span 4' }}>
-          <Typography variant="body2" fontWeight={600}>
-            {fileName}
-          </Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
-          <Typography variant="body2">{fileDate}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
-          <Chip label={t('pages.initiativeRefundsOutcome.uploadPaper.validFile')} color="success" />
-        </Box>
-      </Box>
-      <Box sx={{ gridColumn: 'span 12', py: 2 }}>
-        <ButtonNaked
-          size="small"
-          component="button"
-          onClick={setIntiStatus}
-          startIcon={<FileUploadIcon />}
-          sx={{ color: 'primary.main' }}
-          weight="default"
-        >
-          {t('pages.initiativeRefundsOutcome.uploadPaper.changeFile')}
-        </ButtonNaked>
-      </Box>
-    </Box>
-  );
+  // const FileAcceptedPartial = (
+  //   <Box
+  //     sx={{
+  //       display: 'grid',
+  //       gridTemplateColumns: 'repeat(12, 1fr)',
+  //       py: 2,
+  //       my: 1,
+  //     }}
+  //   >
+  //     <Box
+  //       sx={{
+  //         gridColumn: 'span 12',
+  //         display: 'grid',
+  //         gridTemplateColumns: 'repeat(12, 1fr)',
+  //         px: 2,
+  //         py: 1,
+  //         borderRadius: '10px',
+  //         border: '1px solid #E3E7EB',
+  //         alignItems: 'center',
+  //       }}
+  //     >
+  //       <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
+  //         <CheckCircleIcon color="success" />
+  //       </Box>
+  //       <Box sx={{ gridColumn: 'span 4' }}>
+  //         <Typography variant="body2" fontWeight={600}>
+  //           {fileName}
+  //         </Typography>
+  //       </Box>
+  //       <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
+  //         <Typography variant="body2">{fileDate}</Typography>
+  //       </Box>
+  //       <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
+  //         <Chip label={t('pages.initiativeRefundsOutcome.uploadPaper.validFile')} color="success" />
+  //       </Box>
+  //     </Box>
+  //     <Box sx={{ gridColumn: 'span 12', py: 2 }}>
+  //       <ButtonNaked
+  //         size="small"
+  //         component="button"
+  //         onClick={setIntiStatus}
+  //         startIcon={<FileUploadIcon />}
+  //         sx={{ color: 'primary.main' }}
+  //         weight="default"
+  //       >
+  //         {t('pages.initiativeRefundsOutcome.uploadPaper.changeFile')}
+  //       </ButtonNaked>
+  //     </Box>
+  //   </Box>
+  // );
+
+  const getTableData = (initiativeId: string, page: number) => {
+    setLoading(true);
+    getRewardNotificationImportsPaged(initiativeId, page)
+      .then((res) => {
+        if (typeof res.totalElements === 'number') {
+          setTotalElements(res.totalElements);
+        }
+        if (Array.isArray(res.content) && res.content.length > 0) {
+          const rowsData = res.content.map((r, index) => ({
+            id: index,
+            status: r.status,
+            filePath: r.filePath,
+            feedbackDate: r.feedbackDate?.toLocaleDateString('fr-BE'),
+            rewardsResulted: t('pages.initiativeRefundsOutcome.rewardsResulted', {
+              x: r.rewardsResulted,
+            }),
+            rewardsAdded: t('pages.initiativeRefundsOutcome.rewardsAdded', {
+              x: r.rewardsResulted - r.rewardsResultedError,
+            }),
+          }));
+          setRows(rowsData);
+        }
+      })
+      .catch((error) => {
+        addError({
+          id: 'GET_REWARDS_NOTIFICATION_IMPORTS_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting reward notification imports paged data',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (typeof initiativeSel.initiativeId === 'string') {
+      getTableData(initiativeSel.initiativeId, page);
+    }
+  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+
+  useEffect(() => {
+    if (fileAccepted === true && typeof initiativeSel.initiativeId === 'string') {
+      setPage(0);
+      getTableData(initiativeSel.initiativeId, 0);
+    }
+  }, [fileAccepted]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -315,6 +382,15 @@ const InitiativeRefundsOutcome = () => {
           />
         </Box>
       </Box>
+
+      {fileAccepted && (
+        <Box sx={{ py: 3 }}>
+          <Alert variant="outlined" severity="info" icon={<SyncIcon fontSize="inherit" />}>
+            {t('pages.initiativeRefundsOutcome.uploadPaper.fileIsOnEvaluation')}
+          </Alert>
+        </Box>
+      )}
+
       <Paper sx={{ display: 'grid', width: '100%', mt: 2, px: 3 }}>
         <Box sx={{ py: 3 }}>
           <Typography variant="h6">
@@ -349,12 +425,48 @@ const InitiativeRefundsOutcome = () => {
           />
         )}
 
-        {fileIsLoading
-          ? LoadingFilePartial
-          : fileAccepted
-          ? FileAcceptedPartial
-          : InitStatusPartial}
+        {fileIsLoading ? LoadingFilePartial : InitStatusPartial}
       </Paper>
+
+      {rows.length > 0 && (
+        <Box
+          sx={{
+            display: 'grid',
+            width: '100%',
+            height: '100%',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            alignItems: 'center',
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
+            <Box sx={{ width: '100%', height: '100%' }}>
+              <Table>
+                <TableBody sx={{ backgroundColor: 'white' }}>
+                  {rows.map((r, i) => (
+                    <TableRow key={i}>
+                      <TableCell>{r.status}</TableCell>
+                      <TableCell>{r.filePath}</TableCell>
+                      <TableCell>{r.feedbackDate}</TableCell>
+                      <TableCell>{r.rewardsResulted}</TableCell>
+                      <TableCell>{r.rewardsAdded}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <ThemeProvider theme={theme}>
+                <TablePagination
+                  component="div"
+                  onPageChange={handleChangePage}
+                  page={page}
+                  count={totalElements}
+                  rowsPerPage={10}
+                  rowsPerPageOptions={[10]}
+                />
+              </ThemeProvider>
+            </Box>
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 };

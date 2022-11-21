@@ -169,6 +169,15 @@ export interface InitiativeRefundToDisplay {
   filePath: { initiativeId: string | undefined; filePath: string | undefined };
 }
 
+export interface InitiativeRefundImports {
+  id: number | undefined;
+  status: any;
+  filePath: string | undefined;
+  feedbackDate: any;
+  rewardsResulted: string | undefined;
+  rewardsAdded: string | undefined;
+}
+
 export interface InitiativeRefundsResponse {
   pageNo: number;
   pageSize: number;
