@@ -1,13 +1,12 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
 import MCCItem from '../MCCItem';
 import React from 'react';
+import userEvent from '@testing-library/user-event';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -16,6 +15,35 @@ jest.mock('react-i18next', () => ({
 
 describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
+  const mockedFn = jest.fn();
+
+  const setup = () => {
+    const utils = render(
+      <Provider store={store}>
+        <MCCItem
+          title={'title'}
+          code={'code'}
+          handleShopListItemRemoved={mockedFn}
+          action={'action'}
+          shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
+          setShopRulesToSubmit={function (
+            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          ): void {
+            //
+          }}
+          data={{ allowedList: true, values: ['string', '2string'] }}
+          setData={function (_value: any): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+    const mccCodesTextArea = utils.getByTestId('mccCodesTextArea') as HTMLInputElement;
+    return {
+      mccCodesTextArea,
+      ...utils,
+    };
+  };
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -24,110 +52,41 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
 
   test('should render correctly the MCCItem component', async () => {
     await act(async () => {
-      render(
+      const { getByTestId } = render(
         <Provider store={store}>
           <MCCItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
-            action={''}
-            shopRulesToSubmit={[]}
+            title={'title'}
+            code={'code'}
+            handleShopListItemRemoved={mockedFn}
+            action={'action'}
+            shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
               //
             }}
-            data={undefined}
+            data={{ allowedList: true, values: ['string', '2string'] }}
             setData={function (_value: any): void {
               //
             }}
           />
         </Provider>
       );
+
+      const deletebtn = getByTestId('delete-button-test');
+
+      fireEvent.click(deletebtn);
+      expect(mockedFn.mock.calls.length).toEqual(1);
     });
   });
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
+  test('mc Codes to be defined', async () => {
+    const { mccCodesTextArea } = setup();
 
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      expect(handleSubmit).toBeDefined();
-    });
+    const user = userEvent.setup();
+
+    await user.type(screen.getByLabelText(/components.wizard.stepFour.form.mccCodes/i), 'CODES');
+    // fireEvent.change(mccCodesTextArea, { target: { value: '3' } });
+    expect(mccCodesTextArea).toBeDefined();
   });
-
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-    });
-  });
-
-  it('test on handleSubmit', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
-        <Provider store={store}>
-          <MCCItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
-            action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={undefined}
-            setData={function (_value: any): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
-    });
-  });
-
-  //   it('form fields not null', async () => {
-  //     await act(async () => {
-  //       const { getByTestId, container } = render(
-  //         <Provider store={store}>
-  //           <MCCItem
-  //             title={''}
-  //             code={''}
-  //             handleShopListItemRemoved={undefined}
-  //             action={''}
-  //             shopRulesToSubmit={[]}
-  //             setShopRulesToSubmit={function (
-  //               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //             ): void {
-  //               //
-  //             }}
-  //             data={undefined}
-  //             setData={function (_value: any): void {
-  //               //
-  //             }}
-  //           />
-  //         </Provider>
-  //       );
-  //     });
-  //   });
 });

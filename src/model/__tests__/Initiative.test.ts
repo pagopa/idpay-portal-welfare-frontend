@@ -212,11 +212,17 @@ export const mockedInitiative: Initiative = {
   },
   rewardRule: { _type: 'rewardValue', rewardValue: 1 },
   trxRule: {
-    mccFilter: undefined,
-    rewardLimits: undefined,
+    mccFilter: { allowedList: true, values: ['string', ''] },
+    rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
     threshold: undefined,
-    trxCount: undefined,
-    daysOfWeekIntervals: [],
+    trxCount: {from: 2, to: 3},
+    daysOfWeekIntervals: [
+      {
+        daysOfWeek: 'string',
+        startTime: 'string',
+        endTime: 'string',
+      },
+    ],
   },
   refundRule: {
     reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
@@ -431,11 +437,17 @@ test('Test initiative2Initiative', () => {
     },
     rewardRule: { _type: 'rewardValue', rewardValue: 1 },
     trxRule: {
-      mccFilter: undefined,
-      rewardLimits: undefined,
+      mccFilter: { allowedList: true, values: ['string', ''] },
+      rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
       threshold: undefined,
-      trxCount: undefined,
-      daysOfWeekIntervals: [],
+      trxCount: {from: 2, to: 3},
+      daysOfWeekIntervals: [
+        {
+          daysOfWeek: 'string',
+          startTime: 'string',
+          endTime: 'string',
+        },
+      ],
     },
     refundRule: {
       reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
