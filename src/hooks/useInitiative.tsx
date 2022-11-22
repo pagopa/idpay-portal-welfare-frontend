@@ -85,6 +85,7 @@ export const useInitiative = () => {
           dispatch(setInitiativeUpdateDate(response.updateDate));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
+          console.log(response.general);
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
@@ -166,6 +167,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
+    rankingEnabled: 'true',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -187,6 +189,10 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+    }
+    if (data.rankingEnabled && typeof data.rankingEnabled !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
     if (typeof data.budget !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -214,48 +220,32 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     }
 
     if (data.descriptionMap) {
-      if (
-        data.descriptionMap.introductionTextIT &&
-        typeof data.descriptionMap.introductionTextIT !== undefined
-      ) {
+      if (data.descriptionMap.it && typeof data.descriptionMap.it !== undefined) {
         // eslint-disable-next-line functional/immutable-data
-        dataT.introductionTextIT = data.descriptionMap.introductionTextIT;
+        dataT.introductionTextIT = data.descriptionMap.it;
       }
 
-      if (
-        data.descriptionMap.introductionTextEN &&
-        typeof data.descriptionMap.introductionTextEN !== undefined
-      ) {
+      if (data.descriptionMap.en && typeof data.descriptionMap.en !== undefined) {
         // eslint-disable-next-line functional/immutable-data
-        dataT.introductionTextEN = data.descriptionMap.introductionTextEN;
+        dataT.introductionTextEN = data.descriptionMap.en;
       }
 
-      if (
-        data.descriptionMap.introductionTextFR &&
-        typeof data.descriptionMap.introductionTextFR !== undefined
-      ) {
+      if (data.descriptionMap.fr && typeof data.descriptionMap.fr !== undefined) {
         // eslint-disable-next-line functional/immutable-data
-        dataT.introductionTextFR = data.descriptionMap.introductionTextFR;
+        dataT.introductionTextFR = data.descriptionMap.fr;
       }
 
-      if (
-        data.descriptionMap.introductionTextDE &&
-        typeof data.descriptionMap.introductionTextDE !== undefined
-      ) {
+      if (data.descriptionMap.de && typeof data.descriptionMap.de !== undefined) {
         // eslint-disable-next-line functional/immutable-data
-        dataT.introductionTextDE = data.descriptionMap.introductionTextDE;
+        dataT.introductionTextDE = data.descriptionMap.de;
       }
 
-      if (
-        data.descriptionMap.introductionTextSL &&
-        typeof data.descriptionMap.introductionTextSL !== undefined
-      ) {
+      if (data.descriptionMap.sl && typeof data.descriptionMap.sl !== undefined) {
         // eslint-disable-next-line functional/immutable-data
-        dataT.introductionTextSL = data.descriptionMap.introductionTextSL;
+        dataT.introductionTextSL = data.descriptionMap.sl;
       }
     }
   }
-
   return dataT;
 };
 
@@ -332,7 +322,7 @@ export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch):
   }
 };
 
-const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.threshold &&
@@ -365,7 +355,7 @@ const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.mccFilter &&
@@ -375,7 +365,7 @@ const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.trxCount &&
@@ -408,7 +398,7 @@ const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => 
   }
 };
 
-const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.rewardLimits &&
@@ -429,7 +419,7 @@ const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void
   }
 };
 
-const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.daysOfWeek &&

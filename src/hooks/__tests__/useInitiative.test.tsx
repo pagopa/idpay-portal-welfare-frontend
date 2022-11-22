@@ -14,6 +14,11 @@ import {
   parseManualCriteria,
   parseRewardRule,
   parseRefundRule,
+  parseThreshold,
+  parseMccFilter,
+  parseTrxCount,
+  parseRewardLimits,
+  parseDaysOfWeekIntervals,
 } from '../useInitiative';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
@@ -112,8 +117,16 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
         endDate: '',
         rankingStartDate: '',
         rankingEndDate: '',
+        descriptionMap: {
+          introductionTextIT: '',
+          introductionTextEN: '',
+          introductionTextFR: '',
+          introductionTextDE: '',
+          introductionTextSL: '',
+        },
       };
     };
+
     expect(parseGeneralInfo(mockedGeneralInfo('PF'))).not.toBeNull();
 
     expect(parseGeneralInfo(mockedGeneralInfo('PG'))).not.toBeNull();
@@ -121,7 +134,36 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
 
   test('parseAutomatedCriteria', () => {
     const mockedParseAutomatedCriteria: InitiativeDTO = {};
+    const mockedParseAutomatedCriteriaWithBeneficary: InitiativeDTO = {
+      beneficiaryRule: {
+        selfDeclarationCriteria: [
+          {
+            _type: 'boolean',
+            description: 'string',
+            value: true,
+            code: 'string',
+          },
+          {
+            _type: 'multi',
+            description: 'string',
+            value: ['value1', 'value2', 'value3'],
+            code: 'string',
+          },
+        ],
+        automatedCriteria: [
+          {
+            authority: 'string',
+            code: 'string',
+            field: 'string',
+            operator: 'string',
+            value: 'string',
+            orderEnabled: true,
+          },
+        ],
+      },
+    };
     expect(parseAutomatedCriteria(mockedParseAutomatedCriteria)).not.toBeNull();
+    expect(parseAutomatedCriteria(mockedParseAutomatedCriteriaWithBeneficary)).not.toBeNull();
   });
 
   test('parseManualCriteria', () => {
@@ -132,11 +174,53 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   test('parseRewardRule', () => {
     const mockedParseRewardRule: InitiativeDTO = {};
     const dispatch = useAppDispatch();
-    // expect(parseRewardRule(mockedParseRewardRule, dispatch)).toBeCalled();
+    expect(parseRewardRule(mockedParseRewardRule, dispatch)).not.toBeNull();
+  });
+
+  test('parseThreshold', () => {
+    const mockedParseThreshold: InitiativeDTO = {};
+    const dispatch = useAppDispatch();
+    expect(parseThreshold(mockedParseThreshold, dispatch)).not.toBeNull();
+  });
+
+  test('parseMccFilter', () => {
+    const mockedParseMccFilter: InitiativeDTO = {};
+    const dispatch = useAppDispatch();
+    expect(parseMccFilter(mockedParseMccFilter, dispatch)).not.toBeNull();
+  });
+
+  test('parseTrxCount', () => {
+    const mockedParseTrxCount: InitiativeDTO = {};
+    const dispatch = useAppDispatch();
+    expect(parseTrxCount(mockedParseTrxCount, dispatch)).not.toBeNull();
+  });
+
+  test('parseRewardLimits', () => {
+    const mockedParseRewardLimits: InitiativeDTO = {};
+    const dispatch = useAppDispatch();
+    expect(parseRewardLimits(mockedParseRewardLimits, dispatch)).not.toBeNull();
+  });
+
+  test('parseDaysOfWeekIntervals', () => {
+    const mockedParseDaysOfWeekIntervals: InitiativeDTO = {};
+    const dispatch = useAppDispatch();
+    expect(parseDaysOfWeekIntervals(mockedParseDaysOfWeekIntervals, dispatch)).not.toBeNull();
   });
 
   test('parseRefundRule', () => {
     const mockedRefundRule: InitiativeRefundRuleDTO = {};
+    const mockedRefundRuleWithValues = {
+      accumulatedAmount: {
+        accumulatedType: 'BUDGET_EXHAUSTED',
+        refundThreshold: 0,
+      },
+      timeParameter: {
+        timeType: 'CLOSED',
+      },
+      additionalInfo: {
+        identificationCode: 'string',
+      },
+    };
     expect(parseRefundRule(mockedRefundRule)).toBeDefined();
   });
 });

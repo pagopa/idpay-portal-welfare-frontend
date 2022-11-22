@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Typography } from '@mui/material';
+import { Box, Button, Paper, Typography, Link } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -327,9 +327,15 @@ const AdmissionCriteria = ({
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" sx={{ p: 0 }}>
+          <Link
+            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+            href="#"
+            target="_blank"
+            underline="none"
+            variant="body2"
+          >
             {t('components.wizard.common.links.findOut')}
-          </Button>
+          </Link>
         </Box>
       </Box>
       <Box
