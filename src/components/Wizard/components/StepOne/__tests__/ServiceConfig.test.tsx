@@ -7,9 +7,6 @@ import Wizard from '../../../Wizard';
 import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
 import React from 'react';
-import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
-import { createInitiativeServiceInfo } from '../../../../../services/intitativeService';
-import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
 window.scrollTo = jest.fn();
@@ -18,10 +15,7 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('../../../../../api/InitiativeApiClient.ts');
-
 beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
@@ -238,10 +232,5 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       addAssistanceChannel();
       expect(addAssistanceChannel).toHaveBeenCalled();
     });
-  });
-
-  test('create initiative', async () => {
-    await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
-    expect(InitiativeApi.saveInitiativeServiceInfo).toBeCalled();
   });
 });

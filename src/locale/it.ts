@@ -449,6 +449,9 @@ export default {
           beneficiaryKnown: 'Conosci già i destinatari?',
           taxCodeList: 'Si, ho una lista di codici fiscali',
           manualSelection: "No, imposterò dei criteri d'ammissione",
+          withRanking: 'È prevista una graduatoria?',
+          yes: 'Sì',
+          no: 'No',
           budgetTitle: 'Qual è il tuo budget?',
           reachedUsers: 'Utenti raggiungibili',
           reachedUsersTooltip:
@@ -663,6 +666,8 @@ export default {
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
+    outSpendFromWithRanking:
+      'Deve intercorrere un intervallo di almeno 10 giorni tra la data di fine adesione e quella di inizio spendibilità',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',

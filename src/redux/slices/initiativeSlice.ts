@@ -40,6 +40,7 @@ const initialState: Initiative = {
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
+    rankingEnabled: 'true',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -121,6 +122,7 @@ export const initiativeSlice = createSlice({
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
         beneficiaryKnown: action.payload.beneficiaryKnown,
+        rankingEnabled: action.payload.rankingEnabled,
         budget: action.payload.budget,
         beneficiaryBudget: action.payload.beneficiaryBudget,
         startDate: action.payload.startDate || '',

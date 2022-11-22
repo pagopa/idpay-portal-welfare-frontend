@@ -7,7 +7,7 @@ interface TabPanelProps {
   value: number;
 }
 
-const IntrudoctionTabPanel = ({ children, value, index }: TabPanelProps) => (
+const IntroductionTabPanel = ({ children, value, index }: TabPanelProps) => (
   <div
     role="tabpanel"
     hidden={value !== index}
@@ -18,4 +18,4 @@ const IntrudoctionTabPanel = ({ children, value, index }: TabPanelProps) => (
   </div>
 );
 
-export default IntrudoctionTabPanel;
+export default IntroductionTabPanel;

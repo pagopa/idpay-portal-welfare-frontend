@@ -1,6 +1,6 @@
 import {
   Box,
-  Button,
+  Link,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -327,9 +327,15 @@ const ServiceConfig = ({
           <Typography variant="body1">{t('components.wizard.stepOne.subtitle')}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" sx={{ p: 0 }}>
+          <Link
+            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+            href="#"
+            target="_blank"
+            underline="none"
+            variant="body2"
+          >
             {t('components.wizard.common.links.findOut')}
-          </Button>
+          </Link>
         </Box>
       </Box>
 

@@ -1,18 +1,8 @@
 import { Provider } from 'react-redux';
 import { render, waitFor } from '@testing-library/react';
 import React, { Dispatch, SetStateAction } from 'react';
-import { InitiativeApi } from '../../../api/InitiativeApiClient';
 import { createStore } from '../../../redux/store';
-import { getInitativeSummary, getInitiativeDetail } from '../../../services/intitativeService';
-import { mockedInitiativeId } from '../../../services/__mocks__/initiativeService';
 import InitiativeDetail from '../initiativeDetail';
-
-jest.mock('../../../api/InitiativeApiClient');
-
-beforeEach(() => {
-  jest.spyOn(InitiativeApi, 'getInitativeSummary');
-  jest.spyOn(InitiativeApi, 'getInitiativeById');
-});
 
 jest.mock('react-router-dom', () => Function());
 
@@ -63,16 +53,6 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>
     ];
     jest.spyOn(React, 'useState').mockImplementation(useExpandedMock);
     expect(useExpandedMock).toBeDefined();
-  });
-
-  test('test get initiative summary', async () => {
-    await getInitativeSummary();
-    expect(InitiativeApi.getInitativeSummary).toBeCalled();
-  });
-
-  test('test get initiative detail', async () => {
-    await getInitiativeDetail(mockedInitiativeId);
-    expect(InitiativeApi.getInitiativeById).toBeCalled();
   });
 
   it('Test on close of snackbar', async () => {

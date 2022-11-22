@@ -36,6 +36,16 @@ export const InitiativeApi = {
     _data: InitiativeBeneficiaryRuleDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
 
+  updateInitiativeRefundRulePut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  updateInitiativeRefundRuleDraftPut: async (
+    _id: string,
+    _data: InitiativeRefundRuleDTO
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
   getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
     new Promise((resolve) => resolve(mockedAdmissionCriteria)),
 
@@ -47,16 +57,6 @@ export const InitiativeApi = {
   initiativeTrxAndRewardRulesPutDraft: async (
     _id: string,
     _data: InitiativeRewardAndTrxRulesDTO
-  ): Promise<void> => new Promise((resolve) => resolve()),
-
-  updateInitiativeRefundRulePut: async (
-    _id: string,
-    _data: InitiativeRefundRuleDTO
-  ): Promise<void> => new Promise((resolve) => resolve()),
-
-  updateInitiativeRefundRuleDraftPut: async (
-    _id: string,
-    _data: InitiativeRefundRuleDTO
   ): Promise<void> => new Promise((resolve) => resolve()),
 
   updateInitiativeGeneralInfo: async (_id: string, _data: InitiativeGeneralDTO): Promise<void> =>
@@ -80,4 +80,29 @@ export const InitiativeApi = {
     new Promise((resolve) => resolve()),
 
   getTransactionConfigRules: async (): Promise<void> => new Promise((resolve) => resolve()),
+
+  getGroupOfBeneficiaryStatusAndDetails: async (_id: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  getExportsPaged: async (
+    _id: string,
+    _page: number,
+    _notificationDateFrom: string | undefined,
+    _notificationDateTo: string | undefined,
+    _status: string | undefined
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getOnboardingStatus: async (
+    _id: string,
+    _page: number,
+    _notificationDateFrom: string | undefined,
+    _notificationDateTo: string | undefined,
+    _status: string | undefined
+  ): Promise<void> => new Promise((resolve) => resolve()),
+
+  getRewardFileDownload: async (_id: string, _filePath: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  putDispFileUpload: async (_id: string, _filename: string, _file: File): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };
