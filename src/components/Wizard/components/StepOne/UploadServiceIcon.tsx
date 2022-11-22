@@ -2,24 +2,18 @@ import { Box } from '@mui/system';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import {
-  Alert,
-  AlertTitle,
-  Chip,
-  FormHelperText,
-  IconButton,
-  LinearProgress,
-  Typography,
-} from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Chip, FormHelperText, LinearProgress, Typography } from '@mui/material';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
-
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
   setFileUploadedOk: Dispatch<SetStateAction<boolean>>;
   fileUplodedOk: boolean;
+  fileUplodedKo: boolean;
   fileName: string | undefined;
   fileUploadDate: string | undefined;
 }
@@ -28,6 +22,7 @@ const UploadServiceIcon = ({
   setUploadFile,
   setFileUploadedOk,
   fileUplodedOk,
+  fileUplodedKo,
   fileName,
   fileUploadDate,
 }: Props) => {
@@ -35,6 +30,8 @@ const UploadServiceIcon = ({
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
   const [fileIsRejected, setFileIsRejected] = useState(false);
+  const [alertTitle, setAlertTitle] = useState<string>('');
+  const [alertDescription, setAlertDescription] = useState<string>('');
 
   useEffect(() => {
     if (fileUplodedOk) {
@@ -44,9 +41,15 @@ const UploadServiceIcon = ({
     }
   }, [fileUplodedOk]);
 
+  useEffect(() => {
+    if (fileUplodedKo) {
+      resetStatus();
+    }
+  }, [fileUplodedKo]);
+
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
-    maxSize: 2097152,
+    maxSize: 1048576,
     accept: 'image/png',
     onDrop: () => {
       setFileIsLoading(true);
@@ -54,7 +57,26 @@ const UploadServiceIcon = ({
     onDropAccepted: (files) => {
       setUploadFile(files[0]);
     },
-    onDropRejected: () => {
+    onDropRejected: (files) => {
+      const errorKey = files[0].errors[0].code;
+      switch (errorKey) {
+        case 'file-invalid-type':
+          setAlertTitle(t('components.wizard.stepOne.uploadIcon.invalidFileTitle'));
+          setAlertDescription(
+            t('components.wizard.stepOne.uploadIcon.invalidFileTypeLogoDescription')
+          );
+          break;
+        case 'file-too-large':
+          setAlertTitle(t('components.wizard.stepOne.uploadIcon.invalidFileTitle'));
+          setAlertDescription(
+            t('components.wizard.stepOne.uploadIcon.overMaxUploadLogoDescription')
+          );
+          break;
+        default:
+          setAlertTitle(t('components.wizard.stepOne.uploadIcon.invalidFileTitle'));
+          setAlertTitle(t('components.wizard.stepOne.uploadIcon.invalidFileDescription'));
+          break;
+      }
       setFileIsLoading(false);
       setFileIsRejected(true);
       setFileIsAcceppted(false);
@@ -194,27 +216,18 @@ const UploadServiceIcon = ({
   return (
     <Box sx={{ display: 'grid', width: '100%', pt: 2 }}>
       {fileIsRejected && (
-        <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setFileIsRejected(false);
-              }}
-            >
-              <CloseIcon color="primary" fontSize="inherit" />
-            </IconButton>
-          }
-          sx={{ mb: 2 }}
-        >
-          <AlertTitle>{t('components.wizard.stepThree.upload.invalidFileTitle')}</AlertTitle>
-          <Typography variant="body2">
-            {t('components.wizard.stepThree.upload.invalidFileDescription')}
-          </Typography>
-        </Alert>
+        <Toast
+          open={fileIsRejected}
+          title={alertTitle}
+          message={alertDescription}
+          onCloseToast={() => {
+            setFileIsRejected(false);
+          }}
+          logo={InfoOutlinedIcon}
+          leftBorderColor="#FE6666"
+          toastColorIcon="#FE6666"
+          showToastCloseIcon={true}
+        />
       )}
 
       {fileIsLoading

@@ -434,6 +434,10 @@ export default {
           IconIsLoading: 'Caricamento in corso...',
           validIcon: 'File valido',
           changeIcon: 'Sostituisci Logo',
+          overMaxUploadLogoDescription: 'La dimensione massima supportata è di 1MB',
+          invalidFileTypeLogoDescription: 'Sono ammessi solamente file png',
+          invalidFileTitle: 'Il file caricato non è valido',
+          invalidFileDescription: 'Errore',
         },
       },
       stepTwo: {

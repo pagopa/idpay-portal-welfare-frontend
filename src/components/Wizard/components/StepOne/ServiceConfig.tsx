@@ -71,8 +71,7 @@ const ServiceConfig = ({
   const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
   const [fileName, setFileName] = useState('');
   const [fileUploadDate, setUploadDate] = useState('');
-  // const [fileUplodedKo, setFileUploadedKo] = useState(false);
-
+  const [fileUplodedKo, setFileUploadedKo] = useState(false);
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
   const handleOpenInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(true);
@@ -174,6 +173,8 @@ const ServiceConfig = ({
     }
   }, [formik]);
 
+  const waitUpload = () => setCurrentStep(currentStep + 1);
+
   const sendUploadFile = (
     id: string | undefined,
     file: File | undefined,
@@ -184,13 +185,16 @@ const ServiceConfig = ({
       uploadAndUpdateLogo(id, file)
         .then((res) => {
           setFileUploadedOk(true);
-          // setFileUploadedKo(false);
-          console.log(res);
-          console.log('STO ANDANDO AVANTI');
-          // setCurrentStep(currentStep + 1);
-          // const data = { ...res, logoUploadDate: res.logoUploadDate?.toLocaleString('fr-BE')};
-          dispatch(setInitiativeLogo(res));
+          setFileUploadedKo(false);
+          const fileUploadDate =
+            res.logoUploadDate && typeof res.logoUploadDate === 'string'
+              ? new Date(res.logoUploadDate).toLocaleString('fr-BE')
+              : new Date().toLocaleString('fr-BE');
+          const data = { ...res, logoUploadDate: fileUploadDate };
+          dispatch(setInitiativeLogo(data));
+          return 1;
         })
+        .then(() => setTimeout(waitUpload, 1000))
         .catch((error) => {
           setFileUploadedOk(false);
           addError({
@@ -204,8 +208,7 @@ const ServiceConfig = ({
             component: 'Toast',
             showCloseIcon: true,
           });
-
-          // setFileUploadedKo(true);
+          setFileUploadedKo(true);
         });
     } else {
       setCurrentStep(currentStep + 1);
@@ -224,7 +227,6 @@ const ServiceConfig = ({
       createInitiativeServiceInfo(data)
         .then((res) => {
           dispatch(setInitiativeId(res?.initiativeId));
-          // setCurrentStep(currentStep + 1);
           sendUploadFile(res?.initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
@@ -245,7 +247,6 @@ const ServiceConfig = ({
       setLoading(true);
       updateInitiativeServiceInfo(initiativeId, data)
         .then((_res) => {
-          // setCurrentStep(currentStep + 1);
           sendUploadFile(initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
@@ -456,6 +457,7 @@ const ServiceConfig = ({
                 setUploadFile={setUploadFile}
                 setFileUploadedOk={setFileUploadedOk}
                 fileUplodedOk={fileUplodedOk}
+                fileUplodedKo={fileUplodedKo}
                 fileName={fileName}
                 fileUploadDate={fileUploadDate}
               />
