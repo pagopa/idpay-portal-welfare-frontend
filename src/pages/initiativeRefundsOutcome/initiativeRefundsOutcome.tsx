@@ -13,12 +13,14 @@ import {
   TableCell,
   TablePagination,
   Alert,
+  IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
@@ -39,10 +41,12 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import {
+  getRewardFileDownload,
   getRewardNotificationImportsPaged,
   putDispFileUpload,
 } from '../../services/intitativeService';
 import { InitiativeRefundImports } from '../../services/__mocks__/initiativeService';
+import { SasToken } from '../../api/generated/initiative/SasToken';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -226,57 +230,6 @@ const InitiativeRefundsOutcome = () => {
     </Box>
   );
 
-  // const FileAcceptedPartial = (
-  //   <Box
-  //     sx={{
-  //       display: 'grid',
-  //       gridTemplateColumns: 'repeat(12, 1fr)',
-  //       py: 2,
-  //       my: 1,
-  //     }}
-  //   >
-  //     <Box
-  //       sx={{
-  //         gridColumn: 'span 12',
-  //         display: 'grid',
-  //         gridTemplateColumns: 'repeat(12, 1fr)',
-  //         px: 2,
-  //         py: 1,
-  //         borderRadius: '10px',
-  //         border: '1px solid #E3E7EB',
-  //         alignItems: 'center',
-  //       }}
-  //     >
-  //       <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
-  //         <CheckCircleIcon color="success" />
-  //       </Box>
-  //       <Box sx={{ gridColumn: 'span 4' }}>
-  //         <Typography variant="body2" fontWeight={600}>
-  //           {fileName}
-  //         </Typography>
-  //       </Box>
-  //       <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
-  //         <Typography variant="body2">{fileDate}</Typography>
-  //       </Box>
-  //       <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
-  //         <Chip label={t('pages.initiativeRefundsOutcome.uploadPaper.validFile')} color="success" />
-  //       </Box>
-  //     </Box>
-  //     <Box sx={{ gridColumn: 'span 12', py: 2 }}>
-  //       <ButtonNaked
-  //         size="small"
-  //         component="button"
-  //         onClick={setIntiStatus}
-  //         startIcon={<FileUploadIcon />}
-  //         sx={{ color: 'primary.main' }}
-  //         weight="default"
-  //       >
-  //         {t('pages.initiativeRefundsOutcome.uploadPaper.changeFile')}
-  //       </ButtonNaked>
-  //     </Box>
-  //   </Box>
-  // );
-
   const getTableData = (initiativeId: string, page: number) => {
     setLoading(true);
     getRewardNotificationImportsPaged(initiativeId, page)
@@ -285,8 +238,7 @@ const InitiativeRefundsOutcome = () => {
           setTotalElements(res.totalElements);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
-          const rowsData = res.content.map((r, index) => ({
-            id: index,
+          const rowsData = res.content.map((r) => ({
             status: r.status,
             filePath: r.filePath,
             feedbackDate: r.feedbackDate?.toLocaleDateString('fr-BE'),
@@ -296,6 +248,7 @@ const InitiativeRefundsOutcome = () => {
             rewardsAdded: t('pages.initiativeRefundsOutcome.rewardsAdded', {
               x: r.rewardsResulted - r.rewardsResultedError,
             }),
+            downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
           }));
           setRows(rowsData);
         }
@@ -330,6 +283,44 @@ const InitiativeRefundsOutcome = () => {
         return <CheckCircleIcon color="success" />;
       default:
         return null;
+    }
+  };
+
+  const downloadURI = (uri: string) => {
+    const link = document.createElement('a');
+    // eslint-disable-next-line functional/immutable-data
+    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.href = uri;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadFile = (data: {
+    initiativeId: string | undefined;
+    filePath: string | undefined;
+  }) => {
+    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
+      getRewardFileDownload(data.initiativeId, data.filePath)
+        .then((res: SasToken) => {
+          if (typeof res.sas === 'string') {
+            downloadURI(res.sas);
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_FILE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting export file',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
     }
   };
 
@@ -467,6 +458,11 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.feedbackDate}</TableCell>
                       <TableCell>{r.rewardsResulted}</TableCell>
                       <TableCell>{r.rewardsAdded}</TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                          <FileDownloadIcon color="primary" />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

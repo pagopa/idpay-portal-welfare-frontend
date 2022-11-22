@@ -6,8 +6,6 @@ import {
   Button,
   Chip,
   FormControl,
-  // FormHelperText,
-  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +24,6 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -44,10 +41,9 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
+import { getExportsPaged } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
-import { SasToken } from '../../api/generated/initiative/SasToken';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -175,15 +171,6 @@ const InitiativeRefunds = () => {
     }
   }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
 
-  const downloadURI = (uri: string) => {
-    const link = document.createElement('a');
-    link.download = 'download';
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const validationSchema = Yup.object().shape({
     searchFrom: Yup.date()
       .nullable()
@@ -268,33 +255,6 @@ const InitiativeRefunds = () => {
     setFilterByStatus(undefined);
     if (typeof initiativeSel.initiativeId === 'string') {
       getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined);
-    }
-  };
-
-  const handleDownloadFile = (data: {
-    initiativeId: string | undefined;
-    filePath: string | undefined;
-  }) => {
-    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
     }
   };
 
@@ -493,11 +453,7 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
-                      <TableCell align="right">
-                        <IconButton onClick={() => handleDownloadFile(r.filePath)}>
-                          <FileDownloadIcon color="primary" />
-                        </IconButton>
-                      </TableCell>
+                      <TableCell align="right"></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

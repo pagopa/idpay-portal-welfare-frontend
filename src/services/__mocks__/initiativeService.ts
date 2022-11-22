@@ -170,12 +170,12 @@ export interface InitiativeRefundToDisplay {
 }
 
 export interface InitiativeRefundImports {
-  id: number | undefined;
   status: any;
   filePath: string | undefined;
   feedbackDate: any;
   rewardsResulted: string | undefined;
   rewardsAdded: string | undefined;
+  downloadFileInfo: { initiativeId: string | undefined; filePath: string | undefined };
 }
 
 export interface InitiativeRefundsResponse {
