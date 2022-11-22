@@ -84,7 +84,6 @@ export const useInitiative = () => {
           dispatch(setInitiativeUpdateDate(response.updateDate));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
-          console.log(response.general);
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
