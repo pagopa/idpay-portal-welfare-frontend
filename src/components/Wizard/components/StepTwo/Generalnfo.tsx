@@ -809,6 +809,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               textToRender={introductionArrayOptions()}
               serviceName={initiativeAdditionalInfoSel.serviceName}
               selectedParty={selectedPartySel?.description}
+              logoUrl={initiativeAdditionalInfoSel.logoURL}
             />
           </FormControl>
         </Box>

@@ -25,12 +25,14 @@ interface IntroductionMarkdownProps {
   textToRender: Array<Obj>;
   serviceName: string | undefined;
   selectedParty: string | undefined;
+  logoUrl: string;
 }
 
 const IntroductionMarkdown = ({
   textToRender,
   serviceName,
   selectedParty,
+  logoUrl,
 }: IntroductionMarkdownProps) => {
   const [showMarkdown, setShowMarkdown] = useState(false);
   const [value, setValue] = useState(0);
@@ -131,10 +133,27 @@ const IntroductionMarkdown = ({
                   {t('components.wizard.stepTwo.previewModal.checkGuide')}
                 </Link>
               </Alert>
-              <Typography variant="h4" component="h4" sx={{ pt: 3 }}>
-                {serviceName ?? ''}
-              </Typography>
-              <Typography variant="body1">{selectedParty ?? ''}</Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(12, 1fr)',
+                  alignItems: 'center',
+                  pt: 3,
+                }}
+              >
+                <Box sx={{ gridColumn: 'span 11' }}>
+                  <Typography variant="h4" component="h4">
+                    {serviceName ?? ''}
+                  </Typography>
+                  <Typography variant="body1">{selectedParty ?? ''}</Typography>
+                </Box>
+
+                {logoUrl.length > 0 ? (
+                  <Box sx={{ gridColumn: 'span 1' }}>
+                    <img height={'50'} width={'50'} alt="logo" src={logoUrl} loading="lazy" />
+                  </Box>
+                ) : null}
+              </Box>
 
               {fiteredForEmptyString().map((item, index) => (
                 <IntrudoctionTabPanel key={index} value={value} index={index} {...a11yProps(index)}>
@@ -170,7 +189,7 @@ const IntroductionMarkdown = ({
                 {t('components.wizard.stepTwo.previewModal.title')}
               </Typography>
               <Alert severity="info" variant="standard">
-              {t('components.wizard.stepTwo.previewModal.alertDescription')}
+                {t('components.wizard.stepTwo.previewModal.alertDescription')}
                 <Link
                   href="#"
                   target="_blank"
@@ -181,10 +200,27 @@ const IntroductionMarkdown = ({
                   {t('components.wizard.stepTwo.previewModal.checkGuide')}
                 </Link>
               </Alert>
-              <Typography variant="h4" component="h4" sx={{ pt: 3 }}>
-                {serviceName ?? ''}
-              </Typography>
-              <Typography variant="body1">{selectedParty ?? ''}</Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(12, 1fr)',
+                  alignItems: 'center',
+                  pt: 3,
+                }}
+              >
+                <Box sx={{ gridColumn: 'span 11' }}>
+                  <Typography variant="h4" component="h4">
+                    {serviceName ?? ''}
+                  </Typography>
+                  <Typography variant="body1">{selectedParty ?? ''}</Typography>
+                </Box>
+
+                {logoUrl.length > 0 ? (
+                  <Box sx={{ gridColumn: 'span 1' }}>
+                    <img height={'50'} width={'50'} alt="logo" src={logoUrl} loading="lazy" />
+                  </Box>
+                ) : null}
+              </Box>
 
               <ReactMarkdown>{fiteredForEmptyString()[0]?.formikValue ?? ''}</ReactMarkdown>
 
