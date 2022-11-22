@@ -7,7 +7,6 @@ import {
   Typography,
   Link,
   LinearProgress,
-  // Chip,
   Table,
   TableBody,
   TableRow,
@@ -17,7 +16,10 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import SyncIcon from '@mui/icons-material/Sync';
+import WarningIcon from '@mui/icons-material/Warning';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +33,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import SyncIcon from '@mui/icons-material/Sync';
+
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -316,6 +318,21 @@ const InitiativeRefundsOutcome = () => {
       });
   };
 
+  const renderRefundsImportStatus = (status: string) => {
+    switch (status) {
+      case 'IN PROGRESS':
+        return <SyncIcon color="disabled" />;
+      case 'WARN':
+        return <WarningIcon color="warning" />;
+      case 'ERROR':
+        return <ErrorIcon color="error" />;
+      case 'COMPLETE':
+        return <CheckCircleIcon color="success" />;
+      default:
+        return null;
+    }
+  };
+
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -331,6 +348,7 @@ const InitiativeRefundsOutcome = () => {
   }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (fileAccepted === true && typeof initiativeSel.initiativeId === 'string') {
       setPage(0);
       getTableData(initiativeSel.initiativeId, 0);
@@ -444,7 +462,7 @@ const InitiativeRefundsOutcome = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{r.status}</TableCell>
+                      <TableCell>{renderRefundsImportStatus(r.status)}</TableCell>
                       <TableCell>{r.filePath}</TableCell>
                       <TableCell>{r.feedbackDate}</TableCell>
                       <TableCell>{r.rewardsResulted}</TableCell>

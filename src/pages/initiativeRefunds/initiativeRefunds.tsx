@@ -480,8 +480,8 @@ const InitiativeRefunds = () => {
                     <TableCell width="15%">
                       {t('pages.initiativeRefunds.table.successPercentage')}
                     </TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.status')}</TableCell>
-                    <TableCell width="10%"></TableCell>
+                    <TableCell width="20%">{t('pages.initiativeRefunds.table.status')}</TableCell>
+                    <TableCell width="5%"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
