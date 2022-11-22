@@ -17,12 +17,9 @@ import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeS
 import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
-<<<<<<< HEAD
 import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
-=======
-import { mockedInitiativeDetail, mockedInitiativeSummary } from './__mocks__/initiativeService';
 import { mockedAdmissionCriteria } from './__mocks__/admissionCriteriaService';
->>>>>>> release-dev
+import { mockedInitiativeDetail, mockedInitiativeSummary } from './__mocks__/initiativeService';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
