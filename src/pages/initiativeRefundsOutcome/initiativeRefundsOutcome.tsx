@@ -320,7 +320,7 @@ const InitiativeRefundsOutcome = () => {
 
   const renderRefundsImportStatus = (status: string) => {
     switch (status) {
-      case 'IN PROGRESS':
+      case 'IN_PROGRESS':
         return <SyncIcon color="disabled" />;
       case 'WARN':
         return <WarningIcon color="warning" />;
