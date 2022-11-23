@@ -24,6 +24,9 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
             textToRender={[
               { label: 'IT', formikValue: 'formikValue' },
               { label: 'EN', formikValue: 'formikValue' },
+              { label: 'FR', formikValue: 'formikValue' },
+              { label: 'DE', formikValue: 'formikValue' },
+              { label: 'SL', formikValue: 'formikValue' },
             ]}
             serviceName="serviceName"
             selectedParty="selectedParty"
@@ -39,8 +42,8 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
         <Provider store={store}>
           <IntroductionMarkdown
             textToRender={[]}
-            serviceName="serviceName"
-            selectedParty="selectedParty"
+            serviceName={undefined}
+            selectedParty={undefined}
           />
         </Provider>
       );

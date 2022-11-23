@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
 import AdditionalInfoContentBody from '../StepOne/AdditionalInfoContentBody';
+import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -26,8 +27,18 @@ describe('<AdditionalInfoContentBody />', (injectedStore?: ReturnType<typeof cre
           <AdditionalInfoContentBody initiativeDetail={initiative} />
         </Provider>
       );
+      // expect(printAssistanceChannelLabel).toBeDefined();
+    });
+  });
 
-      expect(printAssistanceChannelLabel).toBeDefined();
+  test('should display the AdditionalInfoContentBody component with his functions', async () => {
+    await act(async () => {
+      render(
+        <Provider store={store}>
+          <AdditionalInfoContentBody initiativeDetail={mockedInitiative} />
+        </Provider>
+      );
+      // expect(printAssistanceChannelLabel).toBeDefined();
     });
   });
 });

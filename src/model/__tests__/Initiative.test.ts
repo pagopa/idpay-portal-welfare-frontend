@@ -79,7 +79,12 @@ export const mockedInitiative: Initiative = {
     serviceDescription: 'newStepOneTest',
     privacyPolicyUrl: 'http://test.it',
     termsAndConditions: 'http://test.it',
-    assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+    assistanceChannels: [
+      { type: TypeEnum.web, contact: 'http://test.it' },
+      { type: TypeEnum.email, contact: 'http://test.it' },
+      { type: TypeEnum.mobile, contact: 'http://test.it' },
+      { type: '', contact: '' },
+    ],
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [
@@ -215,7 +220,7 @@ export const mockedInitiative: Initiative = {
     mccFilter: { allowedList: true, values: ['string', ''] },
     rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
     threshold: undefined,
-    trxCount: {from: 2, to: 3},
+    trxCount: { from: 2, to: 3 },
     daysOfWeekIntervals: [
       {
         daysOfWeek: 'string',
@@ -304,7 +309,12 @@ test('Test initiative2Initiative', () => {
       serviceDescription: 'newStepOneTest',
       privacyPolicyUrl: 'http://test.it',
       termsAndConditions: 'http://test.it',
-      assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+      assistanceChannels: [
+        { type: TypeEnum.web, contact: 'http://test.it' },
+        { type: TypeEnum.email, contact: 'http://test.it' },
+        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: '', contact: '' },
+      ],
     },
     beneficiaryRule: {
       selfDeclarationCriteria: [
@@ -440,7 +450,7 @@ test('Test initiative2Initiative', () => {
       mccFilter: { allowedList: true, values: ['string', ''] },
       rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
       threshold: undefined,
-      trxCount: {from: 2, to: 3},
+      trxCount: { from: 2, to: 3 },
       daysOfWeekIntervals: [
         {
           daysOfWeek: 'string',
