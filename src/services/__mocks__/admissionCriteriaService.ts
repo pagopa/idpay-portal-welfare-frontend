@@ -1,4 +1,5 @@
 import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
@@ -30,7 +31,8 @@ export const verifyFetchAdmissionCriteriasMockExecution = (
   expect(admissionCriteria).toStrictEqual(mockedAdmissionCriteria);
 };
 
-export const fetchAdmissionCriteria = () =>
+export const fetchAdmissionCriteria = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
   new Promise((resolve) => resolve(mockedAdmissionCriteria));
 
-export const getEligibilityCriteriaForSidebar = () => new Promise((resolve) => resolve);
+export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
+  InitiativeApiMocked.getEligibilityCriteriaForSidebar();

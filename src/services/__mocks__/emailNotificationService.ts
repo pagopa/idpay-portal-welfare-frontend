@@ -1,5 +1,6 @@
 import { EmailMessageDTO } from '../../api/generated/email-notification/EmailMessageDTO';
 import { UserInstitutionInfoDTO } from '../../api/generated/email-notification/UserInstitutionInfoDTO';
+import { EmailNotificationApiMocked } from '../../api/__mocks__/emeailNotificationApiClient';
 
 export const mockedBody: EmailMessageDTO = {
   subject: '',
@@ -13,5 +14,7 @@ export const mockedInstitutionInfo: UserInstitutionInfoDTO = {
 };
 
 export const getInstitutionProductUserInfo = () =>
-  new Promise<UserInstitutionInfoDTO>((resolve) => resolve(mockedInstitutionInfo));
-export const sendEmail = (_data: EmailMessageDTO) => new Promise<void>((resolve) => resolve());
+  EmailNotificationApiMocked.getInstitutionProductUserInfo();
+
+export const sendEmail = (_data: EmailMessageDTO) =>
+  EmailNotificationApiMocked.sendEmail(mockedBody);

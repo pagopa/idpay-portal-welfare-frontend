@@ -8,12 +8,13 @@ import {
 import { createStore } from '../../redux/store';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
+import { groupsApiMocked } from '../../api/__mocks__/groupsApiClient';
 
-jest.mock('../../api/groupsApiClient');
+jest.mock('../../api/groupsApiClient.ts');
 
 beforeEach(() => {
-  jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
-  jest.spyOn(groupsApi, 'uploadGroupOfBeneficiary');
+  jest.spyOn(groupsApiMocked, 'getGroupOfBeneficiaryStatusAndDetails');
+  jest.spyOn(groupsApiMocked, 'uploadGroupOfBeneficiary');
 });
 
 describe('Group Service', (injectedStore?: ReturnType<typeof createStore>) => {
@@ -21,12 +22,15 @@ describe('Group Service', (injectedStore?: ReturnType<typeof createStore>) => {
 
   test('test get group of beneficiary status and detail', async () => {
     await getGroupOfBeneficiaryStatusAndDetail(mockedInitiativeId);
-    expect(groupsApi.getGroupOfBeneficiaryStatusAndDetails).toBeCalledWith(mockedInitiativeId);
+
+    expect(groupsApiMocked.getGroupOfBeneficiaryStatusAndDetails).toBeCalledWith(
+      mockedInitiativeId
+    );
   });
 
   test('test upload group of beneficiary', async () => {
     await uploadGroupOfBeneficiaryPut(mockedInitiativeId, mockedFile);
-    expect(groupsApi.uploadGroupOfBeneficiary).toBeCalledWith(mockedInitiativeId, mockedFile);
+    expect(groupsApiMocked.uploadGroupOfBeneficiary).toBeCalledWith(mockedInitiativeId, mockedFile);
   });
 
   test('', () => {

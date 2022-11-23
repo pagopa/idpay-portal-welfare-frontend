@@ -1,14 +1,14 @@
-import { RolePermissionApi } from '../../api/rolePermissionApiClient';
+import { RolePermissionApiMocked } from '../../api/__mocks__/rolePermissionApiClient';
 
-import { getUserPermission } from '../rolePermissionService';
+import { getUserPermission } from '../__mocks__/rolePermissionService';
 
 jest.mock('../../api/rolePermissionApiClient');
 
 beforeEach(() => {
-  jest.spyOn(RolePermissionApi, 'userPermission');
+  jest.spyOn(RolePermissionApiMocked, 'userPermission');
 });
 
-test('test get group of beneficiary status and detail', async () => {
+test('test get user permission', async () => {
   await getUserPermission();
-  expect(RolePermissionApi.userPermission).toBeCalled();
+  expect(RolePermissionApiMocked.userPermission).toBeCalled();
 });

@@ -11,8 +11,13 @@ import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/Initia
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
-import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { InitiativeStatisticsDTO } from '../../api/generated/initiative/InitiativeStatisticsDTO';
+import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
+import { SasToken } from '../../api/generated/initiative/SasToken';
+import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
+import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
@@ -63,11 +68,29 @@ export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Prom
 export const putRefundRuleDraftPut = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
   InitiativeApiMocked.updateInitiativeRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
 
-export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
-  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+export const putTrxAndRewardRules = (_id: string, _data: InitiativeRewardAndTrxRulesDTO) =>
+  InitiativeApiMocked.initiativeTrxAndRewardRulesPut(mockedInitiativeId, mockedTrxAndRewardRules);
 
-export const getGroupOfBeneficiaryStatusAndDetails = (_id: string): Promise<void> =>
-  new Promise((resolve) => resolve());
+export const putTrxAndRewardRulesDraft = (_id: string, _data: InitiativeRewardAndTrxRulesDTO) =>
+  InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft(
+    mockedInitiativeId,
+    mockedTrxAndRewardRules
+  );
+
+export const updateInitiativeApprovedStatus = (_id: string) =>
+  InitiativeApiMocked.updateInitiativeApprovedStatus(mockedInitiativeId);
+
+export const updateInitiativeToCheckStatus = (_id: string) =>
+  InitiativeApiMocked.updateInitiativeToCheckStatus(mockedInitiativeId);
+
+export const updateInitiativePublishedStatus = (_id: string) =>
+  InitiativeApiMocked.updateInitiativePublishedStatus(mockedInitiativeId);
+
+export const logicallyDeleteInitiative = (_id: string) =>
+  InitiativeApiMocked.logicallyDeleteInitiative(mockedInitiativeId);
+
+export const initiativeStatistics = (): Promise<InitiativeStatisticsDTO> =>
+  InitiativeApiMocked.initiativeStatistics(mockedInitiativeId);
 
 export const getExportsPaged = (
   _id: string,
@@ -75,21 +98,36 @@ export const getExportsPaged = (
   _notificationDateFrom: string | undefined,
   _notificationDateTo: string | undefined,
   _status: string | undefined
-): Promise<void> => new Promise((resolve) => resolve());
+): Promise<PageRewardExportsDTO> =>
+  InitiativeApiMocked.getExportsPaged(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.notificationDateFrom,
+    mockedExportsPaged.notificationDateTo,
+    mockedExportsPaged.status
+  );
 
-export const getRewardFileDownload = (_id: string, _filePath: string): Promise<void> =>
-  new Promise((resolve) => resolve());
+export const getRewardFileDownload = (_id: string, _filePath: string): Promise<SasToken> =>
+  InitiativeApiMocked.getRewardFileDownload(mockedInitiativeId, mockedFilePath);
 
 export const getOnboardingStatus = (
   _id: string,
   _page: number,
   _notificationDateFrom: string | undefined,
   _notificationDateTo: string | undefined,
-  _status: string | undefined
-): Promise<void> => new Promise((resolve) => resolve());
+  _status: string | undefined,
+  _beneficiary: string | undefined
+): Promise<OnboardingDTO> =>
+  InitiativeApiMocked.getOnboardingStatus(
+    mockedOnBoardingStatus.id,
+    mockedOnBoardingStatus.page,
+    mockedOnBoardingStatus.dateFrom,
+    mockedOnBoardingStatus.dateTo,
+    mockedOnBoardingStatus.status
+  );
 
 export const putDispFileUpload = (_id: string, _filename: string, _file: File): Promise<void> =>
-  new Promise((resolve) => resolve());
+  InitiativeApiMocked.putDispFileUpload(mockedInitiativeId, mockedFileName, mockedFile);
 
 export const fetchInitiativeRefunds = (page: number) => {
   if (page === 0) {
@@ -284,6 +322,14 @@ export const mockedExportsPaged = {
   status: 'EXPORTED',
   notificationDateFrom: '11/11/2022',
   notificationDateTo: '11/11/2022',
+};
+
+export const mockedOnBoardingStatus = {
+  id: '62e29002aac2e94cfa3763dd',
+  page: 10,
+  status: 'EXPORTED',
+  dateFrom: '11/11/2022',
+  dateTo: '11/11/2022',
   beneficiary: 'MCCGRL01C25M052R',
 };
 

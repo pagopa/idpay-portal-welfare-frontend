@@ -19,27 +19,31 @@ import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import {
+  mockedExportsPaged,
+  mockedFileName,
+  mockedFilePath,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
+  mockedOnBoardingStatus,
+  mockedRefundRules,
   mockedServiceInfoData,
+  mockedTrxAndRewardRules,
 } from './__mocks__/initiativeService';
-import { mockedAdmissionCriteria } from './__mocks__/admissionCriteriaService';
+import { mockedFile } from './__mocks__/groupService';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getInitativeSummary();
-  } else {
-    return InitiativeApi.getInitativeSummary().then((res) => res);
   }
+  return InitiativeApi.getInitativeSummary().then((res) => res);
 };
 
 export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getInitiativeById(mockedInitiativeId);
-  } else {
-    return InitiativeApi.getInitiativeById(id).then((res) => res);
   }
+  return InitiativeApi.getInitiativeById(id).then((res) => res);
 };
 
 export const createInitiativeServiceInfo = (
@@ -47,9 +51,8 @@ export const createInitiativeServiceInfo = (
 ): Promise<InitiativeDTO | void | undefined> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.saveInitiativeServiceInfo({});
-  } else {
-    return InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
   }
+  return InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
 };
 
 export const updateInitiativeServiceInfo = (
@@ -61,9 +64,8 @@ export const updateInitiativeServiceInfo = (
       mockedInitiativeId,
       mockedServiceInfoData
     );
-  } else {
-    return InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
   }
+  return InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
 };
 
 export const updateInitiativeGeneralInfo = (
@@ -75,9 +77,8 @@ export const updateInitiativeGeneralInfo = (
       mockedInitiativeId,
       mockedInitiativeGeneralBody
     );
-  } else {
-    return InitiativeApi.updateInitiativeGeneralInfo(id, data).then((res) => res);
   }
+  return InitiativeApi.updateInitiativeGeneralInfo(id, data).then((res) => res);
 };
 
 export const updateInitiativeGeneralInfoDraft = (
@@ -85,10 +86,12 @@ export const updateInitiativeGeneralInfoDraft = (
   data: InitiativeGeneralDTO
 ): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve());
-  } else {
-    return InitiativeApi.updateInitiativeGeneralInfoDraft(id, data).then((res) => res);
+    return InitiativeApiMocked.updateInitiativeGeneralInfoDraft(
+      mockedInitiativeId,
+      mockedInitiativeGeneralBody
+    );
   }
+  return InitiativeApi.updateInitiativeGeneralInfoDraft(id, data).then((res) => res);
 };
 
 export const putBeneficiaryRuleService = async (
@@ -100,9 +103,8 @@ export const putBeneficiaryRuleService = async (
       mockedInitiativeId,
       mockedInitiativeBeneficiaryRuleBody
     );
-  } else {
-    return InitiativeApi.initiativeBeneficiaryRulePut(id, data);
   }
+  return InitiativeApi.initiativeBeneficiaryRulePut(id, data);
 };
 
 export const putBeneficiaryRuleDraftService = (
@@ -110,10 +112,26 @@ export const putBeneficiaryRuleDraftService = (
   data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve());
-  } else {
-    return InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
+    return InitiativeApiMocked.initiativeBeneficiaryRulePutDraft(
+      mockedInitiativeId,
+      mockedInitiativeBeneficiaryRuleBody
+    );
   }
+  return InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
+};
+
+export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+  }
+  return InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
+};
+
+export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+  }
+  return InitiativeApi.initiativeStatistics(id).then((res) => res);
 };
 
 /** It will accept a {@link InitiativeRewardAndTrxRulesDTORewardRule} and it will transcode it into {@link RewardGroupDTO} or {@link RewardValueDTO} */
@@ -135,51 +153,73 @@ export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORew
 export const putTrxAndRewardRules = (
   id: string,
   data: InitiativeRewardAndTrxRulesDTO
-): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPut(id, data).then((res) => res);
+): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.initiativeTrxAndRewardRulesPut(
+      mockedInitiativeId,
+      mockedTrxAndRewardRules
+    );
+  }
+  return InitiativeApi.initiativeTrxAndRewardRulesPut(id, data).then((res) => res);
+};
 
 export const putTrxAndRewardRulesDraft = (
   id: string,
   data: InitiativeRewardAndTrxRulesDTO
-): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data).then((res) => res);
+): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft(
+      mockedInitiativeId,
+      mockedTrxAndRewardRules
+    );
+  }
+  return InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data).then((res) => res);
+};
 
 export const putRefundRule = (id: string, data: InitiativeRefundRuleDTO): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve());
-  } else {
-    return InitiativeApi.updateInitiativeRefundRulePut(id, data).then((res) => res);
+    return InitiativeApiMocked.updateInitiativeRefundRulePut(mockedInitiativeId, mockedRefundRules);
   }
+  return InitiativeApi.updateInitiativeRefundRulePut(id, data).then((res) => res);
 };
 
 export const putRefundRuleDraft = (id: string, data: InitiativeRefundRuleDTO): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve());
-  } else {
-    return InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data).then((res) => res);
+    return InitiativeApiMocked.updateInitiativeRefundRuleDraftPut(
+      mockedInitiativeId,
+      mockedRefundRules
+    );
   }
+  return InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data).then((res) => res);
 };
 
-export const updateInitiativeApprovedStatus = (id: string): Promise<void> =>
-  InitiativeApi.updateInitiativeApprovedStatus(id).then((res) => res);
-
-export const updateInitiativeToCheckStatus = (id: string): Promise<void> =>
-  InitiativeApi.updateInitiativeToCheckStatus(id).then((res) => res);
-
-export const updateInitiativePublishedStatus = (id: string): Promise<void> =>
-  InitiativeApi.updateInitiativePublishedStatus(id).then((res) => res);
-
-export const logicallyDeleteInitiative = (id: string): Promise<void> =>
-  InitiativeApi.logicallyDeleteInitiative(id).then((res) => res);
-
-export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> => {
+export const updateInitiativeApprovedStatus = (id: string): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return new Promise((resolve) => resolve(mockedAdmissionCriteria));
-  } else {
-    return InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
+    return InitiativeApiMocked.updateInitiativeApprovedStatus(mockedInitiativeId);
   }
+  return InitiativeApi.updateInitiativeApprovedStatus(id).then((res) => res);
 };
 
-export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> =>
-  InitiativeApi.initiativeStatistics(id).then((res) => res);
+export const updateInitiativeToCheckStatus = (id: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.updateInitiativeToCheckStatus(mockedInitiativeId);
+  }
+  return InitiativeApi.updateInitiativeToCheckStatus(id).then((res) => res);
+};
+
+export const updateInitiativePublishedStatus = (id: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.updateInitiativePublishedStatus(mockedInitiativeId);
+  }
+  return InitiativeApi.updateInitiativePublishedStatus(id).then((res) => res);
+};
+
+export const logicallyDeleteInitiative = (id: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.logicallyDeleteInitiative(mockedInitiativeId);
+  }
+  return InitiativeApi.logicallyDeleteInitiative(id).then((res) => res);
+};
 
 export const getExportsPaged = (
   id: string,
@@ -187,13 +227,31 @@ export const getExportsPaged = (
   notificationDateFrom?: string,
   notificationDateTo?: string,
   status?: string
-): Promise<PageRewardExportsDTO> =>
-  InitiativeApi.getExportsPaged(id, page, notificationDateFrom, notificationDateTo, status).then(
-    (res) => res
-  );
+): Promise<PageRewardExportsDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getExportsPaged(
+      mockedExportsPaged.id,
+      mockedExportsPaged.page,
+      mockedExportsPaged.notificationDateFrom,
+      mockedExportsPaged.notificationDateTo,
+      mockedExportsPaged.status
+    );
+  }
+  return InitiativeApi.getExportsPaged(
+    id,
+    page,
+    notificationDateFrom,
+    notificationDateTo,
+    status
+  ).then((res) => res);
+};
 
-export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> =>
-  InitiativeApi.getRewardFileDownload(id, filePath).then((res) => res);
+export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getRewardFileDownload(mockedInitiativeId, mockedFilePath);
+  }
+  return InitiativeApi.getRewardFileDownload(id, filePath).then((res) => res);
+};
 
 export const getOnboardingStatus = (
   id: string,
@@ -202,10 +260,24 @@ export const getOnboardingStatus = (
   dateFrom?: string,
   dateTo?: string,
   state?: string
-): Promise<OnboardingDTO> =>
-  InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then(
+): Promise<OnboardingDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getOnboardingStatus(
+      mockedOnBoardingStatus.id,
+      mockedOnBoardingStatus.page,
+      mockedOnBoardingStatus.dateFrom,
+      mockedOnBoardingStatus.dateTo,
+      mockedOnBoardingStatus.status
+    );
+  }
+  return InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then(
     (res) => res
   );
+};
 
-export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> =>
-  InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);
+export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.putDispFileUpload(mockedInitiativeId, mockedFileName, mockedFile);
+  }
+  return InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);
+};

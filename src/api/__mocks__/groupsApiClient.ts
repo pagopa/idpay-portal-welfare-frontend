@@ -2,7 +2,7 @@ import { mockedInitiativeId } from '../../services/__mocks__/groupService';
 import { GroupUpdateDTO } from '../generated/groups/GroupUpdateDTO';
 import { StatusGroupDTO } from '../generated/groups/StatusGroupDTO';
 
-export const groupsApi = {
+export const groupsApiMocked = {
   getGroupOfBeneficiaryStatusAndDetails: async (_id: string): Promise<StatusGroupDTO> =>
     new Promise((resolve) => resolve(mockedInitiativeId)),
 

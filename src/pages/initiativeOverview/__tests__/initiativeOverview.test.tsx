@@ -3,17 +3,15 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { groupsApi } from '../../../api/groupsApiClient';
-import { Initiative } from '../../../model/Initiative';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
-import { useAppSelector } from '../../../redux/hooks';
-import { initiativeSelector } from '../../../redux/slices/initiativeSlice';
+// import { groupsApi } from '../../../api/groupsApiClient';
+import { groupsApiMocked } from '../../../api/__mocks__/groupsApiClient';
+// import { Initiative } from '../../../model/Initiative';
+// import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+// import { useAppSelector } from '../../../redux/hooks';
+// import { initiativeSelector } from '../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../redux/store';
-// import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
-import {
-  getGroupOfBeneficiaryStatusAndDetails,
-  mockedInitiativeId,
-} from '../../../services/__mocks__/groupService';
+import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
 
 export function mockLocationFunction() {
@@ -56,7 +54,7 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
 jest.mock('../../../api/groupsApiClient');
 
 beforeEach(() => {
-  jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
+  jest.spyOn(groupsApiMocked, 'getGroupOfBeneficiaryStatusAndDetails');
 });
 
 describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStore>) => {
@@ -125,16 +123,12 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
   it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
     jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
 
-    render(
-      <Provider store={store}>
-        <InitiativeOverview />
-      </Provider>
+    await getGroupOfBeneficiaryStatusAndDetail(mockedInitiativeId);
+    expect(groupsApiMocked.getGroupOfBeneficiaryStatusAndDetails).toBeCalledWith(
+      mockedInitiativeId
     );
-
-    getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
-    expect(getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId)).toBeDefined();
   });
-/*
+  /*
   test('test conditional render', () => {
     // const initiativeSel = useAppSelector(initiativeSelector);
     const mockedInitiativeSelected = mockedInitiative;
