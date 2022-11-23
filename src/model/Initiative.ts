@@ -1,3 +1,4 @@
+import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
@@ -61,6 +62,7 @@ export interface AutomatedCriteriaItem {
   operator?: FilterOperator | string | undefined;
   value?: string | undefined;
   value2?: string | undefined;
+  orderDirection?: OrderDirectionEnum | undefined;
 }
 
 export interface MCCFilter {

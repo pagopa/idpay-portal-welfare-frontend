@@ -39,8 +39,10 @@ const initialState: Initiative = {
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    beneficiaryKnown: 'false',
-    rankingEnabled: 'true',
+    // beneficiaryKnown: 'false',
+    // rankingEnabled: 'true',
+    beneficiaryKnown: undefined,
+    rankingEnabled: undefined,
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -295,8 +297,10 @@ export const initiativeSelector = (state: RootState): Initiative => state.initia
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
 export const additionalInfoSelector = (state: RootState): AdditionalInfo =>
   state.initiative.additionalInfo;
-export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
+export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
+export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
+  state.initiative.generalInfo.rankingEnabled;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {

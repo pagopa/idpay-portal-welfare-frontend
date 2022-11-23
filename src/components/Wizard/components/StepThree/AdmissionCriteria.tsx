@@ -11,6 +11,7 @@ import {
   initiativeIdSelector,
   saveAutomatedCriteria,
   saveManualCriteria,
+  stepTwoRankingEnabledSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
@@ -58,17 +59,30 @@ const AdmissionCriteria = ({
   );
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
+  const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     setLoading(true);
     fetchAdmissionCriteria()
       .then((response) => {
-        const responseData = mapResponse(response);
+        // eslint-disable-next-line functional/no-let
+        let responseT = [...response];
+        if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
+          responseT = response.map((r) => {
+            if (r.code !== 'ISEE') {
+              return { ...r };
+            } else {
+              return { ...r, operator: 'GT' };
+            }
+          });
+        }
+        const responseData = mapResponse(responseT);
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
 
@@ -76,7 +90,11 @@ const AdmissionCriteria = ({
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
         if (automatedCriteria.length > 0) {
           const updatedResponseData: Array<AvailableCriteria> =
-            updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
+            updateInitialAutomatedCriteriaOnSelector(
+              automatedCriteria,
+              responseData,
+              rankingEnabled
+            );
           setAvailableCriteria([...updatedResponseData]);
           setCriteriaToRender([...updatedResponseData]);
           updatedResponseData.forEach((c) => {
@@ -263,7 +281,7 @@ const AdmissionCriteria = ({
       setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
       putBeneficiaryRuleService(initiativeId, body)
         .then((_response) => {
@@ -288,7 +306,7 @@ const AdmissionCriteria = ({
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
@@ -418,6 +436,7 @@ const AdmissionCriteria = ({
                 handleFieldValueChanged={handleFieldValueChanged}
                 criteriaToSubmit={criteriaToSubmit}
                 setCriteriaToSubmit={setCriteriaToSubmit}
+                rankingEnabled={rankingEnabled}
               />
             );
           }

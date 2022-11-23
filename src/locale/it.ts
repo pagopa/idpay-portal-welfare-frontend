@@ -518,6 +518,8 @@ export default {
             boolean: 'Booleano',
             multi: 'Scelta multipla',
             addOption: 'Aggiungi opzione',
+            rankingOrderASC: 'Vince il valore minore',
+            rankingOrderDESC: 'Vince il valore maggiore',
           },
         },
         upload: {

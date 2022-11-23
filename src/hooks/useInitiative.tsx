@@ -177,7 +177,7 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
 
 // eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 export const parseGeneralInfo = (data: any): GeneralInfo => {
-  const dataT = {
+  const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
     rankingEnabled: 'true',
@@ -193,6 +193,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     introductionTextDE: '',
     introductionTextSL: '',
   };
+
   if (data && Object.keys(data).length !== 0) {
     if (typeof data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -203,7 +204,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
     }
-    if (data.rankingEnabled && typeof data.rankingEnabled !== undefined) {
+    if (typeof data.rankingEnabled !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
@@ -259,6 +260,9 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       }
     }
   }
+
+  console.log(dataT);
+
   return dataT;
 };
 
