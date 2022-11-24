@@ -5,10 +5,10 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Chip, FormHelperText, LinearProgress, Typography } from '@mui/material';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import ImageIcon from '@mui/icons-material/Image';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
-import { ButtonNaked } from '@pagopa/mui-italia';
+// import { ButtonNaked } from '@pagopa/mui-italia';
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
   setFileUploadedOk: Dispatch<SetStateAction<boolean>>;
@@ -24,8 +24,8 @@ const UploadServiceIcon = ({
   fileUplodedOk,
   fileUplodedKo,
   fileName,
-  fileUploadDate,
-}: Props) => {
+}: // fileUploadDate,
+Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
@@ -56,6 +56,9 @@ const UploadServiceIcon = ({
     },
     onDropAccepted: (files) => {
       setUploadFile(files[0]);
+      setFileIsLoading(false);
+      setFileIsRejected(false);
+      setFileIsAcceppted(true);
     },
     onDropRejected: (files) => {
       const errorKey = files[0].errors[0].code;
@@ -105,7 +108,8 @@ const UploadServiceIcon = ({
           width: '100%',
           border: '1px solid #E3E7EB',
           borderRadius: '10px',
-          p: 3,
+          px: 3,
+          py: 2,
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
         }}
@@ -124,14 +128,24 @@ const UploadServiceIcon = ({
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
+        gridTemplateColumns: 'repeat(24, 1fr)',
+        alignItems: 'center',
       }}
     >
       <Box
         sx={{
-          gridColumn: 'span 12',
+          gridColumn: 'span 2',
+          pt: 1,
+          pl: 3,
+        }}
+      >
+        <RemoveCircleOutlineIcon onClick={resetStatus} color={'error'} sx={{ cursor: 'pointer' }} />
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 22',
           display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
+          gridTemplateColumns: 'repeat(22, 1fr)',
           px: 2,
           py: 1,
           borderRadius: '10px',
@@ -139,22 +153,19 @@ const UploadServiceIcon = ({
           alignItems: 'center',
         }}
       >
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
-          <CheckCircleIcon color="success" />
+        <Box sx={{ textAlign: 'center', gridColumn: 'span 3', mt: 1 }}>
+          <ImageIcon />
         </Box>
-        <Box sx={{ gridColumn: 'span 3' }}>
+        <Box sx={{ gridColumn: 'span 10' }}>
           <Typography variant="body2" fontWeight={600}>
             {fileName}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
-          <Typography variant="body2">{fileUploadDate}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>
+        <Box sx={{ gridColumn: 'span 9', justifySelf: 'right', px: 2 }}>
           <Chip label={t('components.wizard.stepOne.uploadIcon.validIcon')} color="success" />
         </Box>
       </Box>
-      <Box sx={{ gridColumn: 'span 12', pt: 1 }}>
+      {/* <Box sx={{ gridColumn: 'span 12', pt: 1 }}>
         <ButtonNaked
           size="small"
           component="button"
@@ -165,7 +176,7 @@ const UploadServiceIcon = ({
         >
           {t('components.wizard.stepOne.uploadIcon.changeIcon')}
         </ButtonNaked>
-      </Box>
+      </Box> */}
     </Box>
   );
 

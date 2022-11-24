@@ -192,9 +192,8 @@ const ServiceConfig = ({
               : new Date().toLocaleString('fr-BE');
           const data = { ...res, logoUploadDate: fileUploadDate };
           dispatch(setInitiativeLogo(data));
-          return 1;
         })
-        .then(() => setTimeout(waitUpload, 1000))
+        .then(() => waitUpload())
         .catch((error) => {
           setFileUploadedOk(false);
           addError({
