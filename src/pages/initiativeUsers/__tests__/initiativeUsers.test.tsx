@@ -29,6 +29,7 @@ describe('<InitiativeUsers />', (injectedStore?: ReturnType<typeof createStore>)
     );
     const breadcrumbs = getByTestId('breadcrumbs-test') as HTMLDivElement;
     const searchUser = getByTestId('searchUser-test').querySelector('input') as HTMLInputElement;
+    // const history = { replace: jest.fn() };
 
     expect(breadcrumbs).not.toBeNull();
     expect(breadcrumbs).toBeInTheDocument();
@@ -41,5 +42,10 @@ describe('<InitiativeUsers />', (injectedStore?: ReturnType<typeof createStore>)
 
     fireEvent.change(searchUser, { target: { value: 'searchUser' } });
     expect(searchUser.value).toBe('searchUser');
+
+    // const replaceSpy = jest.spyOn(history, 'replace');
+
+    // expect(replaceSpy).toBeCalled();
+    // replaceSpy.mockRestore();
   });
 });

@@ -356,6 +356,7 @@ const InitiativeUsers = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-test
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
