@@ -136,15 +136,8 @@ const InitiativeUsers = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(
-        initiativeSel.initiativeId,
-        page,
-        filterByBeneficiary,
-        filterByDateFrom,
-        filterByDateTo,
-        filterByStatus
-      );
+    if (typeof id === 'string') {
+      getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
   }, [id, page]);
 
@@ -218,7 +211,7 @@ const InitiativeUsers = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof initiativeSel.initiativeId === 'string') {
+      if (typeof id === 'string') {
         const filterBeneficiary = values.searchUser.length > 0 ? values.searchUser : undefined;
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
@@ -251,14 +244,7 @@ const InitiativeUsers = () => {
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getTableData(
-          initiativeSel.initiativeId,
-          0,
-          filterBeneficiary,
-          searchFromStr,
-          searchToStr,
-          filterStatus
-        );
+        getTableData(id, 0, filterBeneficiary, searchFromStr, searchToStr, filterStatus);
       }
     },
   });
@@ -270,8 +256,8 @@ const InitiativeUsers = () => {
     setFilterByDateFrom(undefined);
     setFilterByDateTo(undefined);
     setFilterByStatus(undefined);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined, undefined);
+    if (typeof id === 'string') {
+      getTableData(id, 0, undefined, undefined, undefined, undefined);
     }
   };
 
@@ -289,9 +275,7 @@ const InitiativeUsers = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() =>
-                history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${initiativeSel.initiativeId}`)
-              }
+              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"

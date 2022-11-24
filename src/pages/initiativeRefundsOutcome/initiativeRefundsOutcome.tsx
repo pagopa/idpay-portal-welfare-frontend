@@ -13,14 +13,14 @@ import {
   TableCell,
   TablePagination,
   Alert,
-  // IconButton,
+  IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-// import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
@@ -41,6 +41,7 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import {
+  getDispFileErrors,
   getRewardNotificationImportsPaged,
   putDispFileUpload,
 } from '../../services/intitativeService';
@@ -86,8 +87,8 @@ const InitiativeRefundsOutcome = () => {
     onDropAccepted: (files) => {
       setFileIsLoading(true);
       const uploadedFileName = files[0].name;
-      if (typeof initiativeSel.initiativeId === 'string') {
-        putDispFileUpload(initiativeSel.initiativeId, uploadedFileName, files[0])
+      if (typeof id === 'string') {
+        putDispFileUpload(id, uploadedFileName, files[0])
           .then((_res) => {
             setFileIsLoading(false);
             setFileRejected(false);
@@ -299,18 +300,43 @@ const InitiativeRefundsOutcome = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(initiativeSel.initiativeId, page);
+    if (typeof id === 'string') {
+      getTableData(id, page);
     }
   }, [id, page]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (fileAccepted === true && typeof initiativeSel.initiativeId === 'string') {
+    if (fileAccepted === true && typeof id === 'string') {
       setPage(0);
-      getTableData(initiativeSel.initiativeId, 0);
+      getTableData(id, 0);
     }
   }, [fileAccepted]);
+
+  const handleDownloadFile = (data: {
+    initiativeId: string | undefined;
+    filePath: string | undefined;
+  }) => {
+    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
+      getDispFileErrors(data.initiativeId, data.filePath)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_FILE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting export file',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  };
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -326,9 +352,7 @@ const InitiativeRefundsOutcome = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() =>
-                history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${initiativeSel.initiativeId}`)
-              }
+              onClick={() => history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -444,9 +468,9 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsResulted}</TableCell>
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
-                        {/* <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
                           <FileDownloadIcon color="primary" />
-                        </IconButton> */}
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -207,9 +207,9 @@ const InitiativeRefunds = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof initiativeSel.initiativeId === 'string') {
+    if (typeof id === 'string') {
       getTableData(
-        initiativeSel.initiativeId,
+        id,
         page,
         filterByNotificationDateFrom,
         filterByNotificationDateTo,
@@ -263,7 +263,7 @@ const InitiativeRefunds = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof initiativeSel.initiativeId === 'string') {
+      if (typeof id === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr =
@@ -282,7 +282,7 @@ const InitiativeRefunds = () => {
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getTableData(initiativeSel.initiativeId, 0, searchFromStr, searchToStr, filterStatus);
+        getTableData(id, 0, searchFromStr, searchToStr, filterStatus);
       }
     },
   });
@@ -300,8 +300,8 @@ const InitiativeRefunds = () => {
     setFilterByNotificationDateFrom(undefined);
     setFilterByNotificationDateTo(undefined);
     setFilterByStatus(undefined);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined);
+    if (typeof id === 'string') {
+      getTableData(id, 0, undefined, undefined, undefined);
     }
   };
 
@@ -325,9 +325,7 @@ const InitiativeRefunds = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() =>
-                history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${initiativeSel.initiativeId}`)
-              }
+              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -358,7 +356,7 @@ const InitiativeRefunds = () => {
             variant="contained"
             size="small"
             startIcon={<FileUploadIcon />}
-            onClick={() => goToRefundsOutcome(initiativeSel.initiativeId)}
+            onClick={() => goToRefundsOutcome(id)}
           >
             {t('pages.initiativeRefunds.uploadBtn')}
           </Button>

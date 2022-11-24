@@ -205,3 +205,6 @@ export const getRewardNotificationImportsPaged = (
 
 export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
   InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
+
+export const getDispFileErrors = (id: string, name: string): Promise<void> =>
+  InitiativeApi.getDispFileErrors(id, name).then((res) => res);

@@ -264,4 +264,9 @@ export const InitiativeApi = {
     const result = await apiClient.getRewardNotificationImportsPaged({ initiativeId: id, page });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
+  getDispFileErrors: async (id: string, name: string): Promise<void> => {
+    const result = await apiClient.getDispFileErrors({ initiativeId: id, filename: name });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
 };

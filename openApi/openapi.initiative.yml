@@ -1575,6 +1575,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/reward/import/{filename}/errors:
+    get:
+      tags:
+        - initiative-reward
+      summary: Upload dispositive file
+      operationId: getDispFileErrors
+      parameters:
+        - name: initiativeId
+          in: path
+          description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: filename
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            text/csv: {}
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
 components:
   schemas:
     SasToken:
@@ -1940,10 +2002,10 @@ components:
       properties:
         logoFileName:
           type: string
-          example: 'NTT-Data-Logo.svg.png'
+          example: 'logo-name.png'
         logoURL:
           type: string
-          example: 'https://idpaydinitiativestorage.blob.core.windows.net/logo/initiative/636e1473cc8ec714db521f05/logo'
+          example: 'https://localhost:8080/logo/initiative/logo.png'
         logoUploadDate:
           type: string
           description: date-time
@@ -2113,7 +2175,7 @@ components:
           type: integer
           format: int32
     PageRewardImportsDTO:
-      title: Page«RewardImportsDTO»
+      title: PageRewardImportsDTO
       type: object
       properties:
         content:
