@@ -173,11 +173,17 @@ export const getExportsPaged = (
   page: number,
   notificationDateFrom?: string,
   notificationDateTo?: string,
-  status?: string
+  status?: string,
+  sort?: string
 ): Promise<PageRewardExportsDTO> =>
-  InitiativeApi.getExportsPaged(id, page, notificationDateFrom, notificationDateTo, status).then(
-    (res) => res
-  );
+  InitiativeApi.getExportsPaged(
+    id,
+    page,
+    notificationDateFrom,
+    notificationDateTo,
+    status,
+    sort
+  ).then((res) => res);
 
 export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> =>
   InitiativeApi.getRewardFileDownload(id, filePath).then((res) => res);
@@ -199,9 +205,10 @@ export const putDispFileUpload = (id: string, filename: string, file: File): Pro
 
 export const getRewardNotificationImportsPaged = (
   id: string,
-  page: number
+  page: number,
+  sort: string
 ): Promise<PageRewardImportsDTO> =>
-  InitiativeApi.getRewardNotificationImportsPaged(id, page).then((res) => res);
+  InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);
 
 export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
   InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);

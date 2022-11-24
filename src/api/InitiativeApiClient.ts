@@ -206,7 +206,8 @@ export const InitiativeApi = {
     page: number,
     notificationDateFrom?: string,
     notificationDateTo?: string,
-    status?: string
+    status?: string,
+    sort?: string
   ): Promise<PageRewardExportsDTO> => {
     const result = await apiClient.getRewardNotificationExportsPaged({
       initiativeId: id,
@@ -215,6 +216,7 @@ export const InitiativeApi = {
       notificationDateFrom,
       notificationDateTo,
       status,
+      sort,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -259,9 +261,14 @@ export const InitiativeApi = {
 
   getRewardNotificationImportsPaged: async (
     id: string,
-    page: number
+    page: number,
+    sort: string
   ): Promise<PageRewardImportsDTO> => {
-    const result = await apiClient.getRewardNotificationImportsPaged({ initiativeId: id, page });
+    const result = await apiClient.getRewardNotificationImportsPaged({
+      initiativeId: id,
+      page,
+      sort,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 

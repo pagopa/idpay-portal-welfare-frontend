@@ -237,7 +237,7 @@ const InitiativeRefundsOutcome = () => {
 
   const getTableData = (initiativeId: string, page: number) => {
     setLoading(true);
-    getRewardNotificationImportsPaged(initiativeId, page)
+    getRewardNotificationImportsPaged(initiativeId, page, 'feedbackDate,DESC')
       .then((res) => {
         if (typeof res.totalElements === 'number') {
           setTotalElements(res.totalElements);

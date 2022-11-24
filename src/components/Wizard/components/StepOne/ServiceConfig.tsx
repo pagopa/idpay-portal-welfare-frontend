@@ -465,6 +465,7 @@ const ServiceConfig = ({
                 fileUplodedKo={fileUplodedKo}
                 fileName={fileName}
                 fileUploadDate={fileUploadDate}
+                setFileName={setFileName}
               />
             ) : null}
           </FormControl>

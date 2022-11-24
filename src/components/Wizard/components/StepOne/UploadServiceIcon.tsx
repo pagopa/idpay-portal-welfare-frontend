@@ -16,6 +16,7 @@ interface Props {
   fileUplodedKo: boolean;
   fileName: string | undefined;
   fileUploadDate: string | undefined;
+  setFileName: Dispatch<SetStateAction<string>>;
 }
 
 const UploadServiceIcon = ({
@@ -24,7 +25,9 @@ const UploadServiceIcon = ({
   fileUplodedOk,
   fileUplodedKo,
   fileName,
-}: // fileUploadDate,
+  setFileName,
+}: // fileName,
+// fileUploadDate,
 Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
@@ -56,6 +59,7 @@ Props) => {
     },
     onDropAccepted: (files) => {
       setUploadFile(files[0]);
+      setFileName(files[0].name);
       setFileIsLoading(false);
       setFileIsRejected(false);
       setFileIsAcceppted(true);

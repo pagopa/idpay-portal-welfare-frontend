@@ -161,7 +161,7 @@ const InitiativeRefunds = () => {
     filterStatus: string | undefined
   ) => {
     setLoading(true);
-    getExportsPaged(initiativeId, page, searchFrom, searchTo, filterStatus)
+    getExportsPaged(initiativeId, page, searchFrom, searchTo, filterStatus, 'notificationDate,DESC')
       .then((res) => {
         if (typeof res.totalElements === 'number') {
           setTotalElements(res.totalElements);
@@ -176,7 +176,7 @@ const InitiativeRefunds = () => {
                 : '',
             typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
-            rewardsResults: `${numberWithCommas(r.rewardsResults)}`,
+            rewardsResults: `${numberWithCommas(r.rewardsResulted)}`,
             successPercentage: `${r.percentageResultedOk}%`,
             percentageResulted: r.percentageResulted,
             status: { status: r.status, percentageResulted: r.percentageResulted },
