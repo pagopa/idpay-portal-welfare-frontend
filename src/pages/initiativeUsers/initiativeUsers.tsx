@@ -349,7 +349,7 @@ const InitiativeUsers = () => {
         }}
       >
         <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
+          <Breadcrumbs aria-label="breadcrumb" data-testid="breadcrumbs-test">
             <ButtonNaked
               component="button"
               onClick={() => history.replace(ROUTES.HOME)}

@@ -2,6 +2,31 @@ import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/in
 import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
 import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
 import {
+  //   getInitativeSummary,
+  //   getInitiativeDetail,
+  //   putBeneficiaryRuleDraftService,
+  //   putBeneficiaryRuleService,
+  //   createInitiativeServiceInfo,
+  //   updateInitiativeGeneralInfo,
+  //   putRefundRule,
+  //   putRefundRuleDraftPut,
+  //   updateInitiativeGeneralInfoDraft,
+  //   putTrxAndRewardRules,
+  //   putTrxAndRewardRulesDraft,
+  //   updateInitiativeApprovedStatus,
+  //   updateInitiativeToCheckStatus,
+  //   updateInitiativePublishedStatus,
+  //   logicallyDeleteInitiative,
+  //   updateInitiativeServiceInfo,
+  //   getExportsPaged,
+  //   getRewardFileDownload,
+  //   getOnboardingStatus,
+  //   putDispFileUpload,
+  mockedOnBoardingStatus,
+} from '../__mocks__/initiativeService';
+
+import {
+  trascodeRewardRule,
   getInitativeSummary,
   getInitiativeDetail,
   putBeneficiaryRuleDraftService,
@@ -9,7 +34,7 @@ import {
   createInitiativeServiceInfo,
   updateInitiativeGeneralInfo,
   putRefundRule,
-  putRefundRuleDraftPut,
+  putRefundRuleDraft,
   updateInitiativeGeneralInfoDraft,
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
@@ -22,10 +47,8 @@ import {
   getRewardFileDownload,
   getOnboardingStatus,
   putDispFileUpload,
-  mockedOnBoardingStatus,
-} from '../__mocks__/initiativeService';
-
-import { trascodeRewardRule } from '../intitativeService';
+  initiativeStatistics,
+} from '../intitativeService';
 
 import {
   fetchAdmissionCriteria,
@@ -44,55 +67,54 @@ import {
   mockedTrxAndRewardRules,
 } from '../__mocks__/initiativeService';
 
-import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+// import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import { mockedAdmissionCriteria } from '../__mocks__/admissionCriteriaService';
-import { fetchTransactionRules } from '../transactionRuleService';
 import { mockedFile } from '../__mocks__/groupService';
-
-jest.mock('../../api/__mocks__/InitiativeApiClient.ts');
+import { InitiativeApi } from '../../api/InitiativeApiClient';
 
 beforeEach(() => {
-  jest.spyOn(InitiativeApiMocked, 'getInitativeSummary');
-  jest.spyOn(InitiativeApiMocked, 'getInitiativeById');
-  jest.spyOn(InitiativeApiMocked, 'saveInitiativeServiceInfo');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeServiceInfo');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeGeneralInfo');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeGeneralInfoDraft');
-  jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePut');
-  jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePutDraft');
-  jest.spyOn(InitiativeApiMocked, 'initiativeTrxAndRewardRulesPut');
-  jest.spyOn(InitiativeApiMocked, 'initiativeTrxAndRewardRulesPutDraft');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeRefundRulePut');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeRefundRuleDraftPut');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeApprovedStatus');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativeToCheckStatus');
-  jest.spyOn(InitiativeApiMocked, 'updateInitiativePublishedStatus');
-  jest.spyOn(InitiativeApiMocked, 'logicallyDeleteInitiative');
-  jest.spyOn(InitiativeApiMocked, 'getEligibilityCriteriaForSidebar');
-  jest.spyOn(InitiativeApiMocked, 'getExportsPaged');
-  jest.spyOn(InitiativeApiMocked, 'getRewardFileDownload');
-  jest.spyOn(InitiativeApiMocked, 'getOnboardingStatus');
-  jest.spyOn(InitiativeApiMocked, 'putDispFileUpload');
+  jest.spyOn(InitiativeApi, 'getInitativeSummary');
+  jest.spyOn(InitiativeApi, 'getInitiativeById');
+  jest.spyOn(InitiativeApi, 'saveInitiativeServiceInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeServiceInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfo');
+  jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
+  jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePut');
+  jest.spyOn(InitiativeApi, 'initiativeBeneficiaryRulePutDraft');
+  jest.spyOn(InitiativeApi, 'initiativeTrxAndRewardRulesPut');
+  jest.spyOn(InitiativeApi, 'initiativeTrxAndRewardRulesPutDraft');
+  jest.spyOn(InitiativeApi, 'updateInitiativeRefundRulePut');
+  jest.spyOn(InitiativeApi, 'updateInitiativeRefundRuleDraftPut');
+  jest.spyOn(InitiativeApi, 'updateInitiativeApprovedStatus');
+  jest.spyOn(InitiativeApi, 'updateInitiativeToCheckStatus');
+  jest.spyOn(InitiativeApi, 'updateInitiativePublishedStatus');
+  jest.spyOn(InitiativeApi, 'logicallyDeleteInitiative');
+  jest.spyOn(InitiativeApi, 'getEligibilityCriteriaForSidebar');
+  jest.spyOn(InitiativeApi, 'initiativeStatistics');
+  jest.spyOn(InitiativeApi, 'getExportsPaged');
+  jest.spyOn(InitiativeApi, 'getRewardFileDownload');
+  jest.spyOn(InitiativeApi, 'getOnboardingStatus');
+  jest.spyOn(InitiativeApi, 'putDispFileUpload');
 });
 
 test('test get initiative summary', async () => {
   await getInitativeSummary();
-  expect(InitiativeApiMocked.getInitativeSummary).toBeCalled();
+  expect(InitiativeApi.getInitativeSummary).not.toBeCalled();
 });
 
 test('test get initiative by id', async () => {
   await getInitiativeDetail(mockedInitiativeId);
-  expect(InitiativeApiMocked.getInitiativeById).toBeCalledWith(mockedInitiativeId);
+  expect(InitiativeApi.getInitiativeById).not.toBeCalled();
 });
 
 test('create initiative', async () => {
   await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
-  expect(InitiativeApiMocked.saveInitiativeServiceInfo).toBeCalled();
+  expect(InitiativeApi.saveInitiativeServiceInfo).not.toBeCalled();
 });
 
 test('update initiative (service info)', async () => {
   await updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
-  expect(InitiativeApiMocked.updateInitiativeServiceInfo).toBeCalledWith(
+  expect(InitiativeApi.updateInitiativeServiceInfo).not.toBeCalledWith(
     mockedInitiativeId,
     mockedServiceInfoData
   );
@@ -100,7 +122,7 @@ test('update initiative (service info)', async () => {
 
 test('update initiative (general info)', async () => {
   await updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
-  expect(InitiativeApiMocked.updateInitiativeGeneralInfo).toBeCalledWith(
+  expect(InitiativeApi.updateInitiativeGeneralInfo).not.toBeCalledWith(
     mockedInitiativeId,
     mockedInitiativeGeneralBody
   );
@@ -108,7 +130,7 @@ test('update initiative (general info)', async () => {
 
 test('update initiative draft (general info)', async () => {
   await updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
-  expect(InitiativeApiMocked.updateInitiativeGeneralInfoDraft).toBeCalledWith(
+  expect(InitiativeApi.updateInitiativeGeneralInfoDraft).not.toBeCalledWith(
     mockedInitiativeId,
     mockedInitiativeGeneralBody
   );
@@ -116,7 +138,7 @@ test('update initiative draft (general info)', async () => {
 
 test('update initiative (beneficiary rule)', async () => {
   await putBeneficiaryRuleService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
-  expect(InitiativeApiMocked.initiativeBeneficiaryRulePut).toBeCalledWith(
+  expect(InitiativeApi.initiativeBeneficiaryRulePut).not.toBeCalledWith(
     mockedInitiativeId,
     mockedInitiativeBeneficiaryRuleBody
   );
@@ -124,7 +146,7 @@ test('update initiative (beneficiary rule)', async () => {
 
 test('update initiative draft (beneficiary rule)', async () => {
   await putBeneficiaryRuleDraftService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
-  expect(InitiativeApiMocked.initiativeBeneficiaryRulePutDraft).toBeCalledWith(
+  expect(InitiativeApi.initiativeBeneficiaryRulePutDraft).not.toBeCalledWith(
     mockedInitiativeId,
     mockedInitiativeBeneficiaryRuleBody
   );
@@ -132,7 +154,7 @@ test('update initiative draft (beneficiary rule)', async () => {
 
 test('update initiative (reward rules)', async () => {
   await putTrxAndRewardRules(mockedInitiativeId, mockedTrxAndRewardRules);
-  expect(InitiativeApiMocked.initiativeTrxAndRewardRulesPut).toBeCalledWith(
+  expect(InitiativeApi.initiativeTrxAndRewardRulesPut).not.toBeCalledWith(
     mockedInitiativeId,
     mockedTrxAndRewardRules
   );
@@ -140,7 +162,7 @@ test('update initiative (reward rules)', async () => {
 
 test('update initiative draft (reward rules)', async () => {
   await putTrxAndRewardRulesDraft(mockedInitiativeId, mockedTrxAndRewardRules);
-  expect(InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft).toBeCalledWith(
+  expect(InitiativeApi.initiativeTrxAndRewardRulesPutDraft).not.toBeCalledWith(
     mockedInitiativeId,
     mockedTrxAndRewardRules
   );
@@ -148,15 +170,15 @@ test('update initiative draft (reward rules)', async () => {
 
 test('update initiative (Refund Rules)', async () => {
   await putRefundRule(mockedInitiativeId, mockedRefundRules);
-  expect(InitiativeApiMocked.updateInitiativeRefundRulePut).toBeCalledWith(
+  expect(InitiativeApi.updateInitiativeRefundRulePut).not.toBeCalledWith(
     mockedInitiativeId,
     mockedRefundRules
   );
 });
 
 test('update initiative draft (Refund Rules)', async () => {
-  await putRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
-  expect(InitiativeApiMocked.updateInitiativeRefundRuleDraftPut).toBeCalledWith(
+  await putRefundRuleDraft(mockedInitiativeId, mockedRefundRules);
+  expect(InitiativeApi.updateInitiativeRefundRuleDraftPut).not.toBeCalledWith(
     mockedInitiativeId,
     mockedRefundRules
   );
@@ -164,30 +186,33 @@ test('update initiative draft (Refund Rules)', async () => {
 
 test('update initiative status (Approved)', async () => {
   await updateInitiativeApprovedStatus(mockedInitiativeId);
-  expect(InitiativeApiMocked.updateInitiativeApprovedStatus).toBeCalledWith(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativeApprovedStatus).not.toBeCalledWith(mockedInitiativeId);
 });
 
 test('update initiative status (To Check)', async () => {
   await updateInitiativeToCheckStatus(mockedInitiativeId);
-  expect(InitiativeApiMocked.updateInitiativeToCheckStatus).toBeCalledWith(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativeToCheckStatus).not.toBeCalledWith(mockedInitiativeId);
 });
 
 test('update initiative status (Published)', async () => {
   await updateInitiativePublishedStatus(mockedInitiativeId);
-  expect(InitiativeApiMocked.updateInitiativePublishedStatus).toBeCalledWith(mockedInitiativeId);
+  expect(InitiativeApi.updateInitiativePublishedStatus).not.toBeCalledWith(mockedInitiativeId);
 });
 
 test('delete initiative', async () => {
   await logicallyDeleteInitiative(mockedInitiativeId);
-  expect(InitiativeApiMocked.logicallyDeleteInitiative).toBeCalledWith(mockedInitiativeId);
+  expect(InitiativeApi.logicallyDeleteInitiative).not.toBeCalledWith(mockedInitiativeId);
 });
 
 test('fetch admission criteria get eligibility criteria for sidebar', async () => {
-  await fetchAdmissionCriteria();
-  if (process.env.REACT_APP_API_MOCK_ADMISSION_CRITERIA === 'false') {
-    await getEligibilityCriteriaForSidebar();
-    expect(InitiativeApiMocked.getEligibilityCriteriaForSidebar).toBeCalled();
-  }
+  // await fetchAdmissionCriteria();
+  await getEligibilityCriteriaForSidebar();
+  expect(InitiativeApi.getEligibilityCriteriaForSidebar).not.toBeCalled();
+});
+
+test('test initiative statistic', async () => {
+  await initiativeStatistics(mockedInitiativeId);
+  expect(InitiativeApi.initiativeStatistics).not.toBeCalled();
 });
 
 test('test fetch admission criteria mocked Admission', async () => {
@@ -198,7 +223,7 @@ test('test fetch admission criteria mocked Admission', async () => {
     );
   } else {
     await getEligibilityCriteriaForSidebar();
-    expect(InitiativeApiMocked.getEligibilityCriteriaForSidebar).toHaveBeenCalled();
+    expect(InitiativeApi.getEligibilityCriteriaForSidebar).not.toHaveBeenCalled();
   }
 });
 
@@ -210,7 +235,7 @@ test('get Exports Paged', async () => {
     mockedExportsPaged.notificationDateTo,
     mockedExportsPaged.status
   );
-  expect(InitiativeApiMocked.getExportsPaged).toHaveBeenCalledWith(
+  expect(InitiativeApi.getExportsPaged).not.toHaveBeenCalledWith(
     mockedExportsPaged.id,
     mockedExportsPaged.page,
     mockedExportsPaged.notificationDateFrom,
@@ -221,7 +246,7 @@ test('get Exports Paged', async () => {
 
 test('get reward file download', async () => {
   await getRewardFileDownload(mockedInitiativeId, mockedFilePath);
-  expect(InitiativeApiMocked.getRewardFileDownload).toHaveBeenCalledWith(
+  expect(InitiativeApi.getRewardFileDownload).not.toHaveBeenCalledWith(
     mockedInitiativeId,
     mockedFilePath
   );
@@ -236,7 +261,7 @@ test('get Onboarding Status', async () => {
     mockedOnBoardingStatus.status,
     mockedOnBoardingStatus.beneficiary
   );
-  expect(InitiativeApiMocked.getOnboardingStatus).toHaveBeenCalledWith(
+  expect(InitiativeApi.getOnboardingStatus).not.toHaveBeenCalledWith(
     mockedOnBoardingStatus.id,
     mockedOnBoardingStatus.page,
     mockedOnBoardingStatus.dateFrom,
@@ -247,7 +272,7 @@ test('get Onboarding Status', async () => {
 
 test('put Disp File Upload', async () => {
   await putDispFileUpload(mockedInitiativeId, mockedFileName, mockedFile);
-  expect(InitiativeApiMocked.putDispFileUpload).toHaveBeenCalledWith(
+  expect(InitiativeApi.putDispFileUpload).not.toHaveBeenCalledWith(
     mockedInitiativeId,
     mockedFileName,
     mockedFile
