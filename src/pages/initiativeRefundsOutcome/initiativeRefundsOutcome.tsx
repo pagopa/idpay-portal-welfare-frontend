@@ -254,6 +254,7 @@ const InitiativeRefundsOutcome = () => {
               x: r.rewardsResulted - r.rewardsResultedError,
             }),
             downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
+            errorsSize: r.errorsSize,
           }));
           setRows(rowsData);
         }
@@ -468,9 +469,11 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsResulted}</TableCell>
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
-                          <FileDownloadIcon color="primary" />
-                        </IconButton>
+                        {r.errorsSize > 0 && (
+                          <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                            <FileDownloadIcon color="primary" />
+                          </IconButton>
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}

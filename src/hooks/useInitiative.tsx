@@ -261,9 +261,6 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       }
     }
   }
-
-  console.log(dataT);
-
   return dataT;
 };
 

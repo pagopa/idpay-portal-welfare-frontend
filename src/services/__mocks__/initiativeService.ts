@@ -268,6 +268,7 @@ export interface InitiativeRefundImports {
   rewardsResulted: string | undefined;
   rewardsAdded: string | undefined;
   downloadFileInfo: { initiativeId: string | undefined; filePath: string | undefined };
+  errorsSize: number;
 }
 
 export interface InitiativeRefundsResponse {
