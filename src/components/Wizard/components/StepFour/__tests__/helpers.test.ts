@@ -1,3 +1,5 @@
+import { MccFilterDTO } from '../../../../../api/generated/initiative/MccFilterDTO';
+import { RewardLimit } from '../../../../../model/Initiative';
 import {
   checkThresholdChecked,
   checkMccFilterChecked,
@@ -11,6 +13,7 @@ import {
   handleShopRulesToSubmit,
   mapDataToSend,
 } from '../helpers';
+
 const mockedMapResponse = (code: string | undefined) => {
   return [
     {
@@ -47,17 +50,35 @@ describe('testing helper of step four', () => {
     expect(checkThresholdChecked(threshhold)).toBeTruthy();
   });
   test('checkMccFilterChecked', () => {
+    const MccFilter: MccFilterDTO = { allowedList: true, values: ['string', 'string2'] };
     expect(checkMccFilterChecked(undefined)).toBeFalsy();
+    expect(checkMccFilterChecked(MccFilter)).toEqual(true);
   });
   test('checkTrxCountChecked', () => {
     expect(checkTrxCountChecked(undefined)).toBeFalsy();
   });
+
   test('checkRewardLimitsChecked', () => {
-    expect(checkRewardLimitsChecked(undefined)).toBeFalsy();
+    const rewardLimit: Array<RewardLimit> = [{ frequency: 'string', rewardLimit: 2 }];
+    const rewardLimit2: Array<RewardLimit> = [];
+    expect(checkRewardLimitsChecked(undefined)).toEqual(false);
+    expect(checkRewardLimitsChecked(rewardLimit)).toEqual(true);
+    expect(checkRewardLimitsChecked(rewardLimit2)).toEqual(false);
   });
+
   test('checkDaysOfWeekIntervalsChecked', () => {
-    expect(checkDaysOfWeekIntervalsChecked(undefined)).toBeFalsy();
+    expect(checkDaysOfWeekIntervalsChecked(undefined)).toEqual(false);
+    expect(
+      checkDaysOfWeekIntervalsChecked([
+        {
+          daysOfWeek: 'string',
+          startTime: '',
+          endTime: '',
+        },
+      ])
+    ).toEqual(false);
   });
+
   test('mapResponse step four', () => {
     switchOptions.forEach((item) => {
       expect(mapResponse(mockedMapResponse(item))).toBeDefined();
@@ -79,18 +100,43 @@ describe('testing helper of step four', () => {
     });
     expect(renderShopRuleIcon('stringa per default', 2, 'inherit')).toBeNull();
   });
+
+  test('handleShopRulesToSubmit', () => {
+    expect(
+      handleShopRulesToSubmit(
+        [
+          {
+            code: 'code',
+            dispatched: false,
+          },
+        ],
+        'code'
+      )
+    ).toEqual([
+      {
+        code: 'code',
+        dispatched: true,
+      },
+    ]);
+  });
+
   test('handleShopRulesToSubmit', () => {
     expect(
       handleShopRulesToSubmit(
         [
           {
             code: 'string',
-            dispatched: true,
+            dispatched: false,
           },
         ],
         'code'
       )
-    ).not.toBeNull();
+    ).toEqual([
+      {
+        code: 'string',
+        dispatched: false,
+      },
+    ]);
   });
   test('setError', () => {
     expect(setError(false, '')).toBeFalsy();

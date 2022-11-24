@@ -33,6 +33,11 @@ test('test decode with error', () => {
     decode(value, RewardGroupDTO);
     fail('Expected an error');
   } catch (error) {
-    // do nothing
+    //  do nothing
   }
+});
+
+test('decode with empty object', () => {
+  // @ts-expect-error
+  expect(decode(undefined, RewardValueDTO)).toBeUndefined();;
 });

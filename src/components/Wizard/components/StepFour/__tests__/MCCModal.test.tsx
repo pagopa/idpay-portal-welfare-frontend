@@ -15,40 +15,49 @@ jest.mock('react-i18next', () => ({
 
 describe('<MCCModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
+  const handleCloseModalMcc = jest.fn();
+  const setFieldValue = jest.fn();
+  const handleMccCodeCheckedUpdate = jest.fn();
 
   test('should render correctly the MCCModal component', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
           <MCCModal
-            openModalMcc={false}
-            handleCloseModalMcc={undefined}
-            mccCodesList={[]}
+            openModalMcc={true}
+            handleCloseModalMcc={handleCloseModalMcc}
+            mccCodesList={[{ code: 'code', description: 'description', checked: true }]}
             setMccCodesList={function (_value: SetStateAction<Array<MccCodesModel>>): void {
               //
             }}
-            setFieldValue={undefined}
-            handleMccCodeCheckedUpdate={undefined}
+            setFieldValue={setFieldValue}
+            handleMccCodeCheckedUpdate={handleMccCodeCheckedUpdate}
           />
         </Provider>
       );
     });
   });
 
-  //   it('form fields not null', async () => {
-  //     await act(async () => {
-  //       const { getByTestId, container } = render(
-  //         <Provider store={store}>
-  //           <ShopRulesModal
-  //             openModal={false}
-  //             handleCloseModal={function (_event: React.MouseEvent<Element>): void {
-  //               //
-  //             }}
-  //             availableShopRules={[]}
-  //             handleShopListItemAdded={undefined}
-  //           />
-  //         </Provider>
-  //       );
-  //     });
-  //   });
+  test('should render correctly the MCCModal component', async () => {
+    await act(async () => {
+      const { debug, container } = render(
+        <Provider store={store}>
+          <MCCModal
+            openModalMcc={false}
+            handleCloseModalMcc={handleCloseModalMcc}
+            mccCodesList={[
+              { code: 'code', description: 'description', checked: false },
+              { code: 'code2', description: 'description2', checked: false },
+            ]}
+            setMccCodesList={function (_value: SetStateAction<Array<MccCodesModel>>): void {
+              //
+            }}
+            setFieldValue={setFieldValue}
+            handleMccCodeCheckedUpdate={handleMccCodeCheckedUpdate}
+          />
+        </Provider>
+      );
+    });
+  });
+
 });

@@ -28,11 +28,12 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       render(
         <Provider store={store}>
           <TimeLimitItem
+            key={0}
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={''}
-            shopRulesToSubmit={[]}
+            action={'SUBMIT'}
+            shopRulesToSubmit={[{ code: undefined, dispatched: false }]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
@@ -45,6 +46,38 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
           />
         </Provider>
       );
+    });
+  });
+
+  it('test on handleSubmit', async () => {
+    await act(async () => {
+      const handleShopListItemRemoved = jest.fn();
+      render(
+        <Provider store={store}>
+          <TimeLimitItem
+            key={1}
+            title={'tittle'}
+            code={'code'}
+            handleShopListItemRemoved={handleShopListItemRemoved('code')}
+            action={'DRAFT'}
+            shopRulesToSubmit={[
+              { code: 'code', dispatched: true },
+              { code: 'code', dispatched: true },
+            ]}
+            setShopRulesToSubmit={function (
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+            ): void {
+              //
+            }}
+            data={[{ frequency: 'MONTHLY', rewardLimit: 2 }]}
+            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
+              //
+            }}
+          />
+        </Provider>
+      );
+      // handleSubmit();
+      // expect(handleSubmit).toHaveBeenCalled();
     });
   });
 
@@ -78,57 +111,4 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
     });
   });
-
-  it('test on handleSubmit', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
-        <Provider store={store}>
-          <TimeLimitItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
-            action={''}
-            shopRulesToSubmit={[]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={undefined}
-            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
-    });
-  });
-
-  // it('form fields not null', async () => {
-  //   await act(async () => {
-  //     const { getByTestId, container } = render(
-  //       <Provider store={store}>
-  //         <TimeLimitItem
-  //         title={''}
-  //         code={''}
-  //         handleShopListItemRemoved={undefined}
-  //         action={''}
-  //         shopRulesToSubmit={[]}
-  //         setShopRulesToSubmit={function (
-  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //         ): void {
-  //           //
-  //         }}
-  //         data={undefined}
-  //         setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
-  //           //
-  //         }}
-  //       />
-  //       </Provider>
-  //     );
-  //   });
-  // });
 });
