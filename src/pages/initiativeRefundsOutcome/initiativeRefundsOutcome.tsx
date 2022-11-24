@@ -314,6 +314,19 @@ const InitiativeRefundsOutcome = () => {
     }
   }, [fileAccepted]);
 
+  const downloadURI = (uri: string) => {
+    const link = document.createElement('a');
+    // eslint-disable-next-line functional/immutable-data
+    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.href = uri;
+    // eslint-disable-next-line functional/immutable-data
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleDownloadFile = (data: {
     initiativeId: string | undefined;
     filePath: string | undefined;
@@ -321,7 +334,12 @@ const InitiativeRefundsOutcome = () => {
     if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
       getDispFileErrors(data.initiativeId, data.filePath)
         .then((res) => {
-          console.log(res);
+          // eslint-disable-next-line no-prototype-builtins
+          if (res.hasOwnProperty('data') && typeof res.data === 'string') {
+            const blob = new Blob([res.data], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            downloadURI(url);
+          }
         })
         .catch((error) => {
           addError({

@@ -19,6 +19,7 @@ import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
 import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../api/generated/initiative/LogoDTO';
+import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { mockedAdmissionCriteria } from './__mocks__/admissionCriteriaService';
 import { mockedInitiativeDetail, mockedInitiativeSummary } from './__mocks__/initiativeService';
 
@@ -213,5 +214,5 @@ export const getRewardNotificationImportsPaged = (
 export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
   InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
 
-export const getDispFileErrors = (id: string, name: string): Promise<void> =>
+export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
   InitiativeApi.getDispFileErrors(id, name).then((res) => res);

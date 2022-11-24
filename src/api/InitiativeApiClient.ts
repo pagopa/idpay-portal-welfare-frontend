@@ -21,6 +21,7 @@ import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
 import { SasToken } from './generated/initiative/SasToken';
 import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from './generated/initiative/LogoDTO';
+import { CsvDTO } from './generated/initiative/CsvDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -272,7 +273,7 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getDispFileErrors: async (id: string, name: string): Promise<void> => {
+  getDispFileErrors: async (id: string, name: string): Promise<CsvDTO> => {
     const result = await apiClient.getDispFileErrors({ initiativeId: id, filename: name });
     return extractResponse(result, 200, onRedirectToLogin);
   },
