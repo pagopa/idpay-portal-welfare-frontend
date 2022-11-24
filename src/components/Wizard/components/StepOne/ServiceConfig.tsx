@@ -30,17 +30,20 @@ import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
   updateInitiativeServiceInfo,
+  uploadAndUpdateLogo,
 } from '../../../../services/intitativeService';
 import {
   initiativeIdSelector,
   additionalInfoSelector,
   setInitiativeId,
   setAdditionalInfo,
+  setInitiativeLogo,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
+import UploadServiceIcon from './UploadServiceIcon';
 
 interface Props {
   action: string;
@@ -64,7 +67,11 @@ const ServiceConfig = ({
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
   const setLoading = useLoading('SAVE_INITIATIVE_SERVICE');
-
+  const [uploadFile, setUploadFile] = useState<File>();
+  const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
+  const [fileName, setFileName] = useState('');
+  const [fileUploadDate, setUploadDate] = useState('');
+  const [fileUplodedKo, setFileUploadedKo] = useState(false);
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
   const handleOpenInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(true);
@@ -79,6 +86,14 @@ const ServiceConfig = ({
     }
     setAction('');
   }, [action]);
+
+  useEffect(() => {
+    if (additionalInfo.logoFileName.length > 0 && additionalInfo.logoUploadDate.length > 0) {
+      setFileName(additionalInfo.logoFileName);
+      setUploadDate(additionalInfo.logoUploadDate);
+      setFileUploadedOk(true);
+    }
+  }, [JSON.stringify(additionalInfo)]);
 
   const validationSchema = Yup.object().shape({
     initiativeOnIO: Yup.boolean(),
@@ -158,6 +173,48 @@ const ServiceConfig = ({
     }
   }, [formik]);
 
+  const waitUpload = () => setCurrentStep(currentStep + 1);
+
+  const sendUploadFile = (
+    id: string | undefined,
+    file: File | undefined,
+    currentStep: number,
+    setCurrentStep: Dispatch<SetStateAction<number>>
+  ) => {
+    if (typeof id !== 'undefined' && typeof file !== 'undefined') {
+      uploadAndUpdateLogo(id, file)
+        .then((res) => {
+          setFileUploadedOk(true);
+          setFileUploadedKo(false);
+          const fileUploadDate =
+            res.logoUploadDate && typeof res.logoUploadDate === 'string'
+              ? new Date(res.logoUploadDate).toLocaleString('fr-BE')
+              : new Date().toLocaleString('fr-BE');
+          const data = { ...res, logoUploadDate: fileUploadDate };
+          dispatch(setInitiativeLogo(data));
+          return 1;
+        })
+        .then(() => setTimeout(waitUpload, 1000))
+        .catch((error) => {
+          setFileUploadedOk(false);
+          addError({
+            id: 'UPLOAD_AND_UPDATE_LOGO',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred uploading logo',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+          setFileUploadedKo(true);
+        });
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
   const sendValues = (
     values: any,
     currentStep: number,
@@ -170,7 +227,7 @@ const ServiceConfig = ({
       createInitiativeServiceInfo(data)
         .then((res) => {
           dispatch(setInitiativeId(res?.initiativeId));
-          setCurrentStep(currentStep + 1);
+          sendUploadFile(res?.initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -190,7 +247,7 @@ const ServiceConfig = ({
       setLoading(true);
       updateInitiativeServiceInfo(initiativeId, data)
         .then((_res) => {
-          setCurrentStep(currentStep + 1);
+          sendUploadFile(initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -401,6 +458,16 @@ const ServiceConfig = ({
               InputLabelProps={{ required: false }}
               size="small"
             />
+            {formik.values.initiativeOnIO ? (
+              <UploadServiceIcon
+                setUploadFile={setUploadFile}
+                setFileUploadedOk={setFileUploadedOk}
+                fileUplodedOk={fileUplodedOk}
+                fileUplodedKo={fileUplodedKo}
+                fileName={fileName}
+                fileUploadDate={fileUploadDate}
+              />
+            ) : null}
           </FormControl>
         </Box>
       </Box>

@@ -20,6 +20,7 @@ import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDT
 import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
 import { SasToken } from './generated/initiative/SasToken';
 import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from './generated/initiative/LogoDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -248,15 +249,19 @@ export const InitiativeApi = {
     return extractResponse(result, 201, onRedirectToLogin);
   },
 
+  uploadAndUpdateLogo: async (id: string, logo: File): Promise<LogoDTO> => {
+    const result = await apiClient.uploadAndUpdateLogo({
+      initiativeId: id,
+      logo,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
   getRewardNotificationImportsPaged: async (
     id: string,
     page: number
   ): Promise<PageRewardImportsDTO> => {
-    const result = await apiClient.getRewardNotificationImportsPaged({
-      initiativeId: id,
-      page,
-      size: 10,
-    });
+    const result = await apiClient.getRewardNotificationImportsPaged({ initiativeId: id, page });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

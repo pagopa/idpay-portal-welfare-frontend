@@ -16,6 +16,7 @@ import {
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
+import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -29,14 +30,19 @@ const initialState: Initiative = {
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',
     assistanceChannels: [{ type: 'web', contact: '' }],
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    beneficiaryKnown: 'false',
-    rankingEnabled: 'true',
+    // beneficiaryKnown: 'false',
+    // rankingEnabled: 'true',
+    beneficiaryKnown: undefined,
+    rankingEnabled: undefined,
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -134,7 +140,11 @@ export const initiativeSlice = createSlice({
     }),
     setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => ({
       ...state,
-      additionalInfo: { ...action.payload },
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
+    }),
+    setInitiativeLogo: (state, action: PayloadAction<LogoDTO>) => ({
+      ...state,
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
     }),
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
@@ -268,6 +278,7 @@ export const {
   setInitiativeUpdateDate,
   setGeneralInfo,
   setAdditionalInfo,
+  setInitiativeLogo,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,
@@ -286,8 +297,10 @@ export const initiativeSelector = (state: RootState): Initiative => state.initia
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
 export const additionalInfoSelector = (state: RootState): AdditionalInfo =>
   state.initiative.additionalInfo;
-export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
+export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
+export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
+  state.initiative.generalInfo.rankingEnabled;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {

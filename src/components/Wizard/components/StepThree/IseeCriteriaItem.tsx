@@ -4,6 +4,7 @@ import {
   FormHelperText,
   IconButton,
   InputAdornment,
+  Menu,
   MenuItem,
   Select,
   TextField,
@@ -11,12 +12,14 @@ import {
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import { grey } from '@mui/material/colors';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import _ from 'lodash';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
@@ -36,6 +39,7 @@ type Props = {
   setCriteriaToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
+  rankingEnabled: string | undefined;
 };
 
 const IseeCriteriaItem = ({
@@ -45,11 +49,24 @@ const IseeCriteriaItem = ({
   handleFieldValueChanged,
   criteriaToSubmit,
   setCriteriaToSubmit,
+  rankingEnabled,
 }: Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState(
     formData.operator === FilterOperator.BTW_OPEN ? 'number' : 'hidden'
   );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const [rankingOrderLabel, setRankingOrderLabel] = useState<string | undefined>();
+
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (value: string, fieldKey: string, fieldCode: string) => {
+    handleFieldValueChanged(value, fieldKey, fieldCode);
+    setAnchorEl(null);
+  };
 
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
@@ -71,11 +88,27 @@ const IseeCriteriaItem = ({
     }),
   });
 
+  const setOrderDirection = (
+    rankingEnabled: string | undefined,
+    initialOrderDirection: string | undefined
+  ) => {
+    if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
+      if (typeof initialOrderDirection === 'string') {
+        return initialOrderDirection;
+      } else {
+        return 'ASC';
+      }
+    } else {
+      return undefined;
+    }
+  };
+
   const iseeFormik = useFormik({
     initialValues: {
       iseeRelationSelect: formData.operator,
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
+      orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -85,6 +118,16 @@ const IseeCriteriaItem = ({
       setCriteriaToSubmit([...handleCriteriaToSubmit(criteriaToSubmit, formData.code)]);
     },
   });
+
+  useEffect(() => {
+    if (rankingEnabled === 'true' && typeof iseeFormik.values.orderDirection === 'string') {
+      if (iseeFormik.values.orderDirection === 'ASC') {
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC'));
+      } else if (iseeFormik.values.orderDirection === 'DESC') {
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC'));
+      }
+    }
+  }, [iseeFormik.values.orderDirection, rankingEnabled]);
 
   return (
     <Box
@@ -101,9 +144,57 @@ const IseeCriteriaItem = ({
       }}
       data-testid="isee-criteria-test"
     >
-      <Box sx={{ gridColumn: 'span 11' }}>
+      <Box
+        sx={{
+          gridColumn:
+            typeof rankingEnabled === 'string' && rankingEnabled === 'true' ? 'span 8' : 'span 11',
+        }}
+      >
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>
+      {typeof rankingEnabled === 'string' && rankingEnabled === 'true' && (
+        <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
+          <ButtonNaked
+            id="ranking-button"
+            aria-controls={open ? 'ranking-menu' : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? 'true' : undefined}
+            onClick={handleClick}
+            startIcon={<KeyboardArrowDownIcon />}
+            sx={{ color: 'primary.main' }}
+            size="small"
+            component="button"
+            weight="default"
+          >
+            {rankingOrderLabel}
+          </ButtonNaked>
+          <Menu
+            id="ranking-menu"
+            anchorEl={anchorEl}
+            open={open}
+            MenuListProps={{
+              'aria-labelledby': 'ranking-button',
+            }}
+          >
+            <MenuItem
+              onClick={async () => {
+                handleClose('ASC', 'orderDirection', formData.code);
+                await iseeFormik.setFieldValue('orderDirection', 'ASC');
+              }}
+            >
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC')}
+            </MenuItem>
+            <MenuItem
+              onClick={async () => {
+                handleClose('DESC', 'orderDirection', formData.code);
+                await iseeFormik.setFieldValue('orderDirection', 'DESC');
+              }}
+            >
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC')}
+            </MenuItem>
+          </Menu>
+        </Box>
+      )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
         <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)}>
           <DeleteOutlineIcon
@@ -141,9 +232,11 @@ const IseeCriteriaItem = ({
             )}
             inputProps={{ 'data-testid': 'isee-realtion-select' }}
           >
-            <MenuItem value={FilterOperator.EQ} data-testid="exact">
-              {t('components.wizard.stepThree.chooseCriteria.form.exact')}
-            </MenuItem>
+            {typeof rankingEnabled === 'string' && rankingEnabled === 'false' && (
+              <MenuItem value={FilterOperator.EQ} data-testid="exact">
+                {t('components.wizard.stepThree.chooseCriteria.form.exact')}
+              </MenuItem>
+            )}
             <MenuItem value={FilterOperator.GT} data-testid="majorTo">
               {t('components.wizard.stepThree.chooseCriteria.form.majorTo')}
             </MenuItem>

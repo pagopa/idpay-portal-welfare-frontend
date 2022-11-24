@@ -242,8 +242,6 @@ const InitiativeRefundsOutcome = () => {
           setTotalElements(res.totalElements);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
-          console.log(res.content);
-
           const rowsData = res.content.map((r) => ({
             status: r.status,
             filePath: r.filePath,

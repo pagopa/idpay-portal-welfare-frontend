@@ -1,3 +1,4 @@
+import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
@@ -23,6 +24,9 @@ export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
   serviceName: string | undefined;
   serviceArea: ServiceScopeEnum | string | undefined;
+  logoFileName: string;
+  logoURL: string;
+  logoUploadDate: string;
   serviceDescription: string | undefined;
   privacyPolicyUrl: string | undefined;
   termsAndConditions: string | undefined;
@@ -58,6 +62,7 @@ export interface AutomatedCriteriaItem {
   operator?: FilterOperator | string | undefined;
   value?: string | undefined;
   value2?: string | undefined;
+  orderDirection?: OrderDirectionEnum | undefined;
 }
 
 export interface MCCFilter {
