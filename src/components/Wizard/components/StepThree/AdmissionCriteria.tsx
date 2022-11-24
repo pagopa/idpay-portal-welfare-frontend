@@ -62,7 +62,7 @@ const AdmissionCriteria = ({
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [setLoading]);
 
   useEffect(() => {
     setLoading(true);

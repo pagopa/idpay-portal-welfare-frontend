@@ -6,6 +6,7 @@ import {
   Button,
   Chip,
   FormControl,
+  IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -21,10 +22,10 @@ import {
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { matchPath } from 'react-router';
+import { matchPath, useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -41,9 +42,10 @@ import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import { getExportsPaged } from '../../services/intitativeService';
+import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
+import { SasToken } from '../../api/generated/initiative/SasToken';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -64,11 +66,17 @@ const InitiativeRefunds = () => {
   >();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
 
+  interface MatchParams {
+    id: string;
+  }
+
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_USERS],
+    path: [ROUTES.INITIATIVE_REFUNDS],
     exact: true,
     strict: false,
   });
+
+  const { id } = match?.params as MatchParams;
 
   const getRefundStatus = (status: {
     status: string | undefined;
@@ -106,6 +114,45 @@ const InitiativeRefunds = () => {
     }
   };
 
+  const downloadURI = (uri: string) => {
+    const link = document.createElement('a');
+    // eslint-disable-next-line functional/immutable-data
+    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.href = uri;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadFile = (data: {
+    initiativeId: string | undefined;
+    filePath: string | undefined;
+  }) => {
+    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
+      getRewardFileDownload(data.initiativeId, data.filePath)
+        .then((res: SasToken) => {
+          if (typeof res.sas === 'string') {
+            downloadURI(res.sas);
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_FILE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting export file',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  };
+
   const getTableData = (
     initiativeId: string,
     page: number,
@@ -133,7 +180,7 @@ const InitiativeRefunds = () => {
             successPercentage: `${r.percentageResultedOk}%`,
             percentageResulted: r.percentageResulted,
             status: { status: r.status, percentageResulted: r.percentageResulted },
-            filePath: { initiativeId: r.initiativeId, filePath: r.filePath },
+            downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
           }));
           setRows(rowsData);
         } else {
@@ -169,7 +216,7 @@ const InitiativeRefunds = () => {
         filterByStatus
       );
     }
-  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+  }, [id, page]);
 
   const validationSchema = Yup.object().shape({
     searchFrom: Yup.date()
@@ -453,7 +500,11 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
-                      <TableCell align="right"></TableCell>
+                      <TableCell align="right">
+                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                          <FileDownloadIcon color="primary" />
+                        </IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

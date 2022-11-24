@@ -81,7 +81,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [setLoading]);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {

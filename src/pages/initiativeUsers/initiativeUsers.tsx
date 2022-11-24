@@ -70,72 +70,6 @@ const InitiativeUsers = () => {
 
   const theme = createTheme(itIT);
 
-  // const columns = [
-  //   { field: 'id', hide: true },
-  //   { field: 'beneficiary', headerName: 'Beneficiario', width: 700 },
-  //   { field: 'updateStatusDate', headerName: 'Data e ora', width: 300 },
-  //   { field: 'beneficiaryState', headerName: 'Stato', width: 150 },
-  // ];
-
-  //
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-prototype-builtins
-  //   if (match !== null && match.params.hasOwnProperty('id')) {
-  //     const { id } = match.params as MatchParams;
-  //     if (
-  //       initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
-  //       initiativeSel.initiativeId === id &&
-  //       initiativeSel.status !== 'DRAFT'
-  //     ) {
-  //       getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
-  //         .then((res) => {
-  //           console.log(res);
-  //         })
-  //         .catch((error) => {
-  //           addError({
-  //             id: 'GET_UPLOADED_FILE_DATA_ERROR',
-  //             blocking: false,
-  //             error,
-  //             techDescription: 'An error occurred getting groups file info',
-  //             displayableTitle: t('errors.title'),
-  //             displayableDescription: t('errors.getFileDataDescription'),
-  //             toNotify: true,
-  //             component: 'Toast',
-  //             showCloseIcon: true,
-  //           });
-  //         });
-  //     }
-  //   }
-  // }, [
-  //   JSON.stringify(match),
-  //   initiativeSel.initiativeId,
-  //   JSON.stringify(initiativeSel.generalInfo),
-  // ]);
-
-  // const setAcceptedStatusList = (data: any) => {
-  //   const options = [
-  //     ...new Set(data.map((item: { beneficiaryState: string }) => item.beneficiaryState)),
-  //   ];
-
-  //   const optionsList = options.map((o) => {
-  //     switch (o) {
-  //       case 'ACCEPTED_TC':
-  //         return { value: o, label: t('pages.initiativeUsers.status.acceptedTc') };
-  //       case 'INACTIVE':
-  //         return { value: o, label: t('pages.initiativeUsers.status.inactive') };
-  //       case 'ON_EVALUATION':
-  //         return { value: o, label: t('pages.initiativeUsers.status.onEvaluation') };
-  //       case 'INVITED':
-  //         return { value: o, label: t('pages.initiativeUsers.status.invited') };
-  //       case 'ONBOARDING_OK':
-  //         return { value: o, label: t('pages.initiativeUsers.status.onboardingOk') };
-  //       default:
-  //         return { value: '', label: '' };
-  //     }
-  //   });
-  //   setAvailableStatusOptions([...optionsList]);
-  // };
-
   const getTableData = (
     initiativeId: string,
     page: number,
@@ -171,9 +105,6 @@ const InitiativeUsers = () => {
         if (typeof res.totalElements === 'number') {
           setTotalElements(res.totalElements);
         }
-        // if (Array.isArray(res.content)) {
-        //   setAcceptedStatusList(res.content);
-        // }
       })
       .catch((error) => {
         addError({
@@ -197,6 +128,12 @@ const InitiativeUsers = () => {
     strict: false,
   });
 
+  interface MatchParams {
+    id: string;
+  }
+
+  const { id } = match?.params as MatchParams;
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof initiativeSel.initiativeId === 'string') {
@@ -209,7 +146,7 @@ const InitiativeUsers = () => {
         filterByStatus
       );
     }
-  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+  }, [id, page]);
 
   const renderUserStatus = (status: string | undefined) => {
     switch (status) {

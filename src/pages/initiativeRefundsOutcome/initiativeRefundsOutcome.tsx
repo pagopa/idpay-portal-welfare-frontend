@@ -13,14 +13,14 @@ import {
   TableCell,
   TablePagination,
   Alert,
-  IconButton,
+  // IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+// import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
@@ -41,12 +41,10 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import {
-  getRewardFileDownload,
   getRewardNotificationImportsPaged,
   putDispFileUpload,
 } from '../../services/intitativeService';
 import { InitiativeRefundImports } from '../../services/__mocks__/initiativeService';
-import { SasToken } from '../../api/generated/initiative/SasToken';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -65,11 +63,17 @@ const InitiativeRefundsOutcome = () => {
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_INITIATIVE_REWARD_IMPORTS');
 
+  interface MatchParams {
+    id: string;
+  }
+
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_REFUNDS_OUTCOME],
     exact: true,
     strict: false,
   });
+
+  const { id } = match?.params as MatchParams;
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
@@ -238,14 +242,16 @@ const InitiativeRefundsOutcome = () => {
           setTotalElements(res.totalElements);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
+          console.log(res.content);
+
           const rowsData = res.content.map((r) => ({
             status: r.status,
             filePath: r.filePath,
             feedbackDate: r.feedbackDate?.toLocaleDateString('fr-BE'),
-            rewardsResulted: t('pages.initiativeRefundsOutcome.rewardsResulted', {
+            rewardsResulted: t('pages.initiativeRefundsOutcome.uploadPaper.rewardsResulted', {
               x: r.rewardsResulted,
             }),
-            rewardsAdded: t('pages.initiativeRefundsOutcome.rewardsAdded', {
+            rewardsAdded: t('pages.initiativeRefundsOutcome.uploadPaper.rewardsAdded', {
               x: r.rewardsResulted - r.rewardsResultedError,
             }),
             downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
@@ -286,44 +292,6 @@ const InitiativeRefundsOutcome = () => {
     }
   };
 
-  const downloadURI = (uri: string) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    link.download = 'download';
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownloadFile = (data: {
-    initiativeId: string | undefined;
-    filePath: string | undefined;
-  }) => {
-    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
-    }
-  };
-
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -336,7 +304,7 @@ const InitiativeRefundsOutcome = () => {
     if (typeof initiativeSel.initiativeId === 'string') {
       getTableData(initiativeSel.initiativeId, page);
     }
-  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+  }, [id, page]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -442,6 +410,25 @@ const InitiativeRefundsOutcome = () => {
           sx={{
             display: 'grid',
             width: '100%',
+            backgroundColor: 'white',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            alignItems: 'center',
+            mt: 5,
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 12', p: 3 }}>
+            <Typography variant="h6">
+              {t('pages.initiativeRefundsOutcome.uploadPaper.upoloadsHistoryTitle')}
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
+      {rows.length > 0 && (
+        <Box
+          sx={{
+            display: 'grid',
+            width: '100%',
             height: '100%',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
@@ -459,9 +446,9 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsResulted}</TableCell>
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                        {/* <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
                           <FileDownloadIcon color="primary" />
-                        </IconButton>
+                        </IconButton> */}
                       </TableCell>
                     </TableRow>
                   ))}

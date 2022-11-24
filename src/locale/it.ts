@@ -403,6 +403,7 @@ export default {
         invalidFileDescription: 'Errore',
         invalidFileTypeDescription: 'Sono ammessi solamente file .zip',
         overMaxUploadDescription: 'La dimensione massima supportata è di 175MB',
+        upoloadsHistoryTitle: 'Storico caricamenti',
         rewardsResulted: '{{x}} esiti trovati',
         rewardsAdded: '{{x}} esiti aggiunti',
       },
