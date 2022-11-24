@@ -48,48 +48,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     });
   });
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      const putRefundRuleDraft = jest.fn();
-      const saveRefundRule = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
-      putRefundRuleDraft();
-      expect(putRefundRuleDraft).toHaveBeenCalled();
-      saveRefundRule();
-      expect(saveRefundRule).toHaveBeenCalled();
-    });
-  });
-
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const putRefundRuleDraft = jest.fn();
-      const saveRefundRule = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-      expect(putRefundRuleDraft).toBeDefined();
-      expect(saveRefundRule).toBeDefined();
-    });
-  });
-
   it('test on handleSubmit', async () => {
     await act(async () => {
       const handleSubmit = jest.fn();
@@ -123,7 +81,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
       const { getByTestId, container } = render(
         <Provider store={store}>
           <RefundRules
-            action={''}
+            action={WIZARD_ACTIONS.DRAFT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
@@ -174,7 +132,7 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     const { getByTestId, container, queryByRole } = render(
       <Provider store={store}>
         <RefundRules
-          action={''}
+          action={WIZARD_ACTIONS.BACK}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
