@@ -1,9 +1,11 @@
 import { Box, Button, Paper, Typography, Link } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
@@ -57,6 +59,7 @@ const AdmissionCriteria = ({
   const [criteriaToSubmit, setCriteriaToSubmit] = useState(
     Array<{ code: string | undefined; dispatched: boolean }>
   );
+  const [showMandatoryIseeToast, setShowMandatoryIseeToast] = useState<boolean>(false);
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
@@ -282,27 +285,34 @@ const AdmissionCriteria = ({
     }
     if (toSubmit && typeof initiativeId === 'string') {
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
-      setLoading(true);
-      putBeneficiaryRuleService(initiativeId, body)
-        .then((_response) => {
-          dispatch(saveAutomatedCriteria(body.automatedCriteria));
-          dispatch(saveManualCriteria(manualCriteriaToRender));
-          setCurrentStep(currentStep + 1);
-        })
-        .catch((error) => {
-          addError({
-            id: 'EDIT_BENEFICIARY_RULE_SAVE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred editing initiative beneficiary rule',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.invalidDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        })
-        .finally(() => setLoading(false));
+      const automatedCriteriaCodes = body.automatedCriteria.map((c) => c.code);
+      const iseeCriteriaPopulated = automatedCriteriaCodes.includes('ISEE');
+
+      if ((rankingEnabled === 'true' && iseeCriteriaPopulated) || rankingEnabled === 'false') {
+        setLoading(true);
+        putBeneficiaryRuleService(initiativeId, body)
+          .then((_response) => {
+            dispatch(saveAutomatedCriteria(body.automatedCriteria));
+            dispatch(saveManualCriteria(manualCriteriaToRender));
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_BENEFICIARY_RULE_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative beneficiary rule',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setShowMandatoryIseeToast(true);
+      }
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
@@ -442,6 +452,24 @@ const AdmissionCriteria = ({
           }
           return null;
         })}
+        {showMandatoryIseeToast && (
+          <Toast
+            open={showMandatoryIseeToast}
+            title={t(
+              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorTitle'
+            )}
+            message={t(
+              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorDescription'
+            )}
+            onCloseToast={() => {
+              setShowMandatoryIseeToast(false);
+            }}
+            logo={InfoOutlinedIcon}
+            leftBorderColor="#FE6666"
+            toastColorIcon="#FE6666"
+            showToastCloseIcon={true}
+          />
+        )}
       </Box>
       <Box>
         {manualCriteriaToRender.length > 0 && (

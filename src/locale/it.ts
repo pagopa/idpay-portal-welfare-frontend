@@ -487,6 +487,8 @@ export default {
             'Aggiungi uno o più criteri dal catalogo, oppure definisci dei criteri che i destinatari dell’iniziativa dovranno autodichiarare.',
           browse: 'Sfoglia criteri',
           addManually: 'Aggiungi manualmente',
+          iseeNotPopulatedOnRankingErrorTitle: 'È presente una graduatoria',
+          iseeNotPopulatedOnRankingErrorDescription: 'Il criterio ISEE è obbligatorio',
           modal: {
             subtitle:
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
