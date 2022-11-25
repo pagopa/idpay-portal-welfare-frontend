@@ -70,7 +70,7 @@ const ServiceConfig = ({
   const [uploadFile, setUploadFile] = useState<File>();
   const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
   const [fileName, setFileName] = useState('');
-  const [fileUploadDate, setUploadDate] = useState('');
+  const [uploadDate, setUploadDate] = useState('');
   const [fileUplodedKo, setFileUploadedKo] = useState(false);
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
@@ -190,6 +190,7 @@ const ServiceConfig = ({
             res.logoUploadDate && typeof res.logoUploadDate === 'string'
               ? new Date(res.logoUploadDate).toLocaleString('fr-BE')
               : new Date().toLocaleString('fr-BE');
+          setUploadDate(fileUploadDate);
           const data = { ...res, logoUploadDate: fileUploadDate };
           dispatch(setInitiativeLogo(data));
         })
@@ -464,8 +465,9 @@ const ServiceConfig = ({
                 fileUplodedOk={fileUplodedOk}
                 fileUplodedKo={fileUplodedKo}
                 fileName={fileName}
-                fileUploadDate={fileUploadDate}
+                fileUploadDate={uploadDate}
                 setFileName={setFileName}
+                setUploadDate={setUploadDate}
               />
             ) : null}
           </FormControl>

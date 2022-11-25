@@ -5,10 +5,10 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { Chip, FormHelperText, LinearProgress, Typography } from '@mui/material';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import ImageIcon from '@mui/icons-material/Image';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
-// import { ButtonNaked } from '@pagopa/mui-italia';
+import { ButtonNaked } from '@pagopa/mui-italia';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
   setFileUploadedOk: Dispatch<SetStateAction<boolean>>;
@@ -17,6 +17,7 @@ interface Props {
   fileName: string | undefined;
   fileUploadDate: string | undefined;
   setFileName: Dispatch<SetStateAction<string>>;
+  setUploadDate: Dispatch<SetStateAction<string>>;
 }
 
 const UploadServiceIcon = ({
@@ -25,10 +26,10 @@ const UploadServiceIcon = ({
   fileUplodedOk,
   fileUplodedKo,
   fileName,
+  fileUploadDate,
   setFileName,
-}: // fileName,
-// fileUploadDate,
-Props) => {
+  setUploadDate,
+}: Props) => {
   const { t } = useTranslation();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileIsAcceppted, setFileIsAcceppted] = useState(false);
@@ -60,6 +61,12 @@ Props) => {
     onDropAccepted: (files) => {
       setUploadFile(files[0]);
       setFileName(files[0].name);
+      const dateField =
+        Object.prototype.toString.call(files[0].lastModified) === '[object Date]'
+          ? files[0].lastModified
+          : new Date();
+      const fileDate = dateField && dateField.toLocaleString('fr-BE');
+      setUploadDate(fileDate || '');
       setFileIsLoading(false);
       setFileIsRejected(false);
       setFileIsAcceppted(true);
@@ -132,24 +139,15 @@ Props) => {
     <Box
       sx={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
+        gridTemplateColumns: 'repeat(12, 1fr)',
         alignItems: 'center',
       }}
     >
       <Box
         sx={{
-          gridColumn: 'span 2',
-          pt: 1,
-          pl: 3,
-        }}
-      >
-        <RemoveCircleOutlineIcon onClick={resetStatus} color={'error'} sx={{ cursor: 'pointer' }} />
-      </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 22',
+          gridColumn: 'span 12',
           display: 'grid',
-          gridTemplateColumns: 'repeat(22, 1fr)',
+          gridTemplateColumns: 'repeat(12, 1fr)',
           px: 2,
           py: 1,
           borderRadius: '10px',
@@ -157,19 +155,22 @@ Props) => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 3', mt: 1 }}>
-          <ImageIcon />
+        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
+          <CheckCircleIcon color="success" />
         </Box>
-        <Box sx={{ gridColumn: 'span 10' }}>
+        <Box sx={{ gridColumn: 'span 3' }}>
           <Typography variant="body2" fontWeight={600}>
             {fileName}
           </Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 9', justifySelf: 'right', px: 2 }}>
+        <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
+          <Typography variant="body2">{fileUploadDate}</Typography>
+        </Box>
+        <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>
           <Chip label={t('components.wizard.stepOne.uploadIcon.validIcon')} color="success" />
         </Box>
       </Box>
-      {/* <Box sx={{ gridColumn: 'span 12', pt: 1 }}>
+      <Box sx={{ gridColumn: 'span 12', pt: 1 }}>
         <ButtonNaked
           size="small"
           component="button"
@@ -180,7 +181,7 @@ Props) => {
         >
           {t('components.wizard.stepOne.uploadIcon.changeIcon')}
         </ButtonNaked>
-      </Box> */}
+      </Box>
     </Box>
   );
 
