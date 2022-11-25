@@ -1,9 +1,11 @@
 import { Box, Button, Paper, Typography, Link } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
@@ -11,6 +13,7 @@ import {
   initiativeIdSelector,
   saveAutomatedCriteria,
   saveManualCriteria,
+  stepTwoRankingEnabledSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
@@ -56,19 +59,33 @@ const AdmissionCriteria = ({
   const [criteriaToSubmit, setCriteriaToSubmit] = useState(
     Array<{ code: string | undefined; dispatched: boolean }>
   );
+  const [showMandatoryIseeToast, setShowMandatoryIseeToast] = useState<boolean>(false);
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
+  const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     setLoading(true);
     fetchAdmissionCriteria()
       .then((response) => {
-        const responseData = mapResponse(response);
+        // eslint-disable-next-line functional/no-let
+        let responseT = [...response];
+        if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
+          responseT = response.map((r) => {
+            if (r.code !== 'ISEE') {
+              return { ...r };
+            } else {
+              return { ...r, operator: 'GT' };
+            }
+          });
+        }
+        const responseData = mapResponse(responseT);
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
 
@@ -76,7 +93,11 @@ const AdmissionCriteria = ({
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
         if (automatedCriteria.length > 0) {
           const updatedResponseData: Array<AvailableCriteria> =
-            updateInitialAutomatedCriteriaOnSelector(automatedCriteria, responseData);
+            updateInitialAutomatedCriteriaOnSelector(
+              automatedCriteria,
+              responseData,
+              rankingEnabled
+            );
           setAvailableCriteria([...updatedResponseData]);
           setCriteriaToRender([...updatedResponseData]);
           updatedResponseData.forEach((c) => {
@@ -263,32 +284,39 @@ const AdmissionCriteria = ({
       setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
-      setLoading(true);
-      putBeneficiaryRuleService(initiativeId, body)
-        .then((_response) => {
-          dispatch(saveAutomatedCriteria(body.automatedCriteria));
-          dispatch(saveManualCriteria(manualCriteriaToRender));
-          setCurrentStep(currentStep + 1);
-        })
-        .catch((error) => {
-          addError({
-            id: 'EDIT_BENEFICIARY_RULE_SAVE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred editing initiative beneficiary rule',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.invalidDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        })
-        .finally(() => setLoading(false));
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
+      const automatedCriteriaCodes = body.automatedCriteria.map((c) => c.code);
+      const iseeCriteriaPopulated = automatedCriteriaCodes.includes('ISEE');
+
+      if ((rankingEnabled === 'true' && iseeCriteriaPopulated) || rankingEnabled === 'false') {
+        setLoading(true);
+        putBeneficiaryRuleService(initiativeId, body)
+          .then((_response) => {
+            dispatch(saveAutomatedCriteria(body.automatedCriteria));
+            dispatch(saveManualCriteria(manualCriteriaToRender));
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_BENEFICIARY_RULE_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative beneficiary rule',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setShowMandatoryIseeToast(true);
+      }
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender);
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
@@ -418,11 +446,30 @@ const AdmissionCriteria = ({
                 handleFieldValueChanged={handleFieldValueChanged}
                 criteriaToSubmit={criteriaToSubmit}
                 setCriteriaToSubmit={setCriteriaToSubmit}
+                rankingEnabled={rankingEnabled}
               />
             );
           }
           return null;
         })}
+        {showMandatoryIseeToast && (
+          <Toast
+            open={showMandatoryIseeToast}
+            title={t(
+              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorTitle'
+            )}
+            message={t(
+              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorDescription'
+            )}
+            onCloseToast={() => {
+              setShowMandatoryIseeToast(false);
+            }}
+            logo={InfoOutlinedIcon}
+            leftBorderColor="#FE6666"
+            toastColorIcon="#FE6666"
+            showToastCloseIcon={true}
+          />
+        )}
       </Box>
       <Box>
         {manualCriteriaToRender.length > 0 && (

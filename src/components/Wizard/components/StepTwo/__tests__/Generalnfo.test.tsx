@@ -243,9 +243,9 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       await act(async () => {
         fireEvent.click(beneficiaryKnown1);
         expect(beneficiaryKnown1.checked).toEqual(false);
-        expect(beneficiaryKnown2.checked).toEqual(true);
+        expect(beneficiaryKnown2.checked).toEqual(false);
         fireEvent.click(beneficiaryKnown2);
-        expect(beneficiaryKnown2.checked).toEqual(true);
+        expect(beneficiaryKnown2.checked).toEqual(false);
         expect(beneficiaryKnown1.checked).toEqual(false);
       });
       expect(fn).not.toBeCalled();

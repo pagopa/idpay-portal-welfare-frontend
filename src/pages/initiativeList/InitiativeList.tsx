@@ -393,6 +393,7 @@ const InitiativeList = () => {
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}
               variant="outlined"
+              size="small"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -406,7 +407,12 @@ const InitiativeList = () => {
             />
           </Box>
           <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-            <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ height: '42px' }}
+              onClick={goToNewInitiative}
+            >
               {t('pages.initiativeList.createNew')}
             </Button>
           </Box>
@@ -427,6 +433,7 @@ const InitiativeList = () => {
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}
               variant="outlined"
+              size="small"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -446,7 +453,7 @@ const InitiativeList = () => {
         sx={{
           width: '100%',
           mb: 2,
-          py: 3,
+          pb: 3,
           backgroundColor: grey.A100,
         }}
       >

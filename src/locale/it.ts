@@ -383,6 +383,31 @@ export default {
         feedbackKo: 'Errore nel caricamento del file',
       },
     },
+    initiativeRefundsOutcome: {
+      title: 'Gestione esiti',
+      uploadPaper: {
+        title: 'Carica un nuovo file',
+        subtitle:
+          'Una volta caricato, il file verrà elaborato così da aggiornare lo stato dei rimborsi.',
+        findOut: 'Scopri di più',
+        dragAreaText: 'Trascina qui il file .zip contenente la lista degli esiti o ',
+        dragAreaLink: 'selezionalo dal tuo computer.',
+        fileUploadHelpText: 'Non sai come preparare il file?',
+        fileUuploadHelpFileLinkLabel: 'Scarica il file .zip di esempio',
+        fileIsLoading: 'Caricamento in corso...',
+        fileIsOnEvaluation:
+          'Stiamo elaborando il file caricato. Riceverai un’email al termine dell’operazione.',
+        validFile: 'File valido',
+        changeFile: 'Sostituisci file',
+        invalidFileTitle: 'Il file caricato non è valido',
+        invalidFileDescription: 'Errore',
+        invalidFileTypeDescription: 'Sono ammessi solamente file .zip',
+        overMaxUploadDescription: 'La dimensione massima supportata è di 175MB',
+        upoloadsHistoryTitle: 'Storico caricamenti',
+        rewardsResulted: '{{x}} esiti trovati',
+        rewardsAdded: '{{x}} esiti aggiunti',
+      },
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
@@ -392,6 +417,7 @@ export default {
     initiativeDetail: 'Dettagli iniziativa',
     initiativeUsers: 'Utenti',
     initiativeRefunds: 'Rimborsi',
+    initiativeRefundsOutcome: 'Gestione esiti',
   },
   components: {
     wizard: {
@@ -425,6 +451,19 @@ export default {
             'Stai per creare un servizio che non include la creazione e l’erogazione sull’app IO, ma soltato su un app terza. Sei sicuro di voler continuare?',
           cancelBtn: 'Annulla',
           continueBtn: 'Continua',
+        },
+        uploadIcon: {
+          dragAreaText: 'Trascina qui il logo del servizio o',
+          dragAreaLink: 'selezionalo dal tuo computer.',
+          helperText:
+            'Opzionale. Inserisci un’immagine in formato PNG, 300x300 pixel, con sfondo bianco o trasparente.',
+          IconIsLoading: 'Caricamento in corso...',
+          validIcon: 'File valido',
+          changeIcon: 'Sostituisci Logo',
+          overMaxUploadLogoDescription: 'La dimensione massima supportata è di 1MB',
+          invalidFileTypeLogoDescription: 'Sono ammessi solamente file png',
+          invalidFileTitle: 'Il file caricato non è valido',
+          invalidFileDescription: 'Errore',
         },
       },
       stepTwo: {
@@ -474,6 +513,8 @@ export default {
             'Aggiungi uno o più criteri dal catalogo, oppure definisci dei criteri che i destinatari dell’iniziativa dovranno autodichiarare.',
           browse: 'Sfoglia criteri',
           addManually: 'Aggiungi manualmente',
+          iseeNotPopulatedOnRankingErrorTitle: 'È presente una graduatoria',
+          iseeNotPopulatedOnRankingErrorDescription: 'Il criterio ISEE è obbligatorio',
           modal: {
             subtitle:
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
@@ -482,6 +523,7 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
+
           form: {
             year: 'Anno',
             age: 'Età',
@@ -505,6 +547,8 @@ export default {
             boolean: 'Booleano',
             multi: 'Scelta multipla',
             addOption: 'Aggiungi opzione',
+            rankingOrderASC: 'Vince il valore minore',
+            rankingOrderDESC: 'Vince il valore maggiore',
           },
         },
         upload: {

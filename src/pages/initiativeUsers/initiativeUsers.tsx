@@ -8,7 +8,7 @@ import {
   Button,
   Chip,
   FormControl,
-  IconButton,
+  // IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -26,7 +26,7 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -39,7 +39,7 @@ import { parse } from 'date-fns';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { InitiativeUserToDisplay } from '../../services/__mocks__/initiativeUsersService';
 import { getOnboardingStatus } from '../../services/intitativeService';
 
@@ -69,72 +69,6 @@ const InitiativeUsers = () => {
   const addError = useErrorDispatcher();
 
   const theme = createTheme(itIT);
-
-  // const columns = [
-  //   { field: 'id', hide: true },
-  //   { field: 'beneficiary', headerName: 'Beneficiario', width: 700 },
-  //   { field: 'updateStatusDate', headerName: 'Data e ora', width: 300 },
-  //   { field: 'beneficiaryState', headerName: 'Stato', width: 150 },
-  // ];
-
-  //
-  // useEffect(() => {
-  //   // eslint-disable-next-line no-prototype-builtins
-  //   if (match !== null && match.params.hasOwnProperty('id')) {
-  //     const { id } = match.params as MatchParams;
-  //     if (
-  //       initiativeSel.generalInfo.beneficiaryKnown === 'true' &&
-  //       initiativeSel.initiativeId === id &&
-  //       initiativeSel.status !== 'DRAFT'
-  //     ) {
-  //       getGroupOfBeneficiaryStatusAndDetail(initiativeSel.initiativeId)
-  //         .then((res) => {
-  //           console.log(res);
-  //         })
-  //         .catch((error) => {
-  //           addError({
-  //             id: 'GET_UPLOADED_FILE_DATA_ERROR',
-  //             blocking: false,
-  //             error,
-  //             techDescription: 'An error occurred getting groups file info',
-  //             displayableTitle: t('errors.title'),
-  //             displayableDescription: t('errors.getFileDataDescription'),
-  //             toNotify: true,
-  //             component: 'Toast',
-  //             showCloseIcon: true,
-  //           });
-  //         });
-  //     }
-  //   }
-  // }, [
-  //   JSON.stringify(match),
-  //   initiativeSel.initiativeId,
-  //   JSON.stringify(initiativeSel.generalInfo),
-  // ]);
-
-  // const setAcceptedStatusList = (data: any) => {
-  //   const options = [
-  //     ...new Set(data.map((item: { beneficiaryState: string }) => item.beneficiaryState)),
-  //   ];
-
-  //   const optionsList = options.map((o) => {
-  //     switch (o) {
-  //       case 'ACCEPTED_TC':
-  //         return { value: o, label: t('pages.initiativeUsers.status.acceptedTc') };
-  //       case 'INACTIVE':
-  //         return { value: o, label: t('pages.initiativeUsers.status.inactive') };
-  //       case 'ON_EVALUATION':
-  //         return { value: o, label: t('pages.initiativeUsers.status.onEvaluation') };
-  //       case 'INVITED':
-  //         return { value: o, label: t('pages.initiativeUsers.status.invited') };
-  //       case 'ONBOARDING_OK':
-  //         return { value: o, label: t('pages.initiativeUsers.status.onboardingOk') };
-  //       default:
-  //         return { value: '', label: '' };
-  //     }
-  //   });
-  //   setAvailableStatusOptions([...optionsList]);
-  // };
 
   const getTableData = (
     initiativeId: string,
@@ -171,9 +105,6 @@ const InitiativeUsers = () => {
         if (typeof res.totalElements === 'number') {
           setTotalElements(res.totalElements);
         }
-        // if (Array.isArray(res.content)) {
-        //   setAcceptedStatusList(res.content);
-        // }
       })
       .catch((error) => {
         addError({
@@ -197,19 +128,18 @@ const InitiativeUsers = () => {
     strict: false,
   });
 
+  interface MatchParams {
+    id: string;
+  }
+
+  const { id } = match?.params as MatchParams;
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(
-        initiativeSel.initiativeId,
-        page,
-        filterByBeneficiary,
-        filterByDateFrom,
-        filterByDateTo,
-        filterByStatus
-      );
+    if (typeof id === 'string') {
+      getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
-  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
+  }, [id, page]);
 
   const renderUserStatus = (status: string | undefined) => {
     switch (status) {
@@ -281,7 +211,7 @@ const InitiativeUsers = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof initiativeSel.initiativeId === 'string') {
+      if (typeof id === 'string') {
         const filterBeneficiary = values.searchUser.length > 0 ? values.searchUser : undefined;
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
@@ -314,14 +244,7 @@ const InitiativeUsers = () => {
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getTableData(
-          initiativeSel.initiativeId,
-          0,
-          filterBeneficiary,
-          searchFromStr,
-          searchToStr,
-          filterStatus
-        );
+        getTableData(id, 0, filterBeneficiary, searchFromStr, searchToStr, filterStatus);
       }
     },
   });
@@ -333,13 +256,13 @@ const InitiativeUsers = () => {
     setFilterByDateFrom(undefined);
     setFilterByDateTo(undefined);
     setFilterByStatus(undefined);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined, undefined);
+    if (typeof id === 'string') {
+      getTableData(id, 0, undefined, undefined, undefined, undefined);
     }
   };
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -352,7 +275,7 @@ const InitiativeUsers = () => {
           <Breadcrumbs aria-label="breadcrumb" data-testid="breadcrumbs-test">
             <ButtonNaked
               component="button"
-              onClick={() => history.replace(ROUTES.HOME)}
+              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -514,16 +437,16 @@ const InitiativeUsers = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="30%">
+                    <TableCell width="50%">
                       {t('pages.initiativeUsers.table.beneficiary')}
                     </TableCell>
-                    <TableCell width="30%">
+                    <TableCell width="40%">
                       {t('pages.initiativeUsers.table.updateStatusDate')}
                     </TableCell>
-                    <TableCell width="30%">
+                    <TableCell width="10%">
                       {t('pages.initiativeUsers.table.beneficiaryState')}
                     </TableCell>
-                    <TableCell width="10%"></TableCell>
+                    {/* <TableCell width="10%"></TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -540,11 +463,11 @@ const InitiativeUsers = () => {
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState)}</TableCell>
-                      <TableCell align="right">
+                      {/* <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>
-                      </TableCell>
+                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>

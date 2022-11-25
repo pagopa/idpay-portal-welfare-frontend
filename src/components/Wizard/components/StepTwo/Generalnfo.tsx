@@ -108,8 +108,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
-    beneficiaryKnown: Yup.string().required(t('validation.required')),
-    rankingEnabled: Yup.string().required(t('validation.required')),
+    beneficiaryKnown: Yup.string().default(undefined).required(t('validation.required')),
+    rankingEnabled: Yup.string().default(undefined).required(t('validation.required')),
     budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
@@ -196,7 +196,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             const timestamp = Date.parse(rankingEndDate);
             if (isNaN(timestamp) === false) {
               return Yup.date()
-                .min(getMinDate(rankingEndDate, 10), t('validation.outSpendFromWithRanking'))
+                .min(getMinDate(rankingEndDate, 11), t('validation.outSpendFromWithRanking'))
                 .required(t('validation.required'))
                 .typeError(t('validation.invalidDate'));
             } else {
@@ -312,7 +312,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   useEffect(() => {
     if (formik.values.rankingEnabled === 'true') {
-      setDateOffset(10);
+      setDateOffset(11);
     } else {
       setDateOffset(1);
     }
@@ -437,8 +437,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             row
             aria-labelledby="beneficiaryKnown--label"
             name="beneficiaryKnown"
-            value={formik.values.beneficiaryKnown}
-            defaultValue={formik.values.beneficiaryKnown}
+            value={formik.values.beneficiaryKnown || ''}
+            defaultValue={formik.values.beneficiaryKnown || ''}
             onChange={async (e) => {
               await formik.setFieldValue('beneficiaryKnown', e.target.value, false);
               setRankingEnabled(e.target.value, formik);
@@ -478,12 +478,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               row
               aria-labelledby="witRanking--label"
               name="witRanking--label"
-              value={formik.values.rankingEnabled}
-              defaultValue={formik.values.rankingEnabled}
-              onBlur={(e) => formik.handleBlur(e)}
-              onChange={async (e) =>
-                await formik.setFieldValue('rankingEnabled', e.target.value, false)
-              }
+              value={formik.values.rankingEnabled || ''}
+              defaultValue={formik.values.rankingEnabled || ''}
+              onChange={async (e) => {
+                await formik.setFieldValue('rankingEnabled', e.target.value, false);
+                formik.handleBlur(e);
+              }}
               data-testid="witRanking-test"
             >
               <FormControlLabel
@@ -896,6 +896,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               textToRender={introductionArrayOptions()}
               serviceName={initiativeAdditionalInfoSel.serviceName}
               selectedParty={selectedPartySel?.description}
+              logoUrl={initiativeAdditionalInfoSel.logoURL}
             />
           </FormControl>
         </Box>

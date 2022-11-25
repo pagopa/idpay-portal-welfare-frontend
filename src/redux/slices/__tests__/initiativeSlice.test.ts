@@ -26,7 +26,7 @@ import {
   beneficiaryRuleSelector,
   generalInfoSelector,
   additionalInfoSelector,
-  stepOneBeneficiaryKnownSelector,
+  stepTwoBeneficiaryKnownSelector,
   initiativeIdSelector,
   initiativeRewardRuleSelector,
   initiativeMccFilterSelector,
@@ -68,17 +68,20 @@ describe('use Initiative slice', () => {
       privacyPolicyUrl: '',
       termsAndConditions: '',
       assistanceChannels: [{ type: 'web', contact: '' }],
+      logoFileName: '',
+      logoURL: '',
+      logoUploadDate: '',
     },
     generalInfo: {
       beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: 'false',
+      beneficiaryKnown: undefined,
       budget: '',
       beneficiaryBudget: '',
       startDate: '',
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
-      rankingEnabled: 'true',
+      rankingEnabled: undefined,
       introductionTextDE: '',
       introductionTextEN: '',
       introductionTextFR: '',
@@ -136,6 +139,9 @@ describe('use Initiative slice', () => {
     privacyPolicyUrl: undefined,
     termsAndConditions: undefined,
     assistanceChannels: [],
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
   };
   const mockedAutomatedCriteriaItem: AutomatedCriteriaItem = {};
   const mockedManualCriteriaItem: ManualCriteriaItem = {
@@ -233,7 +239,7 @@ describe('use Initiative slice', () => {
     expect(initiativeSelector(store.getState())).toEqual(mockedInitialState);
     expect(generalInfoSelector(store.getState())).not.toBeNull();
     expect(additionalInfoSelector(store.getState())).not.toBeNull();
-    expect(stepOneBeneficiaryKnownSelector(store.getState())).not.toBeNull();
+    expect(stepTwoBeneficiaryKnownSelector(store.getState())).not.toBeNull();
     expect(beneficiaryRuleSelector(store.getState())).not.toBeNull();
     expect(initiativeIdSelector(store.getState())).not.toBeNull();
     expect(initiativeRewardRuleSelector(store.getState())).not.toBeNull();

@@ -17,6 +17,9 @@ import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeS
 import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { SasToken } from '../api/generated/initiative/SasToken';
+import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from '../api/generated/initiative/LogoDTO';
+import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import {
   mockedExportsPaged,
@@ -226,7 +229,8 @@ export const getExportsPaged = (
   page: number,
   notificationDateFrom?: string,
   notificationDateTo?: string,
-  status?: string
+  status?: string,
+  sort?: string
 ): Promise<PageRewardExportsDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getExportsPaged(
@@ -234,7 +238,8 @@ export const getExportsPaged = (
       mockedExportsPaged.page,
       mockedExportsPaged.notificationDateFrom,
       mockedExportsPaged.notificationDateTo,
-      mockedExportsPaged.status
+      mockedExportsPaged.status,
+      mockedExportsPaged.sort
     );
   }
   return InitiativeApi.getExportsPaged(
@@ -242,7 +247,8 @@ export const getExportsPaged = (
     page,
     notificationDateFrom,
     notificationDateTo,
-    status
+    status,
+    sort
   ).then((res) => res);
 };
 
@@ -281,3 +287,16 @@ export const putDispFileUpload = (id: string, filename: string, file: File): Pro
   }
   return InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);
 };
+
+export const getRewardNotificationImportsPaged = (
+  id: string,
+  page: number,
+  sort: string
+): Promise<PageRewardImportsDTO> =>
+  InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);
+
+export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
+  InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
+
+export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
+  InitiativeApi.getDispFileErrors(id, name).then((res) => res);

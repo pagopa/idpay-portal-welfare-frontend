@@ -102,7 +102,8 @@ export const InitiativeApiMocked = {
     _page: number,
     _notificationDateFrom: string | undefined,
     _notificationDateTo: string | undefined,
-    _status: string | undefined
+    _status: string | undefined,
+    _sort: string | undefined
   ): Promise<PageRewardExportsDTO> => new Promise((resolve) => resolve(mockedExportsPaged)),
 
   getOnboardingStatus: async (

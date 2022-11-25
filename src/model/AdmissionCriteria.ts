@@ -13,6 +13,7 @@ export interface AvailableCriteria extends AdmissionCriteriaModel {
   fieldLabel: string;
   value: string;
   value2: string;
+  orderDirection?: string;
 }
 
 export interface DateOfBirthModel {

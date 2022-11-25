@@ -30,6 +30,7 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
             ]}
             serviceName="serviceName"
             selectedParty="selectedParty"
+            logoUrl="http//test/logo.png"
           />
         </Provider>
       );
@@ -44,6 +45,7 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
             textToRender={[]}
             serviceName={undefined}
             selectedParty={undefined}
+            logoUrl="http//test/logo.png"
           />
         </Provider>
       );

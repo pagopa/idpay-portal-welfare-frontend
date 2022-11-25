@@ -17,7 +17,7 @@ const NewInitiative = () => {
   const { t } = useTranslation();
 
   return (
-    <Box width="100%" px={2}>
+    <Box width="100%" p={2}>
       <Breadcrumbs aria-label="breadcrumb">
         <ButtonNaked
           component="button"

@@ -62,6 +62,7 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_DETAIL,
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
+      ROUTES.INITIATIVE_REFUNDS_OUTCOME,
     ],
     exact: true,
     strict: false,
@@ -84,7 +85,6 @@ export const useInitiative = () => {
           dispatch(setInitiativeUpdateDate(response.updateDate));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
-          console.log(response.general);
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
@@ -124,6 +124,9 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',
     assistanceChannels: [{ type: 'web', contact: '' }],
@@ -157,13 +160,25 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
     // eslint-disable-next-line functional/immutable-data
     dataT.assistanceChannels = [...data.channels];
   }
+  if (typeof data.logoFileName !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoFileName = data.logoFileName;
+  }
+  if (typeof data.logoURL !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoURL = data.logoURL;
+  }
+  if (typeof data.logoUploadDate !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoUploadDate = data.logoUploadDate.toLocaleString('fr-BE');
+  }
 
   return dataT;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 export const parseGeneralInfo = (data: any): GeneralInfo => {
-  const dataT = {
+  const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
     rankingEnabled: 'true',
@@ -179,6 +194,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     introductionTextDE: '',
     introductionTextSL: '',
   };
+
   if (data && Object.keys(data).length !== 0) {
     if (typeof data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -189,7 +205,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
     }
-    if (data.rankingEnabled && typeof data.rankingEnabled !== undefined) {
+    if (typeof data.rankingEnabled !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }

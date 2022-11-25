@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { AutomatedCriteriaItem } from '../../../../model/Initiative';
@@ -113,11 +114,11 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
 
 export const updateInitialAutomatedCriteriaOnSelector = (
   automatedCriteria: Array<AutomatedCriteriaItem>,
-  responseData: Array<AvailableCriteria>
+  responseData: Array<AvailableCriteria>,
+  rankingEnabled: string | undefined
 ) => {
   const updatedResponseData: Array<AvailableCriteria> = [];
   // eslint-disable-next-line sonarjs/cognitive-complexity
-
   automatedCriteria.forEach((a) => {
     responseData.forEach((r) => {
       if (a.code === r.code) {
@@ -131,6 +132,10 @@ export const updateInitialAutomatedCriteriaOnSelector = (
           checked: true,
           value: a.value ? a.value : r.value,
           value2: a.value2 ? a.value2 : r.value2,
+          orderDirection:
+            typeof rankingEnabled === 'string' && rankingEnabled === 'true'
+              ? a.orderDirection
+              : undefined,
         };
         // eslint-disable-next-line functional/immutable-data
         updatedResponseData.push(criteria);
@@ -156,7 +161,26 @@ export const updateInitialAutomatedCriteriaOnSelector = (
   return updatedResponseData;
 };
 
-export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria: Array<any>) => {
+const setInitialOrderDirection = (
+  rankingEnabled: string | undefined,
+  orderDirection: OrderDirectionEnum | undefined
+) => {
+  if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
+    if (typeof orderDirection === 'string') {
+      return orderDirection;
+    } else {
+      return OrderDirectionEnum.ASC;
+    }
+  } else {
+    return undefined;
+  }
+};
+
+export const mapCriteriaToSend = (
+  automatedCriteria: Array<any>,
+  manualCriteria: Array<any>,
+  rankingEnabled: string | undefined
+) => {
   const criteriaToSave: Array<AutomatedCriteriaItem> = [];
   automatedCriteria.forEach((c) => {
     if (c.checked === true && c.code !== 'ISEE') {
@@ -178,6 +202,7 @@ export const mapCriteriaToSend = (automatedCriteria: Array<any>, manualCriteria:
         operator: c.operator,
         value: c.value,
         value2: c.value2,
+        orderDirection: setInitialOrderDirection(rankingEnabled, c.orderDirection),
       };
       // eslint-disable-next-line functional/immutable-data
       criteriaToSave.push({ ...criteria });

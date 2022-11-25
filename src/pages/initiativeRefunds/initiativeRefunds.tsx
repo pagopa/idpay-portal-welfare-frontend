@@ -6,7 +6,6 @@ import {
   Button,
   Chip,
   FormControl,
-  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
@@ -23,12 +22,10 @@ import {
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { matchPath } from 'react-router';
+import { matchPath, useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -40,17 +37,12 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
-import { useDropzone } from 'react-dropzone';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import ROUTES from '../../routes';
+import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import {
-  getExportsPaged,
-  getRewardFileDownload,
-  putDispFileUpload,
-} from '../../services/intitativeService';
+import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
 import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
@@ -74,13 +66,17 @@ const InitiativeRefunds = () => {
   >();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
 
-  const [fileUploadFeedback, setFileUploadFeedback] = useState<string>('');
+  interface MatchParams {
+    id: string;
+  }
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_USERS],
+    path: [ROUTES.INITIATIVE_REFUNDS],
     exact: true,
     strict: false,
   });
+
+  const { id } = match?.params as MatchParams;
 
   const getRefundStatus = (status: {
     status: string | undefined;
@@ -118,6 +114,45 @@ const InitiativeRefunds = () => {
     }
   };
 
+  const downloadURI = (uri: string) => {
+    const link = document.createElement('a');
+    // eslint-disable-next-line functional/immutable-data
+    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.href = uri;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleDownloadFile = (data: {
+    initiativeId: string | undefined;
+    filePath: string | undefined;
+  }) => {
+    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
+      getRewardFileDownload(data.initiativeId, data.filePath)
+        .then((res: SasToken) => {
+          if (typeof res.sas === 'string') {
+            downloadURI(res.sas);
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_FILE_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting export file',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  };
+
   const getTableData = (
     initiativeId: string,
     page: number,
@@ -126,7 +161,7 @@ const InitiativeRefunds = () => {
     filterStatus: string | undefined
   ) => {
     setLoading(true);
-    getExportsPaged(initiativeId, page, searchFrom, searchTo, filterStatus)
+    getExportsPaged(initiativeId, page, searchFrom, searchTo, filterStatus, 'notificationDate,DESC')
       .then((res) => {
         if (typeof res.totalElements === 'number') {
           setTotalElements(res.totalElements);
@@ -141,11 +176,11 @@ const InitiativeRefunds = () => {
                 : '',
             typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
-            rewardsResults: `${numberWithCommas(r.rewardsResults)}`,
+            rewardsResults: `${numberWithCommas(r.rewardsResulted)}`,
             successPercentage: `${r.percentageResultedOk}%`,
             percentageResulted: r.percentageResulted,
             status: { status: r.status, percentageResulted: r.percentageResulted },
-            filePath: { initiativeId: r.initiativeId, filePath: r.filePath },
+            downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
           }));
           setRows(rowsData);
         } else {
@@ -165,30 +200,23 @@ const InitiativeRefunds = () => {
           showCloseIcon: true,
         });
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof initiativeSel.initiativeId === 'string') {
+    if (typeof id === 'string') {
       getTableData(
-        initiativeSel.initiativeId,
+        id,
         page,
         filterByNotificationDateFrom,
         filterByNotificationDateTo,
         filterByStatus
       );
     }
-  }, [JSON.stringify(match), initiativeSel.initiativeId, page]);
-
-  const downloadURI = (uri: string) => {
-    const link = document.createElement('a');
-    link.download = 'download';
-    link.href = uri;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
+  }, [id, page]);
 
   const validationSchema = Yup.object().shape({
     searchFrom: Yup.date()
@@ -235,7 +263,7 @@ const InitiativeRefunds = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof initiativeSel.initiativeId === 'string') {
+      if (typeof id === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr =
@@ -254,7 +282,7 @@ const InitiativeRefunds = () => {
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getTableData(initiativeSel.initiativeId, 0, searchFromStr, searchToStr, filterStatus);
+        getTableData(id, 0, searchFromStr, searchToStr, filterStatus);
       }
     },
   });
@@ -272,74 +300,19 @@ const InitiativeRefunds = () => {
     setFilterByNotificationDateFrom(undefined);
     setFilterByNotificationDateTo(undefined);
     setFilterByStatus(undefined);
-    if (typeof initiativeSel.initiativeId === 'string') {
-      getTableData(initiativeSel.initiativeId, 0, undefined, undefined, undefined);
+    if (typeof id === 'string') {
+      getTableData(id, 0, undefined, undefined, undefined);
     }
   };
 
-  const handleDownloadFile = (data: {
-    initiativeId: string | undefined;
-    filePath: string | undefined;
-  }) => {
-    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
+  const goToRefundsOutcome = (initiativeId: string | undefined) => {
+    if (typeof initiativeId === 'string') {
+      history.replace(`${BASE_ROUTE}/esiti-rimborsi-iniziativa/${initiativeId}`);
     }
   };
-
-  const handleUploadFeedback = (msg: string) => {
-    setFileUploadFeedback(msg);
-    setTimeout(() => {
-      setFileUploadFeedback('');
-    }, 5000);
-  };
-
-  const { getRootProps, getInputProps, open } = useDropzone({
-    noClick: true,
-    noKeyboard: true,
-    maxFiles: 1,
-    maxSize: 2097152,
-    accept:
-      'application/zip, application/octet-stream, application/x-zip-compressed, multipart/x-zip',
-    onDrop: () => {
-      setFileUploadFeedback('');
-    },
-    onDropAccepted: (files) => {
-      const fileName = files[0].name;
-      if (typeof initiativeSel.initiativeId === 'string') {
-        putDispFileUpload(initiativeSel.initiativeId, fileName, files[0])
-          .then((_res) => {
-            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackOk'));
-          })
-          .catch((_error) => {
-            handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-          });
-      }
-    },
-    onDropRejected: (_files) => {
-      handleUploadFeedback(t('pages.initiativeRefunds.uploadFile.feedbackKo'));
-    },
-  });
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -352,7 +325,7 @@ const InitiativeRefunds = () => {
           <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
-              onClick={() => history.replace(ROUTES.HOME)}
+              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
@@ -378,15 +351,15 @@ const InitiativeRefunds = () => {
             variantSubTitle="body1"
           />
         </Box>
-        <Box
-          sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}
-          {...getRootProps({ className: 'dropzone' })}
-        >
-          <input {...getInputProps()} />
-          <Button variant="contained" size="small" startIcon={<FileUploadIcon />} onClick={open}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 2', mt: 2, justifyContent: 'right' }}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<FileUploadIcon />}
+            onClick={() => goToRefundsOutcome(id)}
+          >
             {t('pages.initiativeRefunds.uploadBtn')}
           </Button>
-          <FormHelperText>{fileUploadFeedback}</FormHelperText>
         </Box>
       </Box>
 
@@ -512,8 +485,8 @@ const InitiativeRefunds = () => {
                     <TableCell width="15%">
                       {t('pages.initiativeRefunds.table.successPercentage')}
                     </TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.status')}</TableCell>
-                    <TableCell width="10%"></TableCell>
+                    <TableCell width="20%">{t('pages.initiativeRefunds.table.status')}</TableCell>
+                    <TableCell width="5%"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -526,7 +499,7 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={() => handleDownloadFile(r.filePath)}>
+                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
                           <FileDownloadIcon color="primary" />
                         </IconButton>
                       </TableCell>

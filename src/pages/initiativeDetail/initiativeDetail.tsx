@@ -16,6 +16,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useHistory } from 'react-router-dom';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useLoading } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useInitiative } from '../../hooks/useInitiative';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
@@ -211,14 +212,19 @@ const InitiativeDetail = () => {
         width: '100%',
         alignContent: 'start',
         justifyContent: 'space-between',
-        rowGap: 4,
+        rowGap: 3,
+        pt: 2,
       }}
     >
       <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
         <Breadcrumbs aria-label="breadcrumb">
           <ButtonNaked
             component="button"
-            onClick={() => history.replace(ROUTES.HOME)}
+            onClick={() =>
+              history.replace(
+                `${BASE_ROUTE}/panoramica-iniziativa/${initiativeDetail.initiativeId}`
+              )
+            }
             startIcon={<ArrowBackIcon />}
             sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
             weight="default"
@@ -238,20 +244,28 @@ const InitiativeDetail = () => {
       </Box>
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
           gridColumn: 'span 12',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'baseline',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 10', rowGap: 2 }}>
-          <Typography variant="h4"> {initiativeDetail.additionalInfo.serviceName}</Typography>
+        <Box>
+          <TitleBox
+            title={
+              typeof initiativeDetail.additionalInfo.serviceName === 'string'
+                ? initiativeDetail.additionalInfo.serviceName
+                : ''
+            }
+            subTitle={t('pages.initiativeDetail.subtitle')}
+            mbTitle={2}
+            mtTitle={0}
+            mbSubTitle={2}
+            variantTitle="h4"
+            variantSubTitle="body1"
+          />
         </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-          {renderInitiativeStatus(initiativeDetail.status)}
-        </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 12', rowGap: 2 }}>
-          <Typography variant="body1">{t('pages.initiativeDetail.subtitle')}</Typography>
-        </Box>
+        <Box>{renderInitiativeStatus(initiativeDetail.status)}</Box>
       </Box>
       {userCanReviewInitiative && initiativeDetail.status === 'IN_REVISION' && (
         <Box

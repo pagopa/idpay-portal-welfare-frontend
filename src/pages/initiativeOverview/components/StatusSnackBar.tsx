@@ -1,5 +1,4 @@
-import { Box, IconButton, Snackbar, Typography } from '@mui/material';
-import MuiAlert from '@mui/material/Alert';
+import { Box, IconButton, Snackbar, Typography, Alert } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import CloseIcon from '@mui/icons-material/Close';
@@ -54,7 +53,7 @@ const StatusSnackBar = ({
             <IconButton
               aria-label="close"
               onClick={() => setOpenSnackBar(false)}
-              sx={{ mx: 1 }}
+              sx={{ mx: 1, marginTop: '3px' }}
               data-testid="close-bar-test"
             >
               <CloseIcon />
@@ -67,7 +66,7 @@ const StatusSnackBar = ({
           <IconButton
             aria-label="close"
             onClick={() => setOpenSnackBar(false)}
-            sx={{ mx: 1 }}
+            sx={{ mx: 1, marginTop: '3px' }}
             data-testid="close-bar-test"
           >
             <CloseIcon />
@@ -113,12 +112,14 @@ const StatusSnackBar = ({
 
   return (
     <Snackbar open={openSnackBar} sx={{ position: 'initial', gridColumn: 'span 12', zIndex: 0 }}>
-      <MuiAlert
+      <Alert
         sx={{
-          gridColumn: 'span 10',
+          gridColumn: 'span 12',
           mb: 3,
           width: '100%',
-          gridTemplateColumns: 'repeat(10, 1fr)',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          alignItems: 'center',
+          padding: '6px 16px !important',
         }}
         severity={handleAlertSeverity(fileStatus)}
         elevation={6}
@@ -127,7 +128,7 @@ const StatusSnackBar = ({
         action={handleTypeAction(fileStatus)}
       >
         {renderAlertBody(fileStatus, beneficiaryReached)}
-      </MuiAlert>
+      </Alert>
     </Snackbar>
   );
 };

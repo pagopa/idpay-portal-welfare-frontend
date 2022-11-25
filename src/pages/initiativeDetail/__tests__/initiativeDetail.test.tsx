@@ -13,14 +13,25 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+// jest.mock('@pagopa/selfcare-common-frontend/hooks/useLoading', () => Function());
+
+// jest.mock('@pagopa/selfcare-common-frontend/hooks/useLoading', () => ({
+//   useLoading: () => ({}),
+// }));
+
 jest.mock('@pagopa/selfcare-common-frontend', () => ({
-  useLoading: jest.fn(),
+  ...jest.requireActual('@pagopa/selfcare-common-frontend/hooks/useLoading'),
+  useLoading: () => ({}),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
   withTranslation: jest.fn(),
+}));
+
+jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
+  TitleBox: () => <div>Test</div>,
 }));
 
 describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>) => {

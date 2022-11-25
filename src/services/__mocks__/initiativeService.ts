@@ -104,7 +104,8 @@ export const getExportsPaged = (
     mockedExportsPaged.page,
     mockedExportsPaged.notificationDateFrom,
     mockedExportsPaged.notificationDateTo,
-    mockedExportsPaged.status
+    mockedExportsPaged.status,
+    mockedExportsPaged.sort
   );
 
 export const getRewardFileDownload = (_id: string, _filePath: string): Promise<SasToken> =>
@@ -299,7 +300,17 @@ export interface InitiativeRefundToDisplay {
   rewardsResults: string | undefined;
   successPercentage: string | undefined;
   status: { status: string | undefined; percentageResulted: string | undefined };
-  filePath: { initiativeId: string | undefined; filePath: string | undefined };
+  downloadFileInfo: { initiativeId: string | undefined; filePath: string | undefined };
+}
+
+export interface InitiativeRefundImports {
+  status: any;
+  filePath: string | undefined;
+  feedbackDate: any;
+  rewardsResulted: string | undefined;
+  rewardsAdded: string | undefined;
+  downloadFileInfo: { initiativeId: string | undefined; filePath: string | undefined };
+  errorsSize: number;
 }
 
 export interface InitiativeRefundsResponse {
@@ -322,6 +333,7 @@ export const mockedExportsPaged = {
   status: 'EXPORTED',
   notificationDateFrom: '11/11/2022',
   notificationDateTo: '11/11/2022',
+  sort: 'DESC',
 };
 
 export const mockedOnBoardingStatus = {

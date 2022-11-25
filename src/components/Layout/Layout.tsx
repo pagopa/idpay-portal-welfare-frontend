@@ -33,6 +33,7 @@ const Layout = ({ children }: Props) => {
       ROUTES.INITIATIVE_OVERVIEW,
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
+      ROUTES.INITIATIVE_REFUNDS_OUTCOME,
     ],
     exact: true,
     strict: false,

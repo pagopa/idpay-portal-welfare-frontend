@@ -19,6 +19,9 @@ import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatis
 import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
 import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
 import { SasToken } from './generated/initiative/SasToken';
+import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from './generated/initiative/LogoDTO';
+import { CsvDTO } from './generated/initiative/CsvDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -204,7 +207,8 @@ export const InitiativeApi = {
     page: number,
     notificationDateFrom?: string,
     notificationDateTo?: string,
-    status?: string
+    status?: string,
+    sort?: string
   ): Promise<PageRewardExportsDTO> => {
     const result = await apiClient.getRewardNotificationExportsPaged({
       initiativeId: id,
@@ -213,6 +217,7 @@ export const InitiativeApi = {
       notificationDateFrom,
       notificationDateTo,
       status,
+      sort,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -245,5 +250,31 @@ export const InitiativeApi = {
   putDispFileUpload: async (id: string, filename: string, file: File): Promise<void> => {
     const result = await apiClient.putDispFileUpload({ initiativeId: id, filename, file });
     return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  uploadAndUpdateLogo: async (id: string, logo: File): Promise<LogoDTO> => {
+    const result = await apiClient.uploadAndUpdateLogo({
+      initiativeId: id,
+      logo,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardNotificationImportsPaged: async (
+    id: string,
+    page: number,
+    sort: string
+  ): Promise<PageRewardImportsDTO> => {
+    const result = await apiClient.getRewardNotificationImportsPaged({
+      initiativeId: id,
+      page,
+      sort,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getDispFileErrors: async (id: string, name: string): Promise<CsvDTO> => {
+    const result = await apiClient.getDispFileErrors({ initiativeId: id, filename: name });
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };

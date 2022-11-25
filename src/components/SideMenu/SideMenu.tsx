@@ -54,7 +54,12 @@ export default function SideMenu() {
   });
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_USERS, ROUTES.INITIATIVE_REFUNDS],
+    path: [
+      ROUTES.INITIATIVE_OVERVIEW,
+      ROUTES.INITIATIVE_USERS,
+      ROUTES.INITIATIVE_REFUNDS,
+      ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+    ],
     exact: true,
     strict: false,
   });
@@ -136,9 +141,9 @@ export default function SideMenu() {
                   <SidenavItem
                     title={t('sideMenu.initiativeOveview.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={
                       pathname === `${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`
@@ -150,9 +155,9 @@ export default function SideMenu() {
                   <SidenavItem
                     title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
                     icon={GroupIcon}
@@ -162,12 +167,13 @@ export default function SideMenu() {
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={
-                      pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
+                      pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}` ||
+                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}`
                     }
                     icon={EuroSymbolIcon}
                     level={2}
