@@ -314,10 +314,11 @@ const InitiativeRefundsOutcome = () => {
     }
   }, [fileAccepted]);
 
-  const downloadURI = (uri: string) => {
+  const downloadURI = (uri: string, filePath: string | undefined) => {
     const link = document.createElement('a');
     // eslint-disable-next-line functional/immutable-data
-    link.download = 'download';
+    const fileName = typeof filePath === 'string' ? `${filePath}.csv` : 'download.csv';
+    link.setAttribute('download', fileName);
     // eslint-disable-next-line functional/immutable-data
     link.href = uri;
     // eslint-disable-next-line functional/immutable-data
@@ -337,8 +338,9 @@ const InitiativeRefundsOutcome = () => {
           // eslint-disable-next-line no-prototype-builtins
           if (res.hasOwnProperty('data') && typeof res.data === 'string') {
             const blob = new Blob([res.data], { type: 'text/csv' });
+
             const url = window.URL.createObjectURL(blob);
-            downloadURI(url);
+            downloadURI(url, data.filePath);
           }
         })
         .catch((error) => {
