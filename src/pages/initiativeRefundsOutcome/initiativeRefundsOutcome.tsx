@@ -74,7 +74,7 @@ const InitiativeRefundsOutcome = () => {
     strict: false,
   });
 
-  const { id } = match?.params as MatchParams;
+  const { id } = (match?.params as MatchParams) || {};
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,

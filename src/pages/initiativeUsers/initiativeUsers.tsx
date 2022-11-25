@@ -132,7 +132,7 @@ const InitiativeUsers = () => {
     id: string;
   }
 
-  const { id } = match?.params as MatchParams;
+  const { id } = (match?.params as MatchParams) || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);

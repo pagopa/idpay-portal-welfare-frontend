@@ -76,7 +76,7 @@ const InitiativeRefunds = () => {
     strict: false,
   });
 
-  const { id } = match?.params as MatchParams;
+  const { id } = (match?.params as MatchParams) || {};
 
   const getRefundStatus = (status: {
     status: string | undefined;
