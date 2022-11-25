@@ -3,7 +3,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
-import InitiativeRefunds from '../InitiativeRefunds';
+import InitiativeRefunds from '../initiativeRefunds';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
