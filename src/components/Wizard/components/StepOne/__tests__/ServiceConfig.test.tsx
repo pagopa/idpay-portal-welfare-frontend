@@ -28,7 +28,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     const utils = render(
       <Provider store={store}>
         <ServiceConfig
-          action={''}
+          action={WIZARD_ACTIONS.BACK}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
@@ -51,17 +51,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     const sendValues = jest.fn();
     const values = jest.mock('../InitiativeNotOnIOModal.tsx');
     const setCurrentStep = jest.fn();
-    const serviceName = utils.getAllByLabelText('components.wizard.stepOne.form.serviceName');
-    // const serviceArea = document.getElementById('[data-testid="service-area-select"]');
-    const serviceDescription = utils.getAllByLabelText(
-      'components.wizard.stepOne.form.serviceDescription'
-    );
-    const privacyPolicyUrl = utils.getAllByLabelText(
-      'components.wizard.stepOne.form.privacyPolicyUrl'
-    );
-    const termsAndConditions = utils.getAllByLabelText(
-      'components.wizard.stepOne.form.termsAndConditions'
-    );
     const addChannel = document.querySelector(
       '[data-testid="add-channel-test"]'
     ) as HTMLButtonElement;
@@ -75,11 +64,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       values,
       currentStep,
       setCurrentStep,
-      serviceName,
-      // serviceArea,
-      serviceDescription,
-      privacyPolicyUrl,
-      termsAndConditions,
       addChannel,
       setOpenInitiativeNotOnIOModal,
       addAssistanceChannel,
@@ -111,12 +95,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     currentStep,
     setCurrentStep,
     handleOpenInitiativeNotOnIOModal,
-    serviceName,
-    // serviceArea,
-    serviceDescription,
-    privacyPolicyUrl,
-    termsAndConditions,
-    setOpenInitiativeNotOnIOModal,
     addAssistanceChannel,
     addChannel,
   } = setUpServiceConfig();
@@ -132,34 +110,62 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     });
   });
 
-  it('Test of functions of component', async () => {
-    const useStateMock: any = (openInitiativeOnIOModal: boolean) => [
-      openInitiativeOnIOModal,
-      handleOpenInitiativeNotOnIOModal,
-    ];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-    jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
-
-    handleOpenInitiativeNotOnIOModal();
-    expect(handleOpenInitiativeNotOnIOModal).toHaveBeenCalled();
-  });
-
-  it('draft action makes the dispatch', async () => {
+  it('Add Channel Test', async () => {
     await waitFor(async () => {
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-      fireEvent.click(skip);
+      userEvent.click(addChannel);
+      addAssistanceChannel();
+      expect(addAssistanceChannel).toHaveBeenCalled();
     });
   });
 
-  it('form fields not to be null & to be Defined', async () => {
+  it('form fields not to be null & to be in the document', async () => {
+    const { getByTestId, container } = render(
+      <Provider store={store}>
+        <ServiceConfig
+          action={WIZARD_ACTIONS.SUBMIT}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={currentStep}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    const initiativeOnIo = getByTestId('initiative-on-io-test').querySelector('input');
+    const serviceName = getByTestId('service-name-test').querySelector('input');
+    const serviceArea = getByTestId('service-area-select').querySelector('input');
+    const serviceDescription = getByTestId('service-description-test').querySelector('input');
+    const locale = container.querySelector('#serviceScope-local-test');
+    const nazionale = container.querySelector('#serviceScope-national-test');
+    const privacyPolicyUrl = getByTestId('privacy-policy-url-test').querySelector('input');
+    const termsAndConditions = getByTestId('terms-and-conditions-test').querySelector('input');
+
+    expect(initiativeOnIo).not.toBeNull();
+    expect(initiativeOnIo).toBeInTheDocument();
+
     expect(serviceName).not.toBeNull();
-    expect(serviceName).toBeDefined();
+    expect(serviceName).toBeInTheDocument();
 
-    // expect(serviceArea).not.toBeNull();
-    // expect(serviceArea).toBeInTheDocument();
+    expect(serviceDescription).toBeNull();
+    expect(serviceDescription).not.toBeInTheDocument();
 
-    expect(serviceDescription).not.toBeNull();
-    expect(serviceDescription).toBeDefined();
+    expect(serviceArea).not.toBeNull();
+    expect(serviceArea).toBeInTheDocument();
+
+    expect(locale).toBeNull();
+    expect(locale).not.toBeInTheDocument();
+
+    expect(nazionale).toBeNull();
+    expect(nazionale).not.toBeInTheDocument();
 
     expect(privacyPolicyUrl).not.toBeNull();
     expect(privacyPolicyUrl).toBeDefined();
@@ -168,11 +174,11 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     expect(termsAndConditions).toBeDefined();
   });
 
-  it('Test onChange of form input', async () => {
-    const { container } = render(
+  test('Test Input Form onChange', async () => {
+    const { getByTestId } = render(
       <Provider store={store}>
         <ServiceConfig
-          action={''}
+          action={WIZARD_ACTIONS.DRAFT}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
@@ -189,48 +195,65 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
         />
       </Provider>
     );
-    const servName = container.querySelector('#service-name-test') as HTMLInputElement;
-    const servArea = document.getElementById('service-area-select') as HTMLSelectElement;
+
+    const serviceName = getByTestId('service-name-test').querySelector('input') as HTMLInputElement;
+    const serviceDescription = getByTestId('service-description-test').querySelector(
+      'input'
+    ) as HTMLInputElement;
     const mockCallback = jest.fn();
+    const privacyPolicyUrl = getByTestId('privacy-policy-url-test').querySelector(
+      'input'
+    ) as HTMLInputElement;
+    const termsAndConditions = getByTestId('terms-and-conditions-test').querySelector(
+      'input'
+    ) as HTMLInputElement;
+
+    waitFor(async () => {
+      fireEvent.click(serviceName);
+      fireEvent.change(serviceName, { target: { value: 'name' } });
+      expect(serviceName.value).toBe('name');
+      fireEvent.click(serviceName);
+      fireEvent.change(serviceName, { target: { value: '' } });
+      expect(serviceName.value).toBe('');
+
+      fireEvent.change(serviceDescription, { target: { value: 'description' } });
+      expect(serviceDescription.value).toBe('description');
+      fireEvent.change(serviceDescription, { target: { value: '' } });
+      expect(serviceDescription.value).toBe('');
+
+      fireEvent.change(privacyPolicyUrl, { target: { value: 'privacy' } });
+      expect(privacyPolicyUrl.value).toBe('privacy');
+      fireEvent.change(privacyPolicyUrl, { target: { value: '' } });
+      expect(privacyPolicyUrl.value).toBe('');
+    });
+
+    const initiativeOnIo = getByTestId('initiative-on-io-test').querySelector(
+      'input'
+    ) as HTMLInputElement;
+
+    waitFor(async () => {
+      fireEvent.click(initiativeOnIo);
+      fireEvent.change(initiativeOnIo, { target: { checked: false } });
+      expect(initiativeOnIo.value).toBe(false);
+      fireEvent.click(initiativeOnIo);
+      fireEvent.change(initiativeOnIo, { target: { checked: true } });
+      expect(initiativeOnIo.value).toBe(true);
+    });
+
+    const serviceArea = getByTestId('service-area-select') as HTMLSelectElement;
+
+    const servAreaSelect = serviceArea.childNodes[0];
+
     const locale = document.getElementById('serviceScopeLocal-test');
     const nazionale = document.getElementById('serviceScopeNational-test');
 
     waitFor(async () => {
-      fireEvent.change(servName, { target: { value: 'name' } });
-      expect(servName.value).toBe('name');
-      fireEvent.change(servName, { target: { value: '' } });
-      expect(servName.value).toBe('');
-
       expect(locale).toBeInTheDocument();
       expect(nazionale).toBeInTheDocument();
 
-      const servAreaSelect = servArea.childNodes[0];
-
       fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.LOCAL } });
       expect(servAreaSelect).toBe(ServiceScopeEnum.LOCAL);
-      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.NATIONAL } });
-      expect(servAreaSelect).toBe(ServiceScopeEnum.NATIONAL);
       expect(mockCallback.mock.calls).toHaveLength(1);
-    });
-  });
-
-  it('Test of setting true/false of modal', async () => {
-    const useStateMock: any = (openInitiativeNotOnIOModal: boolean) => [
-      openInitiativeNotOnIOModal,
-      setOpenInitiativeNotOnIOModal,
-    ];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-    expect(useStateMock).toBeDefined();
-
-    setOpenInitiativeNotOnIOModal();
-    expect(setOpenInitiativeNotOnIOModal).toHaveBeenCalled();
-  });
-
-  it('Add Channel Test', async () => {
-    await waitFor(async () => {
-      userEvent.click(addChannel);
-      addAssistanceChannel();
-      expect(addAssistanceChannel).toHaveBeenCalled();
     });
   });
 });

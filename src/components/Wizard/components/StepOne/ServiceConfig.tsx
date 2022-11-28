@@ -405,9 +405,7 @@ const ServiceConfig = ({
               error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
               helperText={formik.touched.serviceName && formik.errors.serviceName}
               size="small"
-              inputProps={{
-                'data-testid': 'service-name-test',
-              }}
+              data-testid="service-name-test"
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 12' }} size="small">
@@ -425,10 +423,10 @@ const ServiceConfig = ({
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
             >
-              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScopeLocal-test">
+              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScopeNational-test">
+              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
                 {t('components.wizard.stepOne.form.serviceScopeNational')}
               </MenuItem>
             </Select>
