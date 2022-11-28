@@ -136,13 +136,15 @@ const TimeLimitItem = ({
         <Typography variant="subtitle1">{title}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end', mb: 1 }}>
-        <IconButton onClick={() => handleShopListItemRemoved(code)}>
+        <IconButton
+          onClick={() => handleShopListItemRemoved(code)}
+          data-testid="delete-button-test"
+        >
           <DeleteOutlineIcon
             color="error"
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -181,6 +183,7 @@ const TimeLimitItem = ({
                     removeTimeLimitItem(i, formik.values, formik.setValues, formik.setTouched)
                   }
                   id={`remove_element_${i}`}
+                  data-testid={'removeCircleIconLimit'}
                 />
               </Box>
             )}

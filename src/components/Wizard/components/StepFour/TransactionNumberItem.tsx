@@ -113,13 +113,15 @@ const TransactionNumberItem = ({
         <Typography variant="subtitle1">{title}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton onClick={() => handleShopListItemRemoved(code)}>
+        <IconButton
+          onClick={() => handleShopListItemRemoved(code)}
+          data-testid="delete-button-test"
+        >
           <DeleteOutlineIcon
             color="error"
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>

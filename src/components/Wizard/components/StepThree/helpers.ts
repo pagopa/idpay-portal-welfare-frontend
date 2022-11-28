@@ -161,7 +161,7 @@ export const updateInitialAutomatedCriteriaOnSelector = (
   return updatedResponseData;
 };
 
-const setInitialOrderDirection = (
+export const setInitialOrderDirection = (
   rankingEnabled: string | undefined,
   orderDirection: OrderDirectionEnum | undefined
 ) => {

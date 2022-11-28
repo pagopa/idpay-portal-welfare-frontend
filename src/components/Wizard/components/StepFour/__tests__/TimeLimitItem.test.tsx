@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent, getByTestId, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -25,7 +25,7 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
 
   test('should render correctly the TimeLimitItem component', async () => {
     await act(async () => {
-      render(
+       render(
         <Provider store={store}>
           <TimeLimitItem
             key={0}
@@ -51,14 +51,14 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
 
   it('test on handleSubmit', async () => {
     await act(async () => {
-      const handleShopListItemRemoved = jest.fn();
-      render(
+      const mockedHandleShopListItemRemoved = jest.fn();
+      const { getByText, getByTestId, getAllByTestId } = render(
         <Provider store={store}>
           <TimeLimitItem
             key={1}
             title={'tittle'}
             code={'code'}
-            handleShopListItemRemoved={handleShopListItemRemoved('code')}
+            handleShopListItemRemoved={mockedHandleShopListItemRemoved}
             action={'DRAFT'}
             shopRulesToSubmit={[
               { code: 'code', dispatched: true },
@@ -76,8 +76,21 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
           />
         </Provider>
       );
-      // handleSubmit();
-      // expect(handleSubmit).toHaveBeenCalled();
+
+      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const addTimeLimitBtn = getByText(
+        'components.wizard.stepFour.form.addTimeLimitItem'
+      ) as HTMLButtonElement;
+      // const removeCircleIcon = getAllByTestId('removeCircleIconLimit') as HTMLElement[];
+
+      fireEvent.click(deleteBtn);
+      expect(mockedHandleShopListItemRemoved).toHaveBeenCalledTimes(1);
+
+      fireEvent.click(addTimeLimitBtn);
+      expect(addTimeLimitBtn).toBeInTheDocument();
+
+      //  fireEvent.click(removeCircleIcon[0]);
+      // expect(removeCircleIcon[0]).toBeInTheDocument();
     });
   });
 

@@ -1,5 +1,5 @@
 import { MccFilterDTO } from '../../../../../api/generated/initiative/MccFilterDTO';
-import { RewardLimit } from '../../../../../model/Initiative';
+import { RewardLimit, TrxCount } from '../../../../../model/Initiative';
 import {
   checkThresholdChecked,
   checkMccFilterChecked,
@@ -44,6 +44,7 @@ type Colors =
   | 'success'
   | 'warning'
   | undefined;
+
 const threshhold = { from: 2, fromIncluded: false };
 describe('testing helper of step four', () => {
   test('Test checkThresholdChecked', () => {
@@ -55,7 +56,11 @@ describe('testing helper of step four', () => {
     expect(checkMccFilterChecked(MccFilter)).toEqual(true);
   });
   test('checkTrxCountChecked', () => {
+    const trxCount: TrxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+    const trxCount2: TrxCount = {  };
     expect(checkTrxCountChecked(undefined)).toBeFalsy();
+    expect(checkTrxCountChecked(trxCount)).toBeTruthy();
+    expect(checkTrxCountChecked(trxCount2)).toBeFalsy();
   });
 
   test('checkRewardLimitsChecked', () => {

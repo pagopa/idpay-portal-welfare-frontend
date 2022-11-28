@@ -8,6 +8,7 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import TransactionNumberItem from '../TransactionNumberItem';
 import React from 'react';
+import { TrxCount } from '../../../../../model/Initiative';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -30,7 +31,7 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={''}
+            action={WIZARD_ACTIONS.DRAFT}
             shopRulesToSubmit={[]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -44,90 +45,58 @@ describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createS
           />
         </Provider>
       );
-    });
-  });
-
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      expect(handleSubmit).toBeDefined();
-    });
-  });
-
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
     });
   });
 
   it('test on handleSubmit', async () => {
+    const mockedHandleShopListItemRemoved = jest.fn();
+    const trxCount: TrxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+
     await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
+      const { getByTestId } = render(
         <Provider store={store}>
           <TransactionNumberItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
+            title={'title'}
+            code={'code'}
+            handleShopListItemRemoved={mockedHandleShopListItemRemoved}
             action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[]}
+            shopRulesToSubmit={[
+              { code: 'code', dispatched: false },
+              { code: 'code', dispatched: true },
+            ]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
               //
             }}
-            data={undefined}
+            data={trxCount}
             setData={function (_value: any): void {
               //
             }}
           />
         </Provider>
       );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
+      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const maxSpendingLimit = getByTestId('max-spending-limit') as HTMLInputElement;
+      const minSpendingLimit = getByTestId('min-spending-limit') as HTMLInputElement;
+      // const removeIcon = getAllByTestId('remove-icon-test');
+      fireEvent.click(deleteBtn);
+      expect(mockedHandleShopListItemRemoved).toHaveBeenCalledTimes(1);
+
+      fireEvent.change(maxSpendingLimit, {
+        target: { value: 'maxLimit' },
+      });
+
+      fireEvent.focusOut(maxSpendingLimit);
+
+      expect(maxSpendingLimit.value).toBeDefined();
+
+      fireEvent.change(minSpendingLimit, {
+        target: { value: 'minLimit' },
+      });
+
+      expect(maxSpendingLimit.value).toBeDefined();
     });
   });
 
-  //   it('form fields not null', async () => {
-  //     await act(async () => {
-  //       const { getByTestId, container } = render(
-  //         <Provider store={store}>
-  //           <TransactionNumberItem
-  //             title={''}
-  //             code={''}
-  //             handleShopListItemRemoved={undefined}
-  //             action={''}
-  //             shopRulesToSubmit={[]}
-  //             setShopRulesToSubmit={function (
-  //               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //             ): void {
-  //               //
-  //             }}
-  //             data={undefined}
-  //             setData={function (_value: any): void {
-  //               //
-  //             }}
-  //           />
-  //         </Provider>
-  //       );
-  //     });
-  //   });
 });
