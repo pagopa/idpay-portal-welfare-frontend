@@ -322,6 +322,11 @@ export default {
       description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
       buttonLabel: 'Chiudi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+      subtitle:
+        'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
+    },
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
@@ -418,6 +423,7 @@ export default {
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',
+    initiativeRanking: 'Graduatoria',
     initiativeUsers: 'Utenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
