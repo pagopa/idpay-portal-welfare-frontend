@@ -1,5 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render } from '@testing-library/react';
+import {
+  fireEvent,
+  render,
+} from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -25,13 +28,14 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
 
   test('should render correctly the TransactionTimeItem component', async () => {
     await act(async () => {
-      render(
+      const { debug, getByTestId, getByText } = render(
         <Provider store={store}>
           <TransactionTimeItem
-            title={''}
-            code={''}
+            key={0}
+            title={'title'}
+            code={'code'}
             handleShopListItemRemoved={undefined}
-            action={''}
+            action={WIZARD_ACTIONS.DRAFT}
             shopRulesToSubmit={[]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -47,57 +51,55 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
           />
         </Provider>
       );
-    });
-  });
+      //debug();
+      const itemMaxTimeInput = getByTestId('item-maxTime') as HTMLElement;
+      const addIconBtn = getByText(
+        'components.wizard.stepFour.form.addTransactionTimeItem'
+      ) as HTMLButtonElement;
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
+      fireEvent.change(itemMaxTimeInput, {
+        target: { value: 'minTime' },
+      });
 
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      expect(handleSubmit).toBeDefined();
-    });
-  });
+      fireEvent.click(addIconBtn);
 
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+      // fireEvent.focusOut(itemMinTimeInput);
+      expect(itemMaxTimeInput).toBeDefined();
+      expect(addIconBtn).toBeInTheDocument();
     });
   });
 
   it('test on handleSubmit', async () => {
+    const daysOfWeek: Array<DaysOfWeekInterval> = [
+      { daysOfWeek: 'MONDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'TUESDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'THURSDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'WEDNESDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'FRIDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'SATURDAY', startTime: '20112070', endTime: '20122070' },
+      { daysOfWeek: 'SUNDAY', startTime: '20112070', endTime: '20122070' },
+    ];
+    const mockedHandleShopListItemRemoved = jest.fn();
+
     await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
+      const { getByTestId, getAllByTestId, debug } = render(
         <Provider store={store}>
           <TransactionTimeItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
+            key={1}
+            title={'title'}
+            code={'code'}
+            handleShopListItemRemoved={mockedHandleShopListItemRemoved}
             action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[]}
+            shopRulesToSubmit={[
+              { code: 'code', dispatched: false },
+              { code: 'code', dispatched: true },
+            ]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
               //
             }}
-            data={undefined}
+            data={daysOfWeek}
             setData={function (
               _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
             ): void {
@@ -106,33 +108,27 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
           />
         </Provider>
       );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
+      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const itemMinTimeInput = getAllByTestId('item-minTime') as HTMLInputElement[];
+      const selectDayOfWeek = getAllByTestId('selectDayOfWeek') as HTMLSelectElement[];
+      const removeCircleIcon = getAllByTestId('removeCircleIcon') as HTMLElement[];
+      // const removeIcon = getAllByTestId('remove-icon-test');
+      fireEvent.click(deleteBtn);
+      expect(mockedHandleShopListItemRemoved).toHaveBeenCalledTimes(1);
+      //debug();
+
+      fireEvent.change(itemMinTimeInput[0], {
+        target: { value: 'minTime' },
+      });
+      // fireEvent.focusOut(itemMinTimeInput);
+      expect(itemMinTimeInput[0]).toBeInTheDocument();
+
+      fireEvent.change(selectDayOfWeek[0], {
+        target: { value: 'MONDAY' },
+      });
+      expect(selectDayOfWeek[0]).toBeInTheDocument();
+      fireEvent.click(removeCircleIcon[0]);
+      expect(removeCircleIcon[0]).toBeInTheDocument();
     });
   });
-
-  // it('form fields not null', async () => {
-  //   await act(async () => {
-  //     const { getByTestId, container } = render(
-  //       <Provider store={store}>
-  //         <TransactionTimeItem
-  //         title={''}
-  //         code={''}
-  //         handleShopListItemRemoved={undefined}
-  //         action={''}
-  //         shopRulesToSubmit={[]}
-  //         setShopRulesToSubmit={function (
-  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //         ): void {
-  //           //
-  //         }}
-  //         data={undefined}
-  //         setData={function (_value: SetStateAction<Array<DaysOfWeekInterval> | undefined>): void {
-  //           //
-  //         }}
-  //       />
-  //       </Provider>
-  //     );
-  //   });
-  // });
 });
