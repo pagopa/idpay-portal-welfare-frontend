@@ -328,6 +328,17 @@ export default {
         'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
       alertText: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
       noData: 'La graduatoria non è stata ancora elaborata.',
+      form: {
+        search: 'Cerca per Codice fiscale',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        beneficiary: 'Aderenti',
+        ranking: 'Posizione',
+        rankingValue: 'ISEE',
+        criteriaConsensusTimeStamp: 'Data e ora',
+      },
     },
     initiativeUsers: {
       title: 'Utenti',

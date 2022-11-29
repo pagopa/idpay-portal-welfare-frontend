@@ -304,9 +304,13 @@ export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
 
 export const getInitiativeOnboardingRankingStatusPaged = (
   id: string,
-  page: number
+  page: number,
+  beneficiary?: string | undefined,
+  state?: string | undefined
 ): Promise<PageOnboardingRankingsDTO> =>
-  InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page).then((res) => res);
+  InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state).then(
+    (res) => res
+  );
 
 export const getRankingFileDownload = (id: string): Promise<SasToken> =>
   InitiativeApi.getRankingFileDownload(id).then((res) => res);

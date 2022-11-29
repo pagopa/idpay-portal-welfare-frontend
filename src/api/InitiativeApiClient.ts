@@ -281,11 +281,15 @@ export const InitiativeApi = {
 
   getInitiativeOnboardingRankingStatusPaged: async (
     id: string,
-    page: number
+    page: number,
+    beneficiary?: string,
+    state?: string
   ): Promise<PageOnboardingRankingsDTO> => {
     const result = await apiClient.getInitiativeOnboardingRankingStatusPaged({
       initiativeId: id,
       page,
+      beneficiary,
+      state,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
