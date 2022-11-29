@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, screen, render, waitFor, getByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
@@ -8,6 +8,7 @@ import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
 import React from 'react';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { ExploreOff } from '@mui/icons-material';
 
 window.scrollTo = jest.fn();
 
@@ -143,11 +144,11 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     const initiativeOnIo = getByTestId('initiative-on-io-test').querySelector('input');
     const serviceName = getByTestId('service-name-test').querySelector('input');
     const serviceArea = getByTestId('service-area-select').querySelector('input');
-    const serviceDescription = getByTestId('service-description-test').querySelector('input');
-    const locale = container.querySelector('#serviceScope-local-test');
-    const nazionale = container.querySelector('#serviceScope-national-test');
+    const serviceDescription = getByTestId('service-description-test') as HTMLInputElement;
     const privacyPolicyUrl = getByTestId('privacy-policy-url-test').querySelector('input');
     const termsAndConditions = getByTestId('terms-and-conditions-test').querySelector('input');
+    const assistanceChannel = getByTestId('assistance-channel-test').querySelector('input');
+    const indicatedChannel = getByTestId('indicated-channel-test').querySelector('input');
 
     expect(initiativeOnIo).not.toBeNull();
     expect(initiativeOnIo).toBeInTheDocument();
@@ -155,27 +156,27 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     expect(serviceName).not.toBeNull();
     expect(serviceName).toBeInTheDocument();
 
-    expect(serviceDescription).toBeNull();
-    expect(serviceDescription).not.toBeInTheDocument();
+    expect(serviceDescription).not.toBeNull();
+    expect(serviceDescription).toBeInTheDocument();
 
     expect(serviceArea).not.toBeNull();
     expect(serviceArea).toBeInTheDocument();
 
-    expect(locale).toBeNull();
-    expect(locale).not.toBeInTheDocument();
-
-    expect(nazionale).toBeNull();
-    expect(nazionale).not.toBeInTheDocument();
-
     expect(privacyPolicyUrl).not.toBeNull();
-    expect(privacyPolicyUrl).toBeDefined();
+    expect(privacyPolicyUrl).toBeInTheDocument();
 
     expect(termsAndConditions).not.toBeNull();
-    expect(termsAndConditions).toBeDefined();
+    expect(termsAndConditions).toBeInTheDocument();
+
+    expect(assistanceChannel).not.toBeNull();
+    expect(assistanceChannel).toBeInTheDocument();
+
+    expect(indicatedChannel).not.toBeNull();
+    expect(indicatedChannel).toBeInTheDocument();
   });
 
   test('Test Input Form onChange', async () => {
-    const { getByTestId } = render(
+    const { getByTestId, container, debug, getByLabelText } = render(
       <Provider store={store}>
         <ServiceConfig
           action={WIZARD_ACTIONS.DRAFT}
@@ -197,10 +198,9 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     );
 
     const serviceName = getByTestId('service-name-test').querySelector('input') as HTMLInputElement;
-    const serviceDescription = getByTestId('service-description-test').querySelector(
-      'input'
-    ) as HTMLInputElement;
-    const mockCallback = jest.fn();
+
+    const serviceDescription = getByTestId('service-description-test') as HTMLInputElement;
+
     const privacyPolicyUrl = getByTestId('privacy-policy-url-test').querySelector(
       'input'
     ) as HTMLInputElement;
@@ -215,16 +215,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       fireEvent.click(serviceName);
       fireEvent.change(serviceName, { target: { value: '' } });
       expect(serviceName.value).toBe('');
-
-      fireEvent.change(serviceDescription, { target: { value: 'description' } });
-      expect(serviceDescription.value).toBe('description');
-      fireEvent.change(serviceDescription, { target: { value: '' } });
-      expect(serviceDescription.value).toBe('');
-
-      fireEvent.change(privacyPolicyUrl, { target: { value: 'privacy' } });
-      expect(privacyPolicyUrl.value).toBe('privacy');
-      fireEvent.change(privacyPolicyUrl, { target: { value: '' } });
-      expect(privacyPolicyUrl.value).toBe('');
     });
 
     const initiativeOnIo = getByTestId('initiative-on-io-test').querySelector(
@@ -240,20 +230,35 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       expect(initiativeOnIo.value).toBe(true);
     });
 
-    const serviceArea = getByTestId('service-area-select') as HTMLSelectElement;
+    const mockCallback = jest.fn();
+    const serviceArea = getByTestId('service-area-select');
+    const serviceAreaSelect = serviceArea.childNodes[0];
 
-    const servAreaSelect = serviceArea.childNodes[0];
+    fireEvent.click(serviceArea);
 
-    const locale = document.getElementById('serviceScopeLocal-test');
-    const nazionale = document.getElementById('serviceScopeNational-test');
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    waitFor(async () => {
+      fireEvent.change(serviceAreaSelect, {
+        target: { value: ServiceScopeEnum.LOCAL },
+      });
+      expect(mockCallback.mock.calls).toHaveLength(1);
+    });
+
+    fireEvent.change(serviceDescription, { target: { value: 'description' } });
+    expect(serviceDescription.value).toBe('description');
+    fireEvent.change(serviceDescription, { target: { value: '' } });
+    expect(serviceDescription.value).toBe('');
 
     waitFor(async () => {
-      expect(locale).toBeInTheDocument();
-      expect(nazionale).toBeInTheDocument();
+      fireEvent.change(privacyPolicyUrl, { target: { value: 'privacy' } });
+      expect(privacyPolicyUrl.value).toBe('privacy');
+      fireEvent.change(privacyPolicyUrl, { target: { value: '' } });
+      expect(privacyPolicyUrl.value).toBe('');
 
-      fireEvent.change(servAreaSelect, { target: { value: ServiceScopeEnum.LOCAL } });
-      expect(servAreaSelect).toBe(ServiceScopeEnum.LOCAL);
-      expect(mockCallback.mock.calls).toHaveLength(1);
+      fireEvent.change(termsAndConditions, { target: { value: 'terms' } });
+      expect(termsAndConditions.value).toBe('terms');
+      fireEvent.change(termsAndConditions, { target: { value: '' } });
+      expect(termsAndConditions.value).toBe('');
     });
   });
 });

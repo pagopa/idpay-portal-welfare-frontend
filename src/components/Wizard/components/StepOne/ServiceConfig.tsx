@@ -446,7 +446,9 @@ const ServiceConfig = ({
               placeholder={t('components.wizard.stepOne.form.serviceDescription')}
               name="serviceDescription"
               aria-label="service-description"
-              data-testid="service-description-test"
+              inputProps={{
+                'data-testid': 'service-description-test',
+              }}
               role="input"
               value={formik.values.serviceDescription}
               onChange={(e) => formik.handleChange(e)}
@@ -633,7 +635,10 @@ const ServiceConfig = ({
                   }}
                 >
                   {i !== 0 && (
-                    <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
+                    <Box
+                      sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}
+                      data-testid="remove-channel-test"
+                    >
                       <RemoveCircleOutlineIcon
                         color="error"
                         sx={{
@@ -660,6 +665,7 @@ const ServiceConfig = ({
                       value={formik.values.assistanceChannels[i].type}
                       onChange={(e) => handleContactSelect(e, formik.setValues, i, formik.values)}
                       error={typeTouched && Boolean(typeError)}
+                      data-testid="assistance-channel-test"
                     >
                       {contacts.map(({ name, value }, id) => (
                         <MenuItem key={id} value={value}>
@@ -693,6 +699,7 @@ const ServiceConfig = ({
                       required
                       InputLabelProps={{ required: false }}
                       size="small"
+                      data-testid="indicated-channel-test"
                     />
                   </FormControl>
                 </Box>
