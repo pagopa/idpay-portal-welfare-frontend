@@ -35,7 +35,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';

@@ -176,7 +176,7 @@ const InitiativeRefunds = () => {
                 : '',
             typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
-            rewardsResults: `${numberWithCommas(r.rewardsResulted)}`,
+            rewardsResults: `${numberWithCommas(r.rewardsNotified)}`,
             successPercentage: `${r.percentageResultedOk}%`,
             percentageResulted: r.percentageResulted,
             status: { status: r.status, percentageResulted: r.percentageResulted },
