@@ -1,49 +1,47 @@
 /* eslint-disable react/jsx-no-bind */
-import { render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { Provider } from 'react-redux';
-import { createStore } from '../../../../../redux/store';
+import React from 'react';
 import ShopRulesModal from '../ShopRulesModal';
+import { renderWithProviders } from '../../../../../utils/test-utils';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<ShopRulesModal />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+describe('<ShopRulesModal />', () => {
+  const mockedHandleCloseModal = jest.fn();
+  const mockedHandleShopListItemAdded = jest.fn();
 
   test('should render correctly the ShopRulesModal component', async () => {
     await act(async () => {
-      render(
-        <Provider store={store}>
-          <ShopRulesModal
-            openModal={false}
-            handleCloseModal={function (_event: React.MouseEvent<Element>): void {
-              //
-            }}
-            availableShopRules={[]}
-            handleShopListItemAdded={undefined}
-          />
-        </Provider>
+      const { getByTestId, debug } = renderWithProviders(
+        <ShopRulesModal
+          openModal={true}
+          handleCloseModal={mockedHandleCloseModal}
+          availableShopRules={[
+            {
+              checked: false,
+              code: 'string',
+              description: 'string',
+              enabled: true,
+              title: 'string',
+              subtitle: 'string',
+            },
+            {
+              checked: true,
+              code: 'string',
+              description: 'string',
+              enabled: false,
+              title: 'string',
+              subtitle: 'string',
+            },
+          ]}
+          handleShopListItemAdded={mockedHandleShopListItemAdded}
+        />
       );
+      // expect(mockedHandleShopListItemAdded.mock.calls.length).toBe(1);
     });
   });
-
-  //   it('form fields not null', async () => {
-  //     await act(async () => {
-  //       const { getByTestId, container } = render(
-  //         <Provider store={store}>
-  //           <ShopRulesModal
-  //             openModal={false}
-  //             handleCloseModal={function (_event: React.MouseEvent<Element>): void {
-  //               //
-  //             }}
-  //             availableShopRules={[]}
-  //             handleShopListItemAdded={undefined}
-  //           />
-  //         </Provider>
-  //       );
-  //     });
-  //   });
 });

@@ -29,7 +29,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       render(
         <Provider store={store}>
           <AdmissionCriteria
-            action={''}
+            action={WIZARD_ACTIONS.DRAFT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
@@ -49,40 +49,14 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     });
   });
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
 
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-    });
-  });
-
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-    });
-  });
+ 
 
   it('Test onClick of "Sfoglia Criteri" to open the modal must be true', async () => {
     const { getByTestId, queryByTestId } = render(
       <Provider store={store}>
         <AdmissionCriteria
-          action={''}
+          action={WIZARD_ACTIONS.SUBMIT}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
