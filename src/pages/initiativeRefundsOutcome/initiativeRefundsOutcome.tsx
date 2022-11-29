@@ -44,7 +44,7 @@ import {
   getRewardNotificationImportsPaged,
   putDispFileUpload,
 } from '../../services/intitativeService';
-import { InitiativeRefundImports } from '../../services/__mocks__/initiativeService';
+import { InitiativeRefundImports } from '../../model/InitiativeRefunds';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();

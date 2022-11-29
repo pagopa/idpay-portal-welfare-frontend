@@ -326,6 +326,8 @@ export default {
       title: 'Graduatoria',
       subtitle:
         'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
+      alertText: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
+      noData: 'La graduatoria non è stata ancora elaborata.',
     },
     initiativeUsers: {
       title: 'Utenti',

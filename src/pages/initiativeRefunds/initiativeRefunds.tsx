@@ -43,9 +43,9 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
 import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
-import { InitiativeRefundToDisplay } from '../../services/__mocks__/initiativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
+import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();

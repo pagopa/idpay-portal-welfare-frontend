@@ -26,7 +26,6 @@ import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-// import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -40,14 +39,8 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { InitiativeUserToDisplay } from '../../services/__mocks__/initiativeUsersService';
 import { getOnboardingStatus } from '../../services/intitativeService';
-
-// import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
-
-// interface MatchParams {
-//   id: string;
-// }
+import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -62,9 +55,6 @@ const InitiativeUsers = () => {
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
-  // const [availableStatusOptions, setAvailableStatusOptions] = useState<
-  //   Array<{ value: string; label: string }>
-  // >([]);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
