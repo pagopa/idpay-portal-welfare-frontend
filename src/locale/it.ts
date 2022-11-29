@@ -32,6 +32,9 @@ export default {
     initiativeRefunds: {
       title: 'Rimborsi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+    },
   },
   subHeader: {
     partySelectionSearch: {
