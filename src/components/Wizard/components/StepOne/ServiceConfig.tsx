@@ -412,7 +412,9 @@ const ServiceConfig = ({
             <InputLabel>{t('components.wizard.stepOne.form.serviceArea')}</InputLabel>
             <Select
               id="serviceArea"
-              data-testid="service-area-select"
+              inputProps={{
+                'data-testid': 'service-area-select',
+              }}
               name="serviceArea"
               aria-labelledby="serviceArea"
               label={t('components.wizard.stepOne.form.serviceArea')}
