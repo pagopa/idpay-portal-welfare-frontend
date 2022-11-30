@@ -196,14 +196,13 @@ const IseeCriteriaItem = ({
         </Box>
       )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)}>
+        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)} data-testid="delete-button-test">
           <DeleteOutlineIcon
             color="error"
             data-id={formData.code}
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>

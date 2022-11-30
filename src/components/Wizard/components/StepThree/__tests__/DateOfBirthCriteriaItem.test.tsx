@@ -68,16 +68,35 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
       const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
       const birthDateStart = getByTestId('dateOfBirth-start-value') as HTMLInputElement;
       const birthDateEnd = getByTestId('dateOfBirth-end-value') as HTMLInputElement;
+      const selectDateOfBirth = getByTestId('dateOfBirth-select-test') as HTMLSelectElement;
+      const selectRelationDateOfBirth = getByTestId(
+        'dateOfBirth-relation-test'
+      ) as HTMLSelectElement;
 
       fireEvent.click(deleteBtn);
       expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
 
+      //select date of birth
+      fireEvent.click(selectDateOfBirth);
+      fireEvent.change(selectDateOfBirth, { target: { value: 'year' } });
+      expect(selectDateOfBirth).toBeDefined();
+
+      //select relation birth date
+      fireEvent.click(selectRelationDateOfBirth);
+      fireEvent.change(selectRelationDateOfBirth, { target: { value: 'EQ' } });
+      fireEvent.blur(selectRelationDateOfBirth);
+      expect(selectRelationDateOfBirth).toBeDefined();
+
+      //birth Date start
       fireEvent.change(birthDateStart, { target: { value: 'birthDateStart' } });
       fireEvent.blur(birthDateStart);
       expect(birthDateStart).toBeInTheDocument();
-
+      //birth Date end
+      fireEvent.click(birthDateEnd);
+      expect(birthDateEnd.value).toBe('');
       fireEvent.change(birthDateEnd, { target: { value: 'birthDateEnd' } });
-      expect(birthDateEnd).toBeInTheDocument();
+      expect(birthDateEnd.value).toBe('birthDateEnd');
+      fireEvent.blur(birthDateEnd);
     });
   });
 

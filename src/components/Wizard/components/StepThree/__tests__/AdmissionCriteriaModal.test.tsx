@@ -1,26 +1,42 @@
 import React from 'react';
-import { waitFor, fireEvent, act, render } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { waitFor, fireEvent, act } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
-import { createStore } from '../../../../../redux/store';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
 import { renderWithProviders } from '../../../../../utils/test-utils';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
+/*
+jest.mock('@mui/material', () => ({
+  Modal: () => ({ t: (key: any) => key }),
+}));*/
+beforeEach(() => {
+  jest.mock('@mui/material');
+});
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
 describe('<AdmissionCriteriaModal />', () => {
-  const mockedCriteria: AvailableCriteria = {
-    authorityLabel: '',
-    fieldLabel: '',
-    value: '',
-    value2: '',
-    code: '',
-    authority: '',
-    operator: '',
-  };
+  const mockedCriteria: Array<AvailableCriteria> = [
+    {
+      authorityLabel: '',
+      fieldLabel: '',
+      value: '',
+      value2: '',
+      code: '',
+      authority: '',
+      operator: '',
+    },
+    {
+      authorityLabel: 'authLabel',
+      fieldLabel: 'field',
+      value: 'value',
+      value2: 'value2',
+      code: 'code',
+      authority: 'auth',
+      operator: 'ope',
+    },
+  ];
   test('Should display the Modal', async () => {
     await act(async () => {
       const { debug } = renderWithProviders(
@@ -36,7 +52,7 @@ describe('<AdmissionCriteriaModal />', () => {
           ): void {
             console.log(event);
           }}
-          criteriaToRender={[mockedCriteria]}
+          criteriaToRender={mockedCriteria}
           // eslint-disable-next-line react/jsx-no-bind
           setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
             console.log(value);
@@ -72,7 +88,6 @@ describe('<AdmissionCriteriaModal />', () => {
     const checkNotSearched = queryByTestId('check-test-1') as HTMLInputElement;
     const checkSearched = queryByTestId('check-test-2') as HTMLInputElement;
     const closeModal = queryByTestId('close-modal-test') as HTMLInputElement;
-    const handleCriteriaChange = jest.fn();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
@@ -97,8 +112,6 @@ describe('<AdmissionCriteriaModal />', () => {
     waitFor(async () => {
       expect(checkNotSearched.checked).toEqual(false);
       fireEvent.change(checkNotSearched, { target: { value: true } });
-      expect(handleCriteriaChange).toBeDefined();
-      expect(handleCriteriaChange).toHaveBeenCalledTimes(0);
       expect(checkNotSearched.checked).toEqual(true);
     });
 
@@ -106,8 +119,6 @@ describe('<AdmissionCriteriaModal />', () => {
     waitFor(async () => {
       expect(checkSearched.checked).toEqual(false);
       fireEvent.change(checkSearched, { target: { value: true } });
-      expect(handleCriteriaChange).toBeDefined();
-      expect(handleCriteriaChange).toHaveBeenCalledTimes(0);
       expect(checkSearched.checked).toEqual(true);
     });
   });
@@ -137,13 +148,10 @@ describe('<AdmissionCriteriaModal />', () => {
     const searchInput = queryByLabelText(
       /components.wizard.stepThree.chooseCriteria.modal.searchCriteria/
     ) as HTMLInputElement;
-    const handleSearchCriteria = jest.fn();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     waitFor(async () => {
       fireEvent.change(searchInput, { target: { value: 'test' } });
-      expect(handleSearchCriteria).toBeDefined();
-      expect(handleSearchCriteria).toHaveBeenCalledTimes(0);
       expect(searchInput.value).toBe(true);
     });
   });
