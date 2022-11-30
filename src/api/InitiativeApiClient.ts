@@ -22,6 +22,7 @@ import { SasToken } from './generated/initiative/SasToken';
 import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from './generated/initiative/LogoDTO';
 import { CsvDTO } from './generated/initiative/CsvDTO';
+import { PageOnboardingRankingsDTO } from './generated/initiative/PageOnboardingRankingsDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -276,5 +277,30 @@ export const InitiativeApi = {
   getDispFileErrors: async (id: string, name: string): Promise<CsvDTO> => {
     const result = await apiClient.getDispFileErrors({ initiativeId: id, filename: name });
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getInitiativeOnboardingRankingStatusPaged: async (
+    id: string,
+    page: number,
+    beneficiary?: string,
+    state?: string
+  ): Promise<PageOnboardingRankingsDTO> => {
+    const result = await apiClient.getInitiativeOnboardingRankingStatusPaged({
+      initiativeId: id,
+      page,
+      beneficiary,
+      state,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRankingFileDownload: async (id: string): Promise<SasToken> => {
+    const result = await apiClient.getRankingFileDownload({ initiativeId: id });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  notifyCitizenRankings: async (id: string): Promise<void> => {
+    const result = await apiClient.notifyCitizenRankings({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 };

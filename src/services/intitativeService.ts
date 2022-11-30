@@ -21,6 +21,7 @@ import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImpo
 import { LogoDTO } from '../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
+import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
 import {
   mockedExportsPaged,
   mockedFileName,
@@ -300,3 +301,19 @@ export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
 
 export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
   InitiativeApi.getDispFileErrors(id, name).then((res) => res);
+
+export const getInitiativeOnboardingRankingStatusPaged = (
+  id: string,
+  page: number,
+  beneficiary?: string | undefined,
+  state?: string | undefined
+): Promise<PageOnboardingRankingsDTO> =>
+  InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state).then(
+    (res) => res
+  );
+
+export const getRankingFileDownload = (id: string): Promise<SasToken> =>
+  InitiativeApi.getRankingFileDownload(id).then((res) => res);
+
+export const notifyCitizenRankings = (id: string): Promise<void> =>
+  InitiativeApi.notifyCitizenRankings(id).then((res) => res);

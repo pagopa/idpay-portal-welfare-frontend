@@ -150,7 +150,7 @@ const IntroductionMarkdown = ({
 
                 {logoUrl.length > 0 ? (
                   <Box sx={{ gridColumn: 'span 1' }}>
-                    <img height={'50'} width={'50'} alt="logo" src={logoUrl} loading="lazy" />
+                    <img width={'50'} alt="logo" src={logoUrl} loading="lazy" />
                   </Box>
                 ) : null}
               </Box>
@@ -217,7 +217,7 @@ const IntroductionMarkdown = ({
 
                 {logoUrl.length > 0 ? (
                   <Box sx={{ gridColumn: 'span 1' }}>
-                    <img height={'50'} width={'50'} alt="logo" src={logoUrl} loading="lazy" />
+                    <img width={'50'} alt="logo" src={logoUrl} loading="lazy" />
                   </Box>
                 ) : null}
               </Box>

@@ -32,6 +32,9 @@ export default {
     initiativeRefunds: {
       title: 'Rimborsi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+    },
   },
   subHeader: {
     partySelectionSearch: {
@@ -319,6 +322,24 @@ export default {
       description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
       buttonLabel: 'Chiudi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+      subtitle:
+        'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
+      alertText: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
+      noData: 'La graduatoria non è stata ancora elaborata.',
+      form: {
+        search: 'Cerca per Codice fiscale',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        beneficiary: 'Aderenti',
+        ranking: 'Posizione',
+        rankingValue: 'ISEE',
+        criteriaConsensusTimeStamp: 'Data e ora',
+      },
+    },
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
@@ -415,6 +436,7 @@ export default {
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',
+    initiativeRanking: 'Graduatoria',
     initiativeUsers: 'Utenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
