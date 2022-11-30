@@ -326,8 +326,28 @@ export default {
       title: 'Graduatoria',
       subtitle:
         'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
-      alertText: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
+      publishedSubtitle: 'Approvata e pubblicata il {{date}} alle {{hour}}',
       noData: 'La graduatoria non è stata ancora elaborata.',
+      rankingStatus: {
+        notReady: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
+        readyToBePublishedTitle: 'La graduatoria è pronta per essere pubblicata',
+        readyToBePublishedSubtitle:
+          "Dopo la pubblicazione gli aderenti idonei riceveranno notifica in appIO e un SMS con l' esito",
+        publishingTitle: 'La graduatoria è in fase di pubblicazione',
+        publishBtn: 'Pubblica',
+        published:
+          'È stata inviata una notifica agli assegnatari su appIO con la conferma dell’esito',
+        publishedCloseBtn: 'Ho capito',
+      },
+      publishModal: {
+        title: 'Pubblica la graduatoria',
+        subtitle:
+          'Se pubblichi la graduatoria, l’iniziativa avrà inizio e gli aderenti assegnatari riceveranno una notifica in appIO e un SMS con l’esito. L’operazione è irreversibile',
+        cancelBtn: 'Annulla',
+        publishBtn: 'Pubblica',
+        alertTitle: 'Ricorda di scaricare il csv della graduatoria',
+        alertBtn: 'Scarica csv',
+      },
       form: {
         search: 'Cerca per Codice fiscale',
         filterBtn: 'Filtra',
@@ -368,6 +388,7 @@ export default {
         onEvaluation: 'In attesa',
         invited: 'Idoneo',
         onboardingOk: 'Iscritto',
+        onboardingKo: 'Non idoneo',
       },
     },
     initiativeRefunds: {

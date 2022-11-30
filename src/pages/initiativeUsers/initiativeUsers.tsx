@@ -143,6 +143,8 @@ const InitiativeUsers = () => {
         return <Chip label={t('pages.initiativeUsers.status.invited')} color="warning" />;
       case 'ONBOARDING_OK':
         return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
+      case 'ONBOARDING_KO':
+        return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
       default:
         return null;
     }
@@ -387,6 +389,9 @@ const InitiativeUsers = () => {
             </MenuItem>
             <MenuItem value="ONBOARDING_OK" data-testid="filterStatusOnboardingOk-test">
               {t('pages.initiativeUsers.status.onboardingOk')}
+            </MenuItem>
+            <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">
+              {t('pages.initiativeUsers.status.onboardingKo')}
             </MenuItem>
           </Select>
         </FormControl>
