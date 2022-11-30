@@ -1,4 +1,11 @@
-import { fireEvent, screen, render, waitFor, getByLabelText } from '@testing-library/react';
+import {
+  fireEvent,
+  screen,
+  render,
+  waitFor,
+  getByLabelText,
+  getAllByTestId,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
@@ -9,6 +16,7 @@ import ServiceConfig from '../ServiceConfig';
 import React from 'react';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { ExploreOff } from '@mui/icons-material';
+import { mockedServiceInfoData } from '../../../../../services/__mocks__/initiativeService';
 
 window.scrollTo = jest.fn();
 
@@ -95,7 +103,6 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     values,
     currentStep,
     setCurrentStep,
-    handleOpenInitiativeNotOnIOModal,
     addAssistanceChannel,
     addChannel,
   } = setUpServiceConfig();
@@ -148,7 +155,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
     const privacyPolicyUrl = getByTestId('privacy-policy-url-test').querySelector('input');
     const termsAndConditions = getByTestId('terms-and-conditions-test').querySelector('input');
     const assistanceChannel = getByTestId('assistance-channel-test').querySelector('input');
-    const indicatedChannel = getByTestId('indicated-channel-test').querySelector('input');
+    const indicatedChannel = getByTestId('indicated-channel-test');
 
     expect(initiativeOnIo).not.toBeNull();
     expect(initiativeOnIo).toBeInTheDocument();
@@ -176,7 +183,7 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   test('Test Input Form onChange', async () => {
-    const { getByTestId, container, debug, getByLabelText } = render(
+    const { getByTestId, getAllByTestId } = render(
       <Provider store={store}>
         <ServiceConfig
           action={WIZARD_ACTIONS.DRAFT}
@@ -260,5 +267,41 @@ describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) =
       fireEvent.change(termsAndConditions, { target: { value: '' } });
       expect(termsAndConditions.value).toBe('');
     });
+
+    const assistanceChannel = getByTestId('add-channel-test');
+
+    const indicatedChannel = getByTestId('indicated-channel-test') as HTMLInputElement;
+
+    const addAssistanceChannel = jest.fn();
+
+    fireEvent.change(indicatedChannel, { target: { value: 'input' } });
+    expect(indicatedChannel.value).toBe('input');
+
+    waitFor(async () => {
+      fireEvent.click(assistanceChannel);
+      addAssistanceChannel();
+      expect(addAssistanceChannel).toHaveBeenCalledTimes(1);
+    });
+
+    const assistanceMockCallback = jest.fn();
+    const assistance = getAllByTestId('assistance-channel-test') as unknown as HTMLSelectElement;
+    const assistanceSelect: any = assistance.childNodes;
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    waitFor(async () => {
+      fireEvent.change(assistanceSelect, {
+        target: { value: 'name' },
+      });
+      expect(assistanceSelect).toBe('name');
+      expect(assistanceMockCallback.mock.calls).toHaveLength(1);
+    });
+
+    const remove = getByTestId('remove-assistance-channel');
+    const deleteAssistanceChannel = jest.fn();
+
+    fireEvent.click(remove);
+    deleteAssistanceChannel(0, values, sendValues(mockedServiceInfoData));
+
+    expect(deleteAssistanceChannel).toHaveBeenCalled();
   });
 });

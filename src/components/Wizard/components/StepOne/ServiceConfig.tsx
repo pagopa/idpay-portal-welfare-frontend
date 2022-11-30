@@ -646,6 +646,7 @@ const ServiceConfig = ({
                         }}
                         onClick={() => deleteAssistanceChannel(i, formik.values, formik.setValues)}
                         id={`remove_assistanceChannel_${i}`}
+                        data-testid="remove-assistance-channel"
                       />
                     </Box>
                   )}
@@ -699,7 +700,9 @@ const ServiceConfig = ({
                       required
                       InputLabelProps={{ required: false }}
                       size="small"
-                      data-testid="indicated-channel-test"
+                      inputProps={{
+                        'data-testid': 'indicated-channel-test',
+                      }}
                     />
                   </FormControl>
                 </Box>

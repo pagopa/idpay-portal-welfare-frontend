@@ -200,7 +200,7 @@ const UploadServiceIcon = ({
         }}
         {...getRootProps()}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} data-testid="drop-input" />
         <Box sx={{ textAlign: 'center', gridColumn: 'span 12', cursor: 'pointer' }}>
           <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
           <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
