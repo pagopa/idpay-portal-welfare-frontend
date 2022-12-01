@@ -4,6 +4,11 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
 import Wizard from '../Wizard';
 import React from 'react';
+import ServiceConfig from '../components/StepOne/ServiceConfig';
+import Generalnfo from '../components/StepTwo/Generalnfo';
+import AdmissionCriteria from '../components/StepThree/AdmissionCriteria';
+import ShopRules from '../components/StepFour/ShopRules';
+import RefundRules from '../components/StepFive/RefundRules';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -17,6 +22,11 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
   const handleDraft = jest.fn();
   const setActiveStep = jest.fn();
   const setActionType = jest.fn();
+  const step1 = 0;
+  const step2 = 1;
+  const step3 = 2;
+  const step4 = 3;
+  const step5 = 4;
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -42,11 +52,7 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
         const backBtn = queryByTestId('back-action-test') as HTMLButtonElement;
         fireEvent.click(backBtn);
         handleBack();
-        /* setActionType();
-        setActiveStep(); */
         expect(handleBack).toHaveBeenCalled();
-        /* expect(setActionType).toHaveBeenCalled();
-        expect(setActiveStep).toHaveBeenCalled(); */
       });
 
       await waitFor(async () => {
@@ -66,7 +72,6 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   it('Test on renderActiveStepBox', async () => {
-    const renderActiveStepBox = jest.fn();
     render(
       <Provider store={store}>
         <Wizard
@@ -76,7 +81,7 @@ describe('<Wizard />', (injectedStore?: ReturnType<typeof createStore>) => {
         />
       </Provider>
     );
-    renderActiveStepBox();
-    expect(renderActiveStepBox).toHaveBeenCalled();
+    const setSteps: any = (activeStep: number) => [activeStep, setActiveStep];
+    jest.spyOn(React, 'useState').mockImplementation(setSteps(step1));
   });
 });

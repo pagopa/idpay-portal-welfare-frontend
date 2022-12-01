@@ -30,6 +30,7 @@ import {
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
   mockedOnBoardingStatus,
+  mockedRankingStatus,
   mockedRefundRules,
   mockedServiceInfoData,
   mockedTrxAndRewardRules,
@@ -293,27 +294,60 @@ export const getRewardNotificationImportsPaged = (
   id: string,
   page: number,
   sort: string
-): Promise<PageRewardImportsDTO> =>
-  InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);
+): Promise<PageRewardImportsDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getRewardNotificationImportsPaged(
+      mockedExportsPaged.id,
+      mockedExportsPaged.page,
+      mockedExportsPaged.sort
+    );
+  }
+  return InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);
+};
 
-export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
-  InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
+export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.uploadAndUpdateLogo(mockedInitiativeId, mockedFile);
+  }
+  return InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
+};
 
-export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
-  InitiativeApi.getDispFileErrors(id, name).then((res) => res);
+export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getDispFileErrors(mockedInitiativeId, mockedFilePath);
+  }
+  return InitiativeApi.getDispFileErrors(id, name).then((res) => res);
+};
 
 export const getInitiativeOnboardingRankingStatusPaged = (
   id: string,
   page: number,
   beneficiary?: string | undefined,
   state?: string | undefined
-): Promise<PageOnboardingRankingsDTO> =>
-  InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state).then(
+): Promise<PageOnboardingRankingsDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged(
+      mockedRankingStatus.id,
+      mockedRankingStatus.page,
+      mockedRankingStatus.beneficiary,
+      mockedRankingStatus.state
+    );
+  }
+  return InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state).then(
     (res) => res
   );
+};
 
-export const getRankingFileDownload = (id: string, filename: string): Promise<SasToken> =>
-  InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
+export const getRankingFileDownload = (id: string, filename: string): Promise<SasToken> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
+  }
+  return InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
+};
 
-export const notifyCitizenRankings = (id: string): Promise<void> =>
-  InitiativeApi.notifyCitizenRankings(id).then((res) => res);
+export const notifyCitizenRankings = (id: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.notifyCitizenRankings(mockedInitiativeId);
+  }
+  return InitiativeApi.notifyCitizenRankings(id).then((res) => res);
+};
