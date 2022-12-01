@@ -19,6 +19,10 @@ import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
 import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
 import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
+import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
+import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
+import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -144,11 +148,54 @@ export const fetchInitiativeRefunds = (page: number) => {
   }
 };
 
+export const getRewardNotificationImportsPaged = (
+  _id: string,
+  _page: number,
+  _sort: string
+): Promise<PageRewardImportsDTO> =>
+  InitiativeApiMocked.getRewardNotificationImportsPaged(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.sort
+  );
+
+export const uploadAndUpdateLogo = (_id: string, _file: File): Promise<LogoDTO> =>
+  InitiativeApiMocked.uploadAndUpdateLogo(mockedInitiativeId, mockedFile);
+
+export const getDispFileErrors = (_id: string, _name: string): Promise<CsvDTO> =>
+  InitiativeApiMocked.getDispFileErrors(mockedInitiativeId, mockedFilePath);
+
+export const getInitiativeOnboardingRankingStatusPaged = (
+  _id: string,
+  _page: number,
+  _beneficiary: string | undefined,
+  _state: string | undefined
+): Promise<PageOnboardingRankingsDTO> =>
+  InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged(
+    mockedRankingStatus.id,
+    mockedRankingStatus.page,
+    mockedRankingStatus.beneficiary,
+    mockedRankingStatus.state
+  );
+
+export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
+  InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
+
+export const notifyCitizenRankings = (_id: string): Promise<void> =>
+  InitiativeApiMocked.notifyCitizenRankings(mockedInitiativeId);
+
 // export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
 //   expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);
 
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
+
+export const mockedRankingStatus = {
+  id: '62e29002aac2e94cfa3763dd',
+  page: 10,
+  beneficiary: 'MCCGRL01C25M052R',
+  state: 'DEFAULT',
+};
 
 export const mockedInitiativeSummary = [
   {

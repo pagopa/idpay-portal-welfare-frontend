@@ -23,6 +23,7 @@ import {
   //   getOnboardingStatus,
   //   putDispFileUpload,
   mockedOnBoardingStatus,
+  mockedRankingStatus,
 } from '../__mocks__/initiativeService';
 
 import {
@@ -48,6 +49,12 @@ import {
   getOnboardingStatus,
   putDispFileUpload,
   initiativeStatistics,
+  getRewardNotificationImportsPaged,
+  uploadAndUpdateLogo,
+  getDispFileErrors,
+  getInitiativeOnboardingRankingStatusPaged,
+  getRankingFileDownload,
+  notifyCitizenRankings,
 } from '../intitativeService';
 
 import {
@@ -95,6 +102,12 @@ beforeEach(() => {
   jest.spyOn(InitiativeApi, 'getRewardFileDownload');
   jest.spyOn(InitiativeApi, 'getOnboardingStatus');
   jest.spyOn(InitiativeApi, 'putDispFileUpload');
+  jest.spyOn(InitiativeApi, 'getRewardNotificationImportsPaged');
+  jest.spyOn(InitiativeApi, 'uploadAndUpdateLogo');
+  jest.spyOn(InitiativeApi, 'getDispFileErrors');
+  jest.spyOn(InitiativeApi, 'getInitiativeOnboardingRankingStatusPaged');
+  jest.spyOn(InitiativeApi, 'getRankingFileDownload');
+  jest.spyOn(InitiativeApi, 'notifyCitizenRankings');
 });
 
 test('test get initiative summary', async () => {
@@ -277,6 +290,63 @@ test('put Disp File Upload', async () => {
     mockedFileName,
     mockedFile
   );
+});
+
+test('get reward notification imports paged', async () => {
+  await getRewardNotificationImportsPaged(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.sort
+  );
+  expect(InitiativeApi.getRewardNotificationImportsPaged).not.toHaveBeenCalledWith(
+    mockedExportsPaged.id,
+    mockedExportsPaged.page,
+    mockedExportsPaged.sort
+  );
+});
+
+test('upload adn update logo', async () => {
+  await uploadAndUpdateLogo(mockedInitiativeId, mockedFile);
+  expect(InitiativeApi.uploadAndUpdateLogo).not.toHaveBeenCalledWith(
+    mockedInitiativeId,
+    mockedFile
+  );
+});
+
+test('get disp file errors', async () => {
+  await getDispFileErrors(mockedInitiativeId, mockedFilePath);
+  expect(InitiativeApi.getDispFileErrors).not.toHaveBeenCalledWith(
+    mockedInitiativeId,
+    mockedFilePath
+  );
+});
+
+test('get initiative Onboarding ranking status paged', async () => {
+  await getInitiativeOnboardingRankingStatusPaged(
+    mockedRankingStatus.id,
+    mockedRankingStatus.page,
+    mockedRankingStatus.beneficiary,
+    mockedRankingStatus.state
+  );
+  expect(InitiativeApi.getInitiativeOnboardingRankingStatusPaged).not.toHaveBeenCalledWith(
+    mockedRankingStatus.id,
+    mockedRankingStatus.page,
+    mockedRankingStatus.beneficiary,
+    mockedRankingStatus.state
+  );
+});
+
+test('get ranking file download', async () => {
+  await getRankingFileDownload(mockedInitiativeId, mockedFileName);
+  expect(InitiativeApi.getRankingFileDownload).not.toHaveBeenCalledWith(
+    mockedInitiativeId,
+    mockedFileName
+  );
+});
+
+test('notify citizen rankings', async () => {
+  await notifyCitizenRankings(mockedInitiativeId);
+  expect(InitiativeApi.notifyCitizenRankings).not.toHaveBeenCalledWith(mockedInitiativeId);
 });
 
 test('test trascodeRewardRule using RewardGroupDTO', () => {

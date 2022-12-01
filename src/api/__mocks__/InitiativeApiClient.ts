@@ -21,6 +21,11 @@ import { SasToken } from '../generated/initiative/SasToken';
 import { OnboardingDTO } from '../generated/initiative/OnboardingDTO';
 import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
+import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from '../generated/initiative/LogoDTO';
+import { mockedFile } from '../../services/__mocks__/groupService';
+import { CsvDTO } from '../generated/initiative/CsvDTO';
+import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardingRankingsDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -119,4 +124,28 @@ export const InitiativeApiMocked = {
 
   putDispFileUpload: async (_id: string, _filename: string, _file: File): Promise<void> =>
     new Promise((resolve) => resolve()),
+
+  getRewardNotificationImportsPaged: async (
+    _id: string,
+    _page: number,
+    _sort: string
+  ): Promise<PageRewardImportsDTO> => new Promise((resolve) => resolve(mockedInitiativeId)),
+
+  uploadAndUpdateLogo: async (_id: string, _file: File): Promise<LogoDTO> =>
+    new Promise((resolve) => resolve(mockedFile)),
+
+  getDispFileErrors: async (_id: string, _name: string): Promise<CsvDTO> =>
+    new Promise((resolve) => resolve(mockedInitiativeId)),
+
+  getInitiativeOnboardingRankingStatusPaged: async (
+    _id: string,
+    _page: number,
+    _beneficiary: string | undefined,
+    _state: string | undefined
+  ): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedInitiativeId)),
+
+  getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
+    new Promise((resolve) => resolve(mockedInitiativeId)),
+
+  notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
 };
