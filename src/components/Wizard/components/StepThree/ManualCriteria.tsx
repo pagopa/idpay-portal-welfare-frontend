@@ -383,7 +383,7 @@ const ManualCriteria = ({
                         );
                         handleOptionDeleted(i, manualCriteriaFormik.values.manualCriteriaCode);
                       }}
-                      data-test-id="manualCriteria-remove-option"
+                      data-testid="manualCriteria-remove-option"
                     />
                   </Box>
                 )}
@@ -440,6 +440,7 @@ const ManualCriteria = ({
                 startIcon={<AddIcon />}
                 sx={{ color: 'primary.main' }}
                 weight="default"
+                data-testid="add option btn"
               >
                 {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
               </ButtonNaked>

@@ -275,7 +275,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }}
         {...getRootProps({ className: 'dropzone' })}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} data-testid="drop-input-step3" />
         <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
           <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
           <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>

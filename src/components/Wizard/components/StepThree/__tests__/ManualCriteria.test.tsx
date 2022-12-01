@@ -1,4 +1,4 @@
-import { fireEvent, render, act, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { ManualCriteriaItem } from '../../../../../model/Initiative';
@@ -39,7 +39,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
           data={{
             _type: 'multi',
             description: 'description',
-            boolValue: true,
+            boolValue: false,
             multiValue: [{ value: 'value' }],
             code: 'code',
           }}
@@ -49,7 +49,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
             {
               _type: 'multi',
               description: 'description',
-              boolValue: true,
+              boolValue: false,
               multiValue: [{ value: 'string' }, { value: 'string' }],
               code: 'code',
             },
@@ -60,7 +60,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         />
       </Provider>
     );
-    //const user = userEvent.setup();
+
     const textField = getByTestId('manualCriteria-multi-test') as HTMLInputElement;
     const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
     const selectManualCriteria = screen.getByTestId(
@@ -69,8 +69,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     const manualCriteriaName = screen.getByTestId(
       'manualCriteria-boolean-test'
     ) as HTMLInputElement;
-
-    //const removeCircleIcon = screen.getByTestId('manualCriteria-remove-option');
+    const addOptionsBtn = screen.getByTestId('add option btn') as HTMLButtonElement;
 
     fireEvent.change(textField, { target: { value: 'temp val' } });
     expect(textField).toBeDefined();
@@ -86,8 +85,8 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     fireEvent.change(manualCriteriaName, { target: { value: 'boolean' } });
     expect(manualCriteriaName).toBeDefined();
 
-    // fireEvent.click(removeCircleIcon);
-    //expect(removeCircleIcon).toBeDefined();
+    fireEvent.click(addOptionsBtn);
+    expect(addOptionsBtn).toBeDefined();
   });
 
   test('Should display ManualCriteria DRAFT action', () => {
@@ -98,7 +97,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
           data={{
             _type: 'boolean',
             description: 'description',
-            boolValue: false,
+            boolValue: true,
             multiValue: [{ value: 'value' }],
             code: 'code',
           }}
@@ -109,9 +108,9 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
             {
               _type: 'bool',
               description: 'description',
-              boolValue: false,
+              boolValue: true,
               multiValue: [{ value: 'string' }, { value: 'string' }],
-              code: 'code',
+              code: '',
             },
           ]}
           // eslint-disable-next-line react/jsx-no-bind
@@ -130,5 +129,8 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
         />
       </Provider>
     );
+    const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+
+    fireEvent.click(deleteBtn);
   });
 });
