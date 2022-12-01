@@ -8,6 +8,7 @@ type Props = {
   openPublishInitiativeRankingModal: boolean;
   handleClosePublishInitiativeRankingModal: MouseEventHandler;
   initiativeId: string | undefined;
+  fileName: string | undefined;
   publishInitiativeRanking: any;
   downloadInitiativeRanking: any;
 };
@@ -16,6 +17,7 @@ const PublishInitiativeRankingModal = ({
   openPublishInitiativeRankingModal,
   handleClosePublishInitiativeRankingModal,
   initiativeId,
+  fileName,
   publishInitiativeRanking,
   downloadInitiativeRanking,
 }: Props) => {
@@ -57,7 +59,7 @@ const PublishInitiativeRankingModal = ({
             action={
               <ButtonNaked
                 component="button"
-                onClick={() => downloadInitiativeRanking(initiativeId)}
+                onClick={() => downloadInitiativeRanking(initiativeId, fileName)}
                 sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
                 weight="default"
                 size="small"

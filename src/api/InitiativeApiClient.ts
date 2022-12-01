@@ -294,8 +294,8 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getRankingFileDownload: async (id: string): Promise<SasToken> => {
-    const result = await apiClient.getRankingFileDownload({ initiativeId: id });
+  getRankingFileDownload: async (id: string, filename: string): Promise<SasToken> => {
+    const result = await apiClient.getRankingFileDownload({ initiativeId: id, filename });
     return extractResponse(result, 201, onRedirectToLogin);
   },
 

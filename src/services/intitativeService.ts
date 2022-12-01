@@ -312,8 +312,8 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     (res) => res
   );
 
-export const getRankingFileDownload = (id: string): Promise<SasToken> =>
-  InitiativeApi.getRankingFileDownload(id).then((res) => res);
+export const getRankingFileDownload = (id: string, filename: string): Promise<SasToken> =>
+  InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
 
 export const notifyCitizenRankings = (id: string): Promise<void> =>
   InitiativeApi.notifyCitizenRankings(id).then((res) => res);

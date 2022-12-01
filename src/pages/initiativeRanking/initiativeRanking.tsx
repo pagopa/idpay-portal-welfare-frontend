@@ -27,6 +27,8 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SyncIcon from '@mui/icons-material/Sync';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
@@ -49,10 +51,9 @@ import { SasToken } from '../../api/generated/initiative/SasToken';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 // TODOs
-// - Populate correctly select options with user's statuses
+
 // - Add orderBy parameter to getTableData function
 // - Call getTableData function when orderDirection changes
-// - Get user status on getTableData function and create function to map it with an icon
 // - Call getTableData function when publish action responses with ok
 
 const InitiativeRanking = () => {
@@ -60,9 +61,9 @@ const InitiativeRanking = () => {
   const history = useHistory();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [rankingStatus, setRankingStatus] = useState<string | undefined>('WAITING_END');
+  const [rankingStatus, setRankingStatus] = useState<string | undefined>('');
   const [filterByBeneficiary, setFilterByBeneficiary] = useState<string | undefined>();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
   const [orderDirection, setOrderDirection] = useState<SortDirection>('desc');
@@ -70,9 +71,12 @@ const InitiativeRanking = () => {
   const [openPublishInitiativeRankingModal, setOpenPublishInitiativeRankingModal] =
     useState<boolean>(false);
   const [openPublishedInitiativeRankingAlert, setOpenPublishedInitiativeRankingAlert] =
-    useState<boolean>(true);
-  const [publishedDate, setPublishedDate] = useState<string>('30/11/2022');
-  const [publishedHour, setPublishedHour] = useState<string>('13:24');
+    useState<boolean>(false);
+  const [publishedDate, setPublishedDate] = useState<string>('');
+  const [publishedHour, setPublishedHour] = useState<string>('');
+  const [fileName, setFileName] = useState<string | undefined>();
+  const [totalEligibleOk, setTotalEligibleOk] = useState<number | undefined>(0);
+  const [totalEligibleKo, setTotalEligibleKo] = useState<number | undefined>(0);
   const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_RANKING');
   const addError = useErrorDispatcher();
@@ -98,10 +102,19 @@ const InitiativeRanking = () => {
     page: number,
     beneficiary: string | undefined,
     filterStatus: string | undefined
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     setLoading(true);
-    getInitiativeOnboardingRankingStatusPaged(initiativeId, page, beneficiary, filterStatus)
+    const b =
+      typeof beneficiary === 'string' && beneficiary !== 'DEFAULT' ? beneficiary : undefined;
+    getInitiativeOnboardingRankingStatusPaged(initiativeId, page, b, filterStatus)
       .then((res) => {
+        if (typeof res.totalElements === 'number') {
+          setTotalElements(res.totalElements);
+        }
+        if (typeof res.pageNumber === 'number') {
+          setPage(res.pageNumber);
+        }
         if (typeof res.rankingStatus === 'string') {
           setRankingStatus(res.rankingStatus);
           if (res.rankingStatus === 'COMPLETED') {
@@ -115,11 +128,18 @@ const InitiativeRanking = () => {
             }
           }
         }
-        if (typeof res.totalElements === 'number') {
-          setTotalElements(res.totalElements);
+        if (typeof res.rankingFilePath === 'string') {
+          setFileName(res.rankingFilePath);
+        }
+        if (typeof res.totalEligibleOk === 'number') {
+          setTotalEligibleOk(res.totalEligibleOk);
+        }
+        if (typeof res.totalEligibleKo === 'number') {
+          setTotalEligibleKo(res.totalEligibleKo);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
           const rowsData = res.content.map((r) => ({
+            beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
             rankingValue: `${numberWithCommas(r.rankingValue)} €`,
@@ -183,9 +203,12 @@ const InitiativeRanking = () => {
     document.body.removeChild(link);
   };
 
-  const downloadInitiativeRanking = (initiativeId: string | undefined) => {
-    if (typeof initiativeId === 'string') {
-      getRankingFileDownload(initiativeId)
+  const downloadInitiativeRanking = (
+    initiativeId: string | undefined,
+    filename: string | undefined
+  ) => {
+    if (typeof initiativeId === 'string' && typeof filename === 'string') {
+      getRankingFileDownload(initiativeId, filename)
         .then((res: SasToken) => {
           if (typeof res.sas === 'string') {
             downloadURI(res.sas);
@@ -217,7 +240,7 @@ const InitiativeRanking = () => {
   const formik = useFormik({
     initialValues: {
       searchUser: '',
-      filterStatus: '',
+      filterStatus: 'DEFAULT',
     },
     validateOnChange: true,
     enableReinitialize: true,
@@ -225,7 +248,10 @@ const InitiativeRanking = () => {
       if (typeof id === 'string') {
         const filterBeneficiary = values.searchUser.length > 0 ? values.searchUser : undefined;
         setFilterByBeneficiary(filterBeneficiary);
-        const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
+        const filterStatus =
+          values.filterStatus.length > 0 && values.filterStatus !== 'DEFAULT'
+            ? values.filterStatus
+            : undefined;
         setFilterByStatus(filterStatus);
         getTableData(id, 0, filterBeneficiary, filterStatus);
       }
@@ -254,6 +280,17 @@ const InitiativeRanking = () => {
       setOrderDirection('desc');
     } else if (orderDirection === 'desc') {
       setOrderDirection('asc');
+    }
+  };
+
+  const getBeneficiaryStatus = (status: string) => {
+    switch (status) {
+      case 'ELIGIBLE_OK':
+        return <CheckIcon color="success" />;
+      case 'ELIGIBLE_KO':
+        return <ErrorOutlineIcon color="warning" />;
+      default:
+        return null;
     }
   };
 
@@ -314,7 +351,7 @@ const InitiativeRanking = () => {
             <Box sx={{ display: 'grid', gridColumn: 'span 2', justifyContent: 'end' }}>
               <ButtonNaked
                 component="button"
-                onClick={() => downloadInitiativeRanking(id)}
+                onClick={() => downloadInitiativeRanking(id, fileName)}
                 sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
                 weight="default"
                 size="small"
@@ -349,7 +386,7 @@ const InitiativeRanking = () => {
             <Box sx={{ display: 'grid', gridColumn: 'span 2', justifyContent: 'end' }}>
               <ButtonNaked
                 component="button"
-                onClick={() => downloadInitiativeRanking(id)}
+                onClick={() => downloadInitiativeRanking(id, fileName)}
                 sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
                 weight="default"
                 size="small"
@@ -403,6 +440,7 @@ const InitiativeRanking = () => {
                 openPublishInitiativeRankingModal={openPublishInitiativeRankingModal}
                 handleClosePublishInitiativeRankingModal={handleClosePublishInitiativeRankingModal}
                 initiativeId={id}
+                fileName={fileName}
                 publishInitiativeRanking={publishInitiativeRanking}
                 downloadInitiativeRanking={downloadInitiativeRanking}
               />
@@ -464,7 +502,7 @@ const InitiativeRanking = () => {
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 2' }} size="small">
-            <InputLabel>{t('pages.initiativeUsers.form.status')}</InputLabel>
+            <InputLabel>{t('pages.initiativeRanking.form.beneficiaryStatus')}</InputLabel>
             <Select
               id="filterStatus"
               data-testid="filterStatus-select"
@@ -474,14 +512,20 @@ const InitiativeRanking = () => {
               onChange={(e) => formik.handleChange(e)}
               value={formik.values.filterStatus}
             >
-              <MenuItem value="ACCEPTED_TC" data-testid="filterStatusAcceptedTc-test">
-                {t('pages.initiativeUsers.status.acceptedTc')}
+              <MenuItem value="DEFAULT" data-testid="filterStatusDefault-test">
+                {t('pages.initiativeRanking.beneficiaryStatus.total', {
+                  tot: totalElements,
+                })}
               </MenuItem>
-              <MenuItem value="INACTIVE" data-testid="filterStatusInactive-test">
-                {t('pages.initiativeUsers.status.inactive')}
+              <MenuItem value="ELIGIBLE_OK" data-testid="filterStatusEligibleOK-test">
+                {t('pages.initiativeRanking.beneficiaryStatus.eligibleOk', {
+                  tot: totalEligibleOk,
+                })}
               </MenuItem>
-              <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
-                {t('pages.initiativeUsers.status.onEvaluation')}
+              <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligibleKO-test">
+                {t('pages.initiativeRanking.beneficiaryStatus.eligibleKo', {
+                  tot: totalEligibleKo,
+                })}
               </MenuItem>
             </Select>
           </FormControl>
@@ -523,6 +567,7 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
+                    <TableCell></TableCell>
                     <TableCell>{t('pages.initiativeRanking.table.beneficiary')}</TableCell>
                     <TableCell sortDirection={orderDirection}>
                       <TableSortLabel
@@ -542,6 +587,7 @@ const InitiativeRanking = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
+                      <TableCell>{getBeneficiaryStatus(r.beneficiaryRankingStatus)}</TableCell>
                       <TableCell>{r.beneficiary}</TableCell>
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>

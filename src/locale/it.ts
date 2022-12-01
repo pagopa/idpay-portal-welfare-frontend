@@ -350,6 +350,7 @@ export default {
       },
       form: {
         search: 'Cerca per Codice fiscale',
+        beneficiaryStatus: 'Stato',
         filterBtn: 'Filtra',
         resetFiltersBtn: 'Annulla filtri',
       },
@@ -358,6 +359,11 @@ export default {
         ranking: 'Posizione',
         rankingValue: 'ISEE',
         criteriaConsensusTimeStamp: 'Data e ora',
+      },
+      beneficiaryStatus: {
+        total: 'Totale aderenti ({{tot}})',
+        eligibleOk: 'Assegnatari ({{tot}})',
+        eligibleKo: 'Non idonei ({{tot}})',
       },
     },
     initiativeUsers: {

@@ -474,7 +474,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description: Unique identifier of the subscribed initiative, IBAN of the citizen
+        description: First initiative info
         content:
           application/json:
             schema:
@@ -535,7 +535,7 @@ paths:
           schema:
             type: string
       requestBody:
-        description: Unique identifier of the subscribed initiative, IBAN of the citizen
+        description: General information about Initiative
         content:
           application/json:
             schema:
@@ -777,6 +777,7 @@ paths:
           schema:
             type: string
       requestBody:
+        description: General information about Initiative
         content:
           application/json:
             schema:
@@ -1246,7 +1247,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/ranking:
+  /{initiativeId}/ranking/exports:
     get:
       tags:
         - initiative-onboarding
@@ -1320,7 +1321,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/ranking/exports:
+  /{initiativeId}/ranking/exports/{filename}:
     get:
       tags:
         - initiative-onboarding
@@ -1331,6 +1332,13 @@ paths:
         - name: initiativeId
           in: path
           description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: filename
+          in: path
+          description: filename
           required: true
           style: simple
           schema:
@@ -2342,7 +2350,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OnboardingRankingsDTO'
-        pageNo:
+        pageNumber:
           type: integer
           format: int32
         pageSize:
@@ -2354,28 +2362,38 @@ components:
         totalPages:
           type: integer
           format: int32
+        rankingStatus:
+          type: string
         rankingPublishedTimeStamp:
           type: string
           format: date-time
         rankingGeneratedTimeStamp:
           type: string
           format: date-time
-        rankingStatus:
+        totalEligibleOk:
+          type: integer
+          format: int64
+        totalEligibleKo:
+          type: integer
+          format: int64
+        rankingFilePath:
           type: string
     OnboardingRankingsDTO:
       type: object
       properties:
         beneficiary:
           type: string
-        ranking:
-          type: integer
-          format: int64
-        rankingValue:
-          type: integer
-          format: int64
         criteriaConsensusTimeStamp:
           type: string
           format: date-time
+        rankingValue:
+          type: integer
+          format: int64
+        ranking:
+          type: integer
+          format: int64
+        beneficiaryRankingStatus:
+          type: string
     RefundAdditionalInfoDTO:
       required:
         - identificationCode
