@@ -37,7 +37,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
   it('test on handleSubmit', async () => {
     await act(async () => {
       const handleFieldValueChanged = jest.fn();
-      const { getByTestId } = render(
+      render(
         <Provider store={store}>
           <IseeCriteriaItem
             action={WIZARD_ACTIONS.SUBMIT}
@@ -57,11 +57,21 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
       );
       const iseeRelationSelect = screen.getByTestId('isee-realtion-select') as HTMLSelectElement;
       const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+      const menuASC = await waitFor(() => {
+        return screen.getByText('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC');
+      });
+      const rankingBtn = await waitFor(() => {
+        return screen.getByTestId('ranking-button-test');
+      });
+      fireEvent.click(menuASC);
+      expect(menuASC).toBeInTheDocument();
+
+      fireEvent.click(rankingBtn);
+      expect(rankingBtn).toBeInTheDocument();
 
       fireEvent.click(iseeRelationSelect);
       fireEvent.change(iseeRelationSelect, { target: { value: 'GT' } });
       expect(iseeRelationSelect).toBeDefined();
-      fireEvent.blur(iseeRelationSelect);
       expect(handleFieldValueChanged.mock.calls.length).toBe(1);
 
       fireEvent.click(deleteBtn);
@@ -123,7 +133,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
 
     expect(iseeStartValue).toBeInTheDocument();
     expect(iseeEndValue).toBeInTheDocument();
-    
+
     fireEvent.blur(iseeStartValue);
     fireEvent.change(iseeStartValue, { target: { value: '100' } });
     expect(iseeStartValue.value).toBe('100');

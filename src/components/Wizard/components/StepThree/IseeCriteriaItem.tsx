@@ -165,6 +165,7 @@ const IseeCriteriaItem = ({
             size="small"
             component="button"
             weight="default"
+            data-testid="ranking-button-test"
           >
             {rankingOrderLabel}
           </ButtonNaked>

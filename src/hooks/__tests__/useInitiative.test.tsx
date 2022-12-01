@@ -24,6 +24,8 @@ import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
+import { OrderDirectionEnum } from '../../api/generated/initiative/AutomatedCriteriaDTO';
+import { FrequencyEnum } from '../../api/generated/initiative/RewardLimitsDTO';
 
 jest.mock('react-router-dom', () => Function());
 
@@ -110,15 +112,16 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
     const mockedGeneralInfo = (benType?: string) => {
       return {
         beneficiaryType: benType,
-        beneficiaryKnown: 'false',
-        budget: '',
-        beneficiaryBudget: '',
+        beneficiaryKnown: true,
+        budget: '200',
+        beneficiaryBudget: '200',
         startDate: '',
         endDate: '',
+        rankingEnabled: true,
         rankingStartDate: '',
         rankingEndDate: '',
         descriptionMap: {
-          introductionTextIT: '',
+          introductionTextIT: 'IT',
           introductionTextEN: '',
           introductionTextFR: '',
           introductionTextDE: '',
@@ -133,7 +136,15 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   });
 
   test('parseAutomatedCriteria', () => {
-    const mockedParseAutomatedCriteria: InitiativeDTO = {};
+    const mockedParseAutomatedCriteria: InitiativeDTO = {
+      trxRule: {
+        mccFilter: { allowedList: true, values: ['string', ''] },
+        rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
+        threshold: undefined,
+        trxCount: { from: 2, to: 3 },
+        daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
+      },
+    };
     const mockedParseAutomatedCriteriaWithBeneficary: InitiativeDTO = {
       beneficiaryRule: {
         selfDeclarationCriteria: [
@@ -157,7 +168,8 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
             field: 'string',
             operator: 'string',
             value: 'string',
-            orderEnabled: true,
+            orderDirection: OrderDirectionEnum.ASC,
+            //orderEnabled: OrderDirectionEnum.ASC,
           },
         ],
       },
@@ -167,12 +179,40 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   });
 
   test('parseManualCriteria', () => {
-    const mockedParseManualCriteria: InitiativeDTO = {};
+    const mockedParseManualCriteria: InitiativeDTO = {
+      beneficiaryRule: {
+        selfDeclarationCriteria: [
+          {
+            _type: 'boolean',
+            description: 'string',
+            value: true,
+            code: 'string',
+          },
+          {
+            _type: 'multi',
+            description: 'string',
+            value: ['value1', 'value2', 'value3'],
+            code: 'string',
+          },
+        ],
+        automatedCriteria: [
+          {
+            authority: 'string',
+            code: 'string',
+            field: 'string',
+            operator: 'string',
+            value: 'string',
+            orderDirection: OrderDirectionEnum.ASC,
+            //orderEnabled: OrderDirectionEnum.ASC,
+          },
+        ],
+      },
+    };
     expect(parseManualCriteria(mockedParseManualCriteria)).not.toBeNull();
   });
 
   test('parseRewardRule', () => {
-    const mockedParseRewardRule: InitiativeDTO = {};
+    const mockedParseRewardRule: InitiativeDTO = { rewardRule: { _type: 'rewardValue' } };
     const dispatch = useAppDispatch();
     expect(parseRewardRule(mockedParseRewardRule, dispatch)).not.toBeNull();
   });
@@ -202,7 +242,28 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   });
 
   test('parseDaysOfWeekIntervals', () => {
-    const mockedParseDaysOfWeekIntervals: InitiativeDTO = {};
+    const mockedParseDaysOfWeekIntervals: InitiativeDTO = {
+      trxRule: {
+        mccFilter: { allowedList: true, values: ['string', ''] },
+        rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
+        threshold: undefined,
+        trxCount: { from: 2, to: 3 },
+        //daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
+        daysOfWeek: [
+          {
+            daysOfWeek: [
+              'MONDAY',
+              'TUESDAY',
+              'WEDNESDAY',
+              'THURSDAY',
+              'FRIDAY',
+              'SATURDAY',
+              'SUNDAY',
+            ],
+          },
+        ],
+      },
+    };
     const dispatch = useAppDispatch();
     expect(parseDaysOfWeekIntervals(mockedParseDaysOfWeekIntervals, dispatch)).not.toBeNull();
   });
