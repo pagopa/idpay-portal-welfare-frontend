@@ -1,9 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import * as redux from 'react-redux';
-import { InitiativeApi } from '../../api/InitiativeApiClient';
-import { getInitiativeDetail } from '../../services/intitativeService';
-import { mockedInitiativeId } from '../../services/__mocks__/initiativeService';
 import { Provider } from 'react-redux';
 import { createStore } from '../../redux/store';
 import {
@@ -20,12 +17,14 @@ import {
   parseRewardLimits,
   parseDaysOfWeekIntervals,
 } from '../useInitiative';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
 import { useAppDispatch } from '../../redux/hooks';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { OrderDirectionEnum } from '../../api/generated/initiative/AutomatedCriteriaDTO';
 import { FrequencyEnum } from '../../api/generated/initiative/RewardLimitsDTO';
+import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
+import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
+import { BeneficiaryTypeEnum } from '../../utils/constants';
 
 jest.mock('react-router-dom', () => Function());
 
@@ -83,8 +82,6 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
         <HookWrapper />
       </Provider>
     );
-    // parseGeneralInfo();
-    // await waitFor(() => expect(parseGeneralInfo).toHaveBeenCalled());
     await waitFor(() => expect(returnVal).toBeDefined());
   });
 
@@ -104,6 +101,9 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
         privacyLink: 'privacy link',
         description: 'data description',
         serviceIO: 'serviceIo',
+        logoFileName: 'logoFileName',
+        logoURL: 'logo URL',
+        logoUploadDate: 'logo date',
       })
     ).not.toBeNull();
   });
@@ -121,18 +121,18 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
         rankingStartDate: '',
         rankingEndDate: '',
         descriptionMap: {
-          introductionTextIT: 'IT',
-          introductionTextEN: '',
-          introductionTextFR: '',
-          introductionTextDE: '',
-          introductionTextSL: '',
+          it: 'IT',
+          en: 'EN',
+          fr: 'FR',
+          de: 'DE',
+          sl: 'SL',
         },
       };
     };
 
-    expect(parseGeneralInfo(mockedGeneralInfo('PF'))).not.toBeNull();
+    expect(parseGeneralInfo(mockedGeneralInfo(BeneficiaryTypeEnum.PF))).not.toBeNull();
 
-    expect(parseGeneralInfo(mockedGeneralInfo('PG'))).not.toBeNull();
+    expect(parseGeneralInfo(mockedGeneralInfo(BeneficiaryTypeEnum.PG))).not.toBeNull();
   });
 
   test('parseAutomatedCriteria', () => {
@@ -212,43 +212,54 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   });
 
   test('parseRewardRule', () => {
-    const mockedParseRewardRule: InitiativeDTO = { rewardRule: { _type: 'rewardValue' } };
+    const mockedParseRewardRule: InitiativeDTO = {
+      // @ts-ignore
+      rewardRule: { _type: 'rewardValue', rewardValue: 'rewardValue' },
+    };
     const dispatch = useAppDispatch();
     expect(parseRewardRule(mockedParseRewardRule, dispatch)).not.toBeNull();
   });
 
   test('parseThreshold', () => {
-    const mockedParseThreshold: InitiativeDTO = {};
+    const dynamicThreshHold = (threshold: { from: number | undefined; to: number | undefined }) => {
+      return {
+        trxRule: {
+          mccFilter: { allowedList: true, values: ['string', ''] },
+          rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
+          threshold: threshold,
+          trxCount: { from: 2, to: 3 },
+          // daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
+          daysOfWeek: [
+            {
+              daysOfWeek: [
+                'MONDAY',
+                'TUESDAY',
+                'WEDNESDAY',
+                'THURSDAY',
+                'FRIDAY',
+                'SATURDAY',
+                'SUNDAY',
+              ],
+            },
+          ],
+        },
+      };
+    };
     const dispatch = useAppDispatch();
-    expect(parseThreshold(mockedParseThreshold, dispatch)).not.toBeNull();
+    expect(parseThreshold(dynamicThreshHold({ from: 2, to: 3 }), dispatch)).not.toBeNull();
+    // @ts-ignore
+    expect(parseThreshold(dynamicThreshHold({ from: 2 }), dispatch)).not.toBeNull();
+    // @ts-ignore
+    expect(parseThreshold(dynamicThreshHold({ to: 3 }), dispatch)).not.toBeNull();
   });
 
   test('parseMccFilter', () => {
-    const mockedParseMccFilter: InitiativeDTO = {};
-    const dispatch = useAppDispatch();
-    expect(parseMccFilter(mockedParseMccFilter, dispatch)).not.toBeNull();
-  });
-
-  test('parseTrxCount', () => {
-    const mockedParseTrxCount: InitiativeDTO = {};
-    const dispatch = useAppDispatch();
-    expect(parseTrxCount(mockedParseTrxCount, dispatch)).not.toBeNull();
-  });
-
-  test('parseRewardLimits', () => {
-    const mockedParseRewardLimits: InitiativeDTO = {};
-    const dispatch = useAppDispatch();
-    expect(parseRewardLimits(mockedParseRewardLimits, dispatch)).not.toBeNull();
-  });
-
-  test('parseDaysOfWeekIntervals', () => {
-    const mockedParseDaysOfWeekIntervals: InitiativeDTO = {
+    const mockedParseMccFilter: InitiativeDTO = {
       trxRule: {
         mccFilter: { allowedList: true, values: ['string', ''] },
         rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
-        threshold: undefined,
+        threshold: { from: 2, to: 3 },
         trxCount: { from: 2, to: 3 },
-        //daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
         daysOfWeek: [
           {
             daysOfWeek: [
@@ -265,23 +276,126 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
       },
     };
     const dispatch = useAppDispatch();
+    expect(parseMccFilter(mockedParseMccFilter, dispatch)).not.toBeNull();
+  });
+
+  test('parseTrxCount', () => {
+    const dynamicTrxCount = (trxCount: { from: number | undefined; to: number | undefined }) => {
+      return {
+        trxRule: {
+          mccFilter: { allowedList: true, values: ['string', ''] },
+          rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
+          threshold: { from: 2, to: 3 },
+          trxCount: trxCount,
+          daysOfWeek: [
+            {
+              daysOfWeek: [
+                'MONDAY',
+                'TUESDAY',
+                'WEDNESDAY',
+                'THURSDAY',
+                'FRIDAY',
+                'SATURDAY',
+                'SUNDAY',
+              ],
+            },
+          ],
+        },
+      };
+    };
+    const dispatch = useAppDispatch();
+    expect(parseTrxCount(dynamicTrxCount({ from: 2, to: 3 }), dispatch)).not.toBeNull();
+    // @ts-ignore
+    expect(parseTrxCount(dynamicTrxCount({ from: 2 }), dispatch)).not.toBeNull();
+    // @ts-ignore
+    expect(parseTrxCount(dynamicTrxCount({ to: 3 }), dispatch)).not.toBeNull();
+  });
+
+  test('parseRewardLimits', () => {
+    const mockedParseRewardLimits: InitiativeDTO = {
+      trxRule: {
+        rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
+      },
+    };
+    const dispatch = useAppDispatch();
+    expect(parseRewardLimits(mockedParseRewardLimits, dispatch)).not.toBeNull();
+    expect(
+      parseRewardLimits(
+        {
+          trxRule: {
+            rewardLimits: [],
+          },
+        },
+        dispatch
+      )
+    ).not.toBeNull();
+  });
+
+  test('parseDaysOfWeekIntervals', () => {
+    const mockedParseDaysOfWeekIntervals: InitiativeDTO = {
+      trxRule: {
+        daysOfWeek: [
+          {
+            daysOfWeek: [
+              'MONDAY',
+              'TUESDAY',
+              'WEDNESDAY',
+              'THURSDAY',
+              'FRIDAY',
+              'SATURDAY',
+              'SUNDAY',
+            ],
+            intervals: [
+              {
+                endTime: 'string',
+                startTime: 'string',
+              },
+            ],
+          },
+        ],
+      },
+    };
+    const dispatch = useAppDispatch();
     expect(parseDaysOfWeekIntervals(mockedParseDaysOfWeekIntervals, dispatch)).not.toBeNull();
   });
 
   test('parseRefundRule', () => {
-    const mockedRefundRule: InitiativeRefundRuleDTO = {};
-    const mockedRefundRuleWithValues = {
+    const mockedRefundRule: InitiativeRefundRuleDTO = {
       accumulatedAmount: {
-        accumulatedType: 'BUDGET_EXHAUSTED',
+        accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,
         refundThreshold: 0,
       },
       timeParameter: {
-        timeType: 'CLOSED',
+        timeType: TimeTypeEnum.CLOSED,
       },
       additionalInfo: {
         identificationCode: 'string',
       },
     };
+
+    const mockedTimeParameterNoLength: InitiativeRefundRuleDTO = {
+      accumulatedAmount: {
+        accumulatedType: AccumulatedTypeEnum.BUDGET_EXHAUSTED,
+        refundThreshold: 0,
+      },
+      // @ts-ignore
+      timeParameter: {},
+      additionalInfo: {
+        identificationCode: 'string',
+      },
+    };
+
+    const mockedAccumulatedNoLength: InitiativeRefundRuleDTO = {
+      // @ts-ignore
+      accumulatedAmount: {},
+      timeParameter: { timeType: TimeTypeEnum.CLOSED },
+      additionalInfo: {
+        identificationCode: 'string',
+      },
+    };
+
     expect(parseRefundRule(mockedRefundRule)).toBeDefined();
+    expect(parseRefundRule(mockedTimeParameterNoLength)).toBeDefined();
+    expect(parseRefundRule(mockedAccumulatedNoLength)).toBeDefined();
   });
 });

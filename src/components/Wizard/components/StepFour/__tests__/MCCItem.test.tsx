@@ -17,6 +17,7 @@ jest.mock('react-i18next', () => ({
 describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const mockedFn = jest.fn();
+  const setData = jest.fn();
 
   const setup = () => {
     const utils = render(
@@ -33,15 +34,15 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
             //
           }}
           data={{ allowedList: true, values: ['string', '2string'] }}
-          setData={function (_value: any): void {
-            //
-          }}
+          setData={setData}
         />
       </Provider>
     );
     const mccCodesTextArea = utils.getByTestId('mccCodesTextArea') as HTMLInputElement;
+    const selectMerchant = utils.getByTestId('merchantSelect-test') as HTMLSelectElement;
     return {
       mccCodesTextArea,
+      selectMerchant,
       ...utils,
     };
   };
@@ -82,14 +83,16 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   test('mc Codes to be defined', async () => {
-    const { mccCodesTextArea } = setup();
+    const { mccCodesTextArea, selectMerchant } = setup();
 
     const user = userEvent.setup();
 
     await user.type(screen.getByLabelText(/components.wizard.stepFour.form.mccCodes/i), 'CODES');
+    expect(mccCodesTextArea).toBeDefined();
 
     //await user.selectOptions(screen.getByTestId('merchantSelect-test'), 'true');
-    fireEvent.change(screen.getByTestId('merchantSelect-test'), { target: { value: 'true' } });
-    expect(mccCodesTextArea).toBeDefined();
+    fireEvent.change(selectMerchant, { target: { value: 'true' } });
+    expect(setData).toHaveBeenCalled();
+    expect(selectMerchant).toBeDefined();
   });
 });
