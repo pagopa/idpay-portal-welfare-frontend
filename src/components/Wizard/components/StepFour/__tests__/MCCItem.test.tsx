@@ -7,6 +7,7 @@ import { createStore } from '../../../../../redux/store';
 import MCCItem from '../MCCItem';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -22,7 +23,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
       <Provider store={store}>
         <MCCItem
           title={'title'}
-          code={'code'}
+          code={WIZARD_ACTIONS.SUBMIT}
           handleShopListItemRemoved={mockedFn}
           action={'action'}
           shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
@@ -58,7 +59,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
             title={'title'}
             code={'code'}
             handleShopListItemRemoved={mockedFn}
-            action={'action'}
+            action={WIZARD_ACTIONS.DRAFT}
             shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -86,7 +87,9 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
     const user = userEvent.setup();
 
     await user.type(screen.getByLabelText(/components.wizard.stepFour.form.mccCodes/i), 'CODES');
-    // fireEvent.change(mccCodesTextArea, { target: { value: '3' } });
+
+    //await user.selectOptions(screen.getByTestId('merchantSelect-test'), 'true');
+    fireEvent.change(screen.getByTestId('merchantSelect-test'), { target: { value: 'true' } });
     expect(mccCodesTextArea).toBeDefined();
   });
 });

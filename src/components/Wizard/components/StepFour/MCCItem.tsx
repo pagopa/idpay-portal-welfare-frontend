@@ -225,7 +225,7 @@ const MCCItem = ({
             defaultValue=""
             name="allowedList"
             id="allowedList"
-            data-testid="merchantSelect-test"
+            inputProps={{"data-testid":"merchantSelect-test"}}
             onChange={(e) => {
               formik.handleChange(e);
               handleUpdateAllowedListFieldState(e.target.value);
