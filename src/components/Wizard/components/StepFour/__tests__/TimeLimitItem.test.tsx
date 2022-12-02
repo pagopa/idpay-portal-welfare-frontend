@@ -1,14 +1,14 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, getByTestId, render } from '@testing-library/react';
+import React from 'react';
+import { fireEvent, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { RewardLimit } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
 import TimeLimitItem from '../TimeLimitItem';
-import React from 'react';
+
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -25,14 +25,14 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
 
   test('should render correctly the TimeLimitItem component', async () => {
     await act(async () => {
-       render(
+      render(
         <Provider store={store}>
           <TimeLimitItem
             key={0}
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={'SUBMIT'}
+            action={WIZARD_ACTIONS.DRAFT}
             shopRulesToSubmit={[{ code: undefined, dispatched: false }]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -52,14 +52,14 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
   it('test on handleSubmit', async () => {
     await act(async () => {
       const mockedHandleShopListItemRemoved = jest.fn();
-      const { getByText, getByTestId, getAllByTestId } = render(
+      const { getByText, getByTestId, getAllByTestId, getByPlaceholderText } = render(
         <Provider store={store}>
           <TimeLimitItem
             key={1}
             title={'tittle'}
             code={'code'}
             handleShopListItemRemoved={mockedHandleShopListItemRemoved}
-            action={'DRAFT'}
+            action={WIZARD_ACTIONS.SUBMIT}
             shopRulesToSubmit={[
               { code: 'code', dispatched: true },
               { code: 'code', dispatched: true },
@@ -81,6 +81,10 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       const addTimeLimitBtn = getByText(
         'components.wizard.stepFour.form.addTimeLimitItem'
       ) as HTMLButtonElement;
+      const selectFrequeny = getByTestId('select frequency') as HTMLSelectElement;
+      const rewardLimit = getByPlaceholderText(
+        /components.wizard.stepFour.form.maxReward/i
+      ) as HTMLInputElement;
       // const removeCircleIcon = getAllByTestId('removeCircleIconLimit') as HTMLElement[];
 
       fireEvent.click(deleteBtn);
@@ -89,39 +93,10 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       fireEvent.click(addTimeLimitBtn);
       expect(addTimeLimitBtn).toBeInTheDocument();
 
-      //  fireEvent.click(removeCircleIcon[0]);
-      // expect(removeCircleIcon[0]).toBeInTheDocument();
-    });
-  });
-
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const submit = getByTestId('continue-action-test');
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      expect(handleSubmit).toBeDefined();
-    });
-  });
-
-  it('draf action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const skip = getByTestId('skip-action-test');
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+      fireEvent.change(selectFrequeny, { target: { value: 'DAILY' } });
+      expect(selectFrequeny).toBeInTheDocument();
+      fireEvent.change(rewardLimit, { target: { value: 'temp text' } });
+      expect(rewardLimit).toBeInTheDocument();
     });
   });
 });
