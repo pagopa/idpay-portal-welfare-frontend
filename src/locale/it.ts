@@ -363,7 +363,8 @@ export default {
       beneficiaryStatus: {
         total: 'Totale aderenti ({{tot}})',
         eligibleOk: 'Assegnatari ({{tot}})',
-        eligibleKo: 'Non idonei ({{tot}})',
+        eligibleKo: 'Idonei non assegnatari ({{tot}})',
+        onboardingKo: 'Non idonei ({{tot}})',
       },
     },
     initiativeUsers: {

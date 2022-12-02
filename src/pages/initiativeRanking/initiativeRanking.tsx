@@ -29,6 +29,7 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import CloseIcon from '@mui/icons-material/Close';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
@@ -51,7 +52,6 @@ import { SasToken } from '../../api/generated/initiative/SasToken';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 // TODOs
-
 // - Add orderBy parameter to getTableData function
 // - Call getTableData function when orderDirection changes
 // - Call getTableData function when publish action responses with ok
@@ -63,7 +63,7 @@ const InitiativeRanking = () => {
   const initiativeSel = useAppSelector(initiativeSelector);
   const [page, setPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [rankingStatus, setRankingStatus] = useState<string | undefined>('');
+  const [rankingStatus, setRankingStatus] = useState<string | undefined>('WAITING_END');
   const [filterByBeneficiary, setFilterByBeneficiary] = useState<string | undefined>();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
   const [orderDirection, setOrderDirection] = useState<SortDirection>('desc');
@@ -77,6 +77,7 @@ const InitiativeRanking = () => {
   const [fileName, setFileName] = useState<string | undefined>();
   const [totalEligibleOk, setTotalEligibleOk] = useState<number | undefined>(0);
   const [totalEligibleKo, setTotalEligibleKo] = useState<number | undefined>(0);
+  const [totalOnboardingKo, setTotalOnboardingKo] = useState<number | undefined>(0);
   const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_RANKING');
   const addError = useErrorDispatcher();
@@ -136,6 +137,9 @@ const InitiativeRanking = () => {
         }
         if (typeof res.totalEligibleKo === 'number') {
           setTotalEligibleKo(res.totalEligibleKo);
+        }
+        if (typeof res.totalOnboardingKo === 'number') {
+          setTotalOnboardingKo(res.totalOnboardingKo);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
           const rowsData = res.content.map((r) => ({
@@ -289,6 +293,8 @@ const InitiativeRanking = () => {
         return <CheckIcon color="success" />;
       case 'ELIGIBLE_KO':
         return <ErrorOutlineIcon color="warning" />;
+      case 'ONBOARDING_KO':
+        return <CloseIcon color="error" />;
       default:
         return null;
     }
@@ -525,6 +531,11 @@ const InitiativeRanking = () => {
               <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligibleKO-test">
                 {t('pages.initiativeRanking.beneficiaryStatus.eligibleKo', {
                   tot: totalEligibleKo,
+                })}
+              </MenuItem>
+              <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKO-test">
+                {t('pages.initiativeRanking.beneficiaryStatus.onboardingKo', {
+                  tot: totalOnboardingKo,
                 })}
               </MenuItem>
             </Select>
