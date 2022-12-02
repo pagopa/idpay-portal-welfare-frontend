@@ -38,7 +38,7 @@ describe('<AdmissionCriteriaModal />', () => {
     },
   ];
   test('Should display the Modal', async () => {
-    await act(async () => {
+    await waitFor(async () => {
       const { debug } = renderWithProviders(
         <AdmissionCriteriaModal
           openModal={true}
@@ -60,6 +60,18 @@ describe('<AdmissionCriteriaModal />', () => {
         />
       );
     });
+
+    const modal = document.querySelector('[data-testid="admission-modal"') as HTMLElement;
+    expect(modal).toBeInTheDocument();
+
+    const fade = document.querySelector('[data-testid="admission-fade"]') as HTMLElement;
+    expect(fade).toBeInTheDocument();
+
+    const searchCriteria = document.querySelector(
+      '[data-testid="search-criteria-test"]'
+    ) as HTMLInputElement;
+    fireEvent.change(searchCriteria, { target: { value: 'search critera' } });
+    expect(searchCriteria).toBeInTheDocument();
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
