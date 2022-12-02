@@ -126,9 +126,9 @@ const AdmissionCriteriaModal = ({
       BackdropProps={{
         timeout: 500,
       }}
-      // data-testid="modal"
+      data-testid="admission-modal"
     >
-      <Fade in={openModal}>
+      <Fade in={openModal} data-testid="admission-fade">
         <Box
           sx={{
             position: 'absolute',
@@ -191,7 +191,7 @@ const AdmissionCriteriaModal = ({
                     </InputAdornment>
                   ),
                 }}
-                data-testid="search-criteria-test"
+                inputProps={{"data-testid":"search-criteria-test"}}
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}
