@@ -110,6 +110,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
   it('Test on mapResponse', () => {
     arrOptions.forEach((item) => {
+      //@ts-expect-error
       expect(mapResponse(mockedMapResponse(item))).not.toBeNull();
     });
     expect(

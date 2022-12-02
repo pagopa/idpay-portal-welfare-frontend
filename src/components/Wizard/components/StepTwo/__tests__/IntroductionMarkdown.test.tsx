@@ -1,6 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { render, screen, act, fireEvent, within } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
 import IntroductionMarkdown from '../IntroductionMarkdown';
@@ -18,7 +17,7 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
 
   test('should render correctly the IntroductionMarkdown component', async () => {
     await act(async () => {
-      render(
+      const { baseElement } = render(
         <Provider store={store}>
           <IntroductionMarkdown
             textToRender={[
@@ -34,6 +33,19 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
           />
         </Provider>
       );
+      const showMarkdownBtn = screen.getByText(
+        /components.wizard.stepTwo.form.preview/i
+      ) as HTMLButtonElement;
+      fireEvent.click(showMarkdownBtn);
+      setValue(true);
+      expect(showMarkdownBtn).toBeDefined();
+      /*
+      expect(
+        within(document.body).getByText('components.wizard.stepTwo.previewModal.closeBtn')
+      ).toHaveTextContent('components.wizard.stepTwo.previewModal.title');
+      console.log('baseElement', baseElement);
+      screen.debug(baseElement);
+      */
     });
   });
 
@@ -45,7 +57,7 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
             textToRender={[]}
             serviceName={undefined}
             selectedParty={undefined}
-            logoUrl="http//test/logo.png"
+            logoUrl={''}
           />
         </Provider>
       );
