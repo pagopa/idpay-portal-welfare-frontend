@@ -275,7 +275,9 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                 label={t('components.wizard.stepFive.form.selectedAccumulatedAmount')}
                 onChange={(e) => formik.setFieldValue('accumulatedAmount', e.target.value)}
                 error={formik.touched.accumulatedAmount && Boolean(formik.errors.accumulatedAmount)}
-                data-testid="accumulatedAmount-test"
+                inputProps={{
+                  'data-testid': 'accumulatedAmount-test',
+                }}
               >
                 <MenuItem
                   value={AccumulatedTypeEnum.BUDGET_EXHAUSTED}
@@ -306,6 +308,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                     min: 1,
                     max: budgetPerPerson,
                     type: 'number',
+                    'data-testid': 'reimbursementThreshold-test',
                   }}
                   id="reimbursementThreshold"
                   label={t('components.wizard.stepFive.form.reimbursementThreshold')}

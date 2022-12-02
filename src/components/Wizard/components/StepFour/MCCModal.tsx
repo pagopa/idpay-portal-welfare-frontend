@@ -199,9 +199,9 @@ Props) => {
       BackdropProps={{
         timeout: 500,
       }}
-      // data-testid="modal"
+      data-testid="mcc-modal"
     >
-      <Fade in={openModalMcc}>
+      <Fade in={openModalMcc} data-testid="mcc-fade">
         <Box
           sx={{
             position: 'absolute',
@@ -232,8 +232,9 @@ Props) => {
                   handleCloseModalMcc();
                   handleSearchMccCode('');
                 }}
+                data-testid="close-modal-test"
               >
-                <CloseIcon data-testid="close-modal-test" />
+                <CloseIcon />
               </IconButton>
             </Box>
           </Box>
@@ -267,7 +268,9 @@ Props) => {
                     </InputAdornment>
                   ),
                 }}
-                data-testid="search-code-description-test"
+                inputProps={{
+                  'data-testid': 'search-code-description-test',
+                }}
                 onChange={(e) => {
                   handleSearchMccCode(e.target.value);
                 }}
