@@ -19,7 +19,7 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
   const handleViewDetails = jest.fn();
 
   it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
+    //  eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
@@ -55,6 +55,9 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   test('status message date case Approved', async () => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 11);
     const clonedMockedInitiative2 = {
       ...mockedInitiative,
       status: 'APPROVED',
@@ -65,8 +68,14 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
         beneficiaryBudget: '801',
         rankingStartDate: undefined,
         rankingEndDate: '',
-        startDate: '',
-        endDate: '',
+        startDate: today,
+        endDate: tomorrow,
+        rankingEnabled: 'true',
+        introductionTextIT: '',
+        introductionTextEN: '',
+        introductionTextFR: '',
+        introductionTextDE: '',
+        introductionTextSL: '',
       },
     };
 
@@ -95,18 +104,18 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
         rankingEndDate: '',
         startDate: '',
         endDate: '',
+        rankingEnabled: 'true',
+        introductionTextIT: '',
+        introductionTextEN: '',
+        introductionTextFR: '',
+        introductionTextDE: '',
+        introductionTextSL: '',
       },
     };
-
-    await act(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <DateReference initiative={clonedMockedInitiativeDate3} handleViewDetails={undefined} />
-        </Provider>
-      );
-
-      const message = queryByTestId('date-message-status');
-      expect(message).toBeInTheDocument();
-    });
+    render(
+      <Provider store={store}>
+        <DateReference initiative={clonedMockedInitiativeDate3} handleViewDetails={undefined} />
+      </Provider>
+    );
   });
 });
