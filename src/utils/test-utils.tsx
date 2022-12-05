@@ -23,13 +23,11 @@ const AllTheProviders: FC<{ children: React.ReactNode }> = ({ children }) => (
 export const renderWithProviders = (ui: ReactElement, options?: Omit<RenderOptions, 'wrapper'>) =>
   render(ui, { wrapper: AllTheProviders, ...options });
 
-type ContextProps = {
-  element?: ReactElement;
-  injectedStore?: ReturnType<typeof createStore>;
-  injectedHistory?: ReturnType<typeof createMemoryHistory>;
-};
-
-export const renderWithContext = ({ element, injectedStore, injectedHistory }: ContextProps) => {
+export const renderWithContext = (
+  element?: React.ReactNode,
+  injectedStore?: ReturnType<typeof createStore>,
+  injectedHistory?: ReturnType<typeof createMemoryHistory>
+) => {
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
   const storeInjected = injectedStore ? injectedStore : createStore();
   render(
