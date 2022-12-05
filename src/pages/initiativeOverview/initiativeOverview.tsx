@@ -584,6 +584,7 @@ const InitiativeOverview = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-testid="overview-back-bread"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
