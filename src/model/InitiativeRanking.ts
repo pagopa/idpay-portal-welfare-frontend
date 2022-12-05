@@ -1,7 +1,7 @@
 export interface InitiativeRankingToDisplay {
-  beneficiaryRankingStatus: string;
-  beneficiary: string;
-  ranking: number;
-  rankingValue: string;
-  criteriaConsensusTimeStamp: string;
+  beneficiaryRankingStatus: string | undefined;
+  beneficiary: string | undefined;
+  ranking: number | undefined;
+  rankingValue: string | undefined;
+  criteriaConsensusTimeStamp: string | undefined;
 }

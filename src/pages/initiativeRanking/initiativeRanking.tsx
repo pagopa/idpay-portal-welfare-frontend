@@ -9,14 +9,14 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  SortDirection,
+  // SortDirection,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
-  TableSortLabel,
+  // TableSortLabel,
   TextField,
   Typography,
 } from '@mui/material';
@@ -49,12 +49,8 @@ import {
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
 import { numberWithCommas } from '../../helpers';
 import { SasToken } from '../../api/generated/initiative/SasToken';
+import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
-
-// TODOs
-// - Add orderBy parameter to getTableData function
-// - Call getTableData function when orderDirection changes
-// - Call getTableData function when publish action responses with ok
 
 const InitiativeRanking = () => {
   const { t } = useTranslation();
@@ -66,7 +62,6 @@ const InitiativeRanking = () => {
   const [rankingStatus, setRankingStatus] = useState<string | undefined>('WAITING_END');
   const [filterByBeneficiary, setFilterByBeneficiary] = useState<string | undefined>();
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
-  const [orderDirection, setOrderDirection] = useState<SortDirection>('desc');
   const [rows, setRows] = useState<Array<InitiativeRankingToDisplay>>([]);
   const [openPublishInitiativeRankingModal, setOpenPublishInitiativeRankingModal] =
     useState<boolean>(false);
@@ -120,8 +115,8 @@ const InitiativeRanking = () => {
           setRankingStatus(res.rankingStatus);
           if (res.rankingStatus === 'COMPLETED') {
             setOpenPublishedInitiativeRankingAlert(true);
-            if (typeof res.rankingPublishedTimeStamp === 'object') {
-              const publishedDateTime = res.rankingPublishedTimeStamp
+            if (typeof res.rankingPublishedTimestamp === 'object') {
+              const publishedDateTime = res.rankingPublishedTimestamp
                 .toLocaleString('fr-BE')
                 .split(' ');
               setPublishedDate(publishedDateTime[0]);
@@ -142,14 +137,19 @@ const InitiativeRanking = () => {
           setTotalOnboardingKo(res.totalOnboardingKo);
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
-          const rowsData = res.content.map((r) => ({
+          const rowsData = res.content.map((r: OnboardingRankingsDTO) => ({
             beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
             rankingValue: `${numberWithCommas(r.rankingValue)} €`,
-            criteriaConsensusTimeStamp: r.criteriaConsensusTimeStamp.toLocaleString('fr-BE'),
+            criteriaConsensusTimeStamp:
+              typeof r.criteriaConsensusTimestamp === 'object'
+                ? r.criteriaConsensusTimestamp.toLocaleString('fr-BE')
+                : new Date().toLocaleString('fr-BE'),
           }));
           setRows(rowsData);
+        } else {
+          setRows([]);
         }
       })
       .catch((error) => {
@@ -157,7 +157,7 @@ const InitiativeRanking = () => {
           id: 'GET_INITIATIVE_RANKING_ERROR',
           blocking: false,
           error,
-          techDescription: 'An error occurred getting export file',
+          techDescription: 'An error occurred getting initiative ranking',
           displayableTitle: t('errors.title'),
           displayableDescription: t('errors.getDataDescription'),
           toNotify: true,
@@ -173,9 +173,10 @@ const InitiativeRanking = () => {
   const publishInitiativeRanking = (initiativeId: string | undefined) => {
     if (typeof initiativeId === 'string') {
       notifyCitizenRankings(initiativeId)
-        .then((res) => {
-          console.log(res);
-          // TODO Call getTableData function when publish action responses with ok
+        .then((_res) => {
+          if (typeof id === 'string') {
+            getTableData(id, 0, undefined, undefined);
+          }
           handleClosePublishInitiativeRankingModal();
         })
         .catch((error) => {
@@ -279,22 +280,14 @@ const InitiativeRanking = () => {
     }
   };
 
-  const changeOrderDirection = (orderDirection: SortDirection) => {
-    if (orderDirection === 'asc') {
-      setOrderDirection('desc');
-    } else if (orderDirection === 'desc') {
-      setOrderDirection('asc');
-    }
-  };
-
-  const getBeneficiaryStatus = (status: string) => {
+  const getBeneficiaryStatus = (status: string | undefined) => {
     switch (status) {
       case 'ELIGIBLE_OK':
-        return <CheckIcon color="success" />;
+        return <CheckIcon color="success" sx={{ mb: -1, mr: 2 }} />;
       case 'ELIGIBLE_KO':
-        return <ErrorOutlineIcon color="warning" />;
+        return <ErrorOutlineIcon color="warning" sx={{ mb: -1, mr: 2 }} />;
       case 'ONBOARDING_KO':
-        return <CloseIcon color="error" />;
+        return <CloseIcon color="error" sx={{ mb: -1, mr: 2 }} />;
       default:
         return null;
     }
@@ -563,7 +556,7 @@ const InitiativeRanking = () => {
         </Box>
       )}
 
-      {rankingStatus !== 'WAITING_END' && rows.length > 0 ? (
+      {rankingStatus !== 'WAITING_END' && rows.length > 0 && (
         <Box
           sx={{
             display: 'grid',
@@ -578,19 +571,15 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell></TableCell>
-                    <TableCell>{t('pages.initiativeRanking.table.beneficiary')}</TableCell>
-                    <TableCell sortDirection={orderDirection}>
-                      <TableSortLabel
-                        active={true}
-                        direction={orderDirection ? orderDirection : 'desc'}
-                        onClick={() => changeOrderDirection(orderDirection)}
-                      >
-                        {t('pages.initiativeRanking.table.ranking')}
-                      </TableSortLabel>
+                    <TableCell width="20%">
+                      {t('pages.initiativeRanking.table.beneficiary')}
                     </TableCell>
-                    <TableCell>{t('pages.initiativeRanking.table.rankingValue')}</TableCell>
-                    <TableCell>
+
+                    <TableCell width="40%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    <TableCell width="20%">
+                      {t('pages.initiativeRanking.table.rankingValue')}
+                    </TableCell>
+                    <TableCell width="20%">
                       {t('pages.initiativeRanking.table.criteriaConsensusTimeStamp')}
                     </TableCell>
                   </TableRow>
@@ -598,8 +587,10 @@ const InitiativeRanking = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{getBeneficiaryStatus(r.beneficiaryRankingStatus)}</TableCell>
-                      <TableCell>{r.beneficiary}</TableCell>
+                      <TableCell>
+                        {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.beneficiary}
+                      </TableCell>
+                      {/* <TableCell>{r.beneficiary}</TableCell> */}
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>
                       <TableCell>{r.criteriaConsensusTimeStamp}</TableCell>
@@ -620,7 +611,8 @@ const InitiativeRanking = () => {
             </Box>
           </Box>
         </Box>
-      ) : (
+      )}
+      {rankingStatus === 'WAITING_END' && (
         <Box
           sx={{
             display: 'grid',
