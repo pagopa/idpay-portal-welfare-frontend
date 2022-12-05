@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
+import { fireEvent, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
@@ -12,12 +12,13 @@ jest.mock('react-i18next', () => ({
 }));
 
 jest.mock('react-router-dom', () => ({
-  useHistory: () => {},
+  useHistory: () => ({
+    replace: jest.fn(),
+  }),
 }));
 
 describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const closeWithoutSaving = jest.fn();
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -30,55 +31,45 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
         <Provider store={store}>
           <ExitModal
             openExitModal={false}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
+            handleCloseExitModal={function (_event: React.MouseEvent<Element>): void {
+              //
             }}
           />
         </Provider>
       );
-    });
-  });
-
-  it('the functions should be defined', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ExitModal
-            openExitModal={true}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
-            }}
-          />
-        </Provider>
-      );
-
-      const setCloseExitModal = jest.fn();
-      const useStateMock: any = (closeExitModal: boolean) => [closeExitModal, setCloseExitModal];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-      expect(setCloseExitModal).toBeDefined();
-      expect(closeWithoutSaving).toBeDefined();
     });
   });
 
   it('the modal should be in the document', async () => {
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <ExitModal
+          openExitModal={true}
+          handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    const setCloseExitModal = jest.fn();
+    const useStateMock: any = (closeExitModal: boolean) => [closeExitModal, setCloseExitModal];
+    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+
+    const modal = document.querySelector('[data-testid="exit-modal-test"') as HTMLElement;
+    expect(modal).toBeInTheDocument();
+
+    const fade = document.querySelector('[data-testid="fade-test"]') as HTMLElement;
+    expect(fade).toBeInTheDocument();
+
     await waitFor(async () => {
-      render(
-        <Provider store={store}>
-          <ExitModal
-            openExitModal={true}
-            handleCloseExitModal={function (event: React.MouseEvent<Element>): void {
-              console.log(event);
-            }}
-          />
-        </Provider>
-      );
+      const cancelBtn = getByTestId('cancel-button-test') as HTMLButtonElement;
+      fireEvent.click(cancelBtn);
+    });
 
-      const modal = document.querySelector('[data-testid="exit-modal-test"') as HTMLElement;
-      expect(modal).toBeInTheDocument();
-
-      const fade = document.querySelector('[data-testid="fade-test"]') as HTMLElement;
-      expect(fade).toBeInTheDocument();
+    await waitFor(async () => {
+      const exitBtn = getByTestId('exit-button-test') as HTMLButtonElement;
+      fireEvent.click(exitBtn);
     });
   });
 });
