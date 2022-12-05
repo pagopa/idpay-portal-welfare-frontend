@@ -228,6 +228,7 @@ const InitiativeDetail = () => {
             startIcon={<ArrowBackIcon />}
             sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
             weight="default"
+            data-testid="backButtonDetail"
           >
             {t('breadcrumbs.back')}
           </ButtonNaked>
