@@ -1,8 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { render } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { SetStateAction } from 'react';
-import { act } from 'react-dom/test-utils';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
@@ -14,7 +11,6 @@ jest.mock('react-i18next', () => ({
 
 describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const user = userEvent.setup();
   const handleClose = jest.fn();
 
   it('renders without crashing', () => {
@@ -23,30 +19,16 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
   });
 
   test('should display the SnackBar component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ApprovedToast
-            openToast={false}
-            handleClose={function (): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
+    render(
+      <Provider store={store}>
+        <ApprovedToast openToast={true} handleClose={handleClose} />
+      </Provider>
+    );
 
-  it('Test on close of snackbar', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ApprovedToast openToast={true} handleClose={handleClose} />
-        </Provider>
-      );
+    const approved = screen.getByText('pages.initiativeDetail.alert.approved');
+    const snackBar = screen.getByTestId('snack-bar-test');
 
-      handleClose();
-      expect(handleClose).toHaveBeenCalled();
-    });
+    expect(approved).toBeInTheDocument();
+    fireEvent.click(snackBar);
   });
 });
