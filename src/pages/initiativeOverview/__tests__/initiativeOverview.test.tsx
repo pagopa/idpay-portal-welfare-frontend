@@ -13,6 +13,9 @@ import { createStore } from '../../../redux/store';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router';
+import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -57,67 +60,57 @@ beforeEach(() => {
   jest.spyOn(groupsApiMocked, 'getGroupOfBeneficiaryStatusAndDetails');
 });
 
-describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<InitiativeOverview />', (injectedStore?: ReturnType<
+  typeof createStore
+>, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const handleViewDetails = jest.fn();
-  const conditionalOnClickRendering = jest.fn();
-  const handleCloseInitiativeOverviewDeleteModal = jest.fn();
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
   test('should display the InitiativeOverview component', async () => {
+    await waitFor(() => setInitiativeId('333'));
     await waitFor(async () => {
       const { queryByTestId } = render(
         <Provider store={store}>
           <InitiativeOverview />
         </Provider>
       );
-
-      const setUseState = jest.fn();
-      const useStateMock: any = (useState: any) => [useState, setUseState];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      expect(useStateMock).toBeDefined();
+      /*
+      store.dispatch({
+        type: 'POPULATE_DATA',
+        initiativeId: 'id',
+      });
+      
+      console.log('state', store.getState());
+*/
     });
   });
 
   test('Testing functions calls', async () => {
-    await waitFor(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
+    const history = injectedHistory ? injectedHistory : createMemoryHistory();
+    const { queryByTestId, debug, getByTestId } = render(
+      <Provider store={store}>
+        <Router history={history}>
           <InitiativeOverview />
-        </Provider>
-      );
+        </Router>
+      </Provider>
+    );
 
-      const setUseState = jest.fn();
-      const useStateMock: any = (useState: any) => [useState, setUseState];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      useStateMock();
-      expect(useStateMock).toBeDefined();
+    // debug(undefined, 99999);
+    const overviewBackBtn = getByTestId('overview-back-bread') as HTMLButtonElement;
+    // Not Found
+    //const overviewViewBtn = getByTestId('view-custom-test') as HTMLButtonElement;
+    const oldLocPathname = history.location.pathname;
 
-      handleViewDetails(mockedInitiativeId);
-      expect(handleViewDetails).toHaveBeenCalled();
+    userEvent.click(overviewBackBtn);
 
-      const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
-      userEvent.click(condition);
-      conditionalOnClickRendering();
-      expect(conditionalOnClickRendering).toHaveBeenCalled();
+    await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
+    // await waitFor(() => expect(overviewViewBtn).toBeInTheDocument());
 
-      const setOpenInitiativeOverviewDeleteModal = jest.fn();
-      const useStateModalMock: any = (openInitiativeOverviewDeleteModal: any) => [
-        openInitiativeOverviewDeleteModal,
-        setOpenInitiativeOverviewDeleteModal,
-      ];
-      expect(useStateModalMock).toBeDefined();
-      setOpenInitiativeOverviewDeleteModal();
-      expect(setOpenInitiativeOverviewDeleteModal).toHaveBeenCalled();
-
-      const details = queryByTestId('view-datails-test') as HTMLElement;
-      userEvent.click(details);
-      handleViewDetails();
-      expect(handleViewDetails).toHaveBeenCalled();
-    });
+    const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
+    userEvent.click(condition);
   });
 
   it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
@@ -128,21 +121,4 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStor
       mockedInitiativeId
     );
   });
-  /*
-  test('test conditional render', () => {
-    // const initiativeSel = useAppSelector(initiativeSelector);
-    const mockedInitiativeSelected = mockedInitiative;
-    const { queryByTestId, debug } = render(
-      <Provider store={store}>
-        <InitiativeOverview  />
-      </Provider>
-    );
-    const titleInitative = queryByTestId('button-overview') as HTMLElement;
-    const typographyIniName = queryByTestId('typography-initiativeName') as HTMLElement;
-    debug();
-    expect(titleInitative).toBeInTheDocument();
-    expect(typographyIniName).toBeInTheDocument();
-    
-  });
-  */
 });

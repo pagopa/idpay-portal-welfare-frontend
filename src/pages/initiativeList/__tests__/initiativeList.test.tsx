@@ -1,9 +1,8 @@
-import { Provider } from 'react-redux';
-import { createStore } from '../../../redux/store';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import InitiativeList from '../InitiativeList';
+import { renderWithContext } from '../../../utils/test-utils';
 import React from 'react';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -12,23 +11,19 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-describe('<InitiativeList />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
-  const EnhancedTableHead = jest.fn();
+describe('<InitiativeList />', () => {
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
   test('Should render the Initiative List', async () => {
-    <Provider store={store}>
-      <InitiativeList />
-    </Provider>;
+    renderWithContext(<InitiativeList />);
 
-    const setOpenExitModal = jest.fn();
-    const useStateMock: any = (openExitModal: boolean) => [openExitModal, setOpenExitModal];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+    // screen.debug();
+    const searchInitiative = screen.getByTestId('search-initiative') as HTMLInputElement;
 
-    expect(EnhancedTableHead).toBeDefined();
+    fireEvent.change(searchInitiative, { target: { value: 'value' } });
+    await waitFor(() => expect(searchInitiative.value).toBe('value'));
   });
 });
