@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
