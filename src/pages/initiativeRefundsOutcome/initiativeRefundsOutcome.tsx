@@ -164,7 +164,7 @@ const InitiativeRefundsOutcome = () => {
         }}
         {...getRootProps({ className: 'dropzone' })}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} data-testid="drop-input" />
         <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
           <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
           <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
@@ -376,6 +376,7 @@ const InitiativeRefundsOutcome = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-testid="back-btn-test"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
