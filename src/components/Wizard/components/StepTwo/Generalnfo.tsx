@@ -23,6 +23,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -34,6 +35,7 @@ import { shallowEqual } from 'react-redux';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { parse } from 'date-fns';
+import itLocale from 'date-fns/locale/it';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   generalInfoSelector,
@@ -70,6 +72,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const selectedPartySel = useAppSelector(partiesSelectors.selectPartySelected);
   const [value, setValue] = useState(0);
   const [dateOffset, setDateOffset] = useState(1);
+
   const { t } = useTranslation();
   const setLoading = useLoading('UPDATE_GENERAL_INFO');
 
@@ -634,7 +637,8 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           >
             {t('components.wizard.stepTwo.form.timeRangeRankingTitle')}
           </FormLabel>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('components.wizard.stepTwo.form.rankingStartDate')}
               inputFormat="dd/MM/yyyy"
@@ -691,7 +695,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           <FormLabel sx={{ fontSize: '16px', fontWeight: '600', gridArea: 'timeRangeTitle' }}>
             {t('components.wizard.stepTwo.form.timeRangeTitle')}
           </FormLabel>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('components.wizard.stepTwo.form.startDate')}
               inputFormat="dd/MM/yyyy"

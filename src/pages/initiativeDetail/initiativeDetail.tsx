@@ -250,7 +250,7 @@ const InitiativeDetail = () => {
           alignItems: 'baseline',
         }}
       >
-        <Box>
+        <Box sx={{ width: '85%' }}>
           <TitleBox
             title={
               typeof initiativeDetail.additionalInfo.serviceName === 'string'

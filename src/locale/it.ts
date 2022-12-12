@@ -396,6 +396,9 @@ export default {
         invited: 'Idoneo',
         onboardingOk: 'Iscritto',
         onboardingKo: 'Non idoneo',
+        notSignedOn: 'Non iscritto',
+        assignee: 'Assegnatario',
+        eligible: 'Idoneo',
       },
     },
     initiativeRefunds: {
