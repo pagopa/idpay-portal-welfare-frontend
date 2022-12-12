@@ -8,7 +8,7 @@ import React from 'react';
 import { mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
-import { setInitiativeId, setInitiative } from '../../../../../redux/slices/initiativeSlice';
+import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
 import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -31,7 +31,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
   test('should display the second step, with validation on input data', async () => {
     // InitiativeApiMocked.getEligibilityCriteriaForSidebar();
-
+    store.dispatch(setInitiative(mockedInitiative));
     const { debug } = render(
       <Provider store={store}>
         <AdmissionCriteria
@@ -53,7 +53,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       </Provider>
     );
     /*
-    store.dispatch(setInitiative(mockedInitiative));
     if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
       console.log('  true case');
     } else {

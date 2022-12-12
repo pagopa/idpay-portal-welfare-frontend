@@ -6,6 +6,8 @@ import InitiativeDetail from '../initiativeDetail';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
+import { setInitiative } from '../../../redux/slices/initiativeSlice';
+import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -26,6 +28,7 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
   typeof createStore
 >, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
+  store.dispatch(setInitiative(mockedInitiative))
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -34,6 +37,7 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
 
   test('Testing useState of the component', async () => {
     const history = injectedHistory ? injectedHistory : createMemoryHistory();
+    // store.dispatch(setInitiative(mockedInitiative));
     render(
       <Provider store={store}>
         <Router history={history}>
