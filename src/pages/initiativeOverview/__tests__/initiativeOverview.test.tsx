@@ -3,15 +3,7 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
-// import { groupsApi } from '../../../api/groupsApiClient';
-import { groupsApiMocked } from '../../../api/__mocks__/groupsApiClient';
-// import { Initiative } from '../../../model/Initiative';
-// import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
-// import { useAppSelector } from '../../../redux/hooks';
-// import { initiativeSelector } from '../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../redux/store';
-import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
-import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
@@ -54,12 +46,6 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-jest.mock('../../../api/groupsApiClient');
-
-beforeEach(() => {
-  jest.spyOn(groupsApiMocked, 'getGroupOfBeneficiaryStatusAndDetails');
-});
-
 describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   typeof createStore
 >, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
@@ -72,7 +58,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   test('should display the InitiativeOverview component', async () => {
     await waitFor(() => setInitiativeId('333'));
     await waitFor(async () => {
-      const { queryByTestId } = render(
+      render(
         <Provider store={store}>
           <InitiativeOverview />
         </Provider>
@@ -111,14 +97,5 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
 
     const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
     userEvent.click(condition);
-  });
-
-  it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
-    jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
-
-    await getGroupOfBeneficiaryStatusAndDetail(mockedInitiativeId);
-    expect(groupsApiMocked.getGroupOfBeneficiaryStatusAndDetails).toBeCalledWith(
-      mockedInitiativeId
-    );
   });
 });

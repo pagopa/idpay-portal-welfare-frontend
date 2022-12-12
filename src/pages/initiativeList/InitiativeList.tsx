@@ -444,7 +444,7 @@ const InitiativeList = () => {
               onChange={(e) => {
                 handleSearchInitiatives(e.target.value);
               }}
-              inputProps={{'data-testid': 'search-initiative'}}
+              inputProps={{ 'data-testid': 'search-initiative' }}
             />
           </Box>
         </Box>
@@ -481,6 +481,7 @@ const InitiativeList = () => {
                                 `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
                               )
                             }
+                            data-testid="initiative-btn-test"
                           >
                             {row.initiativeName}
                           </ButtonNaked>
