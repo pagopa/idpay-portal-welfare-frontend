@@ -3,11 +3,14 @@ import { render, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
+// import { groupsApiMocked } from '../../../api/__mocks__/groupsApiClient';
+
 import { createStore } from '../../../redux/store';
 import InitiativeOverview from '../initiativeOverview';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
+import { setInitiative, setInitiativeId } from '../../../redux/slices/initiativeSlice';
+import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -56,6 +59,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   });
 
   test('should display the InitiativeOverview component', async () => {
+    store.dispatch(setInitiative(mockedInitiative));
     await waitFor(() => setInitiativeId('333'));
     await waitFor(async () => {
       render(

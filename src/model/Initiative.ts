@@ -154,6 +154,9 @@ export const InitiativeAdditional2AdditionalInfo = (resources: AdditionalInfo) =
     type: r.type,
     contact: r.contact,
   })),
+  logoFileName: resources.logoFileName,
+  logoUploadDate: resources.logoUploadDate,
+  logoURL: resources.logoURL,
 });
 
 export const automatedCriteria2AutomatedCriteriaItem = (resources: AutomatedCriteriaItem) => ({
