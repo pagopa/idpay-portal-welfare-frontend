@@ -38,6 +38,9 @@ const mockedAdditionalInfo: AdditionalInfo = {
   privacyPolicyUrl: 'http://test.it',
   termsAndConditions: 'http://test.it',
   assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+  logoFileName: 'logo file name',
+  logoUploadDate: 'logo date',
+  logoURL: 'logo url',
 };
 
 const mockedAutomatedCriteria: AutomatedCriteriaItem = {
@@ -85,6 +88,9 @@ export const mockedInitiative: Initiative = {
       { type: TypeEnum.mobile, contact: 'http://test.it' },
       { type: '', contact: '' },
     ],
+    logoFileName: 'logo file name',
+    logoUploadDate: 'logo date',
+    logoURL: 'logo url',
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [
@@ -262,6 +268,9 @@ test('Test InitiativeAdditional2AdditionalInfo', () => {
     privacyPolicyUrl: 'http://test.it',
     termsAndConditions: 'http://test.it',
     assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+    logoFileName: 'logo file name',
+    logoUploadDate: 'logo date',
+    logoURL: 'logo url',
   });
 });
 
@@ -315,6 +324,9 @@ test('Test initiative2Initiative', () => {
         { type: TypeEnum.mobile, contact: 'http://test.it' },
         { type: '', contact: '' },
       ],
+      logoFileName: 'logo file name',
+      logoUploadDate: 'logo date',
+      logoURL: 'logo url',
     },
     beneficiaryRule: {
       selfDeclarationCriteria: [
