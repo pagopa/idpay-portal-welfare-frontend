@@ -311,6 +311,7 @@ const InitiativeRanking = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-testid="back-btn-test"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>

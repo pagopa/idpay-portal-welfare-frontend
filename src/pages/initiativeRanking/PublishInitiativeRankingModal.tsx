@@ -64,6 +64,7 @@ const PublishInitiativeRankingModal = ({
                 weight="default"
                 size="small"
                 startIcon={<FileDownloadIcon />}
+                data-testid="alert-btn-test"
               >
                 {t('pages.initiativeRanking.publishModal.alertBtn')}
               </ButtonNaked>
