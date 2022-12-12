@@ -41,6 +41,7 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getOnboardingStatus } from '../../services/intitativeService';
 import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
+import { Initiative } from '../../model/Initiative';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -131,20 +132,45 @@ const InitiativeUsers = () => {
     }
   }, [id, page]);
 
-  const renderUserStatus = (status: string | undefined) => {
+  const checkRankingEnded = (date: string | Date | undefined): boolean | undefined => {
+    if (typeof date === 'object') {
+      const now = new Date();
+      return now > date;
+    } else if (typeof date === 'string') {
+      // eslint-disable-next-line functional/immutable-data
+      const d = date.split('/').reverse().join('-');
+      const rankingEnd = new Date(d);
+      const now = new Date();
+      return now > rankingEnd;
+    } else {
+      return undefined;
+    }
+  };
+
+  // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
+  const renderUserStatus = (status: string | undefined, initiative: Initiative) => {
+    const rankingEnded = checkRankingEnded(initiative.generalInfo.rankingEndDate);
     switch (status) {
-      case 'ACCEPTED_TC':
-        return <Chip label={t('pages.initiativeUsers.status.acceptedTc')} color="default" />;
-      case 'INACTIVE':
-        return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
-      case 'ON_EVALUATION':
-        return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       case 'INVITED':
-        return <Chip label={t('pages.initiativeUsers.status.invited')} color="warning" />;
+      case 'ACCEPTED_TC':
+      case 'ON_EVALUATION':
+        if (rankingEnded) {
+          return <Chip label={t('pages.initiativeUsers.status.notSignedOn')} color="error" />;
+        } else {
+          return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
+        }
       case 'ONBOARDING_OK':
-        return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
+        if (initiative.generalInfo.rankingEnabled === 'true') {
+          return <Chip label={t('pages.initiativeUsers.status.assignee')} color="success" />;
+        } else {
+          return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
+        }
       case 'ONBOARDING_KO':
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
+      case 'ELIGIBLE':
+        return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
+      case 'INACTIVE':
+        return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
       default:
         return null;
     }
@@ -377,23 +403,22 @@ const InitiativeUsers = () => {
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
-            <MenuItem value="ACCEPTED_TC" data-testid="filterStatusAcceptedTc-test">
-              {t('pages.initiativeUsers.status.acceptedTc')}
-            </MenuItem>
-            <MenuItem value="INACTIVE" data-testid="filterStatusInactive-test">
-              {t('pages.initiativeUsers.status.inactive')}
-            </MenuItem>
             <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
               {t('pages.initiativeUsers.status.onEvaluation')}
             </MenuItem>
-            <MenuItem value="INVITED" data-testid="filterStatusInvited-test">
-              {t('pages.initiativeUsers.status.invited')}
-            </MenuItem>
             <MenuItem value="ONBOARDING_OK" data-testid="filterStatusOnboardingOk-test">
-              {t('pages.initiativeUsers.status.onboardingOk')}
+              {initiativeSel.generalInfo.rankingEnabled === 'true'
+                ? t('pages.initiativeUsers.status.assignee')
+                : t('pages.initiativeUsers.status.onboardingOk')}
+            </MenuItem>
+            <MenuItem value="ELIGIBLE" data-testid="filterStatusEligible-test">
+              {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
             <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">
               {t('pages.initiativeUsers.status.onboardingKo')}
+            </MenuItem>
+            <MenuItem value="INACTIVE" data-testid="filterStatusInactive-test">
+              {t('pages.initiativeUsers.status.inactive')}
             </MenuItem>
           </Select>
         </FormControl>
@@ -437,10 +462,10 @@ const InitiativeUsers = () => {
                     <TableCell width="50%">
                       {t('pages.initiativeUsers.table.beneficiary')}
                     </TableCell>
-                    <TableCell width="40%">
+                    <TableCell width="30%">
                       {t('pages.initiativeUsers.table.updateStatusDate')}
                     </TableCell>
-                    <TableCell width="10%">
+                    <TableCell width="15%">
                       {t('pages.initiativeUsers.table.beneficiaryState')}
                     </TableCell>
                     {/* <TableCell width="10%"></TableCell> */}
@@ -459,7 +484,7 @@ const InitiativeUsers = () => {
                         </ButtonNaked>
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
-                      <TableCell>{renderUserStatus(r.beneficiaryState)}</TableCell>
+                      <TableCell>{renderUserStatus(r.beneficiaryState, initiativeSel)}</TableCell>
                       {/* <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />

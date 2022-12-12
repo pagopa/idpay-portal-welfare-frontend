@@ -10,7 +10,7 @@ const SummaryContentBody = ({ heading, title }: Props) => (
     <Typography variant="subtitle2" sx={{ width: '100%', my: 1 }}>
       {heading}
     </Typography>
-    <Typography variant="h6" sx={{ width: '100%', my: 1 }}>
+    <Typography variant="h6" sx={{ width: '100%', mt: 2, mb: 1 }}>
       {title}
     </Typography>
   </Box>

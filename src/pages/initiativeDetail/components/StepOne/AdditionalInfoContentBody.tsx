@@ -100,7 +100,14 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
           size="medium"
           href={initiativeDetail.additionalInfo.privacyPolicyUrl}
           target="_blank"
-          sx={{ color: 'primary.main', gridColumn: 'span 7', justifyContent: 'start' }}
+          sx={{
+            color: 'primary.main',
+            gridColumn: 'span 7',
+            justifyContent: 'start',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
           weight="default"
         >
           {initiativeDetail.additionalInfo.privacyPolicyUrl}
@@ -112,7 +119,14 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
           size="medium"
           href={initiativeDetail.additionalInfo.termsAndConditions}
           target="_blank"
-          sx={{ color: 'primary.main', gridColumn: 'span 7', justifyContent: 'start' }}
+          sx={{
+            color: 'primary.main',
+            gridColumn: 'span 7',
+            justifyContent: 'start',
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
           weight="default"
         >
           {initiativeDetail.additionalInfo.termsAndConditions}
