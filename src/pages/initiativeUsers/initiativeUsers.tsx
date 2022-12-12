@@ -264,14 +264,14 @@ const InitiativeUsers = () => {
         }}
       >
         <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb" data-testid="breadcrumbs-test">
+          <Breadcrumbs aria-label="breadcrumb">
             <ButtonNaked
               component="button"
               onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
-              data-test
+              data-testid="back-btn-test"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
@@ -368,7 +368,9 @@ const InitiativeUsers = () => {
           <InputLabel>{t('pages.initiativeUsers.form.status')}</InputLabel>
           <Select
             id="filterStatus"
-            data-testid="filterStatus-select"
+            inputProps={{
+              'data-testid': 'filterStatus-select',
+            }}
             name="filterStatus"
             label={t('pages.initiativeUsers.form.status')}
             placeholder={t('pages.initiativeUsers.form.status')}

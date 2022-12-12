@@ -2,7 +2,7 @@ import React from 'react';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeRefunds from '../initiativeRefunds';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import { date } from 'yup';
 
