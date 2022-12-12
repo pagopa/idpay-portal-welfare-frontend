@@ -329,6 +329,7 @@ const InitiativeRefunds = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-testid="back-btn-test"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
@@ -357,6 +358,7 @@ const InitiativeRefunds = () => {
             size="small"
             startIcon={<FileUploadIcon />}
             onClick={() => goToRefundsOutcome(id)}
+            data-testid="upload-btn-test"
           >
             {t('pages.initiativeRefunds.uploadBtn')}
           </Button>
@@ -421,7 +423,9 @@ const InitiativeRefunds = () => {
           <InputLabel>{t('pages.initiativeRefunds.form.status')}</InputLabel>
           <Select
             id="filterStatus"
-            data-testid="filterStatus-select"
+            inputProps={{
+              'data-testid': 'filterStatus-select',
+            }}
             name="filterStatus"
             label={t('pages.initiativeRefunds.form.status')}
             placeholder={t('pages.initiativeRefunds.form.status')}
@@ -455,6 +459,7 @@ const InitiativeRefunds = () => {
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={resetForm}
+            data-testid="reset-filters-test"
           >
             {t('pages.initiativeRefunds.form.resetFiltersBtn')}
           </ButtonNaked>

@@ -32,7 +32,7 @@ describe('<InitiativeRefundsOutcome />', () => {
   });
 
   it('Test InitiativeRefundsOutcome', async () => {
-    const { container } = renderWithProviders(<InitiativeRefundsOutcome />);
+    renderWithProviders(<InitiativeRefundsOutcome />);
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
