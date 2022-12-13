@@ -2,9 +2,10 @@ import React from 'react';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeRefunds from '../initiativeRefunds';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import { date } from 'yup';
+import { createMemoryHistory } from 'history';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -23,7 +24,7 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-describe('<InitiativeRefunds />', () => {
+describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof createMemoryHistory> */) => {
   it('renders without crashing', () => {
     window.scrollTo = jest.fn();
   });
@@ -31,10 +32,16 @@ describe('<InitiativeRefunds />', () => {
   it('Test Initiativerefunds Inputs and Element', async () => {
     renderWithProviders(<InitiativeRefunds />);
 
+    // const history = injectedHistory ? injectedHistory : createMemoryHistory();
+
+    // const oldLocPathname = history.location.pathname;
+
     //BUTTONS TEST
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
+
+    // expect(oldLocPathname !== history.location.pathname).toBeTruthy();
 
     const uploadBtn = screen.getByTestId('upload-btn-test') as HTMLButtonElement;
     fireEvent.click(uploadBtn);

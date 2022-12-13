@@ -49,7 +49,7 @@ describe('<InitiativeUsers />', () => {
     fireEvent.click(filterStatus);
 
     fireEvent.change(filterStatus, {
-      target: { value: 'ACCEPTED_TC' },
+      target: { value: 'ON_EVALUATION' },
     });
 
     expect(filterStatus).toBeInTheDocument();
