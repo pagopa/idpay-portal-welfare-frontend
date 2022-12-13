@@ -468,7 +468,9 @@ const InitiativeOverview = () => {
             sx={{ color: 'primary.main', padding: 0, fontWeight: 700 }}
             weight="default"
             variant="contained"
-            data-testid="view-custom-test"
+            inputProps={{
+              'data-testid': 'view-custom-test',
+            }}
             onClick={() => handleUpdateInitiative(initiativeSel.initiativeId)}
           >
             {t('pages.initiativeList.actions.update')}

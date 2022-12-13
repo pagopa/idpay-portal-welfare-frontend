@@ -1,14 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
 import { cleanup, render, waitFor, screen, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
 import InitiativeOverview from '../initiativeOverview';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { setInitiative, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { setStatus } from '../../../redux/slices/initiativeSlice';
+import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -31,16 +30,6 @@ beforeEach(() => {
 
 afterEach(cleanup);
 
-// jest.mock('react-router-dom', () => mockLocationFunction());
-
-// jest.mock('react-router-dom', () => ({
-//   ...jest.requireActual('react-router-dom'),
-//   useLocation: () => ({
-//     pathname: 'localhost:3000/portale-enti',
-//   }),
-// }));
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -58,9 +47,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
   test('should display the InitiativeOverview component', async () => {
-    store.dispatch(setInitiative(mockedInitiative));
     store.dispatch(setStatus('IN_REVISION'));
-    // await waitFor(() => setInitiativeId('333'));
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -76,10 +63,34 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
       /pages.initiativeOverview.info.otherinfo.details/i
     ) as HTMLButtonElement;
     fireEvent.click(viewDetailsBtn);
+
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
   });
 
-  test('Testing functions calls', async () => {
-    const { queryByTestId } = render(
+  test('should display the InitiativeOverview component status TO_CHECK', async () => {
+    store.dispatch(setStatus('TO_CHECK'));
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+  });
+
+  test('should display the InitiativeOverview component status APPROVED', async () => {
+    store.dispatch(setStatus('APPROVED'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
       <Provider store={store}>
         <Router history={history}>
           <InitiativeOverview />
@@ -87,13 +98,34 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const overviewBackBtn = screen.getByTestId('overview-back-bread') as HTMLButtonElement;
-    // Not Found
+    store.dispatch(
+      setPermissionsList([
+        { name: 'publishInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+  });
 
-    const oldLocPathname = history.location.pathname;
-    fireEvent.click(overviewBackBtn);
+  test('should display the InitiativeOverview component status DRAFT', async () => {
+    store.dispatch(setStatus('DRAFT'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
 
-    await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
   });
 
   test('Testing functions calls', async () => {
@@ -104,5 +136,11 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
+
+    const overviewBackBtn = screen.getByTestId('overview-back-bread') as HTMLButtonElement;
+    // Not Found
+    const oldLocPathname = history.location.pathname;
+    fireEvent.click(overviewBackBtn);
+    await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
   });
 });
