@@ -37,6 +37,7 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
+import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -374,7 +375,7 @@ const InitiativeRefunds = () => {
         }}
       >
         <FormControl sx={{ gridColumn: 'span 2' }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeRefunds.form.from')}
               inputFormat="dd/MM/yyyy"
@@ -396,7 +397,7 @@ const InitiativeRefunds = () => {
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeRefunds.form.to')}
               inputFormat="dd/MM/yyyy"

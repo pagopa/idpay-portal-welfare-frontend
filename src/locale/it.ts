@@ -107,7 +107,6 @@ export default {
         join: 'Hanno aderito',
         budgetExhausted: 'Budget speso',
         ViewUsers: 'Vedi utenti',
-
         status: {
           subtitleApproved:
             'L’iniziativa è stata approvata dal team di PagoPA ed è pronta per essere pubblicata',

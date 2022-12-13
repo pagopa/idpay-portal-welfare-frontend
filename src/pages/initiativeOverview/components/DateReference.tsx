@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { Divider, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -5,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import HourglassTopIcon from '@mui/icons-material/HourglassTop';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { Initiative } from '../../../model/Initiative';
 
 type Prop = {
@@ -18,97 +20,43 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
   const formatDate = (date: Date | undefined | string) =>
     typeof date === 'object' && date.toLocaleDateString('fr-BE');
 
-  const timeRemainingToJoin = (initiative: Initiative) => {
-    if (
-      typeof initiative.generalInfo.rankingEndDate === 'object' &&
-      typeof initiative.generalInfo.rankingStartDate === 'object'
-    ) {
-      const expirationDate =
-        typeof initiative.generalInfo.rankingEndDate === 'object'
-          ? initiative.generalInfo.rankingEndDate.getTime()
-          : 0;
-      const startDate =
-        typeof initiative.generalInfo.rankingStartDate === 'object'
-          ? initiative.generalInfo.rankingStartDate.getTime()
-          : 0;
-      return (expirationDate - startDate) / (1000 * 60 * 60 * 24);
-    } else if (
-      typeof initiative.generalInfo.endDate === 'object' &&
-      typeof initiative.generalInfo.startDate === 'object'
-    ) {
-      const expirationDate =
-        typeof initiative.generalInfo.endDate === 'object'
-          ? initiative.generalInfo.endDate.getTime()
-          : 0;
-      const startDate =
-        typeof initiative.generalInfo.startDate === 'object'
-          ? initiative.generalInfo.startDate.getTime()
-          : 0;
-      return (expirationDate - startDate) / (1000 * 60 * 60 * 24);
-    } else {
-      return 0;
+  const renderTimeRangeIcon = (sD: string | Date | undefined, eD: string | Date | undefined) => {
+    const now = new Date();
+    if (typeof sD === 'object' && typeof eD === 'object') {
+      if (now > eD) {
+        return <CheckCircleIcon color="action" sx={{ fontSize: '22px' }} />;
+      }
+      if (now >= sD && now <= eD) {
+        return <HourglassTopIcon color="action" sx={{ fontSize: '22px' }} />;
+      }
+      if (now < sD) {
+        return <AccessTimeFilledIcon color="action" sx={{ fontSize: '22px' }} />;
+      }
     }
+    return null;
   };
 
-  const chooseDateToFormat = (
-    startDate: Date | undefined | string,
-    rankingStart: Date | undefined | string
-  ) => {
-    if (typeof rankingStart === 'string' && rankingStart.length === 0) {
-      return formatDate(startDate);
-    } else {
-      return formatDate(rankingStart);
-    }
-  };
-
-  const dateMessageStatusApproved = (initiative: Initiative) => {
-    if (initiative.status === 'APPROVED') {
-      return t('pages.initiativeOverview.info.otherinfo.start', {
-        date: chooseDateToFormat(
-          initiative.generalInfo.startDate,
-          initiative.generalInfo.rankingStartDate
-        ),
-      });
-    } else {
-      if (initiative.generalInfo.rankingStartDate && initiative.generalInfo.rankingEndDate) {
-        if (timeRemainingToJoin(initiative) <= 0) {
-          return t('pages.initiativeOverview.info.otherinfo.closed');
-        } else {
-          return t('pages.initiativeOverview.info.otherinfo.expiration', {
-            days: timeRemainingToJoin(initiative),
-          });
-        }
-      } else {
-        // return t('pages.initiativeOverview.info.otherinfo.start', {
-        //   date: formatDate(initiative.generalInfo.startDate),
-        // });
+  const renderTimeRangeText = (sD: string | Date | undefined, eD: string | Date | undefined) => {
+    const now = new Date();
+    if (typeof sD === 'object' && typeof eD === 'object') {
+      if (now > eD) {
+        return t('pages.initiativeOverview.info.otherinfo.closed');
+      }
+      if (now >= sD && now <= eD) {
+        const eDTimestamp = eD.getTime();
+        const nowTimestamp = now.getTime();
+        const remainingDays = (eDTimestamp - nowTimestamp) / 86400000;
         return t('pages.initiativeOverview.info.otherinfo.expiration', {
-          days: timeRemainingToJoin(initiative),
+          days: Math.ceil(remainingDays),
+        });
+      }
+      if (now < sD) {
+        return t('pages.initiativeOverview.info.otherinfo.start', {
+          date: formatDate(sD),
         });
       }
     }
-  };
-
-  const checkFuture = (date: Date | string | undefined) => {
-    const now = new Date();
-    if (typeof date === 'object') {
-      return date.getTime() > now.getTime();
-    }
-    return true;
-  };
-
-  const chooseDateAndCheckFuture = (
-    rankingStartDate: Date | string | undefined,
-    startDate: Date | string | undefined
-  ) => {
-    const now = new Date();
-    if (typeof rankingStartDate === 'object') {
-      return rankingStartDate.getTime() > now.getTime();
-    } else if (typeof startDate === 'object') {
-      return startDate.getTime() > now.getTime();
-    } else {
-      return true;
-    }
+    return null;
   };
 
   return (
@@ -134,18 +82,27 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        {chooseDateAndCheckFuture(
+        {renderTimeRangeIcon(
           initiative.generalInfo.rankingStartDate,
-          initiative.generalInfo.startDate
-        ) ? (
-          <AccessTimeFilledIcon color="action" sx={{ fontSize: '22px' }} />
-        ) : (
-          <HourglassTopIcon color="action" sx={{ fontSize: '22px' }} />
-        )}
+          initiative.generalInfo.rankingEndDate
+        )
+          ? renderTimeRangeIcon(
+              initiative.generalInfo.rankingStartDate,
+              initiative.generalInfo.rankingEndDate
+            )
+          : renderTimeRangeIcon(initiative.generalInfo.startDate, initiative.generalInfo.endDate)}
       </Box>
       <Box sx={{ gridColumn: 'span 7' }}>
         <Typography variant="body2" sx={{ fontWeight: 600 }} data-testid="date-message-status">
-          {dateMessageStatusApproved(initiative)}
+          {renderTimeRangeText(
+            initiative.generalInfo.rankingStartDate,
+            initiative.generalInfo.rankingEndDate
+          )
+            ? renderTimeRangeText(
+                initiative.generalInfo.rankingStartDate,
+                initiative.generalInfo.rankingEndDate
+              )
+            : renderTimeRangeText(initiative.generalInfo.startDate, initiative.generalInfo.endDate)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 4' }}>
@@ -154,17 +111,11 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
-        {checkFuture(initiative.generalInfo.startDate) ? (
-          <AccessTimeFilledIcon color="action" sx={{ fontSize: '22px' }} />
-        ) : (
-          <HourglassTopIcon color="action" sx={{ fontSize: '22px' }} />
-        )}
+        {renderTimeRangeIcon(initiative.generalInfo.startDate, initiative.generalInfo.endDate)}
       </Box>
       <Box sx={{ gridColumn: 'span 7' }}>
         <Typography variant="body2" sx={{ fontWeight: 600 }}>
-          {t('pages.initiativeOverview.info.otherinfo.start', {
-            date: formatDate(initiative.generalInfo.startDate),
-          })}
+          {renderTimeRangeText(initiative.generalInfo.startDate, initiative.generalInfo.endDate)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 4' }}>

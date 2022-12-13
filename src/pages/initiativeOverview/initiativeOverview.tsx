@@ -670,7 +670,7 @@ const InitiativeOverview = () => {
                 : '-'}
             </Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 4' }}>
+          <Box sx={{ gridColumn: 'span 4', mt: '6px' }}>
             <Typography variant="body2">
               {t('pages.initiativeOverview.info.initiativeState')}
             </Typography>

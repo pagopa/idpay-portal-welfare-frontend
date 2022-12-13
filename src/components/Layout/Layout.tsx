@@ -64,7 +64,7 @@ const Layout = ({ children }: Props) => {
         {/* <Header onExit={onExit} loggedUser={loggedUser} parties={parties} /> */}
       </Box>
       {match !== null ? (
-        <Box gridArea="body" display="grid" gridTemplateColumns="minmax(200px, 2fr) 10fr">
+        <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
           <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
             <SideMenu />
           </Box>
