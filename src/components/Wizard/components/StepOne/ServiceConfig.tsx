@@ -405,7 +405,9 @@ const ServiceConfig = ({
               error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
               helperText={formik.touched.serviceName && formik.errors.serviceName}
               size="small"
-              data-testid="service-name-test"
+              inputProps={{
+                'data-testid': 'service-name-test',
+              }}
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 12' }} size="small">
@@ -519,7 +521,9 @@ const ServiceConfig = ({
               error={formik.touched.privacyPolicyUrl && Boolean(formik.errors.privacyPolicyUrl)}
               helperText={formik.touched.privacyPolicyUrl && formik.errors.privacyPolicyUrl}
               size="small"
-              data-testid="privacy-policy-url-test"
+              inputProps={{
+                'data-testid': 'privacy-policy-url-test',
+              }}
             />
           </FormControl>
 
@@ -556,7 +560,9 @@ const ServiceConfig = ({
               error={formik.touched.termsAndConditions && Boolean(formik.errors.termsAndConditions)}
               helperText={formik.touched.termsAndConditions && formik.errors.termsAndConditions}
               size="small"
-              data-testid="terms-and-conditions-test"
+              inputProps={{
+                'data-testid': 'terms-and-conditions-test',
+              }}
             />
           </FormControl>
 
@@ -668,7 +674,9 @@ const ServiceConfig = ({
                       value={formik.values.assistanceChannels[i].type}
                       onChange={(e) => handleContactSelect(e, formik.setValues, i, formik.values)}
                       error={typeTouched && Boolean(typeError)}
-                      data-testid="assistance-channel-test"
+                      inputProps={{
+                        'data-testid': 'assistance-channel-test',
+                      }}
                     >
                       {contacts.map(({ name, value }, id) => (
                         <MenuItem key={id} value={value}>
