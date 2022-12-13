@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, waitFor, screen } from '@testing-library/react';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { setInitiative } from '../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../redux/store';
 import DeleteInitiativeModal from '../DeleteInitiativeModal';
+import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -22,6 +24,8 @@ jest.mock('@pagopa/selfcare-common-frontend', () => ({
   useLoading: () => ({}),
 }));
 
+afterEach(cleanup);
+
 describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const handleCloseInitiativeDeleteModal = jest.fn();
@@ -29,21 +33,6 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
-  });
-
-  test('should display the ConfirmPublishInitiativeModal component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <DeleteInitiativeModal
-            initiativeId={undefined}
-            initiativeStatus={undefined}
-            openInitiativeDeleteModal={false}
-            handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
-          />
-        </Provider>
-      );
-    });
   });
 
   it('the modal should be in the document', async () => {
@@ -73,5 +62,25 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
       const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
       fireEvent.click(cancelBtn);
     });
+  });
+
+  test('should display the ConfirmPublishInitiativeModal component', async () => {
+    store.dispatch(setInitiative(mockedInitiative));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'deleteInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <DeleteInitiativeModal
+          initiativeId={store.getState().initiative.initiativeId}
+          initiativeStatus={store.getState().initiative.status}
+          openInitiativeDeleteModal={true}
+          handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
+        />
+      </Provider>
+    );
+    fireEvent.click(screen.getByText('pages.initiativeOverview.modal.delete'));
   });
 });

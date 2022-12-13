@@ -1,13 +1,16 @@
 /* eslint-disable react/jsx-no-bind */
-import { screen, waitFor, cleanup } from '@testing-library/react';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { screen, waitFor, cleanup, render } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import ShopRules from '../ShopRules';
-import React from 'react';
-import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
-import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
 import { renderWithProviders } from '../../../../../utils/test-utils';
+import { createStore, store } from '../../../../../redux/store';
+import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
+import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
+import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -15,8 +18,9 @@ jest.mock('react-i18next', () => ({
 
 afterEach(cleanup);
 
-describe('<RefundRules />', () => {
+describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => {
   const setAction = jest.fn();
+  const store = injectedStore ? injectedStore : createStore();
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -43,8 +47,10 @@ describe('<RefundRules />', () => {
   });
 
   it('test on handleSubmit', async () => {
-    await act(async () => {
-      const { debug } = renderWithProviders(
+    store.dispatch(setInitiative(mockedInitiative));
+    // console.log(store.getState().initiative.beneficiaryRule);
+    const { debug } = render(
+      <Provider store={store}>
         <ShopRules
           action={WIZARD_ACTIONS.SUBMIT}
           setAction={function (_value: SetStateAction<string>): void {
@@ -58,8 +64,8 @@ describe('<RefundRules />', () => {
             //
           }}
         />
-      );
-      await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
-    });
+      </Provider>
+    );
+    await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
   });
 });

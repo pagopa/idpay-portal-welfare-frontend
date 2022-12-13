@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor, screen, cleanup } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
@@ -7,6 +7,9 @@ import { isDate, parse } from 'date-fns';
 import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Generalnfo from '../Generalnfo';
 import { createStore } from '../../../../../redux/store';
+import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
+import { renderWithContext } from '../../../../../utils/test-utils';
+import { GeneralInfo } from '../../../../../model/Initiative';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -20,6 +23,8 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
+afterEach(cleanup);
+
 describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
@@ -29,40 +34,57 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
   it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
-      const setGeneralInfo = jest.fn();
+    const setAction = jest.fn();
+    const setCurrentStep = jest.fn();
+    store.dispatch(setInitiativeId('initativeId231'));
+    renderWithContext(
+      <Generalnfo
+        action={WIZARD_ACTIONS.DRAFT}
+        // eslint-disable-next-line react/jsx-no-bind
+        setAction={setAction}
+        currentStep={2}
+        // eslint-disable-next-line react/jsx-no-bind
+        setCurrentStep={setCurrentStep}
+        // eslint-disable-next-line react/jsx-no-bind
+        setDisabledNext={function (_value: SetStateAction<boolean>): void {
+          //
+        }}
+      />
+    );
 
-      render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.DRAFT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      parseValuesFormToInitiativeGeneralDTO();
-      setGeneralInfo();
-      expect(parseValuesFormToInitiativeGeneralDTO).toHaveBeenCalled();
-      expect(setGeneralInfo).toHaveBeenCalled();
+    await waitFor(() => expect(setAction).toHaveBeenCalled());
 
-      // if (mockedInitiativeId) {
-      //   await updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
-      //   expect(InitiativeApi.updateInitiativeGeneralInfoDraft).toBeCalled();
-      // }
-    });
+    const itText = screen.getByTestId('introductionTextIT-test') as HTMLInputElement;
+    fireEvent.change(itText, { target: { value: 'it text' } });
+    expect(itText).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('components.wizard.common.languages.english'));
+    const enText = (await waitFor(() =>
+      screen.getByTestId('introductionTextEN-test')
+    )) as HTMLInputElement;
+    fireEvent.change(enText, { target: { value: 'en text' } });
+    expect(enText).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('components.wizard.common.languages.french'));
+    const frText = (await waitFor(() =>
+      screen.getByTestId('introductionTextFR-test')
+    )) as HTMLInputElement;
+    fireEvent.change(frText, { target: { value: 'fr text' } });
+    expect(frText).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('components.wizard.common.languages.german'));
+    const deText = (await waitFor(() =>
+      screen.getByTestId('introductionTextDE-test')
+    )) as HTMLInputElement;
+    fireEvent.change(deText, { target: { value: 'de text' } });
+    expect(deText).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('components.wizard.common.languages.slovenian'));
+    const slText = (await waitFor(() =>
+      screen.getByTestId('introductionTextSL-test')
+    )) as HTMLInputElement;
+    fireEvent.change(slText, { target: { value: 'sl text' } });
+    expect(slText).toBeInTheDocument();
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
@@ -77,7 +99,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -128,12 +150,12 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     const { getByLabelText, getByDisplayValue } = render(
       <Provider store={store}>
         <Generalnfo
-          action={''}
+          action={WIZARD_ACTIONS.DRAFT}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
           }}
-          currentStep={0}
+          currentStep={2}
           // eslint-disable-next-line react/jsx-no-bind
           setCurrentStep={function (_value: SetStateAction<number>): void {
             //
@@ -182,7 +204,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -219,6 +241,19 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         expect(endDate).toBeRequired();
       });
 
+      fireEvent.click(endDate);
+      fireEvent.change(endDate, { target: { value: '19/07/2022' } });
+      await act(async () => {
+        expect(
+          d
+            .cast('19-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('19/07/2022');
+      });
+
+      // expect to throw  formik error wrong type
+      fireEvent.change(endDate, { target: { value: 2022 } });
+
       /* Checking if invalid cast return invalid date */
       await act(async () => {
         expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
@@ -241,6 +276,9 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('19/07/2022');
       });
+
+      // expect to throw error formik error wrong type
+      fireEvent.change(rankingStartDate, { target: { value: 2022 } });
       /* join-to */
 
       fireEvent.mouseOver(rankingEndDate);
@@ -252,6 +290,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('20/07/2022');
       });
+
       /* spend-from */
 
       fireEvent.mouseOver(startDate);
@@ -288,7 +327,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -325,5 +364,45 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         expect(beneficiaryType.value).toBe('PG');
       });
     });
+  });
+
+  test('precompiled form from redux', async () => {
+    const mockedGeneralBody: GeneralInfo = {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'true',
+      budget: '8515',
+      beneficiaryBudget: '801',
+      rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+      rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+      startDate: new Date('2022-10-01T00:00:00.000Z'),
+      endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'it',
+      introductionTextEN: 'en',
+      introductionTextFR: 'fr',
+      introductionTextDE: undefined,
+      introductionTextSL: undefined,
+      rankingEnabled: 'true',
+    };
+    store.dispatch(setGeneralInfo(mockedGeneralBody));
+    render(
+      <Provider store={store}>
+        <Generalnfo
+          action={WIZARD_ACTIONS.SUBMIT}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={2}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
   });
 });

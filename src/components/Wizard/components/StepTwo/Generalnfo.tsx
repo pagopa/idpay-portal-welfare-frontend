@@ -800,7 +800,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductionTextIT-test"
+                inputProps={{ 'data-testid': 'introductionTextIT-test' }}
                 size="small"
                 minRows={3}
                 multiline
@@ -823,7 +823,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductionTextEN-test"
+                inputProps={{ 'data-testid': 'introductionTextEN-test' }}
                 size="small"
                 minRows={3}
                 multiline
@@ -844,7 +844,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductionTextFR-test"
+                inputProps={{ 'data-testid': 'introductionTextFR-test' }}
                 size="small"
                 minRows={3}
                 multiline
@@ -865,7 +865,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductionTextDE-test"
+                inputProps={{ 'data-testid': 'introductionTextDE-test' }}
                 size="small"
                 minRows={3}
                 multiline
@@ -886,7 +886,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 onChange={(e) => {
                   formik.handleChange(e);
                 }}
-                data-testid="introductionTextSL-test"
+                inputProps={{ 'data-testid': 'introductionTextSL-test' }}
                 size="small"
                 minRows={3}
                 multiline
