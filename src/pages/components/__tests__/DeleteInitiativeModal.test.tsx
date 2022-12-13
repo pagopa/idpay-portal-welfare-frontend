@@ -71,7 +71,6 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
         { name: 'deleteInitiative', description: 'description', mode: 'enabled' },
       ])
     );
-    console.log(store.getState().initiative.initiativeId, store.getState().initiative.status);
     render(
       <Provider store={store}>
         <DeleteInitiativeModal

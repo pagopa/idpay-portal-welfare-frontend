@@ -1,43 +1,38 @@
 import { Provider } from 'react-redux';
 import { render, waitFor, screen, fireEvent } from '@testing-library/react';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { createStore } from '../../../redux/store';
 import InitiativeDetail from '../initiativeDetail';
-import { renderWithProviders } from '../../../utils/test-utils';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { setInitiative } from '../../../redux/slices/initiativeSlice';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { setStatus } from '../../../redux/slices/initiativeSlice';
+import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
   withTranslation: jest.fn(),
 }));
 
-// jest.mock('@pagopa/selfcare-common-frontend', () => ({
-//   // ...jest.requireActual('@pagopa/selfcare-common-frontend/components'),
-//   TitleBox: () => <div>Test</div>,
-// }));
-
-// jest.mock('@pagopa/selfcare-common-frontend', () => ({
-//   // ...jest.requireActual('@pagopa/selfcare-common-frontend/hooks/useLoading'),
-//   useLoading: () => ({}),
-//  }));
-
 describe('<InitiativeDetail />', (injectedStore?: ReturnType<
   typeof createStore
 >, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
-  store.dispatch(setInitiative(mockedInitiative))
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
+  // store.dispatch(setInitiative(mockedInitiative));
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
-  test('Testing useState of the component', async () => {
-    const history = injectedHistory ? injectedHistory : createMemoryHistory();
-    // store.dispatch(setInitiative(mockedInitiative));
+  test('use can review case', async () => {
+    //store.dispatch(setInitiative(mockedInitiative));
+    store.dispatch(setStatus('IN_REVISION'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -45,6 +40,17 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
+    const rejectBtn = screen.getByText(
+      'pages.initiativeDetail.accordion.buttons.reject'
+    ) as HTMLButtonElement;
+    expect(rejectBtn).toBeInTheDocument();
+    expect(rejectBtn).toBeDisabled();
+
+    const approveBtn = screen.getByText(
+      'pages.initiativeDetail.accordion.buttons.approve'
+    ) as HTMLButtonElement;
+    expect(approveBtn).toBeInTheDocument();
+    expect(approveBtn).toBeDisabled();
 
     const backBtnDetail = screen.getByTestId('backButtonDetail') as HTMLButtonElement;
     const secondBackButton = screen.getByText(/pages.initiativeDetail.accordion.buttons.back/i);
@@ -59,7 +65,35 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
     await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
   });
 
-  it('Test on close of snackbar', async () => {
-    renderWithProviders(<InitiativeDetail />);
+  it('Test userCanUpdateInitiative', async () => {
+    store.dispatch(setStatus('APPROVED'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeDetail />
+        </Router>
+      </Provider>
+    );
+  });
+
+  it('Test userCanDeleteInitiative', async () => {
+    store.dispatch(setStatus('APPROVED'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'deleteInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeDetail />
+        </Router>
+      </Provider>
+    );
   });
 });
