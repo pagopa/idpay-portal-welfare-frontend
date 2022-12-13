@@ -1,5 +1,5 @@
 import React from 'react';
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, waitFor, screen, getByLabelText } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
@@ -16,7 +16,7 @@ jest.mock('react-i18next', () => ({
 
 beforeEach(() => {
   // jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
-  jest.spyOn(console, 'error').mockImplementation(() => {});
+   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
@@ -29,40 +29,35 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
   it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
-      const setGeneralInfo = jest.fn();
-
-      render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.DRAFT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      parseValuesFormToInitiativeGeneralDTO();
-      setGeneralInfo();
-      expect(parseValuesFormToInitiativeGeneralDTO).toHaveBeenCalled();
-      expect(setGeneralInfo).toHaveBeenCalled();
-
-      // if (mockedInitiativeId) {
-      //   await updateInitiativeGeneralInfoDraft(mockedInitiativeId, mockedInitiativeGeneralBody);
-      //   expect(InitiativeApi.updateInitiativeGeneralInfoDraft).toBeCalled();
-      // }
-    });
+    render(
+      <Provider store={store}>
+        <Generalnfo
+          action={WIZARD_ACTIONS.DRAFT}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={2}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+    const itText = screen.getByTestId('introductionTextIT-test') as HTMLInputElement;
+    fireEvent.change(itText, { target: { value: 'it text' } });
+    expect(itText).toBeInTheDocument();
+/*
+    fireEvent.click(screen.getByLabelText('components.wizard.common.languages.english'));
+    const enText = screen.getByTestId('introductionTextEN-test') as HTMLInputElement;
+    fireEvent.change(enText, { target: { value: 'en text' } });
+    expect(itText).toBeInTheDocument();
+    */
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
