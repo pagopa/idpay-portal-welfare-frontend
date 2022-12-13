@@ -1,15 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
+import { cleanup, render, waitFor, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
-// import { groupsApiMocked } from '../../../api/__mocks__/groupsApiClient';
-
 import { createStore } from '../../../redux/store';
 import InitiativeOverview from '../initiativeOverview';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { setInitiative, setInitiativeId } from '../../../redux/slices/initiativeSlice';
+import { setInitiative, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
 
 export function mockLocationFunction() {
@@ -31,14 +29,16 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-jest.mock('react-router-dom', () => mockLocationFunction());
+afterEach(cleanup);
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
-}));
+// jest.mock('react-router-dom', () => mockLocationFunction());
+
+// jest.mock('react-router-dom', () => ({
+//   ...jest.requireActual('react-router-dom'),
+//   useLocation: () => ({
+//     pathname: 'localhost:3000/portale-enti',
+//   }),
+// }));
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -49,38 +49,19 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
+window.scrollTo = jest.fn();
+
 describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   typeof createStore
 >, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
   test('should display the InitiativeOverview component', async () => {
     store.dispatch(setInitiative(mockedInitiative));
-    await waitFor(() => setInitiativeId('333'));
-    await waitFor(async () => {
-      render(
-        <Provider store={store}>
-          <InitiativeOverview />
-        </Provider>
-      );
-      /*
-      store.dispatch({
-        type: 'POPULATE_DATA',
-        initiativeId: 'id',
-      });
-      
-      console.log('state', store.getState());
-*/
-    });
-  });
-
-  test('Testing functions calls', async () => {
-    const history = injectedHistory ? injectedHistory : createMemoryHistory();
-    const { queryByTestId, debug, getByTestId } = render(
+    store.dispatch(setStatus('IN_REVISION'));
+    // await waitFor(() => setInitiativeId('333'));
+    render(
       <Provider store={store}>
         <Router history={history}>
           <InitiativeOverview />
@@ -88,18 +69,40 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    // debug(undefined, 99999);
-    const overviewBackBtn = getByTestId('overview-back-bread') as HTMLButtonElement;
-    // Not Found
-    //const overviewViewBtn = getByTestId('view-custom-test') as HTMLButtonElement;
-    const oldLocPathname = history.location.pathname;
+    const condition = screen.getByTestId('revision-onclick-test') as HTMLButtonElement;
+    fireEvent.click(condition);
 
-    userEvent.click(overviewBackBtn);
+    const viewDetailsBtn = screen.getByText(
+      /pages.initiativeOverview.info.otherinfo.details/i
+    ) as HTMLButtonElement;
+    fireEvent.click(viewDetailsBtn);
+  });
+
+  test('Testing functions calls', async () => {
+    const { queryByTestId } = render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+
+    const overviewBackBtn = screen.getByTestId('overview-back-bread') as HTMLButtonElement;
+    // Not Found
+
+    const oldLocPathname = history.location.pathname;
+    fireEvent.click(overviewBackBtn);
 
     await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
-    // await waitFor(() => expect(overviewViewBtn).toBeInTheDocument());
+  });
 
-    const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
-    userEvent.click(condition);
+  test('Testing functions calls', async () => {
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
   });
 });
