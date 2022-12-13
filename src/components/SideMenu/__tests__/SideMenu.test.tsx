@@ -1,11 +1,7 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { createStore } from '../../../redux/store';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { renderWithProviders } from '../../../utils/test-utils';
 import React from 'react';
 import SideMenu from '../SideMenu';
-import { act } from 'react-dom/test-utils';
-import { SvgIcon } from '@mui/material';
-import SidenavItem from '../SidenavItem';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -16,22 +12,19 @@ jest.mock('react-router-dom', () => ({
   useHistory: () => ({
     listen: jest.fn(),
     location: 'localhost:3000/portale-enti',
+    replace: jest.fn(),
   }),
 }));
 
-describe('<SideMenu />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
-  const handleClick = jest.fn();
-
+describe('<SideMenu />', () => {
   it('renders without crashing', () => {
     window.scrollTo = jest.fn();
   });
 
   test('testing rendering of SideMenu component', async () => {
-    render(
-      <Provider store={store}>
-        <SideMenu />
-      </Provider>
-    );
+    renderWithProviders(<SideMenu />);
+    // screen.debug();
+    const listBtn = screen.getByText(/sideMenu.initiativeList.title/) as HTMLElement;
+    fireEvent.click(listBtn);
   });
 });
