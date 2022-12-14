@@ -126,13 +126,6 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (typeof id === 'string') {
-      getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
-    }
-  }, [id, page]);
-
   const checkRankingEnded = (date: string | Date | undefined): boolean | undefined => {
     if (typeof date === 'object') {
       const now = new Date();
@@ -275,10 +268,23 @@ const InitiativeUsers = () => {
     setFilterByDateFrom(undefined);
     setFilterByDateTo(undefined);
     setFilterByStatus(undefined);
+    setRows([]);
     if (typeof id === 'string') {
       getTableData(id, 0, undefined, undefined, undefined, undefined);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    resetForm();
+  }, [id]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (typeof id === 'string') {
+      getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
+    }
+  }, [page]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>

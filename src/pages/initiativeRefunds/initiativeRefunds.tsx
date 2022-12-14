@@ -206,19 +206,6 @@ const InitiativeRefunds = () => {
       });
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (typeof id === 'string') {
-      getTableData(
-        id,
-        page,
-        filterByNotificationDateFrom,
-        filterByNotificationDateTo,
-        filterByStatus
-      );
-    }
-  }, [id, page]);
-
   const validationSchema = Yup.object().shape({
     searchFrom: Yup.date()
       .nullable()
@@ -301,6 +288,7 @@ const InitiativeRefunds = () => {
     setFilterByNotificationDateFrom(undefined);
     setFilterByNotificationDateTo(undefined);
     setFilterByStatus(undefined);
+    setRows([]);
     if (typeof id === 'string') {
       getTableData(id, 0, undefined, undefined, undefined);
     }
@@ -311,6 +299,24 @@ const InitiativeRefunds = () => {
       history.replace(`${BASE_ROUTE}/esiti-rimborsi-iniziativa/${initiativeId}`);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    resetForm();
+  }, [id]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (typeof id === 'string') {
+      getTableData(
+        id,
+        page,
+        filterByNotificationDateFrom,
+        filterByNotificationDateTo,
+        filterByStatus
+      );
+    }
+  }, [page]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
