@@ -35,6 +35,7 @@ import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
+import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -347,7 +348,7 @@ const InitiativeUsers = () => {
           />
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.from')}
               inputFormat="dd/MM/yyyy"
@@ -369,7 +370,7 @@ const InitiativeUsers = () => {
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.to')}
               inputFormat="dd/MM/yyyy"
