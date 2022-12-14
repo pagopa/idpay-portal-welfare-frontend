@@ -401,6 +401,9 @@ const InitiativeList = () => {
                   </InputAdornment>
                 ),
               }}
+              inputProps={{
+                'data-testid': 'search-initiative-test',
+              }}
               onChange={(e) => {
                 handleSearchInitiatives(e.target.value);
               }}

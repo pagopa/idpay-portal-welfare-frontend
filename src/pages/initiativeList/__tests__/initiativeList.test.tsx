@@ -9,6 +9,8 @@ import { getInitativeSummary } from '../../../services/intitativeService';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { Provider } from 'react-redux';
 import { setInitiativeSummaryList } from '../../../redux/slices/initiativeSummarySlice';
+import { Router } from 'react-router';
+import { createMemoryHistory } from 'history';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -18,11 +20,10 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-describe('<InitiativeList />', () => {
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+window.scrollTo = jest.fn();
+
+describe('<InitiativeList />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
   test('Should render the Initiative List', async () => {
     store.dispatch(setInitiative(mockedInitiative));
@@ -63,5 +64,26 @@ describe('<InitiativeList />', () => {
 
     fireEvent.change(searchInitiative, { target: { value: 'search initiative' } });
     expect(searchInitiative.value).toBe('search initiative');
+  });
+
+  test('Should render the Initiative List with status approved', async () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'createInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeList />
+        </Router>
+      </Provider>
+    );
+
+    const searchInitiative = screen.getByTestId('search-initiative-test') as HTMLInputElement;
+
+    fireEvent.change(searchInitiative, { target: { value: 'initiative' } });
+    expect(searchInitiative.value).toBe('initiative');
   });
 });
