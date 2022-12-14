@@ -263,22 +263,28 @@ const InitiativeRanking = () => {
     },
   });
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    if (typeof id === 'string') {
-      getTableData(id, page, filterByBeneficiary, filterByStatus);
-    }
-  }, [id, page]);
-
   const resetForm = () => {
     const initialValues = { searchUser: '', filterStatus: '' };
     formik.resetForm({ values: initialValues });
     setFilterByBeneficiary(undefined);
     setFilterByStatus(undefined);
+    setRows([]);
     if (typeof id === 'string') {
       getTableData(id, 0, undefined, undefined);
     }
   };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    resetForm();
+  }, [id]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (typeof id === 'string') {
+      getTableData(id, page, filterByBeneficiary, filterByStatus);
+    }
+  }, [page]);
 
   const getBeneficiaryStatus = (status: string | undefined) => {
     switch (status) {
