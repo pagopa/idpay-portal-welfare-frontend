@@ -353,7 +353,9 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                 label={t('components.wizard.stepFive.form.selectTimeParam')}
                 onChange={(e) => formik.setFieldValue('timeParameter', e.target.value)}
                 error={formik.touched.timeParameter && Boolean(formik.errors.timeParameter)}
-                data-testid="selectTimeParam-test"
+                inputProps={{
+                  'data-testid': 'selectTimeParam-test',
+                }}
               >
                 <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
                   {t('components.wizard.stepFive.select.timrParameter.initiativeDone')}
@@ -412,7 +414,9 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
             aria-label="additionalInfo"
             value={formik.values.additionalInfo}
             onChange={(e) => formik.setFieldValue('additionalInfo', e.target.value)}
-            data-testid="additionalInfo-test"
+            inputProps={{
+              'data-testid': 'additionalInfo-test',
+            }}
             size="small"
           />
         </FormControl>
