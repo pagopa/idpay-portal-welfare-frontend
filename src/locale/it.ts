@@ -575,7 +575,6 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
-
           form: {
             year: 'Anno',
             age: 'Età',
@@ -711,7 +710,6 @@ export default {
           },
         },
       },
-
       common: {
         buttons: {
           back: 'Indietro',
@@ -727,7 +725,7 @@ export default {
           italian: 'Italiano',
           english: 'Inglese',
           french: 'Francese',
-          german: 'Tesdesco',
+          german: 'Tedesco',
           slovenian: 'Sloveno',
         },
       },
@@ -787,5 +785,18 @@ export default {
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
     cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
     contactAdmin: "Contattare l'amministratore",
+  },
+  helpStaticUrls: {
+    wizard: {
+      serviceConfig: 'https://www.google.it',
+      generalInfo: 'https://www.google.it',
+      admissionCriteria: 'https://www.google.it',
+      fileUpload: 'https://www.google.it',
+      shopRules: 'https://www.google.it',
+      shopRulesModal: 'https://www.google.it',
+    },
+    pages: {
+      initiativeRefundsOutcome: 'https://www.google.it',
+    },
   },
 };
