@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-bind */
 import { cleanup, render, waitFor, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
@@ -8,6 +7,8 @@ import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
 import { setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
+import { ThemeProvider } from '@mui/system';
+import { theme } from '@pagopa/mui-italia';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -46,33 +47,13 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   const store = injectedStore ? injectedStore : createStore();
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
-  test('should display the InitiativeOverview component', async () => {
+  test('Test Button details', async () => {
     store.dispatch(setStatus('IN_REVISION'));
-    render(
-      <Provider store={store}>
-        <Router history={history}>
-          <InitiativeOverview />
-        </Router>
-      </Provider>
-    );
-
-    const condition = screen.getByTestId('revision-onclick-test') as HTMLButtonElement;
-    fireEvent.click(condition);
-
-    const viewDetailsBtn = screen.getByText(
-      /pages.initiativeOverview.info.otherinfo.details/i
-    ) as HTMLButtonElement;
-    fireEvent.click(viewDetailsBtn);
-
     store.dispatch(
       setPermissionsList([
-        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
       ])
     );
-  });
-
-  test('should display the InitiativeOverview component status TO_CHECK', async () => {
-    store.dispatch(setStatus('TO_CHECK'));
 
     render(
       <Provider store={store}>
@@ -81,31 +62,50 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
+
+    const datailsBtn = screen.getByTestId('view-datails-test') as HTMLButtonElement;
+    fireEvent.click(datailsBtn);
   });
 
-  test('should display the InitiativeOverview component status APPROVED', async () => {
-    store.dispatch(setStatus('APPROVED'));
-    store.dispatch(
-      setPermissionsList([
-        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
-      ])
-    );
-    render(
-      <Provider store={store}>
-        <Router history={history}>
-          <InitiativeOverview />
-        </Router>
-      </Provider>
-    );
-
+  test('Test TO_CHECK button', async () => {
     store.dispatch(
       setPermissionsList([
         { name: 'publishInitiative', description: 'description', mode: 'enabled' },
       ])
     );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('TO_CHECK'));
+
+    const toCheckBtn = screen.getByTestId('to-check-onclick-test');
+    fireEvent.click(toCheckBtn);
   });
 
-  test('should display the InitiativeOverview component status DRAFT', async () => {
+  test('Test APPROVED button', async () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'publishInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('APPROVED'));
+    const approvedBtn = screen.getByTestId('approved-onclick-test');
+    fireEvent.click(approvedBtn);
+  });
+
+  test('Test DRAFT button', async () => {
     store.dispatch(setStatus('DRAFT'));
     store.dispatch(
       setPermissionsList([
@@ -120,15 +120,13 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
+    store.dispatch(setStatus('DRAFT'));
 
-    store.dispatch(
-      setPermissionsList([
-        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
-      ])
-    );
+    const draftBtn = screen.getByTestId('draft-onclick-test');
+    fireEvent.click(draftBtn);
   });
 
-  test('Testing functions calls', async () => {
+  test('Testing breadCrumb back button', async () => {
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -142,5 +140,59 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
     const oldLocPathname = history.location.pathname;
     fireEvent.click(overviewBackBtn);
     await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
+  });
+
+  test('Test revision Button', () => {
+    store.dispatch(setStatus('IN_REVISION'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+
+    const revisionBtn = screen.getByTestId('revision-onclick-test') as HTMLButtonElement;
+    fireEvent.click(revisionBtn);
+  });
+
+  test('Test of update action button', () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('APPROVED'));
+
+    const updateActionBtn = screen.getByText('pages.initiativeList.actions.update');
+    fireEvent.click(updateActionBtn);
+  });
+
+  test('Test of view users button', () => {
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <InitiativeOverview />
+          </Router>
+        </ThemeProvider>
+      </Provider>
+    );
+    store.dispatch(setStatus('PUBLISHED'));
+    const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
+    fireEvent.click(viewUsers);
   });
 });
