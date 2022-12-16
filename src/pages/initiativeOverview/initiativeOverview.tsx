@@ -443,6 +443,7 @@ const InitiativeOverview = () => {
             onClick={() =>
               history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiative.initiativeId}`)
             }
+            data-testid="view-users-test"
           >
             {t('pages.initiativeOverview.next.ViewUsers')}
           </Button>
@@ -468,9 +469,7 @@ const InitiativeOverview = () => {
             sx={{ color: 'primary.main', padding: 0, fontWeight: 700 }}
             weight="default"
             variant="contained"
-            inputProps={{
-              'data-testid': 'view-custom-test',
-            }}
+            data-testid="view-custom-test"
             onClick={() => handleUpdateInitiative(initiativeSel.initiativeId)}
           >
             {t('pages.initiativeList.actions.update')}

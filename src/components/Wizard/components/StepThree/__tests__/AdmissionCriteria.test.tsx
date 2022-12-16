@@ -1,15 +1,13 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
-import { SetStateAction } from 'react';
+import React, { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
+import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
+import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../../../redux/store';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import AdmissionCriteria from '../AdmissionCriteria';
-import React from 'react';
 import { mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
-import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
-import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
-import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -31,7 +29,25 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
   test('should display the second step, with validation on input data', async () => {
     // InitiativeApiMocked.getEligibilityCriteriaForSidebar();
-    store.dispatch(setInitiative(mockedInitiative));
+
+    const deepClonedIni = JSON.parse(JSON.stringify(mockedInitiative));
+    deepClonedIni.generalInfo = {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'false',
+      budget: '8515',
+      beneficiaryBudget: '801',
+      rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+      rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+      startDate: new Date('2022-10-01T00:00:00.000Z'),
+      endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'string',
+      introductionTextEN: 'string',
+      introductionTextFR: 'string',
+      introductionTextDE: 'string',
+      introductionTextSL: 'string',
+      rankingEnabled: 'true',
+    };
+    store.dispatch(setInitiative(deepClonedIni));
     const { debug } = render(
       <Provider store={store}>
         <AdmissionCriteria
@@ -52,14 +68,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         />
       </Provider>
     );
-    /*
-    if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-      console.log('  true case');
-    } else {
-      console.log('  false case');
-    }
-    debug();
-    */
   });
 
   it('Test onClick of "Sfoglia Criteri" to open the modal must be true', async () => {

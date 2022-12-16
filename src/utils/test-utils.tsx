@@ -32,7 +32,9 @@ export const renderWithContext = (
   const storeInjected = injectedStore ? injectedStore : createStore();
   render(
     <Provider store={storeInjected}>
-      <Router history={history}>{element}</Router>
+      <ThemeProvider theme={theme}>
+        <Router history={history}>{element}</Router>
+      </ThemeProvider>
     </Provider>
   );
   return { store, history };
