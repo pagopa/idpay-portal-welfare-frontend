@@ -281,7 +281,7 @@ const InitiativeUsers = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof id === 'string') {
+    if (typeof id === 'string' && page > 0) {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
   }, [page]);
