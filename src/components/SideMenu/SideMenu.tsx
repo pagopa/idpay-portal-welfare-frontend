@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import GroupIcon from '@mui/icons-material/Group';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import RuleIcon from '@mui/icons-material/Rule';
 import { useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
@@ -54,7 +55,13 @@ export default function SideMenu() {
   });
 
   const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_OVERVIEW, ROUTES.INITIATIVE_USERS],
+    path: [
+      ROUTES.INITIATIVE_OVERVIEW,
+      ROUTES.INITIATIVE_RANKING,
+      ROUTES.INITIATIVE_USERS,
+      ROUTES.INITIATIVE_REFUNDS,
+      ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+    ],
     exact: true,
     strict: false,
   });
@@ -136,9 +143,9 @@ export default function SideMenu() {
                   <SidenavItem
                     title={t('sideMenu.initiativeOveview.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={
                       pathname === `${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`
@@ -147,32 +154,52 @@ export default function SideMenu() {
                     level={2}
                     data-testid="initiativeOveview-click-test"
                   />
+                  {
+                    // eslint-disable-next-line no-prototype-builtins
+                    item.hasOwnProperty('rankingEnabled') && item.rankingEnabled ? (
+                      <SidenavItem
+                        title={t('sideMenu.initiativeRanking.title')}
+                        handleClick={() =>
+                          onExit(() => {
+                            history.replace(
+                              `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
+                            );
+                          })
+                        }
+                        isSelected={
+                          pathname === `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
+                        }
+                        icon={RuleIcon}
+                        level={2}
+                        data-testid="initiativeRanking-click-test"
+                      />
+                    ) : null
+                  }
                   <SidenavItem
                     title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
                     icon={GroupIcon}
                     level={2}
-                    disabled={false}
                     data-testid="initiativeUsers-click-test"
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
-                      onExit(() =>
-                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`)
-                      )
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`);
+                      })
                     }
                     isSelected={
-                      pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
+                      pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}` ||
+                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}`
                     }
                     icon={EuroSymbolIcon}
                     level={2}
-                    disabled={true}
                     data-testid="initiativeRefunds-click-test"
                   />
                 </List>

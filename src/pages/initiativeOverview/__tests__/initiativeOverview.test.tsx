@@ -1,16 +1,14 @@
-/* eslint-disable react/jsx-no-bind */
-import { render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { cleanup, render, waitFor, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { groupsApi } from '../../../api/groupsApiClient';
 import { createStore } from '../../../redux/store';
-// import { getGroupOfBeneficiaryStatusAndDetail } from '../../../services/groupsService';
-import {
-  getGroupOfBeneficiaryStatusAndDetails,
-  mockedInitiativeId,
-} from '../../../services/__mocks__/groupService';
 import InitiativeOverview from '../initiativeOverview';
+import { createMemoryHistory } from 'history';
+import { Router } from 'react-router';
+import { setStatus } from '../../../redux/slices/initiativeSlice';
+import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
+import { ThemeProvider } from '@mui/system';
+import { theme } from '@pagopa/mui-italia';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -31,16 +29,8 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-jest.mock('react-router-dom', () => mockLocationFunction());
+afterEach(cleanup);
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
-}));
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
@@ -49,85 +39,160 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-jest.mock('../../../api/groupsApiClient');
+window.scrollTo = jest.fn();
 
-beforeEach(() => {
-  jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
-});
-
-describe('<InitiativeOverview />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<InitiativeOverview />', (injectedStore?: ReturnType<
+  typeof createStore
+>, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const handleViewDetails = jest.fn();
-  const conditionalOnClickRendering = jest.fn();
-  const handleCloseInitiativeOverviewDeleteModal = jest.fn();
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
-  test('should display the InitiativeOverview component', async () => {
-    await waitFor(async () => {
-      const _app = render(
-        <Provider store={store}>
-          <InitiativeOverview />
-        </Provider>
-      );
-
-      const setUseState = jest.fn();
-      const useStateMock: any = (useState: any) => [useState, setUseState];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      expect(useStateMock).toBeDefined();
-    });
-  });
-
-  test('Testing functions calls', async () => {
-    await waitFor(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <InitiativeOverview />
-        </Provider>
-      );
-
-      const setUseState = jest.fn();
-      const useStateMock: any = (useState: any) => [useState, setUseState];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      useStateMock();
-      expect(useStateMock).toBeDefined();
-
-      handleViewDetails(mockedInitiativeId);
-      expect(handleViewDetails).toHaveBeenCalled();
-
-      const condition = queryByTestId('contion-onclick-test') as HTMLButtonElement;
-      userEvent.click(condition);
-      conditionalOnClickRendering();
-      expect(conditionalOnClickRendering).toHaveBeenCalled();
-
-      const setOpenInitiativeOverviewDeleteModal = jest.fn();
-      const useStateModalMock: any = (openInitiativeOverviewDeleteModal: any) => [
-        openInitiativeOverviewDeleteModal,
-        setOpenInitiativeOverviewDeleteModal,
-      ];
-      expect(useStateModalMock).toBeDefined();
-      setOpenInitiativeOverviewDeleteModal();
-      expect(setOpenInitiativeOverviewDeleteModal).toHaveBeenCalled();
-
-      const details = queryByTestId('view-datails-test') as HTMLElement;
-      userEvent.click(details);
-      handleViewDetails();
-      expect(handleViewDetails).toHaveBeenCalled();
-    });
-  });
-
-  it('Test call of getGroupOfBeneficiaryStatusAndDetail', async () => {
-    jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
+  test('Test Button details', async () => {
+    store.dispatch(setStatus('IN_REVISION'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
 
     render(
       <Provider store={store}>
-        <InitiativeOverview />
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
       </Provider>
     );
 
-    getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
-    expect(getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId)).toBeDefined();
+    const datailsBtn = screen.getByTestId('view-datails-test') as HTMLButtonElement;
+    fireEvent.click(datailsBtn);
+  });
+
+  test('Test TO_CHECK button', async () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'publishInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('TO_CHECK'));
+
+    const toCheckBtn = screen.getByTestId('to-check-onclick-test');
+    fireEvent.click(toCheckBtn);
+  });
+
+  test('Test APPROVED button', async () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'publishInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('APPROVED'));
+    const approvedBtn = screen.getByTestId('approved-onclick-test');
+    fireEvent.click(approvedBtn);
+  });
+
+  test('Test DRAFT button', async () => {
+    store.dispatch(setStatus('DRAFT'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('DRAFT'));
+
+    const draftBtn = screen.getByTestId('draft-onclick-test');
+    fireEvent.click(draftBtn);
+  });
+
+  test('Testing breadCrumb back button', async () => {
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+
+    const overviewBackBtn = screen.getByTestId('overview-back-bread') as HTMLButtonElement;
+    // Not Found
+    const oldLocPathname = history.location.pathname;
+    fireEvent.click(overviewBackBtn);
+    await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
+  });
+
+  test('Test revision Button', () => {
+    store.dispatch(setStatus('IN_REVISION'));
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+
+    const revisionBtn = screen.getByTestId('revision-onclick-test') as HTMLButtonElement;
+    fireEvent.click(revisionBtn);
+  });
+
+  test('Test of update action button', () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'updateInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <InitiativeOverview />
+        </Router>
+      </Provider>
+    );
+    store.dispatch(setStatus('APPROVED'));
+
+    const updateActionBtn = screen.getByText('pages.initiativeList.actions.update');
+    fireEvent.click(updateActionBtn);
+  });
+
+  test('Test of view users button', () => {
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <InitiativeOverview />
+          </Router>
+        </ThemeProvider>
+      </Provider>
+    );
+    store.dispatch(setStatus('PUBLISHED'));
+    const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
+    fireEvent.click(viewUsers);
   });
 });

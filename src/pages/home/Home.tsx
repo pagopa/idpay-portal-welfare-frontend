@@ -14,8 +14,11 @@ const Home = () => {
         mbSubTitle={5}
         variantTitle="h4"
         variantSubTitle="body1"
+        data-testid="title"
       />
-      <Paper sx={{ padding: '16px' }}>Some content</Paper>
+      <Paper sx={{ padding: '16px' }} data-testid="content">
+        Some content
+      </Paper>
     </Box>
   );
 };

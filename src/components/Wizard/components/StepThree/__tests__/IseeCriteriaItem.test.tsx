@@ -1,4 +1,4 @@
-import { fireEvent, render, act, waitFor } from '@testing-library/react';
+import { fireEvent, render, act, waitFor, screen } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
@@ -28,53 +28,56 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
     checked: false,
   };
 
+  const handleCriteriaRemoved = jest.fn();
+
+  const setCriteriaToSubmit = jest.fn();
+
   const store = injectedStore ? injectedStore : createStore();
-  test('Should display the Isee item and must have a correct validation', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <IseeCriteriaItem
-            action={''}
-            formData={data}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-            handleFieldValueChanged={undefined}
-            criteriaToSubmit={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
 
   it('test on handleSubmit', async () => {
     await act(async () => {
-      const handleSubmit = jest.fn();
+      const handleFieldValueChanged = jest.fn();
       render(
         <Provider store={store}>
           <IseeCriteriaItem
             action={WIZARD_ACTIONS.SUBMIT}
             formData={data}
             // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-            handleFieldValueChanged={undefined}
-            criteriaToSubmit={[]}
+            handleCriteriaRemoved={handleCriteriaRemoved}
+            handleFieldValueChanged={handleFieldValueChanged}
+            criteriaToSubmit={[
+              { code: 'string', dispatched: true },
+              { code: 'string', dispatched: true },
+            ]}
             // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
+            setCriteriaToSubmit={setCriteriaToSubmit}
+            rankingEnabled={'true'}
           />
         </Provider>
       );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
+      const iseeRelationSelect = screen.getByTestId('isee-realtion-select') as HTMLSelectElement;
+      const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+      const menuASC = await waitFor(() => {
+        return screen.getByText('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC');
+      });
+      const rankingBtn = await waitFor(() => {
+        return screen.getByTestId('ranking-button-test');
+      });
+      fireEvent.click(menuASC);
+      expect(menuASC).toBeInTheDocument();
+
+      fireEvent.click(rankingBtn);
+      expect(rankingBtn).toBeInTheDocument();
+
+      fireEvent.click(iseeRelationSelect);
+      fireEvent.change(iseeRelationSelect, { target: { value: 'GT' } });
+      expect(iseeRelationSelect).toBeDefined();
+      expect(handleFieldValueChanged.mock.calls.length).toBe(1);
+
+      fireEvent.click(deleteBtn);
+
+      expect(deleteBtn).toBeInTheDocument();
+      expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
     });
   });
 
@@ -83,7 +86,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
     await act(async () => {
       const { queryByTestId } = render(
         <IseeCriteriaItem
-          action={''}
+          action={WIZARD_ACTIONS.DRAFT}
           formData={data}
           // eslint-disable-next-line react/jsx-no-bind
           handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
@@ -95,96 +98,9 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
           ): void {
             //
           }}
+          rankingEnabled={undefined}
         />
       );
-
-      const iseeRelationSelect = queryByTestId('isee-realtion-select');
-      const iseeStartValue = queryByTestId('isee-start-value');
-      const iseeEndValue = queryByTestId('isee-end-value');
-
-      expect(iseeRelationSelect).not.toBeNull();
-      expect(iseeStartValue).not.toBeNull();
-      expect(iseeEndValue).not.toBeNull();
-    });
-  });
-
-  it('Test iseeCriteria onClick delete button', async () => {
-    const { getByTestId } = render(
-      <IseeCriteriaItem
-        action={''}
-        formData={data}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        handleFieldValueChanged={undefined}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
-    );
-
-    const deleteButton = getByTestId('delete-button-test');
-    const iseeCriteria = getByTestId('isee-criteria-test');
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(iseeCriteria).toBeVisible();
-      expect(iseeCriteria).toBeInTheDocument();
-      fireEvent.click(deleteButton);
-      expect(deleteButton).toBeTruthy();
-      expect(iseeCriteria).not.toBeVisible();
-      expect(iseeCriteria).not.toBeInTheDocument();
-    });
-  });
-
-  it('Test iseeCriteria Select onChange', async () => {
-    const { queryByTestId, getByTestId } = render(
-      <IseeCriteriaItem
-        action={''}
-        formData={data}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        handleFieldValueChanged={undefined}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          console.log(value);
-        }}
-      />
-    );
-
-    const exact = queryByTestId('exact');
-    const majorTo = queryByTestId('majorTo');
-    const minorTo = queryByTestId('minorTo');
-    const majorOrEqualTo = queryByTestId('majorOrEqualTo');
-    const minorOrEqualTo = queryByTestId('minorOrEqualTo');
-    const between = queryByTestId('between');
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(exact).toBeInTheDocument();
-      expect(majorTo).toBeInTheDocument();
-      expect(minorTo).toBeInTheDocument();
-      expect(majorOrEqualTo).toBeInTheDocument();
-      expect(minorOrEqualTo).toBeInTheDocument();
-      expect(between).toBeInTheDocument();
-    });
-
-    const mockCallback = jest.fn();
-
-    const criteria = getByTestId('isee-realtion-select');
-    // Dig deep to find the actual <select>
-    const criteriaSelect = criteria.childNodes[0];
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      fireEvent.change(criteriaSelect, { target: { value: FilterOperator.EQ } });
-      expect(mockCallback.mock.calls).toHaveLength(1);
     });
   });
 
@@ -193,36 +109,36 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
 
     const { getByTestId } = render(
       <IseeCriteriaItem
-        action={''}
+        action={WIZARD_ACTIONS.BACK}
         formData={data}
         // eslint-disable-next-line react/jsx-no-bind
         handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
         handleFieldValueChanged={valueChanged}
-        criteriaToSubmit={[]}
+        criteriaToSubmit={[
+          { code: 'string', dispatched: true },
+          { code: 'string', dispatched: true },
+        ]}
         // eslint-disable-next-line react/jsx-no-bind
         setCriteriaToSubmit={function (
           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
         ): void {
           //
         }}
+        rankingEnabled={'false'}
       />
     );
 
-    const iseeStartValue = getByTestId('isee-start-value').querySelector(
-      'input'
-    ) as HTMLInputElement;
-    const iseeEndValue = getByTestId('isee-end-value').querySelector('input') as HTMLInputElement;
+    const iseeStartValue = getByTestId('isee-start-value') as HTMLInputElement;
+    const iseeEndValue = getByTestId('isee-end-value') as HTMLInputElement;
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(iseeStartValue).toBeInTheDocument();
-      expect(iseeEndValue).toBeInTheDocument();
-      expect(iseeStartValue).toBeVisible();
-      expect(iseeEndValue).toBeVisible();
-      fireEvent.change(iseeStartValue, { target: { value: '100' } });
-      expect(iseeStartValue.value).toBe('100');
-      fireEvent.change(iseeEndValue, { target: { value: '1000' } });
-      expect(iseeEndValue.value).toBe('1000');
-    });
+    expect(iseeStartValue).toBeInTheDocument();
+    expect(iseeEndValue).toBeInTheDocument();
+
+    fireEvent.blur(iseeStartValue);
+    fireEvent.change(iseeStartValue, { target: { value: '100' } });
+    expect(iseeStartValue.value).toBe('100');
+    fireEvent.change(iseeEndValue, { target: { value: '1000' } });
+    fireEvent.blur(iseeEndValue);
+    await waitFor(() => expect(iseeEndValue.value).toBeDefined());
   });
 });

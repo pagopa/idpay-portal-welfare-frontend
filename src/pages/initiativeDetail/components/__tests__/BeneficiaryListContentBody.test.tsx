@@ -25,7 +25,9 @@ describe('<BeneficiaryListContentBody />', (injectedStore?: ReturnType<typeof cr
     window.scrollTo = jest.fn();
   });
 
-  test('should render the BeneficiaryListContentBody component', async () => {
+  const fileStatusOptions = ['OK', 'PROC_KO', ''];
+
+  test('should render the BeneficiaryListContentBody component with undefined props', async () => {
     await act(async () => {
       render(
         <Provider store={store}>
@@ -35,6 +37,21 @@ describe('<BeneficiaryListContentBody />', (injectedStore?: ReturnType<typeof cr
           />
         </Provider>
       );
+    });
+  });
+
+  test('should render the BeneficiaryListContentBody component with string props', async () => {
+    await act(async () => {
+      fileStatusOptions.forEach(async (item) => {
+        render(
+          <Provider store={store}>
+            <BeneficiaryListContentBody
+              fileProcessingOutcomeStatus={item}
+              fileBeneficiaryReached={2}
+            />
+          </Provider>
+        );
+      });
     });
   });
 });

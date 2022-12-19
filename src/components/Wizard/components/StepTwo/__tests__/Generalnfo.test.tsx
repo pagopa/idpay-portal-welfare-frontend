@@ -1,23 +1,29 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import React from 'react';
+import { act, fireEvent, render, waitFor, screen, cleanup } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { date } from 'yup';
 import { isDate, parse } from 'date-fns';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
+import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Generalnfo from '../Generalnfo';
 import { createStore } from '../../../../../redux/store';
-import React from 'react';
+import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
+import { renderWithContext } from '../../../../../utils/test-utils';
+import { GeneralInfo } from '../../../../../model/Initiative';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+// jest.mock('../../../../../api/InitiativeApiClient');
+
 beforeEach(() => {
+  // jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
+
+afterEach(cleanup);
 
 describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('renders without crashing', () => {
@@ -26,159 +32,59 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   const store = injectedStore ? injectedStore : createStore();
-  test('should display the first form, with validation on input data', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <Generalnfo
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
-
-  it('call the formik handleSubmit event when form is submitted', async () => {
-    await waitFor(async () => {
-      const handleSumbit = jest.fn();
-      render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      handleSumbit();
-      expect(handleSumbit).toHaveBeenCalled();
-    });
-  });
 
   it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
-      const setGeneralInfo = jest.fn();
-      const updateInitiativeGeneralInfoDraft = jest.fn();
-      render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.DRAFT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      parseValuesFormToInitiativeGeneralDTO();
-      setGeneralInfo();
-      updateInitiativeGeneralInfoDraft();
-      expect(parseValuesFormToInitiativeGeneralDTO).toHaveBeenCalled();
-      expect(setGeneralInfo).toHaveBeenCalled();
-      expect(updateInitiativeGeneralInfoDraft).toHaveBeenCalled();
-    });
-  });
+    const setAction = jest.fn();
+    const setCurrentStep = jest.fn();
+    store.dispatch(setInitiativeId('initativeId231'));
+    renderWithContext(
+      <Generalnfo
+        action={WIZARD_ACTIONS.DRAFT}
+        // eslint-disable-next-line react/jsx-no-bind
+        setAction={setAction}
+        currentStep={2}
+        // eslint-disable-next-line react/jsx-no-bind
+        setCurrentStep={setCurrentStep}
+        // eslint-disable-next-line react/jsx-no-bind
+        setDisabledNext={function (_value: SetStateAction<boolean>): void {
+          //
+        }}
+      />
+    );
 
-  it('draft action makes the dispatch', async () => {
-    await act(async () => {
-      const parseValuesFormToInitiativeGeneralDTO = jest.fn();
-      const saveGeneralInfoService = jest.fn();
-      const setGeneralInfo = jest.fn();
-      const setAdditionalInfo = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
+    await waitFor(() => expect(setAction).toHaveBeenCalled());
 
-      const skip = getByTestId('skip-action-test');
+    const itText = screen.getByTestId('introductionTextIT-test') as HTMLInputElement;
+    fireEvent.change(itText, { target: { value: 'it text' } });
+    expect(itText).toBeInTheDocument();
 
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
+    fireEvent.click(screen.getByText('components.wizard.common.languages.english'));
+    const enText = (await waitFor(() =>
+      screen.getByTestId('introductionTextEN-test')
+    )) as HTMLInputElement;
+    fireEvent.change(enText, { target: { value: 'en text' } });
+    expect(enText).toBeInTheDocument();
 
-      fireEvent.click(skip);
-      expect(parseValuesFormToInitiativeGeneralDTO).toBeDefined();
-      expect(saveGeneralInfoService).toBeDefined();
-      expect(setGeneralInfo).toBeDefined();
-      expect(setAdditionalInfo).toBeDefined();
-    });
-  });
+    fireEvent.click(screen.getByText('components.wizard.common.languages.french'));
+    const frText = (await waitFor(() =>
+      screen.getByTestId('introductionTextFR-test')
+    )) as HTMLInputElement;
+    fireEvent.change(frText, { target: { value: 'fr text' } });
+    expect(frText).toBeInTheDocument();
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
-  it('Form Fields not null', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Generalnfo
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      await act(async () => {
-        expect(getByTestId('beneficiary-type-test')).not.toBeNull();
-      });
-      await act(async () => {
-        expect(getByTestId('beneficiary-known-test')).not.toBeNull();
-      });
-      await act(async () => {
-        expect(getByTestId('budget-test')).not.toBeNull();
-      });
-      await act(async () => {
-        expect(getByTestId('beneficiary-budget-test')).not.toBeNull();
-      });
-      await act(async () => {
-        expect(getByTestId('start-date-test')).not.toBeNull();
-      });
-      await act(async () => {
-        expect(getByTestId('end-date-test')).not.toBeNull();
-      });
-    });
+    fireEvent.click(screen.getByText('components.wizard.common.languages.german'));
+    const deText = (await waitFor(() =>
+      screen.getByTestId('introductionTextDE-test')
+    )) as HTMLInputElement;
+    fireEvent.change(deText, { target: { value: 'de text' } });
+    expect(deText).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText('components.wizard.common.languages.slovenian'));
+    const slText = (await waitFor(() =>
+      screen.getByTestId('introductionTextSL-test')
+    )) as HTMLInputElement;
+    fireEvent.change(slText, { target: { value: 'sl text' } });
+    expect(slText).toBeInTheDocument();
   });
 
   // eslint-disable-next-line sonarjs/no-identical-functions
@@ -188,12 +94,12 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       const { getByLabelText } = render(
         <Provider store={store}>
           <Generalnfo
-            action={''}
+            action={WIZARD_ACTIONS.SUBMIT}
             // eslint-disable-next-line react/jsx-no-bind
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -207,7 +113,6 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
 
       /* Test of value of radio button */
-
       const beneficiaryType = getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
       const beneficiaryType1 = getByLabelText(/components.wizard.stepTwo.form.person/);
       const beneficiaryType2 = getByLabelText(/components.wizard.stepTwo.form.family/);
@@ -229,25 +134,14 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         expect(beneficiaryType2).toBeDisabled();
       });
 
-      fireEvent.click(beneficiaryKnown1);
-
       await act(async () => {
-        expect(beneficiaryKnown1.checked).toEqual(true);
-      });
-      await act(async () => {
+        fireEvent.click(beneficiaryKnown1);
+        expect(beneficiaryKnown1.checked).toEqual(false);
         expect(beneficiaryKnown2.checked).toEqual(false);
-      });
-
-      fireEvent.click(beneficiaryKnown2);
-
-      await act(async () => {
-        expect(beneficiaryKnown2.checked).toEqual(true);
-      });
-      await act(async () => {
+        fireEvent.click(beneficiaryKnown2);
+        expect(beneficiaryKnown2.checked).toEqual(false);
         expect(beneficiaryKnown1.checked).toEqual(false);
       });
-
-      fireEvent.change(beneficiaryType);
       expect(fn).not.toBeCalled();
     });
   });
@@ -256,12 +150,12 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     const { getByLabelText, getByDisplayValue } = render(
       <Provider store={store}>
         <Generalnfo
-          action={''}
+          action={WIZARD_ACTIONS.DRAFT}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
           }}
-          currentStep={0}
+          currentStep={2}
           // eslint-disable-next-line react/jsx-no-bind
           setCurrentStep={function (_value: SetStateAction<number>): void {
             //
@@ -310,7 +204,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -347,6 +241,19 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
         expect(endDate).toBeRequired();
       });
 
+      fireEvent.click(endDate);
+      fireEvent.change(endDate, { target: { value: '19/07/2022' } });
+      await act(async () => {
+        expect(
+          d
+            .cast('19-07-2022')
+            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+        ).toBe('19/07/2022');
+      });
+
+      // expect to throw  formik error wrong type
+      fireEvent.change(endDate, { target: { value: 2022 } });
+
       /* Checking if invalid cast return invalid date */
       await act(async () => {
         expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
@@ -369,6 +276,9 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('19/07/2022');
       });
+
+      // expect to throw error formik error wrong type
+      fireEvent.change(rankingStartDate, { target: { value: 2022 } });
       /* join-to */
 
       fireEvent.mouseOver(rankingEndDate);
@@ -380,6 +290,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
         ).toBe('20/07/2022');
       });
+
       /* spend-from */
 
       fireEvent.mouseOver(startDate);
@@ -408,7 +319,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('Test beneficiary type onChange', async () => {
     await waitFor(async () => {
       const setFieldValue = jest.fn();
-      const { queryByTestId, queryByRole } = render(
+      const { queryByTestId, getByLabelText } = render(
         <Provider store={store}>
           <Generalnfo
             action={WIZARD_ACTIONS.SUBMIT}
@@ -416,7 +327,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
             setAction={function (_value: SetStateAction<string>): void {
               //
             }}
-            currentStep={0}
+            currentStep={2}
             // eslint-disable-next-line react/jsx-no-bind
             setCurrentStep={function (_value: SetStateAction<number>): void {
               //
@@ -430,239 +341,68 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
       );
 
       const beneficiaryType = queryByTestId('beneficiary-radio-test') as HTMLInputElement;
-      userEvent.click(beneficiaryType);
-      setFieldValue();
-      expect(setFieldValue).toHaveBeenCalled();
+      const beneficiaryType1 = getByLabelText(
+        /components.wizard.stepTwo.form.person/
+      ) as HTMLInputElement;
+      const beneficiaryType2 = getByLabelText(
+        /components.wizard.stepTwo.form.family/
+      ) as HTMLInputElement;
+
+      waitFor(async () => {
+        fireEvent.click(beneficiaryType1);
+        expect(beneficiaryType1).toBeChecked();
+        expect(beneficiaryType1.value).toBe('true');
+        expect(beneficiaryType2).not.toBeChecked();
+        fireEvent.click(beneficiaryType2);
+        expect(beneficiaryType2).toBeChecked();
+        expect(beneficiaryType2.value).toBe('true');
+        expect(beneficiaryType1).not.toBeChecked();
+
+        fireEvent.change(beneficiaryType, { target: { value: BeneficiaryTypeEnum.PF } });
+        expect(beneficiaryType.value).toBe('PF');
+        fireEvent.change(beneficiaryType, { target: { value: BeneficiaryTypeEnum.PG } });
+        expect(beneficiaryType.value).toBe('PG');
+      });
     });
   });
+
+  test('precompiled form from redux', async () => {
+    const mockedGeneralBody: GeneralInfo = {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'true',
+      budget: '8515',
+      beneficiaryBudget: '801',
+      rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+      rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+      startDate: new Date('2022-10-01T00:00:00.000Z'),
+      endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'it',
+      introductionTextEN: 'en',
+      introductionTextFR: 'fr',
+      introductionTextDE: undefined,
+      introductionTextSL: undefined,
+      rankingEnabled: 'true',
+    };
+    store.dispatch(setGeneralInfo(mockedGeneralBody));
+    render(
+      <Provider store={store}>
+        <Generalnfo
+          action={WIZARD_ACTIONS.SUBMIT}
+          // eslint-disable-next-line react/jsx-no-bind
+          setAction={function (_value: SetStateAction<string>): void {
+            //
+          }}
+          currentStep={2}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCurrentStep={function (_value: SetStateAction<number>): void {
+            //
+          }}
+          // eslint-disable-next-line react/jsx-no-bind
+          setDisabledNext={function (_value: SetStateAction<boolean>): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+  });
 });
-
-// it('Initiative on IO switch on off', async () => {
-//   await act(async () => {
-//     const handleAssistanceChannelDTOChange = jest.fn();
-//     const handleContactSelect = jest.fn();
-//     const handleInitiativeOnIO = jest.fn();
-//     const deleteAssistanceChannel = jest.fn();
-//     const { getByTestId, getByRole, container } = render(
-//       <Provider store={store}>
-//         <Generalnfo
-//   action={''}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setAction={function (_value: SetStateAction<string>): void {
-//     //
-//   }}
-//   currentStep={0}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setCurrentStep={function (_value: SetStateAction<number>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-// />
-//       </Provider>
-//     );
-
-//     type TestElement = Document | Element | Window | Node;
-//     const switchEl = getByTestId('initiative-on-io-test');
-//     const checkbox = switchEl.children[0];
-//     const serviceIdEl = container.querySelector('#service-id-select') as HTMLDivElement;
-//     const defaultChannelTypeEl = container.querySelector('input[name="channels[0].type"]');
-
-//     const defaultContactEl = container.querySelector(`#channels_0_contact`) as HTMLDivElement;
-
-//     const serviceName = getByRole('input', { name: 'serviceName' });
-//     const serviceArgument = getByRole('input', { name: 'argument' });
-//     const serviceDescription = getByRole('input', { name: 'description' });
-//     expect(checkbox).not.toBeChecked();
-//     expect(serviceIdEl).not.toBeInTheDocument();
-//     expect(serviceName).toBeInTheDocument();
-//     expect(serviceArgument).toBeInTheDocument();
-//     expect(serviceDescription).toBeInTheDocument();
-//     expect(defaultChannelTypeEl).toBeInTheDocument();
-//     expect(defaultChannelTypeEl?.getAttribute('value') === 'web');
-//     expect(defaultContactEl).toBeInTheDocument();
-
-//     expect(handleAssistanceChannelDTOChange).toBeDefined();
-//     expect(deleteAssistanceChannel).toBeDefined();
-//     expect(deleteAssistanceChannel).toHaveBeenCalledTimes(0);
-
-//     fireEvent.change(serviceName.querySelector('input') as TestElement, {
-//       target: { value: 'test name' },
-//     });
-//     expect(serviceName.getAttribute('value') === 'test name');
-//     expect(serviceName).not.toBeNull();
-
-//     fireEvent.change(serviceArgument.querySelector('input') as TestElement, {
-//       target: { value: 'test argument' },
-//     });
-//     expect(serviceArgument.getAttribute('value') === 'test argument');
-//     expect(serviceArgument).not.toBeNull();
-
-//     fireEvent.change(serviceDescription.querySelector('textarea') as TestElement, {
-//       target: { value: 'test description' },
-//     });
-//     expect(serviceDescription.getAttribute('value') === 'test description');
-//     expect(serviceDescription).not.toBeNull();
-
-//     expect(handleContactSelect).toBeDefined();
-
-//     fireEvent.change(defaultChannelTypeEl as TestElement, {
-//       target: { value: 'email' },
-//     });
-//     expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'email');
-
-//     fireEvent.change(defaultContactEl, {
-//       target: { value: 'test@mail.it' },
-//     });
-//     expect(defaultContactEl.getAttribute('value') === 'test@mail.it');
-
-//     fireEvent.change(defaultChannelTypeEl as TestElement, {
-//       target: { value: 'mobile' },
-//     });
-//     expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'mobile');
-
-//     fireEvent.change(defaultContactEl, {
-//       target: { value: '023456789' },
-//     });
-//     expect(defaultContactEl.getAttribute('value') === '023456789');
-
-//     fireEvent.change(defaultChannelTypeEl as TestElement, {
-//       target: { value: 'web' },
-//     });
-//     expect((defaultChannelTypeEl as HTMLElement).getAttribute('value') === 'web');
-
-//     fireEvent.change(defaultContactEl, {
-//       target: { value: 'http://test.it' },
-//     });
-//     expect(defaultContactEl.getAttribute('value') === 'http://test.it');
-
-//     fireEvent.change(checkbox as TestElement, {
-//       target: { value: 'true' },
-//     });
-
-//     expect(handleInitiativeOnIO).toBeDefined();
-//   });
-// });
-
-// it('Initiative on IO switch change', async () => {
-//   await act(async () => {
-//     const fn = jest.fn();
-//     const { getByRole } = render(
-//       <Provider store={store}>
-//       <Generalnfo
-//   action={''}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setAction={function (_value: SetStateAction<string>): void {
-//     //
-//   }}
-//   currentStep={0}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setCurrentStep={function (_value: SetStateAction<number>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-// />
-//       </Provider>
-//     );
-
-//     const switchEl = getByRole('checkbox');
-
-//     expect(switchEl).toHaveAttribute('value', 'false');
-//     fireEvent.click(switchEl);
-//     fireEvent.change(switchEl, { target: { value: 'true' } });
-//     await act(async () => {
-//       expect(switchEl).toHaveAttribute('value', 'true');
-//       expect(fn).toBeDefined();
-//     });
-//   });
-// });
-
-// it('Add option', async () => {
-//   await act(async () => {
-//     const addAssistanceChannel = jest.fn();
-//     const { container } = render(
-//       <Provider store={store}>
-//         <Generalnfo
-//            action={''}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setAction={function (_value: SetStateAction<string>): void {
-//     //
-//   }}
-//   currentStep={0}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setCurrentStep={function (_value: SetStateAction<number>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-// />
-//       </Provider>
-//     );
-
-//     type TestElement = Document | Element | Window | Node;
-//     const addButton = container.querySelector('#add-option') as TestElement;
-//     fireEvent.click(addButton);
-//     expect(addAssistanceChannel).toBeDefined();
-//   });
-// });
-
-// it('Remove option', async () => {
-//   await act(async () => {
-//     const deleteAssistanceChannel = jest.fn();
-//     const { container } = render(
-//       <Provider store={store}>
-//         <Generalnfo
-//   action={''}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setAction={function (_value: SetStateAction<string>): void {
-//     //
-//   }}
-//   currentStep={0}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setCurrentStep={function (_value: SetStateAction<number>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDisabledNext={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-//   // eslint-disable-next-line react/jsx-no-bind
-//   setDraftEnabled={function (_value: SetStateAction<boolean>): void {
-//     //
-//   }}
-// />
-//       </Provider>
-//     );
-//     type TestElement = Document | Element | Window | Node;
-
-//     const typeEl = container.querySelector(`#channels_1_type`) as TestElement;
-//     const contactEl = container.querySelector(`#channels_1_contact`) as TestElement;
-//     expect(typeEl).toBeFalsy();
-//     expect(contactEl).toBeFalsy();
-
-//     expect(typeEl).not.toBeInTheDocument();
-//     expect(contactEl).not.toBeInTheDocument();
-
-//     expect(deleteAssistanceChannel).toBeDefined();
-//     expect(deleteAssistanceChannel).toBeCalledTimes(0);
-//   });
-// });

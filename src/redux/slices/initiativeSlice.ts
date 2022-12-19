@@ -16,6 +16,7 @@ import {
 
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
+import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -29,19 +30,30 @@ const initialState: Initiative = {
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',
     assistanceChannels: [{ type: 'web', contact: '' }],
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    beneficiaryKnown: 'false',
+    // beneficiaryKnown: 'false',
+    // rankingEnabled: 'true',
+    beneficiaryKnown: undefined,
+    rankingEnabled: undefined,
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
@@ -112,17 +124,27 @@ export const initiativeSlice = createSlice({
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
         beneficiaryKnown: action.payload.beneficiaryKnown,
+        rankingEnabled: action.payload.rankingEnabled,
         budget: action.payload.budget,
         beneficiaryBudget: action.payload.beneficiaryBudget,
         startDate: action.payload.startDate || '',
         endDate: action.payload.endDate || '',
         rankingStartDate: action.payload.rankingStartDate || '',
         rankingEndDate: action.payload.rankingEndDate || '',
+        introductionTextIT: action.payload.introductionTextIT || '',
+        introductionTextEN: action.payload.introductionTextEN || '',
+        introductionTextFR: action.payload.introductionTextFR || '',
+        introductionTextDE: action.payload.introductionTextDE || '',
+        introductionTextSL: action.payload.introductionTextSL || '',
       },
     }),
     setAdditionalInfo: (state, action: PayloadAction<AdditionalInfo>) => ({
       ...state,
-      additionalInfo: { ...action.payload },
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
+    }),
+    setInitiativeLogo: (state, action: PayloadAction<LogoDTO>) => ({
+      ...state,
+      additionalInfo: { ...state.additionalInfo, ...action.payload },
     }),
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
@@ -256,6 +278,7 @@ export const {
   setInitiativeUpdateDate,
   setGeneralInfo,
   setAdditionalInfo,
+  setInitiativeLogo,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,
@@ -274,8 +297,10 @@ export const initiativeSelector = (state: RootState): Initiative => state.initia
 export const generalInfoSelector = (state: RootState): GeneralInfo => state.initiative.generalInfo;
 export const additionalInfoSelector = (state: RootState): AdditionalInfo =>
   state.initiative.additionalInfo;
-export const stepOneBeneficiaryKnownSelector = (state: RootState): string | undefined =>
+export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.beneficiaryKnown;
+export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
+  state.initiative.generalInfo.rankingEnabled;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {

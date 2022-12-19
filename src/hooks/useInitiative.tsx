@@ -60,7 +60,10 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE,
       ROUTES.INITIATIVE_OVERVIEW,
       ROUTES.INITIATIVE_DETAIL,
+      ROUTES.INITIATIVE_RANKING,
       ROUTES.INITIATIVE_USERS,
+      ROUTES.INITIATIVE_REFUNDS,
+      ROUTES.INITIATIVE_REFUNDS_OUTCOME,
     ],
     exact: true,
     strict: false,
@@ -116,12 +119,15 @@ export const useInitiative = () => {
   }, [location.pathname]);
 };
 
-const parseAdditionalInfo = (data: any): AdditionalInfo => {
+export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   const dataT = {
     initiativeOnIO: false,
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
     privacyPolicyUrl: '',
     termsAndConditions: '',
     assistanceChannels: [{ type: 'web', contact: '' }],
@@ -155,22 +161,41 @@ const parseAdditionalInfo = (data: any): AdditionalInfo => {
     // eslint-disable-next-line functional/immutable-data
     dataT.assistanceChannels = [...data.channels];
   }
+  if (typeof data.logoFileName !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoFileName = data.logoFileName;
+  }
+  if (typeof data.logoURL !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoURL = data.logoURL;
+  }
+  if (typeof data.logoUploadDate !== 'undefined') {
+    // eslint-disable-next-line functional/immutable-data
+    dataT.logoUploadDate = data.logoUploadDate.toLocaleString('fr-BE');
+  }
 
   return dataT;
 };
 
-// eslint-disable-next-line sonarjs/cognitive-complexity
-const parseGeneralInfo = (data: any): GeneralInfo => {
-  const dataT = {
+// eslint-disable-next-line sonarjs/cognitive-complexity, complexity
+export const parseGeneralInfo = (data: any): GeneralInfo => {
+  const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
+    rankingEnabled: 'true',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
     endDate: '',
     rankingStartDate: '',
     rankingEndDate: '',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   };
+
   if (data && Object.keys(data).length !== 0) {
     if (typeof data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -180,6 +205,10 @@ const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
+    }
+    if (typeof data.rankingEnabled !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
     if (typeof data.budget !== undefined) {
       // eslint-disable-next-line functional/immutable-data
@@ -205,12 +234,38 @@ const parseGeneralInfo = (data: any): GeneralInfo => {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEndDate = data.rankingEndDate;
     }
-  }
 
+    if (data.descriptionMap) {
+      if (data.descriptionMap.it && typeof data.descriptionMap.it !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextIT = data.descriptionMap.it;
+      }
+
+      if (data.descriptionMap.en && typeof data.descriptionMap.en !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextEN = data.descriptionMap.en;
+      }
+
+      if (data.descriptionMap.fr && typeof data.descriptionMap.fr !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextFR = data.descriptionMap.fr;
+      }
+
+      if (data.descriptionMap.de && typeof data.descriptionMap.de !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextDE = data.descriptionMap.de;
+      }
+
+      if (data.descriptionMap.sl && typeof data.descriptionMap.sl !== undefined) {
+        // eslint-disable-next-line functional/immutable-data
+        dataT.introductionTextSL = data.descriptionMap.sl;
+      }
+    }
+  }
   return dataT;
 };
 
-const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
+export const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
   // eslint-disable-next-line functional/no-let
   let automatedCriteria: Array<AutomatedCriteriaItem> = [];
   if (
@@ -223,7 +278,7 @@ const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteri
   return automatedCriteria;
 };
 
-const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem> => {
+export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem> => {
   const selfDeclarationCriteria: Array<ManualCriteriaItem> = [];
   if (
     response.beneficiaryRule &&
@@ -269,7 +324,7 @@ const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriteriaItem>
   return selfDeclarationCriteria;
 };
 
-const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.rewardRule &&
     typeof response.rewardRule !== undefined &&
@@ -283,7 +338,7 @@ const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void =
   }
 };
 
-const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.threshold &&
@@ -316,7 +371,7 @@ const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.mccFilter &&
@@ -326,7 +381,7 @@ const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): void =>
   }
 };
 
-const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.trxCount &&
@@ -359,7 +414,7 @@ const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): void => 
   }
 };
 
-const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.rewardLimits &&
@@ -380,7 +435,7 @@ const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch): void
   }
 };
 
-const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
+export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.trxRule &&
     response.trxRule.daysOfWeek &&
@@ -436,7 +491,7 @@ const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppDispatch
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined): RefundRule => {
+export const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined): RefundRule => {
   const dataT = {
     reimbursmentQuestionGroup: '',
     timeParameter: '',

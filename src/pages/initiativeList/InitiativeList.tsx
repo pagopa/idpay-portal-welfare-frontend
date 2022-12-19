@@ -388,11 +388,12 @@ const InitiativeList = () => {
             mb: 5,
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 10', backgroundColor: 'white' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
             <TextField
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}
               variant="outlined"
+              size="small"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -400,13 +401,21 @@ const InitiativeList = () => {
                   </InputAdornment>
                 ),
               }}
+              inputProps={{
+                'data-testid': 'search-initiative-test',
+              }}
               onChange={(e) => {
                 handleSearchInitiatives(e.target.value);
               }}
             />
           </Box>
           <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-            <Button variant="contained" sx={{ height: '58px' }} onClick={goToNewInitiative}>
+            <Button
+              variant="contained"
+              size="small"
+              sx={{ height: '42px' }}
+              onClick={goToNewInitiative}
+            >
               {t('pages.initiativeList.createNew')}
             </Button>
           </Box>
@@ -422,11 +431,12 @@ const InitiativeList = () => {
             mb: 5,
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', backgroundColor: 'white' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
             <TextField
               id="search-initiative"
               placeholder={t('pages.initiativeList.search')}
               variant="outlined"
+              size="small"
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
@@ -437,6 +447,7 @@ const InitiativeList = () => {
               onChange={(e) => {
                 handleSearchInitiatives(e.target.value);
               }}
+              inputProps={{ 'data-testid': 'search-initiative' }}
             />
           </Box>
         </Box>
@@ -446,7 +457,7 @@ const InitiativeList = () => {
         sx={{
           width: '100%',
           mb: 2,
-          py: 3,
+          pb: 3,
           backgroundColor: grey.A100,
         }}
       >
@@ -473,6 +484,7 @@ const InitiativeList = () => {
                                 `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
                               )
                             }
+                            data-testid="initiative-btn-test"
                           >
                             {row.initiativeName}
                           </ButtonNaked>

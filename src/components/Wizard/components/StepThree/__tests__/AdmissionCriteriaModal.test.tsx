@@ -1,213 +1,93 @@
-import { waitFor, fireEvent, act, render } from '@testing-library/react';
-import { Provider } from 'react-redux';
+import React from 'react';
+import { waitFor, fireEvent, screen } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
-import { createStore } from '../../../../../redux/store';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
+import { renderWithProviders } from '../../../../../utils/test-utils';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
+/*
+jest.mock('@mui/material', () => ({
+  Modal: () => ({ t: (key: any) => key }),
+}));*/
+beforeEach(() => {
+  jest.mock('@mui/material');
+});
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-describe('<AdmissionCriteriaModal />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
-
+describe('<AdmissionCriteriaModal />', () => {
+  const mockedCriteria: Array<AvailableCriteria> = [
+    {
+      authorityLabel: 'auth label',
+      fieldLabel: 'field label',
+      value: 'value2',
+      value2: 'value2',
+      code: 'code1',
+      authority: 'auth1',
+      operator: 'ope1',
+    },
+    {
+      authorityLabel: 'authLabel',
+      fieldLabel: 'field',
+      value: 'valueobj2',
+      value2: 'value2obj2',
+      code: 'code2',
+      authority: 'auth2',
+      operator: 'ope2',
+    },
+  ];
   test('Should display the Modal', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <AdmissionCriteriaModal
-            openModal={false}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCloseModal={function (event: React.MouseEvent<Element, MouseEvent>): void {
-              console.log(event);
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaAdded={function (
-              event: React.MouseEvent<HTMLInputElement, MouseEvent>
-            ): void {
-              console.log(event);
-            }}
-            criteriaToRender={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
-              console.log(value);
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
-
-  // it('CheckBox Admission Criteria test', async () => {
-  //   const handleClose = jest.fn();
-  //   // eslint-disable-next-line sonarjs/no-identical-functions
-  //   const { queryByTestId } = render(
-  //       <AdmissionCriteriaModal
-  //         openModal={false}
-  //         // eslint-disable-next-line react/jsx-no-bind
-  //         handleCloseModal={handleClose}
-  //         // eslint-disable-next-line react/jsx-no-bind
-  //         handleCriteriaAdded={function (
-  //           event: React.MouseEvent<HTMLInputElement, MouseEvent>
-  //         ): void {
-  //           console.log(event);
-  //         }}
-  //         criteriaToRender={[]}
-  //         // eslint-disable-next-line react/jsx-no-bind
-  //         setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
-  //           console.log(value);
-  //         }}
-  //       />
-  //   );
-
-  //   const modal = queryByTestId('modal-test');
-  //   const close = queryByTestId('close-modal-test');
-
-  // });
-
-  // eslint-disable-next-line sonarjs/no-identical-functions
-  it('CheckBox Admission Criteria test', async () => {
-    const handleClose = jest.fn();
-    // eslint-disable-next-line sonarjs/no-identical-functions
-    const { queryByTestId } = render(
-      <Provider store={store}>
+    await waitFor(() => {
+      const { debug } = renderWithProviders(
         <AdmissionCriteriaModal
-          openModal={false}
+          openModal={true}
           // eslint-disable-next-line react/jsx-no-bind
-          handleCloseModal={handleClose}
+          handleCloseModal={function (event: React.MouseEvent<Element, MouseEvent>): void {
+            console.log(event);
+          }}
           // eslint-disable-next-line react/jsx-no-bind
           handleCriteriaAdded={function (
             event: React.MouseEvent<HTMLInputElement, MouseEvent>
           ): void {
             console.log(event);
           }}
-          criteriaToRender={[]}
+          criteriaToRender={mockedCriteria}
           // eslint-disable-next-line react/jsx-no-bind
           setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
             console.log(value);
           }}
         />
-      </Provider>
-    );
-
-    const checkNotSearched = queryByTestId('check-test-1') as HTMLInputElement;
-    const checkSearched = queryByTestId('check-test-2') as HTMLInputElement;
-    const closeModal = queryByTestId('close-modal-test') as HTMLInputElement;
-    const handleCriteriaChange = jest.fn();
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(closeModal).toBeTruthy();
-      fireEvent.click(closeModal);
+      );
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(handleClose).toHaveBeenCalledTimes(1);
+    /*
+    await waitFor(() => {
+      screen.debug();
     });
+    */
+    const modal = document.querySelector('[data-testid="admission-modal"') as HTMLElement;
+    expect(modal).toBeInTheDocument();
+    const fade = document.querySelector('[data-testid="admission-fade"]') as HTMLElement;
+    const searchCriteriaInput = screen.getByTestId('search-criteria-test') as HTMLInputElement;
+    const checkBoxCriteria = document.querySelectorAll(
+      '[data-testid="check-test-1"]'
+    )[0] as HTMLInputElement;
 
-    /* test checked value */
+    expect(fade).toBeInTheDocument();
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(checkNotSearched || checkSearched).toHaveAttribute('checked');
+    /*
+    await waitFor(() => {
+      expect(checkBoxCriteria.checked).toBe(true);
     });
-    /* test value change */
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(checkNotSearched.checked).toEqual(false);
-      fireEvent.change(checkNotSearched, { target: { value: true } });
-      expect(handleCriteriaChange).toBeDefined();
-      expect(handleCriteriaChange).toHaveBeenCalledTimes(0);
-      expect(checkNotSearched.checked).toEqual(true);
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(checkSearched.checked).toEqual(false);
-      fireEvent.change(checkSearched, { target: { value: true } });
-      expect(handleCriteriaChange).toBeDefined();
-      expect(handleCriteriaChange).toHaveBeenCalledTimes(0);
-      expect(checkSearched.checked).toEqual(true);
-    });
-  });
-
-  it('test Search Criteria TextField', async () => {
-    const { queryByLabelText } = render(
-      <AdmissionCriteriaModal
-        openModal={false}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCloseModal={function (event: React.MouseEvent<HTMLInputElement, MouseEvent>): void {
-          console.log(event);
-        }}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaAdded={function (
-          event: React.MouseEvent<HTMLInputElement, MouseEvent>
-        ): void {
-          console.log(event);
-        }}
-        criteriaToRender={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
-          console.log(value);
-        }}
-      />
-    );
-
-    const searchInput = queryByLabelText(
-      /components.wizard.stepThree.chooseCriteria.modal.searchCriteria/
+*/
+    const searchCriteria = document.querySelector(
+      '[data-testid="search-criteria-test"]'
     ) as HTMLInputElement;
-    const handleSearchCriteria = jest.fn();
+    fireEvent.change(searchCriteria, { target: { value: 'search critera' } });
+    expect(searchCriteria).toBeInTheDocument();
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      fireEvent.change(searchInput, { target: { value: 'test' } });
-      expect(handleSearchCriteria).toBeDefined();
-      expect(handleSearchCriteria).toHaveBeenCalledTimes(0);
-      expect(searchInput.value).toBe(true);
-    });
+    fireEvent.change(searchCriteriaInput, { target: { value: 'search criteria' } });
+
+    await waitFor(() => expect(searchCriteria.value).toBe('search criteria'));
   });
-
-  // it('Should add a Criteria', async () => {
-  //   const rendering = [Array<AvailableCriteria>];
-
-  //   const { queryByTestId } = render(
-  //     <AdmissionCriteriaModal
-  //       openModal={false}
-  //       // eslint-disable-next-line react/jsx-no-bind
-  //       handleCloseModal={function (event: React.MouseEvent<HTMLInputElement, MouseEvent>): void {
-  //         console.log(event);
-  //       }}
-  //       // eslint-disable-next-line react/jsx-no-bind
-  //       handleCriteriaAdded={function (
-  //         event: React.MouseEvent<HTMLInputElement, MouseEvent>
-  //       ): void {
-  //         console.log(event);
-  //       }}
-  //       criteriaToRender={[]}
-  //       // eslint-disable-next-line react/jsx-no-bind
-  //       setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
-  //         console.log(value);
-  //       }}
-  //     />
-  //   );
-
-  //   const addCrit = 'test';
-  //   const addButton = queryByTestId('add-button-test') as HTMLInputElement;
-  //   const checkNotSearched = queryByTestId('check-test-1') as HTMLInputElement;
-  //   const checkSearched = queryByTestId('check-test-2') as HTMLInputElement;
-
-  //   // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  //   waitFor(async () => {
-  //     // verify addCrit is NOT in the initial list
-  //     expect(rendering.find((criteria: { name: string }) => criteria.name === addCrit)).toBeFalsy();
-
-  //     // add criteria
-  //     fireEvent.change(checkSearched || checkNotSearched, { target: { value: addCrit } });
-  //     fireEvent.click(addButton);
-  //     expect(rendering.findIndex((criteria) => criteria.arguments === addCrit)).toBe(0);
-  //   });
-  // });
 });

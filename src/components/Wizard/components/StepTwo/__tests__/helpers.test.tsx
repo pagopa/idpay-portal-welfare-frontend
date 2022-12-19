@@ -1,4 +1,12 @@
-import { getMinDate, parseDate, setError, setErrorText, getYesterday } from '../helpers';
+import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
+import {
+  getMinDate,
+  parseDate,
+  setError,
+  setErrorText,
+  getYesterday,
+  parseValuesFormToInitiativeGeneralDTO,
+} from '../helpers';
 describe('helpers of step two ', () => {
   test('getMinDate', () => {
     expect(getMinDate('2/2/22')).toBeDefined();
@@ -16,5 +24,8 @@ describe('helpers of step two ', () => {
   });
   test('setErrorText step five', () => {
     expect(getYesterday(false)).not.toBeNull();
+  });
+  test('test parseValuesFormToInitiativeGeneralDTO', () => {
+    expect(parseValuesFormToInitiativeGeneralDTO(mockedInitiativeGeneralBody)).not.toBeNull();
   });
 });

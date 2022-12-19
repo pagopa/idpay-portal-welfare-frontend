@@ -35,9 +35,9 @@ const BeneficiaryListContentBody = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(12, 1fr)',
           gridColumn: 'span 12',
-          rowGap: 3,
+          rowGap: 2,
           columnGap: 2,
-          alignItems: 'start',
+          alignItems: 'center',
         }}
       >
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>

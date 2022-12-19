@@ -8,6 +8,7 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
 import SpendingLimitItem from '../SpendingLimitItem';
 import React from 'react';
+import { Threshold } from '../../../../../model/Initiative';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -30,20 +31,72 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
             title={''}
             code={''}
             handleShopListItemRemoved={undefined}
-            action={''}
+            action={'DRAFT'}
             shopRulesToSubmit={[]}
+            setShopRulesToSubmit={function (
+              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+            ): void {}}
+            data={undefined}
+            setData={function (_value: any): void {}}
+          />
+        </Provider>
+      );
+    });
+  });
+
+  it('test on handleSubmit', async () => {
+    const threshold: Threshold = { from: 3, fromIncluded: true, to: 4, toIncluded: true };
+    await act(async () => {
+      const handleSubmit = jest.fn();
+      const mockedHandleShopListItemRemoved = jest.fn();
+      const { debug, getByTestId } = render(
+        <Provider store={store}>
+          <SpendingLimitItem
+            title={'title'}
+            code={'code'}
+            handleShopListItemRemoved={mockedHandleShopListItemRemoved}
+            action={WIZARD_ACTIONS.SUBMIT}
+            shopRulesToSubmit={[
+              { code: 'code', dispatched: true },
+              { code: 'code', dispatched: true },
+            ]}
             setShopRulesToSubmit={function (
               _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
             ): void {
               //
             }}
-            data={undefined}
+            data={threshold}
             setData={function (_value: any): void {
               //
             }}
           />
         </Provider>
       );
+      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const minSpendingLimit = getByTestId('min-spending-limit') as HTMLInputElement;
+      const maxSpendingLimit = getByTestId('max-spending-limit') as HTMLInputElement;
+
+      fireEvent.click(deleteBtn);
+
+      expect(mockedHandleShopListItemRemoved.mock.calls.length).toEqual(1);
+
+      fireEvent.change(maxSpendingLimit, {
+        target: { value: 'maxLimit' },
+      });
+
+      fireEvent.focusOut(maxSpendingLimit);
+
+      expect(maxSpendingLimit.value).toBeDefined();
+
+      fireEvent.change(minSpendingLimit, {
+        target: { value: 'maxLimit' },
+      });
+
+      expect(maxSpendingLimit.value).toBeDefined();
+
+      // debug();
+      handleSubmit();
+      expect(handleSubmit).toHaveBeenCalled();
     });
   });
 
@@ -78,56 +131,4 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
     });
   });
 
-  it('test on handleSubmit', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
-        <Provider store={store}>
-          <SpendingLimitItem
-            title={''}
-            code={''}
-            handleShopListItemRemoved={undefined}
-            action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={undefined}
-            setData={function (_value: any): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
-    });
-  });
-
-  // it('form fields not null', async () => {
-  //   await act(async () => {
-  //     const { getByTestId, container } = render(
-  //       <Provider store={store}>
-  //         <SpendingLimitItem
-  //         title={''}
-  //         code={''}
-  //         handleShopListItemRemoved={undefined}
-  //         action={''}
-  //         shopRulesToSubmit={[]}
-  //         setShopRulesToSubmit={function (
-  //           _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-  //         ): void {
-  //           //
-  //         }}
-  //         data={undefined}
-  //         setData={function (_value: any): void {
-  //           //
-  //         }}
-  //       />
-  //       </Provider>
-  //     );
-  //   });
-  // });
 });

@@ -126,16 +126,16 @@ const AdmissionCriteriaModal = ({
       BackdropProps={{
         timeout: 500,
       }}
-      // data-testid="modal"
+      data-testid="admission-modal"
     >
-      <Fade in={openModal}>
+      <Fade in={openModal} data-testid="admission-fade">
         <Box
           sx={{
             position: 'absolute',
             top: '0',
             right: '0',
             transform: 'translate(0, 0)',
-            width: '20%',
+            width: '375px',
             height: '100%',
             bgcolor: 'background.paper',
             boxShadow: 24,
@@ -180,6 +180,7 @@ const AdmissionCriteriaModal = ({
             </Box>
             <Box sx={{ gridColumn: 'span 12', width: '100%', my: 3 }}>
               <TextField
+                fullWidth
                 size="small"
                 id="search-criteria"
                 label={t('components.wizard.stepThree.chooseCriteria.modal.searchCriteria')}
@@ -191,7 +192,7 @@ const AdmissionCriteriaModal = ({
                     </InputAdornment>
                   ),
                 }}
-                data-testid="search-criteria-test"
+                inputProps={{"data-testid":"search-criteria-test"}}
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}

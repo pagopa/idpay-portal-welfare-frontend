@@ -1,6 +1,7 @@
 import { ConfigTrxRuleArrayDTO } from '../../api/generated/initiative/ConfigTrxRuleArrayDTO';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 
-export const mockecdTransactionRules = [
+export const mockedTransactionRules = [
   {
     checked: false,
     code: 'THRESHOLD',
@@ -62,8 +63,8 @@ export const mockecdTransactionRules = [
 export const verifyFetchShopRulesMockExecution = (
   transactionRules: Array<ConfigTrxRuleArrayDTO>
 ) => {
-  expect(transactionRules).toStrictEqual(mockecdTransactionRules);
+  expect(transactionRules).toStrictEqual(mockedTransactionRules);
 };
 
-export const fetchTransactionRules = () =>
-  new Promise((resolve) => resolve(mockecdTransactionRules));
+export const fetchTransactionRules = (): Promise<ConfigTrxRuleArrayDTO> =>
+  InitiativeApiMocked.getTransactionConfigRules();

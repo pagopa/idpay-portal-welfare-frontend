@@ -32,6 +32,9 @@ export default {
     initiativeRefunds: {
       title: 'Rimborsi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+    },
   },
   subHeader: {
     partySelectionSearch: {
@@ -104,7 +107,6 @@ export default {
         join: 'Hanno aderito',
         budgetExhausted: 'Budget speso',
         ViewUsers: 'Vedi utenti',
-
         status: {
           subtitleApproved:
             'L’iniziativa è stata approvata dal team di PagoPA ed è pronta per essere pubblicata',
@@ -319,9 +321,55 @@ export default {
       description: 'Ti risponderemo al più presto al tuo indirizzo e-mail.',
       buttonLabel: 'Chiudi',
     },
+    initiativeRanking: {
+      title: 'Graduatoria',
+      subtitle:
+        'Visualizza la lista degli aderenti suddivisa per idoneità e organizzata per criteri',
+      publishedSubtitle: 'Approvata e pubblicata il {{date}} alle {{hour}}',
+      noData: 'La graduatoria non è stata ancora elaborata.',
+      rankingStatus: {
+        notReady: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
+        readyToBePublishedTitle: 'La graduatoria è pronta per essere pubblicata',
+        readyToBePublishedSubtitle:
+          "Dopo la pubblicazione gli aderenti idonei riceveranno notifica in appIO e un SMS con l' esito",
+        publishingTitle: 'La graduatoria è in fase di pubblicazione',
+        publishBtn: 'Pubblica',
+        published:
+          'È stata inviata una notifica agli assegnatari su appIO con la conferma dell’esito',
+        publishedCloseBtn: 'Ho capito',
+      },
+      publishModal: {
+        title: 'Pubblica la graduatoria',
+        subtitle:
+          'Se pubblichi la graduatoria, l’iniziativa avrà inizio e gli aderenti assegnatari riceveranno una notifica in appIO e un SMS con l’esito. L’operazione è irreversibile',
+        cancelBtn: 'Annulla',
+        publishBtn: 'Pubblica',
+        alertTitle: 'Ricorda di scaricare il csv della graduatoria',
+        alertBtn: 'Scarica csv',
+      },
+      form: {
+        search: 'Cerca per Codice fiscale',
+        beneficiaryStatus: 'Stato',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        beneficiary: 'Aderenti',
+        ranking: 'Posizione',
+        rankingValue: 'ISEE',
+        criteriaConsensusTimeStamp: 'Data e ora',
+      },
+      beneficiaryStatus: {
+        total: 'Totale aderenti ({{tot}})',
+        eligibleOk: 'Assegnatari ({{tot}})',
+        eligibleKo: 'Idonei non assegnatari ({{tot}})',
+        onboardingKo: 'Non idonei ({{tot}})',
+      },
+    },
     initiativeUsers: {
       title: 'Utenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
+      noData: 'Non sono presenti utenti.',
       form: {
         search: 'Cerca per Codice fiscale',
         from: 'Da',
@@ -341,10 +389,74 @@ export default {
         beneficiaryState: 'Stato',
       },
       status: {
-        waiting: 'In attesa',
-        registered: 'Iscritto',
-        suitable: 'Idoneo',
-        notSuitable: 'Non idoneo',
+        acceptedTc: 'In corso',
+        inactive: 'Disiscritto',
+        onEvaluation: 'In attesa',
+        invited: 'Idoneo',
+        onboardingOk: 'Iscritto',
+        onboardingKo: 'Non idoneo',
+        notSignedOn: 'Non iscritto',
+        assignee: 'Assegnatario',
+        eligible: 'Idoneo',
+      },
+    },
+    initiativeRefunds: {
+      title: 'Rimborsi',
+      subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
+      noData: 'Non sono presenti rimborsi.',
+      uploadBtn: 'Carica esiti',
+      form: {
+        from: 'Da',
+        to: 'A',
+        status: 'Stato',
+        completed: 'Completato',
+        toLoad: 'Esiti da caricare',
+        partial: 'Esiti parziali',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        creationDate: 'Data di creazione',
+        typology: 'Tipologia',
+        amount: 'Importo',
+        refunds: 'Rimborsi',
+        successPercentage: '% Successo',
+        status: 'Stato',
+        typeOrdinary: 'Ordinario',
+      },
+      status: {
+        exported: 'Esiti da caricare',
+        partial: 'Esiti parziali ({{percentage}}%)',
+        complete: 'Completato',
+      },
+      uploadFile: {
+        feedbackOk: 'File caricato correttamente',
+        feedbackKo: 'Errore nel caricamento del file',
+      },
+    },
+    initiativeRefundsOutcome: {
+      title: 'Gestione esiti',
+      uploadPaper: {
+        title: 'Carica un nuovo file',
+        subtitle:
+          'Una volta caricato, il file verrà elaborato così da aggiornare lo stato dei rimborsi.',
+        findOut: 'Scopri di più',
+        dragAreaText: 'Trascina qui il file .zip contenente la lista degli esiti o ',
+        dragAreaLink: 'selezionalo dal tuo computer.',
+        fileUploadHelpText: 'Non sai come preparare il file?',
+        fileUuploadHelpFileLinkLabel: 'Scarica il file .zip di esempio',
+        fileIsLoading: 'Caricamento in corso...',
+        fileIsOnEvaluation:
+          'Stiamo elaborando il file caricato. Riceverai un’email al termine dell’operazione.',
+        validFile: 'File valido',
+        changeFile: 'Sostituisci file',
+        invalidFileTitle: 'Il file caricato non è valido',
+        invalidFileDescription: 'Errore',
+        invalidFileTypeDescription: 'Sono ammessi solamente file .zip',
+        overMaxUploadDescription: 'La dimensione massima supportata è di 175MB',
+        upoloadsHistoryTitle: 'Storico caricamenti',
+        rewardsResulted: '{{x}} esiti trovati',
+        rewardsAdded: '{{x}} esiti aggiunti',
       },
     },
   },
@@ -354,6 +466,10 @@ export default {
     initiatives: 'Iniziative',
     createNew: 'Crea nuova iniziativa',
     initiativeDetail: 'Dettagli iniziativa',
+    initiativeRanking: 'Graduatoria',
+    initiativeUsers: 'Utenti',
+    initiativeRefunds: 'Rimborsi',
+    initiativeRefundsOutcome: 'Gestione esiti',
   },
   components: {
     wizard: {
@@ -388,6 +504,19 @@ export default {
           cancelBtn: 'Annulla',
           continueBtn: 'Continua',
         },
+        uploadIcon: {
+          dragAreaText: 'Trascina qui il logo del servizio o',
+          dragAreaLink: 'selezionalo dal tuo computer.',
+          helperText:
+            'Opzionale. Inserisci un’immagine in formato PNG, 300x300 pixel, con sfondo bianco o trasparente.',
+          IconIsLoading: 'Caricamento in corso...',
+          validIcon: 'File valido',
+          changeIcon: 'Sostituisci Logo',
+          overMaxUploadLogoDescription: 'La dimensione massima supportata è di 1MB',
+          invalidFileTypeLogoDescription: 'Sono ammessi solamente file png',
+          invalidFileTitle: 'Il file caricato non è valido',
+          invalidFileDescription: 'Errore',
+        },
       },
       stepTwo: {
         title: 'Informazioni generali',
@@ -398,6 +527,9 @@ export default {
           beneficiaryKnown: 'Conosci già i destinatari?',
           taxCodeList: 'Si, ho una lista di codici fiscali',
           manualSelection: "No, imposterò dei criteri d'ammissione",
+          withRanking: 'È prevista una graduatoria?',
+          yes: 'Sì',
+          no: 'No',
           budgetTitle: 'Qual è il tuo budget?',
           reachedUsers: 'Utenti raggiungibili',
           reachedUsersTooltip:
@@ -410,6 +542,19 @@ export default {
           timeRangeTitle: 'Quando è possibile spendere i fondi?',
           startDate: 'Inizio periodo',
           endDate: 'Fine periodo',
+          preview: 'Vedi anteprima',
+          introductionTitle: 'Testo introduttivo',
+          introductionSubTitle:
+            'Serve a introdurre l’inziativa all’utente che aderisce tramite l’app IO, illustrando in maniera sintetica le regole.',
+          introductiveInfoLabel: "Descrivi le regole dell'iniziativa",
+          requiredItalianIntroduction: 'Campo italiano obbligatorio',
+        },
+        previewModal: {
+          title: 'Anteprima testo introduttivo',
+          closeBtn: 'Chiudi',
+          checkGuide: ` consulta la guida.`,
+          alertDescription:
+            'Qui puoi vedere come gli utenti visualizzeranno il contenuto su IO. Per maggiori informazioni,',
         },
       },
       stepThree: {
@@ -420,6 +565,8 @@ export default {
             'Aggiungi uno o più criteri dal catalogo, oppure definisci dei criteri che i destinatari dell’iniziativa dovranno autodichiarare.',
           browse: 'Sfoglia criteri',
           addManually: 'Aggiungi manualmente',
+          iseeNotPopulatedOnRankingErrorTitle: 'È presente una graduatoria',
+          iseeNotPopulatedOnRankingErrorDescription: 'Il criterio ISEE è obbligatorio',
           modal: {
             subtitle:
               'In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.',
@@ -451,6 +598,8 @@ export default {
             boolean: 'Booleano',
             multi: 'Scelta multipla',
             addOption: 'Aggiungi opzione',
+            rankingOrderASC: 'Vince il valore minore',
+            rankingOrderDESC: 'Vince il valore maggiore',
           },
         },
         upload: {
@@ -561,7 +710,6 @@ export default {
           },
         },
       },
-
       common: {
         buttons: {
           back: 'Indietro',
@@ -572,6 +720,13 @@ export default {
         },
         links: {
           findOut: 'Scopri di più',
+        },
+        languages: {
+          italian: 'Italiano',
+          english: 'Inglese',
+          french: 'Francese',
+          german: 'Tedesco',
+          slovenian: 'Sloveno',
         },
       },
     },
@@ -592,6 +747,8 @@ export default {
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
     outSpendFrom:
       'La data di inizio periodo spesa deve essere successiva alla data di fine adesione',
+    outSpendFromWithRanking:
+      'Deve intercorrere un intervallo di almeno 10 giorni tra la data di fine adesione e quella di inizio spendibilità',
     outSpendTo: 'La data di fine periodo spesa deve essere successiva a quella di inizio',
     outValue: 'Il secondo valore deve essere maggiore del primo',
     maxTwoHundred: 'Max 200 caratteri',
@@ -616,6 +773,7 @@ export default {
     notValidMccLis: 'Sono stati inseriti valori non validi',
     maxValue: 'Il valore deve essere inferiore o uguale a {{value}}',
     indicateAssistanceSubject: 'Indicaci l’argomento della tua richiesta',
+    outDateTo: 'La data di fine deve essere successiva a quella di inizio',
   },
   errors: {
     title: 'Si è verificato un errore',
@@ -627,5 +785,18 @@ export default {
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
     cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
     contactAdmin: "Contattare l'amministratore",
+  },
+  helpStaticUrls: {
+    wizard: {
+      serviceConfig: 'https://www.google.it',
+      generalInfo: 'https://www.google.it',
+      admissionCriteria: 'https://www.google.it',
+      fileUpload: 'https://www.google.it',
+      shopRules: 'https://www.google.it',
+      shopRulesModal: 'https://www.google.it',
+    },
+    pages: {
+      initiativeRefundsOutcome: 'https://www.google.it',
+    },
   },
 };

@@ -1,6 +1,6 @@
 import {
   Box,
-  Button,
+  Link,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -30,17 +30,20 @@ import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
   updateInitiativeServiceInfo,
+  uploadAndUpdateLogo,
 } from '../../../../services/intitativeService';
 import {
   initiativeIdSelector,
   additionalInfoSelector,
   setInitiativeId,
   setAdditionalInfo,
+  setInitiativeLogo,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
+import UploadServiceIcon from './UploadServiceIcon';
 
 interface Props {
   action: string;
@@ -64,7 +67,11 @@ const ServiceConfig = ({
   const addError = useErrorDispatcher();
   const dispatch = useAppDispatch();
   const setLoading = useLoading('SAVE_INITIATIVE_SERVICE');
-
+  const [uploadFile, setUploadFile] = useState<File>();
+  const [fileUplodedOk, setFileUploadedOk] = useState<boolean>(false);
+  const [fileName, setFileName] = useState('');
+  const [uploadDate, setUploadDate] = useState('');
+  const [fileUplodedKo, setFileUploadedKo] = useState(false);
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
   const handleOpenInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(true);
@@ -79,6 +86,14 @@ const ServiceConfig = ({
     }
     setAction('');
   }, [action]);
+
+  useEffect(() => {
+    if (additionalInfo.logoFileName.length > 0 && additionalInfo.logoUploadDate.length > 0) {
+      setFileName(additionalInfo.logoFileName);
+      setUploadDate(additionalInfo.logoUploadDate);
+      setFileUploadedOk(true);
+    }
+  }, [JSON.stringify(additionalInfo)]);
 
   const validationSchema = Yup.object().shape({
     initiativeOnIO: Yup.boolean(),
@@ -158,6 +173,48 @@ const ServiceConfig = ({
     }
   }, [formik]);
 
+  const waitUpload = () => setCurrentStep(currentStep + 1);
+
+  const sendUploadFile = (
+    id: string | undefined,
+    file: File | undefined,
+    currentStep: number,
+    setCurrentStep: Dispatch<SetStateAction<number>>
+  ) => {
+    if (typeof id !== 'undefined' && typeof file !== 'undefined') {
+      uploadAndUpdateLogo(id, file)
+        .then((res) => {
+          setFileUploadedOk(true);
+          setFileUploadedKo(false);
+          const fileUploadDate =
+            res.logoUploadDate && typeof res.logoUploadDate === 'string'
+              ? new Date(res.logoUploadDate).toLocaleString('fr-BE')
+              : new Date().toLocaleString('fr-BE');
+          setUploadDate(fileUploadDate);
+          const data = { ...res, logoUploadDate: fileUploadDate };
+          dispatch(setInitiativeLogo(data));
+        })
+        .then(() => waitUpload())
+        .catch((error) => {
+          setFileUploadedOk(false);
+          addError({
+            id: 'UPLOAD_AND_UPDATE_LOGO',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred uploading logo',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+          setFileUploadedKo(true);
+        });
+    } else {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
   const sendValues = (
     values: any,
     currentStep: number,
@@ -170,7 +227,7 @@ const ServiceConfig = ({
       createInitiativeServiceInfo(data)
         .then((res) => {
           dispatch(setInitiativeId(res?.initiativeId));
-          setCurrentStep(currentStep + 1);
+          sendUploadFile(res?.initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -190,7 +247,7 @@ const ServiceConfig = ({
       setLoading(true);
       updateInitiativeServiceInfo(initiativeId, data)
         .then((_res) => {
-          setCurrentStep(currentStep + 1);
+          sendUploadFile(initiativeId, uploadFile, currentStep, setCurrentStep);
         })
         .catch((error) => {
           addError({
@@ -270,9 +327,15 @@ const ServiceConfig = ({
           <Typography variant="body1">{t('components.wizard.stepOne.subtitle')}</Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" sx={{ p: 0 }}>
+          <Link
+            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+            href={t('helpStaticUrls.wizard.serviceConfig')}
+            target="_blank"
+            underline="none"
+            variant="body2"
+          >
             {t('components.wizard.common.links.findOut')}
-          </Button>
+          </Link>
         </Box>
       </Box>
 
@@ -342,15 +405,20 @@ const ServiceConfig = ({
               error={formik.touched.serviceName && Boolean(formik.errors.serviceName)}
               helperText={formik.touched.serviceName && formik.errors.serviceName}
               size="small"
-              data-testid="serviceName-test"
+              inputProps={{
+                'data-testid': 'service-name-test',
+              }}
             />
           </FormControl>
           <FormControl sx={{ gridColumn: 'span 12' }} size="small">
             <InputLabel>{t('components.wizard.stepOne.form.serviceArea')}</InputLabel>
             <Select
               id="serviceArea"
-              data-testid="service-area-select"
+              inputProps={{
+                'data-testid': 'service-area-select',
+              }}
               name="serviceArea"
+              aria-labelledby="serviceArea"
               label={t('components.wizard.stepOne.form.serviceArea')}
               placeholder={t('components.wizard.stepOne.form.serviceArea')}
               onChange={async (e) => {
@@ -359,10 +427,10 @@ const ServiceConfig = ({
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
             >
-              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScopeLocal-test">
+              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScopeNational-test">
+              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
                 {t('components.wizard.stepOne.form.serviceScopeNational')}
               </MenuItem>
             </Select>
@@ -382,7 +450,9 @@ const ServiceConfig = ({
               placeholder={t('components.wizard.stepOne.form.serviceDescription')}
               name="serviceDescription"
               aria-label="service-description"
-              data-testid="serviceDescription-test"
+              inputProps={{
+                'data-testid': 'service-description-test',
+              }}
               role="input"
               value={formik.values.serviceDescription}
               onChange={(e) => formik.handleChange(e)}
@@ -392,6 +462,18 @@ const ServiceConfig = ({
               InputLabelProps={{ required: false }}
               size="small"
             />
+            {formik.values.initiativeOnIO ? (
+              <UploadServiceIcon
+                setUploadFile={setUploadFile}
+                setFileUploadedOk={setFileUploadedOk}
+                fileUplodedOk={fileUplodedOk}
+                fileUplodedKo={fileUplodedKo}
+                fileName={fileName}
+                fileUploadDate={uploadDate}
+                setFileName={setFileName}
+                setUploadDate={setUploadDate}
+              />
+            ) : null}
           </FormControl>
         </Box>
       </Box>
@@ -439,7 +521,9 @@ const ServiceConfig = ({
               error={formik.touched.privacyPolicyUrl && Boolean(formik.errors.privacyPolicyUrl)}
               helperText={formik.touched.privacyPolicyUrl && formik.errors.privacyPolicyUrl}
               size="small"
-              data-testid="privacyPolicyUrl-test"
+              inputProps={{
+                'data-testid': 'privacy-policy-url-test',
+              }}
             />
           </FormControl>
 
@@ -476,7 +560,9 @@ const ServiceConfig = ({
               error={formik.touched.termsAndConditions && Boolean(formik.errors.termsAndConditions)}
               helperText={formik.touched.termsAndConditions && formik.errors.termsAndConditions}
               size="small"
-              data-testid="termsAndConditions-test"
+              inputProps={{
+                'data-testid': 'terms-and-conditions-test',
+              }}
             />
           </FormControl>
 
@@ -557,7 +643,10 @@ const ServiceConfig = ({
                   }}
                 >
                   {i !== 0 && (
-                    <Box sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}>
+                    <Box
+                      sx={{ display: 'grid', gridColumn: 'span 1', alignItems: 'center' }}
+                      data-testid="remove-channel-test"
+                    >
                       <RemoveCircleOutlineIcon
                         color="error"
                         sx={{
@@ -565,6 +654,7 @@ const ServiceConfig = ({
                         }}
                         onClick={() => deleteAssistanceChannel(i, formik.values, formik.setValues)}
                         id={`remove_assistanceChannel_${i}`}
+                        data-testid="remove-assistance-channel"
                       />
                     </Box>
                   )}
@@ -584,6 +674,9 @@ const ServiceConfig = ({
                       value={formik.values.assistanceChannels[i].type}
                       onChange={(e) => handleContactSelect(e, formik.setValues, i, formik.values)}
                       error={typeTouched && Boolean(typeError)}
+                      inputProps={{
+                        'data-testid': 'assistance-channel-test',
+                      }}
                     >
                       {contacts.map(({ name, value }, id) => (
                         <MenuItem key={id} value={value}>
@@ -617,6 +710,9 @@ const ServiceConfig = ({
                       required
                       InputLabelProps={{ required: false }}
                       size="small"
+                      inputProps={{
+                        'data-testid': 'indicated-channel-test',
+                      }}
                     />
                   </FormControl>
                 </Box>

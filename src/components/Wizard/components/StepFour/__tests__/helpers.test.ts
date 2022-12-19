@@ -1,3 +1,5 @@
+import { MccFilterDTO } from '../../../../../api/generated/initiative/MccFilterDTO';
+import { RewardLimit, TrxCount } from '../../../../../model/Initiative';
 import {
   checkThresholdChecked,
   checkMccFilterChecked,
@@ -11,6 +13,7 @@ import {
   handleShopRulesToSubmit,
   mapDataToSend,
 } from '../helpers';
+
 const mockedMapResponse = (code: string | undefined) => {
   return [
     {
@@ -41,23 +44,46 @@ type Colors =
   | 'success'
   | 'warning'
   | undefined;
+
 const threshhold = { from: 2, fromIncluded: false };
 describe('testing helper of step four', () => {
   test('Test checkThresholdChecked', () => {
     expect(checkThresholdChecked(threshhold)).toBeTruthy();
   });
   test('checkMccFilterChecked', () => {
+    const MccFilter: MccFilterDTO = { allowedList: true, values: ['string', 'string2'] };
     expect(checkMccFilterChecked(undefined)).toBeFalsy();
+    expect(checkMccFilterChecked(MccFilter)).toEqual(true);
   });
   test('checkTrxCountChecked', () => {
+    const trxCount: TrxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+    const trxCount2: TrxCount = {  };
     expect(checkTrxCountChecked(undefined)).toBeFalsy();
+    expect(checkTrxCountChecked(trxCount)).toBeTruthy();
+    expect(checkTrxCountChecked(trxCount2)).toBeFalsy();
   });
+
   test('checkRewardLimitsChecked', () => {
-    expect(checkRewardLimitsChecked(undefined)).toBeFalsy();
+    const rewardLimit: Array<RewardLimit> = [{ frequency: 'string', rewardLimit: 2 }];
+    const rewardLimit2: Array<RewardLimit> = [];
+    expect(checkRewardLimitsChecked(undefined)).toEqual(false);
+    expect(checkRewardLimitsChecked(rewardLimit)).toEqual(true);
+    expect(checkRewardLimitsChecked(rewardLimit2)).toEqual(false);
   });
+
   test('checkDaysOfWeekIntervalsChecked', () => {
-    expect(checkDaysOfWeekIntervalsChecked(undefined)).toBeFalsy();
+    expect(checkDaysOfWeekIntervalsChecked(undefined)).toEqual(false);
+    expect(
+      checkDaysOfWeekIntervalsChecked([
+        {
+          daysOfWeek: 'string',
+          startTime: '',
+          endTime: '',
+        },
+      ])
+    ).toEqual(false);
   });
+
   test('mapResponse step four', () => {
     switchOptions.forEach((item) => {
       expect(mapResponse(mockedMapResponse(item))).toBeDefined();
@@ -79,18 +105,43 @@ describe('testing helper of step four', () => {
     });
     expect(renderShopRuleIcon('stringa per default', 2, 'inherit')).toBeNull();
   });
+
+  test('handleShopRulesToSubmit', () => {
+    expect(
+      handleShopRulesToSubmit(
+        [
+          {
+            code: 'code',
+            dispatched: false,
+          },
+        ],
+        'code'
+      )
+    ).toEqual([
+      {
+        code: 'code',
+        dispatched: true,
+      },
+    ]);
+  });
+
   test('handleShopRulesToSubmit', () => {
     expect(
       handleShopRulesToSubmit(
         [
           {
             code: 'string',
-            dispatched: true,
+            dispatched: false,
           },
         ],
         'code'
       )
-    ).not.toBeNull();
+    ).toEqual([
+      {
+        code: 'string',
+        dispatched: false,
+      },
+    ]);
   });
   test('setError', () => {
     expect(setError(false, '')).toBeFalsy();

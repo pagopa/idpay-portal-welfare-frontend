@@ -242,6 +242,7 @@ const ManualCriteria = ({
           onClick={(event: MouseEvent<Element, globalThis.MouseEvent>) =>
             handleCriteriaRemoved(event)
           }
+          data-testid="delete-button-test"
         >
           <DeleteOutlineIcon
             color="error"
@@ -249,7 +250,6 @@ const ManualCriteria = ({
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -278,7 +278,7 @@ const ManualCriteria = ({
               manualCriteriaFormik.touched.manualCriteriaSelectName,
               manualCriteriaFormik.errors.manualCriteriaSelectName
             )}
-            data-testid="manualCriteria-select-name"
+            inputProps={{ 'data-testid': 'manualCriteria-select-name' }}
           >
             <MenuItem value={ManualCriteriaOptions.BOOLEAN} data-testid="boolean">
               {t('components.wizard.stepThree.chooseCriteria.form.boolean')}
@@ -329,7 +329,7 @@ const ManualCriteria = ({
                 manualCriteriaFormik.errors.manualCriteriaName
               ) || t('validation.maxTwoHundred')
             }
-            data-testid="manualCriteria-boolean-test"
+            inputProps={{ 'data-testid': 'manualCriteria-boolean-test' }}
             size="small"
           />
         </FormControl>
@@ -383,7 +383,7 @@ const ManualCriteria = ({
                         );
                         handleOptionDeleted(i, manualCriteriaFormik.values.manualCriteriaCode);
                       }}
-                      data-test-id="manualCriteria-remove-option"
+                      data-testid="manualCriteria-remove-option"
                     />
                   </Box>
                 )}
@@ -411,7 +411,7 @@ const ManualCriteria = ({
                     }}
                     error={valueTouched && Boolean(valueError)}
                     helperText={valueTouched && valueError}
-                    data-testid="manualCriteria-multi-test"
+                    inputProps={{ 'data-testid': 'manualCriteria-multi-test' }}
                   />
                 </Box>
               </Box>
@@ -440,6 +440,7 @@ const ManualCriteria = ({
                 startIcon={<AddIcon />}
                 sx={{ color: 'primary.main' }}
                 weight="default"
+                data-testid="add option btn"
               >
                 {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
               </ButtonNaked>

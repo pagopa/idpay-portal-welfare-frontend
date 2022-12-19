@@ -1,12 +1,11 @@
-import { act, fireEvent, render, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { SetStateAction } from 'react';
-import { Provider } from 'react-redux';
+import { fireEvent, waitFor, screen } from '@testing-library/react';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Wizard from '../../../Wizard';
-import { createStore } from '../../../../../redux/store';
 import ServiceConfig from '../ServiceConfig';
 import React from 'react';
+import { renderWithProviders } from '../../../../../utils/test-utils';
+
+window.scrollTo = jest.fn();
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -17,253 +16,93 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-describe('<ServiceConfig />', (injectedStore?: ReturnType<typeof createStore>) => {
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
-
-  const store = injectedStore ? injectedStore : createStore();
-  const initiativeOnIO = store.getState().initiative.additionalInfo.initiativeOnIO;
-  const handleSumbit = jest.fn();
-  const handleOpenInitiativeNotOnIOModal = jest.fn();
-  const sendValues = jest.fn();
-  const values = jest.mock('../InitiativeNotOnIOModal.tsx');
-  let currentStep: number;
+describe('<ServiceConfig />', () => {
+  const handleOpenExitModal = jest.fn();
+  const setAction = jest.fn();
   const setCurrentStep = jest.fn();
+  const setDisabledNext = jest.fn();
+  const currentStep: number = 0;
 
-  test('should display the first form, with validation on input data', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
+  test('test submit wizard', () => {
+    renderWithProviders(<Wizard handleOpenExitModal={handleOpenExitModal} />);
+    const submit = screen.getByTestId('continue-action-test') as HTMLButtonElement;
+    fireEvent.click(submit);
   });
 
-  it('call the formik handleSubmit event when form is submitted', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      sendValues();
-      handleSumbit();
-      expect(handleSumbit).toHaveBeenCalled();
-      expect(sendValues).toHaveBeenCalled();
+  test('Test Input Form onChange', async () => {
+    renderWithProviders(
+      <ServiceConfig
+        action={WIZARD_ACTIONS.SUBMIT}
+        setAction={setAction}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        setDisabledNext={setDisabledNext}
+      />
+    );
+    //TEXTFIELD TEST
+
+    const serviceName = screen.getByTestId('service-name-test') as HTMLInputElement;
+    const serviceDescription = screen.getByTestId('service-description-test') as HTMLInputElement;
+    const privacyPolicyUrl = screen.getByTestId('privacy-policy-url-test') as HTMLInputElement;
+    const termsAndConditions = screen.getByTestId('terms-and-conditions-test') as HTMLInputElement;
+    const indicatedChannel = screen.getByTestId('indicated-channel-test') as HTMLInputElement;
+
+    fireEvent.change(serviceName, { target: { value: 'name' } });
+    expect(serviceName.value).toBe('name');
+
+    fireEvent.change(serviceDescription, { target: { value: 'description' } });
+    expect(serviceDescription.value).toBe('description');
+
+    fireEvent.change(privacyPolicyUrl, { target: { value: 'privacy' } });
+    expect(privacyPolicyUrl.value).toBe('privacy');
+
+    fireEvent.change(termsAndConditions, { target: { value: 'terms' } });
+    expect(termsAndConditions.value).toBe('terms');
+
+    fireEvent.change(indicatedChannel, { target: { value: 'input' } });
+    expect(indicatedChannel.value).toBe('input');
+
+    //SWITCH TEST
+
+    const initiativeOnIo = screen.getByTestId('initiative-on-io-test') as HTMLInputElement;
+
+    waitFor(() => {
+      fireEvent.click(initiativeOnIo);
+      fireEvent.change(initiativeOnIo, { target: { checked: false } });
+      expect(initiativeOnIo.value).toBe(false);
     });
-  });
 
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
+    //SELECT TEST
 
-      await waitFor(async () => {
-        const submit = getByTestId('continue-action-test');
-        expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-        fireEvent.click(submit);
-        sendValues(values, currentStep, setCurrentStep);
-        expect(sendValues).toHaveBeenCalled();
+    const serviceArea = screen.getByTestId('service-area-select');
+
+    fireEvent.click(serviceArea);
+    fireEvent.change(serviceArea, {
+      target: { value: 'LOCAL' },
+    });
+
+    expect(serviceArea).toBeInTheDocument();
+
+    const assistanceSelect = document.querySelector(
+      'assistance-channel-test'
+    ) as unknown as HTMLSelectElement;
+
+    waitFor(async () => {
+      fireEvent.click(assistanceSelect);
+      fireEvent.change(assistanceSelect, {
+        target: { value: 'name' },
       });
     });
-  });
 
-  it('Test of functions of component', async () => {
-    render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={currentStep}
-          setCurrentStep={setCurrentStep}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
+    //BUTTON TEST
 
-    await waitFor(async () => {
-      const useStateMock: any = (openInitiativeOnIOModal: boolean) => [
-        openInitiativeOnIOModal,
-        handleOpenInitiativeNotOnIOModal,
-      ];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-      jest.spyOn(React, 'useEffect').mockImplementation((f) => f());
-      handleOpenInitiativeNotOnIOModal();
-      expect(handleOpenInitiativeNotOnIOModal).toHaveBeenCalled();
-    });
-  });
+    const assistanceChannel = screen.getByTestId('add-channel-test');
+    fireEvent.click(assistanceChannel);
 
-  it('draft action makes the dispatch', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
+    const remove = screen.getByTestId('remove-assistance-channel');
+    fireEvent.click(remove);
 
-      const skip = getByTestId('skip-action-test');
-      await act(async () => {
-        expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-      });
-      fireEvent.click(skip);
-    });
-  });
-
-  it('form fields not to be null', async () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={0}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
-
-    const serviceName = getByTestId('serviceName-test');
-    const serviceArea = getByTestId('service-area-select');
-    const serviceDescription = getByTestId('serviceDescription-test');
-    const privacyPolicyUrl = getByTestId('privacyPolicyUrl-test');
-    const termsAndConditions = getByTestId('termsAndConditions-test');
-
-    await act(async () => {
-      expect(serviceName).not.toBeNull();
-      expect(serviceName).toBeInTheDocument();
-    });
-
-    await act(async () => {
-      expect(serviceArea).not.toBeNull();
-      expect(serviceArea).toBeInTheDocument();
-    });
-
-    await act(async () => {
-      expect(serviceDescription).not.toBeNull();
-      expect(serviceDescription).toBeInTheDocument();
-    });
-
-    await act(async () => {
-      expect(privacyPolicyUrl).not.toBeNull();
-      expect(privacyPolicyUrl).toBeInTheDocument();
-    });
-
-    await act(async () => {
-      expect(termsAndConditions).not.toBeNull();
-      expect(termsAndConditions).toBeInTheDocument();
-    });
-  });
-
-  it('Test of setting true/false of modal', async () => {
-    render(
-      <Provider store={store}>
-        <ServiceConfig
-          action={''}
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={0}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
-    );
-
-    const setOpenInitiativeNotOnIOModal = jest.fn();
-
-    const useStateMock: any = (openInitiativeNotOnIOModal: boolean) => [
-      openInitiativeNotOnIOModal,
-      setOpenInitiativeNotOnIOModal,
-    ];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-    expect(useStateMock).toBeDefined();
-
-    setOpenInitiativeNotOnIOModal();
-    expect(setOpenInitiativeNotOnIOModal).toHaveBeenCalled();
-  });
-
-  it('Add Channel Test', async () => {
-    await act(async () => {
-      const addAssistanceChannel = jest.fn();
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <ServiceConfig
-            action={''}
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={0}
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-
-      waitFor(async () => {
-        const addChannel = queryByTestId('add-channel-test') as HTMLButtonElement;
-        userEvent.click(addChannel);
-        addAssistanceChannel();
-        expect(addAssistanceChannel).toHaveBeenCalled();
-      });
-    });
+    const addChannel = screen.getByTestId('add-channel-test') as HTMLButtonElement;
+    fireEvent.click(addChannel);
   });
 });

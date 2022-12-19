@@ -7,17 +7,22 @@ import {
   mapResponse,
   updateInitialAutomatedCriteriaOnSelector,
   mapCriteriaToSend,
+  setInitialOrderDirection,
 } from '../helpers';
 // import {FilterOperator} from "../../../../../utils/constants";
 const setterFunction = jest.fn();
-const mockedMapResponse = (stringOrUndefined: string | undefined) => {
+export const mockedMapResponse = (
+  stringOrUndefined: string | undefined,
+  authority: string | undefined,
+  operator: string | undefined
+) => {
   return [
     {
-      authority: 'string',
+      authority: authority,
       checked: true,
       code: stringOrUndefined,
       field: 'string',
-      operator: 'string',
+      operator: operator,
     },
   ];
 };
@@ -32,6 +37,7 @@ const mockedAutomatedCriteria = [
     value2: 'string',
   },
 ];
+
 const mockedSecondCriteriaParameter = [
   {
     authority: '',
@@ -45,6 +51,7 @@ const mockedSecondCriteriaParameter = [
     value2: '',
   },
 ];
+
 const mockedManualCriteria = (paramaterType: string) => [
   {
     _type: paramaterType,
@@ -62,6 +69,18 @@ describe('helpers.ts of Step three', () => {
         [
           {
             code: 'string',
+            dispatched: true,
+          },
+        ],
+        'code'
+      )
+    ).not.toBeNull();
+
+    expect(
+      handleCriteriaToSubmit(
+        [
+          {
+            code: 'code',
             dispatched: true,
           },
         ],
@@ -86,7 +105,7 @@ describe('helpers.ts of Step three', () => {
   });
   test('mapResponse', () => {
     arrOptions.forEach((item) => {
-      expect(mapResponse(mockedMapResponse(item))).not.toBeNull();
+      expect(mapResponse(mockedMapResponse(item, 'string', 'string'))).not.toBeNull();
     });
     expect(
       mapResponse([
@@ -98,21 +117,54 @@ describe('helpers.ts of Step three', () => {
         },
       ])
     ).toBeDefined();
+
+    arrOptions.forEach((item) => {
+      expect(mapResponse(mockedMapResponse(item, undefined, undefined))).not.toBeNull();
+    });
+    expect(
+      mapResponse([
+        {
+          authority: '',
+          checked: true,
+          field: 'string',
+          operator: 'EQ',
+        },
+      ])
+    ).toBeDefined();
   });
+
   test('updateInitialAutomatedCriteriaOnSelector', () => {
     expect(
       updateInitialAutomatedCriteriaOnSelector(
         mockedAutomatedCriteria,
-        mockedSecondCriteriaParameter
+        mockedSecondCriteriaParameter,
+        'true'
       )
     ).toBeDefined();
   });
+
+  test('setInitialOrderDirection', () => {
+    enum OrderDirectionEnum {
+      'ASC' = 'ASC',
+
+      'DESC' = 'DESC',
+    }
+    expect(setInitialOrderDirection('true', OrderDirectionEnum.ASC)).toEqual('ASC');
+    expect(setInitialOrderDirection('false', OrderDirectionEnum.ASC)).toEqual(undefined);
+  });
+
   test('mapCriteriaToSend', () => {
     mockedManualCriteriaoptions.forEach((item) => {
       expect(
-        mapCriteriaToSend(mockedMapResponse('ISEE'), mockedManualCriteria(item))
+        mapCriteriaToSend(
+          mockedMapResponse('ISEE', 'string', 'string'),
+          mockedManualCriteria(item),
+          'true'
+        )
       ).not.toBeNull();
-      expect(mapCriteriaToSend(mockedMapResponse(''), mockedManualCriteria(item))).not.toBeNull();
+      expect(
+        mapCriteriaToSend(mockedMapResponse('', '', ''), mockedManualCriteria(item), 'true')
+      ).not.toBeNull();
     });
   });
 });

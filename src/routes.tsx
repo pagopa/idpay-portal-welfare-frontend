@@ -10,7 +10,9 @@ const ROUTES = {
   INITIATIVE: `${BASE_ROUTE}/iniziativa/:id`,
   INITIATIVE_OVERVIEW: `${BASE_ROUTE}/panoramica-iniziativa/:id`,
   INITIATIVE_USERS: `${BASE_ROUTE}/utenti-iniziativa/:id`,
+  INITIATIVE_RANKING: `${BASE_ROUTE}/graduatoria-iniziativa/:id`,
   INITIATIVE_REFUNDS: `${BASE_ROUTE}/rimborsi-iniziativa/:id`,
+  INITIATIVE_REFUNDS_OUTCOME: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/:id`,
   INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
   ASSISTANCE: `${BASE_ROUTE}/assistenza`,
 };

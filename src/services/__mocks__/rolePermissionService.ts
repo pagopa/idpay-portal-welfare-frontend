@@ -1,3 +1,5 @@
+import { RolePermissionApiMocked } from '../../api/__mocks__/rolePermissionApiClient';
+
 export const mockedPermission = [
   {
     permission: {
@@ -16,4 +18,5 @@ export const mockedPermission = [
     role: '',
   },
 ];
-export const getUserPermission = () => new Promise((resolve) => resolve(mockedPermission));
+
+export const getUserPermission = () => RolePermissionApiMocked.userPermission();

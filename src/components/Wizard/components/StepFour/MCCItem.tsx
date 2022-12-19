@@ -194,13 +194,15 @@ const MCCItem = ({
         <Typography variant="subtitle1">{title}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton onClick={() => handleShopListItemRemoved(code)}>
+        <IconButton
+          data-testid="delete-button-test"
+          onClick={() => handleShopListItemRemoved(code)}
+        >
           <DeleteOutlineIcon
             color="error"
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
           />
         </IconButton>
       </Box>
@@ -223,7 +225,7 @@ const MCCItem = ({
             defaultValue=""
             name="allowedList"
             id="allowedList"
-            data-testid="merchantSelect-test"
+            inputProps={{"data-testid":"merchantSelect-test"}}
             onChange={(e) => {
               formik.handleChange(e);
               handleUpdateAllowedListFieldState(e.target.value);
@@ -263,6 +265,7 @@ const MCCItem = ({
             error={setError(formik.touched.values, formik.errors.values)}
             helperText={setErrorText(formik.touched.values, formik.errors.values)}
             size="small"
+            data-testid="mccCodesTextArea"
           />
         </FormControl>
 

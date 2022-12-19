@@ -1,4 +1,4 @@
-import { renderInitiativeStatus } from '../helpers';
+import { numberWithCommas, peopleReached, renderInitiativeStatus } from '../helpers';
 
 describe('switch initiative status', () => {
   const arrOptions = [
@@ -16,5 +16,21 @@ describe('switch initiative status', () => {
     arrOptions.forEach((option) => {
       expect(renderInitiativeStatus(option)).not.toBeNull();
     });
+  });
+
+  test('test numberWithCommas with undefined ', () => {
+    expect(numberWithCommas(undefined)).toEqual('0');
+  });
+
+  test('test numberWithCommas with number type ', () => {
+    expect(numberWithCommas(2)).toEqual('2');
+  });
+
+  test('test numberWithCommas string type ', () => {
+    expect(numberWithCommas('2')).toEqual('2');
+  });
+
+  test('test numberWithCommas string type ', () => {
+    expect(peopleReached('20', '2')).toBeDefined();
   });
 });

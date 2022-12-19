@@ -217,6 +217,7 @@ const TransactionTimeItem = ({
                     removeTransactionTimeItem(i, formik.values, formik.setValues, formik.setTouched)
                   }
                   id={`remove_element_${i}`}
+                  data-testid={'removeCircleIcon'}
                 />
               </Box>
             )}
@@ -231,6 +232,7 @@ const TransactionTimeItem = ({
                 value={formik.values.transactionTime[i].daysOfWeek}
                 onChange={(value) => formik.handleChange(value)}
                 error={daysOfWeekTouched && Boolean(daysOfWeekError)}
+                inputProps={{ 'data-testid': 'selectDayOfWeek' }}
               >
                 <MenuItem value="MONDAY">{t('components.wizard.stepFour.form.monday')}</MenuItem>
                 <MenuItem value="TUESDAY">{t('components.wizard.stepFour.form.tuesday')}</MenuItem>
@@ -258,6 +260,7 @@ const TransactionTimeItem = ({
                 error={minTimeTouched && Boolean(minTimeError)}
                 helperText={minTimeTouched && minTimeError}
                 size="small"
+                inputProps={{ 'data-testid': 'item-minTime' }}
               />
             </FormControl>
             <FormControl sx={{ gridColumn: 'span 8' }}>
@@ -270,6 +273,7 @@ const TransactionTimeItem = ({
                 error={maxTimeTouched && Boolean(maxTimeError)}
                 helperText={maxTimeTouched && maxTimeError}
                 size="small"
+                inputProps={{ 'data-testid': 'item-maxTime' }}
               />
             </FormControl>
             <Box sx={{ gridColumn: 'span 1', alignSelf: 'center' }}>

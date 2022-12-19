@@ -1,10 +1,9 @@
-import { fireEvent, render, act, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { ManualCriteriaItem } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
 import ManualCriteria from '../ManualCriteria';
 import React from 'react';
 
@@ -12,339 +11,126 @@ import React from 'react';
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
+const originalError = console.error;
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  console.error = originalError;
+});
 
 describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const data = {
-    _type: '',
-    description: '',
-    code: '',
-    boolValue: true,
-    multiValue: [{ value: '' }, { value: '' }],
-    authorityLabel: '',
-    fieldLabel: '',
-    value: '',
-    value2: '',
-    authority: '',
-    field: '',
-    operator: '',
-    checked: false,
-  };
-
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
   const store = injectedStore ? injectedStore : createStore();
-  test('Should display ManualCriteria and must have a correct validation', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ManualCriteria
-            data={data}
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-            manualCriteriaToRender={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setManualCriteriaToRender={function (
-              _value: SetStateAction<Array<ManualCriteriaItem>>
-            ): void {
-              //
-            }}
-            criteriaToSubmit={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-    });
-  });
-
-  it('test on handleSubmit', async () => {
-    await act(async () => {
-      const handleSubmit = jest.fn();
-      render(
-        <Provider store={store}>
-          <ManualCriteria
-            data={data}
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-            manualCriteriaToRender={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setManualCriteriaToRender={function (
-              _value: SetStateAction<Array<ManualCriteriaItem>>
-            ): void {
-              //
-            }}
-            criteriaToSubmit={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      handleSubmit();
-      expect(handleSubmit).toHaveBeenCalled();
-    });
-  });
-
-  it('call the submit event when form is submitted', async () => {
-    await act(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <Wizard handleOpenExitModal={() => console.log('exit modal')} />
-        </Provider>
-      );
-
-      const submit = queryByTestId('continue-action-test') as HTMLInputElement;
-      const skip = queryByTestId('skip-action-test') as HTMLInputElement;
-
-      fireEvent.click(submit);
-      expect(WIZARD_ACTIONS.SUBMIT).toBe('SUBMIT');
-      fireEvent.click(skip);
-      expect(WIZARD_ACTIONS.DRAFT).toBe('DRAFT');
-    });
-  });
-
-  it('Test DateOfBirthCriteriaItem onClick delete button', async () => {
+  test('Should display ManualCriteria SUBMIT action', () => {
+    const handleCriteriaRemoved = jest.fn();
+    const setManualCriteriaToRender = jest.fn();
+    const setCriteriaToSubmit = jest.fn();
     const { getByTestId } = render(
-      <ManualCriteria
-        data={data}
-        action={''}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        manualCriteriaToRender={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setManualCriteriaToRender={function (
-          _value: SetStateAction<Array<ManualCriteriaItem>>
-        ): void {
-          //
-        }}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
+      <Provider store={store}>
+        <ManualCriteria
+          key={1}
+          data={{
+            _type: 'multi',
+            description: 'description',
+            boolValue: false,
+            multiValue: [{ value: 'value' }],
+            code: 'code',
+          }}
+          action={WIZARD_ACTIONS.SUBMIT}
+          handleCriteriaRemoved={handleCriteriaRemoved}
+          manualCriteriaToRender={[
+            {
+              _type: 'multi',
+              description: 'description',
+              boolValue: false,
+              multiValue: [{ value: 'string' }, { value: 'string' }],
+              code: 'code',
+            },
+          ]}
+          setManualCriteriaToRender={setManualCriteriaToRender}
+          criteriaToSubmit={[{ code: 'code', dispatched: true }]}
+          setCriteriaToSubmit={setCriteriaToSubmit}
+        />
+      </Provider>
     );
 
-    const deleteButton = getByTestId('delete-button-test');
-    const manual = getByTestId('manual-criteria-test');
+    const textField = getByTestId('manualCriteria-multi-test') as HTMLInputElement;
+    const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+    const selectManualCriteria = screen.getByTestId(
+      'manualCriteria-select-name'
+    ) as HTMLSelectElement;
+    const manualCriteriaName = screen.getByTestId(
+      'manualCriteria-boolean-test'
+    ) as HTMLInputElement;
+    const addOptionsBtn = screen.getByTestId('add option btn') as HTMLButtonElement;
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(manual).toBeVisible();
-      expect(manual).toBeInTheDocument();
-      fireEvent.click(deleteButton);
-      expect(deleteButton).toBeTruthy();
-      expect(manual).not.toBeVisible();
-      expect(manual).not.toBeInTheDocument();
-    });
+    fireEvent.change(textField, { target: { value: 'temp val' } });
+    expect(textField).toBeDefined();
+
+    fireEvent.click(deleteBtn);
+    expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
+
+    fireEvent.click(selectManualCriteria);
+    fireEvent.change(selectManualCriteria, { target: { value: 'boolean' } });
+    expect(selectManualCriteria).toBeDefined();
+
+    fireEvent.click(manualCriteriaName);
+    fireEvent.change(manualCriteriaName, { target: { value: 'boolean' } });
+    expect(manualCriteriaName).toBeDefined();
+
+    fireEvent.click(addOptionsBtn);
+    expect(addOptionsBtn).toBeDefined();
   });
 
-  it('Test manualCriteriaSelectName Select onChange', async () => {
-    const { queryByTestId, getByTestId } = render(
-      <ManualCriteria
-        data={data}
-        action={''}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        manualCriteriaToRender={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setManualCriteriaToRender={function (
-          _value: SetStateAction<Array<ManualCriteriaItem>>
-        ): void {
-          //
-        }}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
+  test('Should display ManualCriteria DRAFT action', () => {
+    render(
+      <Provider store={store}>
+        <ManualCriteria
+          key={0}
+          data={{
+            _type: 'boolean',
+            description: 'description',
+            boolValue: true,
+            multiValue: [{ value: 'value' }],
+            code: 'code',
+          }}
+          action={WIZARD_ACTIONS.DRAFT}
+          // eslint-disable-next-line react/jsx-no-bind
+          handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+          manualCriteriaToRender={[
+            {
+              _type: 'bool',
+              description: 'description',
+              boolValue: true,
+              multiValue: [{ value: 'string' }, { value: 'string' }],
+              code: '',
+            },
+          ]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setManualCriteriaToRender={function (
+            _value: SetStateAction<Array<ManualCriteriaItem>>
+          ): void {
+            //
+          }}
+          criteriaToSubmit={[{ code: 'code', dispatched: true }]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCriteriaToSubmit={function (
+            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          ): void {
+            //
+          }}
+        />
+      </Provider>
     );
+    const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
 
-    const boolean = queryByTestId('boolean');
-    const multi = queryByTestId('multi');
-    const handleCriteriaType = jest.fn();
-    const handleFieldValueChanged = jest.fn();
-    const handleOptionChanged = jest.fn();
-    const changeOption = jest.fn();
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(boolean).toBeInTheDocument();
-      expect(multi).toBeInTheDocument();
-    });
-
-    const mockCallback = jest.fn();
-
-    const manualCriteria = getByTestId('manualCriteria-select-name');
-    // Dig deep to find the actual <select>
-    const manualCriteriaSelect = manualCriteria.childNodes[0];
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      fireEvent.change(manualCriteriaSelect, { target: { value: ManualCriteriaOptions.MULTI } });
-      expect(mockCallback.mock.calls).toHaveLength(1);
-      expect(handleCriteriaType).toBeDefined();
-      expect(handleCriteriaType).toHaveBeenCalledTimes(0);
-      expect(handleFieldValueChanged).toBeDefined();
-      expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
-      expect(handleOptionChanged).toBeDefined();
-      expect(handleOptionChanged).toHaveBeenCalledTimes(0);
-      expect(changeOption).toBeDefined();
-      expect(changeOption).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  it('Test manualCriteriaSelectName TextFields', async () => {
-    const { queryByTestId, getByTestId } = render(
-      <ManualCriteria
-        data={data}
-        action={''}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        manualCriteriaToRender={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setManualCriteriaToRender={function (
-          _value: SetStateAction<Array<ManualCriteriaItem>>
-        ): void {
-          //
-        }}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
-    );
-
-    const boolean = queryByTestId('boolean');
-    const multi = queryByTestId('multi');
-    const manualCriteria = getByTestId('manualCriteria-select-name');
-    const manualCriteriaBoolean = getByTestId('manualCriteria-boolean-test') as HTMLInputElement;
-    const manualCriteriaMulti = queryByTestId('manualCriteria-multi-test') as HTMLInputElement;
-    const handleFieldValueChanged = jest.fn();
-
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(boolean).toBeInTheDocument();
-      expect(multi).toBeInTheDocument();
-    });
-
-    if (manualCriteria.id === ManualCriteriaOptions.BOOLEAN) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      waitFor(async () => {
-        expect(boolean).toBeInTheDocument();
-        expect(boolean).toBeVisible();
-        expect(multi).not.toBeInTheDocument();
-        expect(multi).not.toBeVisible();
-        fireEvent.change(manualCriteriaBoolean, {
-          target: { value: 'Et dignissimos perspiciatis facere impedit modi.' },
-        });
-        expect(handleFieldValueChanged).toBeDefined();
-        expect(handleFieldValueChanged).toHaveBeenCalledTimes(0);
-        expect(manualCriteriaBoolean.value).toBe(
-          'Et dignissimos perspiciatis facere impedit modi.'
-        );
-      });
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      waitFor(async () => {
-        expect(boolean).toBeInTheDocument();
-        expect(boolean).toBeVisible();
-        expect(multi).toBeInTheDocument();
-        expect(multi).toBeVisible();
-        fireEvent.change(manualCriteriaBoolean, {
-          target: { value: 'Et dignissimos perspiciatis facere impedit modi.' },
-        });
-        expect(manualCriteriaBoolean.value).toBe(
-          'Et dignissimos perspiciatis facere impedit modi.'
-        );
-        fireEvent.change(manualCriteriaMulti, { target: { value: 'Multipla' } });
-        expect(manualCriteriaMulti.value).toBe('Multipla');
-      });
-    }
-  });
-
-  it('Test Add/Remove Manual criteria Multi item', async () => {
-    const { queryByTestId, getByTestId } = render(
-      <ManualCriteria
-        data={data}
-        action={''}
-        // eslint-disable-next-line react/jsx-no-bind
-        handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-        manualCriteriaToRender={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setManualCriteriaToRender={function (
-          _value: SetStateAction<Array<ManualCriteriaItem>>
-        ): void {
-          //
-        }}
-        criteriaToSubmit={[]}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCriteriaToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-      />
-    );
-
-    const add = queryByTestId('manualCriteria-add-option') as HTMLInputElement;
-    const remove = queryByTestId('manualCriteria-remove-option') as HTMLInputElement;
-    const manualCriteriaMulti = queryByTestId('manualCriteria-multi-test') as HTMLInputElement;
-    const manualCriteriaSelect = getByTestId('manualCriteria-select-name');
-    const manualCriteria = [manualCriteriaMulti];
-    const handleOptionAdded = jest.fn();
-    const addOption = jest.fn();
-    const handleOptionDeleted = jest.fn();
-    const deleteOption = jest.fn();
-
-    if (manualCriteriaSelect.id === ManualCriteriaOptions.MULTI) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      waitFor(async () => {
-        expect(add).toBeTruthy();
-        expect(add).toBeDefined();
-        expect(add).toBeInTheDocument();
-        expect(add).toBeVisible();
-        fireEvent.click(add);
-        expect(handleOptionAdded).toBeDefined();
-        expect(addOption).toBeDefined();
-        expect(handleOptionAdded).toHaveBeenCalledTimes(0);
-        expect(addOption).toHaveBeenCalledTimes(0);
-        expect(manualCriteriaMulti).toEqual(expect.arrayContaining(manualCriteria));
-      });
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
-      waitFor(async () => {
-        expect(remove).toBeTruthy();
-        expect(remove).toBeDefined();
-        expect(remove).toBeInTheDocument();
-        expect(remove).toBeVisible();
-        fireEvent.click(remove);
-        expect(manualCriteriaMulti).toEqual(expect.not.arrayContaining(manualCriteria));
-        expect(handleOptionDeleted).toBeDefined();
-        expect(deleteOption).toBeDefined();
-        expect(handleOptionDeleted).toHaveBeenCalledTimes(0);
-        expect(deleteOption).toHaveBeenCalledTimes(0);
-      });
-    }
+    fireEvent.click(deleteBtn);
   });
 });

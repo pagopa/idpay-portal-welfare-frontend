@@ -22,14 +22,14 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsService';
 import {
-  getGroupOfBeneficiaryStatusAndDetails,
+  initiativeStatistics,
   updateInitiativePublishedStatus,
 } from '../../services/intitativeService';
 import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativeModal';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
-import { renderInitiativeStatus } from '../../helpers';
+import { numberWithCommas, renderInitiativeStatus } from '../../helpers';
 import { Initiative } from '../../model/Initiative';
 import StatusSnackBar from './components/StatusSnackBar';
 import DateReference from './components/DateReference';
@@ -122,7 +122,7 @@ const InitiativeOverview = () => {
       const { id } = match.params as MatchParams;
       if (initiativeSel.initiativeId === id && initiativeSel.status === 'PUBLISHED') {
         setLoading(true);
-        getGroupOfBeneficiaryStatusAndDetails(id)
+        initiativeStatistics(id)
           .then((res) => {
             if (typeof res.accruedRewards === 'string') {
               setAccruedRewards(res.accruedRewards);
@@ -163,18 +163,6 @@ const InitiativeOverview = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [initiativeSel.initiativeId]);
-
-  const numberWithCommas = (x: number | string | undefined) => {
-    if (typeof x === 'string' && x.length > 0) {
-      const xFormatted = x.replace(/\./g, '').replace(/,/g, '.');
-      const xFloat = parseFloat(xFormatted);
-      return xFloat.toLocaleString('de-DE');
-    }
-    if (typeof x === 'number') {
-      return x.toLocaleString('de-DE');
-    }
-    return '0';
-  };
 
   const publishInitiative = (id: string | undefined, userCanPublishInitiative: boolean) => {
     if (userCanPublishInitiative && initiativeSel.status === 'APPROVED' && typeof id === 'string') {
@@ -341,14 +329,15 @@ const InitiativeOverview = () => {
           {conditionalSubtitleRendering(initiativeSel.status)}
         </Typography>
       </Box>
-      <Box sx={{ gridColumn: 'span 12' }}>
+      <Box sx={{ gridColumn: 'span 12', mt: 1 }}>
         {status === 'IN_REVISION' && (
           <Button
             disabled={!userCanReviewInitiative && status === 'IN_REVISION' ? true : false}
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
-            data-testid="contion-onclick-test"
+            data-testid="revision-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -356,9 +345,10 @@ const InitiativeOverview = () => {
         {status === 'DRAFT' && userCanUpdateInitiative && (
           <Button
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
-            data-testid="contion-onclick-test"
+            data-testid="draft-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -368,9 +358,10 @@ const InitiativeOverview = () => {
           <Button
             disabled={userCanReviewInitiative ? true : false}
             variant="contained"
+            size="small"
             startIcon={conditionalStartIconRendering(initiativeSel.status)}
             onClick={() => conditionalOnClickRendering(initiativeSel.status)}
-            data-testid="contion-onclick-test"
+            data-testid="to-check-onclick-test"
           >
             {conditionaButtonNameRendering(initiativeSel.status)}
           </Button>
@@ -379,9 +370,10 @@ const InitiativeOverview = () => {
           <>
             <Button
               variant="contained"
+              size="small"
               startIcon={conditionalStartIconRendering(initiativeSel.status)}
               onClick={() => conditionalOnClickRendering(initiativeSel.status)}
-              data-testid="contion-onclick-test"
+              data-testid="approved-onclick-test"
             >
               {conditionaButtonNameRendering(initiativeSel.status)}
             </Button>
@@ -405,12 +397,12 @@ const InitiativeOverview = () => {
   ) =>
     initiative.status === 'PUBLISHED' && (
       <>
-        <Box sx={{ gridColumn: 'span 12', display: 'inline-flex' }}>
-          <Typography variant="body2" sx={{ color: '#5C6F82' }}>
+        <Box sx={{ gridColumn: 'span 12', display: 'inline-flex', mb: 1, mt: -1 }}>
+          <Typography variant="body2" sx={{ color: '#5C6F82', fontSize: '0.875rem' }}>
             {t('pages.initiativeOverview.next.lastUpdate')}
           </Typography>
           &nbsp;
-          <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          <Typography variant="caption-semibold" sx={{ fontWeight: 600 }}>
             {lastUpdatedDateTime}
           </Typography>
         </Box>
@@ -443,13 +435,15 @@ const InitiativeOverview = () => {
           </Typography>
         </Box>
 
-        <Box sx={{ gridColumn: 'span 12' }}>
+        <Box sx={{ gridColumn: 'span 12', mt: 1 }}>
           <Button
             variant="contained"
+            size="small"
             startIcon={<FactCheckIcon />}
             onClick={() =>
               history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiative.initiativeId}`)
             }
+            data-testid="view-users-test"
           >
             {t('pages.initiativeOverview.next.ViewUsers')}
           </Button>
@@ -574,7 +568,7 @@ const InitiativeOverview = () => {
   };
 
   return (
-    <Box sx={{ width: '100%', px: 2 }}>
+    <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
           display: 'grid',
@@ -591,6 +585,7 @@ const InitiativeOverview = () => {
               startIcon={<ArrowBackIcon />}
               sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
               weight="default"
+              data-testid="overview-back-bread"
             >
               {t('breadcrumbs.back')}
             </ButtonNaked>
@@ -641,10 +636,10 @@ const InitiativeOverview = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignContent: 'start',
-            rowGap: 3,
+            rowGap: 2,
           }}
         >
-          <Box sx={{ pt: 3, gridColumn: 'span 12' }}>
+          <Box sx={{ pt: 3, gridColumn: 'span 12', pb: 1 }}>
             <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 4' }}>
@@ -677,12 +672,14 @@ const InitiativeOverview = () => {
                 : '-'}
             </Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 4' }}>
+          <Box sx={{ gridColumn: 'span 4', mt: '6px' }}>
             <Typography variant="body2">
               {t('pages.initiativeOverview.info.initiativeState')}
             </Typography>
           </Box>
-          <Box sx={{ gridColumn: 'span 8' }}>{renderInitiativeStatus(initiativeSel.status)}</Box>
+          <Box sx={{ gridColumn: 'span 8', alignItems: 'baseline' }}>
+            {renderInitiativeStatus(initiativeSel.status)}
+          </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             {renderConditionalInfoStatus(initiativeSel.status)}
           </Box>
@@ -696,8 +693,8 @@ const InitiativeOverview = () => {
             gridColumn: 'span 1',
             display: 'grid',
             gridTemplateColumns: 'repeat(12, 1fr)',
-            alignContent: 'start',
-            rowGap: 3,
+            alignItems: 'center',
+            rowGap: 2,
           }}
         >
           <Box

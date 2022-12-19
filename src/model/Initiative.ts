@@ -1,3 +1,4 @@
+import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
@@ -5,18 +6,27 @@ import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 export interface GeneralInfo {
   beneficiaryType: BeneficiaryTypeEnum;
   beneficiaryKnown: string | undefined;
+  rankingEnabled: string | undefined;
   budget: string;
   beneficiaryBudget: string;
   startDate: Date | string | undefined;
   endDate: Date | string | undefined;
   rankingStartDate: Date | string | undefined;
   rankingEndDate: Date | string | undefined;
+  introductionTextIT: string | undefined;
+  introductionTextEN: string | undefined;
+  introductionTextFR: string | undefined;
+  introductionTextDE: string | undefined;
+  introductionTextSL: string | undefined;
 }
 
 export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
   serviceName: string | undefined;
   serviceArea: ServiceScopeEnum | string | undefined;
+  logoFileName: string;
+  logoURL: string;
+  logoUploadDate: string;
   serviceDescription: string | undefined;
   privacyPolicyUrl: string | undefined;
   termsAndConditions: string | undefined;
@@ -52,6 +62,7 @@ export interface AutomatedCriteriaItem {
   operator?: FilterOperator | string | undefined;
   value?: string | undefined;
   value2?: string | undefined;
+  orderDirection?: OrderDirectionEnum | undefined;
 }
 
 export interface MCCFilter {
@@ -143,6 +154,9 @@ export const InitiativeAdditional2AdditionalInfo = (resources: AdditionalInfo) =
     type: r.type,
     contact: r.contact,
   })),
+  logoFileName: resources.logoFileName,
+  logoUploadDate: resources.logoUploadDate,
+  logoURL: resources.logoURL,
 });
 
 export const automatedCriteria2AutomatedCriteriaItem = (resources: AutomatedCriteriaItem) => ({

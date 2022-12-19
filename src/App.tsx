@@ -20,6 +20,8 @@ import InitiativeDetail from './pages/initiativeDetail/initiativeDetail';
 import { USER_PERMISSIONS } from './utils/constants';
 import { usePermissions } from './hooks/usePermissions';
 import Assistance from './pages/assistance/assistance';
+import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativeRefundsOutcome';
+import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -38,11 +40,17 @@ const SecuredRoutes = withLogin(
           <Route path={routes.INITIATIVE_OVERVIEW} exact={true}>
             <InitiativeOverview />
           </Route>
+          <Route path={routes.INITIATIVE_RANKING} exact={true}>
+            <InitiativeRanking />
+          </Route>
           <Route path={routes.INITIATIVE_USERS} exact={true}>
             <InitiativeUsers />
           </Route>
           <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
             <InitiativeRefunds />
+          </Route>
+          <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
+            <InitiativeRefundsOutcome />
           </Route>
           <Route path={routes.INITIATIVE_DETAIL} exact={true}>
             <InitiativeDetail />

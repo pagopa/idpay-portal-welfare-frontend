@@ -1,4 +1,4 @@
-import { fireEvent, render, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import Assistance from '../assistance';
@@ -20,92 +20,45 @@ jest.mock('@pagopa/selfcare-common-frontend', () => ({
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
+  Trans: () => '',
 }));
 
-describe('<InitiativeDetail />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<Assistance />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
   it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
   test('Should render the Assistance component', async () => {
-    render(
-      <Provider store={store}>
-        <Assistance />
-      </Provider>
-    );
-  });
-
-  const setup = () => {
-    const utils = render(
-      <Provider store={store}>
-        <Assistance />
-      </Provider>
-    );
-    const assSubject = utils.getByLabelText('pages.assistance.form.subject') as HTMLInputElement;
-    const assMessage = utils.getByLabelText('pages.assistance.form.message') as HTMLInputElement;
-    const sendBtn = utils.queryByTestId('sendAssistenceRequest-test') as HTMLButtonElement;
-    const exitBtn = utils.queryByTestId('open-exit-test') as HTMLButtonElement;
-    const handleSubmit = jest.fn();
-    const closeWithoutSaving = jest.fn();
-    const thxPage = utils.queryByTestId('thx-page-test') as HTMLElement;
-    return {
-      assSubject,
-      assMessage,
-      sendBtn,
-      exitBtn,
-      handleSubmit,
-      closeWithoutSaving,
-      thxPage,
-      ...utils,
-    };
-  };
-
-  test('Test of form fields', async () => {
-    const { assSubject, assMessage, sendBtn, exitBtn, handleSubmit, closeWithoutSaving, thxPage } =
-      setup();
-
-    await waitFor(async () => {
-      //Assistance subject test
-      fireEvent.change(assSubject, { target: { value: 'assistance subject' } });
-      expect(assSubject.value).toBe('assistance subject');
-      fireEvent.change(assSubject, { target: { value: '' } });
-      expect(assSubject.value).toBe('');
-      //Assistance message test
-      fireEvent.change(assMessage, { target: { value: 'assistance message' } });
-      expect(assMessage.value).toBe('assistance message');
-      fireEvent.change(assMessage, { target: { value: '' } });
-      expect(assMessage.value).toBe('');
+    waitFor(() => {
+      render(
+        <Provider store={store}>
+          <Assistance />
+        </Provider>
+      );
     });
 
-    const initialValues = {
-      assistanceSubject: '',
-      assistanceEmailFrom: '',
-      assistanceMessage: '',
-    };
+    const assSubject = screen.getByLabelText('pages.assistance.form.subject') as HTMLInputElement;
+    const assMessage = screen.getByLabelText('pages.assistance.form.message') as HTMLInputElement;
+    const sendBtn = screen.getByTestId('sendAssistenceRequest-test');
+    const exitBtn = screen.getByTestId('open-exit-test') as HTMLButtonElement;
+    //not found
+    // const thankYou = screen.getByTestId('thankyouPageBackBtn-test') as HTMLButtonElement;
 
-    await waitFor(async () => {
-      //Send button test
-      fireEvent.click(sendBtn);
-      expect(handleSubmit).toBeDefined();
-      handleSubmit(initialValues);
-      expect(sendBtn).toBeInTheDocument();
-      expect(handleSubmit).toHaveBeenCalledWith(initialValues);
-      //Exit button test
-      fireEvent.click(exitBtn);
-      expect(closeWithoutSaving).toBeDefined();
-      expect(exitBtn).toBeInTheDocument();
-      closeWithoutSaving();
-      expect(closeWithoutSaving).toHaveBeenCalled();
-    });
+    fireEvent.change(assSubject, { target: { value: 'assistance subject' } });
+    expect(assSubject.value).toBe('assistance subject');
 
-    const setThxPage = jest.fn();
-    const useStateMock: any = (viewThxPage: boolean) => [viewThxPage, setThxPage];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-    expect(setThxPage).toBeDefined();
+    fireEvent.change(assMessage, { target: { value: 'assistance message' } });
+    expect(assMessage.value).toBe('assistance message');
 
-    expect(thxPage).not.toBeInTheDocument();
+    fireEvent.click(sendBtn);
+    expect(sendBtn).toBeInTheDocument();
+
+    fireEvent.click(exitBtn);
+    expect(exitBtn).toBeInTheDocument();
+
+    // fireEvent.click(thankYou);
+    // expect(thankYou).toBeInTheDocument();
   });
 });

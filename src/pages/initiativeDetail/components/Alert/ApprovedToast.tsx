@@ -18,6 +18,7 @@ export default function ApprovedToast({ openToast, handleClose }: Props) {
       onClose={() => handleClose()}
       anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       autoHideDuration={3000}
+      data-testid="snack-bar-test"
     >
       <MuiAlert severity="success" elevation={6} variant="outlined" icon={<CheckCircleOutline />}>
         {t('pages.initiativeDetail.alert.approved')}

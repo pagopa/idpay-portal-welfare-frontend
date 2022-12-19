@@ -26,7 +26,7 @@ import {
   beneficiaryRuleSelector,
   generalInfoSelector,
   additionalInfoSelector,
-  stepOneBeneficiaryKnownSelector,
+  stepTwoBeneficiaryKnownSelector,
   initiativeIdSelector,
   initiativeRewardRuleSelector,
   initiativeMccFilterSelector,
@@ -68,16 +68,25 @@ describe('use Initiative slice', () => {
       privacyPolicyUrl: '',
       termsAndConditions: '',
       assistanceChannels: [{ type: 'web', contact: '' }],
+      logoFileName: '',
+      logoURL: '',
+      logoUploadDate: '',
     },
     generalInfo: {
       beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: 'false',
+      beneficiaryKnown: undefined,
       budget: '',
       beneficiaryBudget: '',
       startDate: '',
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
+      rankingEnabled: undefined,
+      introductionTextDE: '',
+      introductionTextEN: '',
+      introductionTextFR: '',
+      introductionTextIT: '',
+      introductionTextSL: '',
     },
     beneficiaryRule: {
       selfDeclarationCriteria: [],
@@ -115,6 +124,12 @@ describe('use Initiative slice', () => {
     endDate: mockedDate,
     rankingStartDate: mockedDate,
     rankingEndDate: mockedDate,
+    rankingEnabled: 'true',
+    introductionTextIT: '',
+    introductionTextEN: '',
+    introductionTextFR: '',
+    introductionTextDE: '',
+    introductionTextSL: '',
   };
   const mockedAdditionalInfo: AdditionalInfo = {
     initiativeOnIO: undefined,
@@ -124,6 +139,9 @@ describe('use Initiative slice', () => {
     privacyPolicyUrl: undefined,
     termsAndConditions: undefined,
     assistanceChannels: [],
+    logoFileName: '',
+    logoURL: '',
+    logoUploadDate: '',
   };
   const mockedAutomatedCriteriaItem: AutomatedCriteriaItem = {};
   const mockedManualCriteriaItem: ManualCriteriaItem = {
@@ -221,7 +239,7 @@ describe('use Initiative slice', () => {
     expect(initiativeSelector(store.getState())).toEqual(mockedInitialState);
     expect(generalInfoSelector(store.getState())).not.toBeNull();
     expect(additionalInfoSelector(store.getState())).not.toBeNull();
-    expect(stepOneBeneficiaryKnownSelector(store.getState())).not.toBeNull();
+    expect(stepTwoBeneficiaryKnownSelector(store.getState())).not.toBeNull();
     expect(beneficiaryRuleSelector(store.getState())).not.toBeNull();
     expect(initiativeIdSelector(store.getState())).not.toBeNull();
     expect(initiativeRewardRuleSelector(store.getState())).not.toBeNull();

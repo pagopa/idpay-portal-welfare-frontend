@@ -16,6 +16,13 @@ import { InitiativeRefundRuleDTO } from './generated/initiative/InitiativeRefund
 import { InitiativeAdditionalDTO } from './generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeGeneralDTO } from './generated/initiative/InitiativeGeneralDTO';
 import { InitiativeStatisticsDTO } from './generated/initiative/InitiativeStatisticsDTO';
+import { PageRewardExportsDTO } from './generated/initiative/PageRewardExportsDTO';
+import { OnboardingDTO } from './generated/initiative/OnboardingDTO';
+import { SasToken } from './generated/initiative/SasToken';
+import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDTO';
+import { LogoDTO } from './generated/initiative/LogoDTO';
+import { CsvDTO } from './generated/initiative/CsvDTO';
+import { PageOnboardingRankingsDTO } from './generated/initiative/PageOnboardingRankingsDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -191,9 +198,109 @@ export const InitiativeApi = {
     return extractResponse(result, 204, onRedirectToLogin);
   },
 
-  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<InitiativeStatisticsDTO> => {
-    const result = await apiClient.getGroupOfBeneficiaryStatusAndDetails({ initiativeId: id });
-    console.log(result);
+  initiativeStatistics: async (id: string): Promise<InitiativeStatisticsDTO> => {
+    const result = await apiClient.initiativeStatistics({ initiativeId: id });
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getExportsPaged: async (
+    id: string,
+    page: number,
+    notificationDateFrom?: string,
+    notificationDateTo?: string,
+    status?: string,
+    sort?: string
+  ): Promise<PageRewardExportsDTO> => {
+    const result = await apiClient.getRewardNotificationExportsPaged({
+      initiativeId: id,
+      page,
+      size: 10,
+      notificationDateFrom,
+      notificationDateTo,
+      status,
+      sort,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardFileDownload: async (initiativeId: string, filePath: string): Promise<SasToken> => {
+    const result = await apiClient.getRewardFileDownload({ initiativeId, filename: filePath });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  getOnboardingStatus: async (
+    id: string,
+    page: number,
+    beneficiary?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    state?: string
+  ): Promise<OnboardingDTO> => {
+    const result = await apiClient.getOnboardingStatus({
+      initiativeId: id,
+      page,
+      size: 10,
+      beneficiary,
+      dateFrom,
+      dateTo,
+      state,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  putDispFileUpload: async (id: string, filename: string, file: File): Promise<void> => {
+    const result = await apiClient.putDispFileUpload({ initiativeId: id, filename, file });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  uploadAndUpdateLogo: async (id: string, logo: File): Promise<LogoDTO> => {
+    const result = await apiClient.uploadAndUpdateLogo({
+      initiativeId: id,
+      logo,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardNotificationImportsPaged: async (
+    id: string,
+    page: number,
+    sort: string
+  ): Promise<PageRewardImportsDTO> => {
+    const result = await apiClient.getRewardNotificationImportsPaged({
+      initiativeId: id,
+      page,
+      sort,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getDispFileErrors: async (id: string, name: string): Promise<CsvDTO> => {
+    const result = await apiClient.getDispFileErrors({ initiativeId: id, filename: name });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getInitiativeOnboardingRankingStatusPaged: async (
+    id: string,
+    page: number,
+    beneficiary?: string,
+    state?: string
+  ): Promise<PageOnboardingRankingsDTO> => {
+    const result = await apiClient.getInitiativeOnboardingRankingStatusPaged({
+      initiativeId: id,
+      page,
+      beneficiary,
+      state,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRankingFileDownload: async (id: string, filename: string): Promise<SasToken> => {
+    const result = await apiClient.getRankingFileDownload({ initiativeId: id, filename });
+    return extractResponse(result, 201, onRedirectToLogin);
+  },
+
+  notifyCitizenRankings: async (id: string): Promise<void> => {
+    const result = await apiClient.notifyCitizenRankings({ initiativeId: id });
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 };

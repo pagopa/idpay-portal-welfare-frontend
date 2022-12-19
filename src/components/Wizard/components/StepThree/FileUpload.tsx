@@ -2,7 +2,6 @@ import {
   Alert,
   AlertTitle,
   Box,
-  Button,
   Chip,
   FormHelperText,
   IconButton,
@@ -275,7 +274,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         }}
         {...getRootProps({ className: 'dropzone' })}
       >
-        <input {...getInputProps()} />
+        <input {...getInputProps()} data-testid="drop-input-step3" />
         <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
           <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
           <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
@@ -378,9 +377,15 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 12' }}>
-          <Button size="small" href="" sx={{ p: 0 }}>
+          <Link
+            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+            href={t('helpStaticUrls.wizard.fileUpload')}
+            target="_blank"
+            underline="none"
+            variant="body2"
+          >
             {t('components.wizard.common.links.findOut')}
-          </Button>
+          </Link>
         </Box>
       </Box>
 

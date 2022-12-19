@@ -4,7 +4,7 @@ import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { WIZARD_ACTIONS } from '../../utils/constants';
-import { stepOneBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
+import { stepTwoBeneficiaryKnownSelector } from '../../redux/slices/initiativeSlice';
 import ServiceConfig from './components/StepOne/ServiceConfig';
 import Generalnfo from './components/StepTwo/Generalnfo';
 import AdmissionCriteria from './components/StepThree/AdmissionCriteria';
@@ -22,7 +22,7 @@ const Wizard = ({ handleOpenExitModal }: Props) => {
   const [beneficiaryKnown, setBeneficiaryKnown] = useState('');
   const [disabledNext, setDisabledNext] = useState(true);
   const { t } = useTranslation();
-  const selectedCriteria = useSelector(stepOneBeneficiaryKnownSelector);
+  const selectedCriteria = useSelector(stepTwoBeneficiaryKnownSelector);
 
   useEffect(() => {
     if (selectedCriteria) {
