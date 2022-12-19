@@ -13,11 +13,7 @@ import { mockedMapResponse } from './helpers.test';
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
-/*
-beforeEach(() => {
-  jest.mock('../../../../../api/__mocks__/InitiativeApiClient');
-});
-*/
+
 describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const arrOptions = ['ISEE', 'BIRTHDATE', 'RESIDENCE', '', undefined];
@@ -96,29 +92,13 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     const addManually = getByTestId('add-manually-test');
     const modal = queryByTestId('modal-test');
     const ManuallyAdded = queryByTestId('manually-added-test');
-    const handleOpenModal = jest.fn();
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(modal).not.toBeInTheDocument();
-      expect(modal).not.toBeVisible();
-    });
-
-    // eslint-disable-next-line @typescript-eslint/await-thenable
     fireEvent.click(criteria);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    waitFor(async () => {
-      expect(handleOpenModal).toBeDefined();
-      expect(handleOpenModal).toHaveBeenCalledTimes(0);
-      expect(criteria).toBeTruthy();
-      expect(modal).toBeInTheDocument();
-      expect(modal).toBeVisible();
-      expect(ManuallyAdded).not.toBeInTheDocument();
-      expect(ManuallyAdded).not.toBeVisible();
-    });
+
+    expect(criteria).toBeTruthy();
 
     fireEvent.click(addManually);
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+
     waitFor(async () => {
       expect(addManually).toBeTruthy();
       expect(ManuallyAdded).toBeInTheDocument();

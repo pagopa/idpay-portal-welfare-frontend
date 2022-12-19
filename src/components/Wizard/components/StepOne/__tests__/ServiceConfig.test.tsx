@@ -1,9 +1,14 @@
-import { fireEvent, waitFor, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import React from 'react';
+import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
+import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { AdditionalInfo } from '../../../../../model/Initiative';
+import { setAdditionalInfo } from '../../../../../redux/slices/initiativeSlice';
+import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithProviders } from '../../../../../utils/test-utils';
 import Wizard from '../../../Wizard';
 import ServiceConfig from '../ServiceConfig';
-import React from 'react';
-import { renderWithProviders } from '../../../../../utils/test-utils';
 
 window.scrollTo = jest.fn();
 
@@ -30,6 +35,25 @@ describe('<ServiceConfig />', () => {
   });
 
   test('Test Input Form onChange', async () => {
+    const mockedAdditionalInfo: AdditionalInfo = {
+      initiativeOnIO: true,
+      serviceName: 'prova313',
+      serviceArea: ServiceScopeEnum.NATIONAL,
+      serviceDescription: 'newStepOneTest',
+      privacyPolicyUrl: 'http://test.it',
+      termsAndConditions: 'http://test.it',
+      assistanceChannels: [
+        { type: TypeEnum.web, contact: 'http://test.it' },
+        { type: TypeEnum.email, contact: 'http://test.it' },
+        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: '', contact: '' },
+      ],
+      logoFileName: 'logo file name',
+      logoUploadDate: 'logo date',
+      logoURL: 'logo url',
+    };
+
+    store.dispatch(setAdditionalInfo(mockedAdditionalInfo));
     renderWithProviders(
       <ServiceConfig
         action={WIZARD_ACTIONS.SUBMIT}
@@ -39,13 +63,14 @@ describe('<ServiceConfig />', () => {
         setDisabledNext={setDisabledNext}
       />
     );
+
     //TEXTFIELD TEST
 
     const serviceName = screen.getByTestId('service-name-test') as HTMLInputElement;
     const serviceDescription = screen.getByTestId('service-description-test') as HTMLInputElement;
     const privacyPolicyUrl = screen.getByTestId('privacy-policy-url-test') as HTMLInputElement;
     const termsAndConditions = screen.getByTestId('terms-and-conditions-test') as HTMLInputElement;
-    const indicatedChannel = screen.getByTestId('indicated-channel-test') as HTMLInputElement;
+    const indicatedChannel = screen.getAllByTestId('indicated-channel-test') as HTMLInputElement[];
 
     fireEvent.change(serviceName, { target: { value: 'name' } });
     expect(serviceName.value).toBe('name');
@@ -59,8 +84,8 @@ describe('<ServiceConfig />', () => {
     fireEvent.change(termsAndConditions, { target: { value: 'terms' } });
     expect(termsAndConditions.value).toBe('terms');
 
-    fireEvent.change(indicatedChannel, { target: { value: 'input' } });
-    expect(indicatedChannel.value).toBe('input');
+    fireEvent.change(indicatedChannel[0], { target: { value: 'input' } });
+    expect(indicatedChannel[0].value).toBe('input');
 
     //SWITCH TEST
 
@@ -99,8 +124,8 @@ describe('<ServiceConfig />', () => {
     const assistanceChannel = screen.getByTestId('add-channel-test');
     fireEvent.click(assistanceChannel);
 
-    const remove = screen.getByTestId('remove-assistance-channel');
-    fireEvent.click(remove);
+    const remove = screen.getAllByTestId('remove-assistance-channel');
+    fireEvent.click(remove[0]);
 
     const addChannel = screen.getByTestId('add-channel-test') as HTMLButtonElement;
     fireEvent.click(addChannel);
