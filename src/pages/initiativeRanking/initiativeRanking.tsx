@@ -141,7 +141,7 @@ const InitiativeRanking = () => {
             beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
-            rankingValue: `${numberWithCommas(r.rankingValue)} €`,
+            rankingValue: r.rankingValue ? `${numberWithCommas(r.rankingValue / 100)} €` : '-',
             criteriaConsensusTimeStamp:
               typeof r.criteriaConsensusTimestamp === 'object'
                 ? r.criteriaConsensusTimestamp.toLocaleString('fr-BE')
@@ -281,7 +281,7 @@ const InitiativeRanking = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof id === 'string') {
+    if (typeof id === 'string' && page > 0) {
       getTableData(id, page, filterByBeneficiary, filterByStatus);
     }
   }, [page]);

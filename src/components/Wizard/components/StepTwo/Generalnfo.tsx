@@ -759,7 +759,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           <Box sx={{ gridColumn: 'span 12' }}>
             <Link
               sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href="#"
+              href={t('helpStaticUrls.wizard.generalInfo')}
               target="_blank"
               underline="none"
               variant="body2"

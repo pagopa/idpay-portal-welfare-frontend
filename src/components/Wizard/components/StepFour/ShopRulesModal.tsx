@@ -1,4 +1,4 @@
-import { Box, Typography, Modal, Backdrop, Fade, IconButton, Button } from '@mui/material';
+import { Box, Typography, Modal, Backdrop, Fade, IconButton, Link } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { MouseEventHandler, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -118,9 +118,15 @@ const ShopRulesModal = ({
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
-              <Button size="small" sx={{ p: 0 }}>
+              <Link
+                sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+                href={t('helpStaticUrls.wizard.shopRules')}
+                target="_blank"
+                underline="none"
+                variant="body2"
+              >
                 {t('components.wizard.common.links.findOut')}
-              </Button>
+              </Link>
             </Box>
           </Box>
           <Box

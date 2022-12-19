@@ -1,8 +1,7 @@
 import {
   Box,
   Breadcrumbs,
-  Button,
-  FormHelperText,
+  // FormHelperText,
   Paper,
   Typography,
   Link,
@@ -188,7 +187,7 @@ const InitiativeRefundsOutcome = () => {
           px: 3,
         }}
       >
-        <FormHelperText sx={{ fontSize: '0.875rem' }}>
+        {/* <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('pages.initiativeRefundsOutcome.uploadPaper.fileUploadHelpText')}&#160;
           <Link
             href="#"
@@ -199,7 +198,7 @@ const InitiativeRefundsOutcome = () => {
           >
             {t('pages.initiativeRefundsOutcome.uploadPaper.fileUuploadHelpFileLinkLabel')}
           </Link>
-        </FormHelperText>
+        </FormHelperText> */}
       </Box>
     </Box>
   );
@@ -424,9 +423,15 @@ const InitiativeRefundsOutcome = () => {
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
-            <Button size="small" href="" sx={{ p: 0 }}>
+            <Link
+              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
+              href={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
+              target="_blank"
+              underline="none"
+              variant="body2"
+            >
               {t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
-            </Button>
+            </Link>
           </Box>
         </Box>
 
