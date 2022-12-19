@@ -208,7 +208,7 @@ Props) => {
             top: '0',
             right: '0',
             transform: 'translate(0, 0)',
-            width: '20%',
+            width: '375px',
             height: '100%',
             bgcolor: 'background.paper',
             boxShadow: 24,
@@ -257,6 +257,7 @@ Props) => {
             </Box>
             <Box sx={{ gridColumn: 'span 12', width: '100%', my: 3 }}>
               <TextField
+                fullWidth
                 size="small"
                 id="search-code-description"
                 label={t('components.wizard.stepFour.mccModal.searchCodeOrDescription')}
@@ -316,10 +317,10 @@ Props) => {
               right: 0,
               left: 0,
               mx: 4,
-              pr: 2,
             }}
           >
             <Button
+              fullWidth
               sx={{ width: '100%' }}
               variant="contained"
               onClick={() => {

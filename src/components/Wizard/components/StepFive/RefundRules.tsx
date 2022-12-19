@@ -63,6 +63,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       formik.handleSubmit();
+      setDisableNext(false);
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       const body = mapDataToSend(formik.values);
       if (initiativeId) {
@@ -86,7 +87,6 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
           })
           .finally(() => setLoading(false));
       }
-      return;
     }
     setAction('');
   }, [action]);
@@ -182,6 +182,20 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     },
   });
 
+  useEffect(() => {
+    if (
+      formik.values.reimbursmentQuestionGroup === '' &&
+      formik.values.timeParameter === '' &&
+      formik.values.accumulatedAmount === '' &&
+      formik.values.additionalInfo === '' &&
+      formik.values.reimbursementThreshold === ''
+    ) {
+      setDisableNext(true);
+    } else {
+      setDisableNext(false);
+    }
+  }, [JSON.stringify(formik.values)]);
+
   const handleResetField = (value: string) => {
     setIsChecked(() => value);
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -198,13 +212,13 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     }
   };
 
-  useEffect(() => {
-    if (formik.dirty || formik.isValid) {
-      setDisableNext(false);
-    } else {
-      setDisableNext(true);
-    }
-  }, [formik]);
+  // useEffect(() => {
+  //   if (formik.dirty || formik.isValid) {
+  //     setDisableNext(false);
+  //   } else {
+  //     setDisableNext(true);
+  //   }
+  // }, [formik]);
 
   return (
     <>

@@ -159,7 +159,14 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
                 size="medium"
                 href={a.contact}
                 target="_blank"
-                sx={{ color: 'primary.main', gridColumn: 'span 7', justifyContent: 'start' }}
+                sx={{
+                  color: 'primary.main',
+                  gridColumn: 'span 7',
+                  justifyContent: 'start',
+                  wordWrap: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  wordBreak: 'break-word',
+                }}
                 weight="default"
               >
                 {a.contact}

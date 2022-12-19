@@ -91,18 +91,18 @@ const InitiativeOverview = () => {
             setBeneficiaryReached(beneficiaryReachedRes);
             handleOpenSnackBar();
           })
-          .catch((error) => {
-            addError({
-              id: 'GET_UPLOADED_FILE_DATA_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred getting groups file info',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.getFileDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
+          .catch((_error) => {
+            // addError({
+            //   id: 'GET_UPLOADED_FILE_DATA_ERROR',
+            //   blocking: false,
+            //   error,
+            //   techDescription: 'An error occurred getting groups file info',
+            //   displayableTitle: t('errors.title'),
+            //   displayableDescription: t('errors.contactAdmin'),
+            //   toNotify: false,
+            //   component: 'Toast',
+            //   showCloseIcon: true,
+            // });
           })
           .finally(() => setLoading(false));
       } else if (initiativeSel.generalInfo.beneficiaryKnown === 'false') {

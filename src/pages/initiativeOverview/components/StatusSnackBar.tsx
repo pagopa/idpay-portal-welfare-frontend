@@ -25,7 +25,7 @@ const StatusSnackBar = ({
   const { t } = useTranslation();
   const history = useHistory();
   const handleAlertSeverity = (fileStatus: string | undefined) =>
-    fileStatus === 'KO' || fileStatus === 'PROC_KO' ? 'error' : 'info';
+    fileStatus === 'KO' || fileStatus === 'PROC_KO' || fileStatus === '' ? 'error' : 'info';
 
   const handleIconType = (fileStatus: string | undefined) =>
     fileStatus === 'TO_SCHEDULE' ? <SyncIcon /> : null;
@@ -62,6 +62,7 @@ const StatusSnackBar = ({
         );
       case 'KO':
       case 'PROC_KO':
+      default:
         return (
           <IconButton
             aria-label="close"
@@ -72,8 +73,6 @@ const StatusSnackBar = ({
             <CloseIcon />
           </IconButton>
         );
-      default:
-        return null;
     }
   };
 
@@ -101,12 +100,31 @@ const StatusSnackBar = ({
       case 'TO_SHEDULE':
       case 'VALIDATE':
       case 'PROCESSING':
-        return t('pages.initiativeOverview.snackBar.pending');
+        return (
+          <Box
+            sx={{
+              display: 'inline-flex',
+              gridTemplateColumns: 'repeat(11, 1fr)',
+              width: '100%',
+            }}
+          >
+            <Typography>{t('pages.initiativeOverview.snackBar.pending')}</Typography>
+          </Box>
+        );
       case 'KO':
       case 'PROC_KO':
-        return t('pages.initiativeOverview.snackBar.uploadFailed');
       default:
-        return null;
+        return (
+          <Box
+            sx={{
+              display: 'inline-flex',
+              gridTemplateColumns: 'repeat(11, 1fr)',
+              width: '100%',
+            }}
+          >
+            <Typography>{t('pages.initiativeOverview.snackBar.uploadFailed')}</Typography>
+          </Box>
+        );
     }
   };
 
