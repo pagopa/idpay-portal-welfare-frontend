@@ -65,8 +65,8 @@ export const renderInitiativeStatus = (status: string | undefined) => {
 };
 
 export const peopleReached = (totalBudget: string, budgetPerPerson: string): any => {
-  const totalBudgetInt = parseInt(totalBudget, 10);
-  const budgetPerPersonInt = parseInt(budgetPerPerson, 10);
+  const totalBudgetInt = parseFloat(totalBudget);
+  const budgetPerPersonInt = parseFloat(budgetPerPerson);
   return Math.floor(totalBudgetInt / budgetPerPersonInt);
 };
 

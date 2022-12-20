@@ -128,18 +128,20 @@ const InitiativeDetail = () => {
           setDisabledApprove(res.status !== 'OK');
           setDisabledReject(res.status !== 'OK' && res.status !== 'PROC_KO');
         })
-        .catch((error) => {
-          addError({
-            id: 'GET_UPLOADED_FILE_DATA_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting groups file info',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getFileDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+        .catch((_error) => {
+          setDisabledApprove(true);
+          setDisabledReject(true);
+          // addError({
+          //   id: 'GET_UPLOADED_FILE_DATA_ERROR',
+          //   blocking: false,
+          //   error,
+          //   techDescription: 'An error occurred getting groups file info',
+          //   displayableTitle: t('errors.title'),
+          //   displayableDescription: t('errors.getFileDataDescription'),
+          //   toNotify: true,
+          //   component: 'Toast',
+          //   showCloseIcon: true,
+          // });
         })
         .finally(() => setLoading(false));
     }
