@@ -1,9 +1,10 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
 import ApprovedToast from '../Alert/ApprovedToast';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -18,6 +19,8 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
     window.scrollTo = jest.fn();
   });
 
+  jest.useFakeTimers();
+
   test('should display the SnackBar component', async () => {
     render(
       <Provider store={store}>
@@ -27,8 +30,11 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<typeof createStore>) =
 
     const approved = screen.getByText('pages.initiativeDetail.alert.approved');
     const snackBar = screen.getByTestId('snack-bar-test');
-
-    expect(approved).toBeInTheDocument();
     fireEvent.click(snackBar);
+    expect(approved).toBeInTheDocument();
+
+    act(() => {
+      jest.advanceTimersByTime(3000);
+    });
   });
 });
