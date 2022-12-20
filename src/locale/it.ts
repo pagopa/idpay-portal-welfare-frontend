@@ -28,6 +28,7 @@ export default {
     },
     initiativeUsers: {
       title: 'Utenti',
+      rankingTitle: 'Utenti/Aderenti',
     },
     initiativeRefunds: {
       title: 'Rimborsi',
@@ -345,7 +346,7 @@ export default {
         cancelBtn: 'Annulla',
         publishBtn: 'Pubblica',
         alertTitle: 'Ricorda di scaricare il csv della graduatoria',
-        alertBtn: 'Scarica csv',
+        alertBtn: 'Scarica file',
       },
       form: {
         search: 'Cerca per Codice fiscale',
@@ -368,6 +369,7 @@ export default {
     },
     initiativeUsers: {
       title: 'Utenti',
+      titleRanking: 'Utenti/Aderenti',
       subtitle: 'Visualizza e gestisci gli utenti aderenti all’iniziativa',
       noData: 'Non sono presenti utenti.',
       form: {
@@ -468,6 +470,7 @@ export default {
     initiativeDetail: 'Dettagli iniziativa',
     initiativeRanking: 'Graduatoria',
     initiativeUsers: 'Utenti',
+    initiativeUsersRanking: 'Utenti/Aderenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
   },
@@ -709,6 +712,7 @@ export default {
             everyThreeMonths: 'Ogni tre mesi',
           },
         },
+        sendInitiativeInRevisionMsg: 'Iniziativa inviata in revisione',
       },
       common: {
         buttons: {

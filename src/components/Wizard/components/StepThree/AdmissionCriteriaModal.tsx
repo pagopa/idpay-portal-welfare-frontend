@@ -192,7 +192,7 @@ const AdmissionCriteriaModal = ({
                     </InputAdornment>
                   ),
                 }}
-                inputProps={{"data-testid":"search-criteria-test"}}
+                inputProps={{ 'data-testid': 'search-criteria-test' }}
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}
@@ -215,10 +215,10 @@ const AdmissionCriteriaModal = ({
               right: 0,
               left: 0,
               mx: 4,
-              pr: 2,
             }}
           >
             <Button
+              fullWidth
               sx={{ width: '100%' }}
               variant="contained"
               onClick={handleCriteriaAdded}

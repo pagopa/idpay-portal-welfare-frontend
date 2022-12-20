@@ -22,6 +22,7 @@ import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useHistory } from 'react-router-dom';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
@@ -47,6 +48,7 @@ interface Props {
 const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const { t } = useTranslation();
   const [_isChecked, setIsChecked] = useState('');
+  const [openSendRevisionToast, setOpenSendRevisionToast] = useState(false);
   const initiativeId = useAppSelector(initiativeIdSelector);
   const generalInfo = useAppSelector(generalInfoSelector);
   const budgetPerPerson = generalInfo.beneficiaryBudget;
@@ -93,22 +95,18 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
 
   const validationSchema = Yup.object().shape({
     reimbursmentQuestionGroup: Yup.string().required(t('validation.required')),
-    timeParameter: Yup.string()
-      // .nullable()
-      .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
-        if (reimbursment === 'false') {
-          return Yup.string().required(t('validation.required'));
-        }
-        return schema;
-      }),
-    accumulatedAmount: Yup.string()
-      // .nullable()
-      .when('reimbursmentQuestionGroup', (reimbursment, schema) => {
-        if (reimbursment === 'true') {
-          return Yup.string().required(t('validation.required'));
-        }
-        return schema;
-      }),
+    timeParameter: Yup.string().when('reimbursmentQuestionGroup', (reimbursment, schema) => {
+      if (reimbursment === 'false') {
+        return Yup.string().required(t('validation.required'));
+      }
+      return schema;
+    }),
+    accumulatedAmount: Yup.string().when('reimbursmentQuestionGroup', (reimbursment, schema) => {
+      if (reimbursment === 'true') {
+        return Yup.string().required(t('validation.required'));
+      }
+      return schema;
+    }),
     additionalInfo: Yup.string(),
     reimbursementThreshold: Yup.number()
       .default(undefined)
@@ -159,11 +157,15 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     validationSchema,
     onSubmit: (values) => {
       if (initiativeId) {
+        setLoading(true);
         const body = mapDataToSend(values);
         putRefundRule(initiativeId, body)
           .then((_res) => {
             dispatch(saveRefundRule(values));
-            history.replace(ROUTES.INITIATIVE_LIST);
+            setOpenSendRevisionToast(true);
+            setTimeout(() => {
+              history.replace(ROUTES.INITIATIVE_LIST);
+            }, 3000);
           })
           .catch((error) => {
             addError({
@@ -177,6 +179,9 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
               component: 'Toast',
               showCloseIcon: true,
             });
+          })
+          .finally(() => {
+            setLoading(false);
           });
       }
     },
@@ -435,6 +440,13 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
           />
         </FormControl>
       </Paper>
+      {openSendRevisionToast && (
+        <Toast
+          open={openSendRevisionToast}
+          onCloseToast={() => setOpenSendRevisionToast(false)}
+          title={t('components.wizard.stepFive.sendInitiativeInRevisionMsg')}
+        />
+      )}
     </>
   );
 };

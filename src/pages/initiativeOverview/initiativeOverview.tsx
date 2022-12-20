@@ -371,6 +371,9 @@ const InitiativeOverview = () => {
             <Button
               variant="contained"
               size="small"
+              disabled={
+                initiativeSel.generalInfo.beneficiaryKnown === 'true' && statusFile !== 'OK'
+              }
               startIcon={conditionalStartIconRendering(initiativeSel.status)}
               onClick={() => conditionalOnClickRendering(initiativeSel.status)}
               data-testid="approved-onclick-test"

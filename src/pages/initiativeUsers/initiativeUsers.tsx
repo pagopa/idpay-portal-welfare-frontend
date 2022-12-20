@@ -126,33 +126,34 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  const checkRankingEnded = (date: string | Date | undefined): boolean | undefined => {
-    if (typeof date === 'object') {
-      const now = new Date();
-      return now > date;
-    } else if (typeof date === 'string') {
-      // eslint-disable-next-line functional/immutable-data
-      const d = date.split('/').reverse().join('-');
-      const rankingEnd = new Date(d);
-      const now = new Date();
-      return now > rankingEnd;
-    } else {
-      return undefined;
-    }
-  };
+  // const checkRankingEnded = (date: string | Date | undefined): boolean | undefined => {
+  //   if (typeof date === 'object') {
+  //     const now = new Date();
+  //     return now > date;
+  //   } else if (typeof date === 'string') {
+  //     // eslint-disable-next-line functional/immutable-data
+  //     const d = date.split('/').reverse().join('-');
+  //     const rankingEnd = new Date(d);
+  //     const now = new Date();
+  //     return now > rankingEnd;
+  //   } else {
+  //     return undefined;
+  //   }
+  // };
 
   // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
   const renderUserStatus = (status: string | undefined, initiative: Initiative) => {
-    const rankingEnded = checkRankingEnded(initiative.generalInfo.rankingEndDate);
+    // const rankingEnded = checkRankingEnded(initiative.generalInfo.rankingEndDate);
     switch (status) {
       case 'INVITED':
       case 'ACCEPTED_TC':
       case 'ON_EVALUATION':
-        if (rankingEnded) {
-          return <Chip label={t('pages.initiativeUsers.status.notSignedOn')} color="error" />;
-        } else {
-          return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-        }
+        // if (rankingEnded) {
+        //   return <Chip label={t('pages.initiativeUsers.status.notSignedOn')} color="error" />;
+        // } else {
+        //   return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
+        // }
+        return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       case 'ONBOARDING_OK':
         if (initiative.generalInfo.rankingEnabled === 'true') {
           return <Chip label={t('pages.initiativeUsers.status.assignee')} color="success" />;
@@ -161,7 +162,7 @@ const InitiativeUsers = () => {
         }
       case 'ONBOARDING_KO':
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
-      case 'ELIGIBLE':
+      case 'ELIGIBLE_KO':
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
       case 'INACTIVE':
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
@@ -281,7 +282,7 @@ const InitiativeUsers = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof id === 'string' && page > 0) {
+    if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
   }, [page]);
@@ -312,13 +313,19 @@ const InitiativeUsers = () => {
               {initiativeSel.initiativeName}
             </Typography>
             <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeUsers')}
+              {initiativeSel.generalInfo.rankingEnabled === 'true'
+                ? t('breadcrumbs.initiativeUsersRanking')
+                : t('breadcrumbs.initiativeUsers')}
             </Typography>
           </Breadcrumbs>
         </Box>
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
-            title={t('pages.initiativeUsers.title')}
+            title={
+              initiativeSel.generalInfo.rankingEnabled === 'true'
+                ? t('pages.initiativeUsers.titleRanking')
+                : t('pages.initiativeUsers.title')
+            }
             subTitle={t('pages.initiativeUsers.subtitle')}
             mbTitle={2}
             mtTitle={2}
@@ -418,7 +425,7 @@ const InitiativeUsers = () => {
                 ? t('pages.initiativeUsers.status.assignee')
                 : t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
-            <MenuItem value="ELIGIBLE" data-testid="filterStatusEligible-test">
+            <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligible-test">
               {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
             <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">

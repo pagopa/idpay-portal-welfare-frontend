@@ -7,7 +7,7 @@ export const mockedPartyProducts: Array<Product> = [
     description: 'App IO description',
     id: 'prod-io',
     authorized: true,
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     selfcareRole: 'ADMIN',
     roles: [
       {
@@ -28,7 +28,7 @@ export const mockedPartyProducts: Array<Product> = [
     title: 'Piattaforma Notifiche',
     description: 'Piattaforma Notifiche description',
     authorized: false,
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     selfcareRole: 'LIMITED',
     roles: [
       {
@@ -49,7 +49,7 @@ export const mockedPartyProducts: Array<Product> = [
     title: 'Pagamenti pagoPA',
     description: 'Pagamenti pagoPA description',
     authorized: true,
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     selfcareRole: 'ADMIN',
     roles: [
       {
@@ -70,7 +70,7 @@ export const mockedPartyProducts: Array<Product> = [
     description: "Verifica l'abbinamento di un IBAN ad un CF di un cittadino o di un'impresa.",
     id: 'prod-ciban',
     authorized: false,
-    status: 'PENDING',
+    status: 'INACTIVE',
     selfcareRole: 'ADMIN',
     roles: [
       {
@@ -118,7 +118,7 @@ export const mockedPartyProducts: Array<Product> = [
         roleKey: 'incaricato-ente-creditore', // TODO use real product role
       },
     ],
-    status: 'ACTIVE',
+    status: 'INACTIVE',
     urlPublic: undefined,
     imageUrl:
       'https://selcdcheckoutsa.z6.web.core.windows.net/resources/products/default/depict-image.jpeg',

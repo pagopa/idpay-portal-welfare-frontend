@@ -54,9 +54,7 @@ describe('<AdmissionCriteriaModal />', () => {
           }}
           criteriaToRender={mockedCriteria}
           // eslint-disable-next-line react/jsx-no-bind
-          setCriteriaToRender={function (value: Array<AvailableCriteria>): void {
-            console.log(value);
-          }}
+          setCriteriaToRender={jest.fn()}
         />
       );
     });
@@ -69,17 +67,16 @@ describe('<AdmissionCriteriaModal />', () => {
     expect(modal).toBeInTheDocument();
     const fade = document.querySelector('[data-testid="admission-fade"]') as HTMLElement;
     const searchCriteriaInput = screen.getByTestId('search-criteria-test') as HTMLInputElement;
-    const checkBoxCriteria = document.querySelectorAll(
-      '[data-testid="check-test-1"]'
-    )[0] as HTMLInputElement;
+    const checkBoxCriteria = screen.getAllByTestId('check-test-1') as HTMLInputElement[];
+    const firstCheckBox = checkBoxCriteria[0].querySelector('input') as HTMLInputElement;
 
     expect(fade).toBeInTheDocument();
 
-    /*
-    await waitFor(() => {
-      expect(checkBoxCriteria.checked).toBe(true);
-    });
-*/
+    await waitFor(() => expect(firstCheckBox).toBeInTheDocument());
+    await waitFor(() => expect(firstCheckBox.checked).toEqual(false));
+    fireEvent.click(firstCheckBox);
+    await waitFor(() => expect(firstCheckBox.checked).toEqual(true));
+
     const searchCriteria = document.querySelector(
       '[data-testid="search-criteria-test"]'
     ) as HTMLInputElement;

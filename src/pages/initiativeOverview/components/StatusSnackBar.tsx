@@ -97,7 +97,7 @@ const StatusSnackBar = ({
             <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
           </Box>
         );
-      case 'TO_SHEDULE':
+      case 'TO_SCHEDULE':
       case 'VALIDATE':
       case 'PROCESSING':
         return (

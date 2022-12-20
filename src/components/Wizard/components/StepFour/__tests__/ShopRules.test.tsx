@@ -1,16 +1,15 @@
 /* eslint-disable react/jsx-no-bind */
-import React from 'react';
-import { Provider } from 'react-redux';
-import { screen, waitFor, cleanup, render } from '@testing-library/react';
-import { SetStateAction } from 'react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import React, { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import ShopRules from '../ShopRules';
-import { renderWithProviders } from '../../../../../utils/test-utils';
-import { createStore, store } from '../../../../../redux/store';
-import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
+import { Provider } from 'react-redux';
 import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
-import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
+import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
+import { createStore, store } from '../../../../../redux/store';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithProviders } from '../../../../../utils/test-utils';
+import ShopRules from '../ShopRules';
+
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

@@ -225,7 +225,7 @@ const MCCItem = ({
             defaultValue=""
             name="allowedList"
             id="allowedList"
-            inputProps={{"data-testid":"merchantSelect-test"}}
+            inputProps={{ 'data-testid': 'merchantSelect-test' }}
             onChange={(e) => {
               formik.handleChange(e);
               handleUpdateAllowedListFieldState(e.target.value);
@@ -233,10 +233,10 @@ const MCCItem = ({
             onBlur={(e) => formik.handleBlur(e)}
             value={formik.values.allowedList}
           >
-            <MenuItem value={'true'} data-testid="everybody">
+            <MenuItem value={'false'} data-testid="everybody">
               {t('components.wizard.stepFour.form.everybodyExceptSelectItem')}
             </MenuItem>
-            <MenuItem value={'false'} data-testid="nobody">
+            <MenuItem value={'true'} data-testid="nobody">
               {t('components.wizard.stepFour.form.nobodyExceptSelectItem')}
             </MenuItem>
           </Select>
