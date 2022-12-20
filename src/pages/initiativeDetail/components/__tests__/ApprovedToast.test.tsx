@@ -4,7 +4,6 @@ import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import React from 'react';
 import ApprovedToast from '../Alert/ApprovedToast';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
