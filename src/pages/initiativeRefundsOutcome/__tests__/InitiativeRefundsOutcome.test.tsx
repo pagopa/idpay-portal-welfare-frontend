@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
@@ -47,12 +47,14 @@ beforeEach(() => {
   };
 });
 
+afterEach(cleanup);
+
 describe('<InitiativeRefundsOutcome />', () => {
-  it('renders without crashing', () => {
+  test('renders without crashing', () => {
     window.scrollTo = jest.fn();
   });
 
-  it('Test InitiativeRefundsOutcome', async () => {
+  test('Test InitiativeRefundsOutcome should upload with sucess', async () => {
     renderWithProviders(<InitiativeRefundsOutcome />);
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
@@ -68,5 +70,41 @@ describe('<InitiativeRefundsOutcome />', () => {
     });
     fireEvent.drop(inputEl);
     waitFor(() => expect(screen.getByText('application/zip')).toBeInTheDocument());
+  });
+
+  test('Test InitiativeRefundsOutcome should fail upload with multiple files', async () => {
+    renderWithProviders(<InitiativeRefundsOutcome />);
+
+    const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
+    fireEvent.click(backBtn);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+    const file2 = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file, file2],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('Test InitiativeRefundsOutcome should fail upload with wrong type', async () => {
+    renderWithProviders(<InitiativeRefundsOutcome />);
+
+    const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
+    fireEvent.click(backBtn);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'image/png', {
+      type: 'image/png',
+    });
+
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
   });
 });
