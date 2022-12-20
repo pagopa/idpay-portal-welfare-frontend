@@ -2,10 +2,10 @@ import React from 'react';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeRefunds from '../initiativeRefunds';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, cleanup } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import { date } from 'yup';
-import { createMemoryHistory } from 'history';
+import ROUTES from '../../../routes';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -23,6 +23,29 @@ jest.mock('react-router-dom', () => ({
     pathname: 'localhost:3000/portale-enti',
   }),
 }));
+
+beforeEach(() => {
+  //@ts-expect-error
+  delete global.window.location;
+  global.window = Object.create(window);
+  global.window.location = {
+    ancestorOrigins: ['string'] as unknown as DOMStringList,
+    hash: 'hash',
+    host: 'localhost',
+    port: '3000',
+    protocol: 'http:',
+    hostname: 'localhost:3000/portale-enti',
+    href: 'http://localhost:3000/portale-enti/rimborsi-iniziativa/2333333',
+    origin: 'http://localhost:3000/portale-enti',
+    pathname: ROUTES.INITIATIVE_REFUNDS,
+    search: '',
+    assign: () => {},
+    reload: () => {},
+    replace: () => {},
+  };
+});
+
+afterEach(cleanup);
 
 describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof createMemoryHistory> */) => {
   it('renders without crashing', () => {

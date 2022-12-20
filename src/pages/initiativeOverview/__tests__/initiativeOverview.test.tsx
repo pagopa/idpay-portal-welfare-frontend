@@ -5,10 +5,12 @@ import { createStore } from '../../../redux/store';
 import InitiativeOverview from '../initiativeOverview';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
-import { setStatus } from '../../../redux/slices/initiativeSlice';
+import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { ThemeProvider } from '@mui/system';
 import { theme } from '@pagopa/mui-italia';
+import { BeneficiaryTypeEnum } from '../../../utils/constants';
+import ROUTES from '../../../routes';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -27,6 +29,24 @@ export function mockLocationFunction() {
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
+  //@ts-expect-error
+  delete global.window.location;
+  global.window = Object.create(window);
+  global.window.location = {
+    ancestorOrigins: ['string'] as unknown as DOMStringList,
+    hash: 'hash',
+    host: 'localhost',
+    port: '3000',
+    protocol: 'http:',
+    hostname: 'localhost:3000/portale-enti',
+    href: 'http://localhost:3000/portale-enti/panoramica-iniziativa/2333333',
+    origin: 'http://localhost:3000/portale-enti',
+    pathname: ROUTES.INITIATIVE_OVERVIEW,
+    search: '',
+    assign: () => {},
+    reload: () => {},
+    replace: () => {},
+  };
 });
 
 afterEach(cleanup);
@@ -49,6 +69,23 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
 
   test('Test Button details', async () => {
     store.dispatch(setStatus('IN_REVISION'));
+    store.dispatch(setInitiativeId('233333'));
+    store.dispatch(setGeneralInfo({
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'true',
+      rankingEnabled: undefined,
+      budget: '',
+      beneficiaryBudget: '',
+      startDate: undefined,
+      endDate: undefined,
+      rankingStartDate: undefined,
+      rankingEndDate: undefined,
+      introductionTextIT: undefined,
+      introductionTextEN: undefined,
+      introductionTextFR: undefined,
+      introductionTextDE: undefined,
+      introductionTextSL: undefined
+    }));
     store.dispatch(
       setPermissionsList([
         { name: 'updateInitiative', description: 'description', mode: 'enabled' },

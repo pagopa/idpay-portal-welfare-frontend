@@ -415,6 +415,7 @@ const InitiativeList = () => {
               size="small"
               sx={{ height: '42px' }}
               onClick={goToNewInitiative}
+              data-testid="create-full-onclick-test"
             >
               {t('pages.initiativeList.createNew')}
             </Button>
@@ -543,6 +544,7 @@ const InitiativeList = () => {
                     onClick={goToNewInitiative}
                     disableRipple={true}
                     disableFocusRipple={true}
+                    data-testid="create-empty-onclick-test"
                   >
                     {t('pages.initiativeList.createNew')}
                   </Button>

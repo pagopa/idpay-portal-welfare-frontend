@@ -309,6 +309,7 @@ const InitiativeDetail = () => {
               expandIcon={<ExpandMoreIcon color="primary" />}
               aria-controls="panel1-content"
               id="panel1-header"
+              data-testid="panel1-test"
             >
               <SummaryContentBody
                 heading={t('pages.initiativeDetail.accordion.step1.heading')}
@@ -329,6 +330,7 @@ const InitiativeDetail = () => {
               expandIcon={<ExpandMoreIcon color="primary" />}
               aria-controls="panel2-content"
               id="panel2-header"
+              data-testid="panel2-test"
             >
               <SummaryContentBody
                 heading={t('pages.initiativeDetail.accordion.step2.heading')}
@@ -349,6 +351,7 @@ const InitiativeDetail = () => {
               expandIcon={<ExpandMoreIcon color="primary" />}
               aria-controls="panel3-content"
               id="panel3-header"
+              data-testid="panel3-test"
             >
               <SummaryContentBody
                 heading={t('pages.initiativeDetail.accordion.step3.heading')}
@@ -376,6 +379,7 @@ const InitiativeDetail = () => {
               expandIcon={<ExpandMoreIcon color="primary" />}
               aria-controls="panel4-content"
               id="panel4-header"
+              data-testid="panel4-test"
             >
               <SummaryContentBody
                 heading={t('pages.initiativeDetail.accordion.step4.heading')}
@@ -402,6 +406,7 @@ const InitiativeDetail = () => {
               expandIcon={<ExpandMoreIcon color="primary" />}
               aria-controls="panel5-content"
               id="panel5-header"
+              data-testid="panel5-test"
             >
               <SummaryContentBody
                 heading={t('pages.initiativeDetail.accordion.step5.heading')}

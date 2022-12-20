@@ -2,6 +2,9 @@ import { fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import React from 'react';
 import { date } from 'yup';
+import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { setInitiative } from '../../../redux/slices/initiativeSlice';
+import { store } from '../../../redux/store';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeUsers from '../initiativeUsers';
@@ -15,12 +18,34 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
+beforeEach(() => {
+  //@ts-expect-error
+  delete global.window.location;
+  global.window = Object.create(window);
+  global.window.location = {
+    ancestorOrigins: ['string'] as unknown as DOMStringList,
+    hash: 'hash',
+    host: 'localhost',
+    port: '3000',
+    protocol: 'http:',
+    hostname: 'localhost:3000/portale-enti',
+    href: 'http://localhost:3000/portale-enti/utenti-iniziativa/23232333',
+    origin: 'http://localhost:3000/portale-enti',
+    pathname: '/portale-enti/utenti-iniziativa/23232333',
+    search: '',
+    assign: () => {},
+    reload: () => {},
+    replace: () => {},
+  };
+});
+
 describe('<InitiativeUsers />', () => {
   test('renders without crashing', () => {
     window.scrollTo = jest.fn();
   });
 
   test('Test of breadcrumbs/searchUser and onChange of searchUser', async () => {
+    store.dispatch(setInitiative(mockedInitiative));
     renderWithProviders(<InitiativeUsers />);
 
     //BUTTONS TEST
