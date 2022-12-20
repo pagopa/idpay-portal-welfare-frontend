@@ -22,17 +22,12 @@ type Props = WithPartiesProps & {
 const welfareProduct: ProductEntity = {
   // TODO check if correct
   id: 'prod-welfare',
-  title: 'Welfare',
+  title: 'Portale Bonus',
   productUrl: CONFIG.HEADER.LINK.PRODUCTURL,
   linkType: 'internal',
 };
 
-const Header = ({
-  withSecondHeader,
-  onExit,
-  loggedUser,
-}: /* , parties */
-Props) => {
+const Header = ({ withSecondHeader, onExit, loggedUser }: /* , parties */ Props) => {
   const { t } = useTranslation();
   const products = useAppSelector(partiesSelectors.selectPartySelectedProducts);
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
@@ -63,7 +58,7 @@ Props) => {
       withSecondHeader={withSecondHeader}
       selectedPartyId={selectedParty?.partyId}
       selectedProductId={welfareProduct.id}
-      addSelfcareProduct={true} // TODO verify if returned from API
+      addSelfcareProduct={false} // TODO verify if returned from API
       productsList={activeProducts.map((p) => ({
         id: p.id,
         title: p.title,

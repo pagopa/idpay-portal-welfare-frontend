@@ -1,3 +1,4 @@
+/* eslint-disable no-prototype-builtins */
 import {
   List,
   Box,
@@ -154,29 +155,33 @@ export default function SideMenu() {
                     level={2}
                     data-testid="initiativeOveview-click-test"
                   />
-                  {
-                    // eslint-disable-next-line no-prototype-builtins
-                    item.hasOwnProperty('rankingEnabled') && item.rankingEnabled ? (
-                      <SidenavItem
-                        title={t('sideMenu.initiativeRanking.title')}
-                        handleClick={() =>
-                          onExit(() => {
-                            history.replace(
-                              `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
-                            );
-                          })
-                        }
-                        isSelected={
-                          pathname === `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
-                        }
-                        icon={RuleIcon}
-                        level={2}
-                        data-testid="initiativeRanking-click-test"
-                      />
-                    ) : null
-                  }
+                  {item.hasOwnProperty('rankingEnabled') &&
+                  item.rankingEnabled &&
+                  item.hasOwnProperty('status') &&
+                  item.status === 'PUBLISHED' ? (
+                    <SidenavItem
+                      title={t('sideMenu.initiativeRanking.title')}
+                      handleClick={() =>
+                        onExit(() => {
+                          history.replace(
+                            `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
+                          );
+                        })
+                      }
+                      isSelected={
+                        pathname === `${BASE_ROUTE}/graduatoria-iniziativa/${item.initiativeId}`
+                      }
+                      icon={RuleIcon}
+                      level={2}
+                      data-testid="initiativeRanking-click-test"
+                    />
+                  ) : null}
                   <SidenavItem
-                    title={t('sideMenu.initiativeUsers.title')}
+                    title={
+                      item.hasOwnProperty('rankingEnabled') && item.rankingEnabled
+                        ? t('sideMenu.initiativeUsers.rankingTitle')
+                        : t('sideMenu.initiativeUsers.title')
+                    }
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
