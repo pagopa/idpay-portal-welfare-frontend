@@ -8,6 +8,7 @@ import {
   mockedInitiativeId,
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
+  mockedNotificationReward,
   mockedOnBoardingStatus,
 } from '../../services/__mocks__/initiativeService';
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
@@ -130,7 +131,7 @@ export const InitiativeApiMocked = {
     _id: string,
     _page: number,
     _sort: string
-  ): Promise<PageRewardImportsDTO> => new Promise((resolve) => resolve(mockedInitiativeId)),
+  ): Promise<PageRewardImportsDTO> => new Promise((resolve) => resolve(mockedNotificationReward)),
 
   uploadAndUpdateLogo: async (_id: string, _file: File): Promise<LogoDTO> =>
     new Promise((resolve) => resolve(mockedFile)),

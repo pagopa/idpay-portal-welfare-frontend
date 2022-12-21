@@ -23,6 +23,7 @@ import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardI
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
+import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -342,10 +343,10 @@ export const mockedNotificationReward = {
     {
       contentLength: 0,
       eTag: 'string',
-      elabDate: '2022-12-21T16:15:17.223Z',
+      elabDate: new Date(),
       errorsSize: 0,
       exportIds: ['string'],
-      feedbackDate: '2022-12-21T16:15:17.223Z',
+      feedbackDate: new Date(),
       filePath: 'string',
       initiativeId: 'string',
       organizationId: 'string',
@@ -356,7 +357,7 @@ export const mockedNotificationReward = {
       rewardsResultedError: 0,
       rewardsResultedOk: 0,
       rewardsResultedOkError: 0,
-      status: 'COMPLETE',
+      status: StatusEnum.COMPLETE,
       url: 'string',
     },
   ],
