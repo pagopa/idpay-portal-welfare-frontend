@@ -210,6 +210,7 @@ export const mockedInitiativeSummary = [
     initiativeName: 'Fish',
     status: 'PUBLISHED',
     creationDate: new Date('2022-07-10T16:25:46.363'),
+    updateDate: new Date('2022-08-09T08:35:36.516'),
   },
   {
     initiativeId: '62e2bdae186e8b0b359dd06f',
