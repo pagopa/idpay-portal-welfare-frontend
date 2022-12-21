@@ -107,4 +107,23 @@ describe('<InitiativeRefundsOutcome />', () => {
     });
     fireEvent.drop(inputEl);
   });
+
+  test('Test InitiativeRefundsOutcome should fail upload with wrong size', async () => {
+    renderWithProviders(<InitiativeRefundsOutcome />);
+
+    const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
+    fireEvent.click(backBtn);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+
+    Object.defineProperty(file, 'size', { value: 193500800 });
+
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
 });

@@ -337,6 +337,33 @@ export const mockedTrxAndRewardRules = {
 
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 
+export const mockedNotificationReward = {
+  content: [
+    {
+      contentLength: 0,
+      eTag: 'string',
+      elabDate: '2022-12-21T16:15:17.223Z',
+      errorsSize: 0,
+      exportIds: ['string'],
+      feedbackDate: '2022-12-21T16:15:17.223Z',
+      filePath: 'string',
+      initiativeId: 'string',
+      organizationId: 'string',
+      percentageResulted: 'string',
+      percentageResultedOk: 'string',
+      percentageResultedOkElab: 'string',
+      rewardsResulted: 0,
+      rewardsResultedError: 0,
+      rewardsResultedOk: 0,
+      rewardsResultedOkError: 0,
+      status: 'COMPLETE',
+      url: 'string',
+    },
+  ],
+  totalElements: 5,
+  totalPages: 1,
+};
+
 export const mockedInitiativeStatistics = {
   accruedRewards: '10',
 
