@@ -44,7 +44,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       rankingEnabled: 'true',
     };
     store.dispatch(setInitiative(deepClonedIni));
-    console.log('first', store.getState().initiative.generalInfo);
     render(
       <Provider store={store}>
         <AdmissionCriteria
@@ -56,7 +55,6 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         />
       </Provider>
     );
-    console.log('first', store.getState().initiative.generalInfo);
   });
 
   it('Test onClick of "Sfoglia Criteri" to open the modal must be true', async () => {
