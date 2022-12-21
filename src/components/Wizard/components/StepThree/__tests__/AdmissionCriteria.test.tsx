@@ -24,7 +24,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
   });
 
   test('should display the second step, with validation on input data', async () => {
-    // InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+    //  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
 
     const deepClonedIni = JSON.parse(JSON.stringify(mockedInitiative));
     deepClonedIni.generalInfo = {
@@ -44,6 +44,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       rankingEnabled: 'true',
     };
     store.dispatch(setInitiative(deepClonedIni));
+    console.log('first', store.getState().initiative.generalInfo)
     const { debug } = render(
       <Provider store={store}>
         <AdmissionCriteria
