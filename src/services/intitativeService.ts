@@ -134,7 +134,7 @@ export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRul
 
 export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+    return InitiativeApiMocked.initiativeStatistics(id);
   }
   return InitiativeApi.initiativeStatistics(id).then((res) => res);
 };

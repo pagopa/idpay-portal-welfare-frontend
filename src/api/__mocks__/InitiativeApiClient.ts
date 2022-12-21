@@ -6,6 +6,7 @@ import {
   mockedExportsPaged,
   mockedInitiativeDetail,
   mockedInitiativeId,
+  mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedOnBoardingStatus,
 } from '../../services/__mocks__/initiativeService';
@@ -82,7 +83,7 @@ export const InitiativeApiMocked = {
   ): Promise<void> => new Promise((resolve) => resolve()),
 
   initiativeStatistics: async (_id: string): Promise<InitiativeStatisticsDTO> =>
-    new Promise((resolve) => resolve(mockedInitiativeId)),
+    new Promise((resolve) => resolve(mockedInitiativeStatistics)),
 
   updateInitiativeApprovedStatus: async (_id: string): Promise<void> =>
     new Promise((resolve) => resolve()),
