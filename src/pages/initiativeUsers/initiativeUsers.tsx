@@ -162,7 +162,7 @@ const InitiativeUsers = () => {
         }
       case 'ONBOARDING_KO':
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
-      case 'ELEGIBILE_KO':
+      case 'ELIGIBLE_KO':
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
       case 'INACTIVE':
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
@@ -282,7 +282,7 @@ const InitiativeUsers = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof id === 'string' && page > 0) {
+    if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
   }, [page]);
@@ -425,7 +425,7 @@ const InitiativeUsers = () => {
                 ? t('pages.initiativeUsers.status.assignee')
                 : t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
-            <MenuItem value="ELEGIBILE_KO" data-testid="filterStatusEligible-test">
+            <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligible-test">
               {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
             <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">

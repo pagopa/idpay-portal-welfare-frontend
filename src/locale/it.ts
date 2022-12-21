@@ -346,7 +346,7 @@ export default {
         cancelBtn: 'Annulla',
         publishBtn: 'Pubblica',
         alertTitle: 'Ricorda di scaricare il csv della graduatoria',
-        alertBtn: 'Scarica csv',
+        alertBtn: 'Scarica file',
       },
       form: {
         search: 'Cerca per Codice fiscale',
