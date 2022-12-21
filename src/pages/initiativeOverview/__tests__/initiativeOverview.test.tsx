@@ -70,22 +70,24 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   test('Test Button details', async () => {
     store.dispatch(setStatus('IN_REVISION'));
     store.dispatch(setInitiativeId('233333'));
-    store.dispatch(setGeneralInfo({
-      beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: 'true',
-      rankingEnabled: undefined,
-      budget: '',
-      beneficiaryBudget: '',
-      startDate: undefined,
-      endDate: undefined,
-      rankingStartDate: undefined,
-      rankingEndDate: undefined,
-      introductionTextIT: undefined,
-      introductionTextEN: undefined,
-      introductionTextFR: undefined,
-      introductionTextDE: undefined,
-      introductionTextSL: undefined
-    }));
+    store.dispatch(
+      setGeneralInfo({
+        beneficiaryType: BeneficiaryTypeEnum.PF,
+        beneficiaryKnown: 'true',
+        rankingEnabled: undefined,
+        budget: '',
+        beneficiaryBudget: '',
+        startDate: undefined,
+        endDate: undefined,
+        rankingStartDate: undefined,
+        rankingEndDate: undefined,
+        introductionTextIT: undefined,
+        introductionTextEN: undefined,
+        introductionTextFR: undefined,
+        introductionTextDE: undefined,
+        introductionTextSL: undefined,
+      })
+    );
     store.dispatch(
       setPermissionsList([
         { name: 'updateInitiative', description: 'description', mode: 'enabled' },
@@ -229,6 +231,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
       </Provider>
     );
     store.dispatch(setStatus('PUBLISHED'));
+    store.dispatch(setInitiativeId(':id'));
     const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
     fireEvent.click(viewUsers);
   });

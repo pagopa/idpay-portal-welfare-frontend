@@ -337,6 +337,14 @@ export const mockedTrxAndRewardRules = {
 
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 
+export const mockedInitiativeStatistics = {
+  accruedRewards: '10',
+
+  lastUpdatedDateTime: new Date(),
+
+  onboardedCitizenCount: 2,
+};
+
 export const mockedExportsPaged = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
