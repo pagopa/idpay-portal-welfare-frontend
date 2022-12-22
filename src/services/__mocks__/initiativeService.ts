@@ -378,6 +378,37 @@ export const mockedGetDispFileError = {
   data: 'string',
 };
 
+export const mockedGetRewardFileDownload = {
+  sas: 'string',
+};
+
+export const mockedGetRankingFileDownload = {
+  sas: 'string',
+};
+
+export const mockedGetIniOnboardingRankingStatusPaged = {
+  content: [
+    {
+      beneficiary: 'string',
+      criteriaConsensusTimestamp: new Date(),
+      rankingValue: 0,
+      ranking: 0,
+      beneficiaryRankingStatus: 'string',
+    },
+  ],
+  pageNumber: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
+  rankingStatus: 'string',
+  rankingPublishedTimestamp: new Date(),
+  rankingGeneratedTimestamp: new Date(),
+  totalEligibleOk: 0,
+  totalEligibleKo: 0,
+  totalOnboardingKo: 0,
+  rankingFilePath: 'string',
+};
+
 export const mockedExportsPaged = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,

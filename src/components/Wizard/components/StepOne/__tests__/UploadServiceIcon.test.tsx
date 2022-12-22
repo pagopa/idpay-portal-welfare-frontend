@@ -168,7 +168,6 @@ describe('<UploadServiceIcon />', () => {
     const errorAlert = await waitFor(() => {
       return screen.getByText('components.wizard.stepOne.uploadIcon.invalidFileTitle');
     });
-    console.log('errorAlert', errorAlert);
     expect(errorAlert).toBeInTheDocument();
     fireEvent.click(screen.getByTestId('CloseIcon'));
   });

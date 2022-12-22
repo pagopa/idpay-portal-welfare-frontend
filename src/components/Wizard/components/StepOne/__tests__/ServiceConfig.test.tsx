@@ -3,7 +3,7 @@ import React from 'react';
 import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { AdditionalInfo } from '../../../../../model/Initiative';
-import { setAdditionalInfo } from '../../../../../redux/slices/initiativeSlice';
+import { setAdditionalInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithProviders } from '../../../../../utils/test-utils';
@@ -129,5 +129,18 @@ describe('<ServiceConfig />', () => {
 
     const addChannel = screen.getByTestId('add-channel-test') as HTMLButtonElement;
     fireEvent.click(addChannel);
+  });
+
+  test('test submit wizard', () => {
+    store.dispatch(setInitiativeId('23333'));
+    renderWithProviders(
+      <ServiceConfig
+        action={WIZARD_ACTIONS.SUBMIT}
+        setAction={setAction}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        setDisabledNext={setDisabledNext}
+      />
+    );
   });
 });
