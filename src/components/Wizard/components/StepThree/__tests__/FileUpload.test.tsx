@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithProviders } from '../../../../../utils/test-utils';
 import FileUpload from '../FileUpload';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -58,20 +59,15 @@ describe('<FileUpload />', () => {
 
   test('File upload rejected and DRAFT case should fail upload', async () => {
     store.dispatch(setInitiativeId('444444'));
+
     render(
       <Provider store={store}>
         <FileUpload
           action={WIZARD_ACTIONS.DRAFT}
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
+          setAction={jest.fn()}
           currentStep={3}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
         />
       </Provider>
     );
@@ -85,7 +81,6 @@ describe('<FileUpload />', () => {
     });
 
     fireEvent.drop(inputEl, { file });
-
     await waitFor(() =>
       expect(
         screen.getByText('components.wizard.stepThree.upload.invalidFileTitle')
@@ -94,6 +89,13 @@ describe('<FileUpload />', () => {
 
     expect(screen.getByText('components.wizard.stepThree.upload.changeFile')).toBeInTheDocument();
     fireEvent.click(screen.getByText('components.wizard.stepThree.upload.changeFile'));
+
+    const draftSavedAlert = await waitFor(() => {
+      return screen.getByText('components.wizard.common.draftSaved');
+    });
+
+    expect(draftSavedAlert).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 
   test('File upload rejected and DRAFT case should fail upload beacuse of multiple files', async () => {
@@ -101,17 +103,11 @@ describe('<FileUpload />', () => {
     render(
       <Provider store={store}>
         <FileUpload
-          action={WIZARD_ACTIONS.DRAFT}
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
+          action={WIZARD_ACTIONS.BACK}
+          setAction={jest.fn()}
           currentStep={3}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
         />
       </Provider>
     );
@@ -128,5 +124,34 @@ describe('<FileUpload />', () => {
     });
 
     fireEvent.drop(inputEl, { file, file2 });
+  });
+
+  test('File upload rejected and should fail upload for wrong size', async () => {
+    renderWithProviders(
+      <Provider store={store}>
+        <FileUpload
+          action={''}
+          setAction={jest.fn()}
+          currentStep={3}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
+        />
+      </Provider>
+    );
+    const inputEl = screen.getByTestId('drop-input-step3') as HTMLInputElement;
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(file, 'size', { value: 2197152 });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+
+    fireEvent.drop(inputEl, { file });
+
+    await waitFor(() => {
+      expect(screen.getByTestId('close-icon')).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId('close-icon'));
+    });
   });
 });

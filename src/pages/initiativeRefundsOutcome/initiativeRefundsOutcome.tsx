@@ -495,7 +495,7 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
                         {r.errorsSize > 0 && (
-                          <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                          <IconButton data-testid="download-file" onClick={() => handleDownloadFile(r.downloadFileInfo)}>
                             <FileDownloadIcon color="primary" />
                           </IconButton>
                         )}
