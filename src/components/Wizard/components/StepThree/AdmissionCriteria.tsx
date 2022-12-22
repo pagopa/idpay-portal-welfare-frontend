@@ -64,6 +64,7 @@ const AdmissionCriteria = ({
   const initiativeId = useAppSelector(initiativeIdSelector);
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
+  const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -322,6 +323,7 @@ const AdmissionCriteria = ({
         .then((_response) => {
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
           dispatch(saveManualCriteria(manualCriteriaToRender));
+          setOpenDraftSavedToast(true);
         })
         .catch((error) => {
           addError({
@@ -491,6 +493,14 @@ const AdmissionCriteria = ({
           />
         ))}
       </Box>
+      {openDraftSavedToast && (
+        <Toast
+          open={openDraftSavedToast}
+          title={t('components.wizard.common.draftSaved')}
+          showToastCloseIcon={true}
+          onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
     </Paper>
   );
 };

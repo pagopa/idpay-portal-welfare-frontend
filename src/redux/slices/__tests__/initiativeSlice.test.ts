@@ -98,7 +98,7 @@ describe('use Initiative slice', () => {
     },
     trxRule: {
       mccFilter: {
-        allowedList: true,
+        allowedList: false,
         values: [],
       },
       rewardLimits: [{ frequency: 'DAILY', rewardLimit: undefined }],

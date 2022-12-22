@@ -1,7 +1,4 @@
-/* eslint-disable react/jsx-no-bind */
-import { render, fireEvent, act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { SetStateAction } from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import StatusSnackBar from '../StatusSnackBar';
@@ -18,43 +15,20 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
+window.scrollTo = jest.fn();
+
 describe('<StatusSnacBar />', (injectedStore?: ReturnType<
   typeof createStore
 >, injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const store = injectedStore ? injectedStore : createStore();
-
-  const user = userEvent.setup();
-  const initiativeStatus = store.getState().initiative.status;
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
+  // const user = userEvent.setup();
+  // const initiativeStatus = store.getState().initiative.status;
   const initiativeId = store.getState().initiative.initiativeId;
   const setOpenSnackBar = jest.fn();
-  // const history = { replace: jest.fn() };
-  const history = injectedHistory ? injectedHistory : createMemoryHistory();
 
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
-
-  test('should display the SnackBar component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <StatusSnackBar
-            openSnackBar={true}
-            setOpenSnackBar={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-            fileStatus={initiativeStatus}
-            beneficiaryReached={25}
-            initiativeId={initiativeId}
-          />
-        </Provider>
-      );
-    });
-  });
-
-  test('on click close modale', async () => {
-    const { queryByTestId } = render(
+  test('Test Close Modal and ViewUser Buttons', async () => {
+    render(
       <Provider store={store}>
         <Router history={history}>
           <StatusSnackBar
@@ -68,37 +42,52 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const useStateMock: any = (openSnackBar: boolean) => [openSnackBar, setOpenSnackBar];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-    const closeBtn = queryByTestId('close-bar-test') as HTMLElement;
-    await act(async () => {
-      fireEvent.click(closeBtn);
-    });
+    const closeBtn = screen.getByTestId('close-bar-test') as HTMLButtonElement;
+    fireEvent.click(closeBtn);
     expect(setOpenSnackBar).toBeCalled();
+
+    const currentPath = history.location.pathname;
+    const viewBtn = screen.getByTestId('view-users-test') as HTMLButtonElement;
+    fireEvent.click(viewBtn);
+    expect(currentPath !== history.location.pathname).toBeTruthy();
   });
 
   it('Test pathname replace on click snackbar', async () => {
-    await act(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <Router history={history}>
-            <StatusSnackBar
-              openSnackBar={true}
-              setOpenSnackBar={setOpenSnackBar}
-              fileStatus={'OK'}
-              beneficiaryReached={25}
-              initiativeId={initiativeId}
-            />
-          </Router>
-        </Provider>
-      );
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <StatusSnackBar
+            openSnackBar={true}
+            setOpenSnackBar={setOpenSnackBar}
+            fileStatus={'KO'}
+            beneficiaryReached={25}
+            initiativeId={initiativeId}
+          />
+        </Router>
+      </Provider>
+    );
+    const closeBtn = screen.getByTestId('close-bar-test') as HTMLButtonElement;
+    fireEvent.click(closeBtn);
+    expect(setOpenSnackBar).toBeCalled();
+  });
 
-      const currentPath = history.location.pathname;
-      const viewBtn = queryByTestId('view-users-test') as HTMLElement;
-      fireEvent.click(viewBtn);
-      expect(currentPath !== history.location.pathname).toBeTruthy();
-    });
+  it('Test render snackbar with Filetatus TO_SCHEDULE', async () => {
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <StatusSnackBar
+            openSnackBar={true}
+            setOpenSnackBar={setOpenSnackBar}
+            fileStatus={'TO_SCHEDULE'}
+            beneficiaryReached={25}
+            initiativeId={initiativeId}
+          />
+        </Router>
+      </Provider>
+    );
+
+    const pending = screen.getByText('pages.initiativeOverview.snackBar.pending');
+    expect(pending).toBeInTheDocument();
   });
 
   const statusOptions = ['OK', 'KO', 'PROC_KO', '', 'TO_SHEDULE'];
@@ -115,15 +104,6 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
           />
         </Provider>
       );
-      /*
-      const useStateMock: any = (openSnackBar: boolean) => [openSnackBar, setOpenSnackBar];
-      jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-
-      const closeBtn = queryByTestId('close-bar-test') as HTMLElement;
-      user.click(closeBtn);
-      setOpenSnackBar();
-      expect(setOpenSnackBar).toHaveBeenCalled();
-      */
     });
   });
 });

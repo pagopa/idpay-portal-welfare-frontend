@@ -19,6 +19,7 @@ export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
   },
   {
     code: 'ISEE',
+    field: 'city',
     authority: 'INPS',
     operator: 'EQ',
     checked: false,

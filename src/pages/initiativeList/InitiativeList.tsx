@@ -253,6 +253,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         aria-haspopup="true"
         aria-expanded={open ? 'true' : undefined}
         onClick={handleClickActionsMenu}
+        data-testid="menu-open-test"
       >
         <MoreIcon color="primary" />
       </IconButton>
@@ -264,6 +265,7 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
         MenuListProps={{
           'aria-labelledby': `actions_button-${id}`,
         }}
+        data-testid="menu-close-test"
       >
         <RenderDetail id={id} status={status} />
         <RenderSuspend id={id} status={status} />
@@ -448,7 +450,7 @@ const InitiativeList = () => {
               onChange={(e) => {
                 handleSearchInitiatives(e.target.value);
               }}
-              inputProps={{ 'data-testid': 'search-initiative' }}
+              inputProps={{ 'data-testid': 'search-initiative-no-permission-test' }}
             />
           </Box>
         </Box>

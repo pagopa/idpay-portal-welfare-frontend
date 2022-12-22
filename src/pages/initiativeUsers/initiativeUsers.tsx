@@ -126,33 +126,11 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  // const checkRankingEnded = (date: string | Date | undefined): boolean | undefined => {
-  //   if (typeof date === 'object') {
-  //     const now = new Date();
-  //     return now > date;
-  //   } else if (typeof date === 'string') {
-  //     // eslint-disable-next-line functional/immutable-data
-  //     const d = date.split('/').reverse().join('-');
-  //     const rankingEnd = new Date(d);
-  //     const now = new Date();
-  //     return now > rankingEnd;
-  //   } else {
-  //     return undefined;
-  //   }
-  // };
-
-  // eslint-disable-next-line complexity, sonarjs/cognitive-complexity
   const renderUserStatus = (status: string | undefined, initiative: Initiative) => {
-    // const rankingEnded = checkRankingEnded(initiative.generalInfo.rankingEndDate);
     switch (status) {
       case 'INVITED':
       case 'ACCEPTED_TC':
       case 'ON_EVALUATION':
-        // if (rankingEnded) {
-        //   return <Chip label={t('pages.initiativeUsers.status.notSignedOn')} color="error" />;
-        // } else {
-        //   return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-        // }
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       case 'ONBOARDING_OK':
         if (initiative.generalInfo.rankingEnabled === 'true') {

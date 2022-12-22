@@ -190,6 +190,9 @@ export default {
             beneficiaryknown: 'Conosci già i destinatari?',
             taxCodeList: 'Si, ho una lista di codici fiscali',
             manualSelection: "No, imposterò dei criteri d'ammissione",
+            rankingEnabledQuestion: 'È presente una graduatoria?',
+            rankingEnabledAnswerYes: 'Sì',
+            rankingEnabledAnswerNo: 'No',
             budget: 'Budget totale',
             beneficiaryBudget: 'Budget a persona',
             rankingStartDate: 'Inizio adesione',
@@ -236,6 +239,8 @@ export default {
             statusLoading: 'In corso',
             fileUploadedErrorMessage:
               'L’anonimizzazione del file non è andata a buon fine. Segnala all’ente di dover ricaricare il file corretto per poter procedere con l’approvazione dell’iniziativa.',
+            rankingAsc: ' - In graduatoria vince il valore minore',
+            rankingDesc: ' - In graduatoria vince il valore maggiore',
           },
         },
         step4: {
@@ -732,6 +737,7 @@ export default {
           german: 'Tedesco',
           slovenian: 'Sloveno',
         },
+        draftSaved: 'Bozza salvata correttamente',
       },
     },
     exitModal: {

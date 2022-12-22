@@ -1,5 +1,7 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
+import { store } from '../../../redux/store';
 import { renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeRefundsOutcome from '../initiativeRefundsOutcome';
@@ -45,6 +47,7 @@ beforeEach(() => {
     reload: () => {},
     replace: () => {},
   };
+  store.dispatch(setInitiativeId('3333322'));
 });
 
 afterEach(cleanup);
@@ -60,7 +63,7 @@ describe('<InitiativeRefundsOutcome />', () => {
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
 
-    window.URL.createObjectURL = jest.fn().mockImplementation(() => 'url');
+    // window.URL.createObjectURL = jest.fn().mockImplementation(() => 'url');
     const inputEl = screen.getByTestId('drop-input');
     const file = new File(['file'], 'application/zip', {
       type: 'application/zip',
@@ -101,6 +104,25 @@ describe('<InitiativeRefundsOutcome />', () => {
     const file = new File(['file'], 'image/png', {
       type: 'image/png',
     });
+
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('Test InitiativeRefundsOutcome should fail upload with wrong size', async () => {
+    renderWithProviders(<InitiativeRefundsOutcome />);
+
+    const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
+    fireEvent.click(backBtn);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+
+    Object.defineProperty(file, 'size', { value: 193500800 });
 
     Object.defineProperty(inputEl, 'files', {
       value: [file],

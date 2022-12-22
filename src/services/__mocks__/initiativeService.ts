@@ -23,6 +23,7 @@ import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardI
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
+import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -210,6 +211,7 @@ export const mockedInitiativeSummary = [
     initiativeName: 'Fish',
     status: 'PUBLISHED',
     creationDate: new Date('2022-07-10T16:25:46.363'),
+    updateDate: new Date('2022-08-09T08:35:36.516'),
   },
   {
     initiativeId: '62e2bdae186e8b0b359dd06f',
@@ -336,6 +338,41 @@ export const mockedTrxAndRewardRules = {
 };
 
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
+
+export const mockedNotificationReward = {
+  content: [
+    {
+      contentLength: 0,
+      eTag: 'string',
+      elabDate: new Date(),
+      errorsSize: 0,
+      exportIds: ['string'],
+      feedbackDate: new Date(),
+      filePath: 'string',
+      initiativeId: 'string',
+      organizationId: 'string',
+      percentageResulted: 'string',
+      percentageResultedOk: 'string',
+      percentageResultedOkElab: 'string',
+      rewardsResulted: 0,
+      rewardsResultedError: 0,
+      rewardsResultedOk: 0,
+      rewardsResultedOkError: 0,
+      status: StatusEnum.COMPLETE,
+      url: 'string',
+    },
+  ],
+  totalElements: 5,
+  totalPages: 1,
+};
+
+export const mockedInitiativeStatistics = {
+  accruedRewards: '10',
+
+  lastUpdatedDateTime: new Date(),
+
+  onboardedCitizenCount: 2,
+};
 
 export const mockedExportsPaged = {
   id: '62e29002aac2e94cfa3763dd',

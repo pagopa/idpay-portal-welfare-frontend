@@ -12,6 +12,7 @@ jest.mock('react-i18next', () => ({
 describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const handleRejectInitiative = jest.fn();
+  const setRejectModalOpen = jest.fn();
 
   it('renders without crashing', () => {
     window.scrollTo = jest.fn();
@@ -22,9 +23,7 @@ describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof 
       <Provider store={store}>
         <ConfirmRejectInitiativeModal
           rejectModalOpen={true}
-          setRejectModalOpen={function (_value: React.SetStateAction<boolean>): void {
-            //
-          }}
+          setRejectModalOpen={setRejectModalOpen}
           initiativeId={undefined}
           handleRejectInitiative={handleRejectInitiative}
           userCanRejectInitiative={false}
@@ -40,8 +39,16 @@ describe('<ConfirmRejectInitiativeModal />', (injectedStore?: ReturnType<typeof 
 
     const cancelBtn = screen.getByTestId('cancel-button-test') as HTMLButtonElement;
     fireEvent.click(cancelBtn);
+    expect(setRejectModalOpen).toHaveBeenCalledTimes(1);
 
     const rejectBtn = screen.getByTestId('reject-button-test') as HTMLButtonElement;
     fireEvent.click(rejectBtn);
+
+    fireEvent.keyDown(modal, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
   });
 });

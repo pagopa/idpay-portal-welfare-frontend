@@ -1,31 +1,27 @@
-import { fireEvent, render, act, waitFor, screen } from '@testing-library/react';
-import { SetStateAction } from 'react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React, { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import IseeCriteriaItem from '../IseeCriteriaItem';
-import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
+afterEach(cleanup);
 
 describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const data = {
-    _type: '',
-    description: '',
     code: '',
-    boolValue: true,
-    multiValue: ['', ''],
-    authorityLabel: '',
+    authorityLabel: 'auth label',
     fieldLabel: '',
-    value: '',
-    value2: '',
+    value: 'value',
+    value2: 'value2',
     authority: '',
     field: '',
-    operator: '',
-    checked: false,
+    operator: FilterOperator.BTW_OPEN,
+    checked: true,
   };
 
   const handleCriteriaRemoved = jest.fn();
@@ -63,11 +59,12 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
       const rankingBtn = await waitFor(() => {
         return screen.getByTestId('ranking-button-test');
       });
-      fireEvent.click(menuASC);
-      expect(menuASC).toBeInTheDocument();
 
       fireEvent.click(rankingBtn);
       expect(rankingBtn).toBeInTheDocument();
+
+      fireEvent.click(menuASC);
+      expect(menuASC).toBeInTheDocument();
 
       fireEvent.click(iseeRelationSelect);
       fireEvent.change(iseeRelationSelect, { target: { value: 'GT' } });
@@ -84,10 +81,20 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
   it('Test on IseeCriteriaItem', async () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     await act(async () => {
-      const { queryByTestId } = render(
+      render(
         <IseeCriteriaItem
           action={WIZARD_ACTIONS.DRAFT}
-          formData={data}
+          formData={{
+            code: '',
+            authorityLabel: 'auth label',
+            fieldLabel: '',
+            value: 'value',
+            value2: 'value2',
+            authority: '',
+            field: '',
+            operator: 'GT',
+            checked: true,
+          }}
           // eslint-disable-next-line react/jsx-no-bind
           handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
           handleFieldValueChanged={undefined}
