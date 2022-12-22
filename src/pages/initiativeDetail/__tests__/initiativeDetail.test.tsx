@@ -1,12 +1,14 @@
-import { Provider } from 'react-redux';
-import { render, waitFor, screen, fireEvent, cleanup } from '@testing-library/react';
-import React from 'react';
-import { createStore } from '../../../redux/store';
-import InitiativeDetail from '../initiativeDetail';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
+import React from 'react';
+import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { setStatus } from '../../../redux/slices/initiativeSlice';
+import { GeneralInfo } from '../../../model/Initiative';
+import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
+import { createStore } from '../../../redux/store';
+import { BeneficiaryTypeEnum } from '../../../utils/constants';
+import InitiativeDetail from '../initiativeDetail';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -35,6 +37,24 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
         { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
       ])
     );
+    const mockedGeneralBody: GeneralInfo = {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'true',
+      budget: '8515',
+      beneficiaryBudget: '801',
+      rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+      rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+      startDate: new Date('2022-10-01T00:00:00.000Z'),
+      endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'it',
+      introductionTextEN: 'en',
+      introductionTextFR: 'fr',
+      introductionTextDE: undefined,
+      introductionTextSL: undefined,
+      rankingEnabled: 'true',
+    };
+    store.dispatch(setGeneralInfo(mockedGeneralBody));
+    store.dispatch(setInitiativeId('iniID'));
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -42,19 +62,6 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
-    const rejectBtn = screen.getByText(
-      'pages.initiativeDetail.accordion.buttons.reject'
-    ) as HTMLButtonElement;
-
-    expect(rejectBtn).toBeInTheDocument();
-    expect(rejectBtn).toBeDisabled();
-
-    const approveBtn = screen.getByText(
-      'pages.initiativeDetail.accordion.buttons.approve'
-    ) as HTMLButtonElement;
-
-    expect(approveBtn).toBeInTheDocument();
-    expect(approveBtn).toBeDisabled();
 
     const backBtnDetail = screen.getByTestId('backButtonDetail') as HTMLButtonElement;
     const secondBackButton = screen.getByText(/pages.initiativeDetail.accordion.buttons.back/i);
@@ -106,8 +113,23 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
     fireEvent.click(panel4);
     fireEvent.click(panel5);
 
+    expect(reject).not.toBeDisabled();
+
     fireEvent.click(reject);
+    expect(screen.getByText('components.wizard.stepOne.modal.continueBtn')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('components.wizard.stepOne.modal.continueBtn'));
+
+    expect(approve).not.toBeDisabled();
     fireEvent.click(approve);
+    await waitFor(() =>
+      expect(screen.getByText('pages.initiativeDetail.alert.approved')).toBeInTheDocument()
+    );
+    fireEvent.keyDown(screen.getByText('pages.initiativeDetail.alert.approved'), {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
   });
 
   it('Test Render Initiative Detail component with permission deleteInitiative and Status APPROVED, onclick button', async () => {

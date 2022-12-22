@@ -24,7 +24,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
   });
 
   test('should display the second step, with validation on input data', async () => {
-    // InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+    //  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
 
     const deepClonedIni = JSON.parse(JSON.stringify(mockedInitiative));
     deepClonedIni.generalInfo = {
@@ -44,23 +44,14 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       rankingEnabled: 'true',
     };
     store.dispatch(setInitiative(deepClonedIni));
-    const { debug } = render(
+    render(
       <Provider store={store}>
         <AdmissionCriteria
           action={WIZARD_ACTIONS.DRAFT}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
+          setAction={jest.fn()}
           currentStep={0}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
         />
       </Provider>
     );
@@ -71,19 +62,10 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
       <Provider store={store}>
         <AdmissionCriteria
           action={WIZARD_ACTIONS.SUBMIT}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
+          setAction={jest.fn()}
           currentStep={1}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
         />
       </Provider>
     );

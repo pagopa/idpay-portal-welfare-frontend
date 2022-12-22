@@ -62,6 +62,13 @@ describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createS
       const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
       fireEvent.click(cancelBtn);
     });
+
+    fireEvent.keyDown(modal, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
   });
 
   test('should display the ConfirmPublishInitiativeModal component', async () => {

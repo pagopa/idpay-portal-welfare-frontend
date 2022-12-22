@@ -1,16 +1,16 @@
-import { cleanup, render, waitFor, screen, fireEvent } from '@testing-library/react';
+import { ThemeProvider } from '@mui/system';
+import { theme } from '@pagopa/mui-italia';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { createStore } from '../../../redux/store';
-import InitiativeOverview from '../initiativeOverview';
-import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
 import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
-import { ThemeProvider } from '@mui/system';
-import { theme } from '@pagopa/mui-italia';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
+import { createStore } from '../../../redux/store';
 import ROUTES from '../../../routes';
+import { BeneficiaryTypeEnum } from '../../../utils/constants';
+import InitiativeOverview from '../initiativeOverview';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -70,22 +70,24 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
   test('Test Button details', async () => {
     store.dispatch(setStatus('IN_REVISION'));
     store.dispatch(setInitiativeId('233333'));
-    store.dispatch(setGeneralInfo({
-      beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: 'true',
-      rankingEnabled: undefined,
-      budget: '',
-      beneficiaryBudget: '',
-      startDate: undefined,
-      endDate: undefined,
-      rankingStartDate: undefined,
-      rankingEndDate: undefined,
-      introductionTextIT: undefined,
-      introductionTextEN: undefined,
-      introductionTextFR: undefined,
-      introductionTextDE: undefined,
-      introductionTextSL: undefined
-    }));
+    store.dispatch(
+      setGeneralInfo({
+        beneficiaryType: BeneficiaryTypeEnum.PF,
+        beneficiaryKnown: 'true',
+        rankingEnabled: undefined,
+        budget: '',
+        beneficiaryBudget: '',
+        startDate: undefined,
+        endDate: undefined,
+        rankingStartDate: undefined,
+        rankingEndDate: undefined,
+        introductionTextIT: undefined,
+        introductionTextEN: undefined,
+        introductionTextFR: undefined,
+        introductionTextDE: undefined,
+        introductionTextSL: undefined,
+      })
+    );
     store.dispatch(
       setPermissionsList([
         { name: 'updateInitiative', description: 'description', mode: 'enabled' },
@@ -157,6 +159,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
         </Router>
       </Provider>
     );
+
     store.dispatch(setStatus('DRAFT'));
 
     const draftBtn = screen.getByTestId('draft-onclick-test');
@@ -228,7 +231,29 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
         </ThemeProvider>
       </Provider>
     );
+
+    store.dispatch(
+      setGeneralInfo({
+        beneficiaryType: BeneficiaryTypeEnum.PF,
+        beneficiaryKnown: 'true',
+        rankingEnabled: undefined,
+        budget: '',
+        beneficiaryBudget: '',
+        startDate: undefined,
+        endDate: undefined,
+        rankingStartDate: undefined,
+        rankingEndDate: undefined,
+        introductionTextIT: undefined,
+        introductionTextEN: undefined,
+        introductionTextFR: undefined,
+        introductionTextDE: undefined,
+        introductionTextSL: undefined,
+      })
+    );
+
     store.dispatch(setStatus('PUBLISHED'));
+    store.dispatch(setInitiativeId(':id'));
+
     const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
     fireEvent.click(viewUsers);
   });

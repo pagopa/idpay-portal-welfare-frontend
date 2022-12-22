@@ -1,25 +1,22 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { SetStateAction } from 'react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import React, { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { ManualCriteriaItem } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
-import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import ManualCriteria from '../ManualCriteria';
-import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
-const originalError = console.error;
+
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterAll(() => {
-  console.error = originalError;
-});
+afterEach(cleanup);
 
 describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   it('renders without crashing', () => {
@@ -28,11 +25,12 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
   });
 
   const store = injectedStore ? injectedStore : createStore();
+  
   test('Should display ManualCriteria SUBMIT action', () => {
     const handleCriteriaRemoved = jest.fn();
     const setManualCriteriaToRender = jest.fn();
     const setCriteriaToSubmit = jest.fn();
-    const { getByTestId } = render(
+    render(
       <Provider store={store}>
         <ManualCriteria
           key={1}
@@ -40,7 +38,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
             _type: 'multi',
             description: 'description',
             boolValue: false,
-            multiValue: [{ value: 'value' }],
+            multiValue: [{ value: 'value' }, { value: 'value' }],
             code: 'code',
           }}
           action={WIZARD_ACTIONS.SUBMIT}
@@ -61,7 +59,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
       </Provider>
     );
 
-    const textField = getByTestId('manualCriteria-multi-test') as HTMLInputElement;
+    const textField = screen.getAllByTestId('manualCriteria-multi-test') as HTMLInputElement[];
     const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
     const selectManualCriteria = screen.getByTestId(
       'manualCriteria-select-name'
@@ -70,9 +68,14 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
       'manualCriteria-boolean-test'
     ) as HTMLInputElement;
     const addOptionsBtn = screen.getByTestId('add option btn') as HTMLButtonElement;
+    const removeOption = screen.getByTestId('manualCriteria-remove-option');
 
-    fireEvent.change(textField, { target: { value: 'temp val' } });
-    expect(textField).toBeDefined();
+    fireEvent.click(removeOption);
+    expect(removeOption).toBeDefined();
+
+    fireEvent.change(textField[0], { target: { value: 'temp val' } });
+    expect(textField[0]).toBeDefined();
+    fireEvent.blur(textField[0]);
 
     fireEvent.click(deleteBtn);
     expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
