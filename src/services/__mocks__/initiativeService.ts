@@ -374,6 +374,10 @@ export const mockedInitiativeStatistics = {
   onboardedCitizenCount: 2,
 };
 
+export const mockedGetDispFileError = {
+  data: 'string',
+};
+
 export const mockedExportsPaged = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,

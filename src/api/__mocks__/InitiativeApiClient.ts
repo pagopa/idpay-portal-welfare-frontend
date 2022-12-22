@@ -4,6 +4,7 @@ import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSum
 import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
 import {
   mockedExportsPaged,
+  mockedGetDispFileError,
   mockedInitiativeDetail,
   mockedInitiativeId,
   mockedInitiativeStatistics,
@@ -137,7 +138,7 @@ export const InitiativeApiMocked = {
     new Promise((resolve) => resolve(mockedFile)),
 
   getDispFileErrors: async (_id: string, _name: string): Promise<CsvDTO> =>
-    new Promise((resolve) => resolve(mockedInitiativeId)),
+    new Promise((resolve) => resolve(mockedGetDispFileError)),
 
   getInitiativeOnboardingRankingStatusPaged: async (
     _id: string,

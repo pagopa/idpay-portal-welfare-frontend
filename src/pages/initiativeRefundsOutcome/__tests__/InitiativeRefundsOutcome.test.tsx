@@ -128,5 +128,18 @@ describe('<InitiativeRefundsOutcome />', () => {
       value: [file],
     });
     fireEvent.drop(inputEl);
+
+    const downloadFileBtn = (await waitFor(() =>
+      screen.getByTestId('download-file')
+    )) as HTMLButtonElement;
+
+    fireEvent.click(downloadFileBtn);
+
+    const fileRejectedAlert = await waitFor(() => {
+      return screen.getByText('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle');
+    });
+
+    expect(fileRejectedAlert).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 });
