@@ -1,70 +1,92 @@
 /* eslint-disable react/jsx-no-bind */
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
-import React, { SetStateAction } from 'react';
-import { act } from 'react-dom/test-utils';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import React from 'react';
 import { Provider } from 'react-redux';
-import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
-import { setInitiative } from '../../../../../redux/slices/initiativeSlice';
-import { createStore, store } from '../../../../../redux/store';
+import { Router } from 'react-router';
+import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithProviders } from '../../../../../utils/test-utils';
+import { createMemoryHistory } from 'history';
 import ShopRules from '../ShopRules';
-
+import {
+  saveDaysOfWeekIntervals,
+  saveMccFilter,
+  saveRewardLimits,
+  saveThreshold,
+  saveTrxCount,
+  setInitiative,
+  setInitiativeId,
+} from '../../../../../redux/slices/initiativeSlice';
+import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 afterEach(cleanup);
+window.scrollTo = jest.fn();
 
-describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => {
+describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
   const setAction = jest.fn();
-  const store = injectedStore ? injectedStore : createStore();
+  const setCurrentStep = jest.fn();
+  const setDisabledNext = jest.fn();
+  const trxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+  const threshold = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+  const mccFilter = { allowedList: true, values: ['0742', '0743'] };
+  const rewardLimits = [{ frequency: 'DAILY', rewardLimit: 2 }];
+  const daysOfWeekIntervals = [
+    {
+      daysOfWeek: 'MONDAY',
+      startTime: '00:00',
+      endTime: '23:59',
+    },
+  ];
 
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  test('should render correctly the ShopRules component action SUMBIT', async () => {
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+    store.dispatch(saveTrxCount(trxCount));
+    store.dispatch(saveThreshold(threshold));
+    store.dispatch(saveMccFilter(mccFilter));
+    store.dispatch(saveRewardLimits(rewardLimits));
+    store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
 
-  test('should render correctly the ShopRules component', async () => {
-    await act(async () => {
-      renderWithProviders(
-        <ShopRules
-          action={WIZARD_ACTIONS.DRAFT}
-          setAction={setAction}
-          currentStep={0}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      );
-      // expect(setAction.mock.calls.length).toBe(0);
-    });
-  });
-
-  it('test on handleSubmit', async () => {
-    store.dispatch(setInitiative(mockedInitiative));
-    // console.log(store.getState().initiative.beneficiaryRule);
-    const { debug } = render(
+    render(
       <Provider store={store}>
-        <ShopRules
-          action={WIZARD_ACTIONS.SUBMIT}
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={1}
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.SUBMIT}
+            setAction={setAction}
+            currentStep={0}
+            setCurrentStep={setCurrentStep(3)}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
       </Provider>
     );
-    await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
+
+    // await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
+  });
+
+  test('should render correctly the ShopRules component action DRAFT', async () => {
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.DRAFT}
+            setAction={setAction}
+            currentStep={0}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
   });
 });
