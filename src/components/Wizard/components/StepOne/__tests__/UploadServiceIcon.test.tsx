@@ -121,12 +121,8 @@ describe('<UploadServiceIcon />', () => {
         fileUplodedKo={false}
         fileName={undefined}
         fileUploadDate={undefined}
-        setFileName={function (_value: SetStateAction<string>): void {
-          //
-        }}
-        setUploadDate={function (_value: SetStateAction<string>): void {
-          //
-        }}
+        setFileName={jest.fn()}
+        setUploadDate={jest.fn()}
       />
     );
 
@@ -153,23 +149,27 @@ describe('<UploadServiceIcon />', () => {
         fileUplodedKo={true}
         fileName={undefined}
         fileUploadDate={undefined}
-        setFileName={function (_value: SetStateAction<string>): void {
-          //
-        }}
-        setUploadDate={function (_value: SetStateAction<string>): void {
-          //
-        }}
+        setFileName={jest.fn()}
+        setUploadDate={jest.fn()}
       />
     );
 
     const inputEl = screen.getByTestId('drop-input');
-    const file = new File(['file'], 'text.csv', {
-      type: 'text/csv',
+    const file = new File(['file'], 'image/png', {
+      type: 'image/png',
     });
-    Object.defineProperty(file, 'size', { value: 1024 * 1024 + 1000 });
+    Object.defineProperty(file, 'size', { value: 1058576 });
+    //
     Object.defineProperty(inputEl, 'files', {
       value: [file],
     });
     fireEvent.drop(inputEl);
+
+    const errorAlert = await waitFor(() => {
+      return screen.getByText('components.wizard.stepOne.uploadIcon.invalidFileTitle');
+    });
+    console.log('errorAlert', errorAlert);
+    expect(errorAlert).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 });
