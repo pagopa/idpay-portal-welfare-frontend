@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import { Box, Divider, Typography } from '@mui/material';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -107,13 +108,12 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
             'pages.initiativeDetail.accordion.step3.content.and'
           )} ${automatedCriteria.value2} €`;
         }
-
-        if (typeof automatedCriteria.orderDirection !== undefined) {
+        if (typeof automatedCriteria.orderDirection !== 'undefined') {
           if (automatedCriteria.orderDirection === OrderDirectionEnum.ASC) {
             rankingOrderDirectionAsString = t(
               'pages.initiativeDetail.accordion.step3.content.rankingAsc'
             );
-          } else {
+          } else if (automatedCriteria.orderDirection === OrderDirectionEnum.DESC) {
             rankingOrderDirectionAsString = t(
               'pages.initiativeDetail.accordion.step3.content.rankingDesc'
             );

@@ -9,6 +9,11 @@ import AdmissionCriteria from '../AdmissionCriteria';
 import { mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
 
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
