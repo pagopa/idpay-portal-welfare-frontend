@@ -1,9 +1,9 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { AdditionalInfo } from '../../../../../model/Initiative';
-import { setAdditionalInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
+import { setAdditionalInfo } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithProviders } from '../../../../../utils/test-utils';
@@ -20,6 +20,8 @@ beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
+
+afterEach(cleanup);
 
 describe('<ServiceConfig />', () => {
   const handleOpenExitModal = jest.fn();
@@ -132,7 +134,7 @@ describe('<ServiceConfig />', () => {
   });
 
   test('test submit wizard', () => {
-    store.dispatch(setInitiativeId('23333'));
+
     renderWithProviders(
       <ServiceConfig
         action={WIZARD_ACTIONS.SUBMIT}
