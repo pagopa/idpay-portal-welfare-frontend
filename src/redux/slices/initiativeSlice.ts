@@ -65,7 +65,7 @@ const initialState: Initiative = {
   },
   trxRule: {
     mccFilter: {
-      allowedList: true,
+      allowedList: false,
       values: [],
     },
     rewardLimits: [{ frequency: 'DAILY', rewardLimit: undefined }],

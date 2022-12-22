@@ -25,9 +25,9 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
     // eslint-disable-next-line functional/no-let
     let dataAsString = '';
     if (mccFilter.allowedList) {
-      dataAsString = `${t('pages.initiativeDetail.accordion.step4.content.everybodyExceptItem')}`;
-    } else {
       dataAsString = `${t('pages.initiativeDetail.accordion.step4.content.nobodyExceptItem')}`;
+    } else {
+      dataAsString = `${t('pages.initiativeDetail.accordion.step4.content.everybodyExceptItem')}`;
     }
     const mccList = Array.isArray(mccFilter.values) ? mccFilter.values.join(', ') : '';
     return `${dataAsString} ${mccList}`;

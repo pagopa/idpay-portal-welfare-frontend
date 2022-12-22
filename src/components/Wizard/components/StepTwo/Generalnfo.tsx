@@ -23,7 +23,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-// import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -36,6 +35,7 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorD
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   generalInfoSelector,
@@ -72,6 +72,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const selectedPartySel = useAppSelector(partiesSelectors.selectPartySelected);
   const [value, setValue] = useState(0);
   const [dateOffset, setDateOffset] = useState(1);
+  const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
 
   const { t } = useTranslation();
   const setLoading = useLoading('UPDATE_GENERAL_INFO');
@@ -89,7 +90,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       if (initiativeIdSel) {
         setLoading(true);
         updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed)
-          .then((_res) => {})
+          .then((_res) => {
+            setOpenDraftSavedToast(true);
+          })
           .catch((error) => {
             addError({
               id: 'EDIT_GENERAL_INFO_SAVE_DRAFT_ERROR',
@@ -905,6 +908,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormControl>
         </Box>
       </Paper>
+      {openDraftSavedToast && (
+        <Toast
+          open={openDraftSavedToast}
+          title={t('components.wizard.common.draftSaved')}
+          showToastCloseIcon={true}
+          onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
     </>
   );
 };

@@ -57,6 +57,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const addError = useErrorDispatcher();
   const history = useHistory();
   const setLoading = useLoading('PUT_REFUND_RULES');
+  const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -72,6 +73,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
         setLoading(true);
         putRefundRuleDraft(initiativeId, body)
           .then((_res) => {
+            setOpenDraftSavedToast(true);
             dispatch(saveRefundRule(formik.values));
           })
           .catch((error) => {
@@ -216,14 +218,6 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       formik.setFieldValue('reimbursementThreshold', '');
     }
   };
-
-  // useEffect(() => {
-  //   if (formik.dirty || formik.isValid) {
-  //     setDisableNext(false);
-  //   } else {
-  //     setDisableNext(true);
-  //   }
-  // }, [formik]);
 
   return (
     <>
@@ -445,6 +439,14 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
           open={openSendRevisionToast}
           onCloseToast={() => setOpenSendRevisionToast(false)}
           title={t('components.wizard.stepFive.sendInitiativeInRevisionMsg')}
+        />
+      )}
+      {openDraftSavedToast && (
+        <Toast
+          open={openDraftSavedToast}
+          title={t('components.wizard.common.draftSaved')}
+          showToastCloseIcon={true}
+          onCloseToast={() => setOpenDraftSavedToast(false)}
         />
       )}
     </>

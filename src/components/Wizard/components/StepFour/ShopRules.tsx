@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
@@ -78,6 +79,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const addError = useErrorDispatcher();
   const [modalButtonVisible, setModalButtonVisible] = useState(true);
   const setLoading = useLoading('GET_TRANSACTION_RULES');
+  const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -363,6 +365,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       putTrxAndRewardRulesDraft(initiativeId, body)
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((_response) => {
+          setOpenDraftSavedToast(true);
           dispatch(saveRewardRule(rewardRuleData));
           if (typeof mccFilterData === 'object') {
             dispatch(saveMccFilter(mccFilterData));
@@ -592,6 +595,14 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           return null;
         }
       })}
+      {openDraftSavedToast && (
+        <Toast
+          open={openDraftSavedToast}
+          title={t('components.wizard.common.draftSaved')}
+          showToastCloseIcon={true}
+          onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
     </Paper>
   );
 };

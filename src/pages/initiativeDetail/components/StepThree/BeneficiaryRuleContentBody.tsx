@@ -1,6 +1,7 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
+import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import {
   AutomatedCriteriaItem,
   Initiative,
@@ -77,6 +78,8 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
         }
         return dataAsString;
       case 'ISEE':
+        // eslint-disable-next-line functional/no-let
+        let rankingOrderDirectionAsString = '';
         if (automatedCriteria.operator === FilterOperator.EQ) {
           dataAsString = `${dataAsString}${t(
             'pages.initiativeDetail.accordion.step3.content.exact'
@@ -104,7 +107,19 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
             'pages.initiativeDetail.accordion.step3.content.and'
           )} ${automatedCriteria.value2} €`;
         }
-        return dataAsString;
+
+        if (typeof automatedCriteria.orderDirection !== undefined) {
+          if (automatedCriteria.orderDirection === OrderDirectionEnum.ASC) {
+            rankingOrderDirectionAsString = t(
+              'pages.initiativeDetail.accordion.step3.content.rankingAsc'
+            );
+          } else {
+            rankingOrderDirectionAsString = t(
+              'pages.initiativeDetail.accordion.step3.content.rankingDesc'
+            );
+          }
+        }
+        return `${dataAsString} ${rankingOrderDirectionAsString}`;
       default:
         return '';
     }

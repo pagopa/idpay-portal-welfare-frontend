@@ -20,6 +20,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import CloseIcon from '@mui/icons-material/Close';
+import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   getGroupOfBeneficiaryStatusAndDetail,
@@ -48,6 +49,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const initiativeId = useAppSelector(initiativeIdSelector);
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_STATUS_AND_DETAIL');
+  const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -216,6 +218,9 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
   useEffect(() => {
     if (action === WIZARD_ACTIONS.SUBMIT) {
       setCurrentStep(currentStep + 1);
+    } else if (action === WIZARD_ACTIONS.DRAFT) {
+      setOpenDraftSavedToast(true);
+      return;
     } else {
       return;
     }
@@ -411,6 +416,14 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       )}
 
       {fileIsLoading ? LoadingFilePartial : fileAccepted ? FileAcceptedPartial : InitStatusPartial}
+      {openDraftSavedToast && (
+        <Toast
+          open={openDraftSavedToast}
+          title={t('components.wizard.common.draftSaved')}
+          showToastCloseIcon={true}
+          onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
     </Paper>
   );
 };

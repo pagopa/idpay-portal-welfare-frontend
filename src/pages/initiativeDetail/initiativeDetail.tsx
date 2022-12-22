@@ -131,17 +131,6 @@ const InitiativeDetail = () => {
         .catch((_error) => {
           setDisabledApprove(true);
           setDisabledReject(true);
-          // addError({
-          //   id: 'GET_UPLOADED_FILE_DATA_ERROR',
-          //   blocking: false,
-          //   error,
-          //   techDescription: 'An error occurred getting groups file info',
-          //   displayableTitle: t('errors.title'),
-          //   displayableDescription: t('errors.getFileDataDescription'),
-          //   toNotify: true,
-          //   component: 'Toast',
-          //   showCloseIcon: true,
-          // });
         })
         .finally(() => setLoading(false));
     }
