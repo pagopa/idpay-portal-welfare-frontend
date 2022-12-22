@@ -345,7 +345,7 @@ export const mockedNotificationReward = {
       contentLength: 0,
       eTag: 'string',
       elabDate: new Date(),
-      errorsSize: 0,
+      errorsSize: 1,
       exportIds: ['string'],
       feedbackDate: new Date(),
       filePath: 'string',
