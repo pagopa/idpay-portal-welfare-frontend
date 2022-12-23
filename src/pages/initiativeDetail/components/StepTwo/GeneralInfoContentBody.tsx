@@ -42,13 +42,13 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
           {t('pages.initiativeDetail.accordion.step2.content.rankingEnabledQuestion')}
         </Typography>
       )}
-
-      <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-        {initiativeDetail.generalInfo.rankingEnabled === 'true'
-          ? t('pages.initiativeDetail.accordion.step2.content.rankingEnabledAnswerYes')
-          : t('pages.initiativeDetail.accordion.step2.content.rankingEnabledAnswerNo')}
-      </Typography>
-
+      {initiativeDetail.generalInfo.beneficiaryKnown === 'false' && (
+        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+          {initiativeDetail.generalInfo.rankingEnabled === 'true'
+            ? t('pages.initiativeDetail.accordion.step2.content.rankingEnabledAnswerYes')
+            : t('pages.initiativeDetail.accordion.step2.content.rankingEnabledAnswerNo')}
+        </Typography>
+      )}
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
         {t('pages.initiativeDetail.accordion.step2.content.budget')}
       </Typography>
