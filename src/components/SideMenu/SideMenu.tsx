@@ -71,9 +71,8 @@ export default function SideMenu() {
     if (!initiativeSummaryList) {
       setLoading(true);
       getInitativeSummary()
-        .then((response: InitiativeSummaryArrayDTO) => response)
-        .then((responseT) => {
-          dispatch(setInitiativeSummaryList(responseT));
+        .then((response: InitiativeSummaryArrayDTO) => {
+          dispatch(setInitiativeSummaryList(response));
         })
         .catch((error: any) => {
           addError({

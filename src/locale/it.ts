@@ -337,7 +337,7 @@ export default {
         notReady: 'La graduatoria sarà elaborata al termine del periodo di adesione.',
         readyToBePublishedTitle: 'La graduatoria è pronta per essere pubblicata',
         readyToBePublishedSubtitle:
-          "Dopo la pubblicazione gli aderenti idonei riceveranno notifica in appIO e un SMS con l' esito",
+          "Dopo la pubblicazione gli aderenti assegnatari e idonei non assegnatari riceveranno notifica in appIO e un SMS con l' esito",
         publishingTitle: 'La graduatoria è in fase di pubblicazione',
         publishBtn: 'Pubblica',
         published:

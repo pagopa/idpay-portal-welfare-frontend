@@ -405,6 +405,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
               onClick={() => {
                 setFileRejected(false);
               }}
+              data-testid="close-icon"
             >
               <CloseIcon color="primary" fontSize="inherit" />
             </IconButton>

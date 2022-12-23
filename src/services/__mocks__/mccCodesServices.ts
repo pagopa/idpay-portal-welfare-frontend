@@ -1,4 +1,5 @@
 import { ConfigMccArrayDTO } from '../../api/generated/initiative/ConfigMccArrayDTO';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 
 export const mockedMccCodes = [
   { code: '0742', description: 'Veterinary services' },
@@ -433,4 +434,4 @@ export const verifyFetchMccCodesMockExecution = (transactionRules: Array<ConfigM
   expect(transactionRules).toStrictEqual(mockedMccCodes);
 };
 
-export const fetchMccCodes = () => new Promise((resolve) => resolve(mockedMccCodes));
+export const fetchMccCodes = (): Promise<ConfigMccArrayDTO> => InitiativeApiMocked.getMccConfig();

@@ -54,7 +54,7 @@ export const mockedTransactionRules = [
     checked: false,
     code: 'GIS',
     description: 'description',
-    enabled: true,
+    enabled: false,
     title: 'Area geografica',
     subtitle: 'Scegli la zona di operativà',
   },

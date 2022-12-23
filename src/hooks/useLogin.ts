@@ -45,7 +45,7 @@ const saveUserPermissions = (dispatch: Dispatch<any>, addError: any, t: any) => 
     .catch((error) => {
       addError({
         id: 'GET_USER_PERMISSIONS',
-        blocking: true,
+        blocking: false,
         error,
         techDescription: 'An error occurred getting user permissions for current role',
         displayableTitle: t('errors.title'),

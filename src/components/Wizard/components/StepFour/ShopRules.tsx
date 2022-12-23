@@ -302,6 +302,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       submit = false;
     }
 
+    // console.log(shopRulesToSubmit);
     if (submit && typeof initiativeId === 'string') {
       const body = {
         ...mapDataToSend(

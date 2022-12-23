@@ -199,7 +199,7 @@ const TimeLimitItem = ({
                 value={formik.values.timeLimit[i].frequency}
                 onChange={(value) => formik.handleChange(value)}
                 error={frequencyTouched && Boolean(frequencyError)}
-                inputProps={{ 'data-testid': 'select frequency' }}
+                inputProps={{ 'data-testid': 'select-frequency-test' }}
               >
                 <MenuItem value="DAILY">
                   {t('components.wizard.stepFour.form.rewardLimitDaily')}

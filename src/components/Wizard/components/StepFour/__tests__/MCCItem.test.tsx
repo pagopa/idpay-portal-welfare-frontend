@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, screen } from '@testing-library/react';
-import { SetStateAction } from 'react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+// import userEvent from '@testing-library/user-event';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
-import MCCItem from '../MCCItem';
-import React from 'react';
-import userEvent from '@testing-library/user-event';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithProviders } from '../../../../../utils/test-utils';
+import MCCItem from '../MCCItem';
+import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -19,6 +19,10 @@ beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
+afterEach(cleanup);
+
+window.scrollTo = jest.fn();
+
 describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const mockedFn = jest.fn();
@@ -29,16 +33,12 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
       <Provider store={store}>
         <MCCItem
           title={'title'}
-          code={'code mcc'}
+          code={'MCC'}
           handleShopListItemRemoved={mockedFn}
-          action={WIZARD_ACTIONS.BACK}
-          shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
-          setShopRulesToSubmit={function (
-            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-          ): void {
-            //
-          }}
-          data={{ allowedList: true, values: ['string', '2string'] }}
+          action={WIZARD_ACTIONS.SUBMIT}
+          shopRulesToSubmit={shopRulesToSubmit}
+          setShopRulesToSubmit={jest.fn()}
+          data={mccFilter}
           setData={setData}
         />
       </Provider>
@@ -52,74 +52,58 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
     };
   };
 
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
-
-  test('should render correctly the MCCItem component', async () => {
-    const { getByTestId } = render(
+  test('should render correctly the MCCItem component with action DRAFT', async () => {
+    render(
       <Provider store={store}>
         <MCCItem
           title={'title'}
-          code={'code'}
+          code={'MCC'}
           handleShopListItemRemoved={mockedFn}
           action={WIZARD_ACTIONS.DRAFT}
-          shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
-          setShopRulesToSubmit={function (
-            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-          ): void {
-            //
-          }}
-          data={{ allowedList: true, values: ['string', '2string'] }}
-          setData={function (_value: any): void {
-            //
-          }}
+          shopRulesToSubmit={shopRulesToSubmit}
+          setShopRulesToSubmit={jest.fn()}
+          data={mccFilter}
+          setData={setData}
         />
       </Provider>
     );
-
-    const deletebtn = getByTestId('delete-button-test');
-
-    fireEvent.click(deletebtn);
-    expect(mockedFn.mock.calls.length).toEqual(1);
   });
 
   test('MCCItems subimt action', async () => {
     renderWithProviders(
       <MCCItem
         title={'title'}
-        code={'code'}
+        code={'MCC'}
         handleShopListItemRemoved={mockedFn}
         action={WIZARD_ACTIONS.SUBMIT}
-        shopRulesToSubmit={[{ code: 'code', dispatched: true }]}
-        setShopRulesToSubmit={function (
-          _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-        ): void {
-          //
-        }}
-        data={{ allowedList: true, values: ['string', '2string'] }}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={mccFilter}
         setData={setData}
       />
     );
 
-    const selectMerchant = screen.getByTestId('merchantSelect-test') as HTMLSelectElement;
-    fireEvent.change(selectMerchant, { target: { value: 'true' } });
-    expect(selectMerchant).toBeDefined();
-    expect(setData).toHaveBeenCalled();
+    const deletebtn = screen.getByTestId('delete-button-test');
+
+    fireEvent.click(deletebtn);
+    expect(mockedFn.mock.calls.length).toEqual(1);
   });
 
-  test('mc Codes to be defined', async () => {
+  test('mcc Codes to be defined', async () => {
     const { mccCodesTextArea, selectMerchant } = setup();
 
-    const user = userEvent.setup();
+    fireEvent.change(mccCodesTextArea, { target: { value: '0744' } });
+    expect(mccCodesTextArea.value).toBe('0744');
 
-    await user.type(screen.getByLabelText(/components.wizard.stepFour.form.mccCodes/i), 'CODES');
-    expect(mccCodesTextArea).toBeDefined();
-
-    //await user.selectOptions(screen.getByTestId('merchantSelect-test'), 'true');
+    fireEvent.focus(selectMerchant);
+    fireEvent.blur(selectMerchant);
     fireEvent.change(selectMerchant, { target: { value: 'true' } });
+    expect(selectMerchant.value).toBe('true');
+
+    fireEvent.focus(selectMerchant);
+    fireEvent.blur(selectMerchant);
     fireEvent.change(selectMerchant, { target: { value: 'false' } });
+    expect(selectMerchant.value).toBe('false');
 
     expect(setData).toHaveBeenCalled();
     expect(selectMerchant).toBeDefined();

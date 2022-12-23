@@ -4,8 +4,11 @@ import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSum
 import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
 import {
   mockedExportsPaged,
+  mockedGetDispFileError,
+  mockedGetIniOnboardingRankingStatusPaged,
+  mockedGetRankingFileDownload,
+  mockedGetRewardFileDownload,
   mockedInitiativeDetail,
-  mockedInitiativeId,
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedNotificationReward,
@@ -28,6 +31,8 @@ import { LogoDTO } from '../generated/initiative/LogoDTO';
 import { mockedFile } from '../../services/__mocks__/groupService';
 import { CsvDTO } from '../generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardingRankingsDTO';
+import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
+import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -122,7 +127,7 @@ export const InitiativeApiMocked = {
   ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatus)),
 
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
-    new Promise((resolve) => resolve(mockedInitiativeId)),
+    new Promise((resolve) => resolve(mockedGetRewardFileDownload)),
 
   putDispFileUpload: async (_id: string, _filename: string, _file: File): Promise<void> =>
     new Promise((resolve) => resolve()),
@@ -137,17 +142,21 @@ export const InitiativeApiMocked = {
     new Promise((resolve) => resolve(mockedFile)),
 
   getDispFileErrors: async (_id: string, _name: string): Promise<CsvDTO> =>
-    new Promise((resolve) => resolve(mockedInitiativeId)),
+    new Promise((resolve) => resolve(mockedGetDispFileError)),
 
   getInitiativeOnboardingRankingStatusPaged: async (
     _id: string,
     _page: number,
     _beneficiary: string | undefined,
     _state: string | undefined
-  ): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedInitiativeId)),
+  ): Promise<PageOnboardingRankingsDTO> =>
+    new Promise((resolve) => resolve(mockedGetIniOnboardingRankingStatusPaged)),
 
   getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
-    new Promise((resolve) => resolve(mockedInitiativeId)),
+    new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
 
   notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
+
+  getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
+    new Promise((resolve) => resolve(mockedMccCodes)),
 };

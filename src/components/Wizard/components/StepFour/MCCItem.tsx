@@ -265,7 +265,9 @@ const MCCItem = ({
             error={setError(formik.touched.values, formik.errors.values)}
             helperText={setErrorText(formik.touched.values, formik.errors.values)}
             size="small"
-            data-testid="mccCodesTextArea"
+            inputProps={{
+              'data-testid': 'mccCodesTextArea',
+            }}
           />
         </FormControl>
 

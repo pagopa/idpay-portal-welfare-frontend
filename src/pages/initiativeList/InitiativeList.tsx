@@ -295,15 +295,14 @@ const InitiativeList = () => {
   useEffect(() => {
     setLoading(true);
     getInitativeSummary()
-      .then((response: InitiativeSummaryArrayDTO) => response)
-      .then((responseT) => {
-        const data = responseT.map((r: any, i: any) => ({
+      .then((response: InitiativeSummaryArrayDTO) => {
+        const data = response.map((r: any, i: any) => ({
           ...r,
           creationDate: r.creationDate.toLocaleDateString('fr-BE'),
           updateDate: r.updateDate.toLocaleDateString('fr-BE'),
           id: i,
         }));
-        dispatch(setInitiativeSummaryList(responseT));
+        dispatch(setInitiativeSummaryList(response));
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
       })
