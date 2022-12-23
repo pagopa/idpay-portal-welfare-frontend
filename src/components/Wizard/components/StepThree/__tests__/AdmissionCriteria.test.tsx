@@ -5,7 +5,7 @@ import {
   saveAutomatedCriteria,
   saveManualCriteria,
   setGeneralInfo,
-  setInitiativeId
+  setInitiativeId,
 } from '../../../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../../../redux/store';
 import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
@@ -138,11 +138,44 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         introductionTextFR: 'string',
         introductionTextDE: 'string',
         introductionTextSL: 'string',
-        rankingEnabled: 'false',
+        rankingEnabled: 'true',
       })
     );
 
-    const { getByTestId, queryByTestId } = render(
+    store.dispatch(
+      saveAutomatedCriteria([
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'GT',
+          value: '18',
+        },
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'EQ',
+          value: '18',
+        },
+        {
+          authority: 'INPS',
+          code: 'ISEE',
+          field: 'ISEE',
+          operator: 'GT',
+          value: '40000',
+        },
+        {
+          authority: 'INPS',
+          code: 'RESIDENCE',
+          field: 'ISEE',
+          operator: 'GT',
+          value: '40000',
+        },
+      ])
+    );
+
+    const { getByTestId } = render(
       <Provider store={store}>
         <AdmissionCriteria
           action={WIZARD_ACTIONS.SUBMIT}
@@ -156,20 +189,84 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
 
     const criteria = getByTestId('criteria-button-test');
     const addManually = getByTestId('add-manually-test');
-    const modal = queryByTestId('modal-test');
-    const ManuallyAdded = queryByTestId('manually-added-test');
 
     fireEvent.click(criteria);
 
     expect(criteria).toBeTruthy();
 
     fireEvent.click(addManually);
+    expect(screen.getByTestId('delete-button-test')).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('delete-button-test'));
+  });
 
-    waitFor(async () => {
-      expect(addManually).toBeTruthy();
-      expect(ManuallyAdded).toBeInTheDocument();
-      expect(ManuallyAdded).toBeVisible();
+  it('Test Submit with no ISEE', async () => {
+    store.dispatch(setInitiativeId('2333333'));
+    store.dispatch(
+      setGeneralInfo({
+        beneficiaryType: BeneficiaryTypeEnum.PF,
+        beneficiaryKnown: 'false',
+        budget: '8515',
+        beneficiaryBudget: '801',
+        rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+        rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+        startDate: new Date('2022-10-01T00:00:00.000Z'),
+        endDate: new Date('2023-01-31T00:00:00.000Z'),
+        introductionTextIT: 'string',
+        introductionTextEN: 'string',
+        introductionTextFR: 'string',
+        introductionTextDE: 'string',
+        introductionTextSL: 'string',
+        rankingEnabled: 'true',
+      })
+    );
+
+    store.dispatch(
+      saveAutomatedCriteria([
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'GT',
+          value: '18',
+        },
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'EQ',
+          value: '18',
+        },
+      ])
+    );
+
+    const { getByTestId } = render(
+      <Provider store={store}>
+        <AdmissionCriteria
+          action={WIZARD_ACTIONS.SUBMIT}
+          setAction={jest.fn()}
+          currentStep={3}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
+        />
+      </Provider>
+    );
+
+    const criteria = getByTestId('criteria-button-test');
+    const addManually = getByTestId('add-manually-test');
+
+    fireEvent.click(criteria);
+
+    expect(criteria).toBeTruthy();
+
+    fireEvent.click(addManually);
+    const noISEEToat = await waitFor(() => {
+      return screen.getByText(
+        'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorTitle'
+      );
     });
+
+    expect(noISEEToat).toBeInTheDocument();
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 
   it('Test on mapResponse', () => {
