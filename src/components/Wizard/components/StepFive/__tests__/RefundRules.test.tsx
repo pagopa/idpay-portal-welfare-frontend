@@ -1,11 +1,17 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { createStore } from '../../../../../redux/store';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import RefundRules from '../RefundRules';
+import { ThemeProvider } from '@mui/system';
+import { theme } from '@pagopa/mui-italia';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
 import React from 'react';
-import { renderWithProviders } from '../../../../../utils/test-utils';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router';
+import { AccumulatedTypeEnum } from '../../../../../api/generated/initiative/AccumulatedAmountDTO';
 import { saveRefundRule, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
+import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithProviders } from '../../../../../utils/test-utils';
+import RefundRules from '../RefundRules';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -18,65 +24,49 @@ jest.mock('react-i18next', () => ({
 
 window.scrollTo = jest.fn();
 
-describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
+  const history = injectedHistory ? injectedHistory : createMemoryHistory();
   const setAction = jest.fn();
   const setCurrentStep = jest.fn();
   const setDisableNext = jest.fn();
   const refundRules = {
+    reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
     reimbursmentQuestionGroup: 'true',
+    additionalInfo: 'aaaaaa',
     timeParameter: '',
-    accumulatedAmount: 'THRESHOLD_REACHED',
+    accumulatedAmount: '',
+  };
+
+  const refundRulesEmpty = {
+    reimbursmentQuestionGroup: '',
+    timeParameter: '',
+    accumulatedAmount: '',
     additionalInfo: '',
     reimbursementThreshold: '',
   };
 
-  test('should display the fifth step component with action submit', async () => {
-    renderWithProviders(
-      <RefundRules
-        action={WIZARD_ACTIONS.SUBMIT}
-        setAction={setAction}
-        currentStep={4}
-        setCurrentStep={setCurrentStep}
-        setDisableNext={setDisableNext}
-      />
-    );
-  });
-
-  it('should display the fifth step component with action draft', async () => {
-    renderWithProviders(
-      <RefundRules
-        action={WIZARD_ACTIONS.DRAFT}
-        setAction={setAction}
-        currentStep={4}
-        setCurrentStep={setCurrentStep}
-        setDisableNext={setDisableNext}
-      />
-    );
-  });
-
   test('test Form input onChange with accumulatedAmount ture', async () => {
-    renderWithProviders(
-      <RefundRules
-        action={WIZARD_ACTIONS.BACK}
-        setAction={setAction}
-        currentStep={4}
-        setCurrentStep={setCurrentStep}
-        setDisableNext={setDisableNext}
-      />
+    store.dispatch(saveRefundRule(refundRules));
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <RefundRules
+              action={WIZARD_ACTIONS.DRAFT}
+              setAction={setAction}
+              currentStep={4}
+              setCurrentStep={setCurrentStep}
+              setDisableNext={setDisableNext}
+            />
+          </Router>
+        </ThemeProvider>
+      </Provider>
     );
 
     const reimbursmentQstGroup = screen.getByTestId('accumulatedAmount-radio-test');
     fireEvent.click(reimbursmentQstGroup);
-
-    const accumulatedAmount = screen.getByTestId('accumulatedAmount-test');
-
-    fireEvent.click(accumulatedAmount);
-    fireEvent.change(accumulatedAmount, {
-      target: { value: 'THRESHOLD_REACHED' },
-    });
-
-    expect(accumulatedAmount).toBeInTheDocument();
 
     const additionalInfo = screen.getByTestId('additionalInfo-test') as HTMLInputElement;
 
@@ -84,18 +74,6 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     expect(additionalInfo.value).toBe('info');
 
     expect(additionalInfo).toBeInTheDocument();
-  });
-
-  test('test Form input onChange with timeParameter ture', async () => {
-    renderWithProviders(
-      <RefundRules
-        action={WIZARD_ACTIONS.BACK}
-        setAction={setAction}
-        currentStep={4}
-        setCurrentStep={setCurrentStep}
-        setDisableNext={setDisableNext}
-      />
-    );
 
     const timeParam = screen.getByTestId('timeParameter-radio-test');
     fireEvent.click(timeParam);
@@ -108,10 +86,31 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
     });
 
     expect(timeParamSelect).toBeInTheDocument();
+
+    fireEvent.click(reimbursmentQstGroup);
+
+    const accumulatedAmount = screen.getByTestId('accumulatedAmount-test');
+
+    fireEvent.click(accumulatedAmount);
+    fireEvent.change(accumulatedAmount, {
+      target: { value: 'THRESHOLD_REACHED' },
+    });
+
+    expect(accumulatedAmount).toBeInTheDocument();
+
+    const reimbursementThreshold = screen.getByTestId('reimbursementThreshold-test');
+    fireEvent.change(reimbursementThreshold, { target: { value: '1000' } });
+
+    const draftToast = await waitFor(() => {
+      return screen.getByText('components.wizard.common.draftSaved');
+    });
+    expect(draftToast).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 
-  test('test reimbursmentThreshold onChange', () => {
-    store.dispatch(saveRefundRule(refundRules));
+  test('test reimbursmentThreshold onChange', async () => {
+    store.dispatch(saveRefundRule(refundRulesEmpty));
     store.dispatch(setInitiativeId(mockedInitiativeId));
     renderWithProviders(
       <RefundRules
@@ -125,14 +124,12 @@ describe('<RefundRules />', (injectedStore?: ReturnType<typeof createStore>) => 
 
     const reimbursmentQstGroup = screen.getByTestId('accumulatedAmount-radio-test');
     fireEvent.click(reimbursmentQstGroup);
-
     const accumulatedAmount = screen.getByTestId('accumulatedAmount-test');
+
     fireEvent.click(accumulatedAmount);
     fireEvent.change(accumulatedAmount, {
       target: { value: 'THRESHOLD_REACHED' },
     });
-
-    const reimbursementThreshold = screen.getByTestId('reimbursementThreshold-test');
-    fireEvent.change(reimbursementThreshold, { target: { value: '1000' } });
+    expect(accumulatedAmount).toBeInTheDocument();
   });
 });
