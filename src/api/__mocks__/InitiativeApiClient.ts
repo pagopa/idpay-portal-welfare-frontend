@@ -31,6 +31,8 @@ import { LogoDTO } from '../generated/initiative/LogoDTO';
 import { mockedFile } from '../../services/__mocks__/groupService';
 import { CsvDTO } from '../generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardingRankingsDTO';
+import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
+import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -154,4 +156,7 @@ export const InitiativeApiMocked = {
     new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
 
   notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
+
+  getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
+    new Promise((resolve) => resolve(mockedMccCodes)),
 };

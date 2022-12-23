@@ -52,29 +52,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
     };
   };
 
-  test('should render correctly the MCCItem component', async () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <MCCItem
-          title={'title'}
-          code={'MCC'}
-          handleShopListItemRemoved={mockedFn}
-          action={WIZARD_ACTIONS.SUBMIT}
-          shopRulesToSubmit={shopRulesToSubmit}
-          setShopRulesToSubmit={jest.fn()}
-          data={mccFilter}
-          setData={setData}
-        />
-      </Provider>
-    );
-
-    const deletebtn = getByTestId('delete-button-test');
-
-    fireEvent.click(deletebtn);
-    expect(mockedFn.mock.calls.length).toEqual(1);
-  });
-
-  test('should render correctly the MCCItem component', async () => {
+  test('should render correctly the MCCItem component with action DRAFT', async () => {
     render(
       <Provider store={store}>
         <MCCItem
@@ -106,22 +84,34 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
     );
 
     const selectMerchant = screen.getByTestId('merchantSelect-test') as HTMLSelectElement;
+
+    fireEvent.click(selectMerchant);
     fireEvent.change(selectMerchant, { target: { value: 'true' } });
     expect(selectMerchant).toBeDefined();
+
     expect(setData).toHaveBeenCalled();
+
+    const deletebtn = screen.getByTestId('delete-button-test');
+
+    fireEvent.click(deletebtn);
+    expect(mockedFn.mock.calls.length).toEqual(1);
   });
 
-  test('mc Codes to be defined', async () => {
+  test('mcc Codes to be defined', async () => {
     const { mccCodesTextArea, selectMerchant } = setup();
 
-    const user = userEvent.setup();
+    fireEvent.change(mccCodesTextArea, { target: { value: '0744' } });
+    expect(mccCodesTextArea.value).toBe('0744');
 
-    await user.type(screen.getByLabelText(/components.wizard.stepFour.form.mccCodes/i), '0744');
-    expect(mccCodesTextArea).toBeDefined();
-
-    //await user.selectOptions(screen.getByTestId('merchantSelect-test'), 'true');
+    fireEvent.focus(selectMerchant);
+    fireEvent.blur(selectMerchant);
     fireEvent.change(selectMerchant, { target: { value: 'true' } });
+    expect(selectMerchant.value).toBe('true');
+
+    fireEvent.focus(selectMerchant);
+    fireEvent.blur(selectMerchant);
     fireEvent.change(selectMerchant, { target: { value: 'false' } });
+    expect(selectMerchant.value).toBe('false');
 
     expect(setData).toHaveBeenCalled();
     expect(selectMerchant).toBeDefined();
