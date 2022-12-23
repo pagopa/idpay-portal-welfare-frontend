@@ -4,23 +4,22 @@ import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
   {
+    code: 'ISEE',
+    authority: 'INPS',
+    operator: 'EQ',
+    checked: false,
+  },
+  {
     code: 'BIRTHDATE',
     authority: 'AUTH1',
-    field: 'year',
+    field: 'Year',
     operator: 'EQ',
     checked: false,
   },
   {
     code: 'RESIDENCE',
     authority: 'AUTH2',
-    field: 'city',
-    operator: 'EQ',
-    checked: false,
-  },
-  {
-    code: 'ISEE',
-    field: 'city',
-    authority: 'INPS',
+    field: 'City',
     operator: 'EQ',
     checked: false,
   },
