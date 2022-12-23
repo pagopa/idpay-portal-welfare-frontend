@@ -1,9 +1,10 @@
 import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
 import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
 // import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
-import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
+import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
+import { mockedFile } from '../../services/__mocks__/groupService';
 import {
-  mockedExportsPaged,
+  mockedExportsPagedResponse,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
   mockedGetRankingFileDownload,
@@ -12,27 +13,26 @@ import {
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedNotificationReward,
-  mockedOnBoardingStatus,
+  mockedOnBoardingStatusResponse
 } from '../../services/__mocks__/initiativeService';
-import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
+import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
+import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
 import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
-import { InitiativeRefundRuleDTO } from '../generated/initiative/InitiativeRefundRuleDTO';
+import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
+import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
+import { CsvDTO } from '../generated/initiative/CsvDTO';
 import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
 import { InitiativeGeneralDTO } from '../generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRefundRuleDTO } from '../generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeRewardAndTrxRulesDTO } from '../generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { InitiativeStatisticsDTO } from '../generated/initiative/InitiativeStatisticsDTO';
-import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
-import { SasToken } from '../generated/initiative/SasToken';
-import { OnboardingDTO } from '../generated/initiative/OnboardingDTO';
-import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
-import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
-import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../generated/initiative/LogoDTO';
-import { mockedFile } from '../../services/__mocks__/groupService';
-import { CsvDTO } from '../generated/initiative/CsvDTO';
+import { OnboardingDTO } from '../generated/initiative/OnboardingDTO';
 import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardingRankingsDTO';
-import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
-import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
+import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
+import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
+import { SasToken } from '../generated/initiative/SasToken';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -116,7 +116,7 @@ export const InitiativeApiMocked = {
     _notificationDateTo: string | undefined,
     _status: string | undefined,
     _sort: string | undefined
-  ): Promise<PageRewardExportsDTO> => new Promise((resolve) => resolve(mockedExportsPaged)),
+  ): Promise<PageRewardExportsDTO> => new Promise((resolve) => resolve(mockedExportsPagedResponse)),
 
   getOnboardingStatus: async (
     _id: string,
@@ -124,7 +124,7 @@ export const InitiativeApiMocked = {
     _notificationDateFrom: string | undefined,
     _notificationDateTo: string | undefined,
     _status: string | undefined
-  ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatus)),
+  ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatusResponse)),
 
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),
