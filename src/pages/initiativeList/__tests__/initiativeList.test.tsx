@@ -2,14 +2,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import InitiativeList from '../InitiativeList';
 import React from 'react';
 import { store } from '../../../redux/store';
-import { getInitativeSummary } from '../../../services/intitativeService';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { Provider } from 'react-redux';
 import { theme } from '@pagopa/mui-italia';
 import { Router } from 'react-router';
 import { createMemoryHistory } from 'history';
 import { ThemeProvider } from '@mui/system';
-import { setStatus } from '../../../redux/slices/initiativeSlice';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -100,7 +98,7 @@ describe('<InitiativeList />', (injectedHistory?: ReturnType<typeof createMemory
     fireEvent.click(deleteBtn);
   });
 
-  test('Test render InitiativeList component with create permission', async () => {
+  test('Test InitiativeList with create permission and open/close menu action', async () => {
     store.dispatch(
       setPermissionsList([
         { name: 'createInitiative', description: 'description', mode: 'enabled' },
@@ -126,40 +124,6 @@ describe('<InitiativeList />', (injectedHistory?: ReturnType<typeof createMemory
     const searchInitiative = screen.getByTestId('search-initiative-test') as HTMLInputElement;
     fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
     expect(searchInitiative.value).toBe('Fish');
-    fireEvent.change(searchInitiative, { target: { value: '' } });
-    expect(searchInitiative.value).toBe('');
-  });
-
-  test('Test FilterList of InitiativeList', async () => {
-    render(
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <Router history={history}>
-            <InitiativeList />
-          </Router>
-        </ThemeProvider>
-      </Provider>
-    );
-
-    const searchInitiative = screen.getByTestId('search-initiative-test') as HTMLInputElement;
-    fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
-    expect(searchInitiative.value).toBe('Fish');
-  });
-
-  test('Test Open/Close Menu of initiative list item', async () => {
-    store.dispatch(setStatus('APPROVED'));
-    render(
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <Router history={history}>
-            <InitiativeList />
-          </Router>
-        </ThemeProvider>
-      </Provider>
-    );
-
-    const searchInitiative = screen.getByTestId('search-initiative-test') as HTMLInputElement;
-    fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
 
     const menuButton = await waitFor(() => {
       return screen.getAllByTestId('menu-open-test');
@@ -178,5 +142,32 @@ describe('<InitiativeList />', (injectedHistory?: ReturnType<typeof createMemory
       keyCode: 27,
       charCode: 27,
     });
+
+    const sortByName = screen.getByText('pages.initiativeList.tableColumns.initiativeName');
+    fireEvent.click(sortByName);
+
+    const initiativeBtn = screen.getAllByTestId('initiative-btn-test');
+    fireEvent.click(initiativeBtn[0]);
+
+    fireEvent.change(searchInitiative, { target: { value: '' } });
+    expect(searchInitiative.value).toBe('');
+  });
+
+  test('Test render InitiativeList component with review permission', async () => {
+    store.dispatch(
+      setPermissionsList([
+        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
+      ])
+    );
+
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <InitiativeList />
+          </Router>
+        </ThemeProvider>
+      </Provider>
+    );
   });
 });

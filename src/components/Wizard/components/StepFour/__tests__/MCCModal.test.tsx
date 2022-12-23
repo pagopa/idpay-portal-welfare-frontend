@@ -1,11 +1,8 @@
 /* eslint-disable react/jsx-no-bind */
-import { SetStateAction } from 'react';
-import { MccCodesModel } from '../../../../../model/MccCodes';
-import MCCModal from '../MCCModal';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { renderWithProviders } from '../../../../../utils/test-utils';
-import { screen, waitFor, fireEvent } from '@testing-library/react';
-import Search from '@mui/icons-material/Search';
+import MCCModal from '../MCCModal';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -23,7 +20,11 @@ describe('<MCCModal />', () => {
       <MCCModal
         openModalMcc={true}
         handleCloseModalMcc={handleCloseModalMcc}
-        mccCodesList={[{ code: 'code', description: 'description', checked: true }]}
+        mccCodesList={[
+          { code: '0742', description: 'description', checked: true },
+          { code: '0743', description: 'description2', checked: true },
+          { code: '0744', description: 'description2', checked: false },
+        ]}
         setMccCodesList={setMccCodesList}
         setFieldValue={setFieldValue}
         handleMccCodeCheckedUpdate={handleMccCodeCheckedUpdate}
@@ -36,9 +37,6 @@ describe('<MCCModal />', () => {
     const fade = document.querySelector('[data-testid="mcc-fade"]') as HTMLElement;
     expect(fade).toBeInTheDocument();
 
-    const closeBtn = screen.getByTestId('close-modal-test') as HTMLButtonElement;
-    fireEvent.click(closeBtn);
-
     const addBtn = screen.getByTestId('add-button-test') as HTMLButtonElement;
     fireEvent.click(addBtn);
 
@@ -46,8 +44,11 @@ describe('<MCCModal />', () => {
     fireEvent.click(selectCodes);
 
     const serachCode = screen.getByTestId('search-code-description-test') as HTMLInputElement;
-    fireEvent.change(serachCode, { target: { value: '00000' } });
-    expect(serachCode.value).toBe('00000');
+    fireEvent.change(serachCode, { target: { value: '0744' } });
+    expect(serachCode.value).toBe('0744');
+
+    const closeBtn = screen.getByTestId('close-modal-test') as HTMLButtonElement;
+    fireEvent.click(closeBtn);
   });
 
   test('should render correctly the MCCModal component', async () => {
@@ -56,8 +57,9 @@ describe('<MCCModal />', () => {
         openModalMcc={true}
         handleCloseModalMcc={handleCloseModalMcc}
         mccCodesList={[
-          { code: 'code', description: 'description', checked: false },
-          { code: 'code2', description: 'description2', checked: false },
+          { code: '0742', description: 'description', checked: true },
+          { code: '0743', description: 'description2', checked: true },
+          { code: '0744', description: 'description2', checked: false },
         ]}
         setMccCodesList={setMccCodesList}
         setFieldValue={setFieldValue}
@@ -69,7 +71,7 @@ describe('<MCCModal />', () => {
     const firstCheckBox = checkBoxMccCodes[0].querySelector('input') as HTMLInputElement;
 
     expect(firstCheckBox).toBeInTheDocument();
-    expect(firstCheckBox.checked).toEqual(false);
+    expect(firstCheckBox.checked).toEqual(true);
     fireEvent.click(firstCheckBox);
   });
 
@@ -79,8 +81,9 @@ describe('<MCCModal />', () => {
         openModalMcc={false}
         handleCloseModalMcc={handleCloseModalMcc}
         mccCodesList={[
-          { code: 'code', description: 'description', checked: false },
-          { code: 'code2', description: 'description2', checked: false },
+          { code: '0742', description: 'description', checked: true },
+          { code: '0743', description: 'description2', checked: true },
+          { code: '0744', description: 'description2', checked: false },
         ]}
         setMccCodesList={setMccCodesList}
         setFieldValue={setFieldValue}

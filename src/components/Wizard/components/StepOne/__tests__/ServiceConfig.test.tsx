@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
@@ -20,6 +20,8 @@ beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
+
+afterEach(cleanup);
 
 describe('<ServiceConfig />', () => {
   const handleOpenExitModal = jest.fn();
@@ -129,5 +131,18 @@ describe('<ServiceConfig />', () => {
 
     const addChannel = screen.getByTestId('add-channel-test') as HTMLButtonElement;
     fireEvent.click(addChannel);
+  });
+
+  test('test submit wizard', () => {
+
+    renderWithProviders(
+      <ServiceConfig
+        action={WIZARD_ACTIONS.SUBMIT}
+        setAction={setAction}
+        currentStep={currentStep}
+        setCurrentStep={setCurrentStep}
+        setDisabledNext={setDisabledNext}
+      />
+    );
   });
 });

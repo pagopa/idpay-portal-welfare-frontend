@@ -345,7 +345,7 @@ export const mockedNotificationReward = {
       contentLength: 0,
       eTag: 'string',
       elabDate: new Date(),
-      errorsSize: 0,
+      errorsSize: 1,
       exportIds: ['string'],
       feedbackDate: new Date(),
       filePath: 'string',
@@ -372,6 +372,41 @@ export const mockedInitiativeStatistics = {
   lastUpdatedDateTime: new Date(),
 
   onboardedCitizenCount: 2,
+};
+
+export const mockedGetDispFileError = {
+  data: 'string',
+};
+
+export const mockedGetRewardFileDownload = {
+  sas: 'string',
+};
+
+export const mockedGetRankingFileDownload = {
+  sas: 'string',
+};
+
+export const mockedGetIniOnboardingRankingStatusPaged = {
+  content: [
+    {
+      beneficiary: 'string',
+      criteriaConsensusTimestamp: new Date(),
+      rankingValue: 0,
+      ranking: 0,
+      beneficiaryRankingStatus: 'string',
+    },
+  ],
+  pageNumber: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
+  rankingStatus: 'string',
+  rankingPublishedTimestamp: new Date(),
+  rankingGeneratedTimestamp: new Date(),
+  totalEligibleOk: 0,
+  totalEligibleKo: 0,
+  totalOnboardingKo: 0,
+  rankingFilePath: 'string',
 };
 
 export const mockedExportsPaged = {
