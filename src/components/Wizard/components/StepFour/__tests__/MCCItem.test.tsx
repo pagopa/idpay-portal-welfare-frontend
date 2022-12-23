@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+// import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
@@ -82,14 +82,6 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
         setData={setData}
       />
     );
-
-    const selectMerchant = screen.getByTestId('merchantSelect-test') as HTMLSelectElement;
-
-    fireEvent.click(selectMerchant);
-    fireEvent.change(selectMerchant, { target: { value: 'true' } });
-    expect(selectMerchant).toBeDefined();
-
-    expect(setData).toHaveBeenCalled();
 
     const deletebtn = screen.getByTestId('delete-button-test');
 

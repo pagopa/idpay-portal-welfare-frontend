@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-bind */
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
@@ -89,23 +89,6 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     );
   });
 
-  // test('should render correctly the ShopRules component action SUMBIT', async () => {
-  //   store.dispatch(setInitiativeId(mockedInitiativeId));
-  //   render(
-  //     <Provider store={store}>
-  //       <Router history={history}>
-  //         <ShopRules
-  //           action={WIZARD_ACTIONS.SUBMIT}
-  //           setAction={setAction}
-  //           currentStep={3}
-  //           setCurrentStep={setCurrentStep(3)}
-  //           setDisabledNext={setDisabledNext}
-  //         />
-  //       </Router>
-  //     </Provider>
-  //   );
-  // });
-
   test('should render correctly the ShopRules component action DRAFT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
     render(
@@ -121,5 +104,12 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
         </Router>
       </Provider>
     );
+
+    const toast = await waitFor(() => {
+      return screen.getByText(/components.wizard.common.draftSaved/);
+    });
+    expect(toast).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 });
