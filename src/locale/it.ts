@@ -347,7 +347,7 @@ export default {
       publishModal: {
         title: 'Pubblica la graduatoria',
         subtitle:
-          'Se pubblichi la graduatoria, l’iniziativa avrà inizio e gli aderenti assegnatari riceveranno una notifica in appIO e un SMS con l’esito. L’operazione è irreversibile',
+          'Se pubblichi la graduatoria, l’iniziativa avrà inizio e gli utenti che sono aderenti assegnatari e idonei non assegnatari riceveranno una notifica in appIO e un SMS con l’esito. L’operazione è irreversibile',
         cancelBtn: 'Annulla',
         publishBtn: 'Pubblica',
         alertTitle: 'Ricorda di scaricare il csv della graduatoria',
