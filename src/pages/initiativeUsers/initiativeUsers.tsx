@@ -143,6 +143,7 @@ const InitiativeUsers = () => {
       case 'ELIGIBLE_KO':
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
       case 'INACTIVE':
+      case 'UNSUBSCRIBED':
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
       default:
         return null;
