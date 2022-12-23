@@ -23,13 +23,13 @@ import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
 import {
-  mockedExportsPaged,
+  mockedExportsPagedParam,
   mockedFileName,
   mockedFilePath,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
-  mockedOnBoardingStatus,
+  mockedOnBoardingStatusParam,
   mockedRankingStatus,
   mockedRefundRules,
   mockedServiceInfoData,
@@ -236,12 +236,12 @@ export const getExportsPaged = (
 ): Promise<PageRewardExportsDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getExportsPaged(
-      mockedExportsPaged.id,
-      mockedExportsPaged.page,
-      mockedExportsPaged.notificationDateFrom,
-      mockedExportsPaged.notificationDateTo,
-      mockedExportsPaged.status,
-      mockedExportsPaged.sort
+      mockedExportsPagedParam.id,
+      mockedExportsPagedParam.page,
+      mockedExportsPagedParam.notificationDateFrom,
+      mockedExportsPagedParam.notificationDateTo,
+      mockedExportsPagedParam.status,
+      mockedExportsPagedParam.sort
     );
   }
   return InitiativeApi.getExportsPaged(
@@ -271,11 +271,11 @@ export const getOnboardingStatus = (
 ): Promise<OnboardingDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getOnboardingStatus(
-      mockedOnBoardingStatus.id,
-      mockedOnBoardingStatus.page,
-      mockedOnBoardingStatus.dateFrom,
-      mockedOnBoardingStatus.dateTo,
-      mockedOnBoardingStatus.status
+      mockedOnBoardingStatusParam.id,
+      mockedOnBoardingStatusParam.page,
+      mockedOnBoardingStatusParam.dateFrom,
+      mockedOnBoardingStatusParam.dateTo,
+      mockedOnBoardingStatusParam.status
     );
   }
   return InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then(
@@ -297,9 +297,9 @@ export const getRewardNotificationImportsPaged = (
 ): Promise<PageRewardImportsDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
     return InitiativeApiMocked.getRewardNotificationImportsPaged(
-      mockedExportsPaged.id,
-      mockedExportsPaged.page,
-      mockedExportsPaged.sort
+      mockedExportsPagedParam.id,
+      mockedExportsPagedParam.page,
+      mockedExportsPagedParam.sort
     );
   }
   return InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);

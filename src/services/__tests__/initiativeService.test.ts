@@ -22,7 +22,7 @@ import {
   //   getRewardFileDownload,
   //   getOnboardingStatus,
   //   putDispFileUpload,
-  mockedOnBoardingStatus,
+  mockedOnBoardingStatusParam,
   mockedRankingStatus,
 } from '../__mocks__/initiativeService';
 
@@ -63,7 +63,7 @@ import {
 } from '../__mocks__/admissionCriteriaService';
 
 import {
-  mockedExportsPaged,
+  mockedExportsPagedParam,
   mockedFileName,
   mockedFilePath,
   mockedInitiativeBeneficiaryRuleBody,
@@ -242,18 +242,18 @@ test('test fetch admission criteria mocked Admission', async () => {
 
 test('get Exports Paged', async () => {
   await getExportsPaged(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.notificationDateFrom,
-    mockedExportsPaged.notificationDateTo,
-    mockedExportsPaged.status
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.notificationDateFrom,
+    mockedExportsPagedParam.notificationDateTo,
+    mockedExportsPagedParam.status
   );
   expect(InitiativeApi.getExportsPaged).not.toHaveBeenCalledWith(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.notificationDateFrom,
-    mockedExportsPaged.notificationDateTo,
-    mockedExportsPaged.status
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.notificationDateFrom,
+    mockedExportsPagedParam.notificationDateTo,
+    mockedExportsPagedParam.status
   );
 });
 
@@ -267,19 +267,19 @@ test('get reward file download', async () => {
 
 test('get Onboarding Status', async () => {
   await getOnboardingStatus(
-    mockedOnBoardingStatus.id,
-    mockedOnBoardingStatus.page,
-    mockedOnBoardingStatus.dateFrom,
-    mockedOnBoardingStatus.dateTo,
-    mockedOnBoardingStatus.status,
-    mockedOnBoardingStatus.beneficiary
+    mockedOnBoardingStatusParam.id,
+    mockedOnBoardingStatusParam.page,
+    mockedOnBoardingStatusParam.dateFrom,
+    mockedOnBoardingStatusParam.dateTo,
+    mockedOnBoardingStatusParam.status,
+    mockedOnBoardingStatusParam.beneficiary
   );
   expect(InitiativeApi.getOnboardingStatus).not.toHaveBeenCalledWith(
-    mockedOnBoardingStatus.id,
-    mockedOnBoardingStatus.page,
-    mockedOnBoardingStatus.dateFrom,
-    mockedOnBoardingStatus.dateTo,
-    mockedOnBoardingStatus.status
+    mockedOnBoardingStatusParam.id,
+    mockedOnBoardingStatusParam.page,
+    mockedOnBoardingStatusParam.dateFrom,
+    mockedOnBoardingStatusParam.dateTo,
+    mockedOnBoardingStatusParam.status
   );
 });
 
@@ -294,14 +294,14 @@ test('put Disp File Upload', async () => {
 
 test('get reward notification imports paged', async () => {
   await getRewardNotificationImportsPaged(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.sort
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.sort
   );
   expect(InitiativeApi.getRewardNotificationImportsPaged).not.toHaveBeenCalledWith(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.sort
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.sort
   );
 });
 
