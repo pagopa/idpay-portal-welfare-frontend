@@ -1,58 +1,50 @@
 /* eslint-disable react/jsx-no-bind */
-import {
-  fireEvent,
-  render,
-} from '@testing-library/react';
-import { SetStateAction } from 'react';
+import { fireEvent, render } from '@testing-library/react';
+import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { DaysOfWeekInterval } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
 import TransactionTimeItem from '../TransactionTimeItem';
-import React from 'react';
+import { daysOfWeekIntervals, shopRulesToSubmit } from './ShopRules.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+window.scrollTo = jest.fn();
+
 describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  const mockedHandleShopListItemRemoved = jest.fn();
+  const data = [
+    {
+      daysOfWeek: 'MONDAY',
+      startTime: '00:00',
+      endTime: '23:59',
+    },
+  ];
 
   test('should render correctly the TransactionTimeItem component', async () => {
     await act(async () => {
-      const { debug, getByTestId, getByText } = render(
+      const { getByTestId, getByText } = render(
         <Provider store={store}>
           <TransactionTimeItem
             key={0}
             title={'title'}
-            code={'code'}
+            code={'DAYHOURSWEEK'}
             handleShopListItemRemoved={undefined}
             action={WIZARD_ACTIONS.DRAFT}
-            shopRulesToSubmit={[]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={undefined}
-            setData={function (
-              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
-            ): void {
-              //
-            }}
+            shopRulesToSubmit={shopRulesToSubmit}
+            setShopRulesToSubmit={jest.fn()}
+            data={data}
+            setData={jest.fn()}
           />
         </Provider>
       );
-      //debug();
-      const itemMaxTimeInput = getByTestId('item-maxTime') as HTMLElement;
+
+      const itemMaxTimeInput = getByTestId('item-maxTime') as HTMLInputElement;
       const addIconBtn = getByText(
         'components.wizard.stepFour.form.addTransactionTimeItem'
       ) as HTMLButtonElement;
@@ -70,41 +62,19 @@ describe('<TransactionTimeItem />', (injectedStore?: ReturnType<typeof createSto
   });
 
   it('test on handleSubmit', async () => {
-    const daysOfWeek: Array<DaysOfWeekInterval> = [
-      { daysOfWeek: 'MONDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'TUESDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'THURSDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'WEDNESDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'FRIDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'SATURDAY', startTime: '20112070', endTime: '20122070' },
-      { daysOfWeek: 'SUNDAY', startTime: '20112070', endTime: '20122070' },
-    ];
-    const mockedHandleShopListItemRemoved = jest.fn();
-
     await act(async () => {
       const { getByTestId, getAllByTestId, debug } = render(
         <Provider store={store}>
           <TransactionTimeItem
-            key={1}
+            key={0}
             title={'title'}
-            code={'code'}
+            code={'DAYHOURSWEEK'}
             handleShopListItemRemoved={mockedHandleShopListItemRemoved}
             action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[
-              { code: 'code', dispatched: false },
-              { code: 'code', dispatched: true },
-            ]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={daysOfWeek}
-            setData={function (
-              _value: SetStateAction<Array<DaysOfWeekInterval> | undefined>
-            ): void {
-              //
-            }}
+            shopRulesToSubmit={shopRulesToSubmit}
+            setShopRulesToSubmit={jest.fn()}
+            data={daysOfWeekIntervals}
+            setData={jest.fn()}
           />
         </Provider>
       );

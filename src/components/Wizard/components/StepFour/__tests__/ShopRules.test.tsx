@@ -11,13 +11,12 @@ import {
   saveDaysOfWeekIntervals,
   saveMccFilter,
   saveRewardLimits,
+  saveRewardRule,
   saveThreshold,
   saveTrxCount,
-  setInitiative,
   setInitiativeId,
 } from '../../../../../redux/slices/initiativeSlice';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
-import { mockedInitiative } from '../../../../../model/__tests__/Initiative.test';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -31,47 +30,81 @@ beforeEach(() => {
 afterEach(cleanup);
 window.scrollTo = jest.fn();
 
+export const shopRulesToSubmit = [
+  { code: 'PRCREC', dispatched: false },
+  { code: 'THRESHOLD', dispatched: false },
+  { code: 'MCC', dispatched: false },
+  { code: 'TRXCOUNT', dispatched: false },
+  { code: 'REWARDLIMIT', dispatched: false },
+  { code: 'DAYHOURSWEEK', dispatched: false },
+];
+
+export const trxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+export const threshold = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+export const mccFilter = { allowedList: true, values: ['0742', '0743'] };
+export const rewardLimits = [
+  { frequency: 'DAILY', rewardLimit: 2 },
+  { frequency: 'MONTHLY', rewardLimit: 2 },
+];
+export const daysOfWeekIntervals = [
+  {
+    daysOfWeek: 'MONDAY',
+    startTime: '00:00',
+    endTime: '23:59',
+  },
+  {
+    daysOfWeek: 'THUESDAY',
+    startTime: '00:00',
+    endTime: '23:59',
+  },
+];
+export const perRec = { _type: 'rewardValue', rewardValue: 2 };
+
 describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
   const setAction = jest.fn();
   const setCurrentStep = jest.fn();
   const setDisabledNext = jest.fn();
-  const trxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
-  const threshold = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
-  const mccFilter = { allowedList: true, values: ['0742', '0743'] };
-  const rewardLimits = [{ frequency: 'DAILY', rewardLimit: 2 }];
-  const daysOfWeekIntervals = [
-    {
-      daysOfWeek: 'MONDAY',
-      startTime: '00:00',
-      endTime: '23:59',
-    },
-  ];
 
   test('should render correctly the ShopRules component action SUMBIT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
+    store.dispatch(saveRewardRule(perRec));
     store.dispatch(saveTrxCount(trxCount));
     store.dispatch(saveThreshold(threshold));
     store.dispatch(saveMccFilter(mccFilter));
     store.dispatch(saveRewardLimits(rewardLimits));
     store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
-
     render(
       <Provider store={store}>
         <Router history={history}>
           <ShopRules
             action={WIZARD_ACTIONS.SUBMIT}
             setAction={setAction}
-            currentStep={0}
+            currentStep={3}
             setCurrentStep={setCurrentStep(3)}
             setDisabledNext={setDisabledNext}
           />
         </Router>
       </Provider>
     );
-
-    // await waitFor(() => expect(screen.getByTestId('criteria-button-test')).not.toBeNull());
   });
+
+  // test('should render correctly the ShopRules component action SUMBIT', async () => {
+  //   store.dispatch(setInitiativeId(mockedInitiativeId));
+  //   render(
+  //     <Provider store={store}>
+  //       <Router history={history}>
+  //         <ShopRules
+  //           action={WIZARD_ACTIONS.SUBMIT}
+  //           setAction={setAction}
+  //           currentStep={3}
+  //           setCurrentStep={setCurrentStep(3)}
+  //           setDisabledNext={setDisabledNext}
+  //         />
+  //       </Router>
+  //     </Provider>
+  //   );
+  // });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
@@ -81,8 +114,8 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
           <ShopRules
             action={WIZARD_ACTIONS.DRAFT}
             setAction={setAction}
-            currentStep={0}
-            setCurrentStep={setCurrentStep}
+            currentStep={3}
+            setCurrentStep={setCurrentStep(3)}
             setDisabledNext={setDisabledNext}
           />
         </Router>

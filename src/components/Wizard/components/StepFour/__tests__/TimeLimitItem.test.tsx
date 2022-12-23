@@ -1,27 +1,23 @@
 /* eslint-disable react/jsx-no-bind */
 import React from 'react';
 import { fireEvent, render } from '@testing-library/react';
-import { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
-import { RewardLimit } from '../../../../../model/Initiative';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TimeLimitItem from '../TimeLimitItem';
-
+import { rewardLimits, shopRulesToSubmit } from './ShopRules.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
+window.scrollTo = jest.fn();
+
 describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  const data = [{ frequency: 'DAILY', rewardLimit: 2 }];
 
   test('should render correctly the TimeLimitItem component', async () => {
     await act(async () => {
@@ -30,19 +26,13 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
           <TimeLimitItem
             key={0}
             title={''}
-            code={''}
+            code={'REWARDLIMIT'}
             handleShopListItemRemoved={undefined}
             action={WIZARD_ACTIONS.DRAFT}
-            shopRulesToSubmit={[{ code: undefined, dispatched: false }]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={undefined}
-            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
-              //
-            }}
+            shopRulesToSubmit={shopRulesToSubmit}
+            setShopRulesToSubmit={jest.fn()}
+            data={rewardLimits}
+            setData={jest.fn()}
           />
         </Provider>
       );
@@ -52,27 +42,18 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
   it('test on handleSubmit', async () => {
     await act(async () => {
       const mockedHandleShopListItemRemoved = jest.fn();
-      const { getByText, getByTestId, getAllByTestId, getByPlaceholderText } = render(
+      const { getByText, getByTestId, getByPlaceholderText } = render(
         <Provider store={store}>
           <TimeLimitItem
             key={1}
-            title={'tittle'}
-            code={'code'}
+            title={'title'}
+            code={'REWARDLIMIT'}
             handleShopListItemRemoved={mockedHandleShopListItemRemoved}
             action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={[
-              { code: 'code', dispatched: true },
-              { code: 'code', dispatched: true },
-            ]}
-            setShopRulesToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-            data={[{ frequency: 'MONTHLY', rewardLimit: 2 }]}
-            setData={function (_value: SetStateAction<Array<RewardLimit> | undefined>): void {
-              //
-            }}
+            shopRulesToSubmit={shopRulesToSubmit}
+            setShopRulesToSubmit={jest.fn()}
+            data={data}
+            setData={jest.fn()}
           />
         </Provider>
       );
@@ -81,11 +62,10 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       const addTimeLimitBtn = getByText(
         'components.wizard.stepFour.form.addTimeLimitItem'
       ) as HTMLButtonElement;
-      const selectFrequeny = getByTestId('select frequency') as HTMLSelectElement;
+
       const rewardLimit = getByPlaceholderText(
         /components.wizard.stepFour.form.maxReward/i
       ) as HTMLInputElement;
-      // const removeCircleIcon = getAllByTestId('removeCircleIconLimit') as HTMLElement[];
 
       fireEvent.click(deleteBtn);
       expect(mockedHandleShopListItemRemoved).toHaveBeenCalledTimes(1);
@@ -93,8 +73,11 @@ describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) =
       fireEvent.click(addTimeLimitBtn);
       expect(addTimeLimitBtn).toBeInTheDocument();
 
+      const selectFrequeny = getByTestId('select-frequency-test') as HTMLSelectElement;
+      fireEvent.click(selectFrequeny);
       fireEvent.change(selectFrequeny, { target: { value: 'DAILY' } });
       expect(selectFrequeny).toBeInTheDocument();
+
       fireEvent.change(rewardLimit, { target: { value: 'temp text' } });
       expect(rewardLimit).toBeInTheDocument();
     });

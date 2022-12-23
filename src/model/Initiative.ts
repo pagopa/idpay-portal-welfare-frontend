@@ -127,7 +127,7 @@ export interface Initiative {
     rewardLimits?: Array<RewardLimit>;
     threshold?: Threshold | undefined;
     trxCount?: TrxCount | undefined;
-    daysOfWeekIntervals: Array<DaysOfWeekInterval>;
+    daysOfWeekIntervals?: Array<DaysOfWeekInterval>;
   };
   refundRule: RefundRule;
 }
