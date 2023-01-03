@@ -753,6 +753,7 @@ export default {
     numeric: 'Il campo deve contenere un valore numerico',
     integer: 'Il campo deve contenere un valore intero',
     positive: 'Il campo deve contenere un valore positivo',
+    minOne: 'Il campo deve contenere un valore maggiore o uguale a 1',
     outBudgetPerPerson: 'Il budget a persona deve essere minore del budget totale',
     outJoinFrom: 'La data di inizio adesione non può essere antecedente ad oggi',
     outJoinTo: 'La data di fine adesione deve essere successiva a quella di inizio',
