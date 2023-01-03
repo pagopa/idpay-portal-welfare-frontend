@@ -130,6 +130,7 @@ export default function SideMenu() {
               disableGutters
               elevation={0}
               sx={{ border: 'none', '&:before': { backgroundColor: '#fff' } }}
+              data-testid="accordion-click-test"
             >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}

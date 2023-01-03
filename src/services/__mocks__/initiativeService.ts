@@ -107,12 +107,12 @@ export const getExportsPaged = (
   _status: string | undefined
 ): Promise<PageRewardExportsDTO> =>
   InitiativeApiMocked.getExportsPaged(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.notificationDateFrom,
-    mockedExportsPaged.notificationDateTo,
-    mockedExportsPaged.status,
-    mockedExportsPaged.sort
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.notificationDateFrom,
+    mockedExportsPagedParam.notificationDateTo,
+    mockedExportsPagedParam.status,
+    mockedExportsPagedParam.sort
   );
 
 export const getRewardFileDownload = (_id: string, _filePath: string): Promise<SasToken> =>
@@ -127,11 +127,11 @@ export const getOnboardingStatus = (
   _beneficiary: string | undefined
 ): Promise<OnboardingDTO> =>
   InitiativeApiMocked.getOnboardingStatus(
-    mockedOnBoardingStatus.id,
-    mockedOnBoardingStatus.page,
-    mockedOnBoardingStatus.dateFrom,
-    mockedOnBoardingStatus.dateTo,
-    mockedOnBoardingStatus.status
+    mockedOnBoardingStatusParam.id,
+    mockedOnBoardingStatusParam.page,
+    mockedOnBoardingStatusParam.dateFrom,
+    mockedOnBoardingStatusParam.dateTo,
+    mockedOnBoardingStatusParam.status
   );
 
 export const putDispFileUpload = (_id: string, _filename: string, _file: File): Promise<void> =>
@@ -155,9 +155,9 @@ export const getRewardNotificationImportsPaged = (
   _sort: string
 ): Promise<PageRewardImportsDTO> =>
   InitiativeApiMocked.getRewardNotificationImportsPaged(
-    mockedExportsPaged.id,
-    mockedExportsPaged.page,
-    mockedExportsPaged.sort
+    mockedExportsPagedParam.id,
+    mockedExportsPagedParam.page,
+    mockedExportsPagedParam.sort
   );
 
 export const uploadAndUpdateLogo = (_id: string, _file: File): Promise<LogoDTO> =>
@@ -400,7 +400,7 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
-  rankingStatus: 'string',
+  rankingStatus: StatusEnum.COMPLETE,
   rankingPublishedTimestamp: new Date(),
   rankingGeneratedTimestamp: new Date(),
   totalEligibleOk: 0,
@@ -409,7 +409,7 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
   rankingFilePath: 'string',
 };
 
-export const mockedExportsPaged = {
+export const mockedExportsPagedParam = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
   status: 'EXPORTED',
@@ -418,13 +418,52 @@ export const mockedExportsPaged = {
   sort: 'DESC',
 };
 
-export const mockedOnBoardingStatus = {
+export const mockedExportsPagedResponse = {
+  content: [
+    {
+      feedbackDate: new Date(),
+      filePath: 'string',
+      id: 'string',
+      initiativeId: 'string',
+      initiativeName: 'string',
+      notificationDate: new Date(),
+      organizationId: 'string',
+      percentageResulted: 'string',
+      percentageResultedOk: 'string',
+      percentageResults: 'string',
+      rewardsExported: 'string',
+      rewardsNotified: 0,
+      rewardsResulted: 0,
+      rewardsResultedOk: 0,
+      rewardsResults: 'string',
+      status: StatusEnum.COMPLETE,
+    },
+  ],
+  totalElements: 0,
+  totalPages: 0,
+};
+
+export const mockedOnBoardingStatusParam = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
   status: 'EXPORTED',
   dateFrom: '11/11/2022',
   dateTo: '11/11/2022',
   beneficiary: 'MCCGRL01C25M052R',
+};
+
+export const mockedOnBoardingStatusResponse = {
+  content: [
+    {
+      beneficiary: 'string',
+      beneficiaryState: 'string',
+      updateStatusDate: new Date(),
+    },
+  ],
+  pageNo: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
 };
 
 export const mockedFilePath = 'download';
