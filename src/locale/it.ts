@@ -98,6 +98,7 @@ export default {
           details: 'Vedi dettagli',
           start: 'Inizia il {{date}}',
           expiration: ' {{days}} giorni rimanenti',
+          oneDayExpiration: ' {{days}} giorno rimanente',
           closed: 'Terminato',
         },
       },

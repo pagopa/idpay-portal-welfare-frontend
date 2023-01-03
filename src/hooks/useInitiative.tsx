@@ -86,6 +86,7 @@ export const useInitiative = () => {
           dispatch(setInitiativeUpdateDate(response.updateDate));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
+          // console.log('1 ---- ', response.general?.endDate);
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
@@ -223,6 +224,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       dataT.startDate = data.startDate;
     }
     if (typeof data.endDate !== undefined) {
+      // console.log(data.endDate);
       // eslint-disable-next-line functional/immutable-data
       dataT.endDate = data.endDate;
     }

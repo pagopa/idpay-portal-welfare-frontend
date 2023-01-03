@@ -17,6 +17,16 @@ export const parseDate = (d: string) => {
   }
 };
 
+export const parseEndDate = (d: string) => {
+  if (d) {
+    const dStr = new Date(d).toLocaleDateString('en-CA');
+    const date = `${dStr} 23:59:59Z`;
+    return new Date(date);
+  } else {
+    return undefined;
+  }
+};
+
 export const parseDescriptionMap = (values: any) => {
   // eslint-disable-next-line functional/no-let
   let descriptionMap = {};
@@ -65,9 +75,9 @@ export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   budget: Number(values.budget),
   beneficiaryBudget: Number(values.beneficiaryBudget),
   rankingStartDate: parseDate(values.rankingStartDate),
-  rankingEndDate: parseDate(values.rankingEndDate),
+  rankingEndDate: parseEndDate(values.rankingEndDate),
   startDate: parseDate(values.startDate),
-  endDate: parseDate(values.endDate),
+  endDate: parseEndDate(values.endDate),
   descriptionMap: { ...parseDescriptionMap(values) },
   rankingEnabled: values.rankingEnabled === 'true' ? true : false,
 });
