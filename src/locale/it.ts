@@ -408,6 +408,20 @@ export default {
         eligible: 'Idoneo',
       },
     },
+    initiativeUserDetails: {
+      downloadCsvBtn: 'Scarica .csv',
+      initiativeState: 'Stato iniziativa',
+      updatedOn: 'Aggiornato il',
+      availableBalance: 'Saldo disponibile',
+      spendableAmount: 'Importo che il singolo utente può ancora spendere',
+      refundedBalance: 'Saldo rimborsato',
+      refundedAmount: 'Importo già rimborsato al singolo utente',
+      balanceToBeRefunded: 'Saldo da rimborsare',
+      importNotRefundedYet: 'Importo speso dall’utente e non ancora rimborsato',
+      alerts: 'avvisi',
+      paymentMethod: 'Metodi di pagamento associati',
+      iban: 'IBAN associato',
+    },
     initiativeRefunds: {
       title: 'Rimborsi',
       subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
@@ -479,6 +493,7 @@ export default {
     initiativeUsersRanking: 'Utenti/Aderenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
+    initiativeUserDetails: 'Dettaglio nucleo familiare',
   },
   components: {
     wizard: {
