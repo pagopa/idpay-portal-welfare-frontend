@@ -24,6 +24,7 @@ import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
+import { IbanDTO, StatusWallet, WalletDTO } from '../../model/Initiative';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -191,6 +192,13 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
 
+export const getWalletInfo = (_id: string, _cf: string): Promise<WalletDTO> =>
+  InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
+
+export const getIban = (_iban: string): Promise<IbanDTO> => InitiativeApiMocked.getIban(mockedIban);
+
+export const mockedFiscalCode = 'TRNFNC96R02H501I';
+export const mockedIban = 'IT12T1234512345123456789012';
 export const mockedRankingStatus = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
@@ -228,6 +236,30 @@ export const mockedInitiativeSummary = [
     updateDate: new Date('2022-07-28T16:49:46.982'),
   },
 ];
+
+export const mockedWallet = {
+  initiativeId: '62e29002aac2e94cfa3763dd',
+  initiativeName: 'Test wallet',
+  status: StatusWallet.NOT_REFUNDABLE,
+  endDate: new Date('2023-01-04T15:44:53.816Z'),
+  amount: 5,
+  accrued: 10,
+  refunded: 15,
+  lastCounterUpdate: new Date('2023-01-04T15:44:53.816Z'),
+  iban: 'IT12T1234512345123456789012',
+  nInstr: 0,
+};
+
+export const mockedIbanInfo = {
+  iban: 'IT12T1234512345123456789012',
+  checkIbanStatus: 'ok',
+  holderBank: 'Intesa Sanpaolo S.p.A',
+  description: 'descrizione',
+  channel: 'canale',
+  bicCode: 'bic code',
+  queueDate: 'queue Date',
+  checkIbanResponseDate: new Date('2023-01-04T16:38:43.590Z'),
+};
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',

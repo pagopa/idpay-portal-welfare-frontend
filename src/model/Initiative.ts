@@ -108,6 +108,38 @@ export interface RefundRule {
   reimbursementThreshold: string;
 }
 
+export enum StatusWallet {
+  NOT_REFUNDABLE_ONLY_IBAN = 'NOT_REFUNDABLE_ONLY_IBAN',
+  NOT_REFUNDABLE_ONLY_INSTRUMENT = 'NOT_REFUNDABLE_ONLY_INSTRUMENT',
+  REFUNDABLE = 'REFUNDABLE',
+  NOT_REFUNDABLE = 'NOT_REFUNDABLE',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
+export interface WalletDTO {
+  initiativeId: string | undefined;
+  initiativeName: string | undefined;
+  status: StatusWallet | undefined;
+  endDate: Date | undefined;
+  amount: number | undefined;
+  accrued: number | undefined;
+  refunded: number | undefined;
+  lastCounterUpdate: Date | undefined;
+  iban: string | undefined;
+  nInstr: number | undefined;
+}
+
+export interface IbanDTO {
+  iban: string | undefined;
+  checkIbanStatus: string | undefined;
+  holderBank: string | undefined;
+  description: string | undefined;
+  channel: string | undefined;
+  bicCode: string | undefined;
+  queueDate: string | undefined;
+  checkIbanResponseDate: Date | undefined;
+}
+
 export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;

@@ -12,15 +12,88 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ROUTES, { BASE_ROUTE } from '../../routes';
+import { getIban, getWalletInfo } from '../../services/__mocks__/initiativeService';
 
 const InitiativeUserDetails = () => {
   const history = useHistory();
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = useState(true);
+  const [amount, setAmount] = useState(0);
+  const [accrued, setAccrued] = useState(0);
+  const [refunded, setRefunded] = useState(0);
+  const [iban, setIban] = useState<string | undefined>(undefined);
+  const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
+  const [_holderBank, setHolderBank] = useState('');
+  const [_checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
+  const addError = useErrorDispatcher();
+
+  useEffect(() => {
+    getWalletInfo(id, cf)
+      .then((res) => {
+        if (typeof res.amount === 'number') {
+          setAmount(res.amount);
+        }
+        if (typeof res.accrued === 'number') {
+          setAccrued(res.accrued);
+        }
+        if (typeof res.refunded === 'number') {
+          setRefunded(res.refunded);
+        }
+        if (typeof res.lastCounterUpdate === 'object') {
+          setLastCounterUpdate(res.lastCounterUpdate);
+        }
+        if (typeof res.iban === 'string') {
+          setIban(res.iban);
+        }
+      })
+      .catch((error) =>
+        addError({
+          id: 'GET_WALLET_INFO',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting wallet info',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        })
+      );
+  }, []);
+
+  useEffect(() => {
+    if (typeof iban === 'string') {
+      getIban(iban)
+        .then((res) => {
+          if (typeof res.iban === 'string') {
+            setIban(iban);
+          }
+          if (typeof res.holderBank === 'string') {
+            setHolderBank(res.holderBank);
+          }
+          if (typeof res.checkIbanResponseDate === 'object') {
+            setCheckIbanResponseDate(res.checkIbanResponseDate);
+          }
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_WALLET_INFO',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting wallet info',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  }, [iban]);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USER_DETAILS],
@@ -132,7 +205,7 @@ const InitiativeUserDetails = () => {
               </Typography>
             </Box>
             <Box sx={{ display: 'inline-flex', gridArea: 'date', justifyContent: 'start' }}>
-              <Typography variant="body2"> 23 giugno 2022, 15:50</Typography>
+              <Typography variant="body2">{lastCounterUpdate?.toLocaleString('fr-BE')}</Typography>
             </Box>
           </Box>
 
@@ -152,7 +225,7 @@ const InitiativeUserDetails = () => {
                       {t('pages.initiativeUserDetails.availableBalance')}
                     </Typography>
                     <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      500,00 €
+                      {amount}
                     </Typography>
                     <Typography color="text.secondary" variant="body2">
                       {t('pages.initiativeUserDetails.spendableAmount')}
@@ -167,7 +240,7 @@ const InitiativeUserDetails = () => {
                       {t('pages.initiativeUserDetails.refundedBalance')}
                     </Typography>
                     <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      134,56 €
+                      {refunded}
                     </Typography>
                     <Typography color="text.secondary" variant="body2">
                       {t('pages.initiativeUserDetails.refundedAmount')}
@@ -182,7 +255,7 @@ const InitiativeUserDetails = () => {
                       {t('pages.initiativeUserDetails.balanceToBeRefunded')}
                     </Typography>
                     <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      13,67 €
+                      {accrued}
                     </Typography>
                     <Typography color="text.secondary" variant="body2">
                       {t('pages.initiativeUserDetails.importNotRefundedYet')}
