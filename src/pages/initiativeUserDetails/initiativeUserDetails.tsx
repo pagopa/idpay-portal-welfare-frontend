@@ -1,10 +1,14 @@
 import {
   Breadcrumbs,
-  Button,
+  // Button,
   Card,
   CardContent,
   Collapse,
   IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
@@ -15,8 +19,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from 'react';
+import { Alert } from '@mui/lab';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { getIban, getWalletInfo } from '../../services/__mocks__/initiativeService';
+import {
+  getIban,
+  getWalletInfo,
+  getWalletInstrumen,
+} from '../../services/__mocks__/initiativeService';
+import { MockedInstrumentDTO, MockedStatusWallet } from '../../model/Initiative';
 
 const InitiativeUserDetails = () => {
   const history = useHistory();
@@ -26,44 +36,113 @@ const InitiativeUserDetails = () => {
   const [accrued, setAccrued] = useState(0);
   const [refunded, setRefunded] = useState(0);
   const [iban, setIban] = useState<string | undefined>(undefined);
+  const [walletStatus, setWalletStatus] = useState<MockedStatusWallet | undefined>(undefined);
   const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
-  const [_holderBank, setHolderBank] = useState('');
-  const [_checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
+  const [holderBank, setHolderBank] = useState('');
+  const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
+  const [channel, setChannel] = useState<string | undefined>(undefined);
+  const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
   const addError = useErrorDispatcher();
 
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    getWalletInfo(id, cf)
-      .then((res) => {
-        if (typeof res.amount === 'number') {
-          setAmount(res.amount);
-        }
-        if (typeof res.accrued === 'number') {
-          setAccrued(res.accrued);
-        }
-        if (typeof res.refunded === 'number') {
-          setRefunded(res.refunded);
-        }
-        if (typeof res.lastCounterUpdate === 'object') {
-          setLastCounterUpdate(res.lastCounterUpdate);
-        }
-        if (typeof res.iban === 'string') {
-          setIban(res.iban);
-        }
-      })
-      .catch((error) =>
-        addError({
-          id: 'GET_WALLET_INFO',
-          blocking: false,
-          error,
-          techDescription: 'An error occurred getting wallet info',
-          displayableTitle: t('errors.title'),
-          displayableDescription: t('errors.getDataDescription'),
-          toNotify: true,
-          component: 'Toast',
-          showCloseIcon: true,
+    if (typeof id === 'string' && typeof cf === 'string') {
+      getWalletInfo(id, cf)
+        .then((res) => {
+          if (typeof res.amount === 'number') {
+            setAmount(res.amount);
+          }
+          if (typeof res.accrued === 'number') {
+            setAccrued(res.accrued);
+          }
+          if (typeof res.refunded === 'number') {
+            setRefunded(res.refunded);
+          }
+          if (typeof res.lastCounterUpdate === 'object') {
+            setLastCounterUpdate(res.lastCounterUpdate);
+          }
+          if (typeof res.iban === 'string') {
+            setIban(res.iban);
+          }
+          if (typeof res.status === 'string') {
+            setWalletStatus(res.status);
+          }
         })
-      );
+        .catch((error) =>
+          addError({
+            id: 'GET_WALLET_INFO',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting wallet info',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        );
+
+      getWalletInstrumen(id, cf)
+        .then((res) => {
+          const walletInst = res.filter((r) => r.status === 'ACTIVE');
+          setPaymentMethodList([...walletInst]);
+        })
+        .catch((error) =>
+          addError({
+            id: 'GET_WALLET_INSTRUMENT',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting wallet instrument',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        );
+    }
   }, []);
+
+  const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
+
+  const getWalletAlerts = (status: MockedStatusWallet | undefined) => {
+    const alertMissingPaymentMetod = (
+      <Box sx={{ mt: 2 }}>
+        <Alert severity="error">{t('pages.initiativeUserDetails.missingPaymentMethod')}</Alert>
+      </Box>
+    );
+    const alertMissingIban = (
+      <Box sx={{ mt: 2 }}>
+        <Alert severity="error">{t('pages.initiativeUserDetails.missingIban')}</Alert>
+      </Box>
+    );
+
+    const alertUnsubscribed = (
+      <Box sx={{ mt: 2 }}>
+        <Alert severity="error">{t('pages.initiativeUserDetails.unsubscribed')}</Alert>
+      </Box>
+    );
+
+    if (typeof status !== 'undefined') {
+      switch (status) {
+        case MockedStatusWallet.NOT_REFUNDABLE:
+          return (
+            <>
+              {alertMissingPaymentMetod} {alertMissingIban}
+            </>
+          );
+        case MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN:
+          return alertMissingIban;
+        case MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT:
+          return alertMissingPaymentMetod;
+        case MockedStatusWallet.UNSUBSCRIBED:
+          return alertUnsubscribed;
+        default:
+          return null;
+      }
+    }
+    return null;
+  };
 
   useEffect(() => {
     if (typeof iban === 'string') {
@@ -77,6 +156,9 @@ const InitiativeUserDetails = () => {
           }
           if (typeof res.checkIbanResponseDate === 'object') {
             setCheckIbanResponseDate(res.checkIbanResponseDate);
+          }
+          if (typeof res.channel === 'string') {
+            setChannel(res.channel);
           }
         })
         .catch((error) => {
@@ -164,14 +246,14 @@ const InitiativeUserDetails = () => {
               />
             </Box>
             <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-              <Button
+              {/* <Button
                 variant="contained"
                 size="small"
                 onClick={() => console.log('download .csv')}
                 data-testid="download-csv-test"
               >
                 {t('pages.initiativeUserDetails.downloadCsvBtn')}
-              </Button>
+              </Button> */}
             </Box>
           </Box>
           <Box
@@ -267,16 +349,82 @@ const InitiativeUserDetails = () => {
           </Collapse>
         </Box>
         <Box sx={{ gridColumn: 'auto', px: 3 }}>
-          <Box sx={{ px: 3, py: 2, backgroundColor: 'background.paper' }}>
-            <Typography variant="overline">{t('pages.initiativeUserDetails.alerts')}</Typography>
-          </Box>
+          {walletStatus !== MockedStatusWallet.REFUNDABLE && (
+            <Box sx={{ px: 3, py: 2, backgroundColor: 'background.paper' }}>
+              <Typography variant="overline">{t('pages.initiativeUserDetails.alerts')}</Typography>
+              {getWalletAlerts(walletStatus)}
+            </Box>
+          )}
           <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
             <Typography variant="overline">
               {t('pages.initiativeUserDetails.paymentMethod')}
             </Typography>
+            <List>
+              {paymentMethodList.map((p, i) => (
+                <ListItem key={i}>
+                  <ListItemAvatar>
+                    <img src={p.brandLog} width="32px" />
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={getMaskedPan(p.maskedPan)}
+                    secondary={p.activationDate?.toLocaleString('fr-BE')}
+                  />
+                </ListItem>
+              ))}
+            </List>
           </Box>
           <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
             <Typography variant="overline">{t('pages.initiativeUserDetails.iban')}</Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                width: '100%',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                alignItems: 'center',
+              }}
+            >
+              <Typography sx={{ display: 'grid', gridColumn: 'span 12', fontWeight: 600, mt: 3 }}>
+                {iban}
+              </Typography>
+              <Typography
+                sx={{ display: 'grid', gridColumn: 'span 12' }}
+                variant="body2"
+                color="text.secondary"
+              >
+                {holderBank}
+              </Typography>
+              <Typography
+                sx={{ display: 'grid', gridColumn: 'span 4', mt: 2 }}
+                variant="body2"
+                color="text.secondary"
+                textAlign="left"
+              >
+                {t('pages.initiativeUserDetails.updatedOn')}
+              </Typography>
+              <Typography
+                sx={{ display: 'grid', gridColumn: 'span 8', fontWeight: 600, mt: 2 }}
+                variant="body2"
+                textAlign="left"
+              >
+                {checkIbanResponseDate?.toLocaleString('fr-BE')}
+              </Typography>
+
+              <Typography
+                sx={{ display: 'grid', gridColumn: 'span 3', mt: 2 }}
+                variant="body2"
+                color="text.secondary"
+                textAlign="left"
+              >
+                {t('pages.initiativeUserDetails.addedBy')}
+              </Typography>
+              <Typography
+                sx={{ display: 'grid', gridColumn: 'span 9', fontWeight: 600, mt: 2 }}
+                variant="body2"
+                textAlign="left"
+              >
+                {channel}
+              </Typography>
+            </Box>
           </Box>
         </Box>
       </Box>

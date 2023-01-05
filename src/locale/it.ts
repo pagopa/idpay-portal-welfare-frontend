@@ -412,6 +412,7 @@ export default {
       downloadCsvBtn: 'Scarica .csv',
       initiativeState: 'Stato iniziativa',
       updatedOn: 'Aggiornato il',
+      addedBy: 'Agginto da ',
       availableBalance: 'Saldo disponibile',
       spendableAmount: 'Importo che il singolo utente può ancora spendere',
       refundedBalance: 'Saldo rimborsato',
@@ -421,6 +422,9 @@ export default {
       alerts: 'avvisi',
       paymentMethod: 'Metodi di pagamento associati',
       iban: 'IBAN associato',
+      missingPaymentMethod: 'Nessun metodo di pagamento',
+      missingIban: 'Nessun IBAN presente',
+      unsubscribed: 'Utente disiscritto',
     },
     initiativeRefunds: {
       title: 'Rimborsi',

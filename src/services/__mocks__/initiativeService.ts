@@ -24,7 +24,15 @@ import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
-import { IbanDTO, StatusWallet, WalletDTO } from '../../model/Initiative';
+import {
+  MockedIbanDTO,
+  MockedInstrumentDTO,
+  // MockedOperationListDTO,
+  // MockedOperationType,
+  MockedStatusInstrument,
+  MockedStatusWallet,
+  MockedWalletDTO,
+} from '../../model/Initiative';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -192,10 +200,17 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
 
-export const getWalletInfo = (_id: string, _cf: string): Promise<WalletDTO> =>
+export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
   InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
 
-export const getIban = (_iban: string): Promise<IbanDTO> => InitiativeApiMocked.getIban(mockedIban);
+export const getIban = (_iban: string): Promise<MockedIbanDTO> =>
+  InitiativeApiMocked.getIban(mockedIban);
+
+// export const getTimeLine = (_id: string): Promise<MockedOperationListDTO> =>
+//   InitiativeApiMocked.getTimeLine(mockedInitiativeId);
+
+export const getWalletInstrumen = (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
+  InitiativeApiMocked.getWalletInstrumen(mockedInitiativeId, mockedFiscalCode);
 
 export const mockedFiscalCode = 'TRNFNC96R02H501I';
 export const mockedIban = 'IT12T1234512345123456789012';
@@ -240,7 +255,7 @@ export const mockedInitiativeSummary = [
 export const mockedWallet = {
   initiativeId: '62e29002aac2e94cfa3763dd',
   initiativeName: 'Test wallet',
-  status: StatusWallet.NOT_REFUNDABLE,
+  status: MockedStatusWallet.NOT_REFUNDABLE,
   endDate: new Date('2023-01-04T15:44:53.816Z'),
   amount: 5,
   accrued: 10,
@@ -255,11 +270,82 @@ export const mockedIbanInfo = {
   checkIbanStatus: 'ok',
   holderBank: 'Intesa Sanpaolo S.p.A',
   description: 'descrizione',
-  channel: 'canale',
+  channel: 'IO',
   bicCode: 'bic code',
   queueDate: 'queue Date',
   checkIbanResponseDate: new Date('2023-01-04T16:38:43.590Z'),
 };
+
+export const mockedWalletInstrument = [
+  {
+    idWallet: '12345',
+    instrumentId: '1122334455',
+    maskedPan: '1111 2222 3333 4444',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.ACTIVE,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.ACTIVE,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.PENDING_DEACTIVATION_REQUEST,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.PENDING_ENROLLMENT_REQUEST,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+];
+
+// export const mockedOperationList = {
+//   lastUpdate: new Date('"2023-01-05T10:22:28.012Z"'),
+//   operationList: [
+//     {
+//       operationId: '1u1u1u1u1u1u1u',
+//       operationType: MockedOperationType.PAID_REFUND,
+//       operationDate: new Date('2023-01-05T10:22:28.012Z'),
+//       brandLogo: 'Logo',
+//       maskedPan: 'maskedPan',
+//       amount: 345,
+//       circuitType: 'circuito',
+//       iban: '',
+//       channel: '',
+//     },
+//     {
+//       operationId: '2e2e2e2e2e2e2e2',
+//       operationType: MockedOperationType.TRANSACTION,
+//       operationDate: new Date('2023-01-05T10:22:28.012Z'),
+//       brandLogo: 'Logo',
+//       maskedPan: 'maskedPan',
+//       amount: 34,
+//       circuitType: 'circuito',
+//       iban: '',
+//       channel: '',
+//     },
+//   ],
+// };
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',
