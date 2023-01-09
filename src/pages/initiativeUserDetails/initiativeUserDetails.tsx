@@ -20,6 +20,7 @@ import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from 'react';
 import { Alert } from '@mui/lab';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getIban,
@@ -363,7 +364,7 @@ const InitiativeUserDetails = () => {
               {paymentMethodList.map((p, i) => (
                 <ListItem key={i}>
                   <ListItemAvatar>
-                    <img src={p.brandLog} width="32px" />
+                    {p.brandLog ? <img src={p.brandLog} width="32px" /> : <CreditCardIcon />}
                   </ListItemAvatar>
                   <ListItemText
                     primary={getMaskedPan(p.maskedPan)}
