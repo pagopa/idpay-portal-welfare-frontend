@@ -4,7 +4,7 @@ import {
   UnloadEventHandler,
   UserNotifyHandle,
 } from '@pagopa/selfcare-common-frontend';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
@@ -22,11 +22,20 @@ import { usePermissions } from './hooks/usePermissions';
 import Assistance from './pages/assistance/assistance';
 import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativeRefundsOutcome';
 import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
+import TOSWall from './components/TOS/TOSWall';
+import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
+import { TOS } from './pages/tos/TOS';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+    const location = useLocation();
+    const { isTOSAccepted, acceptTOS } = useTOSAgreementLocalStorage();
+
+    if (!isTOSAccepted && location.pathname !== routes.TOS) {
+      return <TOSWall acceptTOS={acceptTOS} detailRoute={routes.TOS} />;
+    }
 
     return (
       <Layout>
@@ -60,6 +69,9 @@ const SecuredRoutes = withLogin(
           </Route>
           <Route path={routes.ASSISTANCE} exact={true}>
             <Assistance />
+          </Route>
+          <Route path={routes.TOS} exact={true}>
+            <TOS />
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />
