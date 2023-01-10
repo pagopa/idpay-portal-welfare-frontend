@@ -11,7 +11,7 @@ interface TOSWallProps {
 const TOSWall = ({ acceptTOS, detailRoute }: TOSWallProps) => {
   const { t } = useTranslation();
   return (
-    <Box width="100%" px={2}>
+    <Box height="100%" width="100%" px={2} sx={{backgroundColor:'#FAFAFA'}}>
       <TOSAgreement
         productName={t('tos.title')}
         description={t('tos.description')}

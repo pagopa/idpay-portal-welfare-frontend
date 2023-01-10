@@ -25,6 +25,7 @@ import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 import TOSWall from './components/TOS/TOSWall';
 import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import { TOS } from './pages/tos/TOS';
+import { TOSLayout } from './components/TOSLayout/TOSLayout';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -34,7 +35,11 @@ const SecuredRoutes = withLogin(
     const { isTOSAccepted, acceptTOS } = useTOSAgreementLocalStorage();
 
     if (!isTOSAccepted && location.pathname !== routes.TOS) {
-      return <TOSWall acceptTOS={acceptTOS} detailRoute={routes.TOS} />;
+      return (
+        <TOSLayout>
+          <TOSWall acceptTOS={acceptTOS} detailRoute={routes.TOS} />
+        </TOSLayout>
+      );
     }
 
     return (
