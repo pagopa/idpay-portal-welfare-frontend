@@ -584,6 +584,11 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
+          apiKeyConnection: {
+            title: 'API Key di connessione',
+            subtitle:
+              'Aggiungi le due chiavi per abilitare la connessione con gli Enti che forniranno le informazioni necessarie alla verifica dei criteri.',
+          },
           form: {
             year: 'Anno',
             age: 'Età',
