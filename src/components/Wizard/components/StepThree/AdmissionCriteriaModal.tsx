@@ -91,7 +91,7 @@ const AdmissionCriteriaModal = ({
     } else {
       return list.map((a) => {
         const lowerCaseTitle = typeof a.fieldLabel === 'string' ? a.fieldLabel.toLowerCase() : '';
-        if (lowerCaseTitle.startsWith(searchKey)) {
+        if (lowerCaseTitle.includes(searchKey)) {
           return (
             <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
               <Box>

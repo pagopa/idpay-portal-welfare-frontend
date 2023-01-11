@@ -152,24 +152,9 @@ const AdmissionCriteria = ({
   const handleCriteriaAdded = () => {
     setOpenModal(false);
     setAvailableCriteria([...criteriaToRender]);
-    const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
-    // eslint-disable-next-line sonarjs/no-identical-functions
-    criteriaToRender.forEach((c) => {
-      if (c.checked === true) {
-        // eslint-disable-next-line functional/no-let
-        let found = false;
-        criteriaToSubmit.forEach((s) => {
-          if (s.code === c.code) {
-            found = true;
-          }
-        });
-        if (!found) {
-          // eslint-disable-next-line functional/immutable-data
-          newCriteriaToSubmit.push({ code: c.code, dispatched: false });
-        }
-      }
-    });
-    setCriteriaToSubmit([...criteriaToSubmit, ...newCriteriaToSubmit]);
+    const criteriaFiltered = criteriaToRender.filter((c) => c.checked === true);
+    const newCriteriaToSubmit = criteriaFiltered.map((c) => ({ code: c.code, dispatched: false }));
+    setCriteriaToSubmit([...newCriteriaToSubmit]);
   };
 
   const handleCriteriaRemoved = (e: any) => {
