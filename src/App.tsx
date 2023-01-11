@@ -25,7 +25,7 @@ import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 import TOSWall from './components/TOS/TOSWall';
 import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import { TOS } from './pages/tos/TOS';
-import { TOSLayout } from './components/TOSLayout/TOSLayout';
+import TOSLayout from './components/TOSLayout/TOSLayout';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {

@@ -12,7 +12,7 @@ type Props = {
   children?: React.ReactNode;
 };
 
-export const TOSLayout = ({ children }: Props) => {
+const TOSLayout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
   const location = useLocation();
@@ -47,3 +47,5 @@ export const TOSLayout = ({ children }: Props) => {
     </Box>
   );
 };
+
+export default TOSLayout;
