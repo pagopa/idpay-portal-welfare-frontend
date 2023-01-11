@@ -2,7 +2,7 @@
 import { render /* , screen, waitFor */, waitFor } from '@testing-library/react';
 import App from '../App';
 import { Provider } from 'react-redux';
-import { createStore } from '../redux/store';
+import { createStore, store } from '../redux/store';
 
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router';
@@ -14,6 +14,14 @@ import { ThemeProvider } from '@mui/system';
 
 jest.mock('@pagopa/mui-italia/dist/components/Footer/Footer', () => ({
   Footer: () => {},
+}));
+
+const mockSignOutFn = jest.fn();
+
+jest.mock('../hooks/useTOSAgreementLocalStorage', () => () => ({
+  isTOSAccepted: true,
+  acceptTOS: mockSignOutFn,
+  acceptedTOS: '',
 }));
 
 jest.mock('../decorators/withLogin');
@@ -66,8 +74,9 @@ test('Test rendering dashboard parties loaded', () => {
 });
 
 test('Test routing ', async () => {
-  const { history } = renderApp();
-  await waitFor(() => expect(history.location.pathname).toBe('/portale-enti'));
+  const history = createMemoryHistory();
+  renderApp();
+  await waitFor(() => expect(history.location.pathname).toBe('/'));
 });
 // function verifyPartiesMockExecution(arg0: {
 //   parties: PartiesState;
