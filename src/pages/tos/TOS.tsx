@@ -17,7 +17,6 @@ export function TOS() {
       const html = getReplacedAssetsPaths(resp?.data.html as string);
       setHtmlString(html);
     }
-
     asyncFetchData(); */
 
     setHtmlString(tosJson.html);
