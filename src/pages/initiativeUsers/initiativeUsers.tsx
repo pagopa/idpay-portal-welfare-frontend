@@ -230,7 +230,7 @@ const InitiativeUsers = () => {
                   .substring(
                     0,
                     searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
+                  )}T23:59:59Z`
               : undefined;
           setFilterByDateTo(searchToStr);
         }

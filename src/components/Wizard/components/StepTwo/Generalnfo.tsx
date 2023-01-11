@@ -119,11 +119,13 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
-      .positive(t('validation.positive')),
+      .positive(t('validation.positive'))
+      .min(1, t('validation.minOne')),
     beneficiaryBudget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
       .positive(t('validation.positive'))
+      .min(1, t('validation.minOne'))
       // eslint-disable-next-line sonarjs/no-identical-functions
       .when('budget', (budget, schema) => {
         if (budget) {
@@ -131,6 +133,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             .typeError(t('validation.numeric'))
             .required(t('validation.required'))
             .positive(t('validation.positive'))
+            .min(1, t('validation.minOne'))
             .max(parseFloat(budget) - 1, t('validation.outBudgetPerPerson'));
         }
         return schema;

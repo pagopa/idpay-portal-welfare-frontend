@@ -23,6 +23,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
   const renderTimeRangeIcon = (sD: string | Date | undefined, eD: string | Date | undefined) => {
     const now = new Date();
     if (typeof sD === 'object' && typeof eD === 'object') {
+      eD.setHours(23, 59, 59);
       if (now > eD) {
         return <CheckCircleIcon color="action" sx={{ fontSize: '22px' }} />;
       }
@@ -39,16 +40,23 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
   const renderTimeRangeText = (sD: string | Date | undefined, eD: string | Date | undefined) => {
     const now = new Date();
     if (typeof sD === 'object' && typeof eD === 'object') {
+      eD.setHours(23, 59, 59);
       if (now > eD) {
         return t('pages.initiativeOverview.info.otherinfo.closed');
       }
       if (now >= sD && now <= eD) {
         const eDTimestamp = eD.getTime();
         const nowTimestamp = now.getTime();
-        const remainingDays = (eDTimestamp - nowTimestamp) / 86400000;
-        return t('pages.initiativeOverview.info.otherinfo.expiration', {
-          days: Math.ceil(remainingDays),
-        });
+        const remainingDays = Math.ceil((eDTimestamp - nowTimestamp) / 86400000);
+        if (remainingDays > 1) {
+          return t('pages.initiativeOverview.info.otherinfo.expiration', {
+            days: remainingDays,
+          });
+        } else {
+          return t('pages.initiativeOverview.info.otherinfo.oneDayExpiration', {
+            days: remainingDays,
+          });
+        }
       }
       if (now < sD) {
         return t('pages.initiativeOverview.info.otherinfo.start', {

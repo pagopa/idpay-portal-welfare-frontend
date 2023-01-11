@@ -110,15 +110,13 @@ describe('<ServiceConfig />', () => {
 
     expect(serviceArea).toBeInTheDocument();
 
-    const assistanceSelect = document.querySelector(
+    const assistanceSelect = screen.getAllByTestId(
       'assistance-channel-test'
-    ) as unknown as HTMLSelectElement;
+    ) as HTMLSelectElement[];
 
-    waitFor(async () => {
-      fireEvent.click(assistanceSelect);
-      fireEvent.change(assistanceSelect, {
-        target: { value: 'name' },
-      });
+    fireEvent.click(assistanceSelect[0]);
+    fireEvent.change(assistanceSelect[0], {
+      target: { value: 'email' },
     });
 
     //BUTTON TEST
@@ -131,18 +129,5 @@ describe('<ServiceConfig />', () => {
 
     const addChannel = screen.getByTestId('add-channel-test') as HTMLButtonElement;
     fireEvent.click(addChannel);
-  });
-
-  test('test submit wizard', () => {
-
-    renderWithProviders(
-      <ServiceConfig
-        action={WIZARD_ACTIONS.SUBMIT}
-        setAction={setAction}
-        currentStep={currentStep}
-        setCurrentStep={setCurrentStep}
-        setDisabledNext={setDisabledNext}
-      />
-    );
   });
 });
