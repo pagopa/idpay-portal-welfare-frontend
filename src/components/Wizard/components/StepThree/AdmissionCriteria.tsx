@@ -154,7 +154,11 @@ const AdmissionCriteria = ({
     setAvailableCriteria([...criteriaToRender]);
     const criteriaFiltered = criteriaToRender.filter((c) => c.checked === true);
     const newCriteriaToSubmit = criteriaFiltered.map((c) => ({ code: c.code, dispatched: false }));
-    setCriteriaToSubmit([...newCriteriaToSubmit]);
+    const newManualCriteriaToSubmit = manualCriteriaToRender.map((m) => ({
+      code: m.code,
+      dispatched: false,
+    }));
+    setCriteriaToSubmit([...newCriteriaToSubmit, ...newManualCriteriaToSubmit]);
   };
 
   const handleCriteriaRemoved = (e: any) => {
@@ -176,7 +180,11 @@ const AdmissionCriteria = ({
         newCriteriaToSubmit.push({ code: c.code, dispatched: false });
       }
     });
-    setCriteriaToSubmit([...newCriteriaToSubmit]);
+    const newManualCriteriaToSubmit = manualCriteriaToRender.map((m) => ({
+      code: m.code,
+      dispatched: false,
+    }));
+    setCriteriaToSubmit([...newCriteriaToSubmit, ...newManualCriteriaToSubmit]);
   };
 
   const handleFieldValueChanged = (fieldValue: string, fieldKey: string, criteriaCode: string) => {
