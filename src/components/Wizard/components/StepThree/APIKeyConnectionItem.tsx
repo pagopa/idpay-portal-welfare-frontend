@@ -8,9 +8,21 @@ import { setError, setErrorText } from './helpers';
 
 type Props = {
   action: string;
+  apiKeyClientId: string | undefined;
+  handleApyKeyClientIdChanged: any;
+  apiKeyClientAssertion: string | undefined;
+  handleApyKeyClientAssertionChanged: any;
+  handleApiKeyClientDispathed: any;
 };
 
-const APIKeyConnectionItem = ({ action }: Props) => {
+const APIKeyConnectionItem = ({
+  action,
+  apiKeyClientId,
+  handleApyKeyClientIdChanged,
+  apiKeyClientAssertion,
+  handleApyKeyClientAssertionChanged,
+  handleApiKeyClientDispathed,
+}: Props) => {
   const { t } = useTranslation();
 
   const validationSchema = Yup.object().shape({
@@ -20,15 +32,17 @@ const APIKeyConnectionItem = ({ action }: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      apiKeyClientId: '',
-      apiKeyClientAssertion: '',
+      apiKeyClientId,
+      apiKeyClientAssertion,
     },
     validateOnMount: true,
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
+      handleApyKeyClientIdChanged(values.apiKeyClientId);
+      handleApyKeyClientAssertionChanged(values.apiKeyClientAssertion);
+      handleApiKeyClientDispathed(true);
     },
   });
 
@@ -65,7 +79,10 @@ const APIKeyConnectionItem = ({ action }: Props) => {
             size="small"
             value={formik.values.apiKeyClientId}
             onBlur={(e) => formik.handleBlur(e)}
-            onChange={(e) => formik.handleChange(e)}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleApyKeyClientIdChanged(e.target.value);
+            }}
             error={setError(formik.touched.apiKeyClientId, formik.errors.apiKeyClientId)}
             helperText={setErrorText(formik.touched.apiKeyClientId, formik.errors.apiKeyClientId)}
           />
@@ -84,7 +101,10 @@ const APIKeyConnectionItem = ({ action }: Props) => {
             size="small"
             value={formik.values.apiKeyClientAssertion}
             onBlur={(e) => formik.handleBlur(e)}
-            onChange={(e) => formik.handleChange(e)}
+            onChange={(e) => {
+              formik.handleChange(e);
+              handleApyKeyClientAssertionChanged(e.target.value);
+            }}
             error={setError(
               formik.touched.apiKeyClientAssertion,
               formik.errors.apiKeyClientAssertion

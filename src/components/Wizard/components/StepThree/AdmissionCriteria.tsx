@@ -66,6 +66,9 @@ const AdmissionCriteria = ({
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
+  const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>();
+  const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>();
+  const [apiKeyClientDispatched, setApiKeyClientDispatched] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -266,6 +269,19 @@ const AdmissionCriteria = ({
     }
   };
 
+  const handleApyKeyClientIdChanged = (value: string | undefined) => {
+    setApiKeyClientId(value);
+  };
+
+  const handleApyKeyClientAssertionChanged = (value: string | undefined) => {
+    setApiKeyClientAssertion(value);
+  };
+
+  const handleApiKeyClientDispathed = (value: boolean) => {
+    setApiKeyClientDispatched(value);
+  };
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
@@ -274,6 +290,13 @@ const AdmissionCriteria = ({
       criteriaToSubmit.forEach((c) => {
         toSubmit = toSubmit && c.dispatched;
       });
+      const automatedCriteriaChecked = criteriaToRender.map((c) => c.checked);
+      const almostOneCriteriaChecked = automatedCriteriaChecked.reduce(
+        (previousValue, currentValue) => previousValue || currentValue
+      );
+      if (almostOneCriteriaChecked) {
+        toSubmit = toSubmit && apiKeyClientDispatched;
+      }
     } else {
       toSubmit = false;
       setDisabledNext(true);
@@ -335,7 +358,7 @@ const AdmissionCriteria = ({
         .finally(() => setLoading(false));
     }
     setAction('');
-  }, [action, criteriaToSubmit]);
+  }, [action, criteriaToSubmit, apiKeyClientDispatched]);
 
   return (
     <>
@@ -497,7 +520,16 @@ const AdmissionCriteria = ({
           />
         )}
       </Paper>
-      {criteriaToRenderNumber > 0 && <APIKeyConnectionItem action={action} />}
+      {criteriaToRenderNumber > 0 && (
+        <APIKeyConnectionItem
+          action={action}
+          apiKeyClientId={apiKeyClientId}
+          handleApyKeyClientIdChanged={handleApyKeyClientIdChanged}
+          apiKeyClientAssertion={apiKeyClientAssertion}
+          handleApyKeyClientAssertionChanged={handleApyKeyClientAssertionChanged}
+          handleApiKeyClientDispathed={handleApiKeyClientDispathed}
+        />
+      )}
     </>
   );
 };
