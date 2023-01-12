@@ -588,6 +588,10 @@ export default {
             title: 'API Key di connessione',
             subtitle:
               'Aggiungi le due chiavi per abilitare la connessione con gli Enti che forniranno le informazioni necessarie alla verifica dei criteri.',
+            form: {
+              clientId: 'Client ID',
+              clientAssertion: 'Client Assertion',
+            },
           },
           form: {
             year: 'Anno',
