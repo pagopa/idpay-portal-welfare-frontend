@@ -204,7 +204,8 @@ const InitiativeUsers = () => {
       let searchFromStr;
       let searchToStr;
       if (typeof id === 'string') {
-        const filterBeneficiary = values.searchUser.length > 0 ? values.searchUser : undefined;
+        const filterBeneficiary =
+          values.searchUser.length > 0 ? values.searchUser.toUpperCase() : undefined;
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
