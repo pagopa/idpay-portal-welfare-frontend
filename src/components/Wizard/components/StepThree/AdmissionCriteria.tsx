@@ -297,9 +297,12 @@ const AdmissionCriteria = ({
         toSubmit = toSubmit && c.dispatched;
       });
       const automatedCriteriaChecked = criteriaToRender.map((c) => c.checked);
-      const almostOneCriteriaChecked = automatedCriteriaChecked.reduce(
-        (previousValue, currentValue) => previousValue || currentValue
-      );
+      const almostOneCriteriaChecked =
+        automatedCriteriaChecked.length > 0
+          ? automatedCriteriaChecked.reduce(
+              (previousValue, currentValue) => previousValue || currentValue
+            )
+          : false;
       if (almostOneCriteriaChecked) {
         toSubmit = toSubmit && apiKeyClientDispatched;
       }
