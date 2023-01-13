@@ -89,6 +89,8 @@ describe('use Initiative slice', () => {
       introductionTextSL: '',
     },
     beneficiaryRule: {
+      apiKeyClientId: undefined,
+      apiKeyClientAssertion: undefined,
       selfDeclarationCriteria: [],
       automatedCriteria: [],
     },

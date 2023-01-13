@@ -11,6 +11,8 @@ import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaSe
 import {
   beneficiaryRuleSelector,
   initiativeIdSelector,
+  saveApiKeyClientId,
+  saveApiKeyClientAssertion,
   saveAutomatedCriteria,
   saveManualCriteria,
   stepTwoRankingEnabledSelector,
@@ -66,8 +68,12 @@ const AdmissionCriteria = ({
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
-  const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>();
-  const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>();
+  const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
+    beneficiaryRule.apiKeyClientId
+  );
+  const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>(
+    beneficiaryRule.apiKeyClientAssertion
+  );
   const [apiKeyClientDispatched, setApiKeyClientDispatched] = useState(false);
 
   useEffect(() => {
@@ -302,7 +308,13 @@ const AdmissionCriteria = ({
       setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
+      const body = mapCriteriaToSend(
+        criteriaToRender,
+        manualCriteriaToRender,
+        rankingEnabled,
+        apiKeyClientId,
+        apiKeyClientAssertion
+      );
       const automatedCriteriaCodes = body.automatedCriteria.map((c) => c.code);
       const iseeCriteriaPopulated = automatedCriteriaCodes.includes('ISEE');
 
@@ -310,6 +322,8 @@ const AdmissionCriteria = ({
         setLoading(true);
         putBeneficiaryRuleService(initiativeId, body)
           .then((_response) => {
+            dispatch(saveApiKeyClientId(body.apiKeyClientId));
+            dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
             dispatch(saveAutomatedCriteria(body.automatedCriteria));
             dispatch(saveManualCriteria(manualCriteriaToRender));
             setCurrentStep(currentStep + 1);
@@ -334,10 +348,18 @@ const AdmissionCriteria = ({
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
+      const body = mapCriteriaToSend(
+        criteriaToRender,
+        manualCriteriaToRender,
+        rankingEnabled,
+        apiKeyClientId,
+        apiKeyClientAssertion
+      );
       setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
+          dispatch(saveApiKeyClientId(body.apiKeyClientId));
+          dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
           dispatch(saveManualCriteria(manualCriteriaToRender));
           setOpenDraftSavedToast(true);

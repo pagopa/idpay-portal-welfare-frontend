@@ -242,6 +242,9 @@ export default {
               'L’anonimizzazione del file non è andata a buon fine. Segnala all’ente di dover ricaricare il file corretto per poter procedere con l’approvazione dell’iniziativa.',
             rankingAsc: ' - In graduatoria vince il valore minore',
             rankingDesc: ' - In graduatoria vince il valore maggiore',
+            apiClientTitle: 'API Key di connessione',
+            apiKeyClientId: 'Client ID',
+            apiKeyClientAssertion: 'Client Assertion',
           },
         },
         step4: {

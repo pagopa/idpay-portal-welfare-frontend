@@ -55,7 +55,7 @@ const APIKeyConnectionItem = ({
   }, [action]);
 
   return (
-    <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
+    <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }} key="apiKeyClient">
       <Box sx={{ py: 3 }}>
         <Typography variant="h6">
           {t('components.wizard.stepThree.chooseCriteria.apiKeyConnection.title')}
