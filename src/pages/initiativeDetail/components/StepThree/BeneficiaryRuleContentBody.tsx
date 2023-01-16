@@ -186,7 +186,16 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step3.content.apiKeyClientId')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                gridColumn: 'span 7',
+                fontWeight: 600,
+                wordWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}
+            >
               {initiativeDetail.beneficiaryRule.apiKeyClientId}
             </Typography>
           </Fragment>
@@ -194,7 +203,16 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step3.content.apiKeyClientAssertion')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                gridColumn: 'span 7',
+                fontWeight: 600,
+                wordWrap: 'break-word',
+                whiteSpace: 'pre-wrap',
+                wordBreak: 'break-word',
+              }}
+            >
               {initiativeDetail.beneficiaryRule.apiKeyClientAssertion}
             </Typography>
           </Fragment>
