@@ -21,18 +21,14 @@ const TOSWall = ({ acceptTOS, tosRoute, privacyRoute }: TOSWallProps) => {
         onConfirm={() => acceptTOS()}
       >
         <Typography sx={{ px: 8 }} color="text.secondary">
-          {t('tos.termsDescription')}
-        </Typography>
-        <Link underline="hover" href={privacyRoute}>
-          {t('tos.linkPrivacy')}
-        </Link>
-        <Typography sx={{ px: 8 }} color="text.secondary">
-          {t('tos.congiunction')}
-        </Typography>
-        <Link underline="hover" href={tosRoute}>
-          {t('tos.linkTos')}
-        </Link>
-        <Typography sx={{ px: 8 }} color="text.secondary">
+          {t('tos.termsDescription')}{' '}
+          <Link underline="hover" href={privacyRoute}>
+            {t('tos.linkPrivacy')}
+          </Link>{' '}
+          {t('tos.congiunction')}{' '}
+          <Link underline="hover" href={tosRoute}>
+            {t('tos.linkTos')}
+          </Link>{' '}
           {t('tos.pagoPa')}
         </Typography>
       </TOSAgreement>

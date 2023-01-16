@@ -820,5 +820,6 @@ export default {
     congiunction: 'e i',
     linkTos: 'Termini e condizioni d’uso',
     pagoPa: 'di PagoPA',
+    backHome: 'Torna alla home',
   },
 };

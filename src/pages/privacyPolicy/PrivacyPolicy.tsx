@@ -1,7 +1,8 @@
 import { useEffect } from 'react';
-import { Grid } from '@mui/material';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { Grid, Link, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
+import routes from '../../routes';
 declare const OneTrust: any;
 
 export function PrivacyPolicy() {
@@ -19,19 +20,20 @@ export function PrivacyPolicy() {
   }, []);
 
   return (
-    <Grid container>
-      <Grid item xs={8} sx={{ px: 3, py: 3 }}>
-        <TitleBox
-          title={t('tos.title')}
-          mbTitle={2}
-          mtTitle={4}
-          mbSubTitle={6}
-          variantTitle="h4"
-          variantSubTitle="body1"
-        />
-
+    <>
+      <Grid sx={{ px: 3, py: 3 }}>
         <div id="otnotice-5b7fed3e-ea34-4620-b01d-b17fa7c88441" className="otnotice"></div>
       </Grid>
-    </Grid>
+      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
+        <Grid
+          sx={{ display: 'grid', gridColumn: 'span 2', mt: 5, justifyContent: 'center' }}
+        ></Grid>
+        <Grid sx={{ display: 'grid', gridColumn: 'span 10', mt: 5, justifyContent: 'center' }}>
+          <Link underline="hover" href={routes.HOME}>
+            {t('tos.backHome')}
+          </Link>
+        </Grid>
+      </Box>
+    </>
   );
 }

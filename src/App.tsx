@@ -37,7 +37,8 @@ const SecuredRoutes = withLogin(
 
     if (
       !isTOSAccepted &&
-      (location.pathname !== routes.PRIVACY_POLICY || location.pathname !== routes.TOS)
+      location.pathname !== routes.PRIVACY_POLICY &&
+      location.pathname !== routes.TOS
     ) {
       return (
         <TOSLayout>
@@ -77,17 +78,17 @@ const SecuredRoutes = withLogin(
           <Route path={routes.INITIATIVE_DETAIL} exact={true}>
             <InitiativeDetail />
           </Route>
-          <Route path={routes.TOS} exact={true}>
-            <TOS />
-          </Route>
-          <Route path={routes.PRIVACY_POLICY} exact={true}>
-            <PrivacyPolicy />
-          </Route>
           <Route path={routes.HOME} exact={true}>
             <InitiativeList />
           </Route>
           <Route path={routes.ASSISTANCE} exact={true}>
             <Assistance />
+          </Route>
+          <Route path={routes.TOS} exact={true}>
+            <TOS />
+          </Route>
+          <Route path={routes.PRIVACY_POLICY} exact={true}>
+            <PrivacyPolicy />
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />
