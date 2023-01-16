@@ -26,6 +26,7 @@ import TOSWall from './components/TOS/TOSWall';
 import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import { TOS } from './pages/tos/TOS';
 import TOSLayout from './components/TOSLayout/TOSLayout';
+import { PrivacyPolicy } from './pages/privacyPolicy/PrivacyPolicy';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -34,10 +35,17 @@ const SecuredRoutes = withLogin(
     const location = useLocation();
     const { isTOSAccepted, acceptTOS } = useTOSAgreementLocalStorage();
 
-    if (!isTOSAccepted && location.pathname !== routes.TOS) {
+    if (
+      !isTOSAccepted &&
+      (location.pathname !== routes.PRIVACY_POLICY || location.pathname !== routes.TOS)
+    ) {
       return (
         <TOSLayout>
-          <TOSWall acceptTOS={acceptTOS} detailRoute={routes.TOS} />
+          <TOSWall
+            acceptTOS={acceptTOS}
+            privacyRoute={routes.PRIVACY_POLICY}
+            tosRoute={routes.TOS}
+          />
         </TOSLayout>
       );
     }
@@ -69,14 +77,17 @@ const SecuredRoutes = withLogin(
           <Route path={routes.INITIATIVE_DETAIL} exact={true}>
             <InitiativeDetail />
           </Route>
+          <Route path={routes.TOS} exact={true}>
+            <TOS />
+          </Route>
+          <Route path={routes.PRIVACY_POLICY} exact={true}>
+            <PrivacyPolicy />
+          </Route>
           <Route path={routes.HOME} exact={true}>
             <InitiativeList />
           </Route>
           <Route path={routes.ASSISTANCE} exact={true}>
             <Assistance />
-          </Route>
-          <Route path={routes.TOS} exact={true}>
-            <TOS />
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />

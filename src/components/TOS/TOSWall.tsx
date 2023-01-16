@@ -1,36 +1,39 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { Box, Typography, Link } from '@mui/material';
 import { TOSAgreement } from '@pagopa/mui-italia';
-import { Link as RouterLink } from 'react-router-dom';
 
 interface TOSWallProps {
   acceptTOS: () => void;
-  detailRoute: string;
+  tosRoute: string;
+  privacyRoute: string;
 }
 
-const TOSWall = ({ acceptTOS, detailRoute }: TOSWallProps) => {
+const TOSWall = ({ acceptTOS, tosRoute, privacyRoute }: TOSWallProps) => {
   const { t } = useTranslation();
+  // console.log(tosRoute);
+  // console.log(privacyRoute);
+
   return (
-    <Box height="100%" width="100%" px={2} sx={{backgroundColor:'#FAFAFA'}}>
+    <Box height="100%" width="100%" px={2} sx={{ backgroundColor: '#FAFAFA' }}>
       <TOSAgreement
         productName={t('tos.title')}
         description={t('tos.description')}
         onConfirm={() => acceptTOS()}
       >
         <Typography sx={{ px: 8 }} color="text.secondary">
-          <Trans i18nKey="tos.termsDescription">
-            Entrando dichiari di aver letto e accettato l’Informativa Privacy e i Termini e
-            condizioni d’uso di PagoPA
-            <Link
-              component={RouterLink}
-              to={{
-                pathname: detailRoute,
-              }}
-              sx={{ color: 'primary.main', cursor: 'pointer', textDecoration: 'none' }}
-            >
-              <strong> Accedi</strong>
-            </Link>
-          </Trans>
+          {t('tos.termsDescription')}
+        </Typography>
+        <Link underline="hover" href={privacyRoute}>
+          {t('tos.linkPrivacy')}
+        </Link>
+        <Typography sx={{ px: 8 }} color="text.secondary">
+          {t('tos.congiunction')}
+        </Typography>
+        <Link underline="hover" href={tosRoute}>
+          {t('tos.linkTos')}
+        </Link>
+        <Typography sx={{ px: 8 }} color="text.secondary">
+          {t('tos.pagoPa')}
         </Typography>
       </TOSAgreement>
     </Box>

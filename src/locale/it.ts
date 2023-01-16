@@ -815,7 +815,10 @@ export default {
     title: 'pagoPA',
     description:
       'Prima di entrare, leggi e accetta l’Informativa Privacy e i Termini e condizioni d’uso. Potrai consultarli di nuovo quando vuoi: li trovi sempre in fondo alla pagina.',
-    termsDescription:
-      'Entrando dichiari di aver letto e accettato l’<1>Informativa Privacy</1> e i <1>Termini e condizioni d’uso</1> di PagoPA',
+    termsDescription: 'Entrando dichiari di aver letto e accettato',
+    linkPrivacy: 'l’Informativa Privacy',
+    congiunction: 'e i',
+    linkTos: 'Termini e condizioni d’uso',
+    pagoPa: 'di PagoPA',
   },
 };
