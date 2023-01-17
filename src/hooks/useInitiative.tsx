@@ -12,6 +12,8 @@ import { getInitiativeDetail } from '../services/intitativeService';
 import { useAppDispatch } from '../redux/hooks';
 import {
   resetInitiative,
+  saveApiKeyClientId,
+  saveApiKeyClientAssertion,
   saveAutomatedCriteria,
   saveManualCriteria,
   setAdditionalInfo,
@@ -88,6 +90,8 @@ export const useInitiative = () => {
           dispatch(setAdditionalInfo(additionalInfo));
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
+          dispatch(saveApiKeyClientId(response.beneficiaryRule?.apiKeyClientId));
+          dispatch(saveApiKeyClientAssertion(response.beneficiaryRule?.apiKeyClientAssertion));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];

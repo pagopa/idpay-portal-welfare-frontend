@@ -242,6 +242,9 @@ export default {
               'L’anonimizzazione del file non è andata a buon fine. Segnala all’ente di dover ricaricare il file corretto per poter procedere con l’approvazione dell’iniziativa.',
             rankingAsc: ' - In graduatoria vince il valore minore',
             rankingDesc: ' - In graduatoria vince il valore maggiore',
+            apiClientTitle: 'API Key di connessione',
+            apiKeyClientId: 'Client ID',
+            apiKeyClientAssertion: 'Client Assertion',
           },
         },
         step4: {
@@ -584,6 +587,15 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
+          apiKeyConnection: {
+            title: 'API Key di connessione',
+            subtitle:
+              'Aggiungi le due chiavi per abilitare la connessione con gli Enti che forniranno le informazioni necessarie alla verifica dei criteri.',
+            form: {
+              clientId: 'Client ID',
+              clientAssertion: 'Client Assertion',
+            },
+          },
           form: {
             year: 'Anno',
             age: 'Età',

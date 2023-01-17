@@ -2,6 +2,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import React from 'react';
 import { Provider } from 'react-redux';
 import {
+  saveApiKeyClientAssertion,
+  saveApiKeyClientId,
   saveAutomatedCriteria,
   saveManualCriteria,
   setGeneralInfo,
@@ -238,7 +240,8 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         },
       ])
     );
-
+    store.dispatch(saveApiKeyClientId('api key'));
+    store.dispatch(saveApiKeyClientAssertion('api client assertion'));
     const { getByTestId } = render(
       <Provider store={store}>
         <AdmissionCriteria

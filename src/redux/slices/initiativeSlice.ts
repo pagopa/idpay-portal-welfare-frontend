@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
 import {
@@ -56,6 +57,8 @@ const initialState: Initiative = {
     introductionTextSL: '',
   },
   beneficiaryRule: {
+    apiKeyClientId: undefined,
+    apiKeyClientAssertion: undefined,
     selfDeclarationCriteria: [],
     automatedCriteria: [],
   },
@@ -146,6 +149,28 @@ export const initiativeSlice = createSlice({
       ...state,
       additionalInfo: { ...state.additionalInfo, ...action.payload },
     }),
+    saveApiKeyClientId: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      beneficiaryRule: {
+        ...state.beneficiaryRule,
+        apiKeyClientId: action.payload,
+      },
+    }),
+    saveApiKeyClientAssertion: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      beneficiaryRule: {
+        ...state.beneficiaryRule,
+        apiKeyClientAssertion: action.payload,
+      },
+    }),
+    saveAutomatedCriteria: (state, action: PayloadAction<Array<AutomatedCriteriaItem>>) => {
+      state.beneficiaryRule.automatedCriteria = [];
+      state.beneficiaryRule.automatedCriteria = [...action.payload];
+    },
+    saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
+      state.beneficiaryRule.selfDeclarationCriteria = [];
+      state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
+    },
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
       let criteriaFound = false;
@@ -165,10 +190,6 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.automatedCriteria.push(action.payload);
       }
     },
-    saveAutomatedCriteria: (state, action: PayloadAction<Array<AutomatedCriteriaItem>>) => {
-      state.beneficiaryRule.automatedCriteria = [];
-      state.beneficiaryRule.automatedCriteria = [...action.payload];
-    },
     setManualCriteria: (state, action: PayloadAction<ManualCriteriaItem>) => {
       /* eslint-disable functional/no-let */
       let criteriaFound = false;
@@ -187,10 +208,6 @@ export const initiativeSlice = createSlice({
       } else {
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
-    },
-    saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
-      state.beneficiaryRule.selfDeclarationCriteria = [];
-      state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
     },
     saveRewardRule: (
       state,
@@ -279,6 +296,8 @@ export const {
   setGeneralInfo,
   setAdditionalInfo,
   setInitiativeLogo,
+  saveApiKeyClientId,
+  saveApiKeyClientAssertion,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,
@@ -304,6 +323,8 @@ export const stepTwoRankingEnabledSelector = (state: RootState): string | undefi
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {
+  apiKeyClientId: string | undefined;
+  apiKeyClientAssertion: string | undefined;
   selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
