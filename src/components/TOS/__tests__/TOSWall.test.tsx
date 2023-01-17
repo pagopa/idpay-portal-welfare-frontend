@@ -13,7 +13,7 @@ jest.mock('react-i18next', () => ({
 describe('tests for TOSWall', () => {
   test('test render of TOSWall component', async () => {
     const acceptTos = jest.fn();
-    renderWithHistoryAndStore(<TOSWall acceptTOS={acceptTos} detailRoute={''} />);
+    renderWithHistoryAndStore(<TOSWall acceptTOS={acceptTos} tosRoute={''} privacyRoute={''} />);
     fireEvent.click(screen.getByText('Accedi'));
     expect(acceptTos).toBeCalled();
   });
