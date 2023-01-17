@@ -16,10 +16,7 @@ const TOSWall = ({ acceptTOS, tosRoute, privacyRoute }: TOSWallProps) => {
       <TOSAgreement
         sx={{ textAlign: 'center' }}
         productName={t('tos.title')}
-        description=""
-        onConfirm={() => acceptTOS()}
-      >
-        <div style={{ marginTop: '-64px' }}>
+        description={
           <Typography color="text.secondary">
             {t('tos.termsDescription')}{' '}
             <Link underline="hover" href={tosRoute}>
@@ -30,7 +27,10 @@ const TOSWall = ({ acceptTOS, tosRoute, privacyRoute }: TOSWallProps) => {
               {t('tos.linkPrivacy')}
             </Link>
           </Typography>
-        </div>
+        }
+        onConfirm={() => acceptTOS()}
+      >
+        {null}
       </TOSAgreement>
     </Box>
   );
