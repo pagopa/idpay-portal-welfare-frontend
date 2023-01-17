@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
 declare const OneTrust: any;
 
-export function PrivacyPolicy() {
+const PrivacyPolicy = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -24,6 +24,7 @@ export function PrivacyPolicy() {
       <Grid sx={{ px: 3, py: 3 }}>
         <div id="otnotice-5b7fed3e-ea34-4620-b01d-b17fa7c88441" className="otnotice"></div>
       </Grid>
+
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
         <Grid
           sx={{ display: 'grid', gridColumn: 'span 2', mt: 5, justifyContent: 'center' }}
@@ -36,4 +37,6 @@ export function PrivacyPolicy() {
       </Box>
     </>
   );
-}
+};
+
+export default PrivacyPolicy;

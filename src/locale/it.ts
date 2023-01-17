@@ -812,14 +812,11 @@ export default {
     },
   },
   tos: {
-    title: 'pagoPA',
-    description:
-      'Prima di entrare, leggi e accetta l’Informativa Privacy e i Termini e condizioni d’uso. Potrai consultarli di nuovo quando vuoi: li trovi sempre in fondo alla pagina.',
-    termsDescription: 'Entrando dichiari di aver letto e accettato',
-    linkPrivacy: 'l’Informativa Privacy',
-    congiunction: 'e i',
+    title: 'Portale Bonus',
+    termsDescription: 'Accedendo, accetti i',
     linkTos: 'Termini e condizioni d’uso',
-    pagoPa: 'di PagoPA',
+    termsDescription2: 'del servizio e confermi di aver letto l’',
+    linkPrivacy: 'Informativa Privacy',
     backHome: 'Torna alla home',
   },
 };

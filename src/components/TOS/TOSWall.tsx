@@ -10,27 +10,27 @@ interface TOSWallProps {
 
 const TOSWall = ({ acceptTOS, tosRoute, privacyRoute }: TOSWallProps) => {
   const { t } = useTranslation();
-  // console.log(tosRoute);
-  // console.log(privacyRoute);
 
   return (
     <Box height="100%" width="100%" px={2} sx={{ backgroundColor: '#FAFAFA' }}>
       <TOSAgreement
+        sx={{ textAlign: 'center' }}
         productName={t('tos.title')}
-        description={t('tos.description')}
+        description=""
         onConfirm={() => acceptTOS()}
       >
-        <Typography sx={{ px: 8 }} color="text.secondary">
-          {t('tos.termsDescription')}{' '}
-          <Link underline="hover" href={privacyRoute}>
-            {t('tos.linkPrivacy')}
-          </Link>{' '}
-          {t('tos.congiunction')}{' '}
-          <Link underline="hover" href={tosRoute}>
-            {t('tos.linkTos')}
-          </Link>{' '}
-          {t('tos.pagoPa')}
-        </Typography>
+        <div style={{ marginTop: '-64px' }}>
+          <Typography color="text.secondary">
+            {t('tos.termsDescription')}{' '}
+            <Link underline="hover" href={tosRoute}>
+              {t('tos.linkTos')}
+            </Link>{' '}
+            {t('tos.termsDescription2')}
+            <Link underline="hover" href={privacyRoute}>
+              {t('tos.linkPrivacy')}
+            </Link>
+          </Typography>
+        </div>
       </TOSAgreement>
     </Box>
   );

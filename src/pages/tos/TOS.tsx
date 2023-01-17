@@ -5,7 +5,7 @@ import routes from '../../routes';
 
 declare const OneTrust: any;
 
-export function TOS() {
+const TOS = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -36,4 +36,6 @@ export function TOS() {
       </Box>
     </>
   );
-}
+};
+
+export default TOS;
