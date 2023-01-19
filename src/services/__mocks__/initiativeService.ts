@@ -400,7 +400,7 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
-  rankingStatus: StatusEnum.COMPLETE,
+  rankingStatus: 'COMPLETED',
   rankingPublishedTimestamp: new Date(),
   rankingGeneratedTimestamp: new Date(),
   totalEligibleOk: 0,
