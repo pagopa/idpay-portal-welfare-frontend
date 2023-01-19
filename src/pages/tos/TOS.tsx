@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { Grid, Box, Link } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import routes from '../../routes';
@@ -7,6 +7,7 @@ declare const OneTrust: any;
 
 const TOS = () => {
   const { t } = useTranslation();
+  const [contentLoaded, setContentLoaded] = useState(false);
 
   useEffect(() => {
     OneTrust.NoticeApi.Initialized.then(function () {
@@ -16,8 +17,23 @@ const TOS = () => {
         ],
         false
       );
+    }).finally(() => {
+      setContentLoaded(true);
     });
   }, []);
+
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      const links = document.querySelectorAll('.otnotice-content a');
+      links.forEach((l) => {
+        const href = l.getAttribute('href');
+        if (href?.startsWith('#')) {
+          const newHref = `${routes.TOS}${href}`;
+          l.setAttribute('href', newHref);
+        }
+      });
+    }, 1000);
+  }, [contentLoaded]);
 
   return (
     <>
