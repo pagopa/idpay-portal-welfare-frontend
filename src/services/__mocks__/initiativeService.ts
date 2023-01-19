@@ -393,7 +393,7 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
       criteriaConsensusTimestamp: new Date(),
       rankingValue: 0,
       ranking: 0,
-      beneficiaryRankingStatus: 'string',
+      beneficiaryRankingStatus: 'ELIGIBLE_OK',
     },
   ],
   pageNumber: 0,
