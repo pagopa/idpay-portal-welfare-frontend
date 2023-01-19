@@ -75,6 +75,9 @@ const APIKeyConnectionItem = ({
             placeholder={t(
               'components.wizard.stepThree.chooseCriteria.apiKeyConnection.form.clientId'
             )}
+            inputProps={{
+              'data-testid': 'client-id-test',
+            }}
             variant="outlined"
             size="small"
             value={formik.values.apiKeyClientId}
@@ -97,6 +100,9 @@ const APIKeyConnectionItem = ({
             placeholder={t(
               'components.wizard.stepThree.chooseCriteria.apiKeyConnection.form.clientAssertion'
             )}
+            inputProps={{
+              'data-testid': 'client-assertion-test',
+            }}
             variant="outlined"
             size="small"
             value={formik.values.apiKeyClientAssertion}
