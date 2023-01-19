@@ -200,6 +200,7 @@ const AdmissionCriteriaModal = ({
                 onChange={(e) => {
                   handleSearchCriteria(e.target.value);
                 }}
+                value={searchCriteria}
               />
             </Box>
           </Box>
