@@ -55,6 +55,7 @@ const AdmissionCriteria = ({
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
   const [openModal, setOpenModal] = useState(false);
+  const [searchCriteria, setSearchCriteria] = useState('');
   const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
   const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
   const [criteriaToRenderNumber, setCriteriaToRenderNumber] = useState(0);
@@ -157,7 +158,10 @@ const AdmissionCriteria = ({
 
   const handleCloseModal = () => setOpenModal(false);
 
-  const handleOpenModal = () => setOpenModal(true);
+  const handleOpenModal = () => {
+    setOpenModal(true);
+    setSearchCriteria('');
+  };
 
   const handleCriteriaAdded = () => {
     setOpenModal(false);
@@ -435,6 +439,8 @@ const AdmissionCriteria = ({
             handleCriteriaAdded={handleCriteriaAdded}
             criteriaToRender={criteriaToRender}
             setCriteriaToRender={setCriteriaToRender}
+            searchCriteria={searchCriteria}
+            setSearchCriteria={setSearchCriteria}
             data-testid="modal-test"
           />
           <Button
