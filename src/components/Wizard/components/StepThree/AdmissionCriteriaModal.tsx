@@ -19,6 +19,7 @@ import {
   ChangeEvent,
   useCallback,
   ChangeEventHandler,
+  SetStateAction,
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
@@ -29,6 +30,8 @@ type Props = {
   handleCriteriaAdded: MouseEventHandler;
   criteriaToRender: Array<AvailableCriteria>;
   setCriteriaToRender: Dispatch<Array<AvailableCriteria>>;
+  searchCriteria: string;
+  setSearchCriteria: Dispatch<SetStateAction<string>>;
 };
 
 const AdmissionCriteriaModal = ({
@@ -37,9 +40,10 @@ const AdmissionCriteriaModal = ({
   handleCriteriaAdded,
   criteriaToRender,
   setCriteriaToRender,
+  searchCriteria,
+  setSearchCriteria,
 }: Props) => {
   const { t } = useTranslation();
-  const [searchCriteria, setSearchCriteria] = useState('');
   const [headingHeight, setHeadingHeight] = useState('');
 
   const elementRef = useCallback((node) => {
