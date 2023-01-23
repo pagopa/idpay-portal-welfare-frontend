@@ -242,6 +242,9 @@ export default {
               'L’anonimizzazione del file non è andata a buon fine. Segnala all’ente di dover ricaricare il file corretto per poter procedere con l’approvazione dell’iniziativa.',
             rankingAsc: ' - In graduatoria vince il valore minore',
             rankingDesc: ' - In graduatoria vince il valore maggiore',
+            apiClientTitle: 'API Key di connessione',
+            apiKeyClientId: 'Client ID',
+            apiKeyClientAssertion: 'Client Assertion',
           },
         },
         step4: {
@@ -603,6 +606,15 @@ export default {
           },
           admissionCriteriaAdded: 'Criteri aggiunti',
           manualCriteriaAdded: 'Criteri manuali',
+          apiKeyConnection: {
+            title: 'API Key di connessione',
+            subtitle:
+              'Aggiungi le due chiavi per abilitare la connessione con gli Enti che forniranno le informazioni necessarie alla verifica dei criteri.',
+            form: {
+              clientId: 'Client ID',
+              clientAssertion: 'Client Assertion',
+            },
+          },
           form: {
             year: 'Anno',
             age: 'Età',
@@ -829,5 +841,13 @@ export default {
     pages: {
       initiativeRefundsOutcome: 'https://www.google.it',
     },
+  },
+  tos: {
+    title: 'Portale Bonus',
+    termsDescription: 'Accedendo, accetti i',
+    linkTos: 'Termini e condizioni d’uso',
+    termsDescription2: 'del servizio e confermi di aver letto l’',
+    linkPrivacy: 'Informativa Privacy',
+    backHome: 'Torna alla home',
   },
 };

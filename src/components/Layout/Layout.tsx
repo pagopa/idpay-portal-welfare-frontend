@@ -7,20 +7,14 @@ import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/use
 import { useLocation } from 'react-router-dom';
 import { matchPath } from 'react-router';
 import Header from '../Header';
-// import withParties, { WithPartiesProps } from '../../decorators/withParties';
 import SideMenu from '../SideMenu/SideMenu';
 import ROUTES from '../../routes';
-
-// type Props = {
-//   children?: React.ReactNode;
-// } & WithPartiesProps;
+import routes from '../../routes';
 
 type Props = {
   children?: React.ReactNode;
 };
 
-/** The layout of the application: Header, Body (having a sidemenu) and Footer */
-// const Layout = ({ children, parties }: Props) => {
 const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
@@ -62,7 +56,6 @@ const Layout = ({ children }: Props) => {
           loggedUser={loggedUser}
           parties={[]}
         />
-        {/* <Header onExit={onExit} loggedUser={loggedUser} parties={parties} /> */}
       </Box>
       {match !== null ? (
         <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
@@ -95,7 +88,11 @@ const Layout = ({ children }: Props) => {
             pb={16}
             pt={2}
             gridColumn="span 12"
-            maxWidth={920}
+            maxWidth={
+              location.pathname !== routes.PRIVACY_POLICY && location.pathname !== routes.TOS
+                ? 920
+                : '100%'
+            }
             justifySelf="center"
           >
             {children}

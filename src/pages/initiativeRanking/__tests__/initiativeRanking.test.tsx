@@ -56,5 +56,30 @@ describe('<InitiativeRefunds />', () => {
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
+
+    const alertBtn = await screen.findByText('pages.initiativeRanking.publishModal.alertBtn');
+    fireEvent.click(alertBtn);
+
+    const publishClosingBtn = await screen.findByText(
+      'pages.initiativeRanking.rankingStatus.publishedCloseBtn'
+    );
+    fireEvent.click(publishClosingBtn);
+
+    const searchUser = (await screen.findByLabelText(
+      'pages.initiativeUsers.form.search'
+    )) as HTMLInputElement;
+    fireEvent.change(searchUser, { target: { value: 'user' } });
+    expect(searchUser.value).toBe('user');
+
+    const filterStatusSelect = await screen.findByTestId('filterStatus-select');
+
+    fireEvent.click(filterStatusSelect);
+    fireEvent.change(filterStatusSelect, {
+      target: { value: 'ELIGIBLE_OK' },
+    });
+    expect(filterStatusSelect).toBeInTheDocument();
+
+    const filterBtn = await screen.findByText('pages.initiativeRanking.form.filterBtn');
+    fireEvent.click(filterBtn);
   });
 });

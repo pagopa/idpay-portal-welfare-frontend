@@ -511,12 +511,14 @@ const InitiativeRanking = () => {
             <InputLabel>{t('pages.initiativeRanking.form.beneficiaryStatus')}</InputLabel>
             <Select
               id="filterStatus"
-              data-testid="filterStatus-select"
               name="filterStatus"
               label={t('pages.initiativeUsers.form.status')}
               placeholder={t('pages.initiativeUsers.form.status')}
               onChange={(e) => formik.handleChange(e)}
               value={formik.values.filterStatus}
+              inputProps={{
+                'data-testid': 'filterStatus-select',
+              }}
             >
               <MenuItem value="DEFAULT" data-testid="filterStatusDefault-test">
                 {t('pages.initiativeRanking.beneficiaryStatus.total', {

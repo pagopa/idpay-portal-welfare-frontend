@@ -198,6 +198,8 @@ export interface Initiative {
   generalInfo: GeneralInfo;
   additionalInfo: AdditionalInfo;
   beneficiaryRule: {
+    apiKeyClientId: string | undefined;
+    apiKeyClientAssertion: string | undefined;
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
