@@ -15,7 +15,7 @@ import {
   mockedInitiativeSummary,
   mockedNotificationReward,
   mockedOnBoardingStatusResponse,
-  // mockedOperationList,
+  mockedOperationList,
   mockedWallet,
   mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
@@ -40,7 +40,7 @@ import { SasToken } from '../generated/initiative/SasToken';
 import {
   MockedIbanDTO,
   MockedInstrumentDTO,
-  // MockedOperationListDTO,
+  MockedOperationListDTO,
   MockedWalletDTO,
 } from '../../model/Initiative';
 
@@ -176,8 +176,8 @@ export const InitiativeApiMocked = {
   getIban: async (_iban: string): Promise<MockedIbanDTO> =>
     new Promise((resolve) => resolve(mockedIbanInfo)),
 
-  // getTimeLine: async (_id: string): Promise<MockedOperationListDTO> =>
-  //   new Promise((resolve) => resolve(mockedOperationList)),
+  getTimeLine: async (_id: string): Promise<MockedOperationListDTO> =>
+    new Promise((resolve) => resolve(mockedOperationList)),
 
   getWalletInstrumen: async (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
     new Promise((resolve) => resolve(mockedWalletInstrument)),

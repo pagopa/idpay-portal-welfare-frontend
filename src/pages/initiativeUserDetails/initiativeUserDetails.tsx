@@ -9,10 +9,16 @@ import {
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  // TablePagination,
+  TableRow,
   Typography,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import { ButtonNaked } from '@pagopa/mui-italia';
+import { Box /* , ThemeProvider  */ } from '@mui/system';
+import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -21,13 +27,19 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from 'react';
 import { Alert } from '@mui/lab';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getIban,
+  getTimeLine,
   getWalletInfo,
   getWalletInstrumen,
 } from '../../services/__mocks__/initiativeService';
-import { MockedInstrumentDTO, MockedStatusWallet } from '../../model/Initiative';
+import {
+  MockedInstrumentDTO,
+  MockedStatusWallet,
+  MockedOperationList,
+} from '../../model/Initiative';
 
 const InitiativeUserDetails = () => {
   const history = useHistory();
@@ -43,10 +55,13 @@ const InitiativeUserDetails = () => {
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
+  const [rows, setRows] = useState<Array<MockedOperationList>>([]);
+  const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
+    window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getWalletInfo(id, cf)
         .then((res) => {
@@ -101,8 +116,60 @@ const InitiativeUserDetails = () => {
             showCloseIcon: true,
           })
         );
+      getTableData(id);
     }
   }, []);
+
+  const getTableData = (
+    initiativeId: string
+    // page: number,
+    // timestamp: Date | undefined,
+    // totExpense: string | undefined,
+    // toRefund: string | undefined,
+  ) => {
+    setLoading(true);
+    getTimeLine(initiativeId)
+      .then((res) => {
+        // if (typeof res.pageNo === 'number') {
+        //   setPage(res.pageNo);
+        // }
+        const rowsData = res.operationList.map((row) => ({
+          ...row,
+          id: row.operationId,
+          timestamp:
+            typeof row.operationDate === 'object'
+              ? row.operationDate
+                  .toLocaleString('fr-BE')
+                  .substring(0, row.operationDate.toLocaleString('fr-BE').length - 3)
+              : '',
+          totExpense: row.amount,
+          toRefund: '-',
+        }));
+        if (Array.isArray(rowsData)) {
+          setRows(rowsData);
+        }
+        // if (typeof res.pageSize === 'number') {
+        //   setRowsPerPage(res.pageSize);
+        // }
+        // if (typeof res.totalElements === 'number') {
+        //   setTotalElements(res.totalElements);
+        // }
+      })
+      .catch((error) => {
+        addError({
+          id: 'GET_INITIATIVE_USER_DETAILS_OPERATION_LIST',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting initiative user details operation list',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      })
+      .finally(() => setLoading(false));
+  };
 
   const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
 
@@ -348,6 +415,88 @@ const InitiativeUserDetails = () => {
               </Box>
             </Box>
           </Collapse>
+          {rows.length > 0 ? (
+            <Box
+              sx={{
+                display: 'grid',
+                width: '100%',
+                height: '100%',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                alignItems: 'center',
+              }}
+            >
+              <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
+                <Box sx={{ width: '100%', height: '100%' }}>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell width="25%">
+                          {t('pages.initiativeUserDetails.table.dateAndHour')}
+                        </TableCell>
+                        <TableCell width="40%">
+                          {t('pages.initiativeUserDetails.table.event')}
+                        </TableCell>
+                        <TableCell width="17.5%">
+                          {t('pages.initiativeUserDetails.table.totExpense')}
+                        </TableCell>
+                        <TableCell width="17.5%">
+                          {t('pages.initiativeUserDetails.table.toRefund')}
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody sx={{ backgroundColor: 'white' }}>
+                      {rows.map((r) => (
+                        <TableRow key={r.operationId}>
+                          <TableCell>
+                            {r.operationDate
+                              ?.toLocaleString('fr-BE')
+                              .substring(0, r.operationDate.toLocaleString('fr-BE').length - 3)}
+                          </TableCell>
+                          <TableCell>
+                            <ButtonNaked
+                              component="button"
+                              sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
+                              onClick={() => {
+                                console.log('clicked!'); // history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
+                              }}
+                            >
+                              {r.operationType}
+                            </ButtonNaked>
+                          </TableCell>
+                          <TableCell>{r.amount}</TableCell>
+                          <TableCell>{'-'}</TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {/* <ThemeProvider theme={theme}>
+                    <TablePagination
+                      component="div"
+                      onPageChange={handleChangePage}
+                      page={page}
+                      count={totalElements}
+                      rowsPerPage={rowsPerPage}
+                      rowsPerPageOptions={[rowsPerPage]}
+                    />
+                  </ThemeProvider> */}
+                </Box>
+              </Box>
+            </Box>
+          ) : (
+            <Box
+              sx={{
+                display: 'grid',
+                width: '100%',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                alignItems: 'center',
+                backgroundColor: 'white',
+              }}
+            >
+              <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
+                <Typography variant="body2">{t('pages.initiativeUsers.noData')}</Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
         <Box sx={{ gridColumn: 'auto', px: 3 }}>
           {walletStatus !== MockedStatusWallet.REFUNDABLE && (
@@ -356,77 +505,84 @@ const InitiativeUserDetails = () => {
               {getWalletAlerts(walletStatus)}
             </Box>
           )}
-          <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
-            <Typography variant="overline">
-              {t('pages.initiativeUserDetails.paymentMethod')}
-            </Typography>
-            <List>
-              {paymentMethodList.map((p, i) => (
-                <ListItem key={i}>
-                  <ListItemAvatar>
-                    {p.brandLog ? <img src={p.brandLog} width="32px" /> : <CreditCardIcon />}
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={getMaskedPan(p.maskedPan)}
-                    secondary={p.activationDate?.toLocaleString('fr-BE')}
-                  />
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-          <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
-            <Typography variant="overline">{t('pages.initiativeUserDetails.iban')}</Typography>
-            <Box
-              sx={{
-                display: 'grid',
-                width: '100%',
-                gridTemplateColumns: 'repeat(12, 1fr)',
-                alignItems: 'center',
-              }}
-            >
-              <Typography sx={{ display: 'grid', gridColumn: 'span 12', fontWeight: 600, mt: 3 }}>
-                {iban}
+          {(walletStatus === MockedStatusWallet.REFUNDABLE ||
+            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN) && (
+            <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
+              <Typography variant="overline">
+                {t('pages.initiativeUserDetails.paymentMethod')}
               </Typography>
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 12' }}
-                variant="body2"
-                color="text.secondary"
-              >
-                {holderBank}
-              </Typography>
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 4', mt: 2 }}
-                variant="body2"
-                color="text.secondary"
-                textAlign="left"
-              >
-                {t('pages.initiativeUserDetails.updatedOn')}
-              </Typography>
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 8', fontWeight: 600, mt: 2 }}
-                variant="body2"
-                textAlign="left"
-              >
-                {checkIbanResponseDate?.toLocaleString('fr-BE')}
-              </Typography>
-
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 3', mt: 2 }}
-                variant="body2"
-                color="text.secondary"
-                textAlign="left"
-              >
-                {t('pages.initiativeUserDetails.addedBy')}
-              </Typography>
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 9', fontWeight: 600, mt: 2 }}
-                variant="body2"
-                textAlign="left"
-              >
-                {channel}
-              </Typography>
+              <List>
+                {paymentMethodList.map((p, i) => (
+                  <ListItem key={i}>
+                    <ListItemAvatar>
+                      {p.brandLog ? <img src={p.brandLog} width="32px" /> : <CreditCardIcon />}
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={getMaskedPan(p.maskedPan)}
+                      secondary={p.activationDate?.toLocaleString('fr-BE')}
+                    />
+                  </ListItem>
+                ))}
+              </List>
             </Box>
-          </Box>
+          )}
+
+          {(walletStatus === MockedStatusWallet.REFUNDABLE ||
+            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT) && (
+            <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
+              <Typography variant="overline">{t('pages.initiativeUserDetails.iban')}</Typography>
+              <Box
+                sx={{
+                  display: 'grid',
+                  width: '100%',
+                  gridTemplateColumns: 'repeat(12, 1fr)',
+                  alignItems: 'center',
+                }}
+              >
+                <Typography sx={{ display: 'grid', gridColumn: 'span 12', fontWeight: 600, mt: 3 }}>
+                  {iban}
+                </Typography>
+                <Typography
+                  sx={{ display: 'grid', gridColumn: 'span 12' }}
+                  variant="body2"
+                  color="text.secondary"
+                >
+                  {holderBank}
+                </Typography>
+                <Typography
+                  sx={{ display: 'grid', gridColumn: 'span 4', mt: 2 }}
+                  variant="body2"
+                  color="text.secondary"
+                  textAlign="left"
+                >
+                  {t('pages.initiativeUserDetails.updatedOn')}
+                </Typography>
+                <Typography
+                  sx={{ display: 'grid', gridColumn: 'span 8', fontWeight: 600, mt: 2 }}
+                  variant="body2"
+                  textAlign="left"
+                >
+                  {checkIbanResponseDate?.toLocaleString('fr-BE')}
+                </Typography>
+
+                <Typography
+                  sx={{ display: 'grid', gridColumn: 'span 3', mt: 2 }}
+                  variant="body2"
+                  color="text.secondary"
+                  textAlign="left"
+                >
+                  {t('pages.initiativeUserDetails.addedBy')}
+                </Typography>
+                <Typography
+                  sx={{ display: 'grid', gridColumn: 'span 9', fontWeight: 600, mt: 2 }}
+                  variant="body2"
+                  textAlign="left"
+                >
+                  {channel}
+                </Typography>
+              </Box>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

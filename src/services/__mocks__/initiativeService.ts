@@ -27,8 +27,8 @@ import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
 import {
   MockedIbanDTO,
   MockedInstrumentDTO,
-  // MockedOperationListDTO,
-  // MockedOperationType,
+  MockedOperationListDTO,
+  MockedOperationType,
   MockedStatusInstrument,
   MockedStatusWallet,
   MockedWalletDTO,
@@ -206,8 +206,8 @@ export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO
 export const getIban = (_iban: string): Promise<MockedIbanDTO> =>
   InitiativeApiMocked.getIban(mockedIban);
 
-// export const getTimeLine = (_id: string): Promise<MockedOperationListDTO> =>
-//   InitiativeApiMocked.getTimeLine(mockedInitiativeId);
+export const getTimeLine = (_id: string): Promise<MockedOperationListDTO> =>
+  InitiativeApiMocked.getTimeLine(mockedInitiativeId);
 
 export const getWalletInstrumen = (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
   InitiativeApiMocked.getWalletInstrumen(mockedInitiativeId, mockedFiscalCode);
@@ -319,33 +319,33 @@ export const mockedWalletInstrument = [
   },
 ];
 
-// export const mockedOperationList = {
-//   lastUpdate: new Date('"2023-01-05T10:22:28.012Z"'),
-//   operationList: [
-//     {
-//       operationId: '1u1u1u1u1u1u1u',
-//       operationType: MockedOperationType.PAID_REFUND,
-//       operationDate: new Date('2023-01-05T10:22:28.012Z'),
-//       brandLogo: 'Logo',
-//       maskedPan: 'maskedPan',
-//       amount: 345,
-//       circuitType: 'circuito',
-//       iban: '',
-//       channel: '',
-//     },
-//     {
-//       operationId: '2e2e2e2e2e2e2e2',
-//       operationType: MockedOperationType.TRANSACTION,
-//       operationDate: new Date('2023-01-05T10:22:28.012Z'),
-//       brandLogo: 'Logo',
-//       maskedPan: 'maskedPan',
-//       amount: 34,
-//       circuitType: 'circuito',
-//       iban: '',
-//       channel: '',
-//     },
-//   ],
-// };
+export const mockedOperationList = {
+  lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+  operationList: [
+    {
+      operationId: '1u1u1u1u1u1u1u',
+      operationType: MockedOperationType.PAID_REFUND,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: 'maskedPan',
+      amount: 345,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+    },
+    {
+      operationId: '2e2e2e2e2e2e2e2',
+      operationType: MockedOperationType.TRANSACTION,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: 'maskedPan',
+      amount: 34,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+    },
+  ],
+};
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',

@@ -428,6 +428,12 @@ export default {
       missingPaymentMethod: 'Nessun metodo di pagamento',
       missingIban: 'Nessun IBAN presente',
       unsubscribed: 'Utente disiscritto',
+      table: {
+        dateAndHour: 'Data e ora',
+        event: 'Evento',
+        totExpense: 'Totale spesa',
+        toRefund: 'Da rimborsare',
+      },
     },
     initiativeRefunds: {
       title: 'Rimborsi',

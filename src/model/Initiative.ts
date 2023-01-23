@@ -161,21 +161,22 @@ export interface MockedIbanDTO {
   checkIbanResponseDate: Date | undefined;
 }
 
-// export interface MockedOperationListDTO {
-//   lastUpdate: Date | undefined;
-//   operationList: Array<{
-//     operationId: string | undefined;
-//     operationType: MockedOperationType | undefined;
-//     operationDate: Date | undefined;
-//     brandLogo: string | undefined;
-//     maskedPan: string | undefined;
-//     amount: number | undefined;
-//     circuitType: string | undefined;
-//     iban: string | undefined;
-//     channel: string | undefined;
-//   }>;
-// }
+export interface MockedOperationList {
+  operationId: string | undefined;
+  operationType: MockedOperationType | undefined;
+  operationDate: Date | undefined;
+  brandLogo: string | undefined;
+  maskedPan: string | undefined;
+  amount: number | undefined;
+  circuitType: string | undefined;
+  iban: string | undefined;
+  channel: string | undefined;
+}
 
+export interface MockedOperationListDTO {
+  lastUpdate: Date | undefined;
+  operationList: Array<MockedOperationList>;
+}
 export interface MockedInstrumentDTO {
   idWallet: string | undefined;
   instrumentId: string | undefined;
