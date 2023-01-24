@@ -636,6 +636,7 @@ const InitiativeUserDetails = () => {
                 variant="outlined"
                 size="small"
                 onClick={() => formik.handleSubmit()}
+                disabled
                 data-testid="apply-filters-test"
               >
                 {t('pages.initiativeUsers.form.filterBtn')}
@@ -646,6 +647,7 @@ const InitiativeUserDetails = () => {
                 component="button"
                 sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
                 onClick={resetForm}
+                disabled
               >
                 {t('pages.initiativeUsers.form.resetFiltersBtn')}
               </ButtonNaked>
