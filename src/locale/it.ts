@@ -414,6 +414,7 @@ export default {
     initiativeUserDetails: {
       downloadCsvBtn: 'Scarica .csv',
       initiativeState: 'Stato iniziativa',
+      historyState: 'Storico eventi',
       updatedOn: 'Aggiornato il',
       addedBy: 'Agginto da ',
       availableBalance: 'Saldo disponibile',
@@ -434,6 +435,19 @@ export default {
         totExpense: 'Totale spesa',
         toRefund: 'Da rimborsare',
       },
+      operationTypes: {
+        onboarding: 'Adesione iniziativa',
+        addIban: 'Aggiunta IBAN',
+        addInstrument: 'Aggiunta metodo',
+        deleteInstrument: 'Eliminazione metodo',
+        rejectedAddInstrument: 'Errore aggiunta metodo',
+        rejectedDeleteInstrument: 'Errore eliminazione metodo',
+        rejectedRefund: 'Errore rimborso',
+        transaction: 'Pagamento Pos',
+        paidRefund: 'Rimborso',
+        reversal: 'Storno',
+      },
+      filterEvent: 'Filtra per evento',
     },
     initiativeRefunds: {
       title: 'Rimborsi',

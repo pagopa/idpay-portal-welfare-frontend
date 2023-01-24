@@ -168,6 +168,7 @@ export interface MockedOperationList {
   brandLogo: string | undefined;
   maskedPan: string | undefined;
   amount: number | undefined;
+  accrued: number | undefined;
   circuitType: string | undefined;
   iban: string | undefined;
   channel: string | undefined;

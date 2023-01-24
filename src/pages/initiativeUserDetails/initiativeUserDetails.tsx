@@ -1,20 +1,26 @@
+/* eslint-disable functional/no-let */
 import {
   Breadcrumbs,
-  // Button,
+  Button,
   Card,
   CardContent,
-  Collapse,
-  IconButton,
+  FormControl,
+  InputLabel,
+  // Collapse,
+  // IconButton,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  MenuItem,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableHead,
   // TablePagination,
   TableRow,
+  TextField,
   Typography,
 } from '@mui/material';
 import { Box /* , ThemeProvider  */ } from '@mui/system';
@@ -23,11 +29,16 @@ import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+// import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import { useEffect, useState } from 'react';
-import { Alert } from '@mui/lab';
+import { Alert, DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import itLocale from 'date-fns/locale/it';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getIban,
@@ -39,12 +50,13 @@ import {
   MockedInstrumentDTO,
   MockedStatusWallet,
   MockedOperationList,
+  MockedOperationType,
 } from '../../model/Initiative';
 
 const InitiativeUserDetails = () => {
   const history = useHistory();
   const { t } = useTranslation();
-  const [showDetails, setShowDetails] = useState(true);
+  // const [showDetails, setShowDetails] = useState(true);
   const [amount, setAmount] = useState(0);
   const [accrued, setAccrued] = useState(0);
   const [refunded, setRefunded] = useState(0);
@@ -56,6 +68,9 @@ const InitiativeUserDetails = () => {
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
   const [rows, setRows] = useState<Array<MockedOperationList>>([]);
+  const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
+  const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
+  const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -116,12 +131,15 @@ const InitiativeUserDetails = () => {
             showCloseIcon: true,
           })
         );
-      getTableData(id);
+      getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
     }
   }, []);
 
   const getTableData = (
-    initiativeId: string
+    initiativeId: string,
+    _searchFrom: string | undefined,
+    _searcTo: string | undefined,
+    _filterEvent: string | undefined
     // page: number,
     // timestamp: Date | undefined,
     // totExpense: string | undefined,
@@ -171,6 +189,99 @@ const InitiativeUserDetails = () => {
       .finally(() => setLoading(false));
   };
 
+  const validationSchema = Yup.object().shape({
+    searchFrom: Yup.date()
+      .nullable()
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
+      .typeError(t('validation.invalidDate')),
+    searchTo: Yup.date()
+      .nullable()
+      // eslint-disable-next-line sonarjs/no-identical-functions
+      .transform(function (value, originalValue) {
+        if (this.isType(value)) {
+          return value;
+        }
+        return parse(originalValue, 'dd/MM/yyyy', new Date());
+      })
+      .typeError(t('validation.invalidDate'))
+      .when('searchFrom', (searchFrom, _schema) => {
+        const timestamp = Date.parse(searchFrom);
+        if (isNaN(timestamp) === false) {
+          return Yup.date()
+            .nullable()
+            .min(searchFrom, t('validation.outDateTo'))
+            .typeError(t('validation.invalidDate'));
+        } else {
+          return Yup.date().nullable().typeError(t('validation.invalidDate'));
+        }
+      }),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      searchFrom: null,
+      searchTo: null,
+      filterEvent: '',
+    },
+    validationSchema,
+    validateOnChange: true,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      let searchFromStr;
+      let searchToStr;
+      if (typeof id === 'string') {
+        if (values.searchFrom) {
+          const searchFrom = values.searchFrom as unknown as Date;
+          searchFromStr =
+            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
+              ? `${searchFrom
+                  .toLocaleString('en-CA')
+                  .split(' ')[0]
+                  .substring(
+                    0,
+                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
+                  )}T00:00:00Z`
+              : undefined;
+          setFilterByDateFrom(searchFromStr);
+        }
+        if (values.searchTo) {
+          const searchTo = values.searchTo as unknown as Date;
+          searchToStr =
+            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
+              ? `${searchTo
+                  .toLocaleString('en-CA')
+                  .split(' ')[0]
+                  .substring(
+                    0,
+                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
+                  )}T23:59:59Z`
+              : undefined;
+          setFilterByDateTo(searchToStr);
+        }
+        const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
+        setFilterByEvent(filterEvent);
+        getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+      }
+    },
+  });
+
+  const resetForm = () => {
+    const initialValues = { searchUser: '', searchFrom: null, searchTo: null, filterEvent: '' };
+    formik.resetForm({ values: initialValues });
+    setFilterByDateFrom(undefined);
+    setFilterByDateTo(undefined);
+    setFilterByEvent(undefined);
+    setRows([]);
+    if (typeof id === 'string') {
+      getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+    }
+  };
+
   const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
 
   const getWalletAlerts = (status: MockedStatusWallet | undefined) => {
@@ -200,9 +311,9 @@ const InitiativeUserDetails = () => {
             </>
           );
         case MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN:
-          return alertMissingIban;
-        case MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT:
           return alertMissingPaymentMetod;
+        case MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT:
+          return alertMissingIban;
         case MockedStatusWallet.UNSUBSCRIBED:
           return alertUnsubscribed;
         default:
@@ -329,7 +440,7 @@ const InitiativeUserDetails = () => {
               display: 'grid',
               width: '100%',
               gridTemplateColumns: 'repeat(24, 1fr)',
-              gridTemplateAreas: `"title title title title title icon . . . . . . . . . . update update update date date date date date"`,
+              gridTemplateAreas: `"title title title title title title . . . . . . . . . . update update update date date date date date"`,
               alignItems: 'center',
             }}
           >
@@ -338,7 +449,7 @@ const InitiativeUserDetails = () => {
                 {t('pages.initiativeUserDetails.initiativeState')}
               </Typography>
             </Box>
-            <Box sx={{ display: 'inline-flex', gridArea: 'icon' }}>
+            {/* <Box sx={{ display: 'inline-flex', gridArea: 'icon' }}>
               <IconButton
                 aria-label="close"
                 color="inherit"
@@ -348,7 +459,7 @@ const InitiativeUserDetails = () => {
               >
                 <RemoveRedEyeIcon color="primary" fontSize="inherit" />
               </IconButton>
-            </Box>
+            </Box> */}
             <Box sx={{ display: 'inline-flex', gridArea: 'update', justifyContent: 'start' }}>
               <Typography variant="body2" color="text.secondary" textAlign="left">
                 {t('pages.initiativeUserDetails.updatedOn')}
@@ -359,62 +470,188 @@ const InitiativeUserDetails = () => {
             </Box>
           </Box>
 
-          <Collapse in={showDetails} sx={{ py: 2 }}>
-            <Box
-              sx={{
-                display: 'grid',
-                width: '100%',
-                gridTemplateColumns: 'repeat(24, 1fr)',
-                alignItems: 'center',
-              }}
-            >
-              <Box sx={{ display: 'grid', gridColumn: 'span 8', pr: 1.5 }}>
-                <Card>
-                  <CardContent sx={{ pr: 3, pl: '23px', py: 4 }}>
-                    <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                      {t('pages.initiativeUserDetails.availableBalance')}
-                    </Typography>
-                    <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      {amount}
-                    </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {t('pages.initiativeUserDetails.spendableAmount')}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Box>
-              <Box sx={{ display: 'grid', gridColumn: 'span 8', px: 1.5 }}>
-                <Card>
-                  <CardContent sx={{ px: 3, py: 4 }}>
-                    <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                      {t('pages.initiativeUserDetails.refundedBalance')}
-                    </Typography>
-                    <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      {refunded}
-                    </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {t('pages.initiativeUserDetails.refundedAmount')}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Box>
-              <Box sx={{ display: 'grid', gridColumn: 'span 8', pl: 1.5 }}>
-                <Card>
-                  <CardContent sx={{ px: 3, py: 4 }}>
-                    <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                      {t('pages.initiativeUserDetails.balanceToBeRefunded')}
-                    </Typography>
-                    <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                      {accrued}
-                    </Typography>
-                    <Typography color="text.secondary" variant="body2">
-                      {t('pages.initiativeUserDetails.importNotRefundedYet')}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Box>
+          {/* <Collapse in={showDetails} sx={{ py: 2 }}> */}
+          <Box
+            sx={{
+              display: 'grid',
+              width: '100%',
+              gridTemplateColumns: 'repeat(24, 1fr)',
+              alignItems: 'center',
+              mt: 2,
+            }}
+          >
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', pr: 1.5 }}>
+              <Card>
+                <CardContent sx={{ pr: 3, pl: '23px', py: 4 }}>
+                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                    {t('pages.initiativeUserDetails.availableBalance')}
+                  </Typography>
+                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                    {amount}
+                  </Typography>
+                  <Typography color="text.secondary" variant="body2">
+                    {t('pages.initiativeUserDetails.spendableAmount')}
+                  </Typography>
+                </CardContent>
+              </Card>
             </Box>
-          </Collapse>
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', px: 1.5 }}>
+              <Card>
+                <CardContent sx={{ px: 3, py: 4 }}>
+                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                    {t('pages.initiativeUserDetails.refundedBalance')}
+                  </Typography>
+                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                    {refunded}
+                  </Typography>
+                  <Typography color="text.secondary" variant="body2">
+                    {t('pages.initiativeUserDetails.refundedAmount')}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Box>
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', pl: 1.5 }}>
+              <Card>
+                <CardContent sx={{ px: 3, py: 4 }}>
+                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                    {t('pages.initiativeUserDetails.balanceToBeRefunded')}
+                  </Typography>
+                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                    {accrued}
+                  </Typography>
+                  <Typography color="text.secondary" variant="body2">
+                    {t('pages.initiativeUserDetails.importNotRefundedYet')}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
+          {/* </Collapse> */}
+
+          <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
+            <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>
+          </Box>
+
+          <Box
+            sx={{
+              display: 'grid',
+              width: '100%',
+              gridTemplateColumns: 'repeat(24, 1fr)',
+              alignItems: 'baseline',
+              gap: 2,
+            }}
+          >
+            <FormControl sx={{ gridColumn: 'span 8' }} size="small">
+              <InputLabel>{t('pages.initiativeUserDetails.filterEvent')}</InputLabel>
+              <Select
+                id="filterEvent"
+                inputProps={{
+                  'data-testid': 'filterEvent-select',
+                }}
+                name="filterEvent"
+                label={t('pages.initiativeUserDetails.filterEvent')}
+                placeholder={t('pages.initiativeUserDetails.filterEvent')}
+                onChange={(e) => formik.handleChange(e)}
+                value={formik.values.filterEvent}
+              >
+                <MenuItem value={MockedOperationType.ONBOARDING}>
+                  {t('pages.initiativeUserDetails.operationTypes.onboarding')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.ADD_IBAN}>
+                  {t('pages.initiativeUserDetails.operationTypes.addIban')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.ADD_INSTRUMENT}>
+                  {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.DELETE_INSTRUMENT}>
+                  {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.REJECTED_ADD_INSTRUMENT}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.REJECTED_DELETE_INSTRUMENT}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.REJECTED_REFUND}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.TRANSACTION}>
+                  {t('pages.initiativeUserDetails.operationTypes.transaction')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.PAID_REFUND}>
+                  {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
+                </MenuItem>
+                <MenuItem value={MockedOperationType.REVERSAL}>
+                  {t('pages.initiativeUserDetails.operationTypes.reversal')}
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ gridColumn: 'span 4' }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
+                <DesktopDatePicker
+                  label={t('pages.initiativeUsers.form.from')}
+                  inputFormat="dd/MM/yyyy"
+                  value={formik.values.searchFrom}
+                  onChange={(value) => formik.setFieldValue('searchFrom', value)}
+                  renderInput={(props) => (
+                    <TextField
+                      {...props}
+                      id="searchFrom"
+                      data-testid="searchFrom-test"
+                      name="searchFrom"
+                      type="date"
+                      size="small"
+                      error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
+                      helperText={formik.touched.searchFrom && formik.errors.searchFrom}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </FormControl>
+            <FormControl sx={{ gridColumn: 'span 4' }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
+                <DesktopDatePicker
+                  label={t('pages.initiativeUsers.form.to')}
+                  inputFormat="dd/MM/yyyy"
+                  value={formik.values.searchTo}
+                  onChange={(value) => formik.setFieldValue('searchTo', value)}
+                  renderInput={(props) => (
+                    <TextField
+                      {...props}
+                      id="searchTo"
+                      data-testid="searchTo-test"
+                      name="searchTo"
+                      type="date"
+                      size="small"
+                      error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
+                      helperText={formik.touched.searchTo && formik.errors.searchTo}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+            </FormControl>
+            <FormControl sx={{ gridColumn: 'span 4' }}>
+              <Button
+                sx={{ height: '44.5px' }}
+                variant="outlined"
+                size="small"
+                onClick={() => formik.handleSubmit()}
+                data-testid="apply-filters-test"
+              >
+                {t('pages.initiativeUsers.form.filterBtn')}
+              </Button>
+            </FormControl>
+            <FormControl sx={{ gridColumn: 'span 4' }}>
+              <ButtonNaked
+                component="button"
+                sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
+                onClick={resetForm}
+              >
+                {t('pages.initiativeUsers.form.resetFiltersBtn')}
+              </ButtonNaked>
+            </FormControl>
+          </Box>
+
           {rows.length > 0 ? (
             <Box
               sx={{
@@ -463,8 +700,8 @@ const InitiativeUserDetails = () => {
                               {r.operationType}
                             </ButtonNaked>
                           </TableCell>
-                          <TableCell>{r.amount}</TableCell>
-                          <TableCell>{'-'}</TableCell>
+                          <TableCell>{`€ ${r.amount}`}</TableCell>
+                          <TableCell>{r.accrued ? `€ ${r.accrued}` : '-'}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -506,7 +743,7 @@ const InitiativeUserDetails = () => {
             </Box>
           )}
           {(walletStatus === MockedStatusWallet.REFUNDABLE ||
-            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN) && (
+            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT) && (
             <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
               <Typography variant="overline">
                 {t('pages.initiativeUserDetails.paymentMethod')}
@@ -528,7 +765,7 @@ const InitiativeUserDetails = () => {
           )}
 
           {(walletStatus === MockedStatusWallet.REFUNDABLE ||
-            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT) && (
+            walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN) && (
             <Box sx={{ px: 3, py: 2, mt: 3, backgroundColor: 'background.paper' }}>
               <Typography variant="overline">{t('pages.initiativeUserDetails.iban')}</Typography>
               <Box
