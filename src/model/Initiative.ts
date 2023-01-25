@@ -161,9 +161,9 @@ export interface MockedIbanDTO {
   checkIbanResponseDate: Date | undefined;
 }
 
-export interface MockedOperationList {
-  operationId: string | undefined;
-  operationType: MockedOperationType | undefined;
+export interface MockedOperation {
+  operationId: string;
+  operationType: MockedOperationType;
   operationDate: Date | undefined;
   brandLogo: string | undefined;
   maskedPan: string | undefined;
@@ -176,7 +176,7 @@ export interface MockedOperationList {
 
 export interface MockedOperationListDTO {
   lastUpdate: Date | undefined;
-  operationList: Array<MockedOperationList>;
+  operationList: Array<MockedOperation>;
 }
 export interface MockedInstrumentDTO {
   idWallet: string | undefined;

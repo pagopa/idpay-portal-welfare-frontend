@@ -448,6 +448,16 @@ export default {
         reversal: 'Storno',
       },
       filterEvent: 'Filtra per evento',
+      transactionDetail: {
+        paymentMethod: 'Metodo di pagamento',
+        paymentCircuit: 'Circuito di pagamento',
+        totExpense: 'Totale spesa',
+        importToRefund: 'Importo da rimborsare',
+        date: 'Data',
+        acquirerTransactionId: 'ID transazione Acquirer',
+        issuerTransactionId: 'ID transazione Issuer',
+        result: 'esito',
+      },
     },
     initiativeRefunds: {
       title: 'Rimborsi',

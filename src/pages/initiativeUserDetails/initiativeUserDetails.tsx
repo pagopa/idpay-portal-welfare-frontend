@@ -49,9 +49,10 @@ import {
 import {
   MockedInstrumentDTO,
   MockedStatusWallet,
-  MockedOperationList,
+  MockedOperation,
   MockedOperationType,
 } from '../../model/Initiative';
+import TransactionDetailModal from './TransactionDetailModal';
 
 const InitiativeUserDetails = () => {
   const history = useHistory();
@@ -67,10 +68,12 @@ const InitiativeUserDetails = () => {
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
-  const [rows, setRows] = useState<Array<MockedOperationList>>([]);
+  const [rows, setRows] = useState<Array<MockedOperation>>([]);
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedOperationId, setSelectedOperationId] = useState('');
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -280,6 +283,15 @@ const InitiativeUserDetails = () => {
     if (typeof id === 'string') {
       getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
     }
+  };
+
+  const handleOpenModal = (id: string) => {
+    setOpenModal(true);
+    setSelectedOperationId(id);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
@@ -696,7 +708,7 @@ const InitiativeUserDetails = () => {
                               component="button"
                               sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
                               onClick={() => {
-                                console.log('clicked!'); // history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
+                                handleOpenModal(r.operationId);
                               }}
                             >
                               {r.operationType}
@@ -718,6 +730,12 @@ const InitiativeUserDetails = () => {
                       rowsPerPageOptions={[rowsPerPage]}
                     />
                   </ThemeProvider> */}
+                  <TransactionDetailModal
+                    operationId={selectedOperationId}
+                    openModal={openModal}
+                    handleCloseModal={handleCloseModal}
+                    initiativeId={id}
+                  />
                 </Box>
               </Box>
             </Box>

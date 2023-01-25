@@ -40,6 +40,7 @@ import { SasToken } from '../generated/initiative/SasToken';
 import {
   MockedIbanDTO,
   MockedInstrumentDTO,
+  MockedOperation,
   MockedOperationListDTO,
   MockedWalletDTO,
 } from '../../model/Initiative';
@@ -178,6 +179,13 @@ export const InitiativeApiMocked = {
 
   getTimeLine: async (_id: string): Promise<MockedOperationListDTO> =>
     new Promise((resolve) => resolve(mockedOperationList)),
+
+  getTimelineDetail: async (_id: string, operationId: string): Promise<MockedOperation> => {
+    const operationDetails = mockedOperationList.operationList.filter(
+      (e) => e.operationId === operationId
+    );
+    return new Promise((resolve) => resolve(operationDetails[0]));
+  },
 
   getWalletInstrumen: async (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
     new Promise((resolve) => resolve(mockedWalletInstrument)),
