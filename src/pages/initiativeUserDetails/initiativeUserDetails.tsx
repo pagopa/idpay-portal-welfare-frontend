@@ -693,6 +693,7 @@ const InitiativeUserDetails = () => {
                           </TableCell>
                           <TableCell>
                             <ButtonNaked
+                              data-testid="operationTypeBtn"
                               component="button"
                               sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
                               onClick={() => {
