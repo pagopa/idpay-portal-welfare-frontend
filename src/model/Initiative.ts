@@ -164,7 +164,7 @@ export interface MockedIbanDTO {
 export interface MockedOperation {
   operationId: string;
   operationType: MockedOperationType;
-  operationDate: Date | undefined;
+  operationDate: Date;
   brandLogo: string | undefined;
   maskedPan: string | undefined;
   amount: number | undefined;
@@ -172,6 +172,8 @@ export interface MockedOperation {
   circuitType: string | undefined;
   iban: string | undefined;
   channel: string | undefined;
+  aquirerId: string | undefined;
+  issuerId: string | undefined;
 }
 
 export interface MockedOperationListDTO {

@@ -335,6 +335,33 @@ const InitiativeUserDetails = () => {
     return null;
   };
 
+  const operationTypeLabel = (opeType: string) => {
+    switch (opeType) {
+      case MockedOperationType.ADD_IBAN:
+        return t('pages.initiativeUserDetails.operationTypes.addIban');
+      case MockedOperationType.ADD_INSTRUMENT:
+        return t('pages.initiativeUserDetails.operationTypes.addInstrument');
+      case MockedOperationType.DELETE_INSTRUMENT:
+        return t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
+      case MockedOperationType.ONBOARDING:
+        return t('pages.initiativeUserDetails.operationTypes.onboarding');
+      case MockedOperationType.PAID_REFUND:
+        return t('pages.initiativeUserDetails.operationTypes.paidRefund');
+      case MockedOperationType.REJECTED_ADD_INSTRUMENT:
+        return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
+      case MockedOperationType.REJECTED_DELETE_INSTRUMENT:
+        return t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument');
+      case MockedOperationType.REJECTED_REFUND:
+        return t('pages.initiativeUserDetails.operationTypes.rejectedRefund');
+      case MockedOperationType.REVERSAL:
+        return t('pages.initiativeUserDetails.operationTypes.reversal');
+      case MockedOperationType.TRANSACTION:
+        return t('pages.initiativeUserDetails.operationTypes.transaction');
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     if (typeof iban === 'string') {
       getIban(iban)
@@ -456,7 +483,7 @@ const InitiativeUserDetails = () => {
               alignItems: 'center',
             }}
           >
-            <Box sx={{ display: 'inline-flex', gridArea: 'title' }}>
+            <Box sx={{ display: 'inline-flex', gridArea: 'title', mt: 5 }}>
               <Typography variant="h6">
                 {t('pages.initiativeUserDetails.initiativeState')}
               </Typography>
@@ -472,12 +499,14 @@ const InitiativeUserDetails = () => {
                 <RemoveRedEyeIcon color="primary" fontSize="inherit" />
               </IconButton>
             </Box> */}
-            <Box sx={{ display: 'inline-flex', gridArea: 'update', justifyContent: 'start' }}>
+            <Box
+              sx={{ display: 'inline-flex', gridArea: 'update', justifyContent: 'start', mt: 5 }}
+            >
               <Typography variant="body2" color="text.secondary" textAlign="left">
                 {t('pages.initiativeUserDetails.updatedOn')}
               </Typography>
             </Box>
-            <Box sx={{ display: 'inline-flex', gridArea: 'date', justifyContent: 'start' }}>
+            <Box sx={{ display: 'inline-flex', gridArea: 'date', justifyContent: 'start', mt: 5 }}>
               <Typography variant="body2">{lastCounterUpdate?.toLocaleString('fr-BE')}</Typography>
             </Box>
           </Box>
@@ -712,7 +741,7 @@ const InitiativeUserDetails = () => {
                                 handleOpenModal(r.operationId);
                               }}
                             >
-                              {r.operationType}
+                              {operationTypeLabel(r.operationType)}
                             </ButtonNaked>
                           </TableCell>
                           <TableCell>{`€ ${r.amount}`}</TableCell>
@@ -736,6 +765,8 @@ const InitiativeUserDetails = () => {
                     openModal={openModal}
                     handleCloseModal={handleCloseModal}
                     initiativeId={id}
+                    holderBank={holderBank}
+                    operationTypeLabel={operationTypeLabel}
                   />
                 </Box>
               </Box>

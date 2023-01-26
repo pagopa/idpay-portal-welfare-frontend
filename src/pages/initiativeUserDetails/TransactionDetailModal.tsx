@@ -3,7 +3,7 @@ import { MouseEventHandler, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
-import { MockedOperation } from '../../model/Initiative';
+import { MockedOperation, MockedOperationType } from '../../model/Initiative';
 import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
 
 type Props = {
@@ -11,6 +11,8 @@ type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   initiativeId: string;
+  holderBank: string;
+  operationTypeLabel: any;
 };
 
 const TransactionDetailModal = ({
@@ -18,6 +20,8 @@ const TransactionDetailModal = ({
   openModal,
   handleCloseModal,
   initiativeId,
+  holderBank,
+  operationTypeLabel,
 }: Props) => {
   const { t } = useTranslation();
   const [transactionDetail, setTransactionDetail] = useState<MockedOperation>();
@@ -104,52 +108,101 @@ const TransactionDetailModal = ({
           >
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="h6" component="h2">
-                {transactionDetail?.operationType}
+                {operationTypeLabel(transactionDetail?.operationType)}
               </Typography>
             </Box>
+            {transactionDetail?.operationType !== MockedOperationType.ADD_IBAN ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.paymentMethod')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {getMaskedPan(transactionDetail?.maskedPan)}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
+            {transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.iban')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail?.iban}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.bank')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {holderBank}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.addedBy')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail.channel}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
+            {transactionDetail?.operationType === MockedOperationType.REVERSAL ||
+            transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? null : (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.paymentCircuit')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail?.circuitType}
+                  </Typography>
+                </Box>
+              </>
+            )}
+            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
+            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.totExpense')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {`${transactionDetail?.amount} € `}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.importToRefund')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {`${transactionDetail?.accrued} € `}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
+
             <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
               <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.paymentMethod')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body2" fontWeight={600}>
-                {getMaskedPan(transactionDetail?.maskedPan)}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.paymentCircuit')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body2" fontWeight={600}>
-                {transactionDetail?.circuitType}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.totExpense')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body2" fontWeight={600}>
-                {`${transactionDetail?.amount} € `}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.importToRefund')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body2" fontWeight={600}>
-                {`${transactionDetail?.accrued} € `}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.importToRefund')}
+                {t('pages.initiativeUserDetails.transactionDetail.date')}
               </Typography>
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
@@ -162,6 +215,31 @@ const TransactionDetailModal = ({
                   )}
               </Typography>
             </Box>
+            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
+            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.acquirerTransactionId')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail.aquirerId}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.issuerTransactionId')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail.issuerId}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
           </Box>
         </Box>
       </Fade>

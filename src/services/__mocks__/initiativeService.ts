@@ -340,7 +340,9 @@ export const mockedOperationList = {
       accrued: 10,
       circuitType: 'circuito',
       iban: '',
-      channel: '',
+      channel: 'App IO',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '2e2e2e2e2e2e2e2',
@@ -353,6 +355,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '3e3e3e3e3e3e3e3e',
@@ -363,8 +367,10 @@ export const mockedOperationList = {
       amount: 34,
       accrued: 0,
       circuitType: 'circuito',
-      iban: '',
-      channel: '',
+      iban: 'IT12T1234512345123456789012',
+      channel: 'App IO',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '4o4o4o4o4o4o4o4o',
@@ -377,6 +383,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '5e5e5e5e5e5e5e5e',
@@ -389,6 +397,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '6i6i6i6i6i6i6i6i',
@@ -401,6 +411,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '7e7e7e7e7e7e7e7e',
@@ -413,6 +425,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '8o8o8o8o8o8o8o8o',
@@ -425,6 +439,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '9e9e9e9e9e9e9e9e',
@@ -437,6 +453,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
     {
       operationId: '10i10i10i10i10i10i10i10i',
@@ -449,6 +467,8 @@ export const mockedOperationList = {
       circuitType: 'circuito',
       iban: '',
       channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
     },
   ],
 };

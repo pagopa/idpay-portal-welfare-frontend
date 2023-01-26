@@ -457,6 +457,8 @@ export default {
         acquirerTransactionId: 'ID transazione Acquirer',
         issuerTransactionId: 'ID transazione Issuer',
         result: 'esito',
+        bank: 'Banca',
+        iban: 'IBAN',
       },
     },
     initiativeRefunds: {
