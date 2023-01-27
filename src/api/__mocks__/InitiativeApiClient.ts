@@ -13,7 +13,8 @@ import {
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedNotificationReward,
-  mockedOnBoardingStatusResponse
+  mockedOnBoardingStatusResponse,
+  mockedOrganizationsList,
 } from '../../services/__mocks__/initiativeService';
 import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
@@ -33,6 +34,7 @@ import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardin
 import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
 import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { SasToken } from '../generated/initiative/SasToken';
+import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -159,4 +161,7 @@ export const InitiativeApiMocked = {
 
   getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
     new Promise((resolve) => resolve(mockedMccCodes)),
+
+  getOrganizationsList: async (): Promise<OrganizationListDTO> =>
+    new Promise((resolve) => resolve(mockedOrganizationsList)),
 };

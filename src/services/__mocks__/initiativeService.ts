@@ -845,3 +845,34 @@ export const fetchInitiativeUsers = (page: number) => {
     return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
   }
 };
+
+export const mockedOrganizationsList = [
+  {
+    organizationId: '1',
+    organizationName: 'Comune di Milano',
+  },
+  {
+    organizationId: '2',
+    organizationName: 'Comune di Roma',
+  },
+  {
+    organizationId: '3',
+    organizationName: 'Comune di Genova',
+  },
+  {
+    organizationId: '4',
+    organizationName: 'Comune di Firenze',
+  },
+  {
+    organizationId: '5',
+    organizationName: 'Comune di Aosta',
+  },
+  {
+    organizationId: '6',
+    organizationName: 'Comune di Venezia',
+  },
+  {
+    organizationId: '7',
+    organizationName: 'Comune di Genoveffa',
+  },
+];

@@ -17,6 +17,7 @@ const ROUTES = {
   ASSISTANCE: `${BASE_ROUTE}/assistenza`,
   TOS: `${BASE_ROUTE}/terms-of-service`,
   PRIVACY_POLICY: `${BASE_ROUTE}/privacy-policy`,
+  CHOOSE_ORGANIZATION: `${BASE_ROUTE}/selezione-ente`,
 };
 
 export default ROUTES;

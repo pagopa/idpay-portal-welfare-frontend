@@ -27,6 +27,7 @@ import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import TOSLayout from './components/TOSLayout/TOSLayout';
 import TOS from './pages/tos/TOS';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
+import ChooseOrganization from './pages/ChooseOrganization/ChooseOrganization';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -89,6 +90,9 @@ const SecuredRoutes = withLogin(
           </Route>
           <Route path={routes.PRIVACY_POLICY} exact={true}>
             <PrivacyPolicy />
+          </Route>
+          <Route path={routes.CHOOSE_ORGANIZATION} exact={true}>
+            <ChooseOrganization />
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />
