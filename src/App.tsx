@@ -23,17 +23,17 @@ import Assistance from './pages/assistance/assistance';
 import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativeRefundsOutcome';
 import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 import TOSWall from './components/TOS/TOSWall';
-import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import TOSLayout from './components/TOSLayout/TOSLayout';
 import TOS from './pages/tos/TOS';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
+import useTCAgreement from './hooks/useTCAgreement';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
     const location = useLocation();
-    const { isTOSAccepted, acceptTOS } = useTOSAgreementLocalStorage();
+    const { isTOSAccepted, acceptTOS, acceptedTOSVersion } = useTCAgreement();
 
     if (
       !isTOSAccepted &&
@@ -46,6 +46,7 @@ const SecuredRoutes = withLogin(
             acceptTOS={acceptTOS}
             privacyRoute={routes.PRIVACY_POLICY}
             tosRoute={routes.TOS}
+            newVersionAvailable={acceptedTOSVersion ? true : false}
           />
         </TOSLayout>
       );

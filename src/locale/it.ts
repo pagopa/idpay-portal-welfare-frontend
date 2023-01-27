@@ -809,6 +809,9 @@ export default {
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
     cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
     contactAdmin: "Contattare l'assistenza",
+    cantSaveTC: "Non è stato possibile salvare l'accettazione dei termini e condizioni",
+    cantGetTC:
+      "Non è stato possibile recuperare le informazioni in merito all'accettazione dei termini e condizioni",
   },
   helpStaticUrls: {
     wizard: {
@@ -830,5 +833,7 @@ export default {
     termsDescription2: 'del servizio e confermi di aver letto l’',
     linkPrivacy: 'Informativa Privacy',
     backHome: 'Torna alla home',
+    termsDescriptionChanged:
+      'Recentemente abbiamo cambiato i nostri Termini e condizioni d’uso e la nostra informativa sulla privacy',
   },
 };
