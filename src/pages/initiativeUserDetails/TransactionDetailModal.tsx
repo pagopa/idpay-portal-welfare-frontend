@@ -3,6 +3,8 @@ import { MouseEventHandler, useEffect, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
+import { Chip } from '@mui/material';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { MockedOperation, MockedOperationType } from '../../model/Initiative';
 import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
 
@@ -52,6 +54,48 @@ const TransactionDetailModal = ({
   }, [operationId, openModal, initiativeId]);
 
   const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
+
+  const transactionResult = (opeType: MockedOperationType | undefined) => {
+    if (typeof opeType !== 'undefined') {
+      if (opeType?.toUpperCase().substring(0, 8) === 'REJECTED') {
+        return (
+          <>
+            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+              <Typography variant="body2" color="text.secondary" textAlign="left">
+                {t('pages.initiativeUserDetails.transactionDetail.result')}
+              </Typography>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Chip
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
+                label={i18n.t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
+                color="error"
+              />
+            </Box>
+          </>
+        );
+      } else {
+        return (
+          <>
+            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+              <Typography variant="body2" color="text.secondary" textAlign="left">
+                {t('pages.initiativeUserDetails.transactionDetail.result')}
+              </Typography>
+            </Box>
+            <Box sx={{ gridColumn: 'span 12' }}>
+              <Chip
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
+                label={i18n.t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
+                color="success"
+              />
+            </Box>
+          </>
+        );
+      }
+    } else {
+      return;
+    }
+  };
 
   return (
     <Modal
@@ -239,7 +283,9 @@ const TransactionDetailModal = ({
                   </Typography>
                 </Box>
               </>
-            ) : null}
+            ) : (
+              transactionResult(transactionDetail?.operationType)
+            )}
           </Box>
         </Box>
       </Fade>
