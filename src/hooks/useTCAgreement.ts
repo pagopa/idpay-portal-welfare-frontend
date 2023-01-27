@@ -11,7 +11,7 @@ const useTCAgreement = () => {
   useEffect(() => {
     getPortalConsent()
       .then((res) => {
-        if (res) {
+        if (res !== null) {
           if (res.versionId) {
             setAcceptedTOS(false);
             setAcceptedTOSVersion(res.versionId);
