@@ -124,19 +124,25 @@ const InitiativeOverview = () => {
         setLoading(true);
         initiativeStatistics(id)
           .then((res) => {
-            if (typeof res.accruedRewards === 'string') {
-              setAccruedRewards(res.accruedRewards);
-            }
-            if (typeof res.onboardedCitizenCount === 'number') {
-              setOnboardedCitizenCount(res.onboardedCitizenCount);
-            }
-            if (typeof res.lastUpdatedDateTime === 'object') {
-              const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
-              const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
-                0,
-                lastUpdateDateTimeStr.length - 3
-              );
-              setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+            if (res) {
+              if (typeof res.accruedRewards === 'string') {
+                setAccruedRewards(res.accruedRewards);
+              }
+              if (typeof res.onboardedCitizenCount === 'number') {
+                setOnboardedCitizenCount(res.onboardedCitizenCount);
+              }
+              if (typeof res.lastUpdatedDateTime === 'object') {
+                const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
+                const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
+                  0,
+                  lastUpdateDateTimeStr.length - 3
+                );
+                setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+              }
+            } else {
+              setAccruedRewards('0');
+              setOnboardedCitizenCount(0);
+              setLastUpdatedDateTime('-');
             }
           })
           .catch((error) => {

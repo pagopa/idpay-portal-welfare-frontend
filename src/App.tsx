@@ -24,20 +24,20 @@ import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativ
 import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 import InitiativeUserDetails from './pages/initiativeUserDetails/initiativeUserDetails';
 import TOSWall from './components/TOS/TOSWall';
-import useTOSAgreementLocalStorage from './hooks/useTOSAgreementLocalStorage';
 import TOSLayout from './components/TOSLayout/TOSLayout';
 import TOS from './pages/tos/TOS';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
+import useTCAgreement from './hooks/useTCAgreement';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
     const location = useLocation();
-    const { isTOSAccepted, acceptTOS } = useTOSAgreementLocalStorage();
+    const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
 
     if (
-      !isTOSAccepted &&
+      isTOSAccepted === false &&
       location.pathname !== routes.PRIVACY_POLICY &&
       location.pathname !== routes.TOS
     ) {
@@ -47,9 +47,16 @@ const SecuredRoutes = withLogin(
             acceptTOS={acceptTOS}
             privacyRoute={routes.PRIVACY_POLICY}
             tosRoute={routes.TOS}
+            firstAcceptance={firstAcceptance}
           />
         </TOSLayout>
       );
+    } else if (
+      typeof isTOSAccepted === 'undefined' &&
+      location.pathname !== routes.PRIVACY_POLICY &&
+      location.pathname !== routes.TOS
+    ) {
+      return <></>;
     }
 
     return (
