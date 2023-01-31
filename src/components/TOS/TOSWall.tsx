@@ -6,15 +6,13 @@ interface TOSWallProps {
   acceptTOS: () => void;
   tosRoute: string;
   privacyRoute: string;
-  newVersionAvailable: boolean;
+  firstAcceptance: boolean | undefined;
 }
 
-const TOSWall = ({ acceptTOS, tosRoute, privacyRoute, newVersionAvailable }: TOSWallProps) => {
+const TOSWall = ({ acceptTOS, tosRoute, privacyRoute, firstAcceptance }: TOSWallProps) => {
   const { t } = useTranslation();
 
-  const description = newVersionAvailable ? (
-    <Typography color="text.secondary">{t('tos.termsDescriptionChanged')}</Typography>
-  ) : (
+  const description = firstAcceptance ? (
     <Typography color="text.secondary">
       {t('tos.termsDescription')}{' '}
       <Link underline="hover" href={tosRoute}>
@@ -25,6 +23,8 @@ const TOSWall = ({ acceptTOS, tosRoute, privacyRoute, newVersionAvailable }: TOS
         {t('tos.linkPrivacy')}
       </Link>
     </Typography>
+  ) : (
+    <Typography color="text.secondary">{t('tos.termsDescriptionChanged')}</Typography>
   );
 
   return (

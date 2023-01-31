@@ -6,22 +6,22 @@ import { getPortalConsent, savePortalConsent } from '../services/rolePermissionS
 const useTCAgreement = () => {
   const addError = useErrorDispatcher();
   const { t } = useTranslation();
-  const [acceptedTOS, setAcceptedTOS] = useState<boolean>(true);
+  const [acceptedTOS, setAcceptedTOS] = useState<boolean | undefined>(undefined);
   const [acceptedTOSVersion, setAcceptedTOSVersion] = useState<string | undefined>();
+  const [firstAcceptance, setFirstAcceptance] = useState<boolean | undefined>(false);
   useEffect(() => {
     getPortalConsent()
       .then((res) => {
-        if (res !== null) {
-          if (res.versionId) {
-            setAcceptedTOS(false);
-            setAcceptedTOSVersion(res.versionId);
-          }
-        } else {
+        if (Object.keys(res).length) {
+          setAcceptedTOSVersion(res.versionId);
+          setFirstAcceptance(res.firstAcceptance);
           setAcceptedTOS(false);
-          setAcceptedTOSVersion(undefined);
+        } else {
+          setAcceptedTOS(true);
         }
       })
       .catch((error) => {
+        setAcceptedTOS(false);
         addError({
           id: 'GET_TERMS_AND_CONDITION_ACCEPTANCE',
           blocking: false,
@@ -38,8 +38,11 @@ const useTCAgreement = () => {
 
   const acceptTOS = () => {
     savePortalConsent(acceptedTOSVersion)
-      .then((_res) => {})
+      .then((_res) => {
+        setAcceptedTOS(true);
+      })
       .catch((error) => {
+        setAcceptedTOS(false);
         addError({
           id: 'SAVE_TERMS_AND_CONDITION_ACCEPTANCE',
           blocking: false,
@@ -54,7 +57,7 @@ const useTCAgreement = () => {
       });
   };
 
-  return { isTOSAccepted: acceptedTOS, acceptTOS, acceptedTOSVersion };
+  return { isTOSAccepted: acceptedTOS, acceptTOS, firstAcceptance };
 };
 
 export default useTCAgreement;

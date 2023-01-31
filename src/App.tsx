@@ -33,10 +33,10 @@ const SecuredRoutes = withLogin(
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
     const location = useLocation();
-    const { isTOSAccepted, acceptTOS, acceptedTOSVersion } = useTCAgreement();
+    const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
 
     if (
-      !isTOSAccepted &&
+      isTOSAccepted === false &&
       location.pathname !== routes.PRIVACY_POLICY &&
       location.pathname !== routes.TOS
     ) {
@@ -46,10 +46,16 @@ const SecuredRoutes = withLogin(
             acceptTOS={acceptTOS}
             privacyRoute={routes.PRIVACY_POLICY}
             tosRoute={routes.TOS}
-            newVersionAvailable={acceptedTOSVersion ? true : false}
+            firstAcceptance={firstAcceptance}
           />
         </TOSLayout>
       );
+    } else if (
+      typeof isTOSAccepted === 'undefined' &&
+      location.pathname !== routes.PRIVACY_POLICY &&
+      location.pathname !== routes.TOS
+    ) {
+      return <></>;
     }
 
     return (
