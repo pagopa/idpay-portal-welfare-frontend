@@ -18,10 +18,10 @@ jest.mock('@pagopa/mui-italia/dist/components/Footer/Footer', () => ({
 
 const mockSignOutFn = jest.fn();
 
-jest.mock('../hooks/useTOSAgreementLocalStorage', () => () => ({
+jest.mock('../hooks/useTCAgreement', () => () => ({
   isTOSAccepted: true,
   acceptTOS: mockSignOutFn,
-  acceptedTOS: '',
+  firstAcceptance: false,
 }));
 
 jest.mock('../decorators/withLogin');
