@@ -70,7 +70,7 @@ const Header = ({ withSecondHeader, onExit, loggedUser }: /* , parties */ Props)
         party2Show.map((party) => ({
           id: party.partyId,
           name: party.description,
-          productRole: party.roles.map((r) => t(`roles.${r.roleKey}`)).join(','),
+          productRole: party?.roles?.map((r) => t(`roles.${r.roleKey}`)).join(','),
           logoUrl: party.urlLogo,
         }))
       }
