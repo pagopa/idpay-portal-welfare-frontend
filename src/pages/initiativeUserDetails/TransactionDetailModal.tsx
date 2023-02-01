@@ -65,9 +65,9 @@ const TransactionDetailModal = ({
                 {t('pages.initiativeUserDetails.transactionDetail.result')}
               </Typography>
             </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
+            <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
               <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600, px: '2px', py: '4px' }}
                 label={i18n.t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
                 color="error"
               />
@@ -82,9 +82,9 @@ const TransactionDetailModal = ({
                 {t('pages.initiativeUserDetails.transactionDetail.result')}
               </Typography>
             </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
+            <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
               <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600, px: '2px', py: '4px' }}
                 label={i18n.t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
                 color="success"
               />
@@ -176,7 +176,7 @@ const TransactionDetailModal = ({
                     {t('pages.initiativeUserDetails.transactionDetail.iban')}
                   </Typography>
                 </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
+                <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
                   <Typography variant="body2" fontWeight={600}>
                     {transactionDetail?.iban}
                   </Typography>
