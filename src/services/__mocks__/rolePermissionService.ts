@@ -19,4 +19,9 @@ export const mockedPermission = [
   },
 ];
 
+export const mockedPortalConsent = {
+  firstAcceptance: true,
+  versionId: '23456',
+};
+
 export const getUserPermission = () => RolePermissionApiMocked.userPermission();
