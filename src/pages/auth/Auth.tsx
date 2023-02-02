@@ -38,7 +38,10 @@ const Auth = () => {
       };
 
       fetch(url, options)
-        .then((response) => response.text())
+        .then((response) => {
+          console.log(response);
+          return response.text();
+        })
         .then((innerToken) => {
           storageTokenOps.write(innerToken);
           const user = readUserFromToken(innerToken);
