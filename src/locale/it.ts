@@ -12,6 +12,7 @@ export default {
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
     admin: 'Amministratore',
     ope_base: 'Operatore PagoPA',
+    pagopa_admin: 'Operatore PagoPA',
   },
   sideMenu: {
     home: {
