@@ -22,10 +22,12 @@ import { useEffect, useState } from 'react';
 import { PartyAccountItem } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { OrganizationListDTO } from '../../api/generated/initiative/OrganizationListDTO';
 import { getOrganizationsList } from '../../services/intitativeService';
 import { OrganizationDTO } from '../../api/generated/initiative/OrganizationDTO';
 import ROUTES from '../../routes';
+import { ENV } from '../../utils/env';
 
 const ChooseOrganization = () => {
   const theme = useTheme();
@@ -81,8 +83,31 @@ const ChooseOrganization = () => {
   };
 
   const sendOrganizationSelected = () => {
-    // TODO call api
-    history.replace(ROUTES.HOME);
+    const token = storageTokenOps.read();
+
+    const url = ENV.URL_FE.PRE_LOGIN;
+    const options = {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'organization-id': organizationSelected?.organizationId || '',
+        'Ocp-Apim-Trace': 'true',
+        'Ocp-Apim-Subscription-Key': '416d0fde53d144bab55e828d3ea8d886',
+      },
+    };
+
+    fetch(url, options)
+      .then((response) => response.text())
+      .then((innerToken) => {
+        storageTokenOps.write(innerToken);
+        history.replace(ROUTES.HOME);
+      })
+      .catch((error) => {
+        console.error(error);
+        // window.location.assign(ENV.URL_FE.LOGIN);
+      });
   };
 
   return (
@@ -186,14 +211,14 @@ const ChooseOrganization = () => {
                 }}
               >
                 <List>
-                  {organizationsListFiltered?.map((l) => (
-                    <ListItemButton key={l.organizationId} onClick={() => selectOrganization(l)}>
+                  {organizationsListFiltered?.map((el, i) => (
+                    <ListItemButton key={i} onClick={() => selectOrganization(el)}>
                       <ListItemAvatar>
                         <Avatar>
                           <AccountBalanceIcon />
                         </Avatar>
                       </ListItemAvatar>
-                      <ListItemText primary={l.organizationName} />
+                      <ListItemText primary={el.organizationName} />
                     </ListItemButton>
                   ))}
                 </List>
