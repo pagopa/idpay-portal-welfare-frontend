@@ -85,7 +85,7 @@ const ChooseOrganization = () => {
   const sendOrganizationSelected = () => {
     const token = storageTokenOps.read();
 
-    const url = ENV.URL_FE.PRE_LOGIN;
+    const url = `${ENV.URL_API.INITIATIVE}/token/portal`;
     const options = {
       method: 'POST',
       headers: {
