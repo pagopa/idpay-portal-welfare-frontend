@@ -522,6 +522,12 @@ export default {
         rewardsAdded: '{{x}} esiti aggiunti',
       },
     },
+    chooseOrganization: {
+      title: 'Seleziona Ente',
+      subtitle: 'L’elenco mostra soltanto i Comuni che hanno iniziative da revisionare o in corso.',
+      searchInputLabel: 'Cerca ente',
+      continueBtnLabel: 'Continua',
+    },
   },
   breadcrumbs: {
     exit: 'Esci',

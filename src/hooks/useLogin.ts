@@ -12,18 +12,33 @@ import { JWTUser } from '../model/JwtUser';
 import { getUserPermission } from '../services/rolePermissionService';
 import { setUserRole, setPermissionsList } from '../redux/slices/permissionsSlice';
 import { Permission } from '../model/Permission';
+import { IDPayUser } from '../model/IDPayUser';
 
-const mockedUser = {
-  uid: '0',
-  taxCode: 'AAAAAA00A00A000A',
-  name: 'loggedName',
-  surname: 'loggedSurname',
-  email: 'loggedEmail@aa.aa',
-  org_party_role: 'ADMIN',
-  org_role: 'admin',
-};
+// const mockedUser = {
+//   uid: '0',
+//   taxCode: 'AAAAAA00A00A000A',
+//   name: 'loggedName',
+//   surname: 'loggedSurname',
+//   email: 'loggedEmail@aa.aa',
+//   org_party_role: 'ADMIN',
+//   org_role: 'admin',
+// };
 
 export const userFromJwtToken: (token: string) => User = function (token: string) {
+  const jwtUser: JWTUser = parseJwt(token);
+  return {
+    uid: jwtUser.uid,
+    taxCode: '',
+    name: jwtUser.name,
+    surname: jwtUser.family_name,
+    email: jwtUser.email,
+    org_party_role: jwtUser.org_party_role,
+    org_role: jwtUser.org_role,
+  };
+};
+
+// eslint-disable-next-line sonarjs/no-identical-functions
+export const userFromJwtTokenAsJWTUser: (token: string) => IDPayUser = function (token: string) {
   const jwtUser: JWTUser = parseJwt(token);
   return {
     uid: jwtUser.uid,
@@ -67,9 +82,12 @@ export const useLogin = () => {
 
   const attemptSilentLogin = async () => {
     if (CONFIG.MOCKS.MOCK_USER) {
-      setUser(mockedUser);
+      // setUser(mockedUser);
+      const mockedUserFromJWT = userFromJwtTokenAsJWTUser(CONFIG.TEST.JWT);
+      setUser(mockedUserFromJWT);
       storageTokenOps.write(CONFIG.TEST.JWT);
-      storageUserOps.write(mockedUser);
+      // storageUserOps.write(mockedUser);
+      storageUserOps.write(mockedUserFromJWT);
       saveUserPermissions(dispatch, addError, t);
       return;
     }

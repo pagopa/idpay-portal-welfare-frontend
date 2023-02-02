@@ -70,3 +70,5 @@ export enum ManualCriteriaOptions {
   BOOLEAN = 'boolean',
   MULTI = 'multi',
 }
+
+export const PAGOPA_ADMIN_ROLE = 'pagopa_admin';

@@ -23,6 +23,7 @@ import { PageRewardImportsDTO } from './generated/initiative/PageRewardImportsDT
 import { LogoDTO } from './generated/initiative/LogoDTO';
 import { CsvDTO } from './generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from './generated/initiative/PageOnboardingRankingsDTO';
+import { OrganizationListDTO } from './generated/initiative/OrganizationListDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -302,5 +303,10 @@ export const InitiativeApi = {
   notifyCitizenRankings: async (id: string): Promise<void> => {
     const result = await apiClient.notifyCitizenRankings({ initiativeId: id });
     return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  getOrganizationsList: async (): Promise<OrganizationListDTO> => {
+    const result = await apiClient.getListOfOrganization({});
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };

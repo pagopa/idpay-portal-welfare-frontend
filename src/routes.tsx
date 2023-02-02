@@ -18,6 +18,7 @@ const ROUTES = {
   INITIATIVE_USER_DETAILS: `${BASE_ROUTE}/dettagli-utente/:id/:cf`,
   TOS: `${BASE_ROUTE}/terms-of-service`,
   PRIVACY_POLICY: `${BASE_ROUTE}/privacy-policy`,
+  CHOOSE_ORGANIZATION: `${BASE_ROUTE}/selezione-ente`,
 };
 
 export default ROUTES;

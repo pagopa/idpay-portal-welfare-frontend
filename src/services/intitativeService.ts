@@ -22,6 +22,7 @@ import { LogoDTO } from '../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
+import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
 import {
   mockedExportsPagedParam,
   mockedFileName,
@@ -350,4 +351,11 @@ export const notifyCitizenRankings = (id: string): Promise<void> => {
     return InitiativeApiMocked.notifyCitizenRankings(mockedInitiativeId);
   }
   return InitiativeApi.notifyCitizenRankings(id).then((res) => res);
+};
+
+export const getOrganizationsList = (): Promise<OrganizationListDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getOrganizationsList();
+  }
+  return InitiativeApi.getOrganizationsList().then((res) => res);
 };

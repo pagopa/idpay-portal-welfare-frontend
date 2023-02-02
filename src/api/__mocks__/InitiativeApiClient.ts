@@ -16,6 +16,7 @@ import {
   mockedNotificationReward,
   mockedOnBoardingStatusResponse,
   mockedOperationList,
+  mockedOrganizationsList,
   mockedWallet,
   mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
@@ -44,6 +45,7 @@ import {
   MockedOperationListDTO,
   MockedWalletDTO,
 } from '../../model/Initiative';
+import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -189,4 +191,7 @@ export const InitiativeApiMocked = {
 
   getWalletInstrumen: async (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
     new Promise((resolve) => resolve(mockedWalletInstrument)),
+
+  getOrganizationsList: async (): Promise<OrganizationListDTO> =>
+    new Promise((resolve) => resolve(mockedOrganizationsList)),
 };
