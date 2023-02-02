@@ -29,8 +29,7 @@ import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-// import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Alert, DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
@@ -74,6 +73,7 @@ const InitiativeUserDetails = () => {
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
+  const [boxHeight, setBoxHeight] = useState('');
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -135,6 +135,14 @@ const InitiativeUserDetails = () => {
           })
         );
       getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+    }
+  }, []);
+
+  const heightRef = useCallback((card) => {
+    if (card !== null) {
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      const h = card.getBoundingClientRect().height.toString() + 'px';
+      setBoxHeight(h);
     }
   }, []);
 
@@ -478,36 +486,27 @@ const InitiativeUserDetails = () => {
             sx={{
               display: 'grid',
               width: '100%',
-              gridTemplateColumns: 'repeat(24, 1fr)',
-              gridTemplateAreas: `"title title title title title title . . . . . . . . . . update update update date date date date date"`,
+              gridTemplateColumns: 'repeat(12, 1fr)',
               alignItems: 'center',
+              justifyContent: 'space-between',
             }}
           >
-            <Box sx={{ display: 'inline-flex', gridArea: 'title', mt: 5 }}>
+            <Box sx={{ display: 'inline-flex', gridColumn: 'span 6', mt: 5 }}>
               <Typography variant="h6">
                 {t('pages.initiativeUserDetails.initiativeState')}
               </Typography>
             </Box>
-            {/* <Box sx={{ display: 'inline-flex', gridArea: 'icon' }}>
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => setShowDetails(!showDetails)}
-                data-testid="view-detail-icon"
-              >
-                <RemoveRedEyeIcon color="primary" fontSize="inherit" />
-              </IconButton>
-            </Box> */}
             <Box
-              sx={{ display: 'inline-flex', gridArea: 'update', justifyContent: 'start', mt: 5 }}
+              sx={{ gridColumn: 'span 6', display: 'inline-flex', mt: 5, justifyContent: 'end' }}
             >
-              <Typography variant="body2" color="text.secondary" textAlign="left">
+              <Typography variant="body2" color="text.secondary" sx={{ pr: 1 }}>
                 {t('pages.initiativeUserDetails.updatedOn')}
               </Typography>
-            </Box>
-            <Box sx={{ display: 'inline-flex', gridArea: 'date', justifyContent: 'start', mt: 5 }}>
-              <Typography variant="body2">{lastCounterUpdate?.toLocaleString('fr-BE')}</Typography>
+              <Typography variant="body2" fontWeight={600}>
+                {lastCounterUpdate
+                  ?.toLocaleString('fr-BE')
+                  .substring(0, lastCounterUpdate?.toLocaleString('fr-BE').length - 3)}
+              </Typography>
             </Box>
           </Box>
 
@@ -521,9 +520,9 @@ const InitiativeUserDetails = () => {
               mt: 2,
             }}
           >
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', pr: 1.5 }}>
-              <Card>
-                <CardContent sx={{ pr: 3, pl: '23px', py: 4 }}>
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', pr: 1.5 }} ref={heightRef}>
+              <Card sx={{ height: boxHeight }}>
+                <CardContent sx={{ px: 3, py: 4 }}>
                   <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
                     {t('pages.initiativeUserDetails.availableBalance')}
                   </Typography>
@@ -536,8 +535,8 @@ const InitiativeUserDetails = () => {
                 </CardContent>
               </Card>
             </Box>
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', px: 1.5 }}>
-              <Card>
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', px: 1.5 }} ref={heightRef}>
+              <Card sx={{ height: boxHeight }}>
                 <CardContent sx={{ px: 3, py: 4 }}>
                   <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
                     {t('pages.initiativeUserDetails.refundedBalance')}
@@ -551,8 +550,8 @@ const InitiativeUserDetails = () => {
                 </CardContent>
               </Card>
             </Box>
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', pl: 1.5 }}>
-              <Card>
+            <Box sx={{ display: 'grid', gridColumn: 'span 8', pl: 1.5 }} ref={heightRef}>
+              <Card sx={{ height: boxHeight }}>
                 <CardContent sx={{ px: 3, py: 4 }}>
                   <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
                     {t('pages.initiativeUserDetails.balanceToBeRefunded')}
@@ -727,16 +726,20 @@ const InitiativeUserDetails = () => {
                     <TableBody sx={{ backgroundColor: 'white' }}>
                       {rows.map((r) => (
                         <TableRow key={r.operationId}>
-                          <TableCell>
+                          <TableCell sx={{ textAlign: 'left' }}>
                             {r.operationDate
                               ?.toLocaleString('fr-BE')
                               .substring(0, r.operationDate.toLocaleString('fr-BE').length - 3)}
                           </TableCell>
-                          <TableCell>
+                          <TableCell sx={{ textAlign: 'left' }}>
                             <ButtonNaked
                               data-testid="operationTypeBtn"
                               component="button"
-                              sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
+                              sx={{
+                                color: 'primary.main',
+                                fontWeight: 600,
+                                fontSize: '1em',
+                              }}
                               onClick={() => {
                                 handleOpenModal(r.operationId);
                               }}
@@ -744,8 +747,10 @@ const InitiativeUserDetails = () => {
                               {operationTypeLabel(r.operationType)}
                             </ButtonNaked>
                           </TableCell>
-                          <TableCell>{`€ ${r.amount}`}</TableCell>
-                          <TableCell>{r.accrued ? `€ ${r.accrued}` : '-'}</TableCell>
+                          <TableCell sx={{ textAlign: 'left' }}>{`€ ${r.amount}`}</TableCell>
+                          <TableCell sx={{ textAlign: 'left' }}>
+                            {r.accrued ? `€ ${r.accrued}` : '-'}
+                          </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -808,7 +813,9 @@ const InitiativeUserDetails = () => {
                     </ListItemAvatar>
                     <ListItemText
                       primary={getMaskedPan(p.maskedPan)}
-                      secondary={p.activationDate?.toLocaleString('fr-BE')}
+                      secondary={p.activationDate
+                        ?.toLocaleString('fr-BE')
+                        .substring(0, p.activationDate?.toLocaleString('fr-BE').length - 3)}
                     />
                   </ListItem>
                 ))}
@@ -851,7 +858,9 @@ const InitiativeUserDetails = () => {
                   variant="body2"
                   textAlign="left"
                 >
-                  {checkIbanResponseDate?.toLocaleString('fr-BE')}
+                  {checkIbanResponseDate
+                    ?.toLocaleString('fr-BE')
+                    .substring(0, checkIbanResponseDate?.toLocaleString('fr-BE').length - 3)}
                 </Typography>
 
                 <Typography
