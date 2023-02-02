@@ -511,7 +511,7 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
-                        <IconButton onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                        <IconButton data-testid="download-file-refunds" onClick={() => handleDownloadFile(r.downloadFileInfo)}>
                           <FileDownloadIcon color="primary" />
                         </IconButton>
                       </TableCell>
