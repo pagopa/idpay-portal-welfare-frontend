@@ -176,7 +176,7 @@ const TransactionDetailModal = ({
                     {t('pages.initiativeUserDetails.transactionDetail.iban')}
                   </Typography>
                 </Box>
-                <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
+                <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
                     {transactionDetail?.iban}
                   </Typography>

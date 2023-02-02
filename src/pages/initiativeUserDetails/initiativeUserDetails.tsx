@@ -813,7 +813,9 @@ const InitiativeUserDetails = () => {
                     </ListItemAvatar>
                     <ListItemText
                       primary={getMaskedPan(p.maskedPan)}
-                      secondary={p.activationDate?.toLocaleString('fr-BE')}
+                      secondary={p.activationDate
+                        ?.toLocaleString('fr-BE')
+                        .substring(0, p.activationDate?.toLocaleString('fr-BE').length - 3)}
                     />
                   </ListItem>
                 ))}
@@ -856,7 +858,9 @@ const InitiativeUserDetails = () => {
                   variant="body2"
                   textAlign="left"
                 >
-                  {checkIbanResponseDate?.toLocaleString('fr-BE')}
+                  {checkIbanResponseDate
+                    ?.toLocaleString('fr-BE')
+                    .substring(0, checkIbanResponseDate?.toLocaleString('fr-BE').length - 3)}
                 </Typography>
 
                 <Typography
