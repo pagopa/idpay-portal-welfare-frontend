@@ -417,7 +417,7 @@ export default {
       initiativeState: 'Stato iniziativa',
       historyState: 'Storico eventi',
       updatedOn: 'Aggiornato il',
-      addedBy: 'Agginto da ',
+      addedBy: 'Aggiunto da ',
       availableBalance: 'Saldo disponibile',
       spendableAmount: 'Importo che l’utente può ancora spendere',
       refundedBalance: 'Saldo rimborsato',
@@ -893,7 +893,7 @@ export default {
     termsDescription2: 'del servizio e confermi di aver letto l’',
     linkPrivacy: 'Informativa Privacy',
     backHome: 'Torna alla home',
-    termsDescriptionChanged:
-      'Recentemente abbiamo cambiato i nostri Termini e condizioni d’uso e la nostra informativa sulla privacy',
+    termsDescriptionChanged: 'Recentemente abbiamo cambiato i',
+    and: 'e  l’',
   },
 };

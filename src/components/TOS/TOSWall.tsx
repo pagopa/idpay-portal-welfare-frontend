@@ -24,7 +24,16 @@ const TOSWall = ({ acceptTOS, tosRoute, privacyRoute, firstAcceptance }: TOSWall
       </Link>
     </Typography>
   ) : (
-    <Typography color="text.secondary">{t('tos.termsDescriptionChanged')}</Typography>
+    <Typography color="text.secondary">
+      {t('tos.termsDescriptionChanged')}{' '}
+      <Link underline="hover" href={tosRoute}>
+        {t('tos.linkTos')}
+      </Link>{' '}
+      {t('tos.and')}{' '}
+      <Link underline="hover" href={privacyRoute}>
+        {t('tos.linkPrivacy')}
+      </Link>
+    </Typography>
   );
 
   return (

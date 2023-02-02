@@ -67,7 +67,7 @@ const Layout = ({ children }: Props) => {
             sx={{ backgroundColor: '#F5F5F5' }}
             display="grid"
             justifyContent="center"
-            pb={10}
+            pb={16}
             pt={2}
             px={2}
             gridTemplateColumns="1fr"
