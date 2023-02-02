@@ -46,6 +46,7 @@ export const userFromJwtTokenAsJWTUser: (token: string) => IDPayUser = function 
     name: jwtUser.name,
     surname: jwtUser.family_name,
     email: jwtUser.email,
+    org_name: jwtUser.org_name,
     org_party_role: jwtUser.org_party_role,
     org_role: jwtUser.org_role,
   };

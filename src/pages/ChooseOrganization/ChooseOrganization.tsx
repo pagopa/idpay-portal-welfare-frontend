@@ -93,8 +93,6 @@ const ChooseOrganization = () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`,
         'organization-id': organizationSelected?.organizationId || '',
-        'Ocp-Apim-Trace': 'true',
-        'Ocp-Apim-Subscription-Key': '416d0fde53d144bab55e828d3ea8d886',
       },
     };
 
