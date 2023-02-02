@@ -103,7 +103,7 @@ const SecuredRoutes = withLogin(
             <PrivacyPolicy />
           </Route>
           <Route path={routes.CHOOSE_ORGANIZATION} exact={true}>
-            <ChooseOrganization />
+            {!userCanCreateInitiative ? <ChooseOrganization /> : <Redirect to={routes.HOME} />}
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />

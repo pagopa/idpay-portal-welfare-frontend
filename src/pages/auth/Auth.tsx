@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { userFromJwtTokenAsJWTUser } from '../../hooks/useLogin';
 import { IDPayUser } from '../../model/IDPayUser';
 import ROUTES from '../../routes';
-import { PAGOPA_ADMIN_ORG_NAME } from '../../utils/constants';
+import { PAGOPA_ADMIN_ROLE } from '../../utils/constants';
 import { ENV } from '../../utils/env';
 
 export const readUserFromToken = (token: string) => {
@@ -38,16 +38,13 @@ const Auth = () => {
       };
 
       fetch(url, options)
-        .then((response) => {
-          console.log(response);
-          return response.text();
-        })
+        .then((response) => response.text())
         .then((innerToken) => {
           storageTokenOps.write(innerToken);
           const user = readUserFromToken(innerToken);
-          if (user && user.org_name !== PAGOPA_ADMIN_ORG_NAME) {
+          if (user && user.org_role !== PAGOPA_ADMIN_ROLE) {
             window.location.assign(ROUTES.HOME);
-          } else if (user && user.org_name === PAGOPA_ADMIN_ORG_NAME) {
+          } else if (user && user.org_role === PAGOPA_ADMIN_ROLE) {
             window.location.assign(ROUTES.CHOOSE_ORGANIZATION);
           }
         })

@@ -85,7 +85,7 @@ const ChooseOrganization = () => {
   const sendOrganizationSelected = () => {
     const token = storageTokenOps.read();
 
-    const url = `${ENV.URL_API.INITIATIVE}/token/portal`;
+    const url = `${ENV.URL_API.INITIATIVE}/token`;
     const options = {
       method: 'POST',
       headers: {
@@ -104,7 +104,7 @@ const ChooseOrganization = () => {
       })
       .catch((error) => {
         console.error(error);
-        // window.location.assign(ENV.URL_FE.LOGIN);
+        window.location.assign(ENV.URL_FE.LOGIN);
       });
   };
 

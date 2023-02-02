@@ -71,4 +71,4 @@ export enum ManualCriteriaOptions {
   MULTI = 'multi',
 }
 
-export const PAGOPA_ADMIN_ORG_NAME = 'PagoPA S.p.A.';
+export const PAGOPA_ADMIN_ROLE = 'pagopa_admin';
