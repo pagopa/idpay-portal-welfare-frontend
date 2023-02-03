@@ -1,11 +1,10 @@
-import React from 'react';
-import { renderWithProviders } from '../../../utils/test-utils';
-import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
-import InitiativeRefunds from '../initiativeRefunds';
-import { screen, fireEvent, cleanup } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
+import React from 'react';
 import { date } from 'yup';
 import ROUTES from '../../../routes';
+import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import InitiativeRefunds from '../initiativeRefunds';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -15,16 +14,9 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-jest.mock('react-router-dom', () => mockLocationFunction());
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
-}));
-
 beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
   //@ts-expect-error
   delete global.window.location;
   global.window = Object.create(window);
@@ -53,18 +45,16 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   it('Test Initiativerefunds Inputs and Element', async () => {
-    renderWithProviders(<InitiativeRefunds />);
+    const { history } = renderWithHistoryAndStore(<InitiativeRefunds />);
 
-    // const history = injectedHistory ? injectedHistory : createMemoryHistory();
-
-    // const oldLocPathname = history.location.pathname;
+    const oldLocPathname = history.location.pathname;
 
     //BUTTONS TEST
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
 
-    // expect(oldLocPathname !== history.location.pathname).toBeTruthy();
+    expect(oldLocPathname !== history.location.pathname).toBeTruthy();
 
     const uploadBtn = screen.getByTestId('upload-btn-test') as HTMLButtonElement;
     fireEvent.click(uploadBtn);
@@ -126,5 +116,10 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
     });
 
     expect(filterStatus).toBeInTheDocument();
+  });
+
+  it('test download file refunds button', async () => {
+    renderWithHistoryAndStore(<InitiativeRefunds />);
+    fireEvent.click(await screen.findByTestId('download-file-refunds'));
   });
 });

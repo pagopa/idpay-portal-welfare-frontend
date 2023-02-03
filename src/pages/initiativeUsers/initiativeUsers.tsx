@@ -472,7 +472,9 @@ const InitiativeUsers = () => {
                         <ButtonNaked
                           component="button"
                           sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
-                          onClick={() => console.log('handle detail')}
+                          onClick={() =>
+                            history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
+                          }
                         >
                           {r.beneficiary}
                         </ButtonNaked>

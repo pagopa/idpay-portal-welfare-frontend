@@ -9,11 +9,16 @@ import {
   mockedGetIniOnboardingRankingStatusPaged,
   mockedGetRankingFileDownload,
   mockedGetRewardFileDownload,
+  mockedIbanInfo,
   mockedInitiativeDetail,
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedNotificationReward,
-  mockedOnBoardingStatusResponse
+  mockedOnBoardingStatusResponse,
+  mockedOperationList,
+  mockedOrganizationsList,
+  mockedWallet,
+  mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
 import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
@@ -33,6 +38,14 @@ import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardin
 import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
 import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { SasToken } from '../generated/initiative/SasToken';
+import {
+  MockedIbanDTO,
+  MockedInstrumentDTO,
+  MockedOperation,
+  MockedOperationListDTO,
+  MockedWalletDTO,
+} from '../../model/Initiative';
+import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -159,4 +172,26 @@ export const InitiativeApiMocked = {
 
   getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
     new Promise((resolve) => resolve(mockedMccCodes)),
+
+  getWalletInfo: async (_id: string, _cf: string): Promise<MockedWalletDTO> =>
+    new Promise((resolve) => resolve(mockedWallet)),
+
+  getIban: async (_iban: string): Promise<MockedIbanDTO> =>
+    new Promise((resolve) => resolve(mockedIbanInfo)),
+
+  getTimeLine: async (_id: string): Promise<MockedOperationListDTO> =>
+    new Promise((resolve) => resolve(mockedOperationList)),
+
+  getTimelineDetail: async (_id: string, operationId: string): Promise<MockedOperation> => {
+    const operationDetails = mockedOperationList.operationList.filter(
+      (e) => e.operationId === operationId
+    );
+    return new Promise((resolve) => resolve(operationDetails[0]));
+  },
+
+  getWalletInstrumen: async (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
+    new Promise((resolve) => resolve(mockedWalletInstrument)),
+
+  getOrganizationsList: async (): Promise<OrganizationListDTO> =>
+    new Promise((resolve) => resolve(mockedOrganizationsList)),
 };

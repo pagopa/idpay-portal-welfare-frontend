@@ -62,6 +62,7 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+      ROUTES.INITIATIVE_USER_DETAILS,
     ],
     exact: true,
     strict: false,
@@ -187,7 +188,10 @@ export default function SideMenu() {
                         history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
                       })
                     }
-                    isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}` ||
+                      pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
+                    }
                     icon={GroupIcon}
                     level={2}
                     data-testid="initiativeUsers-click-test"

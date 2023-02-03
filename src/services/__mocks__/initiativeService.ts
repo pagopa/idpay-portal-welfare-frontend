@@ -24,6 +24,16 @@ import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
+import {
+  MockedIbanDTO,
+  MockedInstrumentDTO,
+  MockedOperation,
+  MockedOperationListDTO,
+  MockedOperationType,
+  MockedStatusInstrument,
+  MockedStatusWallet,
+  MockedWalletDTO,
+} from '../../model/Initiative';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -191,6 +201,27 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
 
+export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
+  InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
+
+export const getIban = (_iban: string): Promise<MockedIbanDTO> =>
+  InitiativeApiMocked.getIban(mockedIban);
+
+export const getTimeLine = (_id: string): Promise<MockedOperationListDTO> =>
+  InitiativeApiMocked.getTimeLine(mockedInitiativeId);
+
+export const getTimelineDetail = (_id: string, operationId: string): Promise<MockedOperation> => {
+  const operationDetails = mockedOperationList.operationList.filter(
+    (e) => e.operationId === operationId
+  );
+  return new Promise((resolve) => resolve(operationDetails[0]));
+};
+
+export const getWalletInstrumen = (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
+  InitiativeApiMocked.getWalletInstrumen(mockedInitiativeId, mockedFiscalCode);
+
+export const mockedFiscalCode = 'TRNFNC96R02H501I';
+export const mockedIban = 'IT12T1234512345123456789012';
 export const mockedRankingStatus = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
@@ -228,6 +259,219 @@ export const mockedInitiativeSummary = [
     updateDate: new Date('2022-07-28T16:49:46.982'),
   },
 ];
+
+export const mockedWallet = {
+  initiativeId: '62e29002aac2e94cfa3763dd',
+  initiativeName: 'Test wallet',
+  status: MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN,
+  endDate: new Date('2023-01-04T15:44:53.816Z'),
+  amount: 5,
+  accrued: 10,
+  refunded: 15,
+  lastCounterUpdate: new Date('2023-01-04T15:44:53.816Z'),
+  iban: 'IT12T1234512345123456789012',
+  nInstr: 0,
+};
+
+export const mockedIbanInfo = {
+  iban: 'IT12T1234512345123456789012',
+  checkIbanStatus: 'ok',
+  holderBank: 'Intesa Sanpaolo S.p.A',
+  description: 'descrizione',
+  channel: 'IO',
+  bicCode: 'bic code',
+  queueDate: 'queue Date',
+  checkIbanResponseDate: new Date('2023-01-04T16:38:43.590Z'),
+};
+
+export const mockedWalletInstrument = [
+  {
+    idWallet: '12345',
+    instrumentId: '1122334455',
+    maskedPan: '1111 2222 3333 4444',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.ACTIVE,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.ACTIVE,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.PENDING_DEACTIVATION_REQUEST,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+  {
+    idWallet: '678910',
+    instrumentId: '667788991010',
+    maskedPan: '5555 6666 7777 8888',
+    channel: 'channel',
+    brandLog:
+      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+    status: MockedStatusInstrument.PENDING_ENROLLMENT_REQUEST,
+    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+  },
+];
+
+export const mockedOperationList = {
+  lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+  operationList: [
+    {
+      operationId: '1u1u1u1u1u1u1u',
+      operationType: MockedOperationType.PAID_REFUND,
+      operationDate: new Date('2023-02-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 345,
+      accrued: 10,
+      circuitType: 'circuito',
+      iban: '',
+      channel: 'App IO',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '2e2e2e2e2e2e2e2',
+      operationType: MockedOperationType.TRANSACTION,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '3e3e3e3e3e3e3e3e',
+      operationType: MockedOperationType.ADD_IBAN,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: 'IT12T1234512345123456789012',
+      channel: 'App IO',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '4o4o4o4o4o4o4o4o',
+      operationType: MockedOperationType.ADD_INSTRUMENT,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '5e5e5e5e5e5e5e5e',
+      operationType: MockedOperationType.DELETE_INSTRUMENT,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '6i6i6i6i6i6i6i6i',
+      operationType: MockedOperationType.ONBOARDING,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '7e7e7e7e7e7e7e7e',
+      operationType: MockedOperationType.REJECTED_ADD_INSTRUMENT,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '8o8o8o8o8o8o8o8o',
+      operationType: MockedOperationType.REJECTED_DELETE_INSTRUMENT,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '9e9e9e9e9e9e9e9e',
+      operationType: MockedOperationType.REJECTED_REFUND,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+    {
+      operationId: '10i10i10i10i10i10i10i10i',
+      operationType: MockedOperationType.REVERSAL,
+      operationDate: new Date('2023-01-05T10:22:28.012Z'),
+      brandLogo: 'Logo',
+      maskedPan: '1234123412341234',
+      amount: 34,
+      accrued: 0,
+      circuitType: 'circuito',
+      iban: '',
+      channel: '',
+      aquirerId: '349589304999',
+      issuerId: '0001923192038',
+    },
+  ],
+};
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',
@@ -393,14 +637,14 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
       criteriaConsensusTimestamp: new Date(),
       rankingValue: 0,
       ranking: 0,
-      beneficiaryRankingStatus: 'string',
+      beneficiaryRankingStatus: 'ELIGIBLE_OK',
     },
   ],
   pageNumber: 0,
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
-  rankingStatus: StatusEnum.COMPLETE,
+  rankingStatus: 'COMPLETED',
   rankingPublishedTimestamp: new Date(),
   rankingGeneratedTimestamp: new Date(),
   totalEligibleOk: 0,
@@ -845,3 +1089,34 @@ export const fetchInitiativeUsers = (page: number) => {
     return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
   }
 };
+
+export const mockedOrganizationsList = [
+  {
+    organizationId: '1',
+    organizationName: 'Comune di Milano',
+  },
+  {
+    organizationId: '2',
+    organizationName: 'Comune di Roma',
+  },
+  {
+    organizationId: '3',
+    organizationName: 'Comune di Genova',
+  },
+  {
+    organizationId: '4',
+    organizationName: 'Comune di Firenze',
+  },
+  {
+    organizationId: '5',
+    organizationName: 'Comune di Aosta',
+  },
+  {
+    organizationId: '6',
+    organizationName: 'Comune di Venezia',
+  },
+  {
+    organizationId: '7',
+    organizationName: 'Comune di Genoveffa',
+  },
+];

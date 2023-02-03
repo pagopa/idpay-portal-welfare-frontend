@@ -66,6 +66,7 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+      ROUTES.INITIATIVE_USER_DETAILS,
     ],
     exact: true,
     strict: false,

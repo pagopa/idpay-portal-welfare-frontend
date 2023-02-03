@@ -1,19 +1,21 @@
-import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import {
   trackAppError,
   trackEvent,
 } from '@pagopa/selfcare-common-frontend/services/analyticsService';
 import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useEffect } from 'react';
-import { userFromJwtToken } from '../../hooks/useLogin';
+import { userFromJwtTokenAsJWTUser } from '../../hooks/useLogin';
+import { IDPayUser } from '../../model/IDPayUser';
 import ROUTES from '../../routes';
+import { PAGOPA_ADMIN_ROLE } from '../../utils/constants';
 import { ENV } from '../../utils/env';
 
 export const readUserFromToken = (token: string) => {
-  const user: User = userFromJwtToken(token);
+  const user: IDPayUser = userFromJwtTokenAsJWTUser(token);
   if (user) {
     storageUserOps.write(user);
   }
+  return user;
 };
 
 /** success login operations */
@@ -39,8 +41,12 @@ const Auth = () => {
         .then((response) => response.text())
         .then((innerToken) => {
           storageTokenOps.write(innerToken);
-          readUserFromToken(innerToken);
-          window.location.assign(ROUTES.HOME);
+          const user = readUserFromToken(innerToken);
+          if (user && user.org_role !== PAGOPA_ADMIN_ROLE) {
+            window.location.assign(ROUTES.HOME);
+          } else if (user && user.org_role === PAGOPA_ADMIN_ROLE) {
+            window.location.assign(ROUTES.CHOOSE_ORGANIZATION);
+          }
         })
         .catch((error) => {
           console.error(error);

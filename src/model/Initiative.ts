@@ -108,6 +108,90 @@ export interface RefundRule {
   reimbursementThreshold: string;
 }
 
+// Start Dati mockati in attesa dei DTO Reali
+
+export enum MockedStatusWallet {
+  NOT_REFUNDABLE_ONLY_IBAN = 'NOT_REFUNDABLE_ONLY_IBAN',
+  NOT_REFUNDABLE_ONLY_INSTRUMENT = 'NOT_REFUNDABLE_ONLY_INSTRUMENT',
+  REFUNDABLE = 'REFUNDABLE',
+  NOT_REFUNDABLE = 'NOT_REFUNDABLE',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
+export enum MockedOperationType {
+  REJECTED_ADD_INSTRUMENT = 'REJECTED_ADD_INSTRUMENT',
+  REJECTED_DELETE_INSTRUMENT = 'REJECTED_DELETE_INSTRUMENT',
+  TRANSACTION = 'TRANSACTION',
+  REVERSAL = 'REVERSAL',
+  ADD_INSTRUMENT = 'ADD_INSTRUMENT',
+  DELETE_INSTRUMENT = 'DELETE_INSTRUMENT',
+  ADD_IBAN = 'ADD_IBAN',
+  ONBOARDING = 'ONBOARDING',
+  PAID_REFUND = 'PAID_REFUND',
+  REJECTED_REFUND = 'REJECTED_REFUND',
+}
+
+export enum MockedStatusInstrument {
+  ACTIVE = 'ACTIVE',
+  PENDING_ENROLLMENT_REQUEST = 'PENDING_ENROLLMENT_REQUEST',
+  PENDING_DEACTIVATION_REQUEST = 'PENDING_DEACTIVATION_REQUEST',
+}
+
+export interface MockedWalletDTO {
+  initiativeId: string | undefined;
+  initiativeName: string | undefined;
+  status: MockedStatusWallet | undefined;
+  endDate: Date | undefined;
+  amount: number | undefined;
+  accrued: number | undefined;
+  refunded: number | undefined;
+  lastCounterUpdate: Date | undefined;
+  iban: string | undefined;
+  nInstr: number | undefined;
+}
+
+export interface MockedIbanDTO {
+  iban: string | undefined;
+  checkIbanStatus: string | undefined;
+  holderBank: string | undefined;
+  description: string | undefined;
+  channel: string | undefined;
+  bicCode: string | undefined;
+  queueDate: string | undefined;
+  checkIbanResponseDate: Date | undefined;
+}
+
+export interface MockedOperation {
+  operationId: string;
+  operationType: MockedOperationType;
+  operationDate: Date;
+  brandLogo: string | undefined;
+  maskedPan: string | undefined;
+  amount: number | undefined;
+  accrued: number | undefined;
+  circuitType: string | undefined;
+  iban: string | undefined;
+  channel: string | undefined;
+  aquirerId: string | undefined;
+  issuerId: string | undefined;
+}
+
+export interface MockedOperationListDTO {
+  lastUpdate: Date | undefined;
+  operationList: Array<MockedOperation>;
+}
+export interface MockedInstrumentDTO {
+  idWallet: string | undefined;
+  instrumentId: string | undefined;
+  maskedPan: string | undefined;
+  channel: string | undefined;
+  brandLog: string | undefined;
+  status: MockedStatusInstrument | undefined;
+  activationDate: Date | undefined;
+}
+
+// End Dati mockati in attesa dei DTO Reali
+
 export interface Initiative {
   initiativeId: string | undefined;
   organizationId: string | undefined;

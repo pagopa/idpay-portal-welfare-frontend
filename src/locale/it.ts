@@ -12,6 +12,7 @@ export default {
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
     admin: 'Amministratore',
     ope_base: 'Operatore PagoPA',
+    pagopa_admin: 'Operatore PagoPA',
   },
   sideMenu: {
     home: {
@@ -411,6 +412,58 @@ export default {
         eligible: 'Idoneo',
       },
     },
+    initiativeUserDetails: {
+      downloadCsvBtn: 'Scarica .csv',
+      initiativeState: 'Stato iniziativa',
+      historyState: 'Storico eventi',
+      updatedOn: 'Aggiornato il',
+      addedBy: 'Aggiunto da ',
+      availableBalance: 'Saldo disponibile',
+      spendableAmount: 'Importo che l’utente può ancora spendere',
+      refundedBalance: 'Saldo rimborsato',
+      refundedAmount: 'Importo già rimborsato all’utente',
+      balanceToBeRefunded: 'Saldo da rimborsare',
+      importNotRefundedYet: 'Importo speso dall’utente e non ancora rimborsato',
+      alerts: 'avvisi',
+      paymentMethod: 'Metodi di pagamento associati',
+      iban: 'IBAN associato',
+      missingPaymentMethod: 'Nessun metodo di pagamento',
+      missingIban: 'Nessun IBAN presente',
+      unsubscribed: 'Utente disiscritto',
+      table: {
+        dateAndHour: 'Data e ora',
+        event: 'Evento',
+        totExpense: 'Totale spesa',
+        toRefund: 'Da rimborsare',
+      },
+      operationTypes: {
+        onboarding: 'Adesione iniziativa',
+        addIban: 'Aggiunta IBAN',
+        addInstrument: 'Aggiunta metodo',
+        deleteInstrument: 'Eliminazione metodo',
+        rejectedAddInstrument: 'Errore aggiunta metodo',
+        rejectedDeleteInstrument: 'Errore eliminazione metodo',
+        rejectedRefund: 'Errore rimborso',
+        transaction: 'Pagamento Pos',
+        paidRefund: 'Rimborso',
+        reversal: 'Storno',
+      },
+      filterEvent: 'Filtra per evento',
+      transactionDetail: {
+        paymentMethod: 'Metodo di pagamento',
+        paymentCircuit: 'Circuito di pagamento',
+        totExpense: 'Totale spesa',
+        importToRefund: 'Importo da rimborsare',
+        date: 'Data',
+        acquirerTransactionId: 'ID transazione Acquirer',
+        issuerTransactionId: 'ID transazione Issuer',
+        result: 'Esito',
+        bank: 'Banca',
+        iban: 'IBAN',
+        positiveResult: 'Eseguito',
+        negativeResult: 'Fallito',
+      },
+    },
     initiativeRefunds: {
       title: 'Rimborsi',
       subtitle: 'Visualizza e gestisci i rimborsi dell’iniziativa',
@@ -470,6 +523,12 @@ export default {
         rewardsAdded: '{{x}} esiti aggiunti',
       },
     },
+    chooseOrganization: {
+      title: 'Seleziona Ente',
+      subtitle: 'L’elenco mostra soltanto i Comuni che hanno iniziative da revisionare o in corso.',
+      searchInputLabel: 'Cerca ente',
+      continueBtnLabel: 'Continua',
+    },
   },
   breadcrumbs: {
     exit: 'Esci',
@@ -482,6 +541,7 @@ export default {
     initiativeUsersRanking: 'Utenti/Aderenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
+    initiativeUserDetails: 'Dettaglio nucleo familiare',
   },
   components: {
     wizard: {
@@ -809,6 +869,9 @@ export default {
     cantPublishInitiative: "Non è stato possibile pubblicare l'iniziativa. Riprova",
     cantDeleteInitiative: "Non è stato possibile eliminare l'iniziativa. Riprova",
     contactAdmin: "Contattare l'assistenza",
+    cantSaveTC: "Non è stato possibile salvare l'accettazione dei termini e condizioni",
+    cantGetTC:
+      "Non è stato possibile recuperare le informazioni in merito all'accettazione dei termini e condizioni",
   },
   helpStaticUrls: {
     wizard: {
@@ -830,5 +893,7 @@ export default {
     termsDescription2: 'del servizio e confermi di aver letto l’',
     linkPrivacy: 'Informativa Privacy',
     backHome: 'Torna alla home',
+    termsDescriptionChanged: 'Recentemente abbiamo cambiato i',
+    and: 'e l’',
   },
 };
