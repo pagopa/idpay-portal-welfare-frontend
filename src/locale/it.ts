@@ -894,6 +894,6 @@ export default {
     linkPrivacy: 'Informativa Privacy',
     backHome: 'Torna alla home',
     termsDescriptionChanged: 'Recentemente abbiamo cambiato i',
-    and: 'e  l’',
+    and: 'e l’',
   },
 };
