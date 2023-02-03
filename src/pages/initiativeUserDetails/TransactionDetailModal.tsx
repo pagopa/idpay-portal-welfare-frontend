@@ -67,7 +67,7 @@ const TransactionDetailModal = ({
             </Box>
             <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
               <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600, px: '2px', py: '4px' }}
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
                 label={i18n.t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
                 color="error"
               />
@@ -84,7 +84,7 @@ const TransactionDetailModal = ({
             </Box>
             <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
               <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600, px: '2px', py: '4px' }}
+                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
                 label={i18n.t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
                 color="success"
               />
