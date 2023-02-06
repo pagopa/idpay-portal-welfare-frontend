@@ -523,6 +523,17 @@ export default {
         rewardsAdded: '{{x}} esiti aggiunti',
       },
     },
+    initiativeRefundsDetails: {
+      downloadBtn: 'Scarica File',
+      recap: {
+        creationDate: 'Data creazione',
+        totalOrders: 'Totale ordine',
+        totalRefunds: 'Totale rimborsato',
+        totalWarrant: 'Tatle Mandati',
+        percentageSuccess: '% Successo',
+        status: 'Stato',
+      },
+    },
     chooseOrganization: {
       title: 'Seleziona Ente',
       subtitle: 'L’elenco mostra soltanto i Comuni che hanno iniziative da revisionare o in corso.',
@@ -541,6 +552,7 @@ export default {
     initiativeUsersRanking: 'Utenti/Aderenti',
     initiativeRefunds: 'Rimborsi',
     initiativeRefundsOutcome: 'Gestione esiti',
+    initiativeRefundsDetails: 'Dettaglio rimborso',
     initiativeUserDetails: 'Dettaglio nucleo familiare',
   },
   components: {
