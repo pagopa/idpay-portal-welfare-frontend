@@ -22,6 +22,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Alert,
 } from '@mui/material';
 import { Box /* , ThemeProvider  */ } from '@mui/system';
 import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
@@ -29,8 +30,8 @@ import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { useEffect, useState, useCallback } from 'react';
-import { Alert, DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import { useEffect, useState, useRef } from 'react';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -73,7 +74,10 @@ const InitiativeUserDetails = () => {
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
-  const [boxHeight, setBoxHeight] = useState('');
+  const [boxHeight, setBoxHeight] = useState<number | undefined>();
+  const box1 = useRef<any>();
+  const box2 = useRef<any>();
+  const box3 = useRef<any>();
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -138,13 +142,22 @@ const InitiativeUserDetails = () => {
     }
   }, []);
 
-  const heightRef = useCallback((card) => {
-    if (card !== null) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      const h = card.getBoundingClientRect().height.toString() + 'px';
-      setBoxHeight(h);
-    }
-  }, []);
+  const calcOfHeight = () => {
+    const box1Height = box1.current.getBoundingClientRect().height;
+    const box2Height = box2.current.getBoundingClientRect().height;
+    const box3Height = box3.current.getBoundingClientRect().height;
+
+    const maxHeight = Math.max(box1Height, box2Height, box3Height);
+    setBoxHeight(parseFloat(maxHeight.toFixed(2)));
+  };
+
+  useEffect(() => {
+    calcOfHeight();
+    window.addEventListener('resize', () => calcOfHeight());
+    return () => {
+      window.removeEventListener('resize', () => calcOfHeight());
+    };
+  }, [window]);
 
   const getTableData = (
     initiativeId: string,
@@ -520,51 +533,54 @@ const InitiativeUserDetails = () => {
               mt: 2,
             }}
           >
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', pr: 1.5 }} ref={heightRef}>
-              <Card sx={{ height: boxHeight }}>
-                <CardContent sx={{ px: 3, py: 4 }}>
-                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                    {t('pages.initiativeUserDetails.availableBalance')}
-                  </Typography>
-                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                    {amount}
-                  </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {t('pages.initiativeUserDetails.spendableAmount')}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', px: 1.5 }} ref={heightRef}>
-              <Card sx={{ height: boxHeight }}>
-                <CardContent sx={{ px: 3, py: 4 }}>
-                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                    {t('pages.initiativeUserDetails.refundedBalance')}
-                  </Typography>
-                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                    {refunded}
-                  </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {t('pages.initiativeUserDetails.refundedAmount')}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
-            <Box sx={{ display: 'grid', gridColumn: 'span 8', pl: 1.5 }} ref={heightRef}>
-              <Card sx={{ height: boxHeight }}>
-                <CardContent sx={{ px: 3, py: 4 }}>
-                  <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
-                    {t('pages.initiativeUserDetails.balanceToBeRefunded')}
-                  </Typography>
-                  <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
-                    {accrued}
-                  </Typography>
-                  <Typography color="text.secondary" variant="body2">
-                    {t('pages.initiativeUserDetails.importNotRefundedYet')}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </Box>
+            <Card
+              sx={{ height: boxHeight, display: 'grid', gridColumn: 'span 8', mr: 1.5 }}
+              ref={box1}
+            >
+              <CardContent sx={{ px: 3, py: 4 }}>
+                <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                  {t('pages.initiativeUserDetails.availableBalance')}
+                </Typography>
+                <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                  {amount}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t('pages.initiativeUserDetails.spendableAmount')}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card
+              sx={{ height: boxHeight, display: 'grid', gridColumn: 'span 8', mx: 1 }}
+              ref={box2}
+            >
+              <CardContent sx={{ px: 3, py: 4 }}>
+                <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                  {t('pages.initiativeUserDetails.refundedBalance')}
+                </Typography>
+                <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                  {refunded}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t('pages.initiativeUserDetails.refundedAmount')}
+                </Typography>
+              </CardContent>
+            </Card>
+            <Card
+              sx={{ height: boxHeight, display: 'grid', gridColumn: 'span 8', ml: 1.5 }}
+              ref={box3}
+            >
+              <CardContent sx={{ px: 3, py: 4 }}>
+                <Typography sx={{ fontWeight: 700 }} variant="body2" color="text.secondary">
+                  {t('pages.initiativeUserDetails.balanceToBeRefunded')}
+                </Typography>
+                <Typography variant="h4" sx={{ mt: 2, mb: 1 }}>
+                  {accrued}
+                </Typography>
+                <Typography color="text.secondary" variant="body2">
+                  {t('pages.initiativeUserDetails.importNotRefundedYet')}
+                </Typography>
+              </CardContent>
+            </Card>
           </Box>
           {/* </Collapse> */}
 
