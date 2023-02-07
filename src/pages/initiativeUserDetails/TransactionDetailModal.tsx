@@ -13,7 +13,7 @@ type Props = {
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   initiativeId: string;
-  holderBank: string;
+  holderBank: string | undefined;
   operationTypeLabel: any;
 };
 

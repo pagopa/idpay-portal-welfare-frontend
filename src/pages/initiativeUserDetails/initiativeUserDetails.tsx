@@ -1,10 +1,7 @@
 /* eslint-disable functional/no-let */
 import {
-  Badge,
   Breadcrumbs,
   Button,
-  Card,
-  CardContent,
   FormControl,
   InputLabel,
   MenuItem,
@@ -45,7 +42,7 @@ import {
   MockedOperationType,
 } from '../../model/Initiative';
 import TransactionDetailModal from './TransactionDetailModal';
-import PaymentMethodsModal from './PaymentMethodsModal';
+import UserDetailsSummary from './components/UserDetailsSummary';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -57,7 +54,7 @@ const InitiativeUserDetails = () => {
   const [iban, setIban] = useState<string | undefined>(undefined);
   const [walletStatus, setWalletStatus] = useState<MockedStatusWallet | undefined>(undefined);
   const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
-  const [holderBank, setHolderBank] = useState('');
+  const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
@@ -66,7 +63,6 @@ const InitiativeUserDetails = () => {
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
-  const [openPaymentMethodModal, setOpenPaymentMethodModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
@@ -288,16 +284,6 @@ const InitiativeUserDetails = () => {
     setOpenModal(false);
   };
 
-  const handleOpenPaymentMethodModal = () => {
-    if (paymentMethodList.length > 0) {
-      setOpenPaymentMethodModal(true);
-    }
-  };
-
-  const handleClosePaymentMethodModal = () => {
-    setOpenPaymentMethodModal(false);
-  };
-
   const operationTypeLabel = (opeType: string) => {
     switch (opeType) {
       case MockedOperationType.ADD_IBAN:
@@ -459,194 +445,17 @@ const InitiativeUserDetails = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-          mt: 2,
-        }}
-      >
-        <Card sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <CardContent
-            sx={{
-              px: 3,
-              py: 3,
-              display: 'grid',
-              width: '100%',
-              gridTemplateColumns: 'repeat(12, 1fr)',
-              alignItems: 'center',
-            }}
-          >
-            <Box sx={{ display: 'grid', gridColumn: 'span 6' }}>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6' }}
-                variant="overline"
-                color="text.secondary"
-              >
-                {t('pages.initiativeUserDetails.summary')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.availableBalance')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {`€ ${amount}`}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.refundedBalance')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {`€ ${refunded}`}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.balanceToBeRefunded')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {`€ ${accrued}`}
-              </Typography>
-              <Typography
-                sx={{ display: 'grid', gridColumn: 'span 6', mt: 1, justifyContent: 'left', ml: 1 }}
-              >
-                <ButtonNaked
-                  component="button"
-                  sx={{
-                    color:
-                      walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                      walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN
-                        ? 'error'
-                        : 'primary.main',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                  }}
-                  startIcon={
-                    <Badge
-                      color={
-                        walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                        walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN
-                          ? 'error'
-                          : 'primary'
-                      }
-                      badgeContent={paymentMethodList.length}
-                      sx={{ mr: 1 }}
-                    />
-                  }
-                  onClick={() => handleOpenPaymentMethodModal()}
-                >
-                  {t('pages.initiativeUserDetails.paymentMethod')}
-                </ButtonNaked>
-              </Typography>
-              <PaymentMethodsModal
-                openPaymentMethodModal={openPaymentMethodModal}
-                handleClosePaymentMethodModal={handleClosePaymentMethodModal}
-                paymentMethodList={paymentMethodList}
-              />
-            </Box>
-            <Box sx={{ display: 'grid', gridColumn: 'span 6' }}>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6' }}
-                variant="overline"
-                color="text.secondary"
-              >
-                {t('pages.initiativeUserDetails.refundDetail')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.transactionDetail.iban')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-                color={
-                  walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                  walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
-                    ? 'error'
-                    : undefined
-                }
-              >
-                {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
-                  ? t('pages.initiativeUserDetails.missingIban')
-                  : iban}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.transactionDetail.bank')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
-                  ? '-'
-                  : holderBank}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.updatedOn')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
-                  ? '-'
-                  : checkIbanResponseDate
-                      ?.toLocaleString('fr-BE')
-                      .substring(0, checkIbanResponseDate?.toLocaleString('fr-BE').length - 3)}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1', mt: 1 }}
-                variant="body2"
-                color="text.primary"
-              >
-                {t('pages.initiativeUserDetails.addedBy')}
-              </Typography>
-              <Typography
-                sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5', mt: 1 }}
-                variant="body2"
-              >
-                {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
-                  ? '-'
-                  : channel}
-              </Typography>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
+      <UserDetailsSummary
+        amount={amount}
+        refunded={refunded}
+        accrued={accrued}
+        walletStatus={walletStatus}
+        paymentMethodList={paymentMethodList}
+        iban={iban}
+        holderBank={holderBank}
+        checkIbanResponseDate={checkIbanResponseDate}
+        channel={channel}
+      />
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>
