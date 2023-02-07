@@ -36,3 +36,19 @@ export interface InitiativeRefundsResponse {
   totalPages: number;
   list: Array<InitiativeRefund>;
 }
+
+export interface InitiativeRefundsDetailsSummary {
+  createDate: Date | undefined;
+  totalAmount: number | undefined;
+  totalRefundedAmount: number | undefined;
+  totalRefunds: number | undefined;
+  successPercentage: number | undefined;
+  status: string | undefined;
+}
+
+export interface InitiativeRefundsDetailsListItem {
+  id: string | undefined;
+  iban: string | undefined;
+  amount: number | undefined;
+  status: string | undefined;
+}

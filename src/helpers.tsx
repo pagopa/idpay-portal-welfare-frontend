@@ -81,3 +81,10 @@ export const numberWithCommas = (x: number | string | undefined) => {
   }
   return '0';
 };
+
+export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
+  if (number) {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  }
+  return symbol;
+};

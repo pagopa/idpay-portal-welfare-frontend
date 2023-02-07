@@ -17,7 +17,11 @@ import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/I
 import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
-import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
+import {
+  InitiativeRefundsDetailsListItem,
+  InitiativeRefundsDetailsSummary,
+  InitiativeRefundsResponse,
+} from '../../model/InitiativeRefunds';
 import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
 import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
@@ -188,6 +192,18 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.beneficiary,
     mockedRankingStatus.state
   );
+
+export const getRefundsDetailsSummary = (
+  initaitveId: string,
+  exportId: string
+): Promise<InitiativeRefundsDetailsSummary> =>
+  InitiativeApiMocked.getRefundsDetailsSummary(initaitveId, exportId);
+
+export const getRefundsDetailsList = (
+  initaitveId: string,
+  exportId: string
+): Promise<Array<InitiativeRefundsDetailsListItem>> =>
+  InitiativeApiMocked.getRefundsDetailsList(initaitveId, exportId);
 
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
@@ -709,6 +725,24 @@ export const mockedOnBoardingStatusResponse = {
   totalElements: 0,
   totalPages: 0,
 };
+
+export const mockedRefundsDetailsSummary = {
+  createDate: new Date(),
+  totalAmount: 5678090800,
+  totalRefundedAmount: 3500090800,
+  totalRefunds: 2250789,
+  successPercentage: undefined,
+  status: 'Eseguito',
+};
+
+export const mockedRefundsDetailsListItem = [
+  {
+    id: '1111',
+    iban: 'IT 99 C 12345 67890 123456789012',
+    amount: 9999999999,
+    status: 'In attesa',
+  },
+];
 
 export const mockedFilePath = 'download';
 
