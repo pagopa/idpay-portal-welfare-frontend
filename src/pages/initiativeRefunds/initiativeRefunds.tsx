@@ -300,10 +300,10 @@ const InitiativeRefunds = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    resetForm();
-  }, [id]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   resetForm();
+  // }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -316,7 +316,7 @@ const InitiativeRefunds = () => {
         filterByStatus
       );
     }
-  }, [page]);
+  }, [id, page]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -511,7 +511,10 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.successPercentage}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
-                        <IconButton data-testid="download-file-refunds" onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                        <IconButton
+                          data-testid="download-file-refunds"
+                          onClick={() => handleDownloadFile(r.downloadFileInfo)}
+                        >
                           <FileDownloadIcon color="primary" />
                         </IconButton>
                       </TableCell>
