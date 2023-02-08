@@ -70,6 +70,18 @@ export const peopleReached = (totalBudget: string, budgetPerPerson: string): any
   return Math.floor(totalBudgetInt / budgetPerPersonInt);
 };
 
+export const formatFileName = (name: string | undefined): string => {
+  if (typeof name === 'string' && name.length > 15) {
+    const nameArr = name.split('.');
+    const fileExtension = nameArr[nameArr.length - 1];
+    const truncatedName = name.substring(0, 10);
+    return `${truncatedName}... .${fileExtension}`;
+  } else if (typeof name === 'string' && name.length <= 15) {
+    return name;
+  }
+  return '';
+};
+
 export const numberWithCommas = (x: number | string | undefined) => {
   if (typeof x === 'string' && x.length > 0) {
     const xFormatted = x.replace(/\./g, '').replace(/,/g, '.');
