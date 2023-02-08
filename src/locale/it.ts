@@ -533,6 +533,22 @@ export default {
         percentageSuccess: '% Successo',
         status: 'Stato',
       },
+      form: {
+        trn: 'Inserisci TRN',
+        outcome: 'Esito',
+        filterBtn: 'Filtra',
+        resetFiltersBtn: 'Annulla filtri',
+      },
+      table: {
+        iban: 'IBAN',
+        amount: 'Importo',
+        outcome: 'Esito',
+      },
+      status: {
+        failed: 'Fallito',
+        done: 'Eseguito',
+        onEvaluation: 'In attesa',
+      },
     },
     chooseOrganization: {
       title: 'Seleziona Ente',

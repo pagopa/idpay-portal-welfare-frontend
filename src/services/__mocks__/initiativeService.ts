@@ -742,6 +742,24 @@ export const mockedRefundsDetailsListItem = [
     amount: 9999999999,
     status: 'In attesa',
   },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'In attesa',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'In attesa',
+  },
+  {
+    id: '1111',
+    iban: 'IT 99 C 12345 67890 123456789012',
+    amount: 9999999999,
+    status: 'In attesa',
+  },
 ];
 
 export const mockedFilePath = 'download';

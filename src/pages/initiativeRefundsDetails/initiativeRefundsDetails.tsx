@@ -1,19 +1,24 @@
+import { ArrowForwardIos } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import {
   Box,
   Breadcrumbs,
   Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
   Paper,
-  Typography,
+  Select,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  IconButton,
+  TextField,
+  Typography,
 } from '@mui/material';
-import { ArrowForwardIos } from '@mui/icons-material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useEffect, useState } from 'react';
@@ -264,6 +269,77 @@ const InitiativeRefundsDetails = () => {
           </Box>
         </Paper>
       </Box>
+      <Box
+        sx={{
+          display: 'grid',
+          width: '100%',
+          gridTemplateColumns: 'repeat(12, 1fr)',
+          alignItems: 'baseline',
+          gap: 2,
+          mt: 3,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 7' }}>
+          <TextField
+            label={t('pages.initiativeRefundsDetails.form.trn')}
+            placeholder={t('pages.initiativeRefundsDetails.form.trn')}
+            name="searchTRN"
+            aria-label="searchTRN"
+            role="input"
+            InputLabelProps={{ required: false }}
+            // value={formik.values.searchUser}
+            //  onChange={(e) => formik.handleChange(e)}
+            size="small"
+            data-testid="searchTRN-test"
+          />
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 2' }} size="small">
+          <InputLabel>{t('pages.initiativeRefundsDetails.form.outcome')}</InputLabel>
+          <Select
+            id="filterStatus"
+            inputProps={{
+              'data-testid': 'filterStatus-select',
+            }}
+            name="filterStatus"
+            label={t('pages.initiativeRefundsDetails.form.outcome')}
+            placeholder={t('pages.initiativeRefundsDetails.form.outcome')}
+            // onChange={(e) => formik.handleChange(e)}
+            // value={formik.values.filterStatus}
+          >
+            <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
+              {t('pages.initiativeRefundsDetails.status.onEvaluation')}
+            </MenuItem>
+            <MenuItem value="REFUND_OK" data-testid="filterStatusOnboardingOk-test">
+              {t('pages.initiativeRefundsDetails.status.done')}
+            </MenuItem>
+            <MenuItem value="REFUND_KO" data-testid="filterStatusEligible-test">
+              {t('pages.initiativeRefundsDetails.status.failed')}
+            </MenuItem>
+          </Select>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
+          <Button
+            sx={{ py: 2, height: '44px' }}
+            variant="outlined"
+            size="small"
+            disabled
+            // onClick={() => formik.handleSubmit()}
+            data-testid="apply-filters-test"
+          >
+            {t('pages.initiativeRefundsDetails.form.filterBtn')}
+          </Button>
+        </FormControl>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
+          <ButtonNaked
+            component="button"
+            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
+            disabled
+            // onClick={resetForm}
+          >
+            {t('pages.initiativeRefundsDetails.form.resetFiltersBtn')}
+          </ButtonNaked>
+        </FormControl>
+      </Box>
       {rows.length > 0 ? (
         <Box
           sx={{
@@ -279,16 +355,22 @@ const InitiativeRefundsDetails = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%">iban</TableCell>
-                    <TableCell width="40%">Importo</TableCell>
-                    <TableCell width="17.5%">Esito</TableCell>
+                    <TableCell width="66%">
+                      {t('pages.initiativeRefundsDetails.table.iban')}
+                    </TableCell>
+                    <TableCell width="22%">
+                      {t('pages.initiativeRefundsDetails.table.amount')}
+                    </TableCell>
+                    <TableCell width="22%">
+                      {t('pages.initiativeRefundsDetails.table.outcome')}
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
                       <TableCell>{r.iban}</TableCell>
-                      <TableCell>{r.amount}</TableCell>
+                      <TableCell>{formatedCurrency(r.amount)}</TableCell>
                       <TableCell>{r.status}</TableCell>
                       <TableCell align="right">
                         <IconButton
