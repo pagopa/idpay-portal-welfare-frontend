@@ -255,20 +255,20 @@ const InitiativeUsers = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    resetForm();
-  }, [id]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   resetForm();
+  // }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
-  }, [page]);
+  }, [id, page]);
 
   return (
-    <Box sx={{ width: '100%', p: 2 }}>
+    <Box sx={{ width: '100%', padding: '16px' }}>
       <Box
         sx={{
           display: 'grid',
@@ -471,7 +471,12 @@ const InitiativeUsers = () => {
                       <TableCell>
                         <ButtonNaked
                           component="button"
-                          sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
+                          sx={{
+                            color: 'primary.main',
+                            fontWeight: 600,
+                            fontSize: '1em',
+                            textAlign: 'left',
+                          }}
                           onClick={() =>
                             history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
                           }

@@ -274,17 +274,17 @@ const InitiativeRanking = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    resetForm();
-  }, [id]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   resetForm();
+  // }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByStatus);
     }
-  }, [page]);
+  }, [id, page]);
 
   const getBeneficiaryStatus = (status: string | undefined) => {
     switch (status) {
