@@ -261,10 +261,10 @@ const InitiativeRefunds = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    resetForm();
-  }, [id]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  //   resetForm();
+  // }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -277,7 +277,7 @@ const InitiativeRefunds = () => {
         filterByStatus
       );
     }
-  }, [page]);
+  }, [id, page]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>

@@ -28,6 +28,7 @@ import {
 } from '../../../../services/groupsService';
 import { initiativeIdSelector } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../../../redux/hooks';
+import { formatFileName } from '../../../../helpers';
 
 interface Props {
   action: string;
@@ -345,7 +346,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         </Box>
         <Box sx={{ gridColumn: 'span 4' }}>
           <Typography variant="body2" fontWeight={600}>
-            {fileName}
+            {formatFileName(fileName)}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
