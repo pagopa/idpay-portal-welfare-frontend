@@ -263,7 +263,7 @@ export const mockedInitiativeSummary = [
 export const mockedWallet = {
   initiativeId: '62e29002aac2e94cfa3763dd',
   initiativeName: 'Test wallet',
-  status: MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT,
+  status: MockedStatusWallet.REFUNDABLE,
   endDate: new Date('2023-01-04T15:44:53.816Z'),
   amount: 5,
   accrued: 10,

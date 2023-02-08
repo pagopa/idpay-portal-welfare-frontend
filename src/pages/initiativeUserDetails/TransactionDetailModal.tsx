@@ -7,6 +7,7 @@ import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { MockedOperation, MockedOperationType } from '../../model/Initiative';
 import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
+import { formatIban } from '../../helpers';
 
 type Props = {
   operationId: string;
@@ -97,6 +98,21 @@ const TransactionDetailModal = ({
     }
   };
 
+  const formatDate = (date: Date | undefined) => {
+    if (date) {
+      return date.toLocaleString('it-IT', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+    }
+    // eslint-disable-next-line sonarjs/no-redundant-jump
+    return;
+  };
+
   return (
     <Modal
       aria-labelledby="choose-transaction-detail-title"
@@ -178,7 +194,7 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail?.iban}
+                    {formatIban(transactionDetail?.iban)}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -251,12 +267,7 @@ const TransactionDetailModal = ({
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" fontWeight={600}>
-                {transactionDetail?.operationDate
-                  ?.toLocaleString('fr-BE')
-                  .substring(
-                    0,
-                    transactionDetail?.operationDate.toLocaleString('fr-BE').length - 3
-                  )}
+                {formatDate(transactionDetail?.operationDate)}
               </Typography>
             </Box>
             {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||

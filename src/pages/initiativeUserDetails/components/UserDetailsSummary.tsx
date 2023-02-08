@@ -2,13 +2,14 @@ import { Badge, Box, Card, CardContent, Typography } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { formatIban, formatedCurrency } from '../../../helpers';
 import { MockedInstrumentDTO, MockedStatusWallet } from '../../../model/Initiative';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
 type Props = {
-  amount: number;
-  refunded: number;
-  accrued: number;
+  amount: number | undefined;
+  refunded: number | undefined;
+  accrued: number | undefined;
   walletStatus: MockedStatusWallet | undefined;
   paymentMethodList: Array<MockedInstrumentDTO>;
   iban: string | undefined;
@@ -81,7 +82,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {`€ ${amount}`}
+              {formatedCurrency(amount)}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -94,7 +95,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {`€ ${refunded}`}
+              {formatedCurrency(refunded)}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -107,7 +108,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {`€ ${accrued}`}
+              {formatedCurrency(accrued)}
             </Typography>
             <Typography
               sx={{
@@ -192,7 +193,7 @@ const UserDetailsSummary = ({
               {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
               walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
                 ? t('pages.initiativeUserDetails.missingIban')
-                : iban}
+                : formatIban(iban)}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}

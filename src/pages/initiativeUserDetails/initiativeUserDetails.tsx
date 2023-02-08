@@ -41,6 +41,7 @@ import {
   MockedOperation,
   MockedOperationType,
 } from '../../model/Initiative';
+import { formatedCurrency } from '../../helpers';
 import TransactionDetailModal from './TransactionDetailModal';
 import UserDetailsSummary from './components/UserDetailsSummary';
 
@@ -48,9 +49,9 @@ import UserDetailsSummary from './components/UserDetailsSummary';
 const InitiativeUserDetails = () => {
   const history = useHistory();
   const { t } = useTranslation();
-  const [amount, setAmount] = useState(0);
-  const [accrued, setAccrued] = useState(0);
-  const [refunded, setRefunded] = useState(0);
+  const [amount, setAmount] = useState<number | undefined>(undefined);
+  const [accrued, setAccrued] = useState<number | undefined>(undefined);
+  const [refunded, setRefunded] = useState<number | undefined>(undefined);
   const [iban, setIban] = useState<string | undefined>(undefined);
   const [walletStatus, setWalletStatus] = useState<MockedStatusWallet | undefined>(undefined);
   const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
@@ -284,6 +285,20 @@ const InitiativeUserDetails = () => {
     setOpenModal(false);
   };
 
+  const formatDate = (date: Date | undefined) => {
+    if (date) {
+      return date.toLocaleString('it-IT', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+    }
+    return '';
+  };
+
   const operationTypeLabel = (opeType: string) => {
     switch (opeType) {
       case MockedOperationType.ADD_IBAN:
@@ -438,9 +453,7 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUserDetails.updatedOn')}
           </Typography>
           <Typography variant="body2" fontWeight={600}>
-            {lastCounterUpdate
-              ?.toLocaleString('fr-BE')
-              .substring(0, lastCounterUpdate?.toLocaleString('fr-BE').length - 3)}
+            {formatDate(lastCounterUpdate)}
           </Typography>
         </Box>
       </Box>
@@ -616,11 +629,9 @@ const InitiativeUserDetails = () => {
                   {rows.map((r) => (
                     <TableRow key={r.operationId}>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {r.operationDate
-                          ?.toLocaleString('fr-BE')
-                          .substring(0, r.operationDate.toLocaleString('fr-BE').length - 3)}
+                        {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)}
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'left' }}>
+                      <TableCell>
                         <ButtonNaked
                           data-testid="operationTypeBtn"
                           component="button"
@@ -628,6 +639,7 @@ const InitiativeUserDetails = () => {
                             color: 'primary.main',
                             fontWeight: 600,
                             fontSize: '1em',
+                            textAlign: 'left',
                           }}
                           onClick={() => {
                             handleOpenModal(r.operationId);
@@ -636,9 +648,9 @@ const InitiativeUserDetails = () => {
                           {operationTypeLabel(r.operationType)}
                         </ButtonNaked>
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'left' }}>{`€ ${r.amount}`}</TableCell>
+                      <TableCell sx={{ textAlign: 'left' }}>{formatedCurrency(r.amount)}</TableCell>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {r.accrued ? `€ ${r.accrued}` : '-'}
+                        {formatedCurrency(r.accrued)}
                       </TableCell>
                     </TableRow>
                   ))}
