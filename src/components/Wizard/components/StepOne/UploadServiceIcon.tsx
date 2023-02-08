@@ -8,6 +8,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { formatFileName } from '../../../../helpers';
 
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
@@ -160,7 +161,7 @@ const UploadServiceIcon = ({
         </Box>
         <Box sx={{ gridColumn: 'span 3' }}>
           <Typography variant="body2" fontWeight={600}>
-            {fileName}
+            {formatFileName(fileName)}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
