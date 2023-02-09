@@ -136,7 +136,7 @@ const TransactionDetailModal = ({
             height: '100%',
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4,
+            p: 3,
           }}
         >
           <Box
@@ -193,7 +193,7 @@ const TransactionDetailModal = ({
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography variant="monospaced" fontWeight={400}>
                     {formatIban(transactionDetail?.iban)}
                   </Typography>
                 </Box>
