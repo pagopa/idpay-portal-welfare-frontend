@@ -18,6 +18,7 @@ import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardE
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
 import {
+  InitiativeRefundsDetailsByEvent,
   InitiativeRefundsDetailsListItem,
   InitiativeRefundsDetailsSummary,
   InitiativeRefundsResponse,
@@ -204,6 +205,13 @@ export const getRefundsDetailsList = (
   exportId: string
 ): Promise<Array<InitiativeRefundsDetailsListItem>> =>
   InitiativeApiMocked.getRefundsDetailsList(initaitveId, exportId);
+
+export const getRefundsDetailsByEvent = (
+  initaitveId: string,
+  exportId: string,
+  refundEventId: string
+): Promise<InitiativeRefundsDetailsByEvent> =>
+  InitiativeApiMocked.getRefundsDetailsByEvent(initaitveId, exportId, refundEventId);
 
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
@@ -732,7 +740,7 @@ export const mockedRefundsDetailsSummary = {
   totalRefundedAmount: 3500090800,
   totalRefunds: 2250789,
   successPercentage: undefined,
-  status: 'Eseguito',
+  status: 'EXPORTED',
 };
 
 export const mockedRefundsDetailsListItem = [
@@ -740,27 +748,41 @@ export const mockedRefundsDetailsListItem = [
     id: '1111',
     iban: 'IT 99 C 12345 67890 123456789012',
     amount: 9999999999,
-    status: 'In attesa',
+    status: 'EXPORTED',
   },
   {
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'In attesa',
+    status: 'EXPORTED',
   },
   {
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'In attesa',
+    status: 'EXPORTED',
   },
   {
     id: '1111',
     iban: 'IT 99 C 12345 67890 123456789012',
     amount: 9999999999,
-    status: 'In attesa',
+    status: 'EXPORTED',
   },
 ];
+
+export const mockedRefundsDetailsByEventRes = {
+  fiscalCode: 'AAAAAA00A00A000C',
+  iban: 'IT 99 C 12345 67890 123456789012',
+  amount: 9999999999,
+  startDate: new Date(),
+  endDate: new Date(),
+  status: 'EXPORTED',
+  refundType: 'Ordinario',
+  trn: '123456789012345678901234567890',
+  creationDate: new Date(),
+  sendDate: new Date(),
+  notificationDate: new Date(),
+};
 
 export const mockedFilePath = 'download';
 

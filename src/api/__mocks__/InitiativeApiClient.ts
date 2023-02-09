@@ -17,6 +17,7 @@ import {
   mockedOnBoardingStatusResponse,
   mockedOperationList,
   mockedOrganizationsList,
+  mockedRefundsDetailsByEventRes,
   mockedRefundsDetailsListItem,
   mockedRefundsDetailsSummary,
   mockedWallet,
@@ -49,6 +50,7 @@ import {
 } from '../../model/Initiative';
 import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 import {
+  InitiativeRefundsDetailsByEvent,
   InitiativeRefundsDetailsListItem,
   InitiativeRefundsDetailsSummary,
 } from '../../model/InitiativeRefunds';
@@ -156,6 +158,13 @@ export const InitiativeApiMocked = {
     _exportId: string
   ): Promise<Array<InitiativeRefundsDetailsListItem>> =>
     new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
+
+  getRefundsDetailsByEvent: async (
+    _initiativeId: string,
+    _exportId: string,
+    _refundEventId: string
+  ): Promise<InitiativeRefundsDetailsByEvent> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
 
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),

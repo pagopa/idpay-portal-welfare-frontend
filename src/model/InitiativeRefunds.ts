@@ -52,3 +52,17 @@ export interface InitiativeRefundsDetailsListItem {
   amount: number | undefined;
   status: string | undefined;
 }
+
+export interface InitiativeRefundsDetailsByEvent {
+  fiscalCode: string | undefined;
+  iban: string | undefined;
+  amount: number | undefined;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  status: string | undefined;
+  refundType: string | undefined;
+  trn: string | undefined;
+  creationDate?: Date | undefined;
+  sendDate?: Date | undefined;
+  notificationDate?: Date | undefined;
+}

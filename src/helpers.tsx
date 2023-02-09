@@ -100,3 +100,28 @@ export const formatedCurrency = (number: number | undefined, symbol: string = '-
   }
   return symbol;
 };
+
+export const formatedDate = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+    });
+  }
+  return symbol;
+};
+
+export const formatedDateHoursAndMin = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'Europe/Rome',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  }
+  return symbol;
+};

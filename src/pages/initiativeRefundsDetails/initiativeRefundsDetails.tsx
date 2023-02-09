@@ -18,6 +18,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Chip,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
@@ -40,6 +41,7 @@ import {
   getRefundsDetailsList,
   getRefundsDetailsSummary,
 } from '../../services/__mocks__/initiativeService';
+import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 
 const InitiativeRefundsDetails = () => {
   const history = useHistory();
@@ -49,6 +51,8 @@ const InitiativeRefundsDetails = () => {
   const addError = useErrorDispatcher();
   const [detailsSummary, setDetailsSummary] = useState<InitiativeRefundsDetailsSummary>();
   const [rows, setRows] = useState<Array<InitiativeRefundsDetailsListItem>>([]);
+  const [openRefundsDetailModal, setOpenRefundsDetailModal] = useState<boolean>(false);
+  const [refundEventId, setRefundEventId] = useState<string | undefined>('');
 
   interface MatchParams {
     initiativeId: string;
@@ -93,7 +97,6 @@ const InitiativeRefundsDetails = () => {
   ) => {
     getRefundsDetailsList(initiativeId, exportId)
       .then((res: any) => {
-        console.log('List res', res);
         setRows(res);
       })
       .catch((err: any) => console.log('err', err));
@@ -136,6 +139,46 @@ const InitiativeRefundsDetails = () => {
             showCloseIcon: true,
           });
         });
+    }
+  };
+
+  const handleOpenRefundModal = (e: string | undefined) => {
+    setRefundEventId(e);
+    setOpenRefundsDetailModal(true);
+  };
+
+  const handleCloseRefundModal = () => {
+    setOpenRefundsDetailModal(false);
+  };
+
+  const getRefundStatus = (status: string | undefined) => {
+    switch (status) {
+      case 'EXPORTED':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.exported')}
+            color="warning"
+          />
+        );
+      case 'PARTIAL':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.partial')}
+            color="error"
+          />
+        );
+      case 'COMPLETE':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefunds.status.complete')}
+            color="default"
+          />
+        );
+      default:
+        return null;
     }
   };
 
@@ -263,9 +306,9 @@ const InitiativeRefundsDetails = () => {
             <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
               {t('pages.initiativeRefundsDetails.recap.status')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
-              {detailsSummary?.status ? detailsSummary.status : '-'}
-            </Typography>
+            <Box sx={{ gridColumn: 'span 6' }}>
+              {detailsSummary?.status ? getRefundStatus(detailsSummary.status) : '-'}
+            </Box>
           </Box>
         </Paper>
       </Box>
@@ -276,10 +319,10 @@ const InitiativeRefundsDetails = () => {
           gridTemplateColumns: 'repeat(12, 1fr)',
           alignItems: 'baseline',
           gap: 2,
-          mt: 3,
+          mt: 5,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 7' }}>
+        <FormControl sx={{ gridColumn: 'span 8' }}>
           <TextField
             label={t('pages.initiativeRefundsDetails.form.trn')}
             placeholder={t('pages.initiativeRefundsDetails.form.trn')}
@@ -306,7 +349,7 @@ const InitiativeRefundsDetails = () => {
             // onChange={(e) => formik.handleChange(e)}
             // value={formik.values.filterStatus}
           >
-            <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
+            <MenuItem value="EXPORTED" data-testid="filterStatusOnEvaluation-test">
               {t('pages.initiativeRefundsDetails.status.onEvaluation')}
             </MenuItem>
             <MenuItem value="REFUND_OK" data-testid="filterStatusOnboardingOk-test">
@@ -329,7 +372,7 @@ const InitiativeRefundsDetails = () => {
             {t('pages.initiativeRefundsDetails.form.filterBtn')}
           </Button>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
           <ButtonNaked
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
@@ -348,6 +391,7 @@ const InitiativeRefundsDetails = () => {
             height: '100%',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
+            mt: 3,
           }}
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
@@ -355,15 +399,16 @@ const InitiativeRefundsDetails = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="66%">
+                    <TableCell width="65%">
                       {t('pages.initiativeRefundsDetails.table.iban')}
                     </TableCell>
-                    <TableCell width="22%">
+                    <TableCell width="15%">
                       {t('pages.initiativeRefundsDetails.table.amount')}
                     </TableCell>
-                    <TableCell width="22%">
+                    <TableCell width="15%">
                       {t('pages.initiativeRefundsDetails.table.outcome')}
                     </TableCell>
+                    <TableCell width="5%"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -371,11 +416,11 @@ const InitiativeRefundsDetails = () => {
                     <TableRow key={i}>
                       <TableCell>{r.iban}</TableCell>
                       <TableCell>{formatedCurrency(r.amount)}</TableCell>
-                      <TableCell>{r.status}</TableCell>
+                      <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           data-testid="download-file-refunds"
-                          onClick={() => console.log('clicked')}
+                          onClick={() => handleOpenRefundModal(r.id)}
                         >
                           <ArrowForwardIos color="primary" />
                         </IconButton>
@@ -384,6 +429,13 @@ const InitiativeRefundsDetails = () => {
                   ))}
                 </TableBody>
               </Table>
+              <InitiativeRefundsDetailsModal
+                openRefundsDetailModal={openRefundsDetailModal}
+                handleCloseRefundModal={handleCloseRefundModal}
+                refundEventId={refundEventId}
+                initiativeId={initiativeId}
+                exportId={exportId}
+              />
             </Box>
           </Box>
         </Box>
