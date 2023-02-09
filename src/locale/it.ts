@@ -429,6 +429,11 @@ export default {
       missingPaymentMethod: 'Nessun metodo di pagamento',
       missingIban: 'Nessun IBAN presente',
       unsubscribed: 'Utente disiscritto',
+      eligibleKo: 'Idoneo non assegnataro',
+      eligibleKoDescription:
+        'L’utente possiede i requisiti per l’adesione ma non rientra in graduatoria per termine posti.',
+      onboardingKo: 'Non idoneo',
+      onboardingKoDescription: 'L’utente non possiede i requisiti per l’adesione.',
       table: {
         dateAndHour: 'Data e ora',
         event: 'Evento',

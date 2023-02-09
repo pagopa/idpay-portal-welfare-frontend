@@ -1,5 +1,6 @@
 /* eslint-disable functional/no-let */
 import {
+  Alert,
   Breadcrumbs,
   Button,
   FormControl,
@@ -40,13 +41,19 @@ import {
   MockedStatusWallet,
   MockedOperation,
   MockedOperationType,
+  // Initiative,
 } from '../../model/Initiative';
 import { formatedCurrency } from '../../helpers';
-import TransactionDetailModal from './TransactionDetailModal';
+// import { useInitiative } from '../../hooks/useInitiative';
+// import { useAppSelector } from '../../redux/hooks';
+// import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import UserDetailsSummary from './components/UserDetailsSummary';
+import TransactionDetailModal from './TransactionDetailModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
+  // useInitiative();
+  // const initiativeSel = useAppSelector(initiativeSelector);
   const history = useHistory();
   const { t } = useTranslation();
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -299,6 +306,35 @@ const InitiativeUserDetails = () => {
     return '';
   };
 
+  const renderUserStatusAlert = (status: string | undefined) => {
+    switch (status) {
+      case 'ONBOARDING_KO':
+        return (
+          <Alert variant="outlined" severity="error">
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {t('pages.initiativeUserDetails.onboardingKo')}
+            </Typography>
+            <Typography variant="body2">
+              {t('pages.initiativeUserDetails.onboardingKoDescription')}
+            </Typography>
+          </Alert>
+        );
+      case 'ELIGIBLE_KO':
+        return (
+          <Alert variant="outlined" severity="warning">
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {t('pages.initiativeUserDetails.eligibleKo')}
+            </Typography>
+            <Typography variant="body2">
+              {t('pages.initiativeUserDetails.eligibleKoDescription')}
+            </Typography>
+          </Alert>
+        );
+      default:
+        return null;
+    }
+  };
+
   const operationTypeLabel = (opeType: string) => {
     switch (opeType) {
       case MockedOperationType.ADD_IBAN:
@@ -368,9 +404,10 @@ const InitiativeUserDetails = () => {
   interface MatchParams {
     id: string;
     cf: string;
+    status: string;
   }
 
-  const { id, cf } = (match?.params as MatchParams) || {};
+  const { id, cf, status } = (match?.params as MatchParams) || {};
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -418,9 +455,8 @@ const InitiativeUserDetails = () => {
           <TitleBox
             title={cf}
             subTitle={''}
-            mbTitle={2}
-            mtTitle={2}
-            mbSubTitle={5}
+            mtTitle={3}
+            mbTitle={0}
             variantTitle="h4"
             variantSubTitle="body1"
           />
@@ -436,6 +472,8 @@ const InitiativeUserDetails = () => {
               </Button> */}
         </Box>
       </Box>
+
+      <Box sx={{ my: 5 }}>{renderUserStatusAlert(status)}</Box>
       <Box
         sx={{
           display: 'grid',
@@ -445,10 +483,10 @@ const InitiativeUserDetails = () => {
           justifyContent: 'space-between',
         }}
       >
-        <Box sx={{ display: 'inline-flex', gridColumn: 'span 6', mt: 5 }}>
+        <Box sx={{ display: 'inline-flex', gridColumn: 'span 6' }}>
           <Typography variant="h6">{t('pages.initiativeUserDetails.initiativeState')}</Typography>
         </Box>
-        <Box sx={{ gridColumn: 'span 6', display: 'inline-flex', mt: 5, justifyContent: 'end' }}>
+        <Box sx={{ gridColumn: 'span 6', display: 'inline-flex', justifyContent: 'end' }}>
           <Typography variant="body2" color="text.secondary" sx={{ pr: 1 }}>
             {t('pages.initiativeUserDetails.updatedOn')}
           </Typography>
@@ -483,7 +521,7 @@ const InitiativeUserDetails = () => {
           gap: 2,
         }}
       >
-        <FormControl sx={{ gridColumn: 'span 8' }} size="small">
+        <FormControl sx={{ gridColumn: 'span 10' }} size="small">
           <InputLabel>{t('pages.initiativeUserDetails.filterEvent')}</InputLabel>
           <Select
             id="filterEvent"
@@ -528,7 +566,7 @@ const InitiativeUserDetails = () => {
             </MenuItem>
           </Select>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 4' }}>
+        <FormControl sx={{ gridColumn: 'span 5' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.from')}
@@ -550,7 +588,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 4' }}>
+        <FormControl sx={{ gridColumn: 'span 5' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.to')}
@@ -572,7 +610,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 4' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <Button
             sx={{ height: '44.5px' }}
             variant="outlined"
@@ -584,7 +622,7 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUsers.form.filterBtn')}
           </Button>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 4' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <ButtonNaked
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
@@ -604,6 +642,7 @@ const InitiativeUserDetails = () => {
             height: '100%',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
+            mt: 3,
           }}
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
@@ -611,16 +650,16 @@ const InitiativeUserDetails = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%">
+                    <TableCell width="12.5%">
                       {t('pages.initiativeUserDetails.table.dateAndHour')}
                     </TableCell>
-                    <TableCell width="40%">
+                    <TableCell width="62.5%">
                       {t('pages.initiativeUserDetails.table.event')}
                     </TableCell>
-                    <TableCell width="17.5%">
+                    <TableCell width="10%">
                       {t('pages.initiativeUserDetails.table.totExpense')}
                     </TableCell>
-                    <TableCell width="17.5%">
+                    <TableCell width="15%">
                       {t('pages.initiativeUserDetails.table.toRefund')}
                     </TableCell>
                   </TableRow>
