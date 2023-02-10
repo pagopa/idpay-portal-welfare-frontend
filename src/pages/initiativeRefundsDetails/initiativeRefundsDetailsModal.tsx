@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Backdrop, Modal, Fade, Box, IconButton, Typography, Chip } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getRefundsDetailsByEvent } from '../../services/__mocks__/initiativeService';
-import { InitiativeRefundsDetailsByEvent } from '../../model/InitiativeRefunds';
 import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
+import { InitiativeRefundsDetailsByEvent } from '../../model/InitiativeRefunds';
+import { getRefundsDetailsByEvent } from '../../services/__mocks__/initiativeService';
 
 type Props = {
   openRefundsDetailModal: boolean;
@@ -40,7 +40,6 @@ const InitiativeRefundsDetailsModal = ({
         })
         .catch((err) => console.log(err));
     }
-    console.log('undefined / false');
   }, [initiativeId, exportId, refundEventId, openRefundsDetailModal]);
 
   const getRefundModalStatus = (status: string | undefined) => {

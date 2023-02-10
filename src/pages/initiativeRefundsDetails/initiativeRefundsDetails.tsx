@@ -5,6 +5,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -18,7 +19,6 @@ import {
   TableRow,
   TextField,
   Typography,
-  Chip,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
@@ -67,15 +67,11 @@ const InitiativeRefundsDetails = () => {
   });
 
   const { initiativeId, exportId, filePath } = (match?.params as MatchParams) || {};
-  console.log('id', initiativeId);
-  console.log('id', exportId);
-  console.log('filePath', filePath);
 
   useEffect(() => {
     if (typeof initiativeId !== undefined && typeof exportId !== undefined) {
       getRefundsDetailsSummary(initiativeId, exportId)
         .then((res: any) => {
-          console.log('res', res);
           setDetailsSummary(res);
         })
         .catch((err: any) => console.log('err', err));
@@ -452,7 +448,7 @@ const InitiativeRefundsDetails = () => {
                       <TableCell>{getRefundListStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton
-                          data-testid="download-file-refunds"
+                          data-testid="open-modal-refunds-arrow"
                           onClick={() => handleOpenRefundModal(r.id)}
                         >
                           <ArrowForwardIos color="primary" />
