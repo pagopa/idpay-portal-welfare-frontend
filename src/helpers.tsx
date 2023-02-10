@@ -94,6 +94,16 @@ export const numberWithCommas = (x: number | string | undefined) => {
   return '0';
 };
 
+export const formatIban = (iban: string | undefined) => {
+  if (iban) {
+    return `${iban.slice(0, 2)} ${iban.slice(2, 4)} ${iban.slice(4, 5)} ${iban.slice(
+      5,
+      10
+    )} ${iban.slice(10, 15)} ${iban.slice(15, 32)}`;
+  }
+  return '';
+};
+
 export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
   if (number) {
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
