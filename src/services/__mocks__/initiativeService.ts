@@ -746,12 +746,6 @@ export const mockedRefundsDetailsSummary = {
 export const mockedRefundsDetailsListItem = [
   {
     id: '1111',
-    iban: 'IT 99 C 12345 67890 123456789012',
-    amount: 9999999999,
-    status: 'EXPORTED',
-  },
-  {
-    id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
     status: 'EXPORTED',
@@ -764,7 +758,13 @@ export const mockedRefundsDetailsListItem = [
   },
   {
     id: '1111',
-    iban: 'IT 99 C 12345 67890 123456789012',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'EXPORTED',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
     status: 'EXPORTED',
   },
@@ -772,7 +772,7 @@ export const mockedRefundsDetailsListItem = [
 
 export const mockedRefundsDetailsByEventRes = {
   fiscalCode: 'AAAAAA00A00A000C',
-  iban: 'IT 99 C 12345 67890 123456789012',
+  iban: 'IT99C1234567890123456789012',
   amount: 9999999999,
   startDate: new Date(),
   endDate: new Date(),

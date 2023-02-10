@@ -27,7 +27,7 @@ import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 import { useHistory } from 'react-router-dom';
 import { SasToken } from '../../api/generated/initiative/SasToken';
-import { formatedCurrency } from '../../helpers';
+import { formatedCurrency, formatIban } from '../../helpers';
 import { useInitiative } from '../../hooks/useInitiative';
 import {
   InitiativeRefundsDetailsListItem,
@@ -414,7 +414,9 @@ const InitiativeRefundsDetails = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{r.iban}</TableCell>
+                      <TableCell>
+                        <Typography variant="monospaced"> {formatIban(r.iban)}</Typography>
+                      </TableCell>
                       <TableCell>{formatedCurrency(r.amount)}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">

@@ -4,7 +4,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import { getRefundsDetailsByEvent } from '../../services/__mocks__/initiativeService';
 import { InitiativeRefundsDetailsByEvent } from '../../model/InitiativeRefunds';
-import { formatedCurrency, formatedDate, formatedDateHoursAndMin } from '../../helpers';
+import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
 
 type Props = {
   openRefundsDetailModal: boolean;
@@ -139,7 +139,7 @@ const InitiativeRefundsDetailsModal = ({
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="monospaced">{refundEventDetails?.iban}</Typography>
+            <Typography variant="monospaced">{formatIban(refundEventDetails?.iban)}</Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">
