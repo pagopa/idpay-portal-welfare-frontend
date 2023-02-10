@@ -65,6 +65,8 @@ describe('test suite initiative user details', () => {
     });
 
     // test sumbit filter btn  TODO once btn disabled is removed
+
+    //test reset form btn TODO once btn disabled is removed
     // const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
 
     // test click of operation type
@@ -73,5 +75,19 @@ describe('test suite initiative user details', () => {
     )) as HTMLButtonElement[];
     const firstOperationType = operationTypeBtn[0];
     fireEvent.click(firstOperationType);
+
+    // test open statusSnackbar
+    const dowlnloadBtn = screen.getByText(
+      'pages.initiativeUserDetails.downloadCsvBtn'
+    ) as HTMLButtonElement;
+    fireEvent.click(dowlnloadBtn);
+    expect(screen.getByText('pages.initiativeUserDetails.downloadCsv')).toBeInTheDocument();
+
+    fireEvent.keyDown(screen.getByText('pages.initiativeUserDetails.downloadCsv'), {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
   });
 });

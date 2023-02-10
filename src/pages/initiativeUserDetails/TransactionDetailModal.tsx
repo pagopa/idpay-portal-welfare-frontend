@@ -58,7 +58,7 @@ const TransactionDetailModal = ({
 
   const transactionResult = (opeType: MockedOperationType | undefined) => {
     if (typeof opeType !== 'undefined') {
-      if (opeType?.toUpperCase().substring(0, 8) === 'REJECTED') {
+      if (opeType?.toUpperCase().includes('REJECTED')) {
         return (
           <>
             <Box sx={{ gridColumn: 'span 12', mt: 3 }}>

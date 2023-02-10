@@ -2,7 +2,6 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
-
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -15,7 +14,7 @@ describe('test suite initiative user details', () => {
   test('test of component TransactionDetailModal open', async () => {
     renderWithHistoryAndStore(
       <TransactionDetailModal
-        operationId={''}
+        operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
         handleCloseModal={jest.fn()}
         initiativeId={''}
@@ -35,7 +34,7 @@ describe('test suite initiative user details', () => {
         openModal={false}
         handleCloseModal={jest.fn()}
         initiativeId={''}
-        holderBank={''}
+        holderBank={undefined}
         operationTypeLabel={jest.fn()}
       />
     );
