@@ -558,7 +558,7 @@ export default {
         outcome: 'Esito',
         typology: 'Tipologia',
         trn: 'TRN',
-        createdOn: 'Created on',
+        createdOn: 'Creata il',
         mandateDate: 'Data mandato',
         dateNotifiedOfUser: 'Data notifica all’utente',
       },
