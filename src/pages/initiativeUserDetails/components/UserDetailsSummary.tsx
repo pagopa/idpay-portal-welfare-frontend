@@ -82,7 +82,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(amount)}
+              {formatedCurrency(amount, '00,00 €')}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -95,7 +95,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(refunded)}
+              {formatedCurrency(refunded, '00,00 €')}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -108,7 +108,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(accrued)}
+              {formatedCurrency(accrued, '00,00 €')}
             </Typography>
             <Typography
               sx={{

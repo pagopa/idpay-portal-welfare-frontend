@@ -14,6 +14,7 @@ import {
   TableRow,
   TextField,
   Typography,
+  Snackbar,
 } from '@mui/material';
 import { Box /* , ThemeProvider  */ } from '@mui/system';
 import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
@@ -72,6 +73,7 @@ const InitiativeUserDetails = () => {
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
+  const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -451,7 +453,7 @@ const InitiativeUserDetails = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 10' }}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
           <TitleBox
             title={cf}
             subTitle={''}
@@ -461,15 +463,28 @@ const InitiativeUserDetails = () => {
             variantSubTitle="body1"
           />
         </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-          {/* <Button
-                variant="contained"
-                size="small"
-                onClick={() => console.log('download .csv')}
-                data-testid="download-csv-test"
-              >
-                {t('pages.initiativeUserDetails.downloadCsvBtn')}
-              </Button> */}
+        <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={() => setOpenSnackBar(true)}
+            data-testid="download-csv-test"
+          >
+            {t('pages.initiativeUserDetails.downloadCsvBtn')}
+          </Button>
+
+          <Snackbar
+            sx={{ pb: 2 }}
+            open={openSnackBar}
+            onClose={() => setOpenSnackBar(false)}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            autoHideDuration={3000}
+            data-testid="snack-bar-test"
+          >
+            <Alert severity="success" elevation={6} variant="outlined">
+              {t('pages.initiativeUserDetails.downloadCsv')}
+            </Alert>
+          </Snackbar>
         </Box>
       </Box>
 

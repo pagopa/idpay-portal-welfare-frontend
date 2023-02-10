@@ -101,13 +101,33 @@ export const formatIban = (iban: string | undefined) => {
       10
     )} ${iban.slice(10, 15)} ${iban.slice(15, 32)}`;
   }
-  // eslint-disable-next-line sonarjs/no-redundant-jump
-  return;
+  return '';
 };
 
 export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
   if (number) {
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  }
+  return symbol;
+};
+
+export const formatedDate = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', { year: 'numeric', month: 'numeric', day: 'numeric' });
+  }
+  return symbol;
+};
+
+export const formatedDateHoursAndMin = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'Europe/Rome',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
   }
   return symbol;
 };
