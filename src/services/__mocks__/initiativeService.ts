@@ -748,25 +748,25 @@ export const mockedRefundsDetailsListItem = [
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'EXPORTED',
+    status: 'DONE',
   },
   {
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'EXPORTED',
+    status: 'DONE',
   },
   {
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'EXPORTED',
+    status: 'DONE',
   },
   {
     id: '1111',
     iban: 'IT99C1234567890123456789012',
     amount: 9999999999,
-    status: 'EXPORTED',
+    status: 'DONE',
   },
 ];
 
@@ -776,7 +776,7 @@ export const mockedRefundsDetailsByEventRes = {
   amount: 9999999999,
   startDate: new Date(),
   endDate: new Date(),
-  status: 'EXPORTED',
+  status: 'DONE',
   refundType: 'Ordinario',
   trn: '123456789012345678901234567890',
   creationDate: new Date(),

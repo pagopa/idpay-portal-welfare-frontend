@@ -182,6 +182,37 @@ const InitiativeRefundsDetails = () => {
     }
   };
 
+  const getRefundListStatus = (status: string | undefined) => {
+    switch (status) {
+      case 'DONE':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefundsDetails.status.done')}
+            color="success"
+          />
+        );
+      case 'FAILED':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefundsDetails.status.failed')}
+            color="error"
+          />
+        );
+      case 'ON_EVALUATION':
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
+            color="default"
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', p: 2 }}>
       <Box
@@ -418,7 +449,7 @@ const InitiativeRefundsDetails = () => {
                         <Typography variant="monospaced"> {formatIban(r.iban)}</Typography>
                       </TableCell>
                       <TableCell>{formatedCurrency(r.amount)}</TableCell>
-                      <TableCell>{getRefundStatus(r.status)}</TableCell>
+                      <TableCell>{getRefundListStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           data-testid="download-file-refunds"

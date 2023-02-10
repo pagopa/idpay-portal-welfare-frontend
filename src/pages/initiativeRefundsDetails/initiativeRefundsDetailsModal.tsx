@@ -43,29 +43,29 @@ const InitiativeRefundsDetailsModal = ({
     console.log('undefined / false');
   }, [initiativeId, exportId, refundEventId, openRefundsDetailModal]);
 
-  const getRefundStatus = (status: string | undefined) => {
+  const getRefundModalStatus = (status: string | undefined) => {
     switch (status) {
-      case 'EXPORTED':
+      case 'DONE':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.exported')}
-            color="warning"
+            label={t('pages.initiativeRefundsDetails.status.done')}
+            color="success"
           />
         );
-      case 'PARTIAL':
+      case 'FAILED':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.partial')}
+            label={t('pages.initiativeRefundsDetails.status.failed')}
             color="error"
           />
         );
-      case 'COMPLETE':
+      case 'ON_EVALUATION':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.complete')}
+            label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
             color="default"
           />
         );
@@ -169,7 +169,7 @@ const InitiativeRefundsDetailsModal = ({
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
-            {getRefundStatus(refundEventDetails?.status)}
+            {getRefundModalStatus(refundEventDetails?.status)}
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">
