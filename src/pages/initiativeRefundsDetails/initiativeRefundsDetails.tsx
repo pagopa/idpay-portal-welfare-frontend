@@ -285,10 +285,10 @@ const InitiativeRefundsDetails = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.creationDate')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {detailsSummary?.createDate
                 ? detailsSummary.createDate.toLocaleString('fr-BE', {
                     year: 'numeric',
@@ -298,24 +298,24 @@ const InitiativeRefundsDetails = () => {
                 : '-'}
             </Typography>
 
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.totalOrders')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {formatedCurrency(detailsSummary?.totalAmount)}
             </Typography>
 
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.totalRefunds')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {formatedCurrency(detailsSummary?.totalRefundedAmount)}
             </Typography>
 
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.totalWarrant')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {detailsSummary?.totalRefunds ? detailsSummary.totalRefunds : '-'}
             </Typography>
           </Box>
@@ -328,16 +328,16 @@ const InitiativeRefundsDetails = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.percentageSuccess')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {detailsSummary?.successPercentage ? detailsSummary.successPercentage : '-'}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 6' }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.status')}
             </Typography>
-            <Box sx={{ gridColumn: 'span 6' }}>
+            <Box sx={{ gridColumn: 'span 7' }}>
               {detailsSummary?.status ? getRefundStatus(detailsSummary.status) : '-'}
             </Box>
           </Box>
