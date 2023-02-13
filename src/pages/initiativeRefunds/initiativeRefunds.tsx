@@ -136,7 +136,6 @@ const InitiativeRefunds = () => {
               typeof r.notificationDate === 'object'
                 ? r.notificationDate.toLocaleString('fr-BE').split(' ')[0]
                 : '',
-            typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsNotified)}`,
             successPercentage: `${r.percentageResultedOk}%`,
@@ -449,16 +448,15 @@ const InitiativeRefunds = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="15%">
+                    <TableCell width="18%">
                       {t('pages.initiativeRefunds.table.creationDate')}
                     </TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.typology')}</TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.amount')}</TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.refunds')}</TableCell>
-                    <TableCell width="15%">
+                    <TableCell width="18%">{t('pages.initiativeRefunds.table.amount')}</TableCell>
+                    <TableCell width="18%">{t('pages.initiativeRefunds.table.refunds')}</TableCell>
+                    <TableCell width="18%">
                       {t('pages.initiativeRefunds.table.successPercentage')}
                     </TableCell>
-                    <TableCell width="20%">{t('pages.initiativeRefunds.table.status')}</TableCell>
+                    <TableCell width="23%">{t('pages.initiativeRefunds.table.status')}</TableCell>
                     <TableCell width="5%"></TableCell>
                   </TableRow>
                 </TableHead>
@@ -466,7 +464,6 @@ const InitiativeRefunds = () => {
                   {rows.map((r, i) => (
                     <TableRow key={i}>
                       <TableCell>{r.notificationDate}</TableCell>
-                      <TableCell>{r.typology}</TableCell>
                       <TableCell>{r.rewardsExported}</TableCell>
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>

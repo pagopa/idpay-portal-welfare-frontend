@@ -11,7 +11,6 @@ export interface InitiativeRefund {
 export interface InitiativeRefundToDisplay {
   id: string | undefined;
   notificationDate: string | undefined;
-  typology: string | undefined;
   rewardsExported: string | undefined;
   rewardsResults: string | undefined;
   successPercentage: string | undefined;

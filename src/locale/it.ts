@@ -529,7 +529,7 @@ export default {
         creationDate: 'Data creazione',
         totalOrders: 'Totale ordine',
         totalRefunds: 'Totale rimborsato',
-        totalWarrant: 'Totale Mandati',
+        totalWarrant: 'Totale mandati',
         percentageSuccess: '% Successo',
         status: 'Stato',
       },
