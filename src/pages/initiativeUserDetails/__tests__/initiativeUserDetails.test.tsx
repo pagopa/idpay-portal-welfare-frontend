@@ -65,9 +65,14 @@ describe('test suite initiative user details', () => {
     });
 
     // test sumbit filter btn  TODO once btn disabled is removed
+    // const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
+    // fireEvent.click(filterBtn);
 
     //test reset form btn TODO once btn disabled is removed
-    // const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
+    // const resetFilterBtn = screen.getByText(
+    //   'pages.initiativeUsers.form.resetFiltersBtn'
+    // ) as HTMLButtonElement;
+    // fireEvent.click(resetFilterBtn);
 
     // test click of operation type
     const operationTypeBtn = (await screen.findAllByTestId(

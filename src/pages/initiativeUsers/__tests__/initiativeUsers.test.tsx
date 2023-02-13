@@ -118,5 +118,8 @@ describe('<InitiativeUsers />', () => {
         .cast('12-12-2022')
         ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
     ).toBe('12/12/2022');
+
+    const resetFilterBtn = screen.getByText('pages.initiativeUsers.form.resetFiltersBtn');
+    fireEvent.click(resetFilterBtn);
   });
 });
