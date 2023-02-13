@@ -99,11 +99,10 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       </Provider>
     );
 
-    // const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
+     const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
 
-    // fireEvent.click(deleteMccBtn);
+     fireEvent.click(deleteMccBtn);
 
-    // console.log('first', screen.getByTestId('percetage-recognized-value'));
   });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
@@ -157,14 +156,10 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       </Layout>
     );
 
-    // console.log('first', screen.getByTestId('percetage-recognized-value'));
-
     fireEvent.change(screen.getByTestId('percetage-recognized-value'), {
       target: {
         value: '10',
       },
     });
-    // screen.debug(undefined,999999)
-    // console.log('first', await screen.findByText('Continua'));
   });
 });
