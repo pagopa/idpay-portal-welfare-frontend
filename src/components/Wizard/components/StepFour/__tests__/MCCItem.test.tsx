@@ -9,11 +9,6 @@ import { renderWithHistoryAndStore, renderWithProviders } from '../../../../../u
 import MCCItem from '../MCCItem';
 import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
-
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -83,7 +78,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
       />
     );
 
-    const deletebtn = screen.getByTestId('delete-button-test');
+    const deletebtn = screen.getByTestId('delete-button-mcc-test');
 
     fireEvent.click(deletebtn);
     expect(mockedFn.mock.calls.length).toEqual(1);
@@ -109,7 +104,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
     expect(selectMerchant).toBeDefined();
   });
 
-  test('test catch case api getOrganizationsList', async () => {
+  test('test catch case api getMccConfig', async () => {
     (InitiativeApiMocked.getMccConfig = async (): Promise<any> =>
       Promise.reject('mocked error response for tests')),
       renderWithHistoryAndStore(

@@ -8,10 +8,6 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import SpendingLimitItem from '../SpendingLimitItem';
 import { shopRulesToSubmit, threshold } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 window.scrollTo = jest.fn();
 describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();

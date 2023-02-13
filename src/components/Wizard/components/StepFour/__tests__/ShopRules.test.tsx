@@ -17,17 +17,28 @@ import {
   setInitiativeId,
 } from '../../../../../redux/slices/initiativeSlice';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
+import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
+import Layout from '../../../../../components/Layout/Layout';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterEach(cleanup);
+jest.mock('react-i18next', () => ({
+  ...jest.requireActual('react-i18next'),
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+}));
+
+afterEach(() => cleanup);
 window.scrollTo = jest.fn();
 
 export const shopRulesToSubmit = [
@@ -66,7 +77,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   const setCurrentStep = jest.fn();
   const setDisabledNext = jest.fn();
 
-  test('should render correctly the ShopRules component action SUMBIT', async () => {
+  test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
     store.dispatch(saveRewardRule(perRec));
     store.dispatch(saveTrxCount(trxCount));
@@ -87,6 +98,12 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
         </Router>
       </Provider>
     );
+
+    // const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
+
+    // fireEvent.click(deleteMccBtn);
+
+    // console.log('first', screen.getByTestId('percetage-recognized-value'));
   });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
@@ -111,5 +128,43 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     expect(toast).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+
+  test('test catch case api getTransactionConfigRules', async () => {
+    (InitiativeApiMocked.getTransactionConfigRules = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests')),
+      renderWithHistoryAndStore(
+        <ShopRules
+          action={WIZARD_ACTIONS.DRAFT}
+          setAction={setAction}
+          currentStep={3}
+          setCurrentStep={setCurrentStep(3)}
+          setDisabledNext={setDisabledNext}
+        />
+      );
+  });
+
+  test('test catch case api getOrganizationsList', async () => {
+    renderWithHistoryAndStore(
+      <Layout>
+        <ShopRules
+          action={WIZARD_ACTIONS.SUBMIT}
+          setAction={setAction}
+          currentStep={3}
+          setCurrentStep={setCurrentStep(3)}
+          setDisabledNext={setDisabledNext}
+        />
+      </Layout>
+    );
+
+    // console.log('first', screen.getByTestId('percetage-recognized-value'));
+
+    fireEvent.change(screen.getByTestId('percetage-recognized-value'), {
+      target: {
+        value: '10',
+      },
+    });
+    // screen.debug(undefined,999999)
+    // console.log('first', await screen.findByText('Continua'));
   });
 });
