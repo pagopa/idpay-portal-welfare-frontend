@@ -23,10 +23,14 @@ import { CsvDTO } from '../api/generated/initiative/CsvDTO';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
 import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
+import { WalletDTO } from '../api/generated/initiative/WalletDTO';
+import { InstrumentListDTO } from '../api/generated/initiative/InstrumentListDTO';
+import { IbanDTO } from '../api/generated/initiative/IbanDTO';
 import {
   mockedExportsPagedParam,
   mockedFileName,
   mockedFilePath,
+  // mockedFiscalCode,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
   mockedInitiativeId,
@@ -359,3 +363,12 @@ export const getOrganizationsList = (): Promise<OrganizationListDTO> => {
   }
   return InitiativeApi.getOrganizationsList().then((res) => res);
 };
+
+export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> =>
+  InitiativeApi.getWalletDetail(id, cf).then((res) => res);
+
+export const getInstrumentList = (id: string, cf: string): Promise<InstrumentListDTO> =>
+  InitiativeApi.getInstrumentList(id, cf).then((res) => res);
+
+export const getIban = (id: string, cf: string, iban: string): Promise<IbanDTO> =>
+  InitiativeApi.getIban(id, cf, iban).then((res) => res);

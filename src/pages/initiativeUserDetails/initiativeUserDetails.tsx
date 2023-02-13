@@ -32,14 +32,14 @@ import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
-  getIban,
+  // getIban,
   getTimeLine,
-  getWalletInfo,
-  getWalletInstrumen,
+  // getWalletInfo,
+  // getWalletInstrumen,
 } from '../../services/__mocks__/initiativeService';
 import {
-  MockedInstrumentDTO,
-  MockedStatusWallet,
+  // MockedInstrumentDTO,
+  // MockedStatusWallet,
   MockedOperation,
   MockedOperationType,
   // Initiative,
@@ -48,6 +48,10 @@ import { formatedCurrency } from '../../helpers';
 // import { useInitiative } from '../../hooks/useInitiative';
 // import { useAppSelector } from '../../redux/hooks';
 // import { initiativeSelector } from '../../redux/slices/initiativeSlice';
+import { getInstrumentList, getWalletDetail, getIban } from '../../services/intitativeService';
+import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
+// import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
+import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -61,12 +65,12 @@ const InitiativeUserDetails = () => {
   const [accrued, setAccrued] = useState<number | undefined>(undefined);
   const [refunded, setRefunded] = useState<number | undefined>(undefined);
   const [iban, setIban] = useState<string | undefined>(undefined);
-  const [walletStatus, setWalletStatus] = useState<MockedStatusWallet | undefined>(undefined);
+  const [walletStatus, setWalletStatus] = useState<StatusEnum | undefined>(undefined);
   const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
   const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
-  const [paymentMethodList, setPaymentMethodList] = useState<Array<MockedInstrumentDTO>>([]);
+  const [paymentMethodList, setPaymentMethodList] = useState<Array<InstrumentDTO>>([]);
   const [rows, setRows] = useState<Array<MockedOperation>>([]);
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
@@ -81,7 +85,7 @@ const InitiativeUserDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
-      getWalletInfo(id, cf)
+      getWalletDetail(id, cf)
         .then((res) => {
           if (typeof res.amount === 'number') {
             setAmount(res.amount);
@@ -116,9 +120,9 @@ const InitiativeUserDetails = () => {
           })
         );
 
-      getWalletInstrumen(id, cf)
+      getInstrumentList(id, cf)
         .then((res) => {
-          const walletInst = res.filter((r) => r.status === 'ACTIVE');
+          const walletInst = res.instrumentList.filter((r) => r.status === 'ACTIVE');
           setPaymentMethodList([...walletInst]);
         })
         .catch((error) =>
@@ -366,8 +370,9 @@ const InitiativeUserDetails = () => {
 
   useEffect(() => {
     if (typeof iban === 'string') {
-      getIban(iban)
+      getIban(id, cf, iban)
         .then((res) => {
+          console.log('IBAN', res);
           if (typeof res.iban === 'string') {
             setIban(iban);
           }

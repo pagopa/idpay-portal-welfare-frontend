@@ -15,12 +15,13 @@ import { MouseEventHandler } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import { MockedInstrumentDTO } from '../../model/Initiative';
+// import { MockedInstrumentDTO } from '../../model/Initiative';
+import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 
 type Props = {
   openPaymentMethodModal: boolean;
   handleClosePaymentMethodModal: MouseEventHandler;
-  paymentMethodList: Array<MockedInstrumentDTO>;
+  paymentMethodList: Array<InstrumentDTO>;
 };
 
 const PaymentMethodsModal = ({
@@ -94,7 +95,7 @@ const PaymentMethodsModal = ({
                 <>
                   <ListItem key={i}>
                     <ListItemAvatar>
-                      {p.brandLog ? <img src={p.brandLog} width="32px" /> : <CreditCardIcon />}
+                      {p.brandLogo ? <img src={p.brandLogo} width="32px" /> : <CreditCardIcon />}
                     </ListItemAvatar>
                     <ListItemText
                       primary={getMaskedPan(p.maskedPan)}

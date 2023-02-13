@@ -2977,11 +2977,8 @@ components:
       required:
         - iban
         - checkIbanStatus
-        - holderBank
         - description
         - channel
-        - bicCode
-        - queueDate
         - checkIbanResponseDate
       properties:
         iban:
@@ -2993,10 +2990,6 @@ components:
         description:
           type: string
         channel:
-          type: string
-        bicCode:
-          type: string
-        queueDate:
           type: string
         checkIbanResponseDate:
           type: string

@@ -2,16 +2,18 @@ import { Badge, Box, Card, CardContent, Typography } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
+import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
 import { formatIban, formatedCurrency } from '../../../helpers';
-import { MockedInstrumentDTO, MockedStatusWallet } from '../../../model/Initiative';
+// import { MockedInstrumentDTO /* MockedStatusWallet */ } from '../../../model/Initiative';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
 type Props = {
   amount: number | undefined;
   refunded: number | undefined;
   accrued: number | undefined;
-  walletStatus: MockedStatusWallet | undefined;
-  paymentMethodList: Array<MockedInstrumentDTO>;
+  walletStatus: StatusEnum | undefined;
+  paymentMethodList: Array<InstrumentDTO>;
   iban: string | undefined;
   holderBank: string | undefined;
   checkIbanResponseDate: Date | undefined;
@@ -184,14 +186,14 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
               color={
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-                walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
+                walletStatus === StatusEnum.NOT_REFUNDABLE ||
+                walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                   ? 'error'
                   : undefined
               }
             >
-              {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-              walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
+              {walletStatus === StatusEnum.NOT_REFUNDABLE ||
+              walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                 ? t('pages.initiativeUserDetails.missingIban')
                 : formatIban(iban)}
             </Typography>
@@ -206,8 +208,9 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-              walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
+              {walletStatus === StatusEnum.NOT_REFUNDABLE ||
+              walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT ||
+              holderBank === undefined
                 ? '-'
                 : holderBank}
             </Typography>
@@ -222,8 +225,8 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-              walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
+              {walletStatus === StatusEnum.NOT_REFUNDABLE ||
+              walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                 ? '-'
                 : checkIbanResponseDate
                     ?.toLocaleString('fr-BE')
@@ -240,8 +243,8 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {walletStatus === MockedStatusWallet.NOT_REFUNDABLE ||
-              walletStatus === MockedStatusWallet.NOT_REFUNDABLE_ONLY_INSTRUMENT
+              {walletStatus === StatusEnum.NOT_REFUNDABLE ||
+              walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                 ? '-'
                 : channel}
             </Typography>
