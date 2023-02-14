@@ -32,7 +32,7 @@ import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
-  MockedOperation,
+  // MockedOperation,
   MockedOperationType,
   // Initiative,
 } from '../../model/Initiative';
@@ -49,6 +49,7 @@ import {
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 // import { OperationListDTO } from '../../api/generated/initiative/OperationListDTO';
+// import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -68,12 +69,13 @@ const InitiativeUserDetails = () => {
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<InstrumentDTO>>([]);
-  const [rows, setRows] = useState<Array<MockedOperation>>([]);
+  const [rows, setRows] = useState<Array<any>>([]);
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
+  const [_page, setPage] = useState<number>(0);
   const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
@@ -160,10 +162,15 @@ const InitiativeUserDetails = () => {
     setLoading(true);
     getTimeLine(cf, initiativeId)
       .then((res) => {
-        console.log('TimeLIne', res);
-        // if (typeof res.pageNo === 'number') {
-        //   setPage(res.pageNo);
-        // }
+        console.log(res.operationList);
+
+        const rowsData: Array<any> = res.operationList.map((r) => r);
+
+        console.log('11111', rowsData);
+
+        if (typeof res.pageNo === 'number') {
+          setPage(res.pageNo);
+        }
         // const rowsData = res.operationList.map((row) => ({
         //   ...row,
         //   id: row.,
@@ -176,9 +183,9 @@ const InitiativeUserDetails = () => {
         //   totExpense: row.amount,
         //   toRefund: '-',
         // }));
-        // if (Array.isArray(rowsData)) {
-        //   setRows(rowsData);
-        // }
+        if (Array.isArray(rowsData)) {
+          setRows(rowsData);
+        }
         // if (typeof res.pageSize === 'number') {
         //   setRowsPerPage(res.pageSize);
         // }
@@ -680,7 +687,8 @@ const InitiativeUserDetails = () => {
                   {rows.map((r) => (
                     <TableRow key={r.operationId}>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)}
+                        {/* {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)} */}
+                        {r.operationDate}
                       </TableCell>
                       <TableCell>
                         <ButtonNaked
