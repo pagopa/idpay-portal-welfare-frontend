@@ -3046,6 +3046,9 @@ components:
       type: object
       required:
         - instrumentId
+        - status
+        - activationDate
+        - channel
       properties:
         idWallet:
           type: string

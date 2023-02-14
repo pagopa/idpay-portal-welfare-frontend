@@ -27,6 +27,8 @@ import { OrganizationListDTO } from './generated/initiative/OrganizationListDTO'
 import { WalletDTO } from './generated/initiative/WalletDTO';
 import { IbanDTO } from './generated/initiative/IbanDTO';
 import { InstrumentListDTO } from './generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from './generated/initiative/TimelineDTO';
+import { OperationDTO } from './generated/initiative/OperationDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -323,8 +325,38 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getInstrumentList: async (cf: string, id: string): Promise<InstrumentListDTO> => {
+  getInstrumentList: async (id: string, cf: string): Promise<InstrumentListDTO> => {
     const result = await apiClient.getInstrumentList({ 'Fiscal-Code': cf, initiativeId: id });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getTimeLine: async (
+    cf: string,
+    id: string,
+    opeType?: string,
+    dateFrom?: string,
+    dateTo?: string,
+    page?: number,
+    size?: number
+  ): Promise<TimelineDTO> => {
+    const result = await apiClient.getTimeline({
+      'Fiscal-Code': cf,
+      initiativeId: id,
+      operationType: opeType,
+      dateFrom,
+      dateTo,
+      page,
+      size,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getTimelineDetail: async (cf: string, id: string, opeId: string): Promise<OperationDTO> => {
+    const result = await apiClient.getTimelineDetail({
+      'Fiscal-Code': cf,
+      initiativeId: id,
+      operationId: opeId,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

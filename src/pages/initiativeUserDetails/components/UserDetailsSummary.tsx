@@ -121,7 +121,9 @@ const UserDetailsSummary = ({
                 ml: 1,
               }}
             >
-              {paymentMethodList.length > 0 ? (
+              {paymentMethodList.length > 0 ||
+              (walletStatus !== StatusEnum.NOT_REFUNDABLE &&
+                walletStatus !== StatusEnum.NOT_REFUNDABLE_ONLY_IBAN) ? (
                 <ButtonNaked
                   component="button"
                   sx={{

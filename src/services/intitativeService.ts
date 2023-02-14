@@ -26,10 +26,14 @@ import { OrganizationListDTO } from '../api/generated/initiative/OrganizationLis
 import { WalletDTO } from '../api/generated/initiative/WalletDTO';
 import { InstrumentListDTO } from '../api/generated/initiative/InstrumentListDTO';
 import { IbanDTO } from '../api/generated/initiative/IbanDTO';
+import { TimelineDTO } from '../api/generated/initiative/TimelineDTO';
+import { OperationDTO } from '../api/generated/initiative/OperationDTO';
 import {
   mockedExportsPagedParam,
   mockedFileName,
   mockedFilePath,
+  mockedFiscalCode,
+  mockedIban,
   // mockedFiscalCode,
   mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeGeneralBody,
@@ -364,11 +368,37 @@ export const getOrganizationsList = (): Promise<OrganizationListDTO> => {
   return InitiativeApi.getOrganizationsList().then((res) => res);
 };
 
-export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> =>
-  InitiativeApi.getWalletDetail(id, cf).then((res) => res);
+export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
+  }
+  return InitiativeApi.getWalletDetail(id, cf).then((res) => res);
+};
 
-export const getInstrumentList = (id: string, cf: string): Promise<InstrumentListDTO> =>
-  InitiativeApi.getInstrumentList(id, cf).then((res) => res);
+export const getInstrumentList = (id: string, cf: string): Promise<InstrumentListDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
+  }
+  return InitiativeApi.getInstrumentList(id, cf).then((res) => res);
+};
 
-export const getIban = (id: string, cf: string, iban: string): Promise<IbanDTO> =>
-  InitiativeApi.getIban(id, cf, iban).then((res) => res);
+export const getIban = (id: string, cf: string, iban: string): Promise<IbanDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getIban(mockedIban);
+  }
+  return InitiativeApi.getIban(id, cf, iban).then((res) => res);
+};
+
+export const getTimeLine = (
+  cf: string,
+  id: string,
+  opeType?: string,
+  dateFrom?: string,
+  dateTo?: string,
+  page?: number,
+  size?: number
+): Promise<TimelineDTO> =>
+  InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page, size).then((res) => res);
+
+export const getTimelineDetail = (cf: string, id: string, opeType: string): Promise<OperationDTO> =>
+  InitiativeApi.getTimelineDetail(cf, id, opeType);

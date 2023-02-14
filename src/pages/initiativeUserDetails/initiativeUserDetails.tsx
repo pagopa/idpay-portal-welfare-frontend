@@ -32,14 +32,6 @@ import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
-  // getIban,
-  getTimeLine,
-  // getWalletInfo,
-  // getWalletInstrumen,
-} from '../../services/__mocks__/initiativeService';
-import {
-  // MockedInstrumentDTO,
-  // MockedStatusWallet,
   MockedOperation,
   MockedOperationType,
   // Initiative,
@@ -48,7 +40,12 @@ import { formatedCurrency } from '../../helpers';
 // import { useInitiative } from '../../hooks/useInitiative';
 // import { useAppSelector } from '../../redux/hooks';
 // import { initiativeSelector } from '../../redux/slices/initiativeSlice';
-import { getInstrumentList, getWalletDetail, getIban } from '../../services/intitativeService';
+import {
+  getInstrumentList,
+  getWalletDetail,
+  getIban,
+  getTimeLine,
+} from '../../services/intitativeService';
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 // import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
@@ -81,30 +78,33 @@ const InitiativeUserDetails = () => {
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
-  // eslint-disable-next-line sonarjs/cognitive-complexity
+  const match = matchPath(location.pathname, {
+    path: [ROUTES.INITIATIVE_USER_DETAILS],
+    exact: true,
+    strict: false,
+  });
+
+  interface MatchParams {
+    id: string;
+    cf: string;
+    status: string;
+  }
+
+  const { id, cf, status } = (match?.params as MatchParams) || {};
+
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getWalletDetail(id, cf)
         .then((res) => {
-          if (typeof res.amount === 'number') {
-            setAmount(res.amount);
-          }
-          if (typeof res.accrued === 'number') {
-            setAccrued(res.accrued);
-          }
-          if (typeof res.refunded === 'number') {
-            setRefunded(res.refunded);
-          }
+          setAmount(res.amount);
+          setAccrued(res.accrued);
+          setRefunded(res.refunded);
           if (typeof res.lastCounterUpdate === 'object') {
             setLastCounterUpdate(res.lastCounterUpdate);
           }
-          if (typeof res.iban === 'string') {
-            setIban(res.iban);
-          }
-          if (typeof res.status === 'string') {
-            setWalletStatus(res.status);
-          }
+          setIban(res.iban);
+          setWalletStatus(res.status);
         })
         .catch((error) =>
           addError({
@@ -119,7 +119,11 @@ const InitiativeUserDetails = () => {
             showCloseIcon: true,
           })
         );
+    }
+  }, [id, cf]);
 
+  useEffect(() => {
+    if (typeof id === 'string' && typeof cf === 'string') {
       getInstrumentList(id, cf)
         .then((res) => {
           const walletInst = res.instrumentList.filter((r) => r.status === 'ACTIVE');
@@ -138,11 +142,12 @@ const InitiativeUserDetails = () => {
             showCloseIcon: true,
           })
         );
-      getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+      getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
     }
-  }, []);
+  }, [id, cf]);
 
   const getTableData = (
+    cf: string,
     initiativeId: string,
     _searchFrom: string | undefined,
     _searcTo: string | undefined,
@@ -153,26 +158,27 @@ const InitiativeUserDetails = () => {
     // toRefund: string | undefined,
   ) => {
     setLoading(true);
-    getTimeLine(initiativeId)
+    getTimeLine(cf, initiativeId)
       .then((res) => {
+        console.log('TimeLIne', res);
         // if (typeof res.pageNo === 'number') {
         //   setPage(res.pageNo);
         // }
-        const rowsData = res.operationList.map((row) => ({
-          ...row,
-          id: row.operationId,
-          timestamp:
-            typeof row.operationDate === 'object'
-              ? row.operationDate
-                  .toLocaleString('fr-BE')
-                  .substring(0, row.operationDate.toLocaleString('fr-BE').length - 3)
-              : '',
-          totExpense: row.amount,
-          toRefund: '-',
-        }));
-        if (Array.isArray(rowsData)) {
-          setRows(rowsData);
-        }
+        // const rowsData = res.operationList.map((row) => ({
+        //   ...row,
+        //   id: row.operationId,
+        //   timestamp:
+        //     typeof row.operationDate === 'object'
+        //       ? row.operationDate
+        //           .toLocaleString('fr-BE')
+        //           .substring(0, row.operationDate.toLocaleString('fr-BE').length - 3)
+        //       : '',
+        //   totExpense: row.amount,
+        //   toRefund: '-',
+        // }));
+        // if (Array.isArray(rowsData)) {
+        //   setRows(rowsData);
+        // }
         // if (typeof res.pageSize === 'number') {
         //   setRowsPerPage(res.pageSize);
         // }
@@ -272,7 +278,7 @@ const InitiativeUserDetails = () => {
         }
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
         setFilterByEvent(filterEvent);
-        getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+        getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
       }
     },
   });
@@ -285,7 +291,7 @@ const InitiativeUserDetails = () => {
     setFilterByEvent(undefined);
     setRows([]);
     if (typeof id === 'string') {
-      getTableData(id, filterByDateFrom, filterByDateTo, filterByEvent);
+      getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
     }
   };
 
@@ -401,20 +407,6 @@ const InitiativeUserDetails = () => {
         });
     }
   }, [iban]);
-
-  const match = matchPath(location.pathname, {
-    path: [ROUTES.INITIATIVE_USER_DETAILS],
-    exact: true,
-    strict: false,
-  });
-
-  interface MatchParams {
-    id: string;
-    cf: string;
-    status: string;
-  }
-
-  const { id, cf, status } = (match?.params as MatchParams) || {};
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -744,6 +736,7 @@ const InitiativeUserDetails = () => {
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
             backgroundColor: 'white',
+            mt: 3,
           }}
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>

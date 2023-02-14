@@ -31,7 +31,12 @@ const PaymentMethodsModal = ({
 }: Props) => {
   const { t } = useTranslation();
 
-  const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
+  const getMaskedPan = (pan: string | undefined) => {
+    if (pan) {
+      return `**** ${pan?.substring(pan.length - 4)}`;
+    }
+    return '****';
+  };
 
   return (
     <Modal
