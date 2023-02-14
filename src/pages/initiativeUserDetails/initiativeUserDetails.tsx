@@ -14,7 +14,7 @@ import {
   TableRow,
   TextField,
   Typography,
-  Snackbar,
+  // Snackbar,
 } from '@mui/material';
 import { Box /* , ThemeProvider  */ } from '@mui/system';
 import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
@@ -36,7 +36,7 @@ import {
   MockedOperationType,
   // Initiative,
 } from '../../model/Initiative';
-import { formatedCurrency } from '../../helpers';
+import { formatedCurrency, formatStringToDate } from '../../helpers';
 // import { useInitiative } from '../../hooks/useInitiative';
 // import { useAppSelector } from '../../redux/hooks';
 // import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -76,7 +76,7 @@ const InitiativeUserDetails = () => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
   const [_page, setPage] = useState<number>(0);
-  const [openSnackBar, setOpenSnackBar] = useState(false);
+  // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -322,6 +322,7 @@ const InitiativeUserDetails = () => {
         minute: 'numeric',
       });
     }
+
     return '';
   };
 
@@ -467,7 +468,7 @@ const InitiativeUserDetails = () => {
             variantSubTitle="body1"
           />
         </Box>
-        <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
+        {/* <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
           <Button
             variant="contained"
             size="small"
@@ -489,7 +490,7 @@ const InitiativeUserDetails = () => {
               {t('pages.initiativeUserDetails.downloadCsv')}
             </Alert>
           </Snackbar>
-        </Box>
+        </Box> */}
       </Box>
 
       <Box sx={{ my: 5 }}>{renderUserStatusAlert(status)}</Box>
@@ -688,7 +689,7 @@ const InitiativeUserDetails = () => {
                     <TableRow key={r.operationId}>
                       <TableCell sx={{ textAlign: 'left' }}>
                         {/* {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)} */}
-                        {r.operationDate}
+                        {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
                         <ButtonNaked

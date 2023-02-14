@@ -16,7 +16,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 // import { MockedInstrumentDTO } from '../../model/Initiative';
+import React from 'react';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
+import { getMaskedPan } from '../../helpers';
 
 type Props = {
   openPaymentMethodModal: boolean;
@@ -30,18 +32,6 @@ const PaymentMethodsModal = ({
   paymentMethodList,
 }: Props) => {
   const { t } = useTranslation();
-
-  const getMaskedPan = (pan: string | undefined) => {
-    if (typeof pan === 'string') {
-      const regexp = new RegExp('^[0-9]*$');
-      const isNumber = regexp.test(pan);
-      if (isNumber) {
-        return `**** ${pan?.substring(-4)}`;
-      }
-      return pan;
-    }
-    return '****';
-  };
 
   return (
     <Modal
@@ -102,8 +92,8 @@ const PaymentMethodsModal = ({
 
             <List sx={{ gridColumn: 'span 12' }}>
               {paymentMethodList.map((p, i) => (
-                <>
-                  <ListItem key={i}>
+                <React.Fragment key={i}>
+                  <ListItem>
                     <ListItemAvatar>
                       {p.brandLogo ? <img src={p.brandLogo} width="32px" /> : <CreditCardIcon />}
                     </ListItemAvatar>
@@ -115,7 +105,7 @@ const PaymentMethodsModal = ({
                     />
                   </ListItem>
                   <Divider component="li" />
-                </>
+                </React.Fragment>
               ))}
             </List>
           </Box>

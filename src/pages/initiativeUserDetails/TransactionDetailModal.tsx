@@ -5,8 +5,9 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { MockedOperationType } from '../../model/Initiative';
-import { formatIban } from '../../helpers';
+import { formatIban, getMaskedPan } from '../../helpers';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { getTimelineDetail } from '../../services/intitativeService';
 
@@ -32,9 +33,11 @@ const TransactionDetailModal = ({
   const { t } = useTranslation();
   const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_TRANSACTION_DETAIL');
 
   useEffect(() => {
     if (typeof initiativeId === 'string' && typeof operationId === 'string' && openModal) {
+      setLoading(true);
       getTimelineDetail(fiscalCode, initiativeId, operationId)
         .then((res) => {
           if (typeof res === 'object') {
@@ -53,11 +56,10 @@ const TransactionDetailModal = ({
             component: 'Toast',
             showCloseIcon: true,
           })
-        );
+        )
+        .finally(() => setLoading(false));
     }
   }, [operationId, openModal, initiativeId]);
-
-  const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
 
   const transactionResult = (opeType: string | undefined) => {
     if (typeof opeType !== 'undefined') {
@@ -101,19 +103,21 @@ const TransactionDetailModal = ({
     }
   };
 
-  const formatDate = (date: Date | string | undefined) => {
-    if (date) {
-      return date.toLocaleString('it-IT', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'Europe/Rome',
-        hour: 'numeric',
-        minute: 'numeric',
-      });
+  const formatDate = (date: string | undefined) => {
+    if (typeof date === 'string') {
+      const newDate = new Date(date);
+      if (newDate) {
+        return newDate.toLocaleString('it-IT', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          timeZone: 'Europe/Rome',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
+      }
     }
-    // eslint-disable-next-line sonarjs/no-redundant-jump
-    return;
+    return '';
   };
 
   return (
@@ -232,7 +236,9 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail?.circuitType}
+                    {typeof transactionDetail?.circuitType !== 'undefined'
+                      ? transactionDetail?.circuitType
+                      : '-'}
                   </Typography>
                 </Box>
               </>

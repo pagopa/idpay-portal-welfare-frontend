@@ -131,3 +131,32 @@ export const formatedDateHoursAndMin = (date: Date | undefined, symbol: string =
   }
   return symbol;
 };
+
+export const formatStringToDate = (date: string | undefined) => {
+  if (typeof date === 'string') {
+    const newDate = new Date(date);
+    if (newDate) {
+      return newDate.toLocaleString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+    }
+  }
+  return '';
+};
+
+export const getMaskedPan = (pan: string | undefined) => {
+  if (typeof pan === 'string') {
+    const regexp = new RegExp('^[0-9]*$');
+    const isNumber = regexp.test(pan);
+    if (isNumber) {
+      return `**** ${pan?.substring(-4)}`;
+    }
+    return pan;
+  }
+  return '****';
+};
