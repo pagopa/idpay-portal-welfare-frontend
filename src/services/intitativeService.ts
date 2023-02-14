@@ -400,5 +400,13 @@ export const getTimeLine = (
 ): Promise<TimelineDTO> =>
   InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page, size).then((res) => res);
 
-export const getTimelineDetail = (cf: string, id: string, opeType: string): Promise<OperationDTO> =>
-  InitiativeApi.getTimelineDetail(cf, id, opeType);
+export const getTimelineDetail = (
+  cf: string,
+  id: string,
+  opeType: string
+): Promise<OperationDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getTimelineDetail(cf, id, opeType);
+  }
+  return InitiativeApi.getTimelineDetail(cf, id, opeType);
+};

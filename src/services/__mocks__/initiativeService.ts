@@ -216,12 +216,12 @@ export const getTimeLine = (
 export const getInstrumentList = (_id: string, _cf: string): Promise<InstrumentListDTO> =>
   InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
 
-export const getTimelineDetail = (_id: string, operationId: string): Promise<OperationDTO> => {
-  const operationDetails = mockedOperationList.operationList.filter(
-    (e) => e.operationId === operationId
-  );
-  return new Promise((resolve) => resolve(operationDetails[0]));
-};
+// export const getTimelineDetail = (_id: string, operationId: string): Promise<OperationDTO> => {
+//   const operationDetails = mockedOperationList.operationList.filter(
+//     (e) => e.operationId === operationId
+//   );
+//   return new Promise((resolve) => resolve(operationDetails[0]));
+// };
 
 export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
   InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
@@ -335,7 +335,7 @@ export const mockedWalletInstrument = {
   ],
 };
 
-export const mockedOperationList = {
+export const mockedOperationList: TimelineDTO = {
   lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
   operationList: [
     {
@@ -483,6 +483,21 @@ export const mockedOperationList = {
   pageSize: 10,
   totalElements: 10,
   totalPages: 1,
+};
+
+export const mockedOperationDetail: OperationDTO = {
+  operationId: '1u1u1u1u1u1u1u',
+  operationType: 'PAID_REFUND',
+  operationDate: '2023-02-05T10:22:28.012Z',
+  maskedPan: '1234123412341234',
+  amount: 345,
+  accrued: 10,
+  circuitType: 'circuito',
+  iban: '',
+  channel: 'App IO',
+  brandLogo: '',
+  idTrxAcquirer: '349589304999',
+  idTrxIssuer: '0001923192038',
 };
 
 export const mockedInitiativeDetail = {

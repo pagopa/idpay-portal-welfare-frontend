@@ -15,6 +15,7 @@ import {
   mockedInitiativeSummary,
   mockedNotificationReward,
   mockedOnBoardingStatusResponse,
+  mockedOperationDetail,
   mockedOperationList,
   mockedOrganizationsList,
   mockedWallet,
@@ -187,12 +188,8 @@ export const InitiativeApiMocked = {
     _size?: number
   ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList)),
 
-  getTimelineDetail: async (_id: string, operationId: string): Promise<OperationDTO> => {
-    const operationDetails = mockedOperationList.operationList.filter(
-      (e) => e.operationId === operationId
-    );
-    return new Promise((resolve) => resolve(operationDetails[0]));
-  },
+  getTimelineDetail: async (_cf: string, _id: string, _opeId: string): Promise<OperationDTO> =>
+    new Promise((resolve) => resolve(mockedOperationDetail)),
 
   getInstrumentList: async (_id: string, _cf: string): Promise<InstrumentListDTO> =>
     new Promise((resolve) => resolve(mockedWalletInstrument)),
