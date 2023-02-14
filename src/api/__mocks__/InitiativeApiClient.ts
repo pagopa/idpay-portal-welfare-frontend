@@ -187,7 +187,11 @@ export const InitiativeApiMocked = {
     _size?: number
   ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList)),
 
-  getTimelineDetail: async (_id: string, operationId: string): Promise<OperationDTO> => {
+  getTimelineDetail: async (
+    _cf: string,
+    _id: string,
+    operationId: string
+  ): Promise<OperationDTO> => {
     const operationDetails = mockedOperationList.operationList.filter(
       (e) => e.operationId === operationId
     );

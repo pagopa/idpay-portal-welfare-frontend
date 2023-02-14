@@ -29,7 +29,7 @@ regexReplace(
 
 regexReplace(
   '"OperationListDTO": \\{',
-  '"OperationListDTO":{"type": "array", "items": {"$ref": "#/definitions/OperationDTO"},',
+  '"OperationListDTO":{"type": "object", "items": {"$ref": "#/definitions/OperationDTO"},',
   'openApi/generated/initiative-swagger20.json',
   {
     fileContentsOnly: true,

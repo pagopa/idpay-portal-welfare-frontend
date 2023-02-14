@@ -5,9 +5,10 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-import { MockedOperation, MockedOperationType } from '../../model/Initiative';
+import { MockedOperationType } from '../../model/Initiative';
 import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
 import { formatIban } from '../../helpers';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 
 type Props = {
   operationId: string;
@@ -27,7 +28,7 @@ const TransactionDetailModal = ({
   operationTypeLabel,
 }: Props) => {
   const { t } = useTranslation();
-  const [transactionDetail, setTransactionDetail] = useState<MockedOperation>();
+  const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
 
   useEffect(() => {
@@ -56,7 +57,7 @@ const TransactionDetailModal = ({
 
   const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
 
-  const transactionResult = (opeType: MockedOperationType | undefined) => {
+  const transactionResult = (opeType: string | undefined) => {
     if (typeof opeType !== 'undefined') {
       if (opeType?.toUpperCase().includes('REJECTED')) {
         return (
@@ -98,7 +99,7 @@ const TransactionDetailModal = ({
     }
   };
 
-  const formatDate = (date: Date | undefined) => {
+  const formatDate = (date: Date | string | undefined) => {
     if (date) {
       return date.toLocaleString('it-IT', {
         day: '2-digit',
@@ -280,7 +281,7 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.aquirerId}
+                    {transactionDetail.idTrxAcquirer}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -290,7 +291,7 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.issuerId}
+                    {transactionDetail.idTrxIssuer}
                   </Typography>
                 </Box>
               </>

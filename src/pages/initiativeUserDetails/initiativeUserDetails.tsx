@@ -32,7 +32,6 @@ import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
-  MockedOperation,
   MockedOperationType,
   // Initiative,
 } from '../../model/Initiative';
@@ -49,6 +48,7 @@ import {
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 // import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -68,7 +68,7 @@ const InitiativeUserDetails = () => {
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
   const [paymentMethodList, setPaymentMethodList] = useState<Array<InstrumentDTO>>([]);
-  const [rows, setRows] = useState<Array<MockedOperation>>([]);
+  const [rows, setRows] = useState<Array<OperationDTO>>([]);
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
