@@ -32,8 +32,13 @@ const PaymentMethodsModal = ({
   const { t } = useTranslation();
 
   const getMaskedPan = (pan: string | undefined) => {
-    if (pan) {
-      return `**** ${pan?.substring(pan.length - 4)}`;
+    if (typeof pan === 'string') {
+      const regexp = new RegExp('^[0-9]*$');
+      const isNumber = regexp.test(pan);
+      if (isNumber) {
+        return `**** ${pan?.substring(-4)}`;
+      }
+      return pan;
     }
     return '****';
   };

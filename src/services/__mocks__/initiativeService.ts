@@ -216,12 +216,12 @@ export const getTimeLine = (
 export const getInstrumentList = (_id: string, _cf: string): Promise<InstrumentListDTO> =>
   InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
 
-// export const getTimelineDetail = (_id: string, operationId: string): Promise<OperationDTO> => {
-//   const operationDetails = mockedOperationList.operationList.filter(
-//     (e) => e.operationId === operationId
-//   );
-//   return new Promise((resolve) => resolve(operationDetails[0]));
-// };
+export const getTimelineDetail = (
+  _cf: string,
+  _id: string,
+  _operationId: string
+): Promise<OperationDTO> =>
+  InitiativeApiMocked.getTimelineDetail(mockedFiscalCode, mockedInitiativeId, mockedOperationId);
 
 export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
   InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
@@ -401,6 +401,8 @@ export const mockedOperationDetail: OperationDTO = {
   idTrxAcquirer: '349589304999',
   idTrxIssuer: '0001923192038',
 };
+
+export const mockedOperationId = 'PAID_REFUND';
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',

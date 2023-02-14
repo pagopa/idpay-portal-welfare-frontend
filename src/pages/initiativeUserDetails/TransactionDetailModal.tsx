@@ -6,11 +6,12 @@ import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { MockedOperationType } from '../../model/Initiative';
-import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
 import { formatIban } from '../../helpers';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { getTimelineDetail } from '../../services/intitativeService';
 
 type Props = {
+  fiscalCode: string;
   operationId: string;
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 const TransactionDetailModal = ({
+  fiscalCode,
   operationId,
   openModal,
   handleCloseModal,
@@ -33,7 +35,7 @@ const TransactionDetailModal = ({
 
   useEffect(() => {
     if (typeof initiativeId === 'string' && typeof operationId === 'string' && openModal) {
-      getTimelineDetail(initiativeId, operationId)
+      getTimelineDetail(fiscalCode, initiativeId, operationId)
         .then((res) => {
           if (typeof res === 'object') {
             setTransactionDetail(res);
