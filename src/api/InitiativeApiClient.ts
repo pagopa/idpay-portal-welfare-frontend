@@ -336,8 +336,7 @@ export const InitiativeApi = {
     opeType?: string,
     dateFrom?: string,
     dateTo?: string,
-    page?: number,
-    size?: number
+    page?: number
   ): Promise<TimelineDTO> => {
     const result = await apiClient.getTimeline({
       'Fiscal-Code': cf,
@@ -346,7 +345,7 @@ export const InitiativeApi = {
       dateFrom,
       dateTo,
       page,
-      size,
+      size: 10,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

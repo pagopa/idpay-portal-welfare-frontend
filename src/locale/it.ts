@@ -455,6 +455,7 @@ export default {
       },
       filterEvent: 'Filtra per evento',
       transactionDetail: {
+        import: 'Importo',
         paymentMethod: 'Metodo di pagamento',
         paymentCircuit: 'Circuito di pagamento',
         totExpense: 'Totale spesa',

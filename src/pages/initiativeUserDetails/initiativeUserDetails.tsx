@@ -11,16 +11,19 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
   Typography,
   // Snackbar,
 } from '@mui/material';
-import { Box /* , ThemeProvider  */ } from '@mui/system';
+import { Box } from '@mui/system';
 import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { itIT } from '@mui/material/locale';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useEffect, useState } from 'react';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
@@ -31,11 +34,6 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import {
-  // MockedOperation,
-  MockedOperationType,
-  // Initiative,
-} from '../../model/Initiative';
 import { formatedCurrency, formatStringToDate } from '../../helpers';
 // import { useInitiative } from '../../hooks/useInitiative';
 // import { useAppSelector } from '../../redux/hooks';
@@ -75,10 +73,15 @@ const InitiativeUserDetails = () => {
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
-  const [_page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(0);
+  const [totalElements, setTotalElements] = useState<number>(0);
   // const [openSnackBar, setOpenSnackBar] = useState(false);
+  // const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
+
+  const theme = createTheme(itIT);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USER_DETAILS],
@@ -144,29 +147,28 @@ const InitiativeUserDetails = () => {
             showCloseIcon: true,
           })
         );
-      getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
     }
   }, [id, cf]);
 
   const getTableData = (
     cf: string,
     initiativeId: string,
-    _searchFrom: string | undefined,
-    _searcTo: string | undefined,
-    _filterEvent: string | undefined
-    // page: number,
+    filterEvent: string | undefined,
+    searchFrom: string | undefined,
+    searchTo: string | undefined,
+    page: number
     // timestamp: Date | undefined,
     // totExpense: string | undefined,
     // toRefund: string | undefined,
   ) => {
     setLoading(true);
-    getTimeLine(cf, initiativeId)
+    getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
       .then((res) => {
         console.log(res.operationList);
 
         const rowsData: Array<any> = res.operationList.map((r) => r);
 
-        console.log('11111', rowsData);
+        console.log('TIMELINE', rowsData);
 
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
@@ -186,12 +188,12 @@ const InitiativeUserDetails = () => {
         if (Array.isArray(rowsData)) {
           setRows(rowsData);
         }
-        // if (typeof res.pageSize === 'number') {
-        //   setRowsPerPage(res.pageSize);
-        // }
-        // if (typeof res.totalElements === 'number') {
-        //   setTotalElements(res.totalElements);
-        // }
+        if (typeof res.pageSize === 'number') {
+          setRowsPerPage(res.pageSize);
+        }
+        if (typeof res.totalElements === 'number') {
+          setTotalElements(res.totalElements);
+        }
       })
       .catch((error) => {
         addError({
@@ -254,7 +256,8 @@ const InitiativeUserDetails = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof id === 'string') {
+      if (typeof id === 'string' && typeof cf === 'string') {
+        console.log('Value1', values.searchFrom);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr =
@@ -269,6 +272,7 @@ const InitiativeUserDetails = () => {
               : undefined;
           setFilterByDateFrom(searchFromStr);
         }
+        console.log('Value2', values.searchTo);
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
           searchToStr =
@@ -283,9 +287,10 @@ const InitiativeUserDetails = () => {
               : undefined;
           setFilterByDateTo(searchToStr);
         }
+        console.log('Value3', values.filterEvent);
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
         setFilterByEvent(filterEvent);
-        getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
+        getTableData(cf, id, filterEvent, searchFromStr, searchToStr, 0);
       }
     },
   });
@@ -297,8 +302,8 @@ const InitiativeUserDetails = () => {
     setFilterByDateTo(undefined);
     setFilterByEvent(undefined);
     setRows([]);
-    if (typeof id === 'string') {
-      getTableData(cf, id, filterByDateFrom, filterByDateTo, filterByEvent);
+    if (typeof id === 'string' && typeof cf === 'string') {
+      getTableData(cf, id, undefined, undefined, undefined, 0);
     }
   };
 
@@ -309,6 +314,13 @@ const InitiativeUserDetails = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
   };
 
   const formatDate = (date: Date | undefined) => {
@@ -357,25 +369,26 @@ const InitiativeUserDetails = () => {
 
   const operationTypeLabel = (opeType: string) => {
     switch (opeType) {
-      case MockedOperationType.ADD_IBAN:
+      case 'ADD_IBAN':
         return t('pages.initiativeUserDetails.operationTypes.addIban');
-      case MockedOperationType.ADD_INSTRUMENT:
+      case 'ADD_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.addInstrument');
-      case MockedOperationType.DELETE_INSTRUMENT:
+      case 'DELETE_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
-      case MockedOperationType.ONBOARDING:
+      case 'ONBOARDING':
         return t('pages.initiativeUserDetails.operationTypes.onboarding');
-      case MockedOperationType.PAID_REFUND:
+      case 'PAID_REFUND':
         return t('pages.initiativeUserDetails.operationTypes.paidRefund');
-      case MockedOperationType.REJECTED_ADD_INSTRUMENT:
+      case 'REJECTED_ADD_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
-      case MockedOperationType.REJECTED_DELETE_INSTRUMENT:
+      case 'REJECTED_DELETE_INSTRUMENT':
+      case 'DELETE_INSTRUMENT_KO':
         return t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument');
-      case MockedOperationType.REJECTED_REFUND:
+      case 'REJECTED_REFUND':
         return t('pages.initiativeUserDetails.operationTypes.rejectedRefund');
-      case MockedOperationType.REVERSAL:
+      case 'REVERSAL':
         return t('pages.initiativeUserDetails.operationTypes.reversal');
-      case MockedOperationType.TRANSACTION:
+      case 'TRANSACTION':
         return t('pages.initiativeUserDetails.operationTypes.transaction');
       default:
         return null;
@@ -386,7 +399,6 @@ const InitiativeUserDetails = () => {
     if (typeof iban === 'string') {
       getIban(id, cf, iban)
         .then((res) => {
-          console.log('IBAN', res);
           if (typeof res.iban === 'string') {
             setIban(iban);
           }
@@ -415,6 +427,12 @@ const InitiativeUserDetails = () => {
         });
     }
   }, [iban]);
+
+  useEffect(() => {
+    if (typeof id === 'string' && typeof cf === 'string') {
+      getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
+    }
+  }, [id, cf, page]);
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -554,34 +572,34 @@ const InitiativeUserDetails = () => {
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterEvent}
           >
-            <MenuItem value={MockedOperationType.ONBOARDING}>
+            <MenuItem value={'ONBOARDING'}>
               {t('pages.initiativeUserDetails.operationTypes.onboarding')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.ADD_IBAN}>
+            <MenuItem value={'ADD_IBAN'}>
               {t('pages.initiativeUserDetails.operationTypes.addIban')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.ADD_INSTRUMENT}>
+            <MenuItem value={'ADD_INSTRUMENT'}>
               {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.DELETE_INSTRUMENT}>
+            <MenuItem value={'DELETE_INSTRUMENT'}>
               {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.REJECTED_ADD_INSTRUMENT}>
+            <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
               {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.REJECTED_DELETE_INSTRUMENT}>
+            <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
               {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.REJECTED_REFUND}>
+            <MenuItem value={'REJECTED_REFUND'}>
               {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.TRANSACTION}>
+            <MenuItem value={'TRANSACTION'}>
               {t('pages.initiativeUserDetails.operationTypes.transaction')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.PAID_REFUND}>
+            <MenuItem value={'PAID_REFUND'}>
               {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
             </MenuItem>
-            <MenuItem value={MockedOperationType.REVERSAL}>
+            <MenuItem value={'REVERSAL'}>
               {t('pages.initiativeUserDetails.operationTypes.reversal')}
             </MenuItem>
           </Select>
@@ -636,7 +654,6 @@ const InitiativeUserDetails = () => {
             variant="outlined"
             size="small"
             onClick={() => formik.handleSubmit()}
-            disabled
             data-testid="apply-filters-test"
           >
             {t('pages.initiativeUsers.form.filterBtn')}
@@ -647,7 +664,6 @@ const InitiativeUserDetails = () => {
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={resetForm}
-            disabled
           >
             {t('pages.initiativeUsers.form.resetFiltersBtn')}
           </ButtonNaked>
@@ -670,10 +686,10 @@ const InitiativeUserDetails = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="12.5%">
+                    <TableCell width="17.5%">
                       {t('pages.initiativeUserDetails.table.dateAndHour')}
                     </TableCell>
-                    <TableCell width="62.5%">
+                    <TableCell width="57.5%">
                       {t('pages.initiativeUserDetails.table.event')}
                     </TableCell>
                     <TableCell width="10%">
@@ -716,16 +732,16 @@ const InitiativeUserDetails = () => {
                   ))}
                 </TableBody>
               </Table>
-              {/* <ThemeProvider theme={theme}>
-                    <TablePagination
-                      component="div"
-                      onPageChange={handleChangePage}
-                      page={page}
-                      count={totalElements}
-                      rowsPerPage={rowsPerPage}
-                      rowsPerPageOptions={[rowsPerPage]}
-                    />
-                  </ThemeProvider> */}
+              <ThemeProvider theme={theme}>
+                <TablePagination
+                  component="div"
+                  onPageChange={handleChangePage}
+                  page={page}
+                  count={totalElements}
+                  rowsPerPage={rowsPerPage}
+                  rowsPerPageOptions={[rowsPerPage]}
+                />
+              </ThemeProvider>
               <TransactionDetailModal
                 fiscalCode={cf}
                 operationId={selectedOperationId}

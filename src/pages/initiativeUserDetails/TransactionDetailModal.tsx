@@ -6,8 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import { MockedOperationType } from '../../model/Initiative';
-import { formatIban, getMaskedPan } from '../../helpers';
+import { formatedCurrency, formatIban, getMaskedPan } from '../../helpers';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { getTimelineDetail } from '../../services/intitativeService';
 
@@ -29,7 +28,8 @@ const TransactionDetailModal = ({
   initiativeId,
   holderBank,
   operationTypeLabel,
-}: Props) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const { t } = useTranslation();
   const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
@@ -63,7 +63,7 @@ const TransactionDetailModal = ({
 
   const transactionResult = (opeType: string | undefined) => {
     if (typeof opeType !== 'undefined') {
-      if (opeType?.toUpperCase().includes('REJECTED')) {
+      if (opeType?.toUpperCase().includes('REJECTED') || opeType?.toUpperCase().includes('KO')) {
         return (
           <>
             <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -178,7 +178,10 @@ const TransactionDetailModal = ({
                 {operationTypeLabel(transactionDetail?.operationType)}
               </Typography>
             </Box>
-            {transactionDetail?.operationType !== MockedOperationType.ADD_IBAN ? (
+            {transactionDetail?.operationType !== 'ADD_IBAN' &&
+            transactionDetail?.operationType !== 'ONBOARDING' &&
+            transactionDetail?.operationType !== 'PAID_REFUND' &&
+            transactionDetail?.operationType !== 'REJECTED_REFUND' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -192,7 +195,7 @@ const TransactionDetailModal = ({
                 </Box>
               </>
             ) : null}
-            {transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? (
+            {transactionDetail?.operationType === 'ADD_IBAN' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -211,7 +214,7 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {holderBank}
+                    {holderBank ? holderBank : '-'}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -226,8 +229,10 @@ const TransactionDetailModal = ({
                 </Box>
               </>
             ) : null}
-            {transactionDetail?.operationType === MockedOperationType.REVERSAL ||
-            transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? null : (
+            {transactionDetail?.operationType === 'ADD_IBAN' ||
+            transactionDetail?.operationType === 'ONBOARDING' ||
+            transactionDetail?.operationType === 'PAID_REFUND' ||
+            transactionDetail?.operationType === 'REJECTED_REFUND' ? null : (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -243,8 +248,8 @@ const TransactionDetailModal = ({
                 </Box>
               </>
             )}
-            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
-            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+            {transactionDetail?.operationType === 'TRANSACTION' ||
+            transactionDetail?.operationType === 'REVERSAL' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -253,7 +258,9 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {`${transactionDetail?.amount} € `}
+                    {transactionDetail.operationType === 'REVERSAL'
+                      ? `-${formatedCurrency(transactionDetail?.amount)}`
+                      : formatedCurrency(transactionDetail?.amount)}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -263,7 +270,25 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {`${transactionDetail?.accrued} € `}
+                    {transactionDetail.operationType === 'REVERSAL'
+                      ? `-${formatedCurrency(transactionDetail?.accrued)}`
+                      : formatedCurrency(transactionDetail?.accrued)}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
+
+            {transactionDetail?.operationType === 'PAID_REFUND' ||
+            transactionDetail?.operationType === 'REJECTED_REFUND' ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.import')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.amount, '00,00 €')}
                   </Typography>
                 </Box>
               </>
@@ -279,8 +304,8 @@ const TransactionDetailModal = ({
                 {formatDate(transactionDetail?.operationDate)}
               </Typography>
             </Box>
-            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
-            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+            {transactionDetail?.operationType === 'TRANSACTION' ||
+            transactionDetail?.operationType === 'REVERSAL' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">

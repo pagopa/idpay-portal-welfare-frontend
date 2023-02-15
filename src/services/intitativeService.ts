@@ -395,15 +395,12 @@ export const getTimeLine = (
   opeType?: string,
   dateFrom?: string,
   dateTo?: string,
-  page?: number,
-  size?: number
+  page?: number
 ): Promise<TimelineDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.getTimeLine(cf, id, opeType, dateFrom, dateTo, page, size);
+    return InitiativeApiMocked.getTimeLine(cf, id, opeType, dateFrom, dateTo, page);
   }
-  return InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page, size).then(
-    (res) => res
-  );
+  return InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page).then((res) => res);
 };
 
 export const getTimelineDetail = (
