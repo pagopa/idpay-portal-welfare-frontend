@@ -1,11 +1,12 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import React from 'react';
 import { date } from 'yup';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
 import { setInitiative } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
-import { renderWithProviders } from '../../../utils/test-utils';
+import { renderWithHistoryAndStore, renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeUsers from '../initiativeUsers';
 
@@ -58,9 +59,9 @@ describe('<InitiativeUsers />', () => {
 
     //TEXTFIELD TEST
 
-    const searchUser = screen
-      .getByTestId('searchUser-test')
-      .querySelector('input') as HTMLInputElement;
+    const searchUser = screen.getByLabelText(
+      'pages.initiativeUsers.form.search'
+    ) as HTMLInputElement;
 
     fireEvent.change(searchUser, { target: { value: 'searchUser' } });
     expect(searchUser.value).toBe('searchUser');
@@ -118,5 +119,66 @@ describe('<InitiativeUsers />', () => {
         .cast('12-12-2022')
         ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
     ).toBe('12/12/2022');
+  });
+
+  test('Reset Form on Click Annulla filtri and test click beneficiaryBtn', async () => {
+    renderWithHistoryAndStore(<InitiativeUsers />);
+
+    const searchUser = screen.getByLabelText(
+      'pages.initiativeUsers.form.search'
+    ) as HTMLInputElement;
+
+    fireEvent.change(searchUser, { target: { value: 'searchUser' } });
+    expect(searchUser.value).toBe('searchUser');
+
+    const annullaFiltriBtn = screen.getByText(
+      'pages.initiativeUsers.form.resetFiltersBtn'
+    ) as HTMLButtonElement;
+
+    fireEvent.click(annullaFiltriBtn);
+
+    await waitFor(() => expect(searchUser.value).toEqual(''));
+
+    // click beneficiaryBtn
+    const beneficiaryBtn = (await screen.findByTestId('beneficiary-test')) as HTMLButtonElement;
+    fireEvent.click(beneficiaryBtn);
+  });
+
+  test('render with different Onboarding user Status', async () => {
+    const onbUserStatusArr = [
+      'INVITED',
+      'ACCEPTED_TC',
+      'ON_EVALUATION',
+      'ONBOARDING_OK',
+      'ONBOARDING_KO',
+      'ELIGIBLE_KO',
+      'ELIGIBLE_KO',
+      'INACTIVE',
+      'UNSUBSCRIBED',
+    ];
+    onbUserStatusArr.forEach((item) => {
+      (InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> =>
+        new Promise((resolve) =>
+          resolve({
+            content: [
+              {
+                beneficiary: 'string',
+                beneficiaryState: item,
+                updateStatusDate: new Date(),
+              },
+            ],
+            pageNo: 0,
+            pageSize: 0,
+            totalElements: 0,
+            totalPages: 0,
+          })
+        )),
+        renderWithHistoryAndStore(<InitiativeUsers />);
+    });
+  });
+
+  test('test catch case of onboarding api call', () => {
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
+    renderWithHistoryAndStore(<InitiativeUsers />);
   });
 });
