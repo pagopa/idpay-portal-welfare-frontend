@@ -160,3 +160,33 @@ export const getMaskedPan = (pan: string | undefined) => {
   }
   return '****';
 };
+
+export const mappedChannel = (channel: string | undefined) => {
+  switch (channel) {
+    case 'APP_IO':
+      return i18n.t('pages.initiativeUserDetails.appIo');
+    case 'ISSUER':
+      return i18n.t('pages.initiativeUserDetails.issuer');
+    default:
+      return '-';
+  }
+};
+
+export const getTimeLineMaskedPan = (id: string, pan: string | undefined) => {
+  if (id && typeof pan === 'string') {
+    const regexp = new RegExp('^[0-9]*$');
+    const isNumber = regexp.test(pan);
+    if (isNumber) {
+      return `**** ${pan?.substring(-4)}`;
+    }
+    return pan;
+  }
+  return '****';
+};
+
+export const formatedTimeLineCurrency = (id: string, number: number | undefined) => {
+  if (id && number) {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  }
+  return '';
+};

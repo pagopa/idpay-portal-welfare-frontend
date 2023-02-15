@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import { formatedCurrency, formatIban, getMaskedPan } from '../../helpers';
+import { formatedCurrency, formatIban, getMaskedPan, mappedChannel } from '../../helpers';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { getTimelineDetail } from '../../services/intitativeService';
 
@@ -224,7 +224,7 @@ Props) => {
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.channel}
+                    {mappedChannel(transactionDetail.channel)}
                   </Typography>
                 </Box>
               </>

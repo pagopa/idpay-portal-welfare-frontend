@@ -434,7 +434,10 @@ export default {
         'L’utente possiede i requisiti per l’adesione ma non rientra in graduatoria per termine posti.',
       onboardingKo: 'Non idoneo',
       onboardingKoDescription: 'L’utente non possiede i requisiti per l’adesione.',
-      downloadCsv: 'File .csv scaricato con successo',
+      downloadCsv:
+        'La richiesta di download è stata presa in carico. Non appena il file sarà generato, ti sarà inviato via email.',
+      appIo: 'App IO',
+      issuer: 'Issuer',
       table: {
         dateAndHour: 'Data e ora',
         event: 'Evento',

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
 import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
-import { formatIban, formatedCurrency } from '../../../helpers';
+import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
 // import { MockedInstrumentDTO /* MockedStatusWallet */ } from '../../../model/Initiative';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
@@ -248,7 +248,7 @@ const UserDetailsSummary = ({
               {walletStatus === StatusEnum.NOT_REFUNDABLE ||
               walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                 ? '-'
-                : channel}
+                : mappedChannel(channel)}
             </Typography>
           </Box>
         </CardContent>

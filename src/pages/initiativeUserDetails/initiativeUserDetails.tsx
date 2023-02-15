@@ -15,7 +15,7 @@ import {
   TableRow,
   TextField,
   Typography,
-  // Snackbar,
+  Snackbar,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
@@ -34,7 +34,12 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { formatedCurrency, formatStringToDate } from '../../helpers';
+import {
+  formatedCurrency,
+  formatedTimeLineCurrency,
+  formatStringToDate,
+  getTimeLineMaskedPan,
+} from '../../helpers';
 // import { useInitiative } from '../../hooks/useInitiative';
 // import { useAppSelector } from '../../redux/hooks';
 // import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -47,7 +52,7 @@ import {
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 // import { OperationListDTO } from '../../api/generated/initiative/OperationListDTO';
-// import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -76,8 +81,8 @@ const InitiativeUserDetails = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
+  const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   // const [openSnackBar, setOpenSnackBar] = useState(false);
-  // const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
 
@@ -125,6 +130,7 @@ const InitiativeUserDetails = () => {
           })
         );
     }
+    HandleOpenSnackBarOnBoardingStatus();
   }, [id, cf]);
 
   useEffect(() => {
@@ -331,47 +337,24 @@ const InitiativeUserDetails = () => {
     return '';
   };
 
-  const renderUserStatusAlert = (status: string | undefined) => {
-    switch (status) {
-      case 'ONBOARDING_KO':
-        return (
-          <Alert variant="outlined" severity="error">
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {t('pages.initiativeUserDetails.onboardingKo')}
-            </Typography>
-            <Typography variant="body2">
-              {t('pages.initiativeUserDetails.onboardingKoDescription')}
-            </Typography>
-          </Alert>
-        );
-      case 'ELIGIBLE_KO':
-        return (
-          <Alert variant="outlined" severity="warning">
-            <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {t('pages.initiativeUserDetails.eligibleKo')}
-            </Typography>
-            <Typography variant="body2">
-              {t('pages.initiativeUserDetails.eligibleKoDescription')}
-            </Typography>
-          </Alert>
-        );
-      default:
-        return null;
-    }
-  };
-
-  const operationTypeLabel = (opeType: string) => {
+  const operationTypeLabel = (id: string, opeType: string, event: OperationDTO) => {
     switch (opeType) {
       case 'ADD_IBAN':
         return t('pages.initiativeUserDetails.operationTypes.addIban');
       case 'ADD_INSTRUMENT':
-        return t('pages.initiativeUserDetails.operationTypes.addInstrument');
+        return `${t(
+          'pages.initiativeUserDetails.operationTypes.addInstrument'
+        )} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
       case 'DELETE_INSTRUMENT':
-        return t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
+        return `${t(
+          'pages.initiativeUserDetails.operationTypes.deleteInstrument'
+        )} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
       case 'ONBOARDING':
         return t('pages.initiativeUserDetails.operationTypes.onboarding');
       case 'PAID_REFUND':
-        return t('pages.initiativeUserDetails.operationTypes.paidRefund');
+        return `${t(
+          'pages.initiativeUserDetails.operationTypes.paidRefund'
+        )} di ${formatedTimeLineCurrency(id, event.amount)}`;
       case 'REJECTED_ADD_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
       case 'REJECTED_DELETE_INSTRUMENT':
@@ -421,6 +404,81 @@ const InitiativeUserDetails = () => {
     }
   }, [iban]);
 
+  const HandleOpenSnackBarOnBoardingStatus = () => {
+    setOpenSnackBarOnBoardingStatus(true);
+  };
+
+  const HandleCloseSnackBarOnBoardingStatus = () => {
+    setOpenSnackBarOnBoardingStatus(false);
+  };
+
+  const renderUserStatusAlert = (status: string | undefined) => {
+    switch (status) {
+      case 'ONBOARDING_KO':
+        return (
+          <>
+            <Snackbar
+              open={openSnackBarOnBoardingStatus}
+              onClose={() => HandleCloseSnackBarOnBoardingStatus()}
+              autoHideDuration={4000}
+              sx={{
+                position: 'initial',
+                justifyContent: 'center',
+                gridColumn: 'span 24',
+                zIndex: 0,
+                mt: 5,
+              }}
+            >
+              <Alert
+                variant="outlined"
+                severity="error"
+                sx={{ gridColumn: 'span 24', width: '100%' }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {t('pages.initiativeUserDetails.onboardingKo')}
+                </Typography>
+                <Typography variant="body2">
+                  {t('pages.initiativeUserDetails.onboardingKoDescription')}
+                </Typography>
+              </Alert>
+            </Snackbar>
+          </>
+        );
+      case 'ELIGIBLE_KO':
+        return (
+          <>
+            <Snackbar
+              open={openSnackBarOnBoardingStatus}
+              onClose={() => HandleCloseSnackBarOnBoardingStatus()}
+              autoHideDuration={4000}
+              sx={{
+                position: 'initial',
+                justifyContent: 'center',
+                gridColumn: 'span 24',
+                zIndex: 0,
+                mt: 5,
+              }}
+            >
+              <Alert
+                variant="outlined"
+                severity="warning"
+                sx={{ gridColumn: 'span 24', width: '100%' }}
+              >
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  {t('pages.initiativeUserDetails.eligibleKo')}
+                </Typography>
+                <Typography variant="body2">
+                  {t('pages.initiativeUserDetails.eligibleKoDescription')}
+                </Typography>
+              </Alert>
+            </Snackbar>
+          </>
+        );
+      default:
+        return null;
+    }
+  };
+
   useEffect(() => {
     if (typeof id === 'string' && typeof cf === 'string') {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
@@ -465,11 +523,11 @@ const InitiativeUserDetails = () => {
         sx={{
           display: 'grid',
           width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
+          gridTemplateColumns: 'repeat(24, 1fr)',
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 11' }}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 21' }}>
           <TitleBox
             title={cf}
             subTitle={''}
@@ -479,7 +537,7 @@ const InitiativeUserDetails = () => {
             variantSubTitle="body1"
           />
         </Box>
-        {/* <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
+        {/* <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
           <Button
             variant="contained"
             size="small"
@@ -502,9 +560,9 @@ const InitiativeUserDetails = () => {
             </Alert>
           </Snackbar>
         </Box> */}
+        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(status)}</Box>
       </Box>
 
-      <Box sx={{ my: 5 }}>{renderUserStatusAlert(status)}</Box>
       <Box
         sx={{
           display: 'grid',
@@ -512,6 +570,7 @@ const InitiativeUserDetails = () => {
           gridTemplateColumns: 'repeat(12, 1fr)',
           alignItems: 'center',
           justifyContent: 'space-between',
+          mt: 5,
         }}
       >
         <Box sx={{ display: 'inline-flex', gridColumn: 'span 6' }}>
@@ -714,7 +773,7 @@ const InitiativeUserDetails = () => {
                             handleOpenModal(r.operationId);
                           }}
                         >
-                          {operationTypeLabel(r.operationType)}
+                          {operationTypeLabel(r.operationId, r.operationType, r)}
                         </ButtonNaked>
                       </TableCell>
                       <TableCell sx={{ textAlign: 'left' }}>{formatedCurrency(r.amount)}</TableCell>
