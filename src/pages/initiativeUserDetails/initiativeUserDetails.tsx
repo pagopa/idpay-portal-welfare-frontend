@@ -164,11 +164,7 @@ const InitiativeUserDetails = () => {
     setLoading(true);
     getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
       .then((res) => {
-        console.log(res.operationList);
-
         const rowsData: Array<any> = res.operationList.map((r) => r);
-
-        console.log('TIMELINE', rowsData);
 
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
@@ -257,7 +253,6 @@ const InitiativeUserDetails = () => {
       let searchFromStr;
       let searchToStr;
       if (typeof id === 'string' && typeof cf === 'string') {
-        console.log('Value1', values.searchFrom);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr =
@@ -272,7 +267,6 @@ const InitiativeUserDetails = () => {
               : undefined;
           setFilterByDateFrom(searchFromStr);
         }
-        console.log('Value2', values.searchTo);
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
           searchToStr =
@@ -287,7 +281,6 @@ const InitiativeUserDetails = () => {
               : undefined;
           setFilterByDateTo(searchToStr);
         }
-        console.log('Value3', values.filterEvent);
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
         setFilterByEvent(filterEvent);
         getTableData(cf, id, filterEvent, searchFromStr, searchToStr, 0);
