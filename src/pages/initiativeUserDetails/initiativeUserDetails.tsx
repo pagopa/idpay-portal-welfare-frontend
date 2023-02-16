@@ -428,6 +428,7 @@ const InitiativeUserDetails = () => {
                 zIndex: 0,
                 mt: 5,
               }}
+              data-testid="onboarding-ko-snackbar-test"
             >
               <Alert
                 variant="outlined"
@@ -458,6 +459,7 @@ const InitiativeUserDetails = () => {
                 zIndex: 0,
                 mt: 5,
               }}
+              data-testid="eligible-ko-snackbar-test"
             >
               <Alert
                 variant="outlined"

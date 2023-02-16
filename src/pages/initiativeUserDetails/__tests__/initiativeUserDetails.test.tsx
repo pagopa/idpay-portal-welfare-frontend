@@ -1,9 +1,9 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { MockedOperationType } from '../../../model/Initiative';
-import ROUTES from '../../../routes';
-import { mockedOperationList } from '../../../services/__mocks__/initiativeService';
+import ROUTES, { BASE_ROUTE } from '../../../routes';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeUserDetails from '../initiativeUserDetails';
 
@@ -37,7 +37,7 @@ describe('test suite initiative user details', () => {
     window.scrollTo = jest.fn();
 
     const { history } = renderWithHistoryAndStore(<InitiativeUserDetails />);
-    // screen.debug(undefined, 99999, undefined);
+
     // on click of back btn location has changed
     const oldLocPathname = history.location.pathname;
     const breadcrumbsBackBtn = screen.getByText('breadcrumbs.back') as HTMLButtonElement;
@@ -46,7 +46,7 @@ describe('test suite initiative user details', () => {
 
     // test the select to filter events
     const eventsFilterSelect = screen.getByTestId('filterEvent-select');
-    fireEvent.change(eventsFilterSelect, { target: { value: MockedOperationType.ONBOARDING } });
+    fireEvent.change(eventsFilterSelect, { target: { value: 'ONBOARDING' } });
     expect(eventsFilterSelect).toBeInTheDocument();
 
     // test filter of date from
@@ -54,7 +54,7 @@ describe('test suite initiative user details', () => {
     fireEvent.click(fromDatePickerFilter);
     fireEvent.change(fromDatePickerFilter, {
       target: {
-        value: new Date(),
+        value: new Date('2023-01-05T10:22:28.012Z'),
       },
     });
 
@@ -63,7 +63,7 @@ describe('test suite initiative user details', () => {
     fireEvent.click(toDatePickerFilter);
     fireEvent.change(toDatePickerFilter, {
       target: {
-        value: new Date(),
+        value: new Date('2023-02-05T10:22:28.012Z'),
       },
     });
 
@@ -97,10 +97,6 @@ describe('test suite initiative user details', () => {
     //   keyCode: 27,
     //   charCode: 27,
     // });
-
-    //test table pagination onClick
-    // const tablePag = await screen.findByTestId('table-pagination-test');
-    // fireEvent.click(tablePag);
   });
 
   test('test of render TransactionDetailModal with different type of opeType', () => {
@@ -116,6 +112,7 @@ describe('test suite initiative user details', () => {
       'REJECTED_REFUND',
       'REVERSAL',
       'TRANSACTION',
+      undefined,
     ];
 
     operationTypes.forEach((operation) => {
@@ -156,6 +153,69 @@ describe('test suite initiative user details', () => {
 
       renderWithHistoryAndStore(<InitiativeUserDetails />);
     });
+  });
+
+  test('test of render TransactionDetailModal with path ONBOARDING_KO', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    fireEvent.keyDown(screen.getByTestId('onboarding-ko-snackbar-test'), {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
+  });
+
+  test('test of render TransactionDetailModal with path ONBOARDING_KO', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ELIGIBLE_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    fireEvent.keyDown(screen.getByTestId('eligible-ko-snackbar-test'), {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+    });
+  });
+
+  test('test catch case of getIban api call', () => {
+    InitiativeApiMocked.getIban = async (): Promise<IbanDTO> => Promise.reject('reason');
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
   test('test catch case of getWalletDetail api call', () => {
