@@ -1,12 +1,11 @@
 /* eslint-disable react/jsx-no-bind */
-import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { store } from '../../../../../redux/store';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { createMemoryHistory } from 'history';
-import ShopRules from '../ShopRules';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
+import Layout from '../../../../../components/Layout/Layout';
 import {
   saveDaysOfWeekIntervals,
   saveMccFilter,
@@ -14,20 +13,32 @@ import {
   saveRewardRule,
   saveThreshold,
   saveTrxCount,
-  setInitiativeId,
+  setInitiativeId
 } from '../../../../../redux/slices/initiativeSlice';
+import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
-
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import ShopRules from '../ShopRules';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterEach(cleanup);
+jest.mock('react-i18next', () => ({
+  ...jest.requireActual('react-i18next'),
+  useTranslation: () => {
+    return {
+      t: (str: string) => str,
+      i18n: {
+        changeLanguage: () => new Promise(() => {}),
+      },
+    };
+  },
+}));
+
+afterEach(() => cleanup);
 window.scrollTo = jest.fn();
 
 export const shopRulesToSubmit = [
@@ -66,7 +77,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   const setCurrentStep = jest.fn();
   const setDisabledNext = jest.fn();
 
-  test('should render correctly the ShopRules component action SUMBIT', async () => {
+  test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
     store.dispatch(saveRewardRule(perRec));
     store.dispatch(saveTrxCount(trxCount));
@@ -87,6 +98,35 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
         </Router>
       </Provider>
     );
+
+    // delete btns tests
+
+    const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
+
+    fireEvent.click(deleteMccBtn);
+
+    const deleteSpendingLimitBtn = await screen.findByTestId('delete-button-spending-limit-test');
+
+    fireEvent.click(deleteSpendingLimitBtn);
+
+    // add new Criteria
+
+    const addNewCriteria = await screen.findByTestId('criteria-button-test');
+
+    fireEvent.click(addNewCriteria);
+
+    const shopRulesModalTitle = await screen.findByText('components.wizard.stepFour.modal.title');
+
+    expect(shopRulesModalTitle).toBeInTheDocument();
+
+    // console.log('first', await screen.findByTestId('add-shopList-MCC-btn'));
+
+    fireEvent.click(
+      await screen.findByText('components.wizard.stepFour.form.addTransactionTimeItem')
+    );
+
+    fireEvent.click(await screen.findByTestId('add-shopList-MCC-btn'));
+    // screen.debug(undefined, 99999);
   });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
@@ -111,5 +151,39 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     expect(toast).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+
+  test('test percetage-recognized-value input', async () => {
+    renderWithHistoryAndStore(
+      <Layout>
+        <ShopRules
+          action={WIZARD_ACTIONS.SUBMIT}
+          setAction={setAction}
+          currentStep={3}
+          setCurrentStep={setCurrentStep(3)}
+          setDisabledNext={setDisabledNext}
+        />
+      </Layout>
+    );
+
+    fireEvent.change(screen.getByTestId('percetage-recognized-value'), {
+      target: {
+        value: '10',
+      },
+    });
+  });
+
+  test('test catch case api getTransactionConfigRules', async () => {
+    (InitiativeApiMocked.getTransactionConfigRules = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests')),
+      renderWithHistoryAndStore(
+        <ShopRules
+          action={WIZARD_ACTIONS.SUBMIT}
+          setAction={setAction}
+          currentStep={3}
+          setCurrentStep={setCurrentStep(3)}
+          setDisabledNext={setDisabledNext}
+        />
+      );
   });
 });

@@ -195,7 +195,7 @@ const MCCItem = ({
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
         <IconButton
-          data-testid="delete-button-test"
+          data-testid="delete-button-mcc-test"
           onClick={() => handleShopListItemRemoved(code)}
         >
           <DeleteOutlineIcon

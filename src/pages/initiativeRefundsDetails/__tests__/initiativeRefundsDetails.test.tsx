@@ -1,4 +1,5 @@
 /* eslint-disable functional/immutable-data */
+import React from 'react';
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import ROUTES from '../../../routes';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';

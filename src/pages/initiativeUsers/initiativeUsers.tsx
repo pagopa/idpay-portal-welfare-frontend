@@ -480,6 +480,7 @@ const InitiativeUsers = () => {
                           onClick={() =>
                             history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
                           }
+                          data-testid='beneficiary-test'
                         >
                           {r.beneficiary}
                         </ButtonNaked>

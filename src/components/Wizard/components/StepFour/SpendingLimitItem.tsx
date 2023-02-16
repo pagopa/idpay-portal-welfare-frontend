@@ -120,7 +120,7 @@ const SpendingLimitItem = ({
             sx={{
               cursor: 'pointer',
             }}
-            data-testid="delete-button-test"
+            data-testid="delete-button-spending-limit-test"
           />
         </IconButton>
       </Box>
