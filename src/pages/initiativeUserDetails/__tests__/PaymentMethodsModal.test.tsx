@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { MockedStatusInstrument } from '../../../model/Initiative';
-import { mockedWalletInstrument } from '../../../services/__mocks__/initiativeService';
+// import { StatusEnum as WalletStatusEnum } from '../../../api/generated/initiative/WalletDTO';
+import { StatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
@@ -19,7 +19,7 @@ const walletInstrument = [
     maskedPan: '1111 2222 3333 4444',
     channel: 'channel',
     brandLog: undefined,
-    status: MockedStatusInstrument.ACTIVE,
+    status: StatusEnum.ACTIVE,
     activationDate: new Date('2023-01-04T16:38:43.590Z'),
   },
   {
@@ -29,7 +29,7 @@ const walletInstrument = [
     channel: 'channel',
     brandLog:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.ACTIVE,
+    status: StatusEnum.ACTIVE,
     activationDate: new Date('2023-01-04T16:38:43.590Z'),
   },
   {
@@ -39,7 +39,7 @@ const walletInstrument = [
     channel: 'channel',
     brandLog:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.PENDING_DEACTIVATION_REQUEST,
+    status: StatusEnum.PENDING_DEACTIVATION_REQUEST,
     activationDate: new Date('2023-01-04T16:38:43.590Z'),
   },
   {
@@ -49,7 +49,7 @@ const walletInstrument = [
     channel: 'channel',
     brandLog:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.PENDING_ENROLLMENT_REQUEST,
+    status: StatusEnum.PENDING_ENROLLMENT_REQUEST,
     activationDate: new Date('2023-01-04T16:38:43.590Z'),
   },
 ];

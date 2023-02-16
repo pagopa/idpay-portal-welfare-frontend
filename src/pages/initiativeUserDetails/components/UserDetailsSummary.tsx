@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
 import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
 import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
-// import { MockedInstrumentDTO /* MockedStatusWallet */ } from '../../../model/Initiative';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
 type Props = {

@@ -17,7 +17,6 @@ type Props = {
   handleCloseModal: MouseEventHandler;
   initiativeId: string;
   holderBank: string | undefined;
-  operationTypeLabel: any;
 };
 
 const TransactionDetailModal = ({
@@ -27,7 +26,6 @@ const TransactionDetailModal = ({
   handleCloseModal,
   initiativeId,
   holderBank,
-  operationTypeLabel,
 }: // eslint-disable-next-line sonarjs/cognitive-complexity
 Props) => {
   const { t } = useTranslation();
@@ -118,6 +116,34 @@ Props) => {
       }
     }
     return '';
+  };
+
+  const operationTypeLabel = (opeType: string | undefined) => {
+    switch (opeType) {
+      case 'ADD_IBAN':
+        return t('pages.initiativeUserDetails.operationTypes.addIban');
+      case 'ADD_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.addInstrument');
+      case 'DELETE_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
+      case 'ONBOARDING':
+        return t('pages.initiativeUserDetails.operationTypes.onboarding');
+      case 'PAID_REFUND':
+        return t('pages.initiativeUserDetails.operationTypes.paidRefund');
+      case 'REJECTED_ADD_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
+      case 'REJECTED_DELETE_INSTRUMENT':
+      case 'DELETE_INSTRUMENT_KO':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument');
+      case 'REJECTED_REFUND':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedRefund');
+      case 'REVERSAL':
+        return t('pages.initiativeUserDetails.operationTypes.reversal');
+      case 'TRANSACTION':
+        return t('pages.initiativeUserDetails.operationTypes.transaction');
+      default:
+        return null;
+    }
   };
 
   return (

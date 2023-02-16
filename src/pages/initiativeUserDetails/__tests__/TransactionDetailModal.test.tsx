@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
 beforeEach(() => {
@@ -19,7 +20,7 @@ describe('test suite initiative user details', () => {
         handleCloseModal={jest.fn()}
         initiativeId={''}
         holderBank={''}
-        operationTypeLabel={jest.fn()}
+        fiscalCode={''}
       />
     );
 
@@ -35,7 +36,21 @@ describe('test suite initiative user details', () => {
         handleCloseModal={jest.fn()}
         initiativeId={''}
         holderBank={undefined}
-        operationTypeLabel={jest.fn()}
+        fiscalCode={''}
+      />
+    );
+  });
+
+  test('test catch case of getTimelineDetail api call', () => {
+    InitiativeApiMocked.getTimelineDetail = async (): Promise<any> => Promise.reject('reason');
+    renderWithHistoryAndStore(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={''}
+        holderBank={''}
+        fiscalCode={''}
       />
     );
   });

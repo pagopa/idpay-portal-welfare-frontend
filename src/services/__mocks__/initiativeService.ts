@@ -221,7 +221,11 @@ export const getTimelineDetail = (
   _id: string,
   _operationId: string
 ): Promise<OperationDTO> =>
-  InitiativeApiMocked.getTimelineDetail(mockedFiscalCode, mockedInitiativeId, mockedOperationId);
+  InitiativeApiMocked.getTimelineDetail(
+    mockedOperationId,
+    mockedOperationType,
+    mockedOperationDate
+  );
 
 export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
   InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
@@ -402,7 +406,9 @@ export const mockedOperationDetail: OperationDTO = {
   idTrxIssuer: '0001923192038',
 };
 
-export const mockedOperationId = 'PAID_REFUND';
+export const mockedOperationType = 'PAID_REFUND';
+export const mockedOperationId = '63ecc1eb10dc9d6cfb01371e';
+export const mockedOperationDate = '2023-02-15T12:28:42.949';
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',

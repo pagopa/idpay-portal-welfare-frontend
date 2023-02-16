@@ -776,9 +776,15 @@ const InitiativeUserDetails = () => {
                           {operationTypeLabel(r.operationId, r.operationType, r)}
                         </ButtonNaked>
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'left' }}>{formatedCurrency(r.amount)}</TableCell>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {formatedCurrency(r.accrued)}
+                        {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
+                          ? '-'
+                          : formatedCurrency(r.amount)}
+                      </TableCell>
+                      <TableCell sx={{ textAlign: 'left' }}>
+                        {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
+                          ? '-'
+                          : formatedCurrency(r.accrued)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -801,7 +807,6 @@ const InitiativeUserDetails = () => {
                 handleCloseModal={handleCloseModal}
                 initiativeId={id}
                 holderBank={holderBank}
-                operationTypeLabel={operationTypeLabel}
               />
             </Box>
           </Box>
