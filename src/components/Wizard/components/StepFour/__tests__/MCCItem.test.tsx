@@ -1,18 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-// import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Provider } from 'react-redux';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithProviders } from '../../../../../utils/test-utils';
+import { renderWithHistoryAndStore, renderWithProviders } from '../../../../../utils/test-utils';
 import MCCItem from '../MCCItem';
 import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
-
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -83,7 +78,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
       />
     );
 
-    const deletebtn = screen.getByTestId('delete-button-test');
+    const deletebtn = screen.getByTestId('delete-button-mcc-test');
 
     fireEvent.click(deletebtn);
     expect(mockedFn.mock.calls.length).toEqual(1);
@@ -107,5 +102,22 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
 
     expect(setData).toHaveBeenCalled();
     expect(selectMerchant).toBeDefined();
+  });
+
+  test('test catch case api getMccConfig', async () => {
+    (InitiativeApiMocked.getMccConfig = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests')),
+      renderWithHistoryAndStore(
+        <MCCItem
+          title={'title'}
+          code={'MCC'}
+          handleShopListItemRemoved={mockedFn}
+          action={WIZARD_ACTIONS.SUBMIT}
+          shopRulesToSubmit={shopRulesToSubmit}
+          setShopRulesToSubmit={jest.fn()}
+          data={mccFilter}
+          setData={setData}
+        />
+      );
   });
 });

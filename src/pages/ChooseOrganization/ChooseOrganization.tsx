@@ -56,7 +56,7 @@ const ChooseOrganization = () => {
           setOrganizationSelected(res[0]);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => console.log('err', error));
   }, []);
 
   const searchOrganization = (searchValue: string) => {
@@ -102,8 +102,8 @@ const ChooseOrganization = () => {
         storageTokenOps.write(innerToken);
         history.replace(ROUTES.HOME);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((_error) => {
+        // console.error(error);
         window.location.assign(ENV.URL_FE.LOGIN);
       });
   };
@@ -149,6 +149,7 @@ const ChooseOrganization = () => {
                     onClick={resetOrganization}
                     id="clearIcon"
                     aria-label="removeSelectionIcon"
+                    data-testid="removeSelectionIcon"
                   >
                     <ClearOutlinedIcon />
                   </IconButton>
@@ -177,6 +178,7 @@ const ChooseOrganization = () => {
                           position="end"
                           sx={{ cursor: 'pointer' }}
                           onClick={resetOrganizationsList}
+                          data-testid="endAdornment-reset"
                         >
                           <CloseIcon />
                         </InputAdornment>

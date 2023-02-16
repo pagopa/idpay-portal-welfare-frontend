@@ -2,6 +2,8 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import React from 'react';
 import { date } from 'yup';
+import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import ROUTES from '../../../routes';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeRefunds from '../initiativeRefunds';
@@ -49,7 +51,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
 
     const oldLocPathname = history.location.pathname;
 
-    //BUTTONS TEST
+    // BUTTONS TEST
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
@@ -121,5 +123,41 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   it('test download file refunds button', async () => {
     renderWithHistoryAndStore(<InitiativeRefunds />);
     fireEvent.click(await screen.findByTestId('download-file-refunds'));
+  });
+
+  it('test render with response EXPORTED', async () => {
+    (InitiativeApiMocked.getExportsPaged = async (): Promise<PageRewardExportsDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          content: [
+            {
+              feedbackDate: new Date(),
+              filePath: 'string',
+              id: 'string',
+              initiativeId: 'string',
+              initiativeName: 'string',
+              notificationDate: new Date(),
+              organizationId: 'string',
+              percentageResulted: 'string',
+              percentageResultedOk: 'string',
+              percentageResults: 'string',
+              rewardsExported: 'string',
+              rewardsNotified: 0,
+              rewardsResulted: 0,
+              rewardsResultedOk: 0,
+              rewardsResults: 'string',
+              status: 'EXPORTED',
+            },
+          ],
+          totalElements: 0,
+          totalPages: 0,
+        })
+      )),
+      renderWithHistoryAndStore(<InitiativeRefunds />);
+  });
+
+  it(' test catch case with promise reject', async () => {
+    (InitiativeApiMocked.getExportsPaged = async (): Promise<any> => Promise.reject('reason')),
+      renderWithHistoryAndStore(<InitiativeRefunds />);
   });
 });

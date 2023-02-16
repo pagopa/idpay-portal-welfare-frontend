@@ -15,8 +15,12 @@ import {
   mockedInitiativeSummary,
   mockedNotificationReward,
   mockedOnBoardingStatusResponse,
+  mockedOperationDetail,
   mockedOperationList,
   mockedOrganizationsList,
+  mockedRefundsDetailsByEventRes,
+  mockedRefundsDetailsListItem,
+  mockedRefundsDetailsSummary,
   mockedWallet,
   mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
@@ -38,14 +42,17 @@ import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardin
 import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
 import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { SasToken } from '../generated/initiative/SasToken';
-import {
-  MockedIbanDTO,
-  MockedInstrumentDTO,
-  MockedOperation,
-  MockedOperationListDTO,
-  MockedWalletDTO,
-} from '../../model/Initiative';
 import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
+import { WalletDTO } from '../generated/initiative/WalletDTO';
+import { IbanDTO } from '../generated/initiative/IbanDTO';
+import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from '../generated/initiative/TimelineDTO';
+import { OperationDTO } from '../generated/initiative/OperationDTO';
+import {
+  InitiativeRefundsDetailsByEvent,
+  InitiativeRefundsDetailsListItem,
+  InitiativeRefundsDetailsSummary,
+} from '../../model/InitiativeRefunds';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -139,6 +146,25 @@ export const InitiativeApiMocked = {
     _status: string | undefined
   ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatusResponse)),
 
+  getRefundsDetailsSummary: async (
+    _initiativeId: string,
+    _exportId: string
+  ): Promise<InitiativeRefundsDetailsSummary> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsSummary)),
+
+  getRefundsDetailsList: async (
+    _initiativeId: string,
+    _exportId: string
+  ): Promise<Array<InitiativeRefundsDetailsListItem>> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
+
+  getRefundsDetailsByEvent: async (
+    _initiativeId: string,
+    _exportId: string,
+    _refundEventId: string
+  ): Promise<InitiativeRefundsDetailsByEvent> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
+
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),
 
@@ -173,23 +199,26 @@ export const InitiativeApiMocked = {
   getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
     new Promise((resolve) => resolve(mockedMccCodes)),
 
-  getWalletInfo: async (_id: string, _cf: string): Promise<MockedWalletDTO> =>
+  getWalletDetail: async (_id: string, _cf: string): Promise<WalletDTO> =>
     new Promise((resolve) => resolve(mockedWallet)),
 
-  getIban: async (_iban: string): Promise<MockedIbanDTO> =>
+  getIban: async (_iban: string): Promise<IbanDTO> =>
     new Promise((resolve) => resolve(mockedIbanInfo)),
 
-  getTimeLine: async (_id: string): Promise<MockedOperationListDTO> =>
-    new Promise((resolve) => resolve(mockedOperationList)),
+  getTimeLine: async (
+    _cf: string,
+    _id: string,
+    _opeType?: string,
+    _dateFrom?: string,
+    _dateTo?: string,
+    _page?: number,
+    _size?: number
+  ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList)),
 
-  getTimelineDetail: async (_id: string, operationId: string): Promise<MockedOperation> => {
-    const operationDetails = mockedOperationList.operationList.filter(
-      (e) => e.operationId === operationId
-    );
-    return new Promise((resolve) => resolve(operationDetails[0]));
-  },
+  getTimelineDetail: async (_cf: string, _id: string, _opeId: string): Promise<OperationDTO> =>
+    new Promise((resolve) => resolve(mockedOperationDetail)),
 
-  getWalletInstrumen: async (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
+  getInstrumentList: async (_id: string, _cf: string): Promise<InstrumentListDTO> =>
     new Promise((resolve) => resolve(mockedWalletInstrument)),
 
   getOrganizationsList: async (): Promise<OrganizationListDTO> =>

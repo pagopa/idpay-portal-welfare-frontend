@@ -93,3 +93,100 @@ export const numberWithCommas = (x: number | string | undefined) => {
   }
   return '0';
 };
+
+export const formatIban = (iban: string | undefined) => {
+  if (iban) {
+    return `${iban.slice(0, 2)} ${iban.slice(2, 4)} ${iban.slice(4, 5)} ${iban.slice(
+      5,
+      10
+    )} ${iban.slice(10, 15)} ${iban.slice(15, 32)}`;
+  }
+  return '';
+};
+
+export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
+  if (number) {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  }
+  return symbol;
+};
+
+export const formatedDate = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', { year: 'numeric', month: 'numeric', day: 'numeric' });
+  }
+  return symbol;
+};
+
+export const formatedDateHoursAndMin = (date: Date | undefined, symbol: string = '-') => {
+  if (date) {
+    return date.toLocaleString('fr-BE', {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      timeZone: 'Europe/Rome',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  }
+  return symbol;
+};
+
+export const formatStringToDate = (date: string | undefined) => {
+  if (typeof date === 'string') {
+    const newDate = new Date(date);
+    if (newDate) {
+      return newDate.toLocaleString('it-IT', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'Europe/Rome',
+        hour: 'numeric',
+        minute: 'numeric',
+      });
+    }
+  }
+  return '';
+};
+
+export const getMaskedPan = (pan: string | undefined) => {
+  if (typeof pan === 'string') {
+    const regexp = new RegExp('^[0-9]*$');
+    const isNumber = regexp.test(pan);
+    if (isNumber) {
+      return `**** ${pan?.substring(-4)}`;
+    }
+    return pan;
+  }
+  return '****';
+};
+
+export const mappedChannel = (channel: string | undefined) => {
+  switch (channel) {
+    case 'APP_IO':
+      return i18n.t('pages.initiativeUserDetails.appIo');
+    case 'ISSUER':
+      return i18n.t('pages.initiativeUserDetails.issuer');
+    default:
+      return '-';
+  }
+};
+
+export const getTimeLineMaskedPan = (id: string, pan: string | undefined) => {
+  if (id && typeof pan === 'string') {
+    const regexp = new RegExp('^[0-9]*$');
+    const isNumber = regexp.test(pan);
+    if (isNumber) {
+      return `**** ${pan?.substring(-4)}`;
+    }
+    return pan;
+  }
+  return '****';
+};
+
+export const formatedTimeLineCurrency = (id: string, number: number | undefined) => {
+  if (id && number) {
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  }
+  return '';
+};

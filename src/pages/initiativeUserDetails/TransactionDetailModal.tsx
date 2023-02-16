@@ -5,33 +5,38 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useTranslation } from 'react-i18next';
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-import { MockedOperation, MockedOperationType } from '../../model/Initiative';
-import { getTimelineDetail } from '../../services/__mocks__/initiativeService';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { formatedCurrency, formatIban, getMaskedPan, mappedChannel } from '../../helpers';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { getTimelineDetail } from '../../services/intitativeService';
 
 type Props = {
+  fiscalCode: string;
   operationId: string;
   openModal: boolean;
   handleCloseModal: MouseEventHandler;
   initiativeId: string;
-  holderBank: string;
-  operationTypeLabel: any;
+  holderBank: string | undefined;
 };
 
 const TransactionDetailModal = ({
+  fiscalCode,
   operationId,
   openModal,
   handleCloseModal,
   initiativeId,
   holderBank,
-  operationTypeLabel,
-}: Props) => {
+}: // eslint-disable-next-line sonarjs/cognitive-complexity
+Props) => {
   const { t } = useTranslation();
-  const [transactionDetail, setTransactionDetail] = useState<MockedOperation>();
+  const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_TRANSACTION_DETAIL');
 
   useEffect(() => {
     if (typeof initiativeId === 'string' && typeof operationId === 'string' && openModal) {
-      getTimelineDetail(initiativeId, operationId)
+      setLoading(true);
+      getTimelineDetail(fiscalCode, initiativeId, operationId)
         .then((res) => {
           if (typeof res === 'object') {
             setTransactionDetail(res);
@@ -49,15 +54,14 @@ const TransactionDetailModal = ({
             component: 'Toast',
             showCloseIcon: true,
           })
-        );
+        )
+        .finally(() => setLoading(false));
     }
   }, [operationId, openModal, initiativeId]);
 
-  const getMaskedPan = (pan: string | undefined) => `**** ${pan?.substring(pan.length - 4)}`;
-
-  const transactionResult = (opeType: MockedOperationType | undefined) => {
+  const transactionResult = (opeType: string | undefined) => {
     if (typeof opeType !== 'undefined') {
-      if (opeType?.toUpperCase().substring(0, 8) === 'REJECTED') {
+      if (opeType?.toUpperCase().includes('REJECTED') || opeType?.toUpperCase().includes('KO')) {
         return (
           <>
             <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -97,6 +101,51 @@ const TransactionDetailModal = ({
     }
   };
 
+  const formatDate = (date: string | undefined) => {
+    if (typeof date === 'string') {
+      const newDate = new Date(date);
+      if (newDate) {
+        return newDate.toLocaleString('it-IT', {
+          day: '2-digit',
+          month: 'short',
+          year: 'numeric',
+          timeZone: 'Europe/Rome',
+          hour: 'numeric',
+          minute: 'numeric',
+        });
+      }
+    }
+    return '';
+  };
+
+  const operationTypeLabel = (opeType: string | undefined) => {
+    switch (opeType) {
+      case 'ADD_IBAN':
+        return t('pages.initiativeUserDetails.operationTypes.addIban');
+      case 'ADD_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.addInstrument');
+      case 'DELETE_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
+      case 'ONBOARDING':
+        return t('pages.initiativeUserDetails.operationTypes.onboarding');
+      case 'PAID_REFUND':
+        return t('pages.initiativeUserDetails.operationTypes.paidRefund');
+      case 'REJECTED_ADD_INSTRUMENT':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
+      case 'REJECTED_DELETE_INSTRUMENT':
+      case 'DELETE_INSTRUMENT_KO':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument');
+      case 'REJECTED_REFUND':
+        return t('pages.initiativeUserDetails.operationTypes.rejectedRefund');
+      case 'REVERSAL':
+        return t('pages.initiativeUserDetails.operationTypes.reversal');
+      case 'TRANSACTION':
+        return t('pages.initiativeUserDetails.operationTypes.transaction');
+      default:
+        return null;
+    }
+  };
+
   return (
     <Modal
       aria-labelledby="choose-transaction-detail-title"
@@ -120,7 +169,7 @@ const TransactionDetailModal = ({
             height: '100%',
             bgcolor: 'background.paper',
             boxShadow: 24,
-            p: 4,
+            p: 3,
           }}
         >
           <Box
@@ -155,7 +204,10 @@ const TransactionDetailModal = ({
                 {operationTypeLabel(transactionDetail?.operationType)}
               </Typography>
             </Box>
-            {transactionDetail?.operationType !== MockedOperationType.ADD_IBAN ? (
+            {transactionDetail?.operationType !== 'ADD_IBAN' &&
+            transactionDetail?.operationType !== 'ONBOARDING' &&
+            transactionDetail?.operationType !== 'PAID_REFUND' &&
+            transactionDetail?.operationType !== 'REJECTED_REFUND' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -169,7 +221,7 @@ const TransactionDetailModal = ({
                 </Box>
               </>
             ) : null}
-            {transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? (
+            {transactionDetail?.operationType === 'ADD_IBAN' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -177,8 +229,8 @@ const TransactionDetailModal = ({
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail?.iban}
+                  <Typography variant="monospaced" fontWeight={400}>
+                    {formatIban(transactionDetail?.iban)}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -188,7 +240,7 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {holderBank}
+                    {holderBank ? holderBank : '-'}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -198,13 +250,15 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.channel}
+                    {mappedChannel(transactionDetail.channel)}
                   </Typography>
                 </Box>
               </>
             ) : null}
-            {transactionDetail?.operationType === MockedOperationType.REVERSAL ||
-            transactionDetail?.operationType === MockedOperationType.ADD_IBAN ? null : (
+            {transactionDetail?.operationType === 'ADD_IBAN' ||
+            transactionDetail?.operationType === 'ONBOARDING' ||
+            transactionDetail?.operationType === 'PAID_REFUND' ||
+            transactionDetail?.operationType === 'REJECTED_REFUND' ? null : (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -213,13 +267,15 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail?.circuitType}
+                    {typeof transactionDetail?.circuitType !== 'undefined'
+                      ? transactionDetail?.circuitType
+                      : '-'}
                   </Typography>
                 </Box>
               </>
             )}
-            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
-            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+            {transactionDetail?.operationType === 'TRANSACTION' ||
+            transactionDetail?.operationType === 'REVERSAL' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -228,7 +284,9 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {`${transactionDetail?.amount} € `}
+                    {transactionDetail.operationType === 'REVERSAL'
+                      ? `-${formatedCurrency(transactionDetail?.amount)}`
+                      : formatedCurrency(transactionDetail?.amount)}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -238,7 +296,25 @@ const TransactionDetailModal = ({
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {`${transactionDetail?.accrued} € `}
+                    {transactionDetail.operationType === 'REVERSAL'
+                      ? `-${formatedCurrency(transactionDetail?.accrued)}`
+                      : formatedCurrency(transactionDetail?.accrued)}
+                  </Typography>
+                </Box>
+              </>
+            ) : null}
+
+            {transactionDetail?.operationType === 'PAID_REFUND' ||
+            transactionDetail?.operationType === 'REJECTED_REFUND' ? (
+              <>
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.import')}
+                  </Typography>
+                </Box>
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.amount, '00,00 €')}
                   </Typography>
                 </Box>
               </>
@@ -251,16 +327,11 @@ const TransactionDetailModal = ({
             </Box>
             <Box sx={{ gridColumn: 'span 12' }}>
               <Typography variant="body2" fontWeight={600}>
-                {transactionDetail?.operationDate
-                  ?.toLocaleString('fr-BE')
-                  .substring(
-                    0,
-                    transactionDetail?.operationDate.toLocaleString('fr-BE').length - 3
-                  )}
+                {formatDate(transactionDetail?.operationDate)}
               </Typography>
             </Box>
-            {transactionDetail?.operationType === MockedOperationType.TRANSACTION ||
-            transactionDetail?.operationType === MockedOperationType.REVERSAL ? (
+            {transactionDetail?.operationType === 'TRANSACTION' ||
+            transactionDetail?.operationType === 'REVERSAL' ? (
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -268,8 +339,12 @@ const TransactionDetailModal = ({
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.aquirerId}
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
+                    {transactionDetail.idTrxAcquirer}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -278,8 +353,12 @@ const TransactionDetailModal = ({
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.issuerId}
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
+                    {transactionDetail.idTrxIssuer}
                   </Typography>
                 </Box>
               </>

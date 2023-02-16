@@ -1909,7 +1909,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@pagopa/mui-italia@0.8.12":
+"@pagopa/mui-italia@^0.8.12", "@pagopa/mui-italia@^0.8.8":
   version "0.8.12"
   resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-0.8.12.tgz#e53e7ce965fe44d509b63c34ec45deeb7dbb8cf3"
   integrity sha512-Qz0fMf5T3GHp/5g0VLyMR3kUtYnXpjtM3H9Hy5Co776Bi9BSiNLEPgP1svupIyW+RX8xpQD5fohyAmCNhP4qRw==
@@ -1919,15 +1919,6 @@
     clsx "^1.2.1"
     fp-ts "^2.12.3"
     io-ts "^2.2.18"
-
-"@pagopa/mui-italia@^0.6.28":
-  version "0.6.28"
-  resolved "https://registry.yarnpkg.com/@pagopa/mui-italia/-/mui-italia-0.6.28.tgz#32fc23af814f21425e3af3dbec589bfd03a63f4f"
-  integrity sha512-6/ZcuvF/cG3YClXQGWB+3Z0tude3uqWrmliLYmNckUExvZdlq+uobEkVMQDXCPdljGVuVifQ+a0DNaAC2cR3ng==
-  dependencies:
-    clsx "^1.1.1"
-    fp-ts "^2.12.1"
-    io-ts "^2.2.16"
 
 "@pagopa/openapi-codegen-ts@^10.0.6":
   version "10.1.0"
@@ -1943,10 +1934,10 @@
     write-yaml-file "^4.1.3"
     yargs "^15.0.1"
 
-"@pagopa/selfcare-common-frontend@^1.11.8":
-  version "1.11.8"
-  resolved "https://registry.yarnpkg.com/@pagopa/selfcare-common-frontend/-/selfcare-common-frontend-1.11.8.tgz#b83770567ea69f45acf8edacbae3433a513359e2"
-  integrity sha512-BslWroEbj8JiWTpQlkLWRlhwevuPDR00vRHdYK2ljaLDyvA5po8+A+lQb5VMfkK7fyYTTmlBIuarLxNew/8tZQ==
+"@pagopa/selfcare-common-frontend@^1.15.0":
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/@pagopa/selfcare-common-frontend/-/selfcare-common-frontend-1.15.0.tgz#7a6d29e10b669e516219f55871d77d6592a8d329"
+  integrity sha512-mn7wWoRGIAV1zelX7hhnraFnSPX2Vb8AW/FWXK6gIX+yntch5K0e+FMZOQnZoQ1Bbqpz0sKpIF6GlWtx2fmWew==
   dependencies:
     "@emotion/react" "^11.4.1"
     "@emotion/styled" "^11.3.0"
@@ -1954,7 +1945,7 @@
     "@mui/lab" "^5.0.0-alpha.80"
     "@mui/material" "^5.8.2"
     "@mui/system" "^5.8.1"
-    "@pagopa/mui-italia" "^0.6.28"
+    "@pagopa/mui-italia" "^0.8.8"
     "@pagopa/ts-commons" "^10.2.1"
     "@reduxjs/toolkit" "^1.6.2"
     "@types/lodash" "^4.14.172"
@@ -5788,7 +5779,7 @@ forwarded@0.2.0:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.2.0.tgz#2269936428aad4c15c7ebe9779a84bf0b2a81811"
   integrity sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==
 
-fp-ts@^2.11.0, fp-ts@^2.11.5, fp-ts@^2.12.1:
+fp-ts@^2.11.0, fp-ts@^2.11.5:
   version "2.12.1"
   resolved "https://registry.yarnpkg.com/fp-ts/-/fp-ts-2.12.1.tgz#e389488bfd1507af06bd5965e97367edcd4fabad"
   integrity sha512-oxvgqUYR6O9VkKXrxkJ0NOyU0FrE705MeqgBUMEPWyTu6Pwn768cJbHChw2XOBlgFLKfIHxjr2OOBFpv2mUGZw==

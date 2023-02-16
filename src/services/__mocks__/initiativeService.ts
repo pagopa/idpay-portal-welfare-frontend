@@ -17,23 +17,25 @@ import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/I
 import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
-import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
+import {
+  InitiativeRefundsDetailsByEvent,
+  InitiativeRefundsDetailsListItem,
+  InitiativeRefundsDetailsSummary,
+  InitiativeRefundsResponse,
+} from '../../model/InitiativeRefunds';
 import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
 import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
-import {
-  MockedIbanDTO,
-  MockedInstrumentDTO,
-  MockedOperation,
-  MockedOperationListDTO,
-  MockedOperationType,
-  MockedStatusInstrument,
-  MockedStatusWallet,
-  MockedWalletDTO,
-} from '../../model/Initiative';
+import { WalletDTO } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as WalletStatusEnum } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as InstrumentStatusEnum } from '../../api/generated/initiative/InstrumentDTO';
+import { IbanDTO } from '../../api/generated/initiative/IbanDTO';
+import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from '../../api/generated/initiative/TimelineDTO';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -189,6 +191,25 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.state
   );
 
+export const getRefundsDetailsSummary = (
+  initaitveId: string,
+  exportId: string
+): Promise<InitiativeRefundsDetailsSummary> =>
+  InitiativeApiMocked.getRefundsDetailsSummary(initaitveId, exportId);
+
+export const getRefundsDetailsList = (
+  initaitveId: string,
+  exportId: string
+): Promise<Array<InitiativeRefundsDetailsListItem>> =>
+  InitiativeApiMocked.getRefundsDetailsList(initaitveId, exportId);
+
+export const getRefundsDetailsByEvent = (
+  initaitveId: string,
+  exportId: string,
+  refundEventId: string
+): Promise<InitiativeRefundsDetailsByEvent> =>
+  InitiativeApiMocked.getRefundsDetailsByEvent(initaitveId, exportId, refundEventId);
+
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
 
@@ -201,24 +222,37 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
 
-export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
-  InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
+// export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
+//   InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
 
-export const getIban = (_iban: string): Promise<MockedIbanDTO> =>
-  InitiativeApiMocked.getIban(mockedIban);
+export const getIban = (_iban: string): Promise<IbanDTO> => InitiativeApiMocked.getIban(mockedIban);
 
-export const getTimeLine = (_id: string): Promise<MockedOperationListDTO> =>
-  InitiativeApiMocked.getTimeLine(mockedInitiativeId);
+export const getTimeLine = (
+  _cf: string,
+  _id: string,
+  _opeType?: string,
+  _dateFrom?: string,
+  _dateTo?: string,
+  _page?: number,
+  _size?: number
+): Promise<TimelineDTO> => InitiativeApiMocked.getTimeLine(mockedFiscalCode, mockedInitiativeId);
 
-export const getTimelineDetail = (_id: string, operationId: string): Promise<MockedOperation> => {
-  const operationDetails = mockedOperationList.operationList.filter(
-    (e) => e.operationId === operationId
+export const getInstrumentList = (_id: string, _cf: string): Promise<InstrumentListDTO> =>
+  InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
+
+export const getTimelineDetail = (
+  _cf: string,
+  _id: string,
+  _operationId: string
+): Promise<OperationDTO> =>
+  InitiativeApiMocked.getTimelineDetail(
+    mockedOperationId,
+    mockedOperationType,
+    mockedOperationDate
   );
-  return new Promise((resolve) => resolve(operationDetails[0]));
-};
 
-export const getWalletInstrumen = (_id: string, _cf: string): Promise<Array<MockedInstrumentDTO>> =>
-  InitiativeApiMocked.getWalletInstrumen(mockedInitiativeId, mockedFiscalCode);
+export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
+  InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
 
 export const mockedFiscalCode = 'TRNFNC96R02H501I';
 export const mockedIban = 'IT12T1234512345123456789012';
@@ -263,7 +297,7 @@ export const mockedInitiativeSummary = [
 export const mockedWallet = {
   initiativeId: '62e29002aac2e94cfa3763dd',
   initiativeName: 'Test wallet',
-  status: MockedStatusWallet.NOT_REFUNDABLE_ONLY_IBAN,
+  status: WalletStatusEnum.REFUNDABLE,
   endDate: new Date('2023-01-04T15:44:53.816Z'),
   amount: 5,
   accrued: 10,
@@ -284,194 +318,121 @@ export const mockedIbanInfo = {
   checkIbanResponseDate: new Date('2023-01-04T16:38:43.590Z'),
 };
 
-export const mockedWalletInstrument = [
-  {
-    idWallet: '12345',
-    instrumentId: '1122334455',
-    maskedPan: '1111 2222 3333 4444',
-    channel: 'channel',
-    brandLog:
-      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
-  },
-  {
-    idWallet: '678910',
-    instrumentId: '667788991010',
-    maskedPan: '5555 6666 7777 8888',
-    channel: 'channel',
-    brandLog:
-      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
-  },
-  {
-    idWallet: '678910',
-    instrumentId: '667788991010',
-    maskedPan: '5555 6666 7777 8888',
-    channel: 'channel',
-    brandLog:
-      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.PENDING_DEACTIVATION_REQUEST,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
-  },
-  {
-    idWallet: '678910',
-    instrumentId: '667788991010',
-    maskedPan: '5555 6666 7777 8888',
-    channel: 'channel',
-    brandLog:
-      'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-    status: MockedStatusInstrument.PENDING_ENROLLMENT_REQUEST,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
-  },
-];
+export const mockedWalletInstrument = {
+  instrumentList: [
+    {
+      idWallet: '12345',
+      instrumentId: '1122334455',
+      maskedPan: '1111 2222 3333 4444',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.ACTIVE,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.ACTIVE,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.PENDING_DEACTIVATION_REQUEST,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.PENDING_ENROLLMENT_REQUEST,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+  ],
+};
 
-export const mockedOperationList = {
+export const mockedOperationList: TimelineDTO = {
   lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
   operationList: [
     {
       operationId: '1u1u1u1u1u1u1u',
-      operationType: MockedOperationType.PAID_REFUND,
-      operationDate: new Date('2023-02-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
+      operationType: 'PAID_REFUND',
+      operationDate: '2023-02-05T10:22:28.012Z',
       maskedPan: '1234123412341234',
       amount: 345,
       accrued: 10,
       circuitType: 'circuito',
       iban: '',
       channel: 'App IO',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
+      brandLogo: '',
+      idTrxAcquirer: '349589304999',
+      idTrxIssuer: '0001923192038',
     },
     {
       operationId: '2e2e2e2e2e2e2e2',
-      operationType: MockedOperationType.TRANSACTION,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
+      operationType: 'TRANSACTION',
+      operationDate: '2023-01-05T10:22:28.012Z',
       maskedPan: '1234123412341234',
       amount: 34,
       accrued: 0,
       circuitType: 'circuito',
       iban: '',
       channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
+      brandLogo: '',
+      idTrxAcquirer: '349589304999',
+      idTrxIssuer: '0001923192038',
     },
     {
       operationId: '3e3e3e3e3e3e3e3e',
-      operationType: MockedOperationType.ADD_IBAN,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
+      operationType: 'ADD_IBAN',
+      operationDate: '2023-01-05T10:22:28.012Z',
       maskedPan: '1234123412341234',
       amount: 34,
       accrued: 0,
       circuitType: 'circuito',
       iban: 'IT12T1234512345123456789012',
       channel: 'App IO',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '4o4o4o4o4o4o4o4o',
-      operationType: MockedOperationType.ADD_INSTRUMENT,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '5e5e5e5e5e5e5e5e',
-      operationType: MockedOperationType.DELETE_INSTRUMENT,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '6i6i6i6i6i6i6i6i',
-      operationType: MockedOperationType.ONBOARDING,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '7e7e7e7e7e7e7e7e',
-      operationType: MockedOperationType.REJECTED_ADD_INSTRUMENT,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '8o8o8o8o8o8o8o8o',
-      operationType: MockedOperationType.REJECTED_DELETE_INSTRUMENT,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '9e9e9e9e9e9e9e9e',
-      operationType: MockedOperationType.REJECTED_REFUND,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
-    },
-    {
-      operationId: '10i10i10i10i10i10i10i10i',
-      operationType: MockedOperationType.REVERSAL,
-      operationDate: new Date('2023-01-05T10:22:28.012Z'),
-      brandLogo: 'Logo',
-      maskedPan: '1234123412341234',
-      amount: 34,
-      accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      aquirerId: '349589304999',
-      issuerId: '0001923192038',
+      brandLogo: '',
+      idTrxAcquirer: '349589304999',
+      idTrxIssuer: '0001923192038',
     },
   ],
+  pageNo: 0,
+  pageSize: 10,
+  totalElements: 3,
+  totalPages: 1,
 };
+
+export const mockedOperationDetail: OperationDTO = {
+  operationId: '1u1u1u1u1u1u1u',
+  operationType: 'PAID_REFUND',
+  operationDate: '2023-02-05T10:22:28.012Z',
+  maskedPan: '1234123412341234',
+  amount: 345,
+  accrued: 10,
+  circuitType: 'circuito',
+  iban: '',
+  channel: 'App IO',
+  brandLogo: '',
+  idTrxAcquirer: '349589304999',
+  idTrxIssuer: '0001923192038',
+};
+
+export const mockedOperationType = 'PAID_REFUND';
+export const mockedOperationId = '63ecc1eb10dc9d6cfb01371e';
+export const mockedOperationDate = '2023-02-15T12:28:42.949';
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',
@@ -708,6 +669,56 @@ export const mockedOnBoardingStatusResponse = {
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
+};
+
+export const mockedRefundsDetailsSummary = {
+  createDate: new Date(),
+  totalAmount: 5678090800,
+  totalRefundedAmount: 3500090800,
+  totalRefunds: 2250789,
+  successPercentage: undefined,
+  status: 'EXPORTED',
+};
+
+export const mockedRefundsDetailsListItem = [
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+];
+
+export const mockedRefundsDetailsByEventRes = {
+  fiscalCode: 'AAAAAA00A00A000C',
+  iban: 'IT99C1234567890123456789012',
+  amount: 9999999999,
+  startDate: new Date(),
+  endDate: new Date(),
+  status: 'DONE',
+  refundType: 'Ordinario',
+  trn: '123456789012345678901234567890',
+  creationDate: new Date(),
+  sendDate: new Date(),
+  notificationDate: new Date(),
 };
 
 export const mockedFilePath = 'download';

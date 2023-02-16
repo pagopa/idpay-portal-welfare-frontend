@@ -93,6 +93,8 @@ export const mockedInitiative: Initiative = {
     logoURL: 'logo url',
   },
   beneficiaryRule: {
+    apiKeyClientId: 'string',
+    apiKeyClientAssertion: 'string',
     selfDeclarationCriteria: [
       {
         _type: 'boolean',
@@ -329,6 +331,8 @@ test('Test initiative2Initiative', () => {
       logoURL: 'logo url',
     },
     beneficiaryRule: {
+      apiKeyClientId: 'string',
+      apiKeyClientAssertion: 'string',
       selfDeclarationCriteria: [
         {
           _type: 'boolean',

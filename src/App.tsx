@@ -29,6 +29,7 @@ import TOS from './pages/tos/TOS';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
 import ChooseOrganization from './pages/ChooseOrganization/ChooseOrganization';
 import useTCAgreement from './hooks/useTCAgreement';
+import InitiativeRefundsDetails from './pages/initiativeRefundsDetails/initiativeRefundsDetails';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -83,6 +84,9 @@ const SecuredRoutes = withLogin(
           </Route>
           <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
             <InitiativeRefundsOutcome />
+          </Route>
+          <Route path={routes.INITIATIVE_REFUNDS_DETAIL} exact={true}>
+            <InitiativeRefundsDetails />
           </Route>
           <Route path={routes.INITIATIVE_DETAIL} exact={true}>
             <InitiativeDetail />

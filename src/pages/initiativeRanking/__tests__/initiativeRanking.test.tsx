@@ -1,9 +1,9 @@
-import React from 'react';
-import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
-import InitiativeRanking from '../initiativeRanking';
-import { renderWithProviders } from '../../../utils/test-utils';
 import { cleanup, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import ROUTES from '../../../routes';
+import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import InitiativeRanking from '../initiativeRanking';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -13,16 +13,9 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-jest.mock('react-router-dom', () => mockLocationFunction());
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
-}));
-
 beforeEach(() => {
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
   //@ts-expect-error
   delete global.window.location;
   global.window = Object.create(window);
@@ -51,9 +44,8 @@ describe('<InitiativeRefunds />', () => {
   });
 
   it('Test InitiativeRanking to be Rendered with state', async () => {
-    renderWithProviders(<InitiativeRanking />);
-    // screen.debug();
-
+    renderWithHistoryAndStore(<InitiativeRanking />);
+    //  screen.debug();
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
 
@@ -81,5 +73,88 @@ describe('<InitiativeRefunds />', () => {
 
     const filterBtn = await screen.findByText('pages.initiativeRanking.form.filterBtn');
     fireEvent.click(filterBtn);
+  });
+
+  test('test case of READY status from getInitiativeOnboardingRankingStatus', async () => {
+    const mockedRes = {
+      content: [
+        {
+          beneficiary: 'string',
+          criteriaConsensusTimestamp: new Date(),
+          rankingValue: 0,
+          ranking: 0,
+          beneficiaryRankingStatus: 'ELIGIBLE_OK',
+        },
+      ],
+      pageNumber: 0,
+      pageSize: 0,
+      totalElements: 0,
+      totalPages: 0,
+      rankingStatus: 'READY',
+      rankingPublishedTimestamp: new Date(),
+      rankingGeneratedTimestamp: new Date(),
+      totalEligibleOk: 0,
+      totalEligibleKo: 0,
+      totalOnboardingKo: 0,
+      rankingFilePath: 'string',
+    };
+
+    InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged = async (): Promise<any> =>
+      new Promise((resolve) => resolve(mockedRes));
+    renderWithHistoryAndStore(<InitiativeRanking />);
+
+    // test reset filter btn click
+    const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
+
+    fireEvent.click(resetFilterBtn);
+
+    const downloadRankingFileBtn = await screen.findByText(
+      'pages.initiativeRanking.publishModal.alertBtn'
+    );
+
+    fireEvent.click(downloadRankingFileBtn);
+
+    // publish btn
+    const publishBtn = (await screen.findByText(
+      'pages.initiativeRanking.rankingStatus.publishBtn'
+    )) as HTMLButtonElement;
+
+    fireEvent.click(publishBtn);
+
+    const publishModalTitle = await screen.findByText('pages.initiativeRanking.publishModal.title');
+    expect(publishModalTitle).toBeInTheDocument();
+  });
+
+  test('test case getBeneficiaryStatus ELIGIBLE_KO', () => {
+    const mockedBeneficiaryStatusArr = ['ELIGIBLE_KO', 'ONBOARDING_KO', ''];
+
+    mockedBeneficiaryStatusArr.forEach((item) => {
+      InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged = async (): Promise<any> =>
+        new Promise((resolve) =>
+          resolve({
+            content: [
+              {
+                beneficiary: 'string',
+                criteriaConsensusTimestamp: new Date(),
+                rankingValue: 0,
+                ranking: 0,
+                beneficiaryRankingStatus: item,
+              },
+            ],
+            pageNumber: 0,
+            pageSize: 0,
+            totalElements: 0,
+            totalPages: 0,
+            rankingStatus: 'READY',
+            rankingPublishedTimestamp: new Date(),
+            rankingGeneratedTimestamp: new Date(),
+            totalEligibleOk: 0,
+            totalEligibleKo: 0,
+            totalOnboardingKo: 0,
+            rankingFilePath: 'string',
+          })
+        );
+      renderWithHistoryAndStore(<InitiativeRanking />);
+    });
   });
 });

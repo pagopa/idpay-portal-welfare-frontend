@@ -478,8 +478,11 @@ const InitiativeUsers = () => {
                             textAlign: 'left',
                           }}
                           onClick={() =>
-                            history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
+                            history.replace(
+                              `${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}/${r.beneficiaryState}`
+                            )
                           }
+                          data-testid='beneficiary-test'
                         >
                           {r.beneficiary}
                         </ButtonNaked>

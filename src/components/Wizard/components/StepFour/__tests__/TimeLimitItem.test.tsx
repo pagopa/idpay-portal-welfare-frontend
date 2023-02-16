@@ -8,11 +8,6 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TimeLimitItem from '../TimeLimitItem';
 import { rewardLimits, shopRulesToSubmit } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
-
 window.scrollTo = jest.fn();
 
 describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
