@@ -51,7 +51,7 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
           />
         </Provider>
       );
-      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const deleteBtn = getByTestId('delete-button-spending-limit-test') as HTMLButtonElement;
       const minSpendingLimit = getByTestId('min-spending-limit') as HTMLInputElement;
       const maxSpendingLimit = getByTestId('max-spending-limit') as HTMLInputElement;
 
