@@ -7,10 +7,6 @@ import React from 'react';
 import { renderWithProviders } from '../../../../../utils/test-utils';
 import { perRec, shopRulesToSubmit } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 window.scrollTo = jest.fn();
 
 describe('<PercentageRecognizedItem />', () => {

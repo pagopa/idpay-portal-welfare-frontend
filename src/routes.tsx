@@ -13,6 +13,7 @@ const ROUTES = {
   INITIATIVE_RANKING: `${BASE_ROUTE}/graduatoria-iniziativa/:id`,
   INITIATIVE_REFUNDS: `${BASE_ROUTE}/rimborsi-iniziativa/:id`,
   INITIATIVE_REFUNDS_OUTCOME: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/:id`,
+  INITIATIVE_REFUNDS_DETAIL: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/:initiativeId/:exportId/:filePath`,
   INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
   ASSISTANCE: `${BASE_ROUTE}/assistenza`,
   INITIATIVE_USER_DETAILS: `${BASE_ROUTE}/dettagli-utente/:id/:cf/:status`,

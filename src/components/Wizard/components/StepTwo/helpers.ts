@@ -10,7 +10,8 @@ export const getMinDate = (date: Date | string | undefined, offset: number) => {
 
 export const parseDate = (d: string) => {
   if (d) {
-    const date = new Date(d).toLocaleDateString('en-CA');
+    const dStr = new Date(d).toLocaleDateString('en-CA');
+    const date = `${dStr} 12:00:00Z`;
     return new Date(date);
   } else {
     return undefined;

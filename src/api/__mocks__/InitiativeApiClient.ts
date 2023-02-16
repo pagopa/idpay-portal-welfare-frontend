@@ -18,6 +18,9 @@ import {
   mockedOperationDetail,
   mockedOperationList,
   mockedOrganizationsList,
+  mockedRefundsDetailsByEventRes,
+  mockedRefundsDetailsListItem,
+  mockedRefundsDetailsSummary,
   mockedWallet,
   mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
@@ -45,6 +48,11 @@ import { IbanDTO } from '../generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
 import { TimelineDTO } from '../generated/initiative/TimelineDTO';
 import { OperationDTO } from '../generated/initiative/OperationDTO';
+import {
+  InitiativeRefundsDetailsByEvent,
+  InitiativeRefundsDetailsListItem,
+  InitiativeRefundsDetailsSummary,
+} from '../../model/InitiativeRefunds';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -137,6 +145,25 @@ export const InitiativeApiMocked = {
     _notificationDateTo: string | undefined,
     _status: string | undefined
   ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatusResponse)),
+
+  getRefundsDetailsSummary: async (
+    _initiativeId: string,
+    _exportId: string
+  ): Promise<InitiativeRefundsDetailsSummary> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsSummary)),
+
+  getRefundsDetailsList: async (
+    _initiativeId: string,
+    _exportId: string
+  ): Promise<Array<InitiativeRefundsDetailsListItem>> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
+
+  getRefundsDetailsByEvent: async (
+    _initiativeId: string,
+    _exportId: string,
+    _refundEventId: string
+  ): Promise<InitiativeRefundsDetailsByEvent> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
 
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),

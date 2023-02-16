@@ -62,6 +62,7 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+      ROUTES.INITIATIVE_REFUNDS_DETAIL,
       ROUTES.INITIATIVE_USER_DETAILS,
     ],
     exact: true,
@@ -205,7 +206,8 @@ export default function SideMenu() {
                     }
                     isSelected={
                       pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}` ||
-                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}`
+                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}` ||
+                      pathname.includes(`${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`)
                     }
                     icon={EuroSymbolIcon}
                     level={2}

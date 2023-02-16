@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
+// import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -38,14 +38,14 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
+import { ArrowForwardIos } from '@mui/icons-material';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { numberWithCommas } from '../../helpers';
-import { getExportsPaged, getRewardFileDownload } from '../../services/intitativeService';
+import { getExportsPaged } from '../../services/intitativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
-import { SasToken } from '../../api/generated/initiative/SasToken';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 
 const InitiativeRefunds = () => {
@@ -115,45 +115,6 @@ const InitiativeRefunds = () => {
     }
   };
 
-  const downloadURI = (uri: string) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    link.download = 'download';
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const handleDownloadFile = (data: {
-    initiativeId: string | undefined;
-    filePath: string | undefined;
-  }) => {
-    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
-    }
-  };
-
   const getTableData = (
     initiativeId: string,
     page: number,
@@ -175,7 +136,6 @@ const InitiativeRefunds = () => {
               typeof r.notificationDate === 'object'
                 ? r.notificationDate.toLocaleString('fr-BE').split(' ')[0]
                 : '',
-            typology: t('pages.initiativeRefunds.table.typeOrdinary'),
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsNotified)}`,
             successPercentage: `${r.percentageResultedOk}%`,
@@ -488,16 +448,15 @@ const InitiativeRefunds = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="15%">
+                    <TableCell width="18%">
                       {t('pages.initiativeRefunds.table.creationDate')}
                     </TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.typology')}</TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.amount')}</TableCell>
-                    <TableCell width="15%">{t('pages.initiativeRefunds.table.refunds')}</TableCell>
-                    <TableCell width="15%">
+                    <TableCell width="18%">{t('pages.initiativeRefunds.table.amount')}</TableCell>
+                    <TableCell width="18%">{t('pages.initiativeRefunds.table.refunds')}</TableCell>
+                    <TableCell width="18%">
                       {t('pages.initiativeRefunds.table.successPercentage')}
                     </TableCell>
-                    <TableCell width="20%">{t('pages.initiativeRefunds.table.status')}</TableCell>
+                    <TableCell width="23%">{t('pages.initiativeRefunds.table.status')}</TableCell>
                     <TableCell width="5%"></TableCell>
                   </TableRow>
                 </TableHead>
@@ -505,7 +464,6 @@ const InitiativeRefunds = () => {
                   {rows.map((r, i) => (
                     <TableRow key={i}>
                       <TableCell>{r.notificationDate}</TableCell>
-                      <TableCell>{r.typology}</TableCell>
                       <TableCell>{r.rewardsExported}</TableCell>
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
@@ -513,9 +471,13 @@ const InitiativeRefunds = () => {
                       <TableCell align="right">
                         <IconButton
                           data-testid="download-file-refunds"
-                          onClick={() => handleDownloadFile(r.downloadFileInfo)}
+                          onClick={() =>
+                            history.replace(
+                              `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${r.downloadFileInfo.initiativeId}/${r.id}/${r.downloadFileInfo.filePath}`
+                            )
+                          }
                         >
-                          <FileDownloadIcon color="primary" />
+                          <ArrowForwardIos color="primary" />
                         </IconButton>
                       </TableCell>
                     </TableRow>

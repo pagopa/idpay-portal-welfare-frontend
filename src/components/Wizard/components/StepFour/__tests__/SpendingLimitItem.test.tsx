@@ -8,10 +8,6 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import SpendingLimitItem from '../SpendingLimitItem';
 import { shopRulesToSubmit, threshold } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 window.scrollTo = jest.fn();
 describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
@@ -55,7 +51,7 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
           />
         </Provider>
       );
-      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const deleteBtn = getByTestId('delete-button-spending-limit-test') as HTMLButtonElement;
       const minSpendingLimit = getByTestId('min-spending-limit') as HTMLInputElement;
       const maxSpendingLimit = getByTestId('max-spending-limit') as HTMLInputElement;
 

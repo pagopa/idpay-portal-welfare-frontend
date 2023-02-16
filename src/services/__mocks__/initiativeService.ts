@@ -17,7 +17,12 @@ import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/I
 import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
-import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
+import {
+  InitiativeRefundsDetailsByEvent,
+  InitiativeRefundsDetailsListItem,
+  InitiativeRefundsDetailsSummary,
+  InitiativeRefundsResponse,
+} from '../../model/InitiativeRefunds';
 import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
 import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
@@ -185,6 +190,25 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.beneficiary,
     mockedRankingStatus.state
   );
+
+export const getRefundsDetailsSummary = (
+  initaitveId: string,
+  exportId: string
+): Promise<InitiativeRefundsDetailsSummary> =>
+  InitiativeApiMocked.getRefundsDetailsSummary(initaitveId, exportId);
+
+export const getRefundsDetailsList = (
+  initaitveId: string,
+  exportId: string
+): Promise<Array<InitiativeRefundsDetailsListItem>> =>
+  InitiativeApiMocked.getRefundsDetailsList(initaitveId, exportId);
+
+export const getRefundsDetailsByEvent = (
+  initaitveId: string,
+  exportId: string,
+  refundEventId: string
+): Promise<InitiativeRefundsDetailsByEvent> =>
+  InitiativeApiMocked.getRefundsDetailsByEvent(initaitveId, exportId, refundEventId);
 
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
@@ -645,6 +669,56 @@ export const mockedOnBoardingStatusResponse = {
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
+};
+
+export const mockedRefundsDetailsSummary = {
+  createDate: new Date(),
+  totalAmount: 5678090800,
+  totalRefundedAmount: 3500090800,
+  totalRefunds: 2250789,
+  successPercentage: undefined,
+  status: 'EXPORTED',
+};
+
+export const mockedRefundsDetailsListItem = [
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+  {
+    id: '1111',
+    iban: 'IT99C1234567890123456789012',
+    amount: 9999999999,
+    status: 'DONE',
+  },
+];
+
+export const mockedRefundsDetailsByEventRes = {
+  fiscalCode: 'AAAAAA00A00A000C',
+  iban: 'IT99C1234567890123456789012',
+  amount: 9999999999,
+  startDate: new Date(),
+  endDate: new Date(),
+  status: 'DONE',
+  refundType: 'Ordinario',
+  trn: '123456789012345678901234567890',
+  creationDate: new Date(),
+  sendDate: new Date(),
+  notificationDate: new Date(),
 };
 
 export const mockedFilePath = 'download';
