@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Grid, Link, Box } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { ENV } from '../../utils/env';
 
 import routes from '../../routes';
 declare const OneTrust: any;
@@ -11,12 +12,7 @@ const PrivacyPolicy = () => {
 
   useEffect(() => {
     OneTrust.NoticeApi.Initialized.then(function () {
-      OneTrust.NoticeApi.LoadNotices(
-        [
-          'https://privacyportalde-cdn.onetrust.com/77f17844-04c3-4969-a11d-462ee77acbe1/privacy-notices/draft/5b7fed3e-ea34-4620-b01d-b17fa7c88441.json',
-        ],
-        false
-      );
+      OneTrust.NoticeApi.LoadNotices([ENV.ONE_TRUST.PRIVACY_POLICY_JSON_URL], false);
     }).finally(() => {
       setContentLoaded(true);
     });
@@ -38,7 +34,7 @@ const PrivacyPolicy = () => {
   return (
     <>
       <Grid sx={{ px: 3, py: 3 }}>
-        <div id="otnotice-5b7fed3e-ea34-4620-b01d-b17fa7c88441" className="otnotice"></div>
+        <div id={ENV.ONE_TRUST.PRIVACY_POLICY_ID} className="otnotice"></div>
       </Grid>
 
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>

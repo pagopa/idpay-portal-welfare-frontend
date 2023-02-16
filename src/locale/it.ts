@@ -11,7 +11,7 @@ export default {
     'referente-legale': 'Referente Legale',
     'referente-dei-pagamenti': 'Referente Dei Pagamenti',
     admin: 'Amministratore',
-    ope_base: 'Operatore PagoPA',
+    ope_base: 'Operatore',
     pagopa_admin: 'Operatore PagoPA',
   },
   sideMenu: {
