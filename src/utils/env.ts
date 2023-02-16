@@ -46,4 +46,18 @@ export const ENV = {
       .default('https://api-eu.mixpanel.com')
       .asString(),
   },
+  ONE_TRUST: {
+    OT_NOTICE_CDN_URL: env.get('REACT_APP_ONE_TRUST_OTNOTICE_CDN_URL').required().asString(),
+    OT_NOTICE_CDN_SETTINGS: env
+      .get('REACT_APP_ONE_TRUST_OTNOTICE_CDN_SETTINGS')
+      .required()
+      .asString(),
+    PRIVACY_POLICY_ID: env.get('REACT_APP_ONE_TRUST_PRIVACY_POLICY_ID').required().asString(),
+    PRIVACY_POLICY_JSON_URL: env
+      .get('REACT_APP_ONE_TRUST_PRIVACY_POLICY_JSON_URL')
+      .required()
+      .asString(),
+    TOS_ID: env.get('REACT_APP_ONE_TRUST_TOS_ID').required().asString(),
+    TOS_JSON_URL: env.get('REACT_APP_ONE_TRUST_TOS_JSON_URL').required().asString(),
+  },
 };
