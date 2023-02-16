@@ -102,8 +102,8 @@ const ChooseOrganization = () => {
         storageTokenOps.write(innerToken);
         history.replace(ROUTES.HOME);
       })
-      .catch((error) => {
-        console.error(error);
+      .catch((_error) => {
+        // console.error(error);
         window.location.assign(ENV.URL_FE.LOGIN);
       });
   };
