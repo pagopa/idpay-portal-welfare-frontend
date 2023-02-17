@@ -339,7 +339,11 @@ Props) => {
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
                     {transactionDetail.idTrxAcquirer}
                   </Typography>
                 </Box>
@@ -349,7 +353,11 @@ Props) => {
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                  >
                     {transactionDetail.idTrxIssuer}
                   </Typography>
                 </Box>
