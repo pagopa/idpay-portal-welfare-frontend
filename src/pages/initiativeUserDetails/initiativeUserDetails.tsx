@@ -83,7 +83,7 @@ const InitiativeUserDetails = () => {
   const [totalElements, setTotalElements] = useState<number>(0);
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   // const [openSnackBar, setOpenSnackBar] = useState(false);
-  const setLoading = useLoading('GET_INITIATIVE_USERS');
+  const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
 
   const theme = createTheme(itIT);
@@ -163,9 +163,6 @@ const InitiativeUserDetails = () => {
     searchFrom: string | undefined,
     searchTo: string | undefined,
     page: number
-    // timestamp: Date | undefined,
-    // totExpense: string | undefined,
-    // toRefund: string | undefined,
   ) => {
     setLoading(true);
     getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
@@ -175,18 +172,6 @@ const InitiativeUserDetails = () => {
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
         }
-        // const rowsData = res.operationList.map((row) => ({
-        //   ...row,
-        //   id: row.,
-        //   timestamp:
-        //     typeof row.operationDate === 'object'
-        //       ? row.operationDate
-        //           .toLocaleString('fr-BE')
-        //           .substring(0, row.operationDate.toLocaleString('fr-BE').length - 3)
-        //       : '',
-        //   totExpense: row.amount,
-        //   toRefund: '-',
-        // }));
         if (Array.isArray(rowsData)) {
           setRows(rowsData);
         }
@@ -825,7 +810,7 @@ const InitiativeUserDetails = () => {
           }}
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUsers.noData')}</Typography>
+            <Typography variant="body2">{t('pages.initiativeUserDetails.noData')}</Typography>
           </Box>
         </Box>
       )}

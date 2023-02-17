@@ -438,6 +438,7 @@ export default {
         'La richiesta di download è stata presa in carico. Non appena il file sarà generato, ti sarà inviato via email.',
       appIo: 'App IO',
       issuer: 'Issuer',
+      noData: 'Non sono presenti eventi.',
       table: {
         dateAndHour: 'Data e ora',
         event: 'Evento',
