@@ -16,31 +16,34 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TablePagination,
   TableRow,
   TextField,
   Typography,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { TitleBox, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend';
+import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 import { useHistory } from 'react-router-dom';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { itIT } from '@mui/material/locale';
+import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
+import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
+import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { formatedCurrency, formatIban } from '../../helpers';
 import { useInitiative } from '../../hooks/useInitiative';
-import {
-  InitiativeRefundsDetailsListItem,
-  InitiativeRefundsDetailsSummary,
-} from '../../model/InitiativeRefunds';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { getRewardFileDownload } from '../../services/intitativeService';
 import {
-  getRefundsDetailsList,
-  getRefundsDetailsSummary,
-} from '../../services/__mocks__/initiativeService';
+  getExportRefundsListPaged,
+  getExportSummary,
+  getRewardFileDownload,
+} from '../../services/intitativeService';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 
 const InitiativeRefundsDetails = () => {
@@ -49,10 +52,16 @@ const InitiativeRefundsDetails = () => {
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const addError = useErrorDispatcher();
-  const [detailsSummary, setDetailsSummary] = useState<InitiativeRefundsDetailsSummary>();
-  const [rows, setRows] = useState<Array<InitiativeRefundsDetailsListItem>>([]);
+  const theme = createTheme(itIT);
+  const setLoading = useLoading('GET_INITIATIVE_REFUNDS_DETAILS_SUMMARY');
+  const [detailsSummary, setDetailsSummary] = useState<ExportSummaryDTO>();
+  const [rows, setRows] = useState<Array<ExportDetailDTO>>([]);
   const [openRefundsDetailModal, setOpenRefundsDetailModal] = useState<boolean>(false);
   const [refundEventId, setRefundEventId] = useState<string | undefined>('');
+  const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [cro, setCRO] = useState<string | undefined>('');
+  const [filterStatus, setFilterStatus] = useState<string | undefined>('');
 
   interface MatchParams {
     initiativeId: string;
@@ -70,32 +79,76 @@ const InitiativeRefundsDetails = () => {
 
   useEffect(() => {
     if (typeof initiativeId !== undefined && typeof exportId !== undefined) {
-      getRefundsDetailsSummary(initiativeId, exportId)
+      setLoading(true);
+      getExportSummary(initiativeId, exportId)
         .then((res: any) => {
           setDetailsSummary(res);
         })
-        .catch((err: any) => console.log('err', err));
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_PAGED_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting refund detail summary',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [initiativeId, exportId]);
 
   useEffect(() => {
     if (typeof initiativeId !== undefined && typeof exportId !== undefined) {
-      getTableData(initiativeId, exportId);
+      getTableData(initiativeId, exportId, page, cro, filterStatus);
     }
-  }, [initiativeId, exportId]);
+  }, [initiativeId, exportId, page]);
 
   const getTableData = (
     initiativeId: string,
     exportId: string,
-    _trn?: string,
-    _status?: string,
-    _page?: number
+    page: number,
+    cro?: string,
+    status?: string
   ) => {
-    getRefundsDetailsList(initiativeId, exportId)
-      .then((res: any) => {
-        setRows(res);
+    setLoading(true);
+    getExportRefundsListPaged(initiativeId, exportId, page, cro, status)
+      .then((res: ExportListDTO) => {
+        if (typeof res.totalElements === 'number') {
+          setTotalElements(res.totalElements);
+        }
+
+        if (typeof res.pageNo === 'number') {
+          setPage(res.pageNo);
+        }
+
+        if (typeof res != undefined && Array.isArray(res.content) && res.content.length > 0) {
+          setRows(res.content);
+        } else {
+          setRows([]);
+        }
       })
-      .catch((err: any) => console.log('err', err));
+      .catch((error) => {
+        addError({
+          id: 'GET_EXPORTS_PAGED_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting refund export paged data',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   const downloadURI = (uri: string) => {
@@ -147,7 +200,7 @@ const InitiativeRefundsDetails = () => {
     setOpenRefundsDetailModal(false);
   };
 
-  const getRefundStatus = (status: string | undefined) => {
+  const getRefundSummaryStatus = (status: string | undefined) => {
     switch (status) {
       case 'EXPORTED':
         return (
@@ -180,7 +233,7 @@ const InitiativeRefundsDetails = () => {
 
   const getRefundListStatus = (status: string | undefined) => {
     switch (status) {
-      case 'DONE':
+      case 'COMPLETED_OK':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -188,7 +241,7 @@ const InitiativeRefundsDetails = () => {
             color="success"
           />
         );
-      case 'FAILED':
+      case 'COMPLETED_KO':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -196,7 +249,7 @@ const InitiativeRefundsDetails = () => {
             color="error"
           />
         );
-      case 'ON_EVALUATION':
+      case 'EXPORTED':
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -207,6 +260,42 @@ const InitiativeRefundsDetails = () => {
       default:
         return null;
     }
+  };
+
+  const formik = useFormik({
+    initialValues: {
+      searchCRO: '',
+      filterStatus: '',
+    },
+    validateOnChange: true,
+    enableReinitialize: true,
+    onSubmit: (values) => {
+      if (typeof initiativeId === 'string') {
+        const searchCRO = values.searchCRO.length > 0 ? values.searchCRO : undefined;
+        setCRO(searchCRO);
+        const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
+        setFilterStatus(filterStatus);
+        getTableData(initiativeId, exportId, 0, searchCRO, filterStatus);
+      }
+    },
+  });
+
+  const resetForm = () => {
+    const initialValues = { searchCRO: '', filterStatus: '' };
+    formik.resetForm({ values: initialValues });
+    setCRO(undefined);
+    setFilterStatus(undefined);
+    setRows([]);
+    if (typeof initiativeId === 'string' && typeof exportId === 'string') {
+      getTableData(initiativeId, exportId, 0, undefined, undefined);
+    }
+  };
+
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    newPage: number
+  ) => {
+    setPage(newPage);
   };
 
   return (
@@ -334,7 +423,7 @@ const InitiativeRefundsDetails = () => {
               {t('pages.initiativeRefundsDetails.recap.status')}
             </Typography>
             <Box sx={{ gridColumn: 'span 7' }}>
-              {detailsSummary?.status ? getRefundStatus(detailsSummary.status) : '-'}
+              {detailsSummary?.status ? getRefundSummaryStatus(detailsSummary.status) : '-'}
             </Box>
           </Box>
         </Paper>
@@ -351,16 +440,16 @@ const InitiativeRefundsDetails = () => {
       >
         <FormControl sx={{ gridColumn: 'span 8' }}>
           <TextField
-            label={t('pages.initiativeRefundsDetails.form.trn')}
-            placeholder={t('pages.initiativeRefundsDetails.form.trn')}
-            name="searchTRN"
-            aria-label="searchTRN"
+            label={t('pages.initiativeRefundsDetails.form.cro')}
+            placeholder={t('pages.initiativeRefundsDetails.form.cro')}
+            name="searchCRO"
+            aria-label="searchCRO"
             role="input"
             InputLabelProps={{ required: false }}
-            // value={formik.values.searchUser}
-            //  onChange={(e) => formik.handleChange(e)}
+            value={formik.values.searchCRO}
+            onChange={(e) => formik.handleChange(e)}
             size="small"
-            data-testid="searchTRN-test"
+            data-testid="searchCRO-test"
           />
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }} size="small">
@@ -373,16 +462,16 @@ const InitiativeRefundsDetails = () => {
             name="filterStatus"
             label={t('pages.initiativeRefundsDetails.form.outcome')}
             placeholder={t('pages.initiativeRefundsDetails.form.outcome')}
-            // onChange={(e) => formik.handleChange(e)}
-            // value={formik.values.filterStatus}
+            onChange={(e) => formik.handleChange(e)}
+            value={formik.values.filterStatus}
           >
             <MenuItem value="EXPORTED" data-testid="filterStatusOnEvaluation-test">
               {t('pages.initiativeRefundsDetails.status.onEvaluation')}
             </MenuItem>
-            <MenuItem value="REFUND_OK" data-testid="filterStatusOnboardingOk-test">
+            <MenuItem value="COMPLETED_OK" data-testid="filterStatusOnboardingOk-test">
               {t('pages.initiativeRefundsDetails.status.done')}
             </MenuItem>
-            <MenuItem value="REFUND_KO" data-testid="filterStatusEligible-test">
+            <MenuItem value="COMPLETED_KO" data-testid="filterStatusEligible-test">
               {t('pages.initiativeRefundsDetails.status.failed')}
             </MenuItem>
           </Select>
@@ -392,8 +481,7 @@ const InitiativeRefundsDetails = () => {
             sx={{ py: 2, height: '44px' }}
             variant="outlined"
             size="small"
-            disabled
-            // onClick={() => formik.handleSubmit()}
+            onClick={() => formik.handleSubmit()}
             data-testid="apply-filters-test"
           >
             {t('pages.initiativeRefundsDetails.form.filterBtn')}
@@ -403,8 +491,7 @@ const InitiativeRefundsDetails = () => {
           <ButtonNaked
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
-            disabled
-            // onClick={resetForm}
+            onClick={resetForm}
           >
             {t('pages.initiativeRefundsDetails.form.resetFiltersBtn')}
           </ButtonNaked>
@@ -458,6 +545,16 @@ const InitiativeRefundsDetails = () => {
                   ))}
                 </TableBody>
               </Table>
+              <ThemeProvider theme={theme}>
+                <TablePagination
+                  component="div"
+                  onPageChange={handleChangePage}
+                  page={page}
+                  count={totalElements}
+                  rowsPerPage={10}
+                  rowsPerPageOptions={[10]}
+                />
+              </ThemeProvider>
               <InitiativeRefundsDetailsModal
                 openRefundsDetailModal={openRefundsDetailModal}
                 handleCloseRefundModal={handleCloseRefundModal}

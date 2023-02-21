@@ -17,12 +17,7 @@ import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/I
 import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
-import {
-  InitiativeRefundsDetailsByEvent,
-  InitiativeRefundsDetailsListItem,
-  InitiativeRefundsDetailsSummary,
-  InitiativeRefundsResponse,
-} from '../../model/InitiativeRefunds';
+import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
 import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
 import { PageRewardImportsDTO } from '../../api/generated/initiative/PageRewardImportsDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
@@ -36,6 +31,9 @@ import { IbanDTO } from '../../api/generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
 import { TimelineDTO } from '../../api/generated/initiative/TimelineDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
+import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
+import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -191,24 +189,25 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.state
   );
 
-export const getRefundsDetailsSummary = (
+export const getExportSummary = (
   initaitveId: string,
   exportId: string
-): Promise<InitiativeRefundsDetailsSummary> =>
-  InitiativeApiMocked.getRefundsDetailsSummary(initaitveId, exportId);
+): Promise<ExportSummaryDTO> => InitiativeApiMocked.getExportSummary(initaitveId, exportId);
 
-export const getRefundsDetailsList = (
-  initaitveId: string,
-  exportId: string
-): Promise<Array<InitiativeRefundsDetailsListItem>> =>
-  InitiativeApiMocked.getRefundsDetailsList(initaitveId, exportId);
-
-export const getRefundsDetailsByEvent = (
+export const getExportRefundsListPaged = (
   initaitveId: string,
   exportId: string,
-  refundEventId: string
-): Promise<InitiativeRefundsDetailsByEvent> =>
-  InitiativeApiMocked.getRefundsDetailsByEvent(initaitveId, exportId, refundEventId);
+  page: number,
+  _cro?: string,
+  _status?: string
+): Promise<ExportListDTO> =>
+  InitiativeApiMocked.getExportRefundsListPaged(initaitveId, exportId, page);
+
+export const getRefundDetail = (
+  initiativeId: string,
+  exportId: string,
+  eventId: string
+): Promise<RefundDetailDTO> => InitiativeApiMocked.getRefundDetail(initiativeId, exportId, eventId);
 
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
@@ -676,36 +675,24 @@ export const mockedRefundsDetailsSummary = {
   totalAmount: 5678090800,
   totalRefundedAmount: 3500090800,
   totalRefunds: 2250789,
-  successPercentage: undefined,
+  successPercentage: 10,
   status: 'EXPORTED',
 };
 
-export const mockedRefundsDetailsListItem = [
-  {
-    id: '1111',
-    iban: 'IT99C1234567890123456789012',
-    amount: 9999999999,
-    status: 'DONE',
-  },
-  {
-    id: '1111',
-    iban: 'IT99C1234567890123456789012',
-    amount: 9999999999,
-    status: 'DONE',
-  },
-  {
-    id: '1111',
-    iban: 'IT99C1234567890123456789012',
-    amount: 9999999999,
-    status: 'DONE',
-  },
-  {
-    id: '1111',
-    iban: 'IT99C1234567890123456789012',
-    amount: 9999999999,
-    status: 'DONE',
-  },
-];
+export const mockedRefundsDetailsListItem = {
+  content: [
+    {
+      id: 'string',
+      iban: 'string',
+      amount: 0,
+      status: 'string',
+    },
+  ],
+  pageNo: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
+};
 
 export const mockedRefundsDetailsByEventRes = {
   fiscalCode: 'AAAAAA00A00A000C',
@@ -715,7 +702,7 @@ export const mockedRefundsDetailsByEventRes = {
   endDate: new Date(),
   status: 'DONE',
   refundType: 'Ordinario',
-  trn: '123456789012345678901234567890',
+  cro: '12345678901',
   creationDate: new Date(),
   sendDate: new Date(),
   notificationDate: new Date(),

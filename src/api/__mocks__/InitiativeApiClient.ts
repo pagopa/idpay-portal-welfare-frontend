@@ -48,11 +48,9 @@ import { IbanDTO } from '../generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
 import { TimelineDTO } from '../generated/initiative/TimelineDTO';
 import { OperationDTO } from '../generated/initiative/OperationDTO';
-import {
-  InitiativeRefundsDetailsByEvent,
-  InitiativeRefundsDetailsListItem,
-  InitiativeRefundsDetailsSummary,
-} from '../../model/InitiativeRefunds';
+import { ExportListDTO } from '../generated/initiative/ExportListDTO';
+import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
+import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -146,24 +144,22 @@ export const InitiativeApiMocked = {
     _status: string | undefined
   ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatusResponse)),
 
-  getRefundsDetailsSummary: async (
-    _initiativeId: string,
-    _exportId: string
-  ): Promise<InitiativeRefundsDetailsSummary> =>
+  getExportSummary: async (_initiativeId: string, _exportId: string): Promise<ExportSummaryDTO> =>
     new Promise((resolve) => resolve(mockedRefundsDetailsSummary)),
 
-  getRefundsDetailsList: async (
+  getExportRefundsListPaged: async (
     _initiativeId: string,
-    _exportId: string
-  ): Promise<Array<InitiativeRefundsDetailsListItem>> =>
-    new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
+    _exportId: string,
+    _page: number,
+    _cro?: string,
+    _status?: string
+  ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
 
-  getRefundsDetailsByEvent: async (
+  getRefundDetail: async (
     _initiativeId: string,
     _exportId: string,
     _refundEventId: string
-  ): Promise<InitiativeRefundsDetailsByEvent> =>
-    new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
+  ): Promise<RefundDetailDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
 
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),

@@ -35,33 +35,3 @@ export interface InitiativeRefundsResponse {
   totalPages: number;
   list: Array<InitiativeRefund>;
 }
-
-export interface InitiativeRefundsDetailsSummary {
-  createDate: Date | undefined;
-  totalAmount: number | undefined;
-  totalRefundedAmount: number | undefined;
-  totalRefunds: number | undefined;
-  successPercentage: number | undefined;
-  status: string | undefined;
-}
-
-export interface InitiativeRefundsDetailsListItem {
-  id: string | undefined;
-  iban: string | undefined;
-  amount: number | undefined;
-  status: string | undefined;
-}
-
-export interface InitiativeRefundsDetailsByEvent {
-  fiscalCode: string | undefined;
-  iban: string | undefined;
-  amount: number | undefined;
-  startDate: Date | undefined;
-  endDate: Date | undefined;
-  status: string | undefined;
-  refundType: string | undefined;
-  trn: string | undefined;
-  creationDate?: Date | undefined;
-  sendDate?: Date | undefined;
-  notificationDate?: Date | undefined;
-}

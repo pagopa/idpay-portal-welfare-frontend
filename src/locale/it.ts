@@ -544,7 +544,7 @@ export default {
         status: 'Stato',
       },
       form: {
-        trn: 'Inserisci TRN',
+        cro: 'Inserisci CRO',
         outcome: 'Esito',
         filterBtn: 'Filtra',
         resetFiltersBtn: 'Annulla filtri',
@@ -567,7 +567,7 @@ export default {
         referencePeriod: 'Periodo di riferimento',
         outcome: 'Esito',
         typology: 'Tipologia',
-        trn: 'TRN',
+        cro: 'CRO',
         createdOn: 'Creata il',
         mandateDate: 'Data mandato',
         dateNotifiedOfUser: 'Data notifica all’utente',

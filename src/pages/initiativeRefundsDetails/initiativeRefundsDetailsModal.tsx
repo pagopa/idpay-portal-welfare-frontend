@@ -2,9 +2,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
-import { InitiativeRefundsDetailsByEvent } from '../../model/InitiativeRefunds';
-import { getRefundsDetailsByEvent } from '../../services/__mocks__/initiativeService';
+import { getRefundDetail } from '../../services/intitativeService';
 
 type Props = {
   openRefundsDetailModal: boolean;
@@ -21,7 +21,7 @@ const InitiativeRefundsDetailsModal = ({
   initiativeId,
   exportId,
 }: Props) => {
-  const [refundEventDetails, setRefundEventDetails] = useState<InitiativeRefundsDetailsByEvent>();
+  const [refundEventDetails, setRefundEventDetails] = useState<RefundDetailDTO>();
 
   const { t } = useTranslation();
 
@@ -32,7 +32,7 @@ const InitiativeRefundsDetailsModal = ({
       typeof refundEventId === 'string' &&
       openRefundsDetailModal
     ) {
-      getRefundsDetailsByEvent(initiativeId, exportId, refundEventId)
+      getRefundDetail(initiativeId, exportId, refundEventId)
         .then((res) => {
           if (typeof res === 'object') {
             setRefundEventDetails(res);
@@ -181,16 +181,16 @@ const InitiativeRefundsDetailsModal = ({
             </Typography>
           </Box>
 
-          {refundEventDetails?.trn && (
+          {refundEventDetails?.cro && (
             <>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.trn')}
+                  {t('pages.initiativeRefundsDetails.modal.cro')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {refundEventDetails?.trn}
+                  {refundEventDetails?.cro}
                 </Typography>
               </Box>
             </>

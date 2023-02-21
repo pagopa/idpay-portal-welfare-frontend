@@ -1,33 +1,37 @@
-import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
+import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { CsvDTO } from '../api/generated/initiative/CsvDTO';
+import { ExportListDTO } from '../api/generated/initiative/ExportListDTO';
+import { ExportSummaryDTO } from '../api/generated/initiative/ExportSummaryDTO';
+import { IbanDTO } from '../api/generated/initiative/IbanDTO';
+import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeApi } from '../api/InitiativeApiClient';
-import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
+import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import {
   InitiativeRewardAndTrxRulesDTO,
   InitiativeRewardAndTrxRulesDTORewardRule,
 } from '../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
-import { decode } from '../utils/io-utils';
-import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
-import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
-import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
-import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeStatisticsDTO';
-import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
-import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
-import { SasToken } from '../api/generated/initiative/SasToken';
-import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
-import { LogoDTO } from '../api/generated/initiative/LogoDTO';
-import { CsvDTO } from '../api/generated/initiative/CsvDTO';
-import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
-import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
-import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
-import { WalletDTO } from '../api/generated/initiative/WalletDTO';
+import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { InstrumentListDTO } from '../api/generated/initiative/InstrumentListDTO';
-import { IbanDTO } from '../api/generated/initiative/IbanDTO';
-import { TimelineDTO } from '../api/generated/initiative/TimelineDTO';
+import { LogoDTO } from '../api/generated/initiative/LogoDTO';
+import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
 import { OperationDTO } from '../api/generated/initiative/OperationDTO';
+import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
+import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
+import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
+import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
+import { RefundDetailDTO } from '../api/generated/initiative/RefundDetailDTO';
+import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
+import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
+import { SasToken } from '../api/generated/initiative/SasToken';
+import { TimelineDTO } from '../api/generated/initiative/TimelineDTO';
+import { WalletDTO } from '../api/generated/initiative/WalletDTO';
+import { InitiativeApi } from '../api/InitiativeApiClient';
+import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
+import { decode } from '../utils/io-utils';
+import { mockedFile } from './__mocks__/groupService';
 import {
   mockedExportsPagedParam,
   mockedFileName,
@@ -44,7 +48,6 @@ import {
   mockedServiceInfoData,
   mockedTrxAndRewardRules,
 } from './__mocks__/initiativeService';
-import { mockedFile } from './__mocks__/groupService';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
@@ -412,4 +415,38 @@ export const getTimelineDetail = (
     return InitiativeApiMocked.getTimelineDetail(cf, id, opeType);
   }
   return InitiativeApi.getTimelineDetail(cf, id, opeType);
+};
+
+export const getExportSummary = (
+  initiativeId: string,
+  exportId: string
+): Promise<ExportSummaryDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getExportSummary(initiativeId, exportId);
+  }
+  return InitiativeApi.getExportSummary(initiativeId, exportId);
+};
+
+export const getExportRefundsListPaged = (
+  initiativeId: string,
+  exportId: string,
+  page: number,
+  cro?: string,
+  status?: string
+): Promise<ExportListDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getExportRefundsListPaged(initiativeId, exportId, page, cro, status);
+  }
+  return InitiativeApi.getExportRefundsListPaged(initiativeId, exportId, page, cro, status);
+};
+
+export const getRefundDetail = (
+  initiativeId: string,
+  exportId: string,
+  eventId: string
+): Promise<RefundDetailDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getRefundDetail(initiativeId, exportId, eventId);
+  }
+  return InitiativeApi.getRefundDetail(initiativeId, exportId, eventId);
 };
