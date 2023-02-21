@@ -1,10 +1,13 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
+import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
 import { getRefundDetail } from '../../services/intitativeService';
+import { getRefundStatus } from './helpers';
 
 type Props = {
   openRefundsDetailModal: boolean;
@@ -21,6 +24,8 @@ const InitiativeRefundsDetailsModal = ({
   initiativeId,
   exportId,
 }: Props) => {
+  const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_INITIATIVE_REFUNDS_DETAILS_SUMMARY');
   const [refundEventDetails, setRefundEventDetails] = useState<RefundDetailDTO>();
 
   const { t } = useTranslation();
@@ -32,46 +37,31 @@ const InitiativeRefundsDetailsModal = ({
       typeof refundEventId === 'string' &&
       openRefundsDetailModal
     ) {
+      setLoading(true);
       getRefundDetail(initiativeId, exportId, refundEventId)
         .then((res) => {
           if (typeof res === 'object') {
-            setRefundEventDetails(res);
+            setRefundEventDetails({ ...res });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_PAGED_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting refund detail',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
   }, [initiativeId, exportId, refundEventId, openRefundsDetailModal]);
-
-  const getRefundModalStatus = (status: string | undefined) => {
-    switch (status) {
-      case 'DONE':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.done')}
-            color="success"
-          />
-        );
-      case 'FAILED':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.failed')}
-            color="error"
-          />
-        );
-      case 'ON_EVALUATION':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
-            color="default"
-          />
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <Modal
@@ -168,7 +158,7 @@ const InitiativeRefundsDetailsModal = ({
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
-            {getRefundModalStatus(refundEventDetails?.status)}
+            {getRefundStatus(refundEventDetails?.status)}
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">

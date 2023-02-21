@@ -20,17 +20,19 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography,
+  Typography
 } from '@mui/material';
+import { itIT } from '@mui/material/locale';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { TitleBox, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 import { useHistory } from 'react-router-dom';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
 import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
@@ -43,8 +45,9 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getExportRefundsListPaged,
   getExportSummary,
-  getRewardFileDownload,
+  getRewardFileDownload
 } from '../../services/intitativeService';
+import { getRefundStatus } from './helpers';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 
 const InitiativeRefundsDetails = () => {
@@ -221,37 +224,6 @@ const InitiativeRefundsDetails = () => {
           <Chip
             sx={{ fontSize: '14px' }}
             label={t('pages.initiativeRefunds.status.complete')}
-            color="default"
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  const getRefundListStatus = (status: string | undefined) => {
-    switch (status) {
-      case 'COMPLETED_OK':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.done')}
-            color="success"
-          />
-        );
-      case 'COMPLETED_KO':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.failed')}
-            color="error"
-          />
-        );
-      case 'EXPORTED':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
             color="default"
           />
         );
@@ -530,7 +502,7 @@ const InitiativeRefundsDetails = () => {
                         <Typography variant="monospaced"> {formatIban(r.iban)}</Typography>
                       </TableCell>
                       <TableCell>{formatedCurrency(r.amount)}</TableCell>
-                      <TableCell>{getRefundListStatus(r.status)}</TableCell>
+                      <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           data-testid="open-modal-refunds-arrow"
