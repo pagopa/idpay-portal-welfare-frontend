@@ -2263,6 +2263,13 @@ paths:
             application/json:
               schema:
                 '$ref': '#/components/schemas/ExportSummaryDTO'
+              example:
+                createDate: 2018-10-13
+                status: EXPORTED
+                successPercentage: '20'
+                totalAmount: 100
+                totalRefundedAmount: 10
+                totalRefunds: 20
         '400':
           description: Bad request
           content:
@@ -2299,7 +2306,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/reward/exports/{exportId}:
+  /{initiativeId}/reward/exports/{exportId}/refunds:
     get:
       tags:
         - initiative-reward
@@ -2354,6 +2361,52 @@ paths:
             application/json:
               schema:
                 '$ref': '#/components/schemas/ExportListDTO'
+              example:
+                content:
+                  - id: '1234'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_OK
+                  - id: '5678'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_OK
+                  - id: '9101'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_OK
+                  - id: '1121'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_OK
+                  - id: '3141'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_KO
+                  - id: '5161'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_KO
+                  - id: '7181'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: COMPLETED_KO
+                  - id: '9200'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: EXPORTED
+                  - id: '1222'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: EXPORTED
+                  - id: '3242'
+                    iban: IT60X0542811101000000123456
+                    amount: 10
+                    status: EXPORTED
+                pageNo: 0
+                pageSize: 10
+                totalElements: 10
+                totalPages: 1
         '400':
           description: Bad request
           content:
@@ -2390,7 +2443,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/reward/exports/{exportId}/refund/{eventId}:
+  /{initiativeId}/reward/exports/{exportId}/refunds/{eventId}:
     get:
       tags:
         - initiative-reward
@@ -2425,6 +2478,75 @@ paths:
             application/json:
               schema:
                 '$ref': '#/components/schemas/RefundDetailDTO'
+              example:
+                amount: 10
+                creationDate: 2018-10-13T00:00:00.000Z
+                endDate: 2018-10-13
+                fiscalCode: RSSMRA94C31F205K
+                iban: IT60X0542811101000000123456
+                notificationDate: 2018-10-13T00:00:00.000Z
+                refundType: Ordinario
+                sendDate: 2018-10-13T00:00:00.000Z
+                startDate: 2018-10-13
+                status: COMPLETED_OK
+                cro: 12345678901
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /token:
+    post:
+      tags:
+        - 'token'
+      summary: Get jwt token for pagopa_admin user role with the choosen organizationId
+      description: Get jwt token for pagopa_admin user role with the choosen organizationId
+      operationId: getPagoPaAdminToken
+      parameters:
+        - name: organization-id
+          in: header
+          schema:
+            type: string
+            example: organization-id
+          required: true
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PortalToken'
         '400':
           description: Bad request
           content:
@@ -2467,6 +2589,11 @@ components:
       type: object
       properties:
         sas:
+          type: string
+    PortalToken:
+      type: object
+      properties:
+        token:
           type: string
     InitiativeAdditionalDTO:
       type: object
@@ -3379,7 +3506,7 @@ components:
         - maskedPan
         - amount
         - accrued
-        - circuitType
+        - brand
         - idTrxIssuer
         - idTrxAcquirer
       properties:
@@ -3401,7 +3528,7 @@ components:
         operationDate:
           type: string
           format: date-time
-        circuitType:
+        brand:
           type: string
           description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
         idTrxIssuer:
@@ -3541,7 +3668,7 @@ components:
       properties:
         createDate:
           type: string
-          format: date-time
+          format: date
         totalAmount:
           type: number
         totalRefundedAmount:
@@ -3550,7 +3677,7 @@ components:
           type: integer
           format: int64
         successPercentage:
-          type: integer
+          type: string
         status:
           type: string
     ExportListDTO:
