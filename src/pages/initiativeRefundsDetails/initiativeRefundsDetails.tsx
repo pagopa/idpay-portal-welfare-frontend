@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { ArrowForwardIos } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
@@ -60,8 +61,8 @@ const InitiativeRefundsDetails = () => {
   const [refundEventId, setRefundEventId] = useState<string | undefined>('');
   const [page, setPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [cro, setCRO] = useState<string | undefined>('');
-  const [filterStatus, setFilterStatus] = useState<string | undefined>('');
+  const [cro, setCRO] = useState<string | undefined>();
+  const [filterStatus, setFilterStatus] = useState<string | undefined>();
 
   interface MatchParams {
     initiativeId: string;
@@ -153,11 +154,8 @@ const InitiativeRefundsDetails = () => {
 
   const downloadURI = (uri: string) => {
     const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
     link.download = 'download';
-    // eslint-disable-next-line functional/immutable-data
     link.href = uri;
-    // eslint-disable-next-line functional/immutable-data
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();

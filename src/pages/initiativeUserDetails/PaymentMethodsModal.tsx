@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Modal,
   Backdrop,
@@ -15,8 +16,6 @@ import { MouseEventHandler } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-// import { MockedInstrumentDTO } from '../../model/Initiative';
-import React from 'react';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { getMaskedPan } from '../../helpers';
 

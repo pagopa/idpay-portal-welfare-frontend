@@ -461,7 +461,7 @@ export default {
       transactionDetail: {
         import: 'Importo',
         paymentMethod: 'Metodo di pagamento',
-        paymentCircuit: 'Circuito di pagamento',
+        brand: 'Brand',
         totExpense: 'Totale spesa',
         importToRefund: 'Importo da rimborsare',
         date: 'Data',

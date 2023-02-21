@@ -421,7 +421,7 @@ export const mockedOperationDetail: OperationDTO = {
   maskedPan: '1234123412341234',
   amount: 345,
   accrued: 10,
-  circuitType: 'circuito',
+  brand: 'VISA',
   iban: '',
   channel: 'App IO',
   brandLogo: '',
@@ -675,7 +675,7 @@ export const mockedRefundsDetailsSummary = {
   totalAmount: 5678090800,
   totalRefundedAmount: 3500090800,
   totalRefunds: 2250789,
-  successPercentage: 10,
+  successPercentage: '10',
   status: 'EXPORTED',
 };
 

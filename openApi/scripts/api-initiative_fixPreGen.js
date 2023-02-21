@@ -20,7 +20,7 @@ regexReplace(
 
 regexReplace(
   '"OperationDTO": \\{\\},',
-  '"OperationDTO":{"type": "object", "properties": { "operationId": {"type":"string"}, "operationType": {"type":"string"}, "operationDate": {"type":"string"}, "amount": {"type":"number"}, "accrued": {"type":"number"}, "circuitType": {"type":"string"}, "idTrxIssuer": {"type":"string"}, "idTrxAcquirer":{"type":"string"}, "brandLogo": {"type":"string"}, "maskedPan": {"type":"string"}, "channel": {"type":"string"}, "iban": {"type":"string"}}, "required": ["operationId","operationType","operationDate"]},',
+  '"OperationDTO":{"type": "object", "properties": { "operationId": {"type":"string"}, "operationType": {"type":"string"}, "operationDate": {"type":"string"}, "amount": {"type":"number"}, "accrued": {"type":"number"}, "brand": {"type":"string"}, "idTrxIssuer": {"type":"string"}, "idTrxAcquirer":{"type":"string"}, "brandLogo": {"type":"string"}, "maskedPan": {"type":"string"}, "channel": {"type":"string"}, "iban": {"type":"string"}}, "required": ["operationId","operationType","operationDate"]},',
   'openApi/generated/initiative-swagger20.json',
   {
     fileContentsOnly: true,
