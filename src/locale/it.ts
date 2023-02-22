@@ -675,7 +675,7 @@ export default {
           requiredItalianIntroduction: 'Campo italiano obbligatorio',
         },
         previewModal: {
-          title: 'Anteprima testo introduttivo',
+          title: 'Anteprima',
           closeBtn: 'Chiudi',
           checkGuide: ` consulta la guida.`,
           alertDescription:
