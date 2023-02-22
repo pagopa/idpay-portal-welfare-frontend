@@ -33,8 +33,6 @@ import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import * as Yup from 'yup';
-import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -43,6 +41,7 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getOnboardingStatus } from '../../services/intitativeService';
 import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
+import { initiativeUsersAndRefundsValidationSchema } from '../../helpers';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -157,39 +156,6 @@ const InitiativeUsers = () => {
     setPage(newPage);
   };
 
-  const validationSchema = Yup.object().shape({
-    searchFrom: Yup.date()
-      .nullable()
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate')),
-    searchTo: Yup.date()
-      .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate'))
-      .when('searchFrom', (searchFrom, _schema) => {
-        const timestamp = Date.parse(searchFrom);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .nullable()
-            .min(searchFrom, t('validation.outDateTo'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date().nullable().typeError(t('validation.invalidDate'));
-        }
-      }),
-  });
-
   const formik = useFormik({
     initialValues: {
       searchUser: '',
@@ -197,7 +163,7 @@ const InitiativeUsers = () => {
       searchTo: null,
       filterStatus: '',
     },
-    validationSchema,
+    validationSchema: initiativeUsersAndRefundsValidationSchema,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -482,7 +448,7 @@ const InitiativeUsers = () => {
                               `${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}/${r.beneficiaryState}`
                             )
                           }
-                          data-testid='beneficiary-test'
+                          data-testid="beneficiary-test"
                         >
                           {r.beneficiary}
                         </ButtonNaked>

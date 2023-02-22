@@ -1,5 +1,7 @@
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import * as Yup from 'yup';
+import { parse } from 'date-fns';
 
 export const renderInitiativeStatus = (status: string | undefined) => {
   switch (status) {
@@ -190,3 +192,36 @@ export const formatedTimeLineCurrency = (id: string, number: number | undefined)
   }
   return '';
 };
+
+export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
+  searchFrom: Yup.date()
+    .nullable()
+    .transform(function (value, originalValue) {
+      if (this.isType(value)) {
+        return value;
+      }
+      return parse(originalValue, 'dd/MM/yyyy', new Date());
+    })
+    .typeError(i18n.t('validation.invalidDate')),
+  searchTo: Yup.date()
+    .nullable()
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    .transform(function (value, originalValue) {
+      if (this.isType(value)) {
+        return value;
+      }
+      return parse(originalValue, 'dd/MM/yyyy', new Date());
+    })
+    .typeError(i18n.t('validation.invalidDate'))
+    .when('searchFrom', (searchFrom, _schema) => {
+      const timestamp = Date.parse(searchFrom);
+      if (isNaN(timestamp) === false) {
+        return Yup.date()
+          .nullable()
+          .min(searchFrom, i18n.t('validation.outDateTo'))
+          .typeError(i18n.t('validation.invalidDate'));
+      } else {
+        return Yup.date().nullable().typeError(i18n.t('validation.invalidDate'));
+      }
+    }),
+});

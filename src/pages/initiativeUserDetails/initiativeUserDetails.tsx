@@ -31,18 +31,14 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   formatedCurrency,
   formatedTimeLineCurrency,
   formatStringToDate,
   getTimeLineMaskedPan,
+  initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
-// import { useInitiative } from '../../hooks/useInitiative';
-// import { useAppSelector } from '../../redux/hooks';
-// import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import {
   getInstrumentList,
   getWalletDetail,
@@ -51,15 +47,12 @@ import {
 } from '../../services/intitativeService';
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
-// import { OperationListDTO } from '../../api/generated/initiative/OperationListDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
-  // useInitiative();
-  // const initiativeSel = useAppSelector(initiativeSelector);
   const history = useHistory();
   const { t } = useTranslation();
   const [amount, setAmount] = useState<number | undefined>(undefined);
@@ -198,46 +191,13 @@ const InitiativeUserDetails = () => {
       .finally(() => setLoading(false));
   };
 
-  const validationSchema = Yup.object().shape({
-    searchFrom: Yup.date()
-      .nullable()
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate')),
-    searchTo: Yup.date()
-      .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate'))
-      .when('searchFrom', (searchFrom, _schema) => {
-        const timestamp = Date.parse(searchFrom);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .nullable()
-            .min(searchFrom, t('validation.outDateTo'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date().nullable().typeError(t('validation.invalidDate'));
-        }
-      }),
-  });
-
   const formik = useFormik({
     initialValues: {
       searchFrom: null,
       searchTo: null,
       filterEvent: '',
     },
-    validationSchema,
+    validationSchema: initiativeUsersAndRefundsValidationSchema,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
