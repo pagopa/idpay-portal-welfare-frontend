@@ -571,6 +571,8 @@ export default {
         createdOn: 'Creata il',
         mandateDate: 'Data mandato',
         dateNotifiedOfUser: 'Data notifica all’utente',
+        ordinary: 'Ordinario',
+        remedial: 'Correttivo',
       },
     },
     chooseOrganization: {

@@ -20,7 +20,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { itIT } from '@mui/material/locale';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -45,7 +45,7 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getExportRefundsListPaged,
   getExportSummary,
-  getRewardFileDownload
+  getRewardFileDownload,
 } from '../../services/intitativeService';
 import { getRefundStatus } from './helpers';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
@@ -530,7 +530,6 @@ const InitiativeRefundsDetails = () => {
                 handleCloseRefundModal={handleCloseRefundModal}
                 refundEventId={refundEventId}
                 initiativeId={initiativeId}
-                exportId={exportId}
               />
             </Box>
           </Box>

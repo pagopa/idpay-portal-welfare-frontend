@@ -387,10 +387,9 @@ export const InitiativeApi = {
 
   getRefundDetail: async (
     initiativeId: string,
-    exportId: string,
     eventId: string
   ): Promise<RefundDetailDTO> => {
-    const result = await apiClient.getRefundDetail({ initiativeId, exportId, eventId });
+    const result = await apiClient.getRefundDetail({ initiativeId, eventId });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

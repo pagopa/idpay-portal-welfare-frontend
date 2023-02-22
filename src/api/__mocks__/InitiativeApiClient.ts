@@ -157,7 +157,6 @@ export const InitiativeApiMocked = {
 
   getRefundDetail: async (
     _initiativeId: string,
-    _exportId: string,
     _refundEventId: string
   ): Promise<RefundDetailDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
 

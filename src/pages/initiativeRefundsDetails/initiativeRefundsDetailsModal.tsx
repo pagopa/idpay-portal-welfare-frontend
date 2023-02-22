@@ -5,7 +5,7 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
-import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
+import { formatedCurrency, formatedDate, formatIban } from '../../helpers';
 import { getRefundDetail } from '../../services/intitativeService';
 import { getRefundStatus } from './helpers';
 
@@ -14,7 +14,6 @@ type Props = {
   handleCloseRefundModal: React.MouseEventHandler;
   refundEventId: string | undefined;
   initiativeId: string;
-  exportId: string;
 };
 
 const InitiativeRefundsDetailsModal = ({
@@ -22,7 +21,6 @@ const InitiativeRefundsDetailsModal = ({
   handleCloseRefundModal,
   refundEventId,
   initiativeId,
-  exportId,
 }: Props) => {
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_INITIATIVE_REFUNDS_DETAILS_SUMMARY');
@@ -33,12 +31,11 @@ const InitiativeRefundsDetailsModal = ({
   useEffect(() => {
     if (
       typeof initiativeId === 'string' &&
-      typeof exportId === 'string' &&
       typeof refundEventId === 'string' &&
       openRefundsDetailModal
     ) {
       setLoading(true);
-      getRefundDetail(initiativeId, exportId, refundEventId)
+      getRefundDetail(initiativeId, refundEventId)
         .then((res) => {
           if (typeof res === 'object') {
             setRefundEventDetails({ ...res });
@@ -61,7 +58,18 @@ const InitiativeRefundsDetailsModal = ({
           setLoading(false);
         });
     }
-  }, [initiativeId, exportId, refundEventId, openRefundsDetailModal]);
+  }, [initiativeId, refundEventId, openRefundsDetailModal]);
+
+  const renderRefundType = (status: string | undefined) => {
+    switch (status) {
+      case 'ORDINARY':
+        return t('pages.initiativeRefundsDetails.modal.ordinary');
+      case 'REMEDIAL':
+        return t('pages.initiativeRefundsDetails.modal.remedial');
+      default:
+        return '';
+    }
+  };
 
   return (
     <Modal
@@ -167,7 +175,7 @@ const InitiativeRefundsDetailsModal = ({
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant="body2" fontWeight={600}>
-              {refundEventDetails?.refundType}
+              {renderRefundType(refundEventDetails?.refundType)}
             </Typography>
           </Box>
 
@@ -195,7 +203,7 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.creationDate)}
+                  {formatedDate(refundEventDetails?.creationDate)}
                 </Typography>
               </Box>
             </>
@@ -210,7 +218,7 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.sendDate)}
+                  {formatedDate(refundEventDetails?.sendDate)}
                 </Typography>
               </Box>
             </>
@@ -225,7 +233,7 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.notificationDate)}
+                  {formatedDate(refundEventDetails?.notificationDate)}
                 </Typography>
               </Box>
             </>

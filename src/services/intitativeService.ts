@@ -442,11 +442,10 @@ export const getExportRefundsListPaged = (
 
 export const getRefundDetail = (
   initiativeId: string,
-  exportId: string,
   eventId: string
 ): Promise<RefundDetailDTO> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.getRefundDetail(initiativeId, exportId, eventId);
+    return InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
   }
-  return InitiativeApi.getRefundDetail(initiativeId, exportId, eventId);
+  return InitiativeApi.getRefundDetail(initiativeId, eventId);
 };

@@ -203,11 +203,8 @@ export const getExportRefundsListPaged = (
 ): Promise<ExportListDTO> =>
   InitiativeApiMocked.getExportRefundsListPaged(initaitveId, exportId, page);
 
-export const getRefundDetail = (
-  initiativeId: string,
-  exportId: string,
-  eventId: string
-): Promise<RefundDetailDTO> => InitiativeApiMocked.getRefundDetail(initiativeId, exportId, eventId);
+export const getRefundDetail = (initiativeId: string, eventId: string): Promise<RefundDetailDTO> =>
+  InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
 
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
