@@ -1,22 +1,14 @@
 /* eslint-disable react/jsx-no-bind */
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { Provider } from 'react-redux';
-import { createStore } from '../../../../../redux/store';
 import ExitModal from '../ExitModal';
+import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
-}));
-
-describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+describe('<ExitModal />', () => {
   const handleCloseExitModal = jest.fn();
 
   it('renders without crashing', () => {
@@ -24,10 +16,13 @@ describe('<ExitModal />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   it('the modal should be in the document', async () => {
-    render(
-      <Provider store={store}>
-        <ExitModal openExitModal={true} handleCloseExitModal={handleCloseExitModal} />
-      </Provider>
+    renderWithHistoryAndStore(
+      <ExitModal
+        title="Test title"
+        subtitle="test subtitle"
+        openExitModal={true}
+        handleCloseExitModal={handleCloseExitModal}
+      />
     );
 
     const modal = document.querySelector('[data-testid="exit-modal-test"') as HTMLElement;
