@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import Wizard from '../../components/Wizard/Wizard';
 import { useInitiative } from '../../hooks/useInitiative';
-import ExitModal from '../../components/Wizard/components/ExitModal/ExitModal';
+import ExitModal from '../../components/ExitModal/ExitModal';
 
 const NewInitiative = () => {
   useInitiative();
@@ -36,7 +36,12 @@ const NewInitiative = () => {
           {t('breadcrumbs.createNew')}
         </Typography>
       </Breadcrumbs>
-      <ExitModal openExitModal={openExitModal} handleCloseExitModal={handleCloseExitModal} />
+      <ExitModal
+        title={t('components.exitModal.title')}
+        subtitle={t('components.exitModal.body')}
+        openExitModal={openExitModal}
+        handleCloseExitModal={handleCloseExitModal}
+      />
       <TitleBox
         title={t('pages.newInitiative.title')}
         subTitle={t('pages.newInitiative.subtitle')}

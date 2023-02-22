@@ -2,14 +2,16 @@ import { Modal, Backdrop, Fade, Box, Typography, Button } from '@mui/material';
 import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import ROUTES from '../../../../routes';
+import ROUTES from '../../routes';
 
 type Props = {
+  title: string;
+  subtitle: string;
   openExitModal: boolean;
   handleCloseExitModal: MouseEventHandler;
 };
 
-const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
+const ExitModal = ({ title, subtitle, openExitModal, handleCloseExitModal }: Props) => {
   const history = useHistory();
   const { t } = useTranslation();
   const closeWithoutSaving = (e: any) => {
@@ -43,9 +45,9 @@ const ExitModal = ({ openExitModal, handleCloseExitModal }: Props) => {
             p: 4,
           }}
         >
-          <Typography variant="h6">{t('components.exitModal.title')}</Typography>
+          <Typography variant="h6">{title}</Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('pages.assistance.exitModal.body')}
+            {subtitle}
           </Typography>
           <Box
             sx={{
