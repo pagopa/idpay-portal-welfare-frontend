@@ -60,8 +60,8 @@ const InitiativeRefundsDetailsModal = ({
     }
   }, [initiativeId, refundEventId, openRefundsDetailModal]);
 
-  const renderRefundType = (status: string | undefined) => {
-    switch (status) {
+  const renderRefundType = (refundType: string | undefined) => {
+    switch (refundType) {
       case 'ORDINARY':
         return t('pages.initiativeRefundsDetails.modal.ordinary');
       case 'REMEDIAL':
