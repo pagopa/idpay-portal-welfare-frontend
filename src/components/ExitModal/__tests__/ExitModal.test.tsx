@@ -2,15 +2,10 @@
 import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import ExitModal from '../ExitModal';
+import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
-}));
-
-jest.mock('react-router-dom', () => ({
-  useHistory: () => ({
-    replace: jest.fn(),
-  }),
 }));
 
 describe('<ExitModal />', () => {
@@ -43,6 +38,3 @@ describe('<ExitModal />', () => {
     fireEvent.click(exitBtn);
   });
 });
-function renderWithHistoryAndStore(arg0: JSX.Element) {
-  throw new Error('Function not implemented.');
-}
