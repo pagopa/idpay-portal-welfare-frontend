@@ -102,10 +102,15 @@ const ServiceConfig = ({
     serviceDescription: Yup.string().required(t('validation.required')),
     privacyPolicyUrl: Yup.string()
       .required(t('validation.required'))
-      .matches(
-        /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-        t('validation.web')
-      ),
+      .test('url', t('validation.web'), function (value) {
+        if (typeof value === 'string') {
+          const regex = new RegExp(
+            /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/
+          );
+          return regex.test(value);
+        }
+        return false;
+      }),
     termsAndConditions: Yup.string()
       .required(t('validation.required'))
       .matches(
