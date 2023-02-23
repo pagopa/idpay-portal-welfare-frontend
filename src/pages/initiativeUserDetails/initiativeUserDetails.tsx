@@ -18,7 +18,7 @@ import {
   Snackbar,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -48,6 +48,7 @@ import {
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -69,8 +70,10 @@ const InitiativeUserDetails = () => {
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
+  const [openRefundDetailModal, setOpenRefundDetailModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
@@ -258,6 +261,30 @@ const InitiativeUserDetails = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleOpenRefundDetailModal = (eventId: string) => {
+    setOpenRefundDetailModal(true);
+    setSelectedEventId(eventId);
+  };
+
+  const handleCloseRefundDetailModal = () => {
+    setOpenRefundDetailModal(false);
+  };
+
+  const handleOpenModalOnOpeType = (
+    opeType: string,
+    opeId: string,
+    eventId: string | undefined
+  ) => {
+    if (opeType !== 'PAID_REFUND' && opeType !== 'REJECTED_REFUND') {
+      handleOpenModal(opeId);
+    } else if (
+      (opeType === 'PAID_REFUND' || opeType === 'REJECTED_REFUND') &&
+      typeof eventId === 'string'
+    ) {
+      handleOpenRefundDetailModal(eventId);
+    }
   };
 
   const handleChangePage = (
@@ -717,7 +744,7 @@ const InitiativeUserDetails = () => {
                             textAlign: 'left',
                           }}
                           onClick={() => {
-                            handleOpenModal(r.operationId);
+                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
                           }}
                         >
                           {operationTypeLabel(r.operationId, r.operationType, r)}
@@ -754,6 +781,12 @@ const InitiativeUserDetails = () => {
                 handleCloseModal={handleCloseModal}
                 initiativeId={id}
                 holderBank={holderBank}
+              />
+              <InitiativeRefundsDetailsModal
+                openRefundsDetailModal={openRefundDetailModal}
+                handleCloseRefundModal={handleCloseRefundDetailModal}
+                refundEventId={selectedEventId}
+                initiativeId={id}
               />
             </Box>
           </Box>
