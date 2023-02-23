@@ -193,47 +193,31 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
             </>
           )}
-
-          {refundEventDetails?.creationDate && (
+          {refundEventDetails?.transferDate && (
             <>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.createdOn')}
+                  {t('pages.initiativeRefundsDetails.modal.transferDate')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDate(refundEventDetails?.creationDate)}
+                  {formatedDate(refundEventDetails?.transferDate)}
                 </Typography>
               </Box>
             </>
           )}
 
-          {refundEventDetails?.sendDate && (
+          {refundEventDetails?.userNotificationDate && (
             <>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.mandateDate')}
+                  {t('pages.initiativeRefundsDetails.modal.userNotificationDate')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDate(refundEventDetails?.sendDate)}
-                </Typography>
-              </Box>
-            </>
-          )}
-
-          {refundEventDetails?.notificationDate && (
-            <>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.dateNotifiedOfUser')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatedDate(refundEventDetails?.notificationDate)}
+                  {formatedDate(refundEventDetails?.userNotificationDate)}
                 </Typography>
               </Box>
             </>

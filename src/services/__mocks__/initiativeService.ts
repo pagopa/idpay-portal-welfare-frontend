@@ -700,9 +700,8 @@ export const mockedRefundsDetailsByEventRes = {
   status: 'DONE',
   refundType: 'Ordinario',
   cro: '12345678901',
-  creationDate: new Date(),
-  sendDate: new Date(),
-  notificationDate: new Date(),
+  transferDate: new Date(),
+  userNotificationDate: new Date(),
 };
 
 export const mockedFilePath = 'download';
