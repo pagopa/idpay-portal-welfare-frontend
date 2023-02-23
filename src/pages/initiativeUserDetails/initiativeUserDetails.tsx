@@ -33,6 +33,7 @@ import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
+  cleanDate,
   formatedCurrency,
   formatedTimeLineCurrency,
   formatStringToDate,
@@ -49,6 +50,7 @@ import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
+import EmptyList from '../components/EmptyList';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
@@ -209,30 +211,12 @@ const InitiativeUserDetails = () => {
       if (typeof id === 'string' && typeof cf === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
-              : undefined;
+          searchFromStr = cleanDate(searchFrom);
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T23:59:59Z`
-              : undefined;
+          searchToStr = cleanDate(searchTo);
           setFilterByDateTo(searchToStr);
         }
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
@@ -792,20 +776,7 @@ const InitiativeUserDetails = () => {
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            mt: 3,
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUserDetails.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeUserDetails.noData')} />
       )}
     </Box>
   );

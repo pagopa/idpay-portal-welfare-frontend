@@ -10,7 +10,13 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { Threshold } from '../../../../model/Initiative';
-import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
+import {
+  renderShopRuleIcon,
+  handleShopRulesToSubmit,
+  setError,
+  setErrorText,
+  handleUpdateFromToFieldState,
+} from './helpers';
 
 type Props = {
   title: string;
@@ -80,20 +86,6 @@ const SpendingLimitItem = ({
     },
   });
 
-  const handleUpdateFromFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, from: valueNumber };
-    setData({ ...newState });
-  };
-
-  const handleUpdateToFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, to: valueNumber };
-    setData({ ...newState });
-  };
-
   return (
     <Box
       sx={{
@@ -150,7 +142,7 @@ const SpendingLimitItem = ({
             value={formik.values.from}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateFromFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'from', data, setData);
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
@@ -185,7 +177,7 @@ const SpendingLimitItem = ({
             value={formik.values.to}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateToFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'to', data, setData);
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}

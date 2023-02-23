@@ -225,3 +225,11 @@ export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
       }
     }),
 });
+
+export const cleanDate = (d: Date): string | undefined =>
+  d.toLocaleString('en-CA').split(' ')[0].length > 0
+    ? `${d
+        .toLocaleString('en-CA')
+        .split(' ')[0]
+        .substring(0, d.toLocaleString('en-CA').split(' ')[0].length - 1)}T00:00:00Z`
+    : undefined;
