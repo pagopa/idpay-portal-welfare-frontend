@@ -1,6 +1,7 @@
 /* eslint-disable functional/immutable-data */
-import React from 'react';
 import { cleanup, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import ROUTES from '../../../routes';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
@@ -45,13 +46,43 @@ describe('test suite for refund details', () => {
 
   test('on click of download file', () => {
     renderWithHistoryAndStore(<InitiativeRefundsDetails />);
-
-    // download of file
+    //  download of file
     const downloadCsvBtn = screen.getByText(
       'pages.initiativeRefundsDetails.downloadBtn'
     ) as HTMLButtonElement;
 
     fireEvent.click(downloadCsvBtn);
+  });
+
+  test('test on filters of refund Details', async () => {
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    const filterByCro = screen.getByLabelText(
+      'pages.initiativeRefundsDetails.form.cro'
+    ) as HTMLInputElement;
+
+    fireEvent.change(filterByCro, { target: { value: 'cro' } });
+
+    expect(filterByCro.value).toEqual('cro');
+
+    const selectByStatus = screen.getByPlaceholderText(
+      'pages.initiativeRefundsDetails.form.outcome'
+    ) as HTMLSelectElement;
+
+    fireEvent.click(selectByStatus);
+
+    fireEvent.change(selectByStatus, { target: { value: 'COMPLETED_OK' } });
+
+    const filterBtn = screen.getByText(
+      'pages.initiativeRefundsDetails.form.filterBtn'
+    ) as HTMLButtonElement;
+
+    fireEvent.click(filterBtn);
+
+    const resetFiltersBtn = screen.getByText(
+      'pages.initiativeRefundsDetails.form.resetFiltersBtn'
+    ) as HTMLButtonElement;
+
+    fireEvent.click(resetFiltersBtn);
   });
 
   test('test open modal and close modal', async () => {
@@ -72,5 +103,14 @@ describe('test suite for refund details', () => {
     const closeModalXBTn = (await screen.findByTestId('close-modal-test')) as HTMLButtonElement;
 
     fireEvent.click(closeModalXBTn);
+  });
+
+  test('test addError with reject case for getExportSummary and getExportRefundsListPaged ', async () => {
+    InitiativeApiMocked.getExportSummary = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+
+    InitiativeApiMocked.getExportRefundsListPaged = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
   });
 });
