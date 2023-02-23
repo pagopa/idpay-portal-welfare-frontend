@@ -95,6 +95,22 @@ const ServiceConfig = ({
     }
   }, [JSON.stringify(additionalInfo)]);
 
+  const validateUrl = (value: string | undefined): boolean => {
+    const regex = new RegExp(/^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/);
+    if (typeof value === 'string') {
+      return regex.test(value);
+    }
+    return false;
+  };
+
+  const validatePhoneNumber = (value: string | undefined): boolean => {
+    const regex = new RegExp(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/);
+    if (typeof value === 'string') {
+      return regex.test(value);
+    }
+    return false;
+  };
+
   const validationSchema = Yup.object().shape({
     initiativeOnIO: Yup.boolean(),
     serviceName: Yup.string().required(t('validation.required')),
@@ -102,21 +118,10 @@ const ServiceConfig = ({
     serviceDescription: Yup.string().required(t('validation.required')),
     privacyPolicyUrl: Yup.string()
       .required(t('validation.required'))
-      .test('url', t('validation.web'), function (value) {
-        if (typeof value === 'string') {
-          const regex = new RegExp(
-            /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/
-          );
-          return regex.test(value);
-        }
-        return false;
-      }),
+      .test('url', t('validation.web'), (value) => validateUrl(value)),
     termsAndConditions: Yup.string()
       .required(t('validation.required'))
-      .matches(
-        /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-        t('validation.web')
-      ),
+      .test('url', t('validation.web'), (value) => validateUrl(value)),
     assistanceChannels: Yup.array().of(
       Yup.object().shape({
         type: Yup.string().required(t('validation.required')),
@@ -126,10 +131,7 @@ const ServiceConfig = ({
             if (type && type === 'web') {
               return Yup.string()
                 .required(t('validation.required'))
-                .matches(
-                  /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-                  t('validation.webValid')
-                );
+                .test('url', t('validation.webValid'), (value) => validateUrl(value));
             }
             if (type && type === 'email') {
               return Yup.string()
@@ -139,7 +141,7 @@ const ServiceConfig = ({
             if (type && type === 'mobile') {
               return Yup.string()
                 .required(t('validation.required'))
-                .matches(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/, t('validation.celNumValid'));
+                .test('mobile', t('validation.celNumValid'), (value) => validatePhoneNumber(value));
             }
             return schema;
           }),
