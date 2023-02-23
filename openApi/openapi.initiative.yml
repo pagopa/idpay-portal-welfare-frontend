@@ -3724,13 +3724,10 @@ components:
           type: string
         cro:
           type: string
-        creationDate:
+        transferDate:
           type: string
           format: date
-        sendDate:
-          type: string
-          format: date
-        notificationDate:
+        userNotificationDate:
           type: string
           format: date
   securitySchemes:
