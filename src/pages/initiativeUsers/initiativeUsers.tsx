@@ -41,7 +41,8 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getOnboardingStatus } from '../../services/intitativeService';
 import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
-import { initiativeUsersAndRefundsValidationSchema } from '../../helpers';
+import { cleanDate, initiativeUsersAndRefundsValidationSchema } from '../../helpers';
+import EmptyList from '../components/EmptyList';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -175,30 +176,12 @@ const InitiativeUsers = () => {
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
-              : undefined;
+          searchFromStr = cleanDate(searchFrom);
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T23:59:59Z`
-              : undefined;
+          searchToStr = cleanDate(searchTo);
           setFilterByDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
@@ -478,19 +461,7 @@ const InitiativeUsers = () => {
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUsers.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeUsers.noData')} />
       )}
     </Box>
   );

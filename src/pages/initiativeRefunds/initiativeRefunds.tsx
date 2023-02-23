@@ -45,6 +45,7 @@ import { initiativeUsersAndRefundsValidationSchema, numberWithCommas } from '../
 import { getExportsPaged } from '../../services/intitativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
+import EmptyList from '../components/EmptyList';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -164,6 +165,11 @@ const InitiativeRefunds = () => {
       });
   };
 
+  const parseDateformat = (d: Date): string | undefined =>
+    d.toLocaleString('en-CA').split(' ')[0].length > 0
+      ? `${d.toLocaleString('en-CA').split(',')[0]}`
+      : undefined;
+
   const formik = useFormik({
     initialValues: {
       searchFrom: null,
@@ -179,18 +185,13 @@ const InitiativeRefunds = () => {
       if (typeof id === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom.toLocaleString('en-CA').split(',')[0]}`
-              : undefined;
+          searchFromStr = parseDateformat(searchFrom);
+
           setFilterByNotificationDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo.toLocaleString('en-CA').split(',')[0]}`
-              : undefined;
+          searchToStr = parseDateformat(searchTo);
           setFilterByNotificationDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
@@ -463,19 +464,7 @@ const InitiativeRefunds = () => {
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeRefunds.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeRefunds.noData')} />
       )}
     </Box>
   );

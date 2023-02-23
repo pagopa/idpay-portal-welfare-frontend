@@ -50,6 +50,7 @@ import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
 import { numberWithCommas } from '../../helpers';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
+import EmptyList from '../components/EmptyList';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
@@ -622,26 +623,7 @@ const InitiativeRanking = () => {
         </Box>
       )}
       {rankingStatus === 'WAITING_END' && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'grid',
-              gridColumn: 'span 12',
-              justifyContent: 'center',
-              py: 2,
-              backgroundColor: 'white',
-            }}
-          >
-            <Typography variant="body2">{t('pages.initiativeRanking.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeRanking.noData')} />
       )}
     </Box>
   );
