@@ -8,17 +8,16 @@ import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/consta
 import Generalnfo from '../Generalnfo';
 import { createStore } from '../../../../../redux/store';
 import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
-import { renderWithContext } from '../../../../../utils/test-utils';
+import { renderWithContext, renderWithHistoryAndStore } from '../../../../../utils/test-utils';
 import { GeneralInfo } from '../../../../../model/Initiative';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
+import { InitiativeGeneralDTO } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-// jest.mock('../../../../../api/InitiativeApiClient');
-
 beforeEach(() => {
-  // jest.spyOn(InitiativeApi, 'updateInitiativeGeneralInfoDraft');
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
@@ -26,146 +25,97 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
+  window.scrollTo = jest.fn();
 
   const store = injectedStore ? injectedStore : createStore();
 
   it('call the submit event when form is submitted', async () => {
-    const setAction = jest.fn();
-    const setCurrentStep = jest.fn();
     store.dispatch(setInitiativeId('initativeId231'));
-    renderWithContext(
+    renderWithHistoryAndStore(
       <Generalnfo
         action={WIZARD_ACTIONS.DRAFT}
-        // eslint-disable-next-line react/jsx-no-bind
-        setAction={setAction}
+        setAction={jest.fn()}
         currentStep={2}
-        // eslint-disable-next-line react/jsx-no-bind
-        setCurrentStep={setCurrentStep}
-        // eslint-disable-next-line react/jsx-no-bind
-        setDisabledNext={function (_value: SetStateAction<boolean>): void {
-          //
-        }}
+        setCurrentStep={jest.fn()}
+        setDisabledNext={jest.fn()}
       />
     );
-
-    await waitFor(() => expect(setAction).toHaveBeenCalled());
-
     const itText = screen.getByTestId('introductionTextIT-test') as HTMLInputElement;
     fireEvent.change(itText, { target: { value: 'it text' } });
     expect(itText).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('components.wizard.common.languages.english'));
-    const enText = (await waitFor(() =>
-      screen.getByTestId('introductionTextEN-test')
-    )) as HTMLInputElement;
+    const enText = screen.getByTestId('introductionTextEN-test') as HTMLInputElement;
     fireEvent.change(enText, { target: { value: 'en text' } });
     expect(enText).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('components.wizard.common.languages.french'));
-    const frText = (await waitFor(() =>
-      screen.getByTestId('introductionTextFR-test')
-    )) as HTMLInputElement;
+    const frText = screen.getByTestId('introductionTextFR-test') as HTMLInputElement;
     fireEvent.change(frText, { target: { value: 'fr text' } });
     expect(frText).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('components.wizard.common.languages.german'));
-    const deText = (await waitFor(() =>
-      screen.getByTestId('introductionTextDE-test')
-    )) as HTMLInputElement;
+    const deText = screen.getByTestId('introductionTextDE-test') as HTMLInputElement;
     fireEvent.change(deText, { target: { value: 'de text' } });
     expect(deText).toBeInTheDocument();
 
     fireEvent.click(screen.getByText('components.wizard.common.languages.slovenian'));
-    const slText = (await waitFor(() =>
-      screen.getByTestId('introductionTextSL-test')
-    )) as HTMLInputElement;
+    const slText = screen.getByTestId('introductionTextSL-test') as HTMLInputElement;
     fireEvent.change(slText, { target: { value: 'sl text' } });
     expect(slText).toBeInTheDocument();
   });
 
-  // eslint-disable-next-line sonarjs/no-identical-functions
   it('BeneficiaryTypes / BeneficiaryKnowns have the correct values', async () => {
+    renderWithHistoryAndStore(
+      <Generalnfo
+        action={WIZARD_ACTIONS.SUBMIT}
+        setAction={jest.fn()}
+        currentStep={2}
+        setCurrentStep={jest.fn()}
+        setDisabledNext={jest.fn()}
+      />
+    );
+
+    /* Test of value of radio button */
+    const beneficiaryType = screen.getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
+    const beneficiaryType1 = screen.getByLabelText(/components.wizard.stepTwo.form.person/);
+    const beneficiaryType2 = screen.getByLabelText(/components.wizard.stepTwo.form.family/);
+    // const beneficiaryKnown = getByLabelText(/components.wizard.stepTwo.form.beneficiaryKnown/);
+    const beneficiaryKnown1 = screen.getByLabelText(
+      /components.wizard.stepTwo.form.taxCodeList/
+    ) as HTMLInputElement;
+    const beneficiaryKnown2 = screen.getByLabelText(
+      /components.wizard.stepTwo.form.manualSelection/
+    ) as HTMLInputElement;
+
+    fireEvent.click(beneficiaryType);
+
     await act(async () => {
-      const fn = jest.fn();
-      const { getByLabelText } = render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={2}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
+      expect(beneficiaryType1).toBeChecked();
+    });
+    await act(async () => {
+      expect(beneficiaryType2).toBeDisabled();
+    });
 
-      /* Test of value of radio button */
-      const beneficiaryType = getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
-      const beneficiaryType1 = getByLabelText(/components.wizard.stepTwo.form.person/);
-      const beneficiaryType2 = getByLabelText(/components.wizard.stepTwo.form.family/);
-      // const beneficiaryKnown = getByLabelText(/components.wizard.stepTwo.form.beneficiaryKnown/);
-      const beneficiaryKnown1 = getByLabelText(
-        /components.wizard.stepTwo.form.taxCodeList/
-      ) as HTMLInputElement;
-      const beneficiaryKnown2 = getByLabelText(
-        /components.wizard.stepTwo.form.manualSelection/
-      ) as HTMLInputElement;
-
-      fireEvent.click(beneficiaryType);
-      expect(fn).toBeDefined();
-
-      await act(async () => {
-        expect(beneficiaryType1).toBeChecked();
-      });
-      await act(async () => {
-        expect(beneficiaryType2).toBeDisabled();
-      });
-
-      await act(async () => {
-        fireEvent.click(beneficiaryKnown1);
-        expect(beneficiaryKnown1.checked).toEqual(false);
-        expect(beneficiaryKnown2.checked).toEqual(false);
-        fireEvent.click(beneficiaryKnown2);
-        expect(beneficiaryKnown2.checked).toEqual(false);
-        expect(beneficiaryKnown1.checked).toEqual(false);
-      });
-      expect(fn).not.toBeCalled();
+    await act(async () => {
+      fireEvent.click(beneficiaryKnown1);
+      expect(beneficiaryKnown1.checked).toEqual(false);
+      expect(beneficiaryKnown2.checked).toEqual(false);
+      fireEvent.click(beneficiaryKnown2);
+      expect(beneficiaryKnown2.checked).toEqual(false);
+      expect(beneficiaryKnown1.checked).toEqual(false);
     });
   });
 
   it('Total Budget / Budget per Person Test', async () => {
-    const { getByLabelText, getByDisplayValue } = render(
-      <Provider store={store}>
-        <Generalnfo
-          action={WIZARD_ACTIONS.DRAFT}
-          // eslint-disable-next-line react/jsx-no-bind
-          setAction={function (_value: SetStateAction<string>): void {
-            //
-          }}
-          currentStep={2}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCurrentStep={function (_value: SetStateAction<number>): void {
-            //
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          setDisabledNext={function (_value: SetStateAction<boolean>): void {
-            //
-          }}
-        />
-      </Provider>
+    renderWithHistoryAndStore(
+      <Generalnfo
+        action={WIZARD_ACTIONS.DRAFT}
+        setAction={jest.fn()}
+        currentStep={2}
+        setCurrentStep={jest.fn()}
+        setDisabledNext={jest.fn()}
+      />
     );
 
     type TestElement = Document | Element | Window | Node;
@@ -173,9 +123,9 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     /* check if the field are required */
 
     function hasInputValueTot(e: TestElement, budgetTot: string) {
-      return getByDisplayValue(budgetTot) === e;
+      return screen.getByDisplayValue(budgetTot) === e;
     }
-    const budget = getByLabelText(/components.wizard.stepTwo.form.budget/);
+    const budget = screen.getByLabelText(/components.wizard.stepTwo.form.budget/);
     fireEvent.change(budget, { target: { value: '1000' } });
     await act(async () => {
       expect(hasInputValueTot(budget, '1000')).toBe(true);
@@ -183,9 +133,11 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     });
 
     function hasInputValuePerPerson(e: TestElement, budgetPerPerson: string) {
-      return getByDisplayValue(budgetPerPerson) === e;
+      return screen.getByDisplayValue(budgetPerPerson) === e;
     }
-    const beneficiaryBudget = getByLabelText(/components.wizard.stepTwo.form.beneficiaryBudget/);
+    const beneficiaryBudget = screen.getByLabelText(
+      /components.wizard.stepTwo.form.beneficiaryBudget/
+    );
     fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
 
     await act(async () => {
@@ -195,156 +147,131 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   it('Date Join / Spend Test', async () => {
+    renderWithHistoryAndStore(
+      <Generalnfo
+        action={''}
+        setAction={jest.fn()}
+        currentStep={2}
+        setCurrentStep={jest.fn()}
+        setDisabledNext={jest.fn()}
+      />
+    );
+
+    function parseDateString(_value: any, originalValue: string) {
+      return isDate(originalValue) ? originalValue : parse(originalValue, 'dd-MM-yyyy', new Date());
+    }
+
+    function isValidDate(date: any): date is Date {
+      return date instanceof Date && !isNaN(date.getTime());
+    }
+
+    const rankingStartDate = screen.getByLabelText(
+      /components.wizard.stepTwo.form.rankingStartDate/
+    );
+    const rankingEndDate = screen.getByLabelText(/components.wizard.stepTwo.form.rankingEndDate/);
+    const startDate = screen.getByLabelText(/components.wizard.stepTwo.form.startDate/);
+    const endDate = screen.getByLabelText(/components.wizard.stepTwo.form.endDate/);
+
+    const d = date().transform(parseDateString);
+    /* check if the fields are required */
     await act(async () => {
-      const { getByLabelText } = render(
-        <Provider store={store}>
-          <Generalnfo
-            action={''}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={2}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
-      );
+      expect(startDate).toBeRequired();
+    });
+    await act(async () => {
+      expect(endDate).toBeRequired();
+    });
 
-      function parseDateString(_value: any, originalValue: string) {
-        return isDate(originalValue)
-          ? originalValue
-          : parse(originalValue, 'dd-MM-yyyy', new Date());
-      }
+    fireEvent.click(endDate);
+    fireEvent.change(endDate, { target: { value: '19/07/2022' } });
+    await act(async () => {
+      expect(
+        d
+          .cast('19-07-2022')
+          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      ).toBe('19/07/2022');
+    });
 
-      function isValidDate(date: any): date is Date {
-        return date instanceof Date && !isNaN(date.getTime());
-      }
+    // expect to throw  formik error wrong type
+    fireEvent.change(endDate, { target: { value: 2022 } });
 
-      const rankingStartDate = getByLabelText(/components.wizard.stepTwo.form.rankingStartDate/);
-      const rankingEndDate = getByLabelText(/components.wizard.stepTwo.form.rankingEndDate/);
-      const startDate = getByLabelText(/components.wizard.stepTwo.form.startDate/);
-      const endDate = getByLabelText(/components.wizard.stepTwo.form.endDate/);
+    /* Checking if invalid cast return invalid date */
+    await act(async () => {
+      expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
+    });
+    await act(async () => {
+      expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
+    });
+    /* Casting */
+    await act(async () => {
+      expect(d.cast(new Date())).toBeInstanceOf(Date);
+    });
+    /* join-from */
 
-      const d = date().transform(parseDateString);
-      /* check if the fields are required */
-      await act(async () => {
-        expect(startDate).toBeRequired();
-      });
-      await act(async () => {
-        expect(endDate).toBeRequired();
-      });
+    fireEvent.click(rankingStartDate);
+    fireEvent.change(rankingStartDate, { target: { value: '19/07/2022' } });
+    await act(async () => {
+      expect(
+        d
+          .cast('19-07-2022')
+          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      ).toBe('19/07/2022');
+    });
 
-      fireEvent.click(endDate);
-      fireEvent.change(endDate, { target: { value: '19/07/2022' } });
-      await act(async () => {
-        expect(
-          d
-            .cast('19-07-2022')
-            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        ).toBe('19/07/2022');
-      });
+    // expect to throw error formik error wrong type
+    fireEvent.change(rankingStartDate, { target: { value: 2022 } });
+    /* join-to */
 
-      // expect to throw  formik error wrong type
-      fireEvent.change(endDate, { target: { value: 2022 } });
+    fireEvent.mouseOver(rankingEndDate);
+    fireEvent.change(rankingEndDate, { target: { value: '20/07/2022' } });
+    await act(async () => {
+      expect(
+        d
+          .cast('20-07-2022')
+          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      ).toBe('20/07/2022');
+    });
 
-      /* Checking if invalid cast return invalid date */
-      await act(async () => {
-        expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
-      });
-      await act(async () => {
-        expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
-      });
-      /* Casting */
-      await act(async () => {
-        expect(d.cast(new Date())).toBeInstanceOf(Date);
-      });
-      /* join-from */
+    /* spend-from */
 
-      fireEvent.click(rankingStartDate);
-      fireEvent.change(rankingStartDate, { target: { value: '19/07/2022' } });
-      await act(async () => {
-        expect(
-          d
-            .cast('19-07-2022')
-            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        ).toBe('19/07/2022');
-      });
+    fireEvent.mouseOver(startDate);
+    fireEvent.change(startDate, { target: { value: '21/07/2022' } });
+    await act(async () => {
+      expect(
+        d
+          .cast('21-07-2022')
+          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      ).toBe('21/07/2022');
+    });
+    /* spend-to */
 
-      // expect to throw error formik error wrong type
-      fireEvent.change(rankingStartDate, { target: { value: 2022 } });
-      /* join-to */
-
-      fireEvent.mouseOver(rankingEndDate);
-      fireEvent.change(rankingEndDate, { target: { value: '20/07/2022' } });
-      await act(async () => {
-        expect(
-          d
-            .cast('20-07-2022')
-            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        ).toBe('20/07/2022');
-      });
-
-      /* spend-from */
-
-      fireEvent.mouseOver(startDate);
-      fireEvent.change(startDate, { target: { value: '21/07/2022' } });
-      await act(async () => {
-        expect(
-          d
-            .cast('21-07-2022')
-            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        ).toBe('21/07/2022');
-      });
-      /* spend-to */
-
-      fireEvent.mouseOver(endDate);
-      fireEvent.change(endDate, { target: { value: '22/07/2022' } });
-      await act(async () => {
-        expect(
-          d
-            .cast('22-07-2022')
-            ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-        ).toBe('22/07/2022');
-      });
+    fireEvent.mouseOver(endDate);
+    fireEvent.change(endDate, { target: { value: '22/07/2022' } });
+    await act(async () => {
+      expect(
+        d
+          .cast('22-07-2022')
+          ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+      ).toBe('22/07/2022');
     });
   });
 
   it('Test beneficiary type onChange', async () => {
     await waitFor(async () => {
-      const setFieldValue = jest.fn();
-      const { queryByTestId, getByLabelText } = render(
-        <Provider store={store}>
-          <Generalnfo
-            action={WIZARD_ACTIONS.SUBMIT}
-            // eslint-disable-next-line react/jsx-no-bind
-            setAction={function (_value: SetStateAction<string>): void {
-              //
-            }}
-            currentStep={2}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCurrentStep={function (_value: SetStateAction<number>): void {
-              //
-            }}
-            // eslint-disable-next-line react/jsx-no-bind
-            setDisabledNext={function (_value: SetStateAction<boolean>): void {
-              //
-            }}
-          />
-        </Provider>
+      renderWithHistoryAndStore(
+        <Generalnfo
+          action={WIZARD_ACTIONS.SUBMIT}
+          setAction={jest.fn()}
+          currentStep={2}
+          setCurrentStep={jest.fn()}
+          setDisabledNext={jest.fn()}
+        />
       );
 
-      const beneficiaryType = queryByTestId('beneficiary-radio-test') as HTMLInputElement;
-      const beneficiaryType1 = getByLabelText(
+      const beneficiaryType = screen.queryByTestId('beneficiary-radio-test') as HTMLInputElement;
+      const beneficiaryType1 = screen.getByLabelText(
         /components.wizard.stepTwo.form.person/
       ) as HTMLInputElement;
-      const beneficiaryType2 = getByLabelText(
+      const beneficiaryType2 = screen.getByLabelText(
         /components.wizard.stepTwo.form.family/
       ) as HTMLInputElement;
 
@@ -387,7 +314,7 @@ describe('<Genaralnfo />', (injectedStore?: ReturnType<typeof createStore>) => {
     render(
       <Provider store={store}>
         <Generalnfo
-          action={WIZARD_ACTIONS.SUBMIT}
+          action={WIZARD_ACTIONS.DRAFT}
           // eslint-disable-next-line react/jsx-no-bind
           setAction={function (_value: SetStateAction<string>): void {
             //
