@@ -4,7 +4,6 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -41,7 +40,11 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { initiativeUsersAndRefundsValidationSchema, numberWithCommas } from '../../helpers';
+import {
+  getRefundStatusChip,
+  initiativeUsersAndRefundsValidationSchema,
+  numberWithCommas,
+} from '../../helpers';
 import { getExportsPaged } from '../../services/intitativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
@@ -77,42 +80,6 @@ const InitiativeRefunds = () => {
   });
 
   const { id } = (match?.params as MatchParams) || {};
-
-  const getRefundStatus = (status: {
-    status: string | undefined;
-    percentageResulted: string | undefined;
-  }) => {
-    switch (status.status) {
-      case 'EXPORTED':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.exported')}
-            color="warning"
-          />
-        );
-      case 'PARTIAL':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.partial', {
-              percentage: status?.percentageResulted || '',
-            })}
-            color="error"
-          />
-        );
-      case 'COMPLETE':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.complete')}
-            color="default"
-          />
-        );
-      default:
-        return null;
-    }
-  };
 
   const getTableData = (
     initiativeId: string,
@@ -433,7 +400,7 @@ const InitiativeRefunds = () => {
                       <TableCell>{r.rewardsExported}</TableCell>
                       <TableCell>{r.rewardsResults}</TableCell>
                       <TableCell>{r.successPercentage}</TableCell>
-                      <TableCell>{getRefundStatus(r.status)}</TableCell>
+                      <TableCell>{getRefundStatusChip(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton
                           data-testid="download-file-refunds"

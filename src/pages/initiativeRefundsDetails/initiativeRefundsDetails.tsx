@@ -6,7 +6,7 @@ import {
   Box,
   Breadcrumbs,
   Button,
-  Chip,
+  // Chip,
   FormControl,
   IconButton,
   InputLabel,
@@ -47,8 +47,10 @@ import {
   getExportSummary,
   getRewardFileDownload,
 } from '../../services/intitativeService';
-import { getRefundStatus } from './helpers';
+import { getRefundStatusChip } from '../../helpers';
+import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
+import { getRefundStatus } from './helpers';
 
 const InitiativeRefundsDetails = () => {
   const history = useHistory();
@@ -199,37 +201,6 @@ const InitiativeRefundsDetails = () => {
 
   const handleCloseRefundModal = () => {
     setOpenRefundsDetailModal(false);
-  };
-
-  const getRefundSummaryStatus = (status: string | undefined) => {
-    switch (status) {
-      case 'EXPORTED':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.exported')}
-            color="warning"
-          />
-        );
-      case 'PARTIAL':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.partial')}
-            color="error"
-          />
-        );
-      case 'COMPLETE':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefunds.status.complete')}
-            color="default"
-          />
-        );
-      default:
-        return null;
-    }
   };
 
   const formik = useFormik({
@@ -393,7 +364,12 @@ const InitiativeRefundsDetails = () => {
               {t('pages.initiativeRefundsDetails.recap.status')}
             </Typography>
             <Box sx={{ gridColumn: 'span 7' }}>
-              {detailsSummary?.status ? getRefundSummaryStatus(detailsSummary.status) : '-'}
+              {detailsSummary?.status
+                ? getRefundStatusChip({
+                    status: detailsSummary.status,
+                    percentageResulted: undefined,
+                  })
+                : '-'}
             </Box>
           </Box>
         </Paper>
@@ -406,6 +382,7 @@ const InitiativeRefundsDetails = () => {
           alignItems: 'baseline',
           gap: 2,
           mt: 5,
+          mb: 4,
         }}
       >
         <FormControl sx={{ gridColumn: 'span 8' }}>
@@ -534,7 +511,9 @@ const InitiativeRefundsDetails = () => {
             </Box>
           </Box>
         </Box>
-      ) : null}
+      ) : (
+        <EmptyList message={t('pages.initiativeRefunds.noData')} />
+      )}
     </Box>
   );
 };

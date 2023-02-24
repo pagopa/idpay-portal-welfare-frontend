@@ -5,7 +5,6 @@ import {
   Paper,
   Typography,
   Link,
-  LinearProgress,
   Table,
   TableBody,
   TableRow,
@@ -15,7 +14,6 @@ import {
   IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -44,6 +42,8 @@ import {
   putDispFileUpload,
 } from '../../services/intitativeService';
 import { InitiativeRefundImports } from '../../model/InitiativeRefunds';
+import LoadingFile from '../../components/LoadingFile/LoadingFile';
+import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -164,18 +164,10 @@ const InitiativeRefundsOutcome = () => {
         {...getRootProps({ className: 'dropzone' })}
       >
         <input {...getInputProps()} data-testid="drop-input" />
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
-          <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
-          <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-            {t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}&#160;
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
-          >
-            {t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
-          </Typography>
-        </Box>
+        <InitUploadBox
+          text={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}
+          link={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
+        />
       </Box>
       <Box
         sx={{
@@ -199,36 +191,6 @@ const InitiativeRefundsOutcome = () => {
             {t('pages.initiativeRefundsOutcome.uploadPaper.fileUuploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText> */}
-      </Box>
-    </Box>
-  );
-
-  const LoadingFilePartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          width: '100%',
-          border: '1px solid #E3E7EB',
-          borderRadius: '10px',
-          p: 3,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-        }}
-      >
-        <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')}
-        </Typography>
-        <Box sx={{ gridColumn: 'span 9' }}>
-          <LinearProgress />
-        </Box>
       </Box>
     </Box>
   );
@@ -450,7 +412,11 @@ const InitiativeRefundsOutcome = () => {
           />
         )}
 
-        {fileIsLoading ? LoadingFilePartial : InitStatusPartial}
+        {fileIsLoading ? (
+          <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} />
+        ) : (
+          InitStatusPartial
+        )}
       </Paper>
 
       {rows.length > 0 && (
@@ -495,7 +461,10 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
                         {r.errorsSize > 0 && (
-                          <IconButton data-testid="download-file" onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                          <IconButton
+                            data-testid="download-file"
+                            onClick={() => handleDownloadFile(r.downloadFileInfo)}
+                          >
                             <FileDownloadIcon color="primary" />
                           </IconButton>
                         )}

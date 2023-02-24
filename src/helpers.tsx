@@ -233,3 +233,39 @@ export const cleanDate = (d: Date): string | undefined =>
         .split(' ')[0]
         .substring(0, d.toLocaleString('en-CA').split(' ')[0].length - 1)}T00:00:00Z`
     : undefined;
+
+export const getRefundStatusChip = (status: {
+  status: string | undefined;
+  percentageResulted: string | undefined;
+}) => {
+  switch (status.status) {
+    case 'EXPORTED':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={i18n.t('pages.initiativeRefunds.status.exported')}
+          color="default"
+        />
+      );
+    case 'PARTIAL':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={i18n.t('pages.initiativeRefunds.status.partial', {
+            percentage: status?.percentageResulted || '',
+          })}
+          color="warning"
+        />
+      );
+    case 'COMPLETE':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={i18n.t('pages.initiativeRefunds.status.complete')}
+          color="success"
+        />
+      );
+    default:
+      return null;
+  }
+};

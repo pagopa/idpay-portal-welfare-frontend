@@ -2,10 +2,8 @@ import {
   Alert,
   AlertTitle,
   Box,
-  Chip,
   FormHelperText,
   IconButton,
-  LinearProgress,
   Link,
   Paper,
   Typography,
@@ -14,9 +12,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { ButtonNaked } from '@pagopa/mui-italia';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,7 +23,9 @@ import {
 } from '../../../../services/groupsService';
 import { initiativeIdSelector } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../../../redux/hooks';
-import { formatFileName } from '../../../../helpers';
+import LoadingFile from '../../../LoadingFile/LoadingFile';
+import InitUploadBox from '../../../InitUploadBox/InitUploadBox';
+import AcceptedFile from '../../../AcceptedFile/AcceptedFile';
 
 interface Props {
   action: string;
@@ -228,36 +225,6 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
     setAction('');
   }, [action]);
 
-  const LoadingFilePartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          width: '100%',
-          border: '1px solid #E3E7EB',
-          borderRadius: '10px',
-          p: 3,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-        }}
-      >
-        <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('components.wizard.stepThree.upload.fileIsLoading')}
-        </Typography>
-        <Box sx={{ gridColumn: 'span 9' }}>
-          <LinearProgress />
-        </Box>
-      </Box>
-    </Box>
-  );
-
   const InitStatusPartial = (
     <Box
       sx={{
@@ -281,18 +248,10 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         {...getRootProps({ className: 'dropzone' })}
       >
         <input {...getInputProps()} data-testid="drop-input-step3" />
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
-          <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
-          <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-            {t('components.wizard.stepThree.upload.dragAreaText')}&#160;
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
-          >
-            {t('components.wizard.stepThree.upload.dragAreaLink')}
-          </Typography>
-        </Box>
+        <InitUploadBox
+          text={t('components.wizard.stepThree.upload.dragAreaText')}
+          link={t('components.wizard.stepThree.upload.dragAreaLink')}
+        />
       </Box>
       <Box
         sx={{
@@ -316,57 +275,6 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {t('components.wizard.stepThree.upload.fileUuploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText>
-      </Box>
-    </Box>
-  );
-
-  const FileAcceptedPartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-        my: 1,
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          px: 2,
-          py: 1,
-          borderRadius: '10px',
-          border: '1px solid #E3E7EB',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
-          <CheckCircleIcon color="success" />
-        </Box>
-        <Box sx={{ gridColumn: 'span 4' }}>
-          <Typography variant="body2" fontWeight={600}>
-            {formatFileName(fileName)}
-          </Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 4', textAlign: 'right' }}>
-          <Typography variant="body2">{fileDate}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 3', justifySelf: 'right', px: 2 }}>
-          <Chip label={t('components.wizard.stepThree.upload.validFile')} color="success" />
-        </Box>
-      </Box>
-      <Box sx={{ gridColumn: 'span 12', py: 2 }}>
-        <ButtonNaked
-          size="small"
-          component="button"
-          onClick={setIntiStatus}
-          startIcon={<FileUploadIcon />}
-          sx={{ color: 'primary.main' }}
-          weight="default"
-        >
-          {t('components.wizard.stepThree.upload.changeFile')}
-        </ButtonNaked>
       </Box>
     </Box>
   );
@@ -417,7 +325,19 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         </Alert>
       )}
 
-      {fileIsLoading ? LoadingFilePartial : fileAccepted ? FileAcceptedPartial : InitStatusPartial}
+      {fileIsLoading ? (
+        <LoadingFile message={t('components.wizard.stepThree.upload.fileIsLoading')} />
+      ) : fileAccepted ? (
+        <AcceptedFile
+          fileName={fileName}
+          fileDate={fileDate}
+          chipLabel={t('components.wizard.stepThree.upload.validFile')}
+          buttonLabel={t('components.wizard.stepThree.upload.changeFile')}
+          buttonHandler={setIntiStatus}
+        />
+      ) : (
+        InitStatusPartial
+      )}
       {openDraftSavedToast && (
         <Toast
           open={openDraftSavedToast}
