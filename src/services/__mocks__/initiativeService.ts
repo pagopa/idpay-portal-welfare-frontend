@@ -375,6 +375,7 @@ export const mockedOperationList: TimelineDTO = {
       brandLogo: '',
       idTrxAcquirer: '349589304999',
       idTrxIssuer: '0001923192038',
+      eventId: '111111',
     },
     {
       operationId: '2e2e2e2e2e2e2e2',

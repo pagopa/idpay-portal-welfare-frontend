@@ -3,7 +3,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
 import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { Initiative } from '../../../model/Initiative';
 import { createStore } from '../../../redux/store';
 import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import ConfirmPublishInitiativeModal from '../ConfirmPublishInitiativeModal';
@@ -56,6 +55,8 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
       logoURL: 'logo url',
     },
     beneficiaryRule: {
+      apiKeyClientId: 'string',
+      apiKeyClientAssertion: 'string',
       selfDeclarationCriteria: [],
       automatedCriteria: [],
     },

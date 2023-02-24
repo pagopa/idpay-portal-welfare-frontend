@@ -1,9 +1,17 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
+import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from '../../../api/generated/initiative/TimelineDTO';
+import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { MockedOperationType } from '../../../model/Initiative';
 import ROUTES, { BASE_ROUTE } from '../../../routes';
+import {
+  mockedIbanInfo,
+  mockedOperationList,
+  mockedWallet,
+  mockedWalletInstrument,
+} from '../../../services/__mocks__/initiativeService';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeUserDetails from '../initiativeUserDetails';
 
@@ -155,6 +163,92 @@ describe('test suite initiative user details', () => {
     });
   });
 
+  test('test of render initiativeRefundsDetailsModal', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [
+        {
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'PAID_REFUND',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          circuitType: 'circuito',
+          iban: '',
+          channel: 'App IO',
+          brandLogo: '',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          eventId: 'vvvvvv',
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 3,
+      totalPages: 1,
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+
+    const operationTypeBtn = (await screen.findAllByTestId(
+      'operationTypeBtn'
+    )) as HTMLButtonElement[];
+    fireEvent.click(operationTypeBtn[0]);
+  });
+
+  test('test of render TransactionDetailModal', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [
+        {
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          circuitType: 'circuito',
+          iban: '',
+          channel: 'App IO',
+          brandLogo: '',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          eventId: 'vvvvvv',
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 3,
+      totalPages: 1,
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+
+    const operationTypeBtn = (await screen.findAllByTestId(
+      'operationTypeBtn'
+    )) as HTMLButtonElement[];
+    fireEvent.click(operationTypeBtn[0]);
+  });
+
   test('test of render TransactionDetailModal with path ONBOARDING_KO', () => {
     //@ts-expect-error
     delete global.window.location;
@@ -211,6 +305,111 @@ describe('test suite initiative user details', () => {
       keyCode: 27,
       charCode: 27,
     });
+  });
+
+  test('test else case of getIban without initiaveId in pathName', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E/ONBOARDING_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+    (InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
+      new Promise((resolve) => resolve(mockedIbanInfo))),
+      renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('test else case of getWalletDetails without initiaveId in pathName', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E/ONBOARDING_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+    InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
+      new Promise((resolve) => resolve(mockedWallet));
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('test else case of getInstrumentList without initiaveId in pathName', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E/ONBOARDING_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+    InitiativeApiMocked.getInstrumentList = async (
+      _id: string,
+      _cf: string
+    ): Promise<InstrumentListDTO> => new Promise((resolve) => resolve(mockedWalletInstrument));
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('test else case of getTimeLine without initiaveId in pathName', () => {
+    //@ts-expect-error
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E/ONBOARDING_KO',
+      origin: 'http://localhost:3000/portale-enti',
+      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E/ONBOARDING_KO`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList));
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
   test('test catch case of getIban api call', () => {
