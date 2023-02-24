@@ -29,7 +29,7 @@ describe('test suite initiative user details', () => {
     fireEvent.click(closeModal);
   });
 
-  test('test of component TransactionDetailModal open', async () => {
+  test('test of component TransactionDetailModal closed', async () => {
     renderWithHistoryAndStore(
       <TransactionDetailModal
         operationId={''}
@@ -86,11 +86,128 @@ describe('test suite initiative user details', () => {
           openModal={true}
           handleCloseModal={jest.fn()}
           initiativeId={''}
-          holderBank={''}
+          holderBank={undefined}
           fiscalCode={''}
         />
       );
     });
+  });
+
+  test('test of render TransactionDetailModal with brand', () => {
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          brand: 'undefined',
+          iban: '',
+          channel: 'App IO',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+        })
+      );
+
+    renderWithHistoryAndStore(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={''}
+        holderBank={'undefined'}
+        fiscalCode={''}
+      />
+    );
+  });
+
+  test('test of render TransactionDetailModal with holderBank', () => {
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'ADD_IBAN',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          brand: 'undefined',
+          iban: '',
+          channel: 'App IO',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+        })
+      );
+
+    renderWithHistoryAndStore(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={''}
+        holderBank={'banca'}
+        fiscalCode={''}
+      />
+    );
+  });
+
+  test('test of formatDate condition', () => {
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: 'aaaaa',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          brand: 'undefined',
+          iban: '',
+          channel: 'App IO',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+        })
+      );
+
+    renderWithHistoryAndStore(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={'banca'}
+        holderBank={'banca'}
+        fiscalCode={'banca'}
+      />
+    );
+  });
+
+  test('test catch case of getTimelineDetail not an object', () => {
+    InitiativeApiMocked.getTimelineDetail = async (): Promise<any> =>
+      new Promise<void>((res) => res());
+    renderWithHistoryAndStore(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={''}
+        holderBank={''}
+        fiscalCode={''}
+      />
+    );
   });
 
   test('test catch case of getTimelineDetail api call', () => {
