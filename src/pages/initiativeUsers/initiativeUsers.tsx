@@ -4,7 +4,6 @@ import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import {
   Box,
-  Breadcrumbs,
   Button,
   Chip,
   FormControl,
@@ -19,11 +18,9 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -43,6 +40,7 @@ import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
 import { cleanDate, initiativeUsersAndRefundsValidationSchema } from '../../helpers';
 import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -226,28 +224,17 @@ const InitiativeUsers = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.generalInfo.rankingEnabled === 'true'
-                ? t('breadcrumbs.initiativeUsersRanking')
-                : t('breadcrumbs.initiativeUsers')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[
+            initiativeSel.initiativeName,
+            initiativeSel.generalInfo.rankingEnabled === 'true'
+              ? t('breadcrumbs.initiativeUsersRanking')
+              : t('breadcrumbs.initiativeUsers'),
+          ]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
             title={

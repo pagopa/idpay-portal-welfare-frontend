@@ -1,7 +1,6 @@
 /* eslint-disable functional/no-let */
 import {
   Alert,
-  Breadcrumbs,
   Button,
   FormControl,
   InputLabel,
@@ -19,9 +18,8 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { matchPath, useHistory } from 'react-router-dom';
+import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
@@ -51,12 +49,12 @@ import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
 import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
-  const history = useHistory();
   const { t } = useTranslation();
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [accrued, setAccrued] = useState<number | undefined>(undefined);
@@ -453,29 +451,11 @@ const InitiativeUserDetails = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/utenti-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeUsers')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeUserDetails')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {cf}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[t('breadcrumbs.initiativeUsers'), t('breadcrumbs.initiativeUserDetails'), cf]}
+        />
       </Box>
       <Box
         sx={{

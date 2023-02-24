@@ -2,7 +2,6 @@
 /* eslint-disable functional/no-let */
 import {
   Box,
-  Breadcrumbs,
   Button,
   FormControl,
   IconButton,
@@ -16,13 +15,11 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 // import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
@@ -49,6 +46,7 @@ import { getExportsPaged } from '../../services/intitativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -221,26 +219,12 @@ const InitiativeRefunds = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRefunds')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeRefunds')]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeRefunds.title')}

@@ -1,6 +1,5 @@
 import {
   Box,
-  Breadcrumbs,
   // FormHelperText,
   Paper,
   Typography,
@@ -13,16 +12,14 @@ import {
   Alert,
   IconButton,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
-import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useDropzone } from 'react-dropzone';
 import { useEffect, useState } from 'react';
@@ -44,10 +41,10 @@ import {
 import { InitiativeRefundImports } from '../../model/InitiativeRefunds';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
-  const history = useHistory();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const [fileIsLoading, setFileIsLoading] = useState(false);
@@ -329,29 +326,16 @@ const InitiativeRefundsOutcome = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRefunds')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRefundsOutcome')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/rimborsi-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[
+            initiativeSel.initiativeName,
+            t('breadcrumbs.initiativeRefunds'),
+            t('breadcrumbs.initiativeRefundsOutcome'),
+          ]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeRefundsOutcome.title')}
