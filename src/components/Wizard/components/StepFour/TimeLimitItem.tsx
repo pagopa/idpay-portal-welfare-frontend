@@ -242,6 +242,7 @@ const TimeLimitItem = ({
           startIcon={<AddIcon />}
           sx={{ color: 'primary.main' }}
           weight="default"
+          data-testid="addTimeLimitItem-test"
         >
           {t('components.wizard.stepFour.form.addTimeLimitItem')}
         </ButtonNaked>
