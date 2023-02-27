@@ -26,6 +26,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 import LoadingFile from '../../../LoadingFile/LoadingFile';
 import InitUploadBox from '../../../InitUploadBox/InitUploadBox';
 import AcceptedFile from '../../../AcceptedFile/AcceptedFile';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
 
 interface Props {
   action: string;
@@ -281,27 +282,12 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepThree.upload.title')}</Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">
-            {t('components.wizard.stepThree.upload.subTitle')}
-          </Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.fileUpload')}
-            target="_blank"
-            underline="none"
-            variant="body2"
-          >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
-        </Box>
-      </Box>
+      <TitleBoxWithHelpLink
+        title={t('components.wizard.stepThree.upload.title')}
+        subtitle={t('components.wizard.stepThree.upload.subTitle')}
+        helpLink={t('helpStaticUrls.wizard.fileUpload')}
+        helpLabel={t('components.wizard.common.links.findOut')}
+      />
 
       {fileRejected && (
         <Alert

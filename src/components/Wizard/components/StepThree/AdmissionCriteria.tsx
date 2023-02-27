@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Typography, Link } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -24,6 +24,7 @@ import {
   putBeneficiaryRuleDraftService,
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -390,29 +391,13 @@ const AdmissionCriteria = ({
   return (
     <>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6">
-            {t('components.wizard.stepThree.chooseCriteria.title')}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', pb: 2 }}>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body2">
-              {t('components.wizard.stepThree.chooseCriteria.subtitle')}
-            </Typography>
-          </Box>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Link
-              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href={t('helpStaticUrls.wizard.admissionCriteria')}
-              target="_blank"
-              underline="none"
-              variant="body2"
-            >
-              {t('components.wizard.common.links.findOut')}
-            </Link>
-          </Box>
-        </Box>
+        <TitleBoxWithHelpLink
+          title={t('components.wizard.stepThree.chooseCriteria.title')}
+          subtitle={t('components.wizard.stepThree.chooseCriteria.subtitle')}
+          helpLink={t('helpStaticUrls.wizard.admissionCriteria')}
+          helpLabel={t('components.wizard.common.links.findOut')}
+        />
+
         <Box
           sx={{
             display: 'grid',

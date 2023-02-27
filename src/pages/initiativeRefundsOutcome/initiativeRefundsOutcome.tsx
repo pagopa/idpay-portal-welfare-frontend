@@ -3,7 +3,6 @@ import {
   // FormHelperText,
   Paper,
   Typography,
-  Link,
   Table,
   TableBody,
   TableRow,
@@ -46,6 +45,7 @@ import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesTableContainerStyle,
 } from '../../helpers';
+import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHalpLink';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -354,29 +354,12 @@ const InitiativeRefundsOutcome = () => {
       )}
 
       <Paper sx={{ display: 'grid', width: '100%', mt: 2, px: 3 }}>
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6">
-            {t('pages.initiativeRefundsOutcome.uploadPaper.title')}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body2">
-              {t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
-            </Typography>
-          </Box>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Link
-              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
-              target="_blank"
-              underline="none"
-              variant="body2"
-            >
-              {t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
-            </Link>
-          </Box>
-        </Box>
+        <TitleBoxWithHelpLink
+          title={t('pages.initiativeRefundsOutcome.uploadPaper.title')}
+          subtitle={t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
+          helpLink={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
+          helpLabel={t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
+        />
 
         {fileRejected && (
           <Toast
