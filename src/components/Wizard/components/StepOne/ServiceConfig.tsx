@@ -1,6 +1,5 @@
 import {
   Box,
-  Link,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -41,6 +40,7 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
 import UploadServiceIcon from './UploadServiceIcon';
@@ -326,25 +326,13 @@ const ServiceConfig = ({
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
       />
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepOne.subtitle')}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.serviceConfig')}
-            target="_blank"
-            underline="none"
-            variant="body2"
-          >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
-        </Box>
-      </Box>
+
+      <TitleBoxWithHelpLink
+        title={t('components.wizard.stepOne.title')}
+        subtitle={t('components.wizard.stepOne.subtitle')}
+        helpLink={t('helpStaticUrls.wizard.serviceConfig')}
+        helpLabel={t('components.wizard.common.links.findOut')}
+      />
 
       <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', pb: 2 }}>
         <FormControlLabel
