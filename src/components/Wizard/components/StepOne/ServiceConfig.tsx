@@ -40,7 +40,7 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
-import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
 import UploadServiceIcon from './UploadServiceIcon';

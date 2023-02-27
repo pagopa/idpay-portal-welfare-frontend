@@ -45,7 +45,7 @@ import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesTableContainerStyle,
 } from '../../helpers';
-import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();

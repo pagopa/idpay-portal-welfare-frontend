@@ -30,7 +30,7 @@ import {
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
 } from '../../../../services/intitativeService';
-import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {

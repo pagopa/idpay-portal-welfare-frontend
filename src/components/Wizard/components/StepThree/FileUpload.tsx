@@ -26,7 +26,7 @@ import { useAppSelector } from '../../../../redux/hooks';
 import LoadingFile from '../../../LoadingFile/LoadingFile';
 import InitUploadBox from '../../../InitUploadBox/InitUploadBox';
 import AcceptedFile from '../../../AcceptedFile/AcceptedFile';
-import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 
 interface Props {
   action: string;

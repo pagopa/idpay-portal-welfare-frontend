@@ -24,7 +24,7 @@ import {
   putBeneficiaryRuleDraftService,
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {

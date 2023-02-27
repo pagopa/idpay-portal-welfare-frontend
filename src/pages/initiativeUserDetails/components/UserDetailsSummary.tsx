@@ -68,7 +68,7 @@ const UserDetailsSummary = ({
             <Typography
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6', mb: 1 }}
               variant="overline"
-              color="text.secondary"
+              color="text.primary"
             >
               {t('pages.initiativeUserDetails.summary')}
             </Typography>
@@ -172,7 +172,7 @@ const UserDetailsSummary = ({
             <Typography
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6', mb: 1 }}
               variant="overline"
-              color="text.secondary"
+              color="text.primary"
             >
               {t('pages.initiativeUserDetails.refundDetail')}
             </Typography>

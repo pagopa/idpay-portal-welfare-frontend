@@ -49,7 +49,7 @@ import {
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
-import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHalpLink';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
