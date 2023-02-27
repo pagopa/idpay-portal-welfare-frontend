@@ -7,6 +7,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import { Dispatch, SetStateAction } from 'react';
+import { grey } from '@mui/material/colors';
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import {
@@ -276,4 +277,16 @@ export const handleUpdateFromToFieldState = (
   const valueNumber = typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
   const newState = { ...data, [key]: valueNumber };
   setData({ ...newState });
+};
+
+export const boxItemStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(24, 1fr)',
+  alignItems: 'start',
+  borderColor: grey.A200,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: 2,
+  my: 3,
+  p: 3,
 };

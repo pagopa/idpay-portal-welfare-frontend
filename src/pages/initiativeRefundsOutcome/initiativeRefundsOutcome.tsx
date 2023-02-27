@@ -42,6 +42,10 @@ import { InitiativeRefundImports } from '../../model/InitiativeRefunds';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import {
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativePagesTableContainerStyle,
+} from '../../helpers';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -318,14 +322,7 @@ const InitiativeRefundsOutcome = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/rimborsi-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
@@ -423,15 +420,7 @@ const InitiativeRefundsOutcome = () => {
       )}
 
       {rows.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>

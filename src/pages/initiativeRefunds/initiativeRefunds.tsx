@@ -40,7 +40,10 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getRefundStatusChip,
   initiativeUsersAndRefundsValidationSchema,
+  initiativePagesFiltersFormContainerStyle,
   numberWithCommas,
+  initiativePagesTableContainerStyle,
+  initiativePagesBreadcrumbsContainerStyle,
 } from '../../helpers';
 import { getExportsPaged } from '../../services/intitativeService';
 import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
@@ -191,11 +194,6 @@ const InitiativeRefunds = () => {
     }
   };
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   resetForm();
-  // }, [id]);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
@@ -211,14 +209,7 @@ const InitiativeRefunds = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
@@ -249,16 +240,7 @@ const InitiativeRefunds = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-          mb: 4,
-        }}
-      >
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
@@ -351,15 +333,7 @@ const InitiativeRefunds = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>

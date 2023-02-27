@@ -33,7 +33,13 @@ import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO'
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
-import { formatedCurrency, formatIban } from '../../helpers';
+import {
+  formatedCurrency,
+  formatIban,
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+} from '../../helpers';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -239,10 +245,8 @@ const InitiativeRefundsDetails = () => {
     <Box sx={{ width: '100%', p: 2 }}>
       <Box
         sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
+          ...initiativePagesBreadcrumbsContainerStyle,
+          mb: 5,
         }}
       >
         <BreadcrumbsBox
@@ -356,17 +360,7 @@ const InitiativeRefundsDetails = () => {
           </Box>
         </Paper>
       </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-          mt: 5,
-          mb: 4,
-        }}
-      >
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 8' }}>
           <TextField
             label={t('pages.initiativeRefundsDetails.form.cro')}
@@ -429,11 +423,7 @@ const InitiativeRefundsDetails = () => {
       {rows.length > 0 ? (
         <Box
           sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
+            ...initiativePagesTableContainerStyle,
             mt: 3,
           }}
         >

@@ -1,7 +1,6 @@
 import { Box, FormControl, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -16,6 +15,7 @@ import {
   setError,
   setErrorText,
   handleUpdateFromToFieldState,
+  boxItemStyle,
 } from './helpers';
 
 type Props = {
@@ -87,20 +87,7 @@ const SpendingLimitItem = ({
   });
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="spending-limit-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="spending-limit-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>
