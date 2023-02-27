@@ -37,6 +37,9 @@ import {
   formatStringToDate,
   getTimeLineMaskedPan,
   initiativeUsersAndRefundsValidationSchema,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  initiativePagesBreadcrumbsContainerStyle,
 } from '../../helpers';
 import {
   getInstrumentList,
@@ -443,14 +446,7 @@ const InitiativeUserDetails = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
@@ -540,16 +536,8 @@ const InitiativeUserDetails = () => {
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(24, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-        }}
-      >
-        <FormControl sx={{ gridColumn: 'span 10' }} size="small">
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
+        <FormControl sx={{ gridColumn: 'span 6' }} size="small">
           <InputLabel>{t('pages.initiativeUserDetails.filterEvent')}</InputLabel>
           <Select
             id="filterEvent"
@@ -594,7 +582,7 @@ const InitiativeUserDetails = () => {
             </MenuItem>
           </Select>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 5' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.from')}
@@ -616,7 +604,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 5' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.to')}
@@ -638,7 +626,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
           <Button
             sx={{ height: '44.5px' }}
             variant="outlined"
@@ -649,7 +637,7 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUsers.form.filterBtn')}
           </Button>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
           <ButtonNaked
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
@@ -661,16 +649,7 @@ const InitiativeUserDetails = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            mt: 3,
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>

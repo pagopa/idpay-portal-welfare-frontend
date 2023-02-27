@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react';
+import { grey } from '@mui/material/colors';
 import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
@@ -257,4 +258,16 @@ export const mapCriteriaToSend = (
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],
   };
+};
+
+export const boxItemStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
+  borderColor: grey.A200,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: 2,
+  my: 3,
+  p: 3,
 };

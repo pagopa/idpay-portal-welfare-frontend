@@ -16,13 +16,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { grey } from '@mui/material/colors';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
-import _ from 'lodash';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
+  boxItemStyle,
   handleCriteriaToSubmit,
   setError,
   setErrorText,
@@ -130,20 +129,7 @@ const IseeCriteriaItem = ({
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="isee-criteria-test"
-    >
+    <Box sx={boxItemStyle} data-testid="isee-criteria-test">
       <Box
         sx={{
           gridColumn:
@@ -197,7 +183,11 @@ const IseeCriteriaItem = ({
         </Box>
       )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)} data-testid="delete-button-test">
+        <IconButton
+          data-id={formData.code}
+          onClick={(event: any) => handleCriteriaRemoved(event)}
+          data-testid="delete-button-test"
+        >
           <DeleteOutlineIcon
             color="error"
             data-id={formData.code}

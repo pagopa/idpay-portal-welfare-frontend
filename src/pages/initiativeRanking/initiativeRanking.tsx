@@ -45,7 +45,12 @@ import {
   notifyCitizenRankings,
 } from '../../services/intitativeService';
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
-import { numberWithCommas } from '../../helpers';
+import {
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  numberWithCommas,
+} from '../../helpers';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import EmptyList from '../components/EmptyList';
@@ -273,11 +278,6 @@ const InitiativeRanking = () => {
     }
   };
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   resetForm();
-  // }, [id]);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
@@ -300,14 +300,7 @@ const InitiativeRanking = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
@@ -468,16 +461,7 @@ const InitiativeRanking = () => {
       </Box>
 
       {rankingStatus !== 'WAITING_END' && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'baseline',
-            gap: 2,
-            mb: 4,
-          }}
-        >
+        <Box sx={initiativePagesFiltersFormContainerStyle}>
           <FormControl sx={{ gridColumn: 'span 4' }}>
             <TextField
               label={t('pages.initiativeUsers.form.search')}
@@ -551,15 +535,7 @@ const InitiativeRanking = () => {
       )}
 
       {rankingStatus !== 'WAITING_END' && rows.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>

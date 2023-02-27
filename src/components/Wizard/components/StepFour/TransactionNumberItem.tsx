@@ -2,7 +2,6 @@ import { Box, IconButton, Typography, FormControl, TextField } from '@mui/materi
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormik } from 'formik';
@@ -15,6 +14,7 @@ import {
   setError,
   setErrorText,
   handleUpdateFromToFieldState,
+  boxItemStyle,
 } from './helpers';
 
 type Props = {
@@ -89,20 +89,7 @@ const TransactionNumberItem = ({
   });
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="transaction-number-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="transaction-number-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>

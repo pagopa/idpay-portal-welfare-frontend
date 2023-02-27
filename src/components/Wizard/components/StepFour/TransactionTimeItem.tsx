@@ -13,7 +13,6 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { grey } from '@mui/material/colors';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
@@ -21,7 +20,7 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { DaysOfWeekInterval } from '../../../../model/Initiative';
-import { handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
+import { boxItemStyle, handleShopRulesToSubmit, renderShopRuleIcon } from './helpers';
 
 type Props = {
   title: string;
@@ -150,20 +149,7 @@ const TransactionTimeItem = ({
   }, [formik.values.transactionTime]);
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="spending-limit-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="spending-limit-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>
