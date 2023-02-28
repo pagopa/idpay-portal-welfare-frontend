@@ -3702,7 +3702,7 @@ components:
           type: number
         status:
           type: string
-        eventId:
+        externalId:
           type: string
     RefundDetailDTO:
       type: object
