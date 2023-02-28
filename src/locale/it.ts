@@ -501,6 +501,7 @@ export default {
       status: {
         exported: 'Esiti da caricare',
         partial: 'Esiti parziali ({{percentage}}%)',
+        partialNoPerc: 'Esiti parziali',
         complete: 'Completato',
       },
       uploadFile: {
