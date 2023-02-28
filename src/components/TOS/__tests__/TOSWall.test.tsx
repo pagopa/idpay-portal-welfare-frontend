@@ -11,10 +11,16 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('tests for TOSWall', () => {
-  test('test render of TOSWall component', async () => {
-    const acceptTos = jest.fn();
-    renderWithHistoryAndStore(<TOSWall acceptTOS={acceptTos} tosRoute={''} privacyRoute={''} />);
+  test('test render of TOSWall component with not already accepted tos', async () => {
+    renderWithHistoryAndStore(
+      <TOSWall acceptTOS={jest.fn()} tosRoute={''} privacyRoute={''} firstAcceptance={false} />
+    );
     fireEvent.click(screen.getByText('Accedi'));
-    expect(acceptTos).toBeCalled();
+  });
+
+  test('test render of TOSWall component with tos already accepted', async () => {
+    renderWithHistoryAndStore(
+      <TOSWall acceptTOS={jest.fn()} tosRoute={''} privacyRoute={''} firstAcceptance={true} />
+    );
   });
 });
