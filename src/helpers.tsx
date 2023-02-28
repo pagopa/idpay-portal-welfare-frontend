@@ -251,9 +251,13 @@ export const getRefundStatusChip = (status: {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefunds.status.partial', {
-            percentage: status?.percentageResulted || '',
-          })}
+          label={
+            status.percentageResulted
+              ? i18n.t('pages.initiativeRefunds.status.partial', {
+                  percentage: status?.percentageResulted || '',
+                })
+              : i18n.t('pages.initiativeRefunds.status.partialNoPerc')
+          }
           color="warning"
         />
       );

@@ -3702,6 +3702,8 @@ components:
           type: number
         status:
           type: string
+        externalId:
+          type: string
     RefundDetailDTO:
       type: object
       properties:

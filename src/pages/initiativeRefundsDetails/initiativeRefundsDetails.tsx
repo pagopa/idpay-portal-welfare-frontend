@@ -455,7 +455,7 @@ const InitiativeRefundsDetails = () => {
                       <TableCell align="right">
                         <IconButton
                           data-testid="open-modal-refunds-arrow"
-                          onClick={() => handleOpenRefundModal(r.id)}
+                          onClick={() => handleOpenRefundModal(r.externalId)}
                         >
                           <ArrowForwardIos color="primary" />
                         </IconButton>
