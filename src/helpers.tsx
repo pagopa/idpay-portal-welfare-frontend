@@ -226,13 +226,12 @@ export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
     }),
 });
 
-export const cleanDate = (d: Date): string | undefined =>
-  d.toLocaleString('en-CA').split(' ')[0].length > 0
-    ? `${d
-        .toLocaleString('en-CA')
-        .split(' ')[0]
-        .substring(0, d.toLocaleString('en-CA').split(' ')[0].length - 1)}T00:00:00Z`
+export const cleanDate = (d: Date, mod: 'start' | 'end'): string | undefined => {
+  const hours = mod === 'start' ? 'T00:00:00Z' : 'T23:59:59Z';
+  return d.toLocaleDateString('fr-CA').length > 0
+    ? `${d.toLocaleDateString('fr-CA')}${hours}`
     : undefined;
+};
 
 export const getRefundStatusChip = (status: {
   status: string | undefined;

@@ -166,13 +166,15 @@ const InitiativeUserDetails = () => {
     setLoading(true);
     getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
       .then((res) => {
-        const rowsData: Array<any> = res.operationList.map((r) => r);
-
+        const rowsData: Array<any> = res.operationList.map((r: any) => r);
+        console.log(rowsData);
+        if (Array.isArray(rowsData) && rowsData.length > 0) {
+          setRows(rowsData);
+        } else {
+          setRows([]);
+        }
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
-        }
-        if (Array.isArray(rowsData)) {
-          setRows(rowsData);
         }
         if (typeof res.pageSize === 'number') {
           setRowsPerPage(res.pageSize);
@@ -182,6 +184,7 @@ const InitiativeUserDetails = () => {
         }
       })
       .catch((error) => {
+        setRows([]);
         addError({
           id: 'GET_INITIATIVE_USER_DETAILS_OPERATION_LIST',
           blocking: false,
@@ -212,12 +215,12 @@ const InitiativeUserDetails = () => {
       if (typeof id === 'string' && typeof cf === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr = cleanDate(searchFrom);
+          searchFromStr = cleanDate(searchFrom, 'start');
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr = cleanDate(searchTo);
+          searchToStr = cleanDate(searchTo, 'end');
           setFilterByDateTo(searchToStr);
         }
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;

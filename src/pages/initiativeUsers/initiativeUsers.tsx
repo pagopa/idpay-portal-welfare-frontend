@@ -40,10 +40,10 @@ import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
 import {
   cleanDate,
-  initiativeUsersAndRefundsValidationSchema,
   initiativePagesFiltersFormContainerStyle,
   initiativePagesTableContainerStyle,
   initiativePagesBreadcrumbsContainerStyle,
+  initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
@@ -180,12 +180,12 @@ const InitiativeUsers = () => {
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr = cleanDate(searchFrom);
+          searchFromStr = cleanDate(searchFrom, 'start');
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr = cleanDate(searchTo);
+          searchToStr = cleanDate(searchTo, 'end');
           setFilterByDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;

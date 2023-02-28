@@ -133,10 +133,12 @@ const InitiativeRefunds = () => {
       });
   };
 
-  const parseDateformat = (d: Date): string | undefined =>
-    d.toLocaleString('en-CA').split(' ')[0].length > 0
-      ? `${d.toLocaleString('en-CA').split(',')[0]}`
-      : undefined;
+  const parseDateFormat = (d: Date | undefined) => {
+    if (d instanceof Date && d.toLocaleDateString('fr-CA').length > 0) {
+      return `${d.toLocaleDateString('fr-CA')}`;
+    }
+    return undefined;
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -153,13 +155,12 @@ const InitiativeRefunds = () => {
       if (typeof id === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr = parseDateformat(searchFrom);
-
+          searchFromStr = parseDateFormat(searchFrom);
           setFilterByNotificationDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr = parseDateformat(searchTo);
+          searchToStr = parseDateFormat(searchTo);
           setFilterByNotificationDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
