@@ -167,7 +167,6 @@ const InitiativeUserDetails = () => {
     getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
       .then((res) => {
         const rowsData: Array<any> = res.operationList.map((r: any) => r);
-        console.log(rowsData);
         if (Array.isArray(rowsData) && rowsData.length > 0) {
           setRows(rowsData);
         } else {

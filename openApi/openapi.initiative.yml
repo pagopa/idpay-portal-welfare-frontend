@@ -3427,7 +3427,6 @@ components:
     TimelineDTO:
       type: object
       required:
-        - lastUpdate
         - operationList
       properties:
         lastUpdate:
