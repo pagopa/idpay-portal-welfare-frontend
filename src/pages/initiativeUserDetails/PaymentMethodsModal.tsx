@@ -68,7 +68,7 @@ const PaymentMethodsModal = ({
             <Box sx={{ gridColumn: 'span 12' }}>
               <IconButton
                 color="default"
-                aria-label="close mcc modal"
+                aria-label="close modal"
                 component="span"
                 onClick={(e: any) => {
                   handleClosePaymentMethodModal(e);

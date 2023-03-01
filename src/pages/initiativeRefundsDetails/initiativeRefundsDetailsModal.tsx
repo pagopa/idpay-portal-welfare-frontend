@@ -187,7 +187,15 @@ const InitiativeRefundsDetailsModal = ({
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    wordWrap: 'break-word',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    fontWeight: 600,
+                  }}
+                >
                   {refundEventDetails?.cro}
                 </Typography>
               </Box>

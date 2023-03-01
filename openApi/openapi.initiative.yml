@@ -3693,15 +3693,13 @@ components:
     ExportDetailDTO:
       type: object
       properties:
-        id:
-          type: string
         iban:
           type: string
         amount:
           type: number
         status:
           type: string
-        externalId:
+        eventId:
           type: string
     RefundDetailDTO:
       type: object
