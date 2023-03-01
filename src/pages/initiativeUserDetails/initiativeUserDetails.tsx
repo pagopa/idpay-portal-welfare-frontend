@@ -689,7 +689,7 @@ const InitiativeUserDetails = () => {
                             textAlign: 'left',
                           }}
                           onClick={() => {
-                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.externalId);
+                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
                           }}
                         >
                           {operationTypeLabel(r.operationId, r.operationType, r)}
