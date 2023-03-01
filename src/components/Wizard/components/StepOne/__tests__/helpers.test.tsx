@@ -1,5 +1,6 @@
 import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { mockedServiceInfoData } from '../../../../../services/__mocks__/initiativeService';
 import { parseDataToSend } from '../helpers';
 const mockedDataToSendChannelsUndefined = {
   channels: [
@@ -26,20 +27,6 @@ const mockedDataToSendAssistanceEmpty = {
   assistanceChannels: [
     { type: '', contact: '' },
     { type: '', contact: '' },
-  ],
-};
-
-const mockedServiceInfoData = {
-  initiativeOnIO: true,
-  serviceName: 'newStepOneTest',
-  serviceScope: ServiceScopeEnum.NATIONAL,
-  serviceDescription: 'newStepOneTest',
-  privacyPolicyUrl: 'http://test.it',
-  termsAndConditions: 'http://test.it',
-  channels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
-  assistanceChannels: [
-    { type: 'web', contact: 'string' },
-    { type: 'web', contact: 'string' },
   ],
 };
 
