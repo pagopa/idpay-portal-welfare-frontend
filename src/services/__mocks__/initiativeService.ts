@@ -518,12 +518,12 @@ export const mockedInitiativeBeneficiaryRuleBody = {
 };
 
 export const mockedServiceInfoData = {
-  serviceIO: true,
+  initiativeOnIO: true,
   serviceName: 'newStepOneTest',
   serviceScope: ServiceScopeEnum.NATIONAL,
-  description: 'newStepOneTest',
-  privacyLink: 'http://test.it',
-  tcLink: 'http://test.it',
+  serviceDescription: 'newStepOneTest',
+  privacyPolicyUrl: 'http://test.it',
+  termsAndConditions: 'http://test.it',
   channels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
 };
 
