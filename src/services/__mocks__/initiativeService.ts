@@ -360,7 +360,7 @@ export const mockedWalletInstrument = {
 };
 
 export const mockedOperationList: TimelineDTO = {
-  lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+  // lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
   operationList: [
     {
       operationId: '1u1u1u1u1u1u1u',

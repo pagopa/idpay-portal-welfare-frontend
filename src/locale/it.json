@@ -667,7 +667,19 @@
           "modal": {
             "subtitle": "In questa lista trovi i criteri che possono essere verificati in automatico tramite gli Enti che detengono le informazioni.",
             "addButton": "Aggiungi",
-            "searchCriteria": "Cerca criteri"
+            "searchCriteria": "Cerca criteri",
+            "isee": {
+              "fieldLabel": "ISEE",
+              "authorityLabel": "INPS"
+            },
+            "birthDate": {
+              "fieldLabel": "Data di nascita",
+              "authorityLabel": "Ministero dell'interno"
+            },
+            "residency": {
+              "fieldLabel": "Residenza",
+              "authorityLabel": "Ministero dell'interno"
+            }
           },
           "admissionCriteriaAdded": "Criteri aggiunti",
           "manualCriteriaAdded": "Criteri manuali",
@@ -736,7 +748,35 @@
         "rulesAddedTitle": "regole aggiunte",
         "modal": {
           "title": "Aggiungi regola",
-          "subtitle": "Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato."
+          "subtitle": "Le regole ti permettono di definire quali transazioni riconoscere ai fini dell’iniziativa e come usufruire dell’importo erogato.",
+          "threshold": {
+            "title": "Limite di spesa",
+            "description": "Definisci importo minimo o massimo"
+          },
+          "mcc": {
+            "title": "Merchant Category Code",
+            "description": "Ammetti o escludi categorie"
+          },
+          "ateco": {
+            "title": "Codice Ateco",
+            "description": "Ammetti o escludi categorie"
+          },
+          "trxcount": {
+            "title": "Numero di transazioni",
+            "description": "Definisci un minimo o massimo"
+          },
+          "rewardLimit": {
+            "title": "Limite temporale",
+            "description": "Definisci un massimale ricorrente"
+          },
+          "daysHoursWeek": {
+            "title": "Orario della transazione",
+            "description": "Definisci una fascia oraria di validità"
+          },
+          "gis": {
+            "title": "Area geografica",
+            "description": "Scegli la zona di operatività"
+          }
         },
         "mccModal": {
           "title": "Elenco categorie merceologiche",
