@@ -8,6 +8,7 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import { Dispatch, SetStateAction } from 'react';
 import { grey } from '@mui/material/colors';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import {
@@ -93,24 +94,54 @@ export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesMod
     if (r.hasOwnProperty('code') && typeof r.code !== undefined) {
       switch (r.code) {
         case 'THRESHOLD':
-          return makeObject(r, 'Limite di spesa', 'Definisci importo minimo o massimo', true);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.threshold.title'),
+            i18n.t('components.wizard.stepFour.modal.threshold.description'),
+            true
+          );
         case 'MCC':
-          return makeObject(r, 'Merchant Category Code', 'Ammetti o escludi categorie', true);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.mcc.title'),
+            i18n.t('components.wizard.stepFour.modal.mcc.description'),
+            true
+          );
         case 'ATECO':
-          return makeObject(r, 'Codice Ateco', 'Ammetti o escludi categorie', false);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.ateco.title'),
+            i18n.t('components.wizard.stepFour.modal.ateco.desctiption'),
+            false
+          );
         case 'TRXCOUNT':
-          return makeObject(r, 'Numero di transazioni', 'Definisci un minimo o massimo', true);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.trxcount.title'),
+            i18n.t('components.wizard.stepFour.modal.trxcount.description'),
+            true
+          );
         case 'REWARDLIMIT':
-          return makeObject(r, 'Limite temporale', 'Definisci un massimale ricorrente', true);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.rewardLimit.title'),
+            i18n.t('components.wizard.stepFour.modal.rewardLimit.description'),
+            true
+          );
         case 'DAYHOURSWEEK':
           return makeObject(
             r,
-            'Orario della transazione',
-            'Definisci una fascia oraria di validità',
+            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.title'),
+            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.description'),
             true
           );
         case 'GIS':
-          return makeObject(r, 'Area geografica', 'Scegli la zona di operativà', false);
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.gis.title'),
+            i18n.t('components.wizard.stepFour.modal.gis.description'),
+            false
+          );
         default:
           return makeDefaultObject();
       }
