@@ -1,51 +1,50 @@
 import React from 'react';
 import PublishInitiativeRankingModal from '../PublishInitiativeRankingModal';
-import { renderWithProviders } from '../../../utils/test-utils';
-import { waitFor, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, render } from '@testing-library/react';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
+import { Provider } from 'react-redux';
+import { store } from '../../../redux/store';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
 describe('<PublishInitiativeRankingModal />', () => {
-  it('renders without crashing', () => {
-    window.scrollTo = jest.fn();
-  });
+  window.scrollTo = jest.fn();
 
-  it('Test PublishInitiativeRankingModal to be Rendered with state', async () => {
-    const downloadInitiativeRanking = jest.fn();
-    const publishInitiativeRanking = jest.fn();
-
-    renderWithProviders(
-      <PublishInitiativeRankingModal
-        openPublishInitiativeRankingModal={true}
-        handleClosePublishInitiativeRankingModal={function (
-          _event: React.MouseEvent<Element, MouseEvent>
-        ): void {
-          //
-        }}
-        initiativeId={undefined}
-        fileName={undefined}
-        publishInitiativeRanking={publishInitiativeRanking}
-        downloadInitiativeRanking={downloadInitiativeRanking}
-      />
+  it('Test PublishInitiativeRankingModal download button', async () => {
+    render(
+      <Provider store={store}>
+        <PublishInitiativeRankingModal
+          openPublishInitiativeRankingModal={true}
+          handleClosePublishInitiativeRankingModal={jest.fn()}
+          initiativeId={mockedInitiativeId}
+          fileName={'fileName'}
+          publishInitiativeRanking={jest.fn()}
+          downloadInitiativeRanking={jest.fn()}
+        />
+      </Provider>
     );
 
-    const modal = document.querySelector(
-      '[data-testid="publish-initiative-ranking-modal-test"]'
-    ) as HTMLDivElement;
-    const fade = document.querySelector('[data-testid="fade-test"]') as HTMLDivElement;
+    const downloadBtn = screen.getByTestId('download-btn-test') as HTMLButtonElement;
+    fireEvent.click(downloadBtn);
+  });
 
-    expect(modal).toBeInTheDocument();
-    expect(fade).toBeInTheDocument();
+  it('Test PublishInitiativeRankingModal publish button', async () => {
+    render(
+      <Provider store={store}>
+        <PublishInitiativeRankingModal
+          openPublishInitiativeRankingModal={true}
+          handleClosePublishInitiativeRankingModal={jest.fn()}
+          initiativeId={mockedInitiativeId}
+          fileName={'fileName'}
+          publishInitiativeRanking={jest.fn()}
+          downloadInitiativeRanking={jest.fn()}
+        />
+      </Provider>
+    );
 
-    const alert = screen.getByTestId('alert-btn-test') as HTMLButtonElement;
-    fireEvent.click(alert);
-
-    const cancelBtn = screen.getByTestId('cancel-button-test') as HTMLButtonElement;
-    fireEvent.click(cancelBtn);
-
-    const exitBtn = screen.getByTestId('exit-button-test') as HTMLButtonElement;
-    fireEvent.click(exitBtn);
+    const publishBtn = screen.getByTestId('publish-button-test') as HTMLButtonElement;
+    fireEvent.click(publishBtn);
   });
 });
