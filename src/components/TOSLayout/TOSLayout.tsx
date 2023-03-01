@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLocation } from 'react-router-dom';
 import { Footer } from '@pagopa/selfcare-common-frontend';
-import Header from '../Header';
+import Header from '../Header/Header';
 import ROUTES from '../../routes';
 
 type Props = {
