@@ -525,6 +525,7 @@ export const mockedServiceInfoData = {
   privacyPolicyUrl: 'http://test.it',
   termsAndConditions: 'http://test.it',
   channels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+  assistanceChannels: [{ type: 'web', contact: 'string' }],
 };
 
 export const mockedRefundRules = {
