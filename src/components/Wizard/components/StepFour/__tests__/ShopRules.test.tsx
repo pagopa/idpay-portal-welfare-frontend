@@ -4,14 +4,10 @@ import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { AccumulatedTypeEnum } from '../../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ConfigTrxRuleArrayDTO } from '../../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
-import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeRewardAndTrxRulesDTO } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import Layout from '../../../../../components/Layout/Layout';
-import { Initiative } from '../../../../../model/Initiative';
 import {
   saveDaysOfWeekIntervals,
   saveMccFilter,
@@ -23,10 +19,8 @@ import {
 } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
-import { mockedTransactionRules } from '../../../../../services/__mocks__/transactionRuleService';
-import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
-import { checkRewardLimitsChecked } from '../helpers';
 import ShopRules from '../ShopRules';
 
 beforeEach(() => {
@@ -110,29 +104,22 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     // delete btns tests
 
     const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
-
     fireEvent.click(deleteMccBtn);
 
     const deleteSpendingLimitBtn = await screen.findByTestId('delete-button-spending-limit-test');
-
     fireEvent.click(deleteSpendingLimitBtn);
 
     // add new Criteria
 
     const addNewCriteria = await screen.findByTestId('criteria-button-test');
-
     fireEvent.click(addNewCriteria);
 
     const shopRulesModalTitle = await screen.findByText('components.wizard.stepFour.modal.title');
-
     expect(shopRulesModalTitle).toBeInTheDocument();
-
-    // console.log('first', await screen.findByTestId('add-shopList-MCC-btn'));
 
     fireEvent.click(
       await screen.findByText('components.wizard.stepFour.form.addTransactionTimeItem')
     );
-
     fireEvent.click(await screen.findByTestId('add-shopList-MCC-btn'));
     // screen.debug(undefined, 99999);
   });
@@ -163,6 +150,70 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     expect(toast).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+
+  test('test getTransactionConfigRules', () => {
+    InitiativeApiMocked.getTransactionConfigRules = async (): Promise<ConfigTrxRuleArrayDTO> =>
+      new Promise((resolve) =>
+        resolve([
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: true,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: true,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: false,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: true,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: true,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: true,
+          },
+          {
+            checked: false,
+            code: undefined,
+            description: 'description',
+            enabled: false,
+          },
+        ])
+      );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.SUBMIT}
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep(3)}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
   });
 
   test('test getTransactionConfigRules', () => {
@@ -219,6 +270,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test catch case api putTrxAndRewardRulesDraft', async () => {
+    store.dispatch(setInitiativeId(mockedInitiativeId));
     InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (): Promise<void> =>
       Promise.reject('mocked error response for tests');
     renderWithHistoryAndStore(
