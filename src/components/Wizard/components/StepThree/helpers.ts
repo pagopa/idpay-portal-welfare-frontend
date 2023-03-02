@@ -1,4 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
+import { grey } from '@mui/material/colors';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
@@ -55,8 +57,10 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: 'ISEE',
-            fieldLabel: 'ISEE',
-            authorityLabel: 'INPS',
+            fieldLabel: i18n.t('components.wizard.stepThree.chooseCriteria.modal.isee.fieldLabel'),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.isee.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -67,8 +71,12 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: 'Data di nascita',
-            authorityLabel: "Ministero dell'interno",
+            fieldLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.birthDate.fieldLabel'
+            ),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.birthDate.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -79,8 +87,12 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: 'Residenza',
-            authorityLabel: "Ministero dell'interno",
+            fieldLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.residency.fieldLabel'
+            ),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.residency.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -263,4 +275,16 @@ export const mapCriteriaToSend = (
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],
   };
+};
+
+export const boxItemStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
+  borderColor: grey.A200,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: 2,
+  my: 3,
+  p: 3,
 };

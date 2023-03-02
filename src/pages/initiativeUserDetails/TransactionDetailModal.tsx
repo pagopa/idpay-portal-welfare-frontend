@@ -262,13 +262,13 @@ Props) => {
               <>
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.paymentCircuit')}
+                    {t('pages.initiativeUserDetails.transactionDetail.brand')}
                   </Typography>
                 </Box>
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {typeof transactionDetail?.circuitType !== 'undefined'
-                      ? transactionDetail?.circuitType
+                    {typeof transactionDetail?.brand !== 'undefined'
+                      ? transactionDetail?.brand
                       : '-'}
                   </Typography>
                 </Box>

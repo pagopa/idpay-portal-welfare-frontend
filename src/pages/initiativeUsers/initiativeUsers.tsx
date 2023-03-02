@@ -4,7 +4,6 @@ import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import {
   Box,
-  Breadcrumbs,
   Button,
   Chip,
   FormControl,
@@ -19,11 +18,9 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -33,8 +30,6 @@ import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import * as Yup from 'yup';
-import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -43,6 +38,15 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getOnboardingStatus } from '../../services/intitativeService';
 import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
+import {
+  cleanDate,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativeUsersAndRefundsValidationSchema,
+} from '../../helpers';
+import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -157,39 +161,6 @@ const InitiativeUsers = () => {
     setPage(newPage);
   };
 
-  const validationSchema = Yup.object().shape({
-    searchFrom: Yup.date()
-      .nullable()
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate')),
-    searchTo: Yup.date()
-      .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate'))
-      .when('searchFrom', (searchFrom, _schema) => {
-        const timestamp = Date.parse(searchFrom);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .nullable()
-            .min(searchFrom, t('validation.outDateTo'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date().nullable().typeError(t('validation.invalidDate'));
-        }
-      }),
-  });
-
   const formik = useFormik({
     initialValues: {
       searchUser: '',
@@ -197,7 +168,7 @@ const InitiativeUsers = () => {
       searchTo: null,
       filterStatus: '',
     },
-    validationSchema,
+    validationSchema: initiativeUsersAndRefundsValidationSchema,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -209,30 +180,12 @@ const InitiativeUsers = () => {
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
-              : undefined;
+          searchFromStr = cleanDate(searchFrom, 'start');
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T23:59:59Z`
-              : undefined;
+          searchToStr = cleanDate(searchTo, 'end');
           setFilterByDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
@@ -255,11 +208,6 @@ const InitiativeUsers = () => {
     }
   };
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   resetForm();
-  // }, []);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
@@ -268,37 +216,19 @@ const InitiativeUsers = () => {
   }, [id, page]);
 
   return (
-    <Box sx={{ width: '100%', padding: '16px' }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.generalInfo.rankingEnabled === 'true'
-                ? t('breadcrumbs.initiativeUsersRanking')
-                : t('breadcrumbs.initiativeUsers')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+    <Box sx={{ width: '100%', padding: 2 }}>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[
+            initiativeSel.initiativeName,
+            initiativeSel.generalInfo.rankingEnabled === 'true'
+              ? t('breadcrumbs.initiativeUsersRanking')
+              : t('breadcrumbs.initiativeUsers'),
+          ]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
             title={
@@ -316,16 +246,7 @@ const InitiativeUsers = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-          mb: 4,
-        }}
-      >
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 4' }}>
           <TextField
             label={t('pages.initiativeUsers.form.search')}
@@ -439,15 +360,7 @@ const InitiativeUsers = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -482,7 +395,7 @@ const InitiativeUsers = () => {
                               `${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}/${r.beneficiaryState}`
                             )
                           }
-                          data-testid='beneficiary-test'
+                          data-testid="beneficiary-test"
                         >
                           {r.beneficiary}
                         </ButtonNaked>
@@ -512,19 +425,7 @@ const InitiativeUsers = () => {
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUsers.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeUsers.noData')} />
       )}
     </Box>
   );

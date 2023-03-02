@@ -29,6 +29,9 @@ import { IbanDTO } from './generated/initiative/IbanDTO';
 import { InstrumentListDTO } from './generated/initiative/InstrumentListDTO';
 import { TimelineDTO } from './generated/initiative/TimelineDTO';
 import { OperationDTO } from './generated/initiative/OperationDTO';
+import { ExportSummaryDTO } from './generated/initiative/ExportSummaryDTO';
+import { ExportListDTO } from './generated/initiative/ExportListDTO';
+import { RefundDetailDTO } from './generated/initiative/RefundDetailDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -356,6 +359,37 @@ export const InitiativeApi = {
       initiativeId: id,
       operationId: opeId,
     });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getExportSummary: async (initiativeId: string, exportId: string): Promise<ExportSummaryDTO> => {
+    const result = await apiClient.getExportSummary({ initiativeId, exportId });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getExportRefundsListPaged: async (
+    initiativeId: string,
+    exportId: string,
+    page: number,
+    cro?: string,
+    status?: string
+  ): Promise<ExportListDTO> => {
+    const result = await apiClient.getExportRefundsListPaged({
+      initiativeId,
+      exportId,
+      page,
+      cro,
+      status,
+      size: 10,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRefundDetail: async (
+    initiativeId: string,
+    eventId: string
+  ): Promise<RefundDetailDTO> => {
+    const result = await apiClient.getRefundDetail({ initiativeId, eventId });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };

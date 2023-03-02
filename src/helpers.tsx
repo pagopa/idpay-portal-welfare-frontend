@@ -1,5 +1,7 @@
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import * as Yup from 'yup';
+import { parse } from 'date-fns';
 
 export const renderInitiativeStatus = (status: string | undefined) => {
   switch (status) {
@@ -189,4 +191,108 @@ export const formatedTimeLineCurrency = (id: string, number: number | undefined)
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
   }
   return '';
+};
+
+export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
+  searchFrom: Yup.date()
+    .nullable()
+    .transform(function (value, originalValue) {
+      if (this.isType(value)) {
+        return value;
+      }
+      return parse(originalValue, 'dd/MM/yyyy', new Date());
+    })
+    .typeError(i18n.t('validation.invalidDate')),
+  searchTo: Yup.date()
+    .nullable()
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    .transform(function (value, originalValue) {
+      if (this.isType(value)) {
+        return value;
+      }
+      return parse(originalValue, 'dd/MM/yyyy', new Date());
+    })
+    .typeError(i18n.t('validation.invalidDate'))
+    .when('searchFrom', (searchFrom, _schema) => {
+      const timestamp = Date.parse(searchFrom);
+      if (isNaN(timestamp) === false) {
+        return Yup.date()
+          .nullable()
+          .min(searchFrom, i18n.t('validation.outDateTo'))
+          .typeError(i18n.t('validation.invalidDate'));
+      } else {
+        return Yup.date().nullable().typeError(i18n.t('validation.invalidDate'));
+      }
+    }),
+});
+
+export const cleanDate = (d: Date, mod: 'start' | 'end'): string | undefined => {
+  const hours = mod === 'start' ? 'T00:00:00Z' : 'T23:59:59Z';
+  return d.toLocaleDateString('fr-CA').length > 0
+    ? `${d.toLocaleDateString('fr-CA')}${hours}`
+    : undefined;
+};
+
+export const getRefundStatusChip = (status: {
+  status: string | undefined;
+  percentageResulted: string | undefined;
+}) => {
+  switch (status.status) {
+    case 'EXPORTED':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={i18n.t('pages.initiativeRefunds.status.exported')}
+          color="default"
+        />
+      );
+    case 'PARTIAL':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={
+            status.percentageResulted
+              ? i18n.t('pages.initiativeRefunds.status.partial', {
+                  percentage: status?.percentageResulted || '',
+                })
+              : i18n.t('pages.initiativeRefunds.status.partialNoPerc')
+          }
+          color="warning"
+        />
+      );
+    case 'COMPLETE':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={i18n.t('pages.initiativeRefunds.status.complete')}
+          color="success"
+        />
+      );
+    default:
+      return null;
+  }
+};
+
+export const initiativePagesBreadcrumbsContainerStyle = {
+  display: 'grid',
+  width: '100%',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
+};
+
+export const initiativePagesFiltersFormContainerStyle = {
+  display: 'grid',
+  width: '100%',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'baseline',
+  gap: 2,
+  mb: 4,
+};
+
+export const initiativePagesTableContainerStyle = {
+  display: 'grid',
+  width: '100%',
+  height: '100%',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
 };

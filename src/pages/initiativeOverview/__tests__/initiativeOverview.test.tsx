@@ -175,7 +175,7 @@ describe('<InitiativeOverview />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const overviewBackBtn = screen.getByTestId('overview-back-bread') as HTMLButtonElement;
+    const overviewBackBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     // Not Found
     const oldLocPathname = history.location.pathname;
     fireEvent.click(overviewBackBtn);

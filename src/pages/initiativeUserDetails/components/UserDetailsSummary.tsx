@@ -68,7 +68,7 @@ const UserDetailsSummary = ({
             <Typography
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6', mb: 1 }}
               variant="overline"
-              color="text.secondary"
+              color="text.primary"
             >
               {t('pages.initiativeUserDetails.summary')}
             </Typography>
@@ -83,7 +83,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(amount, '00,00 €')}
+              {formatedCurrency(amount, '0,00 €')}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -96,7 +96,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(refunded, '00,00 €')}
+              {formatedCurrency(refunded, '0,00 €')}
             </Typography>
             <Typography
               sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -109,7 +109,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(accrued, '00,00 €')}
+              {formatedCurrency(accrued, '0,00 €')}
             </Typography>
             <Typography
               sx={{
@@ -120,9 +120,7 @@ const UserDetailsSummary = ({
                 ml: 1,
               }}
             >
-              {paymentMethodList.length > 0 ||
-              (walletStatus !== StatusEnum.NOT_REFUNDABLE &&
-                walletStatus !== StatusEnum.NOT_REFUNDABLE_ONLY_IBAN) ? (
+              {paymentMethodList.length > 0 ? (
                 <ButtonNaked
                   component="button"
                   sx={{
@@ -172,7 +170,7 @@ const UserDetailsSummary = ({
             <Typography
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 6', mb: 1 }}
               variant="overline"
-              color="text.secondary"
+              color="text.primary"
             >
               {t('pages.initiativeUserDetails.refundDetail')}
             </Typography>

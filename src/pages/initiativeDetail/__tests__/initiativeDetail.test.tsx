@@ -63,7 +63,7 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const backBtnDetail = screen.getByTestId('backButtonDetail') as HTMLButtonElement;
+    const backBtnDetail = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     const secondBackButton = screen.getByText(/pages.initiativeDetail.accordion.buttons.back/i);
 
     const oldLocPathname = history.location.pathname;

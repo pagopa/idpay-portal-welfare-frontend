@@ -1,7 +1,6 @@
 import { Box, FormControl, IconButton, InputAdornment, TextField, Typography } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -10,7 +9,14 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { Threshold } from '../../../../model/Initiative';
-import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
+import {
+  renderShopRuleIcon,
+  handleShopRulesToSubmit,
+  setError,
+  setErrorText,
+  handleUpdateFromToFieldState,
+  boxItemStyle,
+} from './helpers';
 
 type Props = {
   title: string;
@@ -80,35 +86,8 @@ const SpendingLimitItem = ({
     },
   });
 
-  const handleUpdateFromFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, from: valueNumber };
-    setData({ ...newState });
-  };
-
-  const handleUpdateToFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, to: valueNumber };
-    setData({ ...newState });
-  };
-
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="spending-limit-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="spending-limit-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>
@@ -150,7 +129,7 @@ const SpendingLimitItem = ({
             value={formik.values.from}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateFromFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'from', data, setData);
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
@@ -185,7 +164,7 @@ const SpendingLimitItem = ({
             value={formik.values.to}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateToFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'to', data, setData);
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}

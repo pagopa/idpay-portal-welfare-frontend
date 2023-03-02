@@ -16,7 +16,6 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  Link,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -50,6 +49,7 @@ import {
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
@@ -750,30 +750,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         </FormControl>
       </Paper>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6">
-            {t('components.wizard.stepTwo.form.introductionTitle')}
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body2">
-              {t('components.wizard.stepTwo.form.introductionSubTitle')}
-            </Typography>
-          </Box>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Link
-              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href={t('helpStaticUrls.wizard.generalInfo')}
-              target="_blank"
-              underline="none"
-              variant="body2"
-            >
-              {t('components.wizard.common.links.findOut')}
-            </Link>
-          </Box>
-        </Box>
+        <TitleBoxWithHelpLink
+          title={t('components.wizard.stepTwo.form.introductionTitle')}
+          subtitle={t('components.wizard.stepTwo.form.introductionSubTitle')}
+          helpLink={t('helpStaticUrls.wizard.generalInfo')}
+          helpLabel={t('components.wizard.common.links.findOut')}
+        />
 
         <Box sx={{ width: '100%', pt: 2 }}>
           <Box>

@@ -1,11 +1,8 @@
 import {
   Box,
-  Breadcrumbs,
   // FormHelperText,
   Paper,
   Typography,
-  Link,
-  LinearProgress,
   Table,
   TableBody,
   TableRow,
@@ -14,17 +11,14 @@ import {
   Alert,
   IconButton,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
+
 import SyncIcon from '@mui/icons-material/Sync';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
-import { ButtonNaked } from '@pagopa/mui-italia';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useDropzone } from 'react-dropzone';
 import { useEffect, useState } from 'react';
@@ -44,10 +38,17 @@ import {
   putDispFileUpload,
 } from '../../services/intitativeService';
 import { InitiativeRefundImports } from '../../model/InitiativeRefunds';
+import LoadingFile from '../../components/LoadingFile/LoadingFile';
+import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import {
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativePagesTableContainerStyle,
+} from '../../helpers';
+import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
-  const history = useHistory();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const [fileIsLoading, setFileIsLoading] = useState(false);
@@ -164,18 +165,10 @@ const InitiativeRefundsOutcome = () => {
         {...getRootProps({ className: 'dropzone' })}
       >
         <input {...getInputProps()} data-testid="drop-input" />
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 12' }}>
-          <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
-          <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-            {t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}&#160;
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
-          >
-            {t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
-          </Typography>
-        </Box>
+        <InitUploadBox
+          text={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}
+          link={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
+        />
       </Box>
       <Box
         sx={{
@@ -199,36 +192,6 @@ const InitiativeRefundsOutcome = () => {
             {t('pages.initiativeRefundsOutcome.uploadPaper.fileUuploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText> */}
-      </Box>
-    </Box>
-  );
-
-  const LoadingFilePartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          width: '100%',
-          border: '1px solid #E3E7EB',
-          borderRadius: '10px',
-          p: 3,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-        }}
-      >
-        <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')}
-        </Typography>
-        <Box sx={{ gridColumn: 'span 9' }}>
-          <LinearProgress />
-        </Box>
       </Box>
     </Box>
   );
@@ -359,37 +322,17 @@ const InitiativeRefundsOutcome = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRefunds')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRefundsOutcome')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/rimborsi-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[
+            initiativeSel.initiativeName,
+            t('breadcrumbs.initiativeRefunds'),
+            t('breadcrumbs.initiativeRefundsOutcome'),
+          ]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeRefundsOutcome.title')}
@@ -411,29 +354,12 @@ const InitiativeRefundsOutcome = () => {
       )}
 
       <Paper sx={{ display: 'grid', width: '100%', mt: 2, px: 3 }}>
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6">
-            {t('pages.initiativeRefundsOutcome.uploadPaper.title')}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body2">
-              {t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
-            </Typography>
-          </Box>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Link
-              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
-              target="_blank"
-              underline="none"
-              variant="body2"
-            >
-              {t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
-            </Link>
-          </Box>
-        </Box>
+        <TitleBoxWithHelpLink
+          title={t('pages.initiativeRefundsOutcome.uploadPaper.title')}
+          subtitle={t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
+          helpLink={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
+          helpLabel={t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
+        />
 
         {fileRejected && (
           <Toast
@@ -450,7 +376,11 @@ const InitiativeRefundsOutcome = () => {
           />
         )}
 
-        {fileIsLoading ? LoadingFilePartial : InitStatusPartial}
+        {fileIsLoading ? (
+          <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} />
+        ) : (
+          InitStatusPartial
+        )}
       </Paper>
 
       {rows.length > 0 && (
@@ -473,15 +403,7 @@ const InitiativeRefundsOutcome = () => {
       )}
 
       {rows.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -495,7 +417,10 @@ const InitiativeRefundsOutcome = () => {
                       <TableCell>{r.rewardsAdded}</TableCell>
                       <TableCell align="right">
                         {r.errorsSize > 0 && (
-                          <IconButton data-testid="download-file" onClick={() => handleDownloadFile(r.downloadFileInfo)}>
+                          <IconButton
+                            data-testid="download-file"
+                            onClick={() => handleDownloadFile(r.downloadFileInfo)}
+                          >
                             <FileDownloadIcon color="primary" />
                           </IconButton>
                         )}

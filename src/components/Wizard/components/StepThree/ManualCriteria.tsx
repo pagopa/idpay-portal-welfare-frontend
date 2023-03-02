@@ -14,14 +14,13 @@ import { Dispatch, MouseEvent, MouseEventHandler, SetStateAction, useEffect } fr
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
-import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { ManualCriteriaOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
-import { handleCriteriaToSubmit, setError, setErrorText } from './helpers';
+import { boxItemStyle, handleCriteriaToSubmit, setError, setErrorText } from './helpers';
 
 type Props = {
   data: ManualCriteriaItem;
@@ -217,20 +216,7 @@ const ManualCriteria = ({
   };
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="manual-criteria-test"
-    >
+    <Box sx={boxItemStyle} data-testid="manual-criteria-test">
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{`${t(
           'components.wizard.stepThree.chooseCriteria.form.manual'

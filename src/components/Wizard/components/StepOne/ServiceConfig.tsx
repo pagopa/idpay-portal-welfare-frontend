@@ -1,6 +1,5 @@
 import {
   Box,
-  Link,
   FormControl,
   FormControlLabel,
   FormHelperText,
@@ -41,6 +40,7 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { contacts, parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
 import UploadServiceIcon from './UploadServiceIcon';
@@ -95,6 +95,22 @@ const ServiceConfig = ({
     }
   }, [JSON.stringify(additionalInfo)]);
 
+  const validateUrl = (value: string | undefined): boolean => {
+    const regex = new RegExp(/^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/);
+    if (typeof value === 'string') {
+      return regex.test(value);
+    }
+    return false;
+  };
+
+  const validatePhoneNumber = (value: string | undefined): boolean => {
+    const regex = new RegExp(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/);
+    if (typeof value === 'string') {
+      return regex.test(value);
+    }
+    return false;
+  };
+
   const validationSchema = Yup.object().shape({
     initiativeOnIO: Yup.boolean(),
     serviceName: Yup.string().required(t('validation.required')),
@@ -102,16 +118,10 @@ const ServiceConfig = ({
     serviceDescription: Yup.string().required(t('validation.required')),
     privacyPolicyUrl: Yup.string()
       .required(t('validation.required'))
-      .matches(
-        /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-        t('validation.web')
-      ),
+      .test('url', t('validation.web'), (value) => validateUrl(value)),
     termsAndConditions: Yup.string()
       .required(t('validation.required'))
-      .matches(
-        /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-        t('validation.web')
-      ),
+      .test('url', t('validation.web'), (value) => validateUrl(value)),
     assistanceChannels: Yup.array().of(
       Yup.object().shape({
         type: Yup.string().required(t('validation.required')),
@@ -121,10 +131,7 @@ const ServiceConfig = ({
             if (type && type === 'web') {
               return Yup.string()
                 .required(t('validation.required'))
-                .matches(
-                  /^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/,
-                  t('validation.webValid')
-                );
+                .test('url', t('validation.webValid'), (value) => validateUrl(value));
             }
             if (type && type === 'email') {
               return Yup.string()
@@ -134,7 +141,7 @@ const ServiceConfig = ({
             if (type && type === 'mobile') {
               return Yup.string()
                 .required(t('validation.required'))
-                .matches(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/, t('validation.celNumValid'));
+                .test('mobile', t('validation.celNumValid'), (value) => validatePhoneNumber(value));
             }
             return schema;
           }),
@@ -319,25 +326,13 @@ const ServiceConfig = ({
         currentStep={currentStep}
         setCurrentStep={setCurrentStep}
       />
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepOne.title')}</Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepOne.subtitle')}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.serviceConfig')}
-            target="_blank"
-            underline="none"
-            variant="body2"
-          >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
-        </Box>
-      </Box>
+
+      <TitleBoxWithHelpLink
+        title={t('components.wizard.stepOne.title')}
+        subtitle={t('components.wizard.stepOne.subtitle')}
+        helpLink={t('helpStaticUrls.wizard.serviceConfig')}
+        helpLabel={t('components.wizard.common.links.findOut')}
+      />
 
       <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', pb: 2 }}>
         <FormControlLabel

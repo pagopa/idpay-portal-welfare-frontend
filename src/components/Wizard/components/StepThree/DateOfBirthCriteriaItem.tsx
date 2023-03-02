@@ -13,11 +13,10 @@ import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
 import * as Yup from 'yup';
-import { grey } from '@mui/material/colors';
-import _ from 'lodash';
 import { FilterOperator, DateOfBirthOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
+  boxItemStyle,
   handleCriteriaToSubmit,
   setError,
   setErrorText,
@@ -88,20 +87,7 @@ const DateOdBirthCriteriaItem = ({
   });
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="dateBirth-criteria-test"
-    >
+    <Box sx={boxItemStyle} data-testid="dateBirth-criteria-test">
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>

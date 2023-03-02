@@ -2,7 +2,6 @@ import {
   Alert,
   AlertTitle,
   Box,
-  Breadcrumbs,
   Button,
   Collapse,
   FormControl,
@@ -23,14 +22,13 @@ import {
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SyncIcon from '@mui/icons-material/Sync';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
-import { matchPath, useHistory } from 'react-router-dom';
+import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
 import { useEffect, useState } from 'react';
@@ -47,14 +45,20 @@ import {
   notifyCitizenRankings,
 } from '../../services/intitativeService';
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
-import { numberWithCommas } from '../../helpers';
+import {
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  numberWithCommas,
+} from '../../helpers';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
+import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
   const { t } = useTranslation();
-  const history = useHistory();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const [page, setPage] = useState<number>(0);
@@ -274,11 +278,6 @@ const InitiativeRanking = () => {
     }
   };
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  //   resetForm();
-  // }, [id]);
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
@@ -301,34 +300,13 @@ const InitiativeRanking = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeRanking')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeRanking')]}
+        />
+
         {rankingStatus === 'WAITING_END' && rows.length === 0 && (
           <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
             <TitleBox
@@ -483,16 +461,7 @@ const InitiativeRanking = () => {
       </Box>
 
       {rankingStatus !== 'WAITING_END' && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'baseline',
-            gap: 2,
-            mb: 4,
-          }}
-        >
+        <Box sx={initiativePagesFiltersFormContainerStyle}>
           <FormControl sx={{ gridColumn: 'span 4' }}>
             <TextField
               label={t('pages.initiativeUsers.form.search')}
@@ -566,15 +535,7 @@ const InitiativeRanking = () => {
       )}
 
       {rankingStatus !== 'WAITING_END' && rows.length > 0 && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -622,26 +583,7 @@ const InitiativeRanking = () => {
         </Box>
       )}
       {rankingStatus === 'WAITING_END' && (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
-          <Box
-            sx={{
-              display: 'grid',
-              gridColumn: 'span 12',
-              justifyContent: 'center',
-              py: 2,
-              backgroundColor: 'white',
-            }}
-          >
-            <Typography variant="body2">{t('pages.initiativeRanking.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeRanking.noData')} />
       )}
     </Box>
   );

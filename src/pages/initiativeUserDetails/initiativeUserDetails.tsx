@@ -1,7 +1,6 @@
 /* eslint-disable functional/no-let */
 import {
   Alert,
-  Breadcrumbs,
   Button,
   FormControl,
   InputLabel,
@@ -18,10 +17,9 @@ import {
   Snackbar,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { ButtonNaked /* , theme */ } from '@pagopa/mui-italia';
-import { matchPath, useHistory } from 'react-router-dom';
+import { ButtonNaked } from '@pagopa/mui-italia';
+import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
@@ -31,18 +29,18 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { parse } from 'date-fns';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
+  cleanDate,
   formatedCurrency,
   formatedTimeLineCurrency,
   formatStringToDate,
   getTimeLineMaskedPan,
+  initiativeUsersAndRefundsValidationSchema,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  initiativePagesBreadcrumbsContainerStyle,
 } from '../../helpers';
-// import { useInitiative } from '../../hooks/useInitiative';
-// import { useAppSelector } from '../../redux/hooks';
-// import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import {
   getInstrumentList,
   getWalletDetail,
@@ -51,16 +49,15 @@ import {
 } from '../../services/intitativeService';
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
-// import { OperationListDTO } from '../../api/generated/initiative/OperationListDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
+import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
-  // useInitiative();
-  // const initiativeSel = useAppSelector(initiativeSelector);
-  const history = useHistory();
   const { t } = useTranslation();
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [accrued, setAccrued] = useState<number | undefined>(undefined);
@@ -76,8 +73,10 @@ const InitiativeUserDetails = () => {
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
   const [filterByEvent, setFilterByEvent] = useState<string | undefined>();
+  const [openRefundDetailModal, setOpenRefundDetailModal] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [selectedOperationId, setSelectedOperationId] = useState('');
+  const [selectedEventId, setSelectedEventId] = useState('');
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
@@ -167,13 +166,14 @@ const InitiativeUserDetails = () => {
     setLoading(true);
     getTimeLine(cf, initiativeId, filterEvent, searchFrom, searchTo, page)
       .then((res) => {
-        const rowsData: Array<any> = res.operationList.map((r) => r);
-
+        const rowsData: Array<any> = res.operationList.map((r: any) => r);
+        if (Array.isArray(rowsData) && rowsData.length > 0) {
+          setRows(rowsData);
+        } else {
+          setRows([]);
+        }
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
-        }
-        if (Array.isArray(rowsData)) {
-          setRows(rowsData);
         }
         if (typeof res.pageSize === 'number') {
           setRowsPerPage(res.pageSize);
@@ -183,6 +183,7 @@ const InitiativeUserDetails = () => {
         }
       })
       .catch((error) => {
+        setRows([]);
         addError({
           id: 'GET_INITIATIVE_USER_DETAILS_OPERATION_LIST',
           blocking: false,
@@ -198,46 +199,13 @@ const InitiativeUserDetails = () => {
       .finally(() => setLoading(false));
   };
 
-  const validationSchema = Yup.object().shape({
-    searchFrom: Yup.date()
-      .nullable()
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate')),
-    searchTo: Yup.date()
-      .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate'))
-      .when('searchFrom', (searchFrom, _schema) => {
-        const timestamp = Date.parse(searchFrom);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .nullable()
-            .min(searchFrom, t('validation.outDateTo'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date().nullable().typeError(t('validation.invalidDate'));
-        }
-      }),
-  });
-
   const formik = useFormik({
     initialValues: {
       searchFrom: null,
       searchTo: null,
       filterEvent: '',
     },
-    validationSchema,
+    validationSchema: initiativeUsersAndRefundsValidationSchema,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -246,30 +214,12 @@ const InitiativeUserDetails = () => {
       if (typeof id === 'string' && typeof cf === 'string') {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
-              : undefined;
+          searchFromStr = cleanDate(searchFrom, 'start');
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T23:59:59Z`
-              : undefined;
+          searchToStr = cleanDate(searchTo, 'end');
           setFilterByDateTo(searchToStr);
         }
         const filterEvent = values.filterEvent.length > 0 ? values.filterEvent : undefined;
@@ -298,6 +248,30 @@ const InitiativeUserDetails = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
+  };
+
+  const handleOpenRefundDetailModal = (eventId: string) => {
+    setOpenRefundDetailModal(true);
+    setSelectedEventId(eventId);
+  };
+
+  const handleCloseRefundDetailModal = () => {
+    setOpenRefundDetailModal(false);
+  };
+
+  const handleOpenModalOnOpeType = (
+    opeType: string,
+    opeId: string,
+    eventId: string | undefined
+  ) => {
+    if (opeType !== 'PAID_REFUND' && opeType !== 'REJECTED_REFUND') {
+      handleOpenModal(opeId);
+    } else if (
+      (opeType === 'PAID_REFUND' || opeType === 'REJECTED_REFUND') &&
+      typeof eventId === 'string'
+    ) {
+      handleOpenRefundDetailModal(eventId);
+    }
   };
 
   const handleChangePage = (
@@ -474,37 +448,12 @@ const InitiativeUserDetails = () => {
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/utenti-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeUsers')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiativeUserDetails')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {cf}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[t('breadcrumbs.initiativeUsers'), t('breadcrumbs.initiativeUserDetails'), cf]}
+        />
       </Box>
       <Box
         sx={{
@@ -589,16 +538,8 @@ const InitiativeUserDetails = () => {
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(24, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-        }}
-      >
-        <FormControl sx={{ gridColumn: 'span 10' }} size="small">
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
+        <FormControl sx={{ gridColumn: 'span 6' }} size="small">
           <InputLabel>{t('pages.initiativeUserDetails.filterEvent')}</InputLabel>
           <Select
             id="filterEvent"
@@ -643,7 +584,7 @@ const InitiativeUserDetails = () => {
             </MenuItem>
           </Select>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 5' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.from')}
@@ -665,7 +606,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 5' }}>
+        <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.to')}
@@ -687,7 +628,7 @@ const InitiativeUserDetails = () => {
             />
           </LocalizationProvider>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
           <Button
             sx={{ height: '44.5px' }}
             variant="outlined"
@@ -698,7 +639,7 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUsers.form.filterBtn')}
           </Button>
         </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }}>
+        <FormControl sx={{ gridColumn: 'span 1' }}>
           <ButtonNaked
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
@@ -710,16 +651,7 @@ const InitiativeUserDetails = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            mt: 3,
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -757,7 +689,7 @@ const InitiativeUserDetails = () => {
                             textAlign: 'left',
                           }}
                           onClick={() => {
-                            handleOpenModal(r.operationId);
+                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
                           }}
                         >
                           {operationTypeLabel(r.operationId, r.operationType, r)}
@@ -795,24 +727,17 @@ const InitiativeUserDetails = () => {
                 initiativeId={id}
                 holderBank={holderBank}
               />
+              <InitiativeRefundsDetailsModal
+                openRefundsDetailModal={openRefundDetailModal}
+                handleCloseRefundModal={handleCloseRefundDetailModal}
+                refundEventId={selectedEventId}
+                initiativeId={id}
+              />
             </Box>
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-            mt: 3,
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUserDetails.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeUserDetails.noData')} />
       )}
     </Box>
   );

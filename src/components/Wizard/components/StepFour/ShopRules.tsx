@@ -1,6 +1,6 @@
 /* eslint-disable functional/no-let */
 /* eslint-disable prefer-const */
-import { Box, Button, Paper, Typography, Link } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
@@ -30,6 +30,7 @@ import {
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
 } from '../../../../services/intitativeService';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -456,25 +457,13 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepFour.title')}</Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepFour.subtitle')}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.shopRules')}
-            target="_blank"
-            underline="none"
-            variant="body2"
-          >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
-        </Box>
-      </Box>
+      <TitleBoxWithHelpLink
+        title={t('components.wizard.stepFour.title')}
+        subtitle={t('components.wizard.stepFour.subtitle')}
+        helpLink={t('helpStaticUrls.wizard.shopRules')}
+        helpLabel={t('components.wizard.common.links.findOut')}
+      />
+
       {modalButtonVisible && (
         <Box
           sx={{

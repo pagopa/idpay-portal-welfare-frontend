@@ -4,12 +4,9 @@ import {
   AccordionSummary,
   Alert,
   Box,
-  Breadcrumbs,
   Button,
   Typography,
 } from '@mui/material';
-import { ButtonNaked } from '@pagopa/mui-italia';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useTranslation } from 'react-i18next';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -30,6 +27,7 @@ import { getGroupOfBeneficiaryStatusAndDetail } from '../../services/groupsServi
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
 import { renderInitiativeStatus } from '../../helpers';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import SummaryContentBody from './components/Summary/SummaryContentBody';
 import AdditionalInfoContentBody from './components/StepOne/AdditionalInfoContentBody';
 import GeneralInfoContentBody from './components/StepTwo/GeneralInfoContentBody';
@@ -207,33 +205,15 @@ const InitiativeDetail = () => {
         pt: 2,
       }}
     >
-      <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-        <Breadcrumbs aria-label="breadcrumb">
-          <ButtonNaked
-            component="button"
-            onClick={() =>
-              history.replace(
-                `${BASE_ROUTE}/panoramica-iniziativa/${initiativeDetail.initiativeId}`
-              )
-            }
-            startIcon={<ArrowBackIcon />}
-            sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-            weight="default"
-            data-testid="backButtonDetail"
-          >
-            {t('breadcrumbs.back')}
-          </ButtonNaked>
-          <Typography color="text.primary" variant="body2">
-            {t('breadcrumbs.initiatives')}
-          </Typography>
-          <Typography color="text.primary" variant="body2">
-            {initiativeDetail.additionalInfo.serviceName}
-          </Typography>
-          <Typography color="text.secondary" variant="body2">
-            {t('breadcrumbs.initiativeDetail')}
-          </Typography>
-        </Breadcrumbs>
-      </Box>
+      <BreadcrumbsBox
+        backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${initiativeDetail.initiativeId}`}
+        backLabel={t('breadcrumbs.back')}
+        items={[
+          t('breadcrumbs.initiatives'),
+          initiativeDetail.additionalInfo.serviceName,
+          t('breadcrumbs.initiativeDetail'),
+        ]}
+      />
       <Box
         sx={{
           gridColumn: 'span 12',

@@ -1,17 +1,19 @@
 import CloseIcon from '@mui/icons-material/Close';
-import { Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
+import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { formatedCurrency, formatedDate, formatedDateHoursAndMin, formatIban } from '../../helpers';
-import { InitiativeRefundsDetailsByEvent } from '../../model/InitiativeRefunds';
-import { getRefundsDetailsByEvent } from '../../services/__mocks__/initiativeService';
+import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
+import { formatedCurrency, formatedDate, formatIban } from '../../helpers';
+import { getRefundDetail } from '../../services/intitativeService';
+import { getRefundStatus } from './helpers';
 
 type Props = {
   openRefundsDetailModal: boolean;
   handleCloseRefundModal: React.MouseEventHandler;
   refundEventId: string | undefined;
   initiativeId: string;
-  exportId: string;
 };
 
 const InitiativeRefundsDetailsModal = ({
@@ -19,57 +21,53 @@ const InitiativeRefundsDetailsModal = ({
   handleCloseRefundModal,
   refundEventId,
   initiativeId,
-  exportId,
 }: Props) => {
-  const [refundEventDetails, setRefundEventDetails] = useState<InitiativeRefundsDetailsByEvent>();
+  const addError = useErrorDispatcher();
+  const setLoading = useLoading('GET_INITIATIVE_REFUNDS_DETAILS_SUMMARY');
+  const [refundEventDetails, setRefundEventDetails] = useState<RefundDetailDTO>();
 
   const { t } = useTranslation();
 
   useEffect(() => {
     if (
       typeof initiativeId === 'string' &&
-      typeof exportId === 'string' &&
       typeof refundEventId === 'string' &&
       openRefundsDetailModal
     ) {
-      getRefundsDetailsByEvent(initiativeId, exportId, refundEventId)
+      setLoading(true);
+      getRefundDetail(initiativeId, refundEventId)
         .then((res) => {
           if (typeof res === 'object') {
-            setRefundEventDetails(res);
+            setRefundEventDetails({ ...res });
           }
         })
-        .catch((err) => console.log(err));
+        .catch((error) => {
+          addError({
+            id: 'GET_EXPORTS_PAGED_ERROR',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting refund detail',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  }, [initiativeId, exportId, refundEventId, openRefundsDetailModal]);
+  }, [initiativeId, refundEventId, openRefundsDetailModal]);
 
-  const getRefundModalStatus = (status: string | undefined) => {
-    switch (status) {
-      case 'DONE':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.done')}
-            color="success"
-          />
-        );
-      case 'FAILED':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.failed')}
-            color="error"
-          />
-        );
-      case 'ON_EVALUATION':
-        return (
-          <Chip
-            sx={{ fontSize: '14px' }}
-            label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
-            color="default"
-          />
-        );
+  const renderRefundType = (refundType: string | undefined) => {
+    switch (refundType) {
+      case 'ORDINARY':
+        return t('pages.initiativeRefundsDetails.modal.ordinary');
+      case 'REMEDIAL':
+        return t('pages.initiativeRefundsDetails.modal.remedial');
       default:
-        return null;
+        return '';
     }
   };
 
@@ -168,7 +166,7 @@ const InitiativeRefundsDetailsModal = ({
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
-            {getRefundModalStatus(refundEventDetails?.status)}
+            {getRefundStatus(refundEventDetails?.status)}
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">
@@ -177,65 +175,57 @@ const InitiativeRefundsDetailsModal = ({
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant="body2" fontWeight={600}>
-              {refundEventDetails?.refundType}
+              {renderRefundType(refundEventDetails?.refundType)}
             </Typography>
           </Box>
 
-          {refundEventDetails?.trn && (
+          {refundEventDetails?.cro && (
             <>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.trn')}
+                  {t('pages.initiativeRefundsDetails.modal.cro')}
+                </Typography>
+              </Box>
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography
+                  variant="body2"
+                  sx={{
+                    wordWrap: 'break-word',
+                    whiteSpace: 'pre-wrap',
+                    wordBreak: 'break-word',
+                    fontWeight: 600,
+                  }}
+                >
+                  {refundEventDetails?.cro}
+                </Typography>
+              </Box>
+            </>
+          )}
+          {refundEventDetails?.transferDate && (
+            <>
+              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                <Typography variant="body2" color="text.secondary" textAlign="left">
+                  {t('pages.initiativeRefundsDetails.modal.transferDate')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {refundEventDetails?.trn}
+                  {formatedDate(refundEventDetails?.transferDate)}
                 </Typography>
               </Box>
             </>
           )}
 
-          {refundEventDetails?.creationDate && (
+          {refundEventDetails?.userNotificationDate && (
             <>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.createdOn')}
+                  {t('pages.initiativeRefundsDetails.modal.userNotificationDate')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.creationDate)}
-                </Typography>
-              </Box>
-            </>
-          )}
-
-          {refundEventDetails?.sendDate && (
-            <>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.mandateDate')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.sendDate)}
-                </Typography>
-              </Box>
-            </>
-          )}
-
-          {refundEventDetails?.notificationDate && (
-            <>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeRefundsDetails.modal.dateNotifiedOfUser')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatedDateHoursAndMin(refundEventDetails?.notificationDate)}
+                  {formatedDate(refundEventDetails?.userNotificationDate)}
                 </Typography>
               </Box>
             </>

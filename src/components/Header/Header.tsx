@@ -6,12 +6,12 @@ import { trackEvent } from '@pagopa/selfcare-common-frontend/services/analyticsS
 import { CONFIG } from '@pagopa/selfcare-common-frontend/config/env';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { WithPartiesProps } from '../decorators/withParties';
-import { Product } from '../model/Product';
-import { useAppSelector } from '../redux/hooks';
-import { partiesSelectors } from '../redux/slices/partiesSlice';
-import { Party } from '../model/Party';
-import { ENV } from './../utils/env';
+import { WithPartiesProps } from '../../decorators/withParties';
+import { Product } from '../../model/Product';
+import { useAppSelector } from '../../redux/hooks';
+import { partiesSelectors } from '../../redux/slices/partiesSlice';
+import { Party } from '../../model/Party';
+import { ENV } from '../../utils/env';
 
 type Props = WithPartiesProps & {
   withSecondHeader: boolean;

@@ -1,4 +1,3 @@
-import { grey } from '@mui/material/colors';
 import { Box, FormControl, TextField, Typography } from '@mui/material';
 import PercentIcon from '@mui/icons-material/Percent';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +5,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { handleShopRulesToSubmit, setError, setErrorText } from './helpers';
+import { boxItemStyle, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
 interface Props {
   code: string;
@@ -71,20 +70,7 @@ const PercentageRecognizedItem = ({
   };
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="percetage-recognized-test"
-    >
+    <Box sx={boxItemStyle} data-testid="percetage-recognized-test">
       <Box sx={{ gridColumn: 'span 1' }}>
         <PercentIcon />
       </Box>

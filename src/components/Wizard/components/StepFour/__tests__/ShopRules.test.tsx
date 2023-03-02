@@ -4,8 +4,14 @@ import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
+import { AccumulatedTypeEnum } from '../../../../../api/generated/initiative/AccumulatedAmountDTO';
+import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
+import { ConfigTrxRuleArrayDTO } from '../../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
+import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeRewardAndTrxRulesDTO } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import Layout from '../../../../../components/Layout/Layout';
+import { Initiative } from '../../../../../model/Initiative';
 import {
   saveDaysOfWeekIntervals,
   saveMccFilter,
@@ -13,12 +19,14 @@ import {
   saveRewardRule,
   saveThreshold,
   saveTrxCount,
-  setInitiativeId
+  setInitiativeId,
 } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { mockedTransactionRules } from '../../../../../services/__mocks__/transactionRuleService';
+import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { checkRewardLimitsChecked } from '../helpers';
 import ShopRules from '../ShopRules';
 
 beforeEach(() => {
@@ -131,6 +139,10 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
+    InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (
+      _id: string,
+      _data: InitiativeRewardAndTrxRulesDTO
+    ): Promise<void> => new Promise((resolve) => resolve());
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -151,6 +163,25 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     expect(toast).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
+  });
+
+  test('test getTransactionConfigRules', () => {
+    InitiativeApiMocked.getTransactionConfigRules = async (): Promise<ConfigTrxRuleArrayDTO> =>
+      new Promise((resolve) => resolve([]));
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.SUBMIT}
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep(3)}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
   });
 
   test('test percetage-recognized-value input', async () => {
@@ -178,12 +209,26 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       Promise.reject('mocked error response for tests')),
       renderWithHistoryAndStore(
         <ShopRules
-          action={WIZARD_ACTIONS.SUBMIT}
+          action={''}
           setAction={setAction}
           currentStep={3}
           setCurrentStep={setCurrentStep(3)}
           setDisabledNext={setDisabledNext}
         />
       );
+  });
+
+  test('test catch case api putTrxAndRewardRulesDraft', async () => {
+    InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (): Promise<void> =>
+      Promise.reject('mocked error response for tests');
+    renderWithHistoryAndStore(
+      <ShopRules
+        action={WIZARD_ACTIONS.DRAFT}
+        setAction={setAction}
+        currentStep={3}
+        setCurrentStep={setCurrentStep(3)}
+        setDisabledNext={setDisabledNext}
+      />
+    );
   });
 });

@@ -2,14 +2,20 @@ import { Box, IconButton, Typography, FormControl, TextField } from '@mui/materi
 import Tooltip from '@mui/material/Tooltip';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { grey } from '@mui/material/colors';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { TrxCount } from '../../../../model/Initiative';
-import { renderShopRuleIcon, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
+import {
+  renderShopRuleIcon,
+  handleShopRulesToSubmit,
+  setError,
+  setErrorText,
+  handleUpdateFromToFieldState,
+  boxItemStyle,
+} from './helpers';
 
 type Props = {
   title: string;
@@ -82,35 +88,8 @@ const TransactionNumberItem = ({
     },
   });
 
-  const handleUpdateFromFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, from: valueNumber };
-    setData({ ...newState });
-  };
-
-  const handleUpdateToFieldState = (value: string | undefined) => {
-    const valueNumber =
-      typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
-    const newState = { ...data, to: valueNumber };
-    setData({ ...newState });
-  };
-
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="transaction-number-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="transaction-number-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>
@@ -154,7 +133,7 @@ const TransactionNumberItem = ({
             value={formik.values.from}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateFromFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'from', data, setData);
             }}
             error={setError(formik.touched.from, formik.errors.from)}
             helperText={setErrorText(formik.touched.from, formik.errors.from)}
@@ -182,7 +161,7 @@ const TransactionNumberItem = ({
             value={formik.values.to}
             onChange={(e) => {
               formik.handleChange(e);
-              handleUpdateToFieldState(e.target.value);
+              handleUpdateFromToFieldState(e.target.value, 'to', data, setData);
             }}
             error={setError(formik.touched.to, formik.errors.to)}
             helperText={setErrorText(formik.touched.to, formik.errors.to)}
