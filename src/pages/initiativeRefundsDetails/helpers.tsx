@@ -12,6 +12,7 @@ export const getRefundStatus = (status: string | undefined) => {
         />
       );
     case 'COMPLETED_KO':
+    case 'RECOVERED':
       return (
         <Chip
           sx={{ fontSize: '14px' }}
