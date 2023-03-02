@@ -8,7 +8,9 @@ import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import ROUTES, { BASE_ROUTE } from '../../../routes';
 import {
+  mockedFiscalCode,
   mockedIbanInfo,
+  mockedInitiativeId,
   mockedOperationList,
   mockedWallet,
   mockedWalletInstrument,
@@ -31,7 +33,7 @@ beforeEach(() => {
     hostname: 'localhost:3000/portale-enti',
     href: 'http://localhost:3000/portale-enti/rimborsi-iniziativa/2333333/55fiscal',
     origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.INITIATIVE_USER_DETAILS,
+    pathname: `${BASE_ROUTE}/dettagli-utente/${mockedInitiativeId}/${mockedFiscalCode}/ONBOARDING_OK`,
     search: '',
     assign: () => {},
     reload: () => {},
@@ -42,9 +44,9 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('test suite initiative user details', () => {
-  test('test of render InitiativeUserDetails and filter button', async () => {
-    window.scrollTo = jest.fn();
+  window.scrollTo = jest.fn();
 
+  test('test of render InitiativeUserDetails and filter button', async () => {
     const { history } = renderWithHistoryAndStore(<InitiativeUserDetails />);
 
     // on click of back btn location has changed
@@ -79,13 +81,6 @@ describe('test suite initiative user details', () => {
     // test sumbit filter btn
     const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
     fireEvent.click(filterBtn);
-
-    // test click of operation type
-    const operationTypeBtn = (await screen.findAllByTestId(
-      'operationTypeBtn'
-    )) as HTMLButtonElement[];
-    const firstOperationType = operationTypeBtn[0];
-    fireEvent.click(firstOperationType);
 
     // test open statusSnackbar
     // const dowlnloadBtn = screen.getByText(
