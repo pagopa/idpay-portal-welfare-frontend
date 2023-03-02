@@ -103,7 +103,11 @@ const InitiativeUserDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    if (typeof id === 'string' && typeof cf === 'string') {
+    if (
+      typeof id === 'string' &&
+      typeof cf === 'string' &&
+      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+    ) {
       getWalletDetail(id, cf)
         .then((res) => {
           setAmount(res.amount);
@@ -133,7 +137,11 @@ const InitiativeUserDetails = () => {
   }, [id, cf]);
 
   useEffect(() => {
-    if (typeof id === 'string' && typeof cf === 'string') {
+    if (
+      typeof id === 'string' &&
+      typeof cf === 'string' &&
+      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+    ) {
       getInstrumentList(id, cf)
         .then((res) => {
           const walletInst = res.instrumentList.filter((r) => r.status === 'ACTIVE');
@@ -211,7 +219,11 @@ const InitiativeUserDetails = () => {
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
-      if (typeof id === 'string' && typeof cf === 'string') {
+      if (
+        typeof id === 'string' &&
+        typeof cf === 'string' &&
+        (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
           searchFromStr = cleanDate(searchFrom, 'start');
@@ -236,7 +248,11 @@ const InitiativeUserDetails = () => {
     setFilterByDateTo(undefined);
     setFilterByEvent(undefined);
     setRows([]);
-    if (typeof id === 'string' && typeof cf === 'string') {
+    if (
+      typeof id === 'string' &&
+      typeof cf === 'string' &&
+      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+    ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
   };
@@ -441,7 +457,11 @@ const InitiativeUserDetails = () => {
   };
 
   useEffect(() => {
-    if (typeof id === 'string' && typeof cf === 'string') {
+    if (
+      typeof id === 'string' &&
+      typeof cf === 'string' &&
+      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+    ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
   }, [id, cf, page]);
