@@ -1,22 +1,26 @@
 import { ThemeProvider } from '@mui/system';
 import { theme } from '@pagopa/mui-italia';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import { AccumulatedTypeEnum } from '../../../../../api/generated/initiative/AccumulatedAmountDTO';
+import { InitiativeRefundRuleDTO } from '../../../../../api/generated/initiative/InitiativeRefundRuleDTO';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { saveRefundRule, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithProviders } from '../../../../../utils/test-utils';
+import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
 import RefundRules from '../RefundRules';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
+
+afterEach(cleanup);
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -48,6 +52,11 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   test('test Form input onChange with accumulatedAmount ture', async () => {
     store.dispatch(saveRefundRule(refundRules));
     store.dispatch(setInitiativeId(mockedInitiativeId));
+
+    InitiativeApiMocked.updateInitiativeRefundRuleDraftPut = async (
+      _id: string,
+      _data: InitiativeRefundRuleDTO
+    ): Promise<void> => new Promise((resolve) => resolve());
 
     render(
       <Provider store={store}>
@@ -109,10 +118,22 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     fireEvent.click(screen.getByTestId('CloseIcon'));
   });
 
+  test('test render RefundRules with no action', async () => {
+    renderWithHistoryAndStore(
+      <RefundRules
+        action={''}
+        setAction={setAction}
+        currentStep={4}
+        setCurrentStep={setCurrentStep}
+        setDisableNext={setDisableNext}
+      />
+    );
+  });
+
   test('test reimbursmentThreshold onChange', async () => {
     store.dispatch(saveRefundRule(refundRulesEmpty));
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithProviders(
+    renderWithHistoryAndStore(
       <RefundRules
         action={WIZARD_ACTIONS.SUBMIT}
         setAction={setAction}
@@ -131,5 +152,31 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       target: { value: 'THRESHOLD_REACHED' },
     });
     expect(accumulatedAmount).toBeInTheDocument();
+  });
+
+  test('test updateInitiativeRefundRuleDraftPut catch case', () => {
+    store.dispatch(saveRefundRule(refundRules));
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+
+    InitiativeApiMocked.updateInitiativeRefundRuleDraftPut = async (
+      _id: string,
+      _data: InitiativeRefundRuleDTO
+    ): Promise<void> => Promise.reject('testing catch case');
+
+    render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <Router history={history}>
+            <RefundRules
+              action={WIZARD_ACTIONS.DRAFT}
+              setAction={setAction}
+              currentStep={4}
+              setCurrentStep={setCurrentStep}
+              setDisableNext={setDisableNext}
+            />
+          </Router>
+        </ThemeProvider>
+      </Provider>
+    );
   });
 });
