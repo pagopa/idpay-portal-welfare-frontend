@@ -472,7 +472,7 @@ const InitiativeUserDetails = () => {
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
-          items={[t('breadcrumbs.initiativeUsers'), t('breadcrumbs.initiativeUserDetails'), cf]}
+          items={[t('breadcrumbs.initiativeUsers'), cf]}
         />
       </Box>
       <Box
