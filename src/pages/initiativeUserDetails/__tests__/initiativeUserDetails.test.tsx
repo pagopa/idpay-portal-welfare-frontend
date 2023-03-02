@@ -2,6 +2,7 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentListDTO';
+import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
 import { TimelineDTO } from '../../../api/generated/initiative/TimelineDTO';
 import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
@@ -41,7 +42,7 @@ beforeEach(() => {
 afterEach(cleanup);
 
 describe('test suite initiative user details', () => {
-  test('render of component InitiativeUserDetails', async () => {
+  test('test of render InitiativeUserDetails and filter button', async () => {
     window.scrollTo = jest.fn();
 
     const { history } = renderWithHistoryAndStore(<InitiativeUserDetails />);
@@ -79,12 +80,6 @@ describe('test suite initiative user details', () => {
     const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
     fireEvent.click(filterBtn);
 
-    //test reset form btn
-    const resetFilterBtn = screen.getByText(
-      'pages.initiativeUsers.form.resetFiltersBtn'
-    ) as HTMLButtonElement;
-    fireEvent.click(resetFilterBtn);
-
     // test click of operation type
     const operationTypeBtn = (await screen.findAllByTestId(
       'operationTypeBtn'
@@ -105,6 +100,61 @@ describe('test suite initiative user details', () => {
     //   keyCode: 27,
     //   charCode: 27,
     // });
+  });
+
+  test('Test of reset filter button', async () => {
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+
+    // test the select to filter events
+    const eventsFilterSelect = screen.getByTestId('filterEvent-select');
+    fireEvent.change(eventsFilterSelect, { target: { value: 'ONBOARDING' } });
+    expect(eventsFilterSelect).toBeInTheDocument();
+
+    // test filter of date from
+    const fromDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.from');
+    fireEvent.click(fromDatePickerFilter);
+    fireEvent.change(fromDatePickerFilter, {
+      target: {
+        value: new Date('2023-01-05T10:22:28.012Z'),
+      },
+    });
+
+    // test filter of date to
+    const toDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.to');
+    fireEvent.click(toDatePickerFilter);
+    fireEvent.change(toDatePickerFilter, {
+      target: {
+        value: new Date('2023-02-05T10:22:28.012Z'),
+      },
+    });
+
+    //test reset form btn
+    const resetFilterBtn = screen.getByText(
+      'pages.initiativeUsers.form.resetFiltersBtn'
+    ) as HTMLButtonElement;
+    fireEvent.click(resetFilterBtn);
+  });
+
+  test('test of getTimeLine with list empty', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 0,
+      totalPages: 0,
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
   test('test of render TransactionDetailModal with different type of opeType', () => {
@@ -163,7 +213,7 @@ describe('test suite initiative user details', () => {
     });
   });
 
-  test('test of render initiativeRefundsDetailsModal', async () => {
+  test('test of onClose InitiativeRefundsDetailsModal', async () => {
     const mockedTimeLine = {
       lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
       operationList: [
@@ -198,12 +248,105 @@ describe('test suite initiative user details', () => {
       _size?: number
     ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
 
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'PAID_REFUND',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          iban: '',
+          channel: 'App IO',
+          brandLogo: '',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          eventId: 'vvvvvv',
+        })
+      );
+
     renderWithHistoryAndStore(<InitiativeUserDetails />);
 
     const operationTypeBtn = (await screen.findAllByTestId(
       'operationTypeBtn'
     )) as HTMLButtonElement[];
     fireEvent.click(operationTypeBtn[0]);
+
+    const closeModalBtn = await screen.findByTestId('close-modal-test');
+    fireEvent.click(closeModalBtn);
+  });
+
+  test('test of onClose TransactionDetailModal', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [
+        {
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          circuitType: 'circuito',
+          iban: '',
+          channel: 'App IO',
+          brandLogo: '',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          eventId: 'vvvvvv',
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 3,
+      totalPages: 1,
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: '2023-02-05T10:22:28.012Z',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          iban: '',
+          channel: 'App IO',
+          brandLogo: '',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          eventId: 'vvvvvv',
+        })
+      );
+
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+
+    const operationTypeBtn = (await screen.findAllByTestId(
+      'operationTypeBtn'
+    )) as HTMLButtonElement[];
+    fireEvent.click(operationTypeBtn[0]);
+
+    const closeModalBtn = await screen.findByTestId('close-modal-test');
+    fireEvent.click(closeModalBtn);
   });
 
   test('test of render TransactionDetailModal', async () => {
@@ -413,7 +556,8 @@ describe('test suite initiative user details', () => {
   });
 
   test('test catch case of getIban api call', () => {
-    InitiativeApiMocked.getIban = async (): Promise<IbanDTO> => Promise.reject('reason');
+    InitiativeApiMocked.getIban = async (): Promise<IbanDTO> =>
+      Promise.reject('catch case of getIban');
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
