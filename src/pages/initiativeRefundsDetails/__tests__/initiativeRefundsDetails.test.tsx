@@ -1,8 +1,12 @@
 /* eslint-disable functional/immutable-data */
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { ExportListDTO } from '../../../api/generated/initiative/ExportListDTO';
+import { SasToken } from '../../../api/generated/initiative/SasToken';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import ROUTES from '../../../routes';
+import ROUTES, { BASE_ROUTE } from '../../../routes';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
+import { mockedGetRewardFileDownload } from '../../../services/__mocks__/initiativeService';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 
@@ -19,9 +23,9 @@ beforeEach(() => {
     port: '3000',
     protocol: 'http:',
     hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/dettaglio-rimborsi-iniziativa/111111/222222/333333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.INITIATIVE_REFUNDS_DETAIL,
+    href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+    origin: `${BASE_ROUTE}`,
+    pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
     search: '',
     assign: () => {},
     reload: () => {},
@@ -45,12 +49,14 @@ describe('test suite for refund details', () => {
   });
 
   test('on click of download file', () => {
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
-    //  download of file
-    const downloadCsvBtn = screen.getByText(
-      'pages.initiativeRefundsDetails.downloadBtn'
-    ) as HTMLButtonElement;
+    InitiativeApiMocked.getRewardFileDownload = async (
+      _id: string,
+      _filePath: string
+    ): Promise<SasToken> => new Promise((resolve) => resolve(mockedGetRewardFileDownload));
 
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+
+    const downloadCsvBtn = screen.getByTestId('download-btn-test') as HTMLButtonElement;
     fireEvent.click(downloadCsvBtn);
   });
 
@@ -105,7 +111,78 @@ describe('test suite for refund details', () => {
     fireEvent.click(closeModalXBTn);
   });
 
-  test('test addError with reject case for getExportSummary and getExportRefundsListPaged ', async () => {
+  test('test getExportRefundsListPaged with empty response', async () => {
+    const mockedRefundsDetailsListItem = {
+      content: [],
+      pageNo: 0,
+      pageSize: 0,
+      totalElements: 0,
+      totalPages: 0,
+    };
+
+    InitiativeApiMocked.getExportRefundsListPaged = async (
+      _initiativeId: string,
+      _exportId: string,
+      _page: number,
+      _cro?: string,
+      _status?: string
+    ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+  });
+
+  test('test catch case of getRewardFileDownload api call', async () => {
+    // @ts-expect-error need for matchPath to work
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      origin: `${BASE_ROUTE}`,
+      pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+
+    InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+  });
+
+  test('test render component without parameter in the header', async () => {
+    // @ts-expect-error need for matchPath to work
+    delete global.window.location;
+    global.window = Object.create(window);
+    global.window.location = {
+      ancestorOrigins: ['string'] as unknown as DOMStringList,
+      hash: 'hash',
+      host: 'localhost',
+      port: '3000',
+      protocol: 'http:',
+      hostname: 'localhost:3000/portale-enti',
+      href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      origin: `${BASE_ROUTE}`,
+      pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/`,
+      search: '',
+      assign: () => {},
+      reload: () => {},
+      replace: () => {},
+    };
+
+    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+  });
+
+  test('test addError with reject case for getExportSummary, getExportRefundsListPaged and getRewardFileDownload', async () => {
+    InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+
     InitiativeApiMocked.getExportSummary = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
 
