@@ -815,7 +815,15 @@
           "selectFromList": "Seleziona dall'elenco",
           "mccCodes": "Inserisci o incolla i codici separati da virgola",
           "everybodyExceptSelectItem": "Tutti tranne",
-          "nobodyExceptSelectItem": "Nessuno tranne"
+          "nobodyExceptSelectItem": "Nessuno tranne",
+          "selectedAccumulatedAmount": "Importo riconosciuto",
+          "fixedPlaceholder": "Valore",
+          "select": {
+            "selectedAccumulatedAmount": {
+              "fixedPremium": "Fisso",
+              "percentage": "% Percentuale"
+            } 
+          }
         }
       },
       "stepFive": {
@@ -902,6 +910,7 @@
     "outMaxSpendingLimit": "Il valore di spesa massimo deve essere maggiore del minimo",
     "outTransactionNumberLimit": "Il numero massimo di transazioni deve essere maggiore del minimo",
     "outPercentageRecognized": "La percentuale massima non può essere maggiore di 100",
+    "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "formatTimeInvalid": "Ora non valida",
     "outTransactionTime": "L'orario di fine deve essere maggiore di quello d'inizio",
     "uniqueFrequency": "Non è possible inserire due importi differenti per lo stesso limite",

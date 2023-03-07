@@ -2904,10 +2904,16 @@ components:
     InitiativeRewardRuleDTO:
       required:
         - _type
+        - rewardValueType
       type: object
       properties:
         _type:
           type: string
+        rewardValueType:
+          type: string
+          enum:
+            - PERCENTAGE
+            - ABSOLUTE
       discriminator:
         propertyName: _type
     InitiativeTrxConditionsDTO:
