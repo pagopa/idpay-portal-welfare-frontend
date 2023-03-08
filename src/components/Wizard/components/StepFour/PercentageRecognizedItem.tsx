@@ -97,7 +97,8 @@ const PercentageRecognizedItem = ({
     validateOnChange: true,
     enableReinitialize: true,
     validationSchema,
-    onSubmit: (_values) => {
+    onSubmit: (values) => {
+      console.log('values', values);
       setShopRulesToSubmit([...handleShopRulesToSubmit(shopRulesToSubmit, code)]);
     },
   });
@@ -108,6 +109,14 @@ const PercentageRecognizedItem = ({
     const newState = {
       ...data,
       rewardValue: valueNumber,
+    };
+    setData({ ...newState });
+  };
+
+  const handleUpdateStateOnSelect = (value: string | undefined) => {
+    const newState = {
+      ...data,
+      rewardValueType: value,
     };
     setData({ ...newState });
   };
@@ -138,7 +147,10 @@ const PercentageRecognizedItem = ({
             id="rewardValueType"
             name="rewardValueType"
             value={formik.values.rewardValueType}
-            onChange={(e) => formik.setFieldValue('rewardValueType', e.target.value)}
+            onChange={async (e) => {
+              handleUpdateStateOnSelect(e.target.value);
+              await formik.setFieldValue('rewardValueType', e.target.value); 
+            }}
             error={formik.touched.rewardValueType && Boolean(formik.errors.rewardValueType)}
             inputProps={{
               'data-testid': 'rewardValueType-test',
