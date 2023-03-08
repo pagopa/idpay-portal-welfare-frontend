@@ -8,7 +8,7 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { useFormik } from 'formik';
 import { Dispatch, SetStateAction, useEffect } from 'react';
@@ -31,6 +31,7 @@ interface Props {
     | {
         _type: string;
         rewardValue: number | undefined;
+        rewardValueType: RewardValueTypeEnum;
       }
     | undefined;
   setData: Dispatch<SetStateAction<any>>;
@@ -55,27 +56,42 @@ const PercentageRecognizedItem = ({
     }
   }, [action]);
 
- 
-
   const validationSchema = Yup.object().shape({
-    percentageRecognized: Yup.number()
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .max(100, t('validation.outPercentageRecognized')),
-    fixedPremiumValue: Yup.number()
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .max(parseFloat(generalInfo.beneficiaryBudget), t('validation.outFixedPremiumValue')),
     rewardValueType: Yup.string().required(t('validation.required')),
+    percentageRecognized: Yup.number().when('rewardValueType', (rewardValueType, schema) => {
+      if (rewardValueType === RewardValueTypeEnum.PERCENTAGE) {
+        return Yup.number()
+          .typeError(t('validation.numeric'))
+          .required(t('validation.required'))
+          .positive(t('validation.positive'))
+          .max(100, t('validation.outPercentageRecognized'));
+      }
+      return schema;
+    }),
+
+    fixedPremiumValue: Yup.number().when('rewardValueType', (rewardValueType, schema) => {
+      if (rewardValueType === RewardValueTypeEnum.ABSOLUTE) {
+        return Yup.number()
+          .typeError(t('validation.numeric'))
+          .required(t('validation.required'))
+          .positive(t('validation.positive'))
+          .max(parseFloat(generalInfo.beneficiaryBudget), t('validation.outFixedPremiumValue'));
+      }
+      return schema;
+    }),
   });
 
   const formik = useFormik({
     initialValues: {
-      percentageRecognized: data?.rewardValue || undefined,
-      fixedPremiumValue: data?.rewardValue || undefined,
-      rewardValueType: '',
+      percentageRecognized:
+        data?.rewardValueType === RewardValueTypeEnum.PERCENTAGE && data?.rewardValue
+          ? data?.rewardValue
+          : undefined,
+      fixedPremiumValue:
+        data?.rewardValueType === RewardValueTypeEnum.ABSOLUTE && data?.rewardValue
+          ? data?.rewardValue
+          : undefined,
+      rewardValueType: data?.rewardValueType,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -176,7 +192,7 @@ const PercentageRecognizedItem = ({
             <TextField
               inputProps={{
                 step: 0.01,
-                min: 1,
+                min: 0.01,
                 max: parseFloat(generalInfo.beneficiaryBudget),
                 type: 'number',
                 'data-testid': 'fixed-premium-value',

@@ -18,6 +18,7 @@ import {
 import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
+import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -65,6 +66,7 @@ const initialState: Initiative = {
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
+    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
   },
   trxRule: {
     mccFilter: {
@@ -211,7 +213,7 @@ export const initiativeSlice = createSlice({
     },
     saveRewardRule: (
       state,
-      action: PayloadAction<{ _type: string; rewardValue: number | undefined }>
+      action: PayloadAction<{ _type: string; rewardValue: number | undefined ; rewardValueType: RewardValueTypeEnum}>
     ) => ({
       ...state,
       rewardRule: {
@@ -221,6 +223,7 @@ export const initiativeSlice = createSlice({
         rewardValue: action.payload.hasOwnProperty('rewardValue')
           ? action.payload.rewardValue
           : undefined,
+          rewardValueType: action.payload.rewardValueType,
       },
     }),
     saveMccFilter: (state, action: PayloadAction<MccFilterDTO>) => ({

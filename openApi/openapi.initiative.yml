@@ -2904,7 +2904,6 @@ components:
     InitiativeRewardRuleDTO:
       required:
         - _type
-        - rewardValueType
       type: object
       properties:
         _type:
