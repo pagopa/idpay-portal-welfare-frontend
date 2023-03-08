@@ -51,6 +51,7 @@ import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import { GeneralInfo } from '../../../model/Initiative';
 import { createStore, RootState } from '../../store';
 import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
+import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
 
 describe('use Initiative slice', () => {
   const mockedInitialState: Initiative = {
@@ -97,6 +98,7 @@ describe('use Initiative slice', () => {
     rewardRule: {
       _type: 'rewardValue',
       rewardValue: undefined,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
     },
     trxRule: {
       mccFilter: {
@@ -221,7 +223,7 @@ describe('use Initiative slice', () => {
       initiativeReducer(mockedInitialState, saveManualCriteria([mockedManualCriteriaItem]))
     ).toBeDefined();
     expect(
-      initiativeReducer(mockedInitialState, saveRewardRule({ _type: 'string', rewardValue: 2 }))
+      initiativeReducer(mockedInitialState, saveRewardRule({ _type: 'string', rewardValue: 2 , rewardValueType:RewardValueTypeEnum.PERCENTAGE}))
     ).toBeDefined();
     expect(initiativeReducer(mockedInitialState, saveMccFilter(mockedMccFilterDTO))).toBeDefined();
     expect(

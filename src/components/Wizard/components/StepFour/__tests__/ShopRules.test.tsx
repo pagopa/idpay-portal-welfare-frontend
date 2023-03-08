@@ -6,6 +6,7 @@ import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import { ConfigTrxRuleArrayDTO } from '../../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { InitiativeRewardAndTrxRulesDTO } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import Layout from '../../../../../components/Layout/Layout';
 import {
@@ -71,7 +72,7 @@ export const daysOfWeekIntervals = [
     endTime: '23:59',
   },
 ];
-export const perRec = { _type: 'rewardValue', rewardValue: 2 };
+export const perRec = { _type: 'rewardValue', rewardValue: 2, rewardValueType:RewardValueTypeEnum.PERCENTAGE };
 
 describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
@@ -235,7 +236,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     );
   });
 
-  test('test percetage-recognized-value input', async () => {
+  test('test percentage-recognized-value input', async () => {
     renderWithHistoryAndStore(
       <Layout>
         <ShopRules
@@ -248,7 +249,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       </Layout>
     );
 
-    fireEvent.change(screen.getByTestId('percetage-recognized-value'), {
+    fireEvent.change(screen.getByTestId('percentage-recognized-value'), {
       target: {
         value: '10',
       },
