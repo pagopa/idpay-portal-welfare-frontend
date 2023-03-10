@@ -242,6 +242,8 @@
           "description": "placeholder text",
           "content": {
             "percentageRecognized": "Percentuale riconosciuta",
+            "fixedPremiumLabel": "Importo riconosciuto",
+            "fixedPremium": "Fisso",
             "rewardRuleFixed": "Fissa",
             "spentLimit": "Limite di spesa",
             "threshold": "Minimo {{minValue}} € - Massimo {{maxValue}} €",

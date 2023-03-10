@@ -43,6 +43,10 @@ const UserDetailsSummary = ({
     setOpenPaymentMethodModal(false);
   };
 
+  const renderToBeRefunded = (accrued: number | undefined, refunded: number | undefined) => {
+    const result = (accrued ?? 0) - (refunded ?? 0);
+    return result > 0 ? result : 0;
+  };
   return (
     <Box
       sx={{
@@ -109,7 +113,7 @@ const UserDetailsSummary = ({
               sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
               variant="body2"
             >
-              {formatedCurrency(accrued, '0,00 €')}
+              {formatedCurrency(renderToBeRefunded(accrued, refunded), '0,00 €')}
             </Typography>
             <Typography
               sx={{
