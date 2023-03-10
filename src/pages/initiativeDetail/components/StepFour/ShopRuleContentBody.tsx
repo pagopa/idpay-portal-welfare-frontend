@@ -18,7 +18,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
 
   const printRewardRuleAsString = (rewardRule: RewardRule): string => {
     if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
-      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${rewardRule.rewardValue}`;
+      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${rewardRule.rewardValue} €`;
     } else {
       return `${t('pages.initiativeDetail.accordion.step4.content.rewardRuleFixed')} ${
         rewardRule.rewardValue
