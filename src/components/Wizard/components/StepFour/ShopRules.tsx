@@ -1,6 +1,7 @@
 /* eslint-disable functional/no-let */
 /* eslint-disable prefer-const */
 import { Box, Button, Paper, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
@@ -31,6 +32,7 @@ import {
   putTrxAndRewardRulesDraft,
 } from '../../../../services/intitativeService';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -81,6 +83,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [modalButtonVisible, setModalButtonVisible] = useState(true);
   const setLoading = useLoading('GET_TRANSACTION_RULES');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
+  const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -303,52 +306,62 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       submit = false;
     }
 
+    const shopRulesCodes = shopRulesToSubmit.map((s) => s.code);
+    const trxCountPresent = shopRulesCodes.includes('THRESHOLD');
+    const rewardValueTypeIsAbsolute =
+      rewardRuleData.rewardValueType === RewardValueTypeEnum.ABSOLUTE;
+    const trxCountIsOk = trxCountPresent && rewardValueTypeIsAbsolute;
+
     if (submit && typeof initiativeId === 'string') {
-      const body = {
-        ...mapDataToSend(
-          rewardRuleData,
-          mccFilterData,
-          rewardLimitsData,
-          thresholdData,
-          trxCountData,
-          daysOfWeekIntervalsData
-        ),
-      };
-      setLoading(true);
-      putTrxAndRewardRules(initiativeId, body)
-        .then((_response) => {
-          dispatch(saveRewardRule(rewardRuleData));
-          if (typeof mccFilterData === 'object') {
-            dispatch(saveMccFilter(mccFilterData));
-          }
-          if (Array.isArray(rewardLimitsData)) {
-            dispatch(saveRewardLimits(rewardLimitsData));
-          }
-          if (typeof thresholdData === 'object') {
-            dispatch(saveThreshold(thresholdData));
-          }
-          if (typeof trxCountData === 'object') {
-            dispatch(saveTrxCount(trxCountData));
-          }
-          if (Array.isArray(daysOfWeekIntervalsData)) {
-            dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
-          }
-          setCurrentStep(currentStep + 1);
-        })
-        .catch((error) => {
-          addError({
-            id: 'EDIT_TRANSACTION_RULES_SAVE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred editing initiative transaction rules',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.invalidDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        })
-        .finally(() => setLoading(false));
+      if (trxCountIsOk || !rewardValueTypeIsAbsolute) {
+        const body = {
+          ...mapDataToSend(
+            rewardRuleData,
+            mccFilterData,
+            rewardLimitsData,
+            thresholdData,
+            trxCountData,
+            daysOfWeekIntervalsData
+          ),
+        };
+        setLoading(true);
+        putTrxAndRewardRules(initiativeId, body)
+          .then((_response) => {
+            dispatch(saveRewardRule(rewardRuleData));
+            if (typeof mccFilterData === 'object') {
+              dispatch(saveMccFilter(mccFilterData));
+            }
+            if (Array.isArray(rewardLimitsData)) {
+              dispatch(saveRewardLimits(rewardLimitsData));
+            }
+            if (typeof thresholdData === 'object') {
+              dispatch(saveThreshold(thresholdData));
+            }
+            if (typeof trxCountData === 'object') {
+              dispatch(saveTrxCount(trxCountData));
+            }
+            if (Array.isArray(daysOfWeekIntervalsData)) {
+              dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
+            }
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_TRANSACTION_RULES_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative transaction rules',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setMandatoryTrxCountToast(true);
+      }
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
@@ -522,6 +535,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
               setShopRulesToSubmit={setShopRulesToSubmit}
               data={thresholdData}
               setData={setThresholdData}
+              rewardRuleData={rewardRuleData}
             />
           );
         } else if (a.code === 'MCC' && a.checked === true) {
@@ -590,6 +604,20 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           title={t('components.wizard.common.draftSaved')}
           showToastCloseIcon={true}
           onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
+      {mandatoryTrxCountToast && (
+        <Toast
+          open={mandatoryTrxCountToast}
+          title={t('components.wizard.stepFour.form.trxCountNotPopulatedErrorTitle')}
+          message={t('components.wizard.stepFour.form.trxCountNotPopulatedErrorDescription')}
+          onCloseToast={() => {
+            setMandatoryTrxCountToast(false);
+          }}
+          logo={InfoOutlinedIcon}
+          leftBorderColor="#FE6666"
+          toastColorIcon="#FE6666"
+          showToastCloseIcon={true}
         />
       )}
     </Paper>

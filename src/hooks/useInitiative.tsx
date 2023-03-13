@@ -45,7 +45,7 @@ import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
-import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
+// import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 
 interface MatchParams {
   id: string;
@@ -346,19 +346,19 @@ export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch):
     dispatch(saveRewardRule(rewardRule));
   }
   // TEMP REMOVE LATER elseIf
-   else if (
-    response.rewardRule &&
-    typeof response.rewardRule !== undefined &&
-    // eslint-disable-next-line no-underscore-dangle
-    response.rewardRule._type === 'rewardValue' &&
-    // eslint-disable-next-line no-prototype-builtins
-    response.rewardRule.hasOwnProperty('rewardValue') &&
-    // eslint-disable-next-line no-prototype-builtins
-    !response.rewardRule.hasOwnProperty('rewardValueType')
-  ) {
-    const rewardRule = { ...response.rewardRule, rewardValueType:RewardValueTypeEnum.PERCENTAGE  } as any;
-    dispatch(saveRewardRule(rewardRule));
-  }
+  //  else if (
+  //   response.rewardRule &&
+  //   typeof response.rewardRule !== undefined &&
+  //   // eslint-disable-next-line no-underscore-dangle
+  //   response.rewardRule._type === 'rewardValue' &&
+  //   // eslint-disable-next-line no-prototype-builtins
+  //   response.rewardRule.hasOwnProperty('rewardValue') &&
+  //   // eslint-disable-next-line no-prototype-builtins
+  //   !response.rewardRule.hasOwnProperty('rewardValueType')
+  // ) {
+  //   const rewardRule = { ...response.rewardRule, rewardValueType:RewardValueTypeEnum.PERCENTAGE  } as any;
+  //   dispatch(saveRewardRule(rewardRule));
+  // }
 };
 
 export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
