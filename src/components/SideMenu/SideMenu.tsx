@@ -131,7 +131,7 @@ export default function SideMenu() {
               onChange={handleChange(`panel-${item.initiativeId}`)}
               disableGutters
               elevation={0}
-              sx={{ border: 'none', '&:before': { backgroundColor: '#fff' } }}
+              sx={{ border: 'none', '&:before': { backgroundColor: '#fff' }, maxWidth: 300 }}
               data-testid="accordion-click-test"
             >
               <AccordionSummary
@@ -207,7 +207,9 @@ export default function SideMenu() {
                     isSelected={
                       pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}` ||
                       pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}` ||
-                      pathname.includes(`${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`)
+                      pathname.includes(
+                        `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`
+                      )
                     }
                     icon={EuroSymbolIcon}
                     level={2}

@@ -297,7 +297,7 @@ Props) => {
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
                     {transactionDetail.operationType === 'REVERSAL'
-                      ? `-${formatedCurrency(transactionDetail?.accrued)}`
+                      ? `${formatedCurrency(transactionDetail?.accrued)}`
                       : formatedCurrency(transactionDetail?.accrued)}
                   </Typography>
                 </Box>

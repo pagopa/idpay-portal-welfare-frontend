@@ -16,11 +16,23 @@ type Props = {
 const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
   const { t } = useTranslation();
 
-  const printRewardRuleAsString = (rewardRule: RewardRule): string =>
-    `${t('pages.initiativeDetail.accordion.step4.content.rewardRuleFixed')} ${
-      rewardRule.rewardValue
-    }%`;
+  const printRewardRuleAsString = (rewardRule: RewardRule): string => {
+    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${rewardRule.rewardValue} €`;
+    } else {
+      return `${t('pages.initiativeDetail.accordion.step4.content.rewardRuleFixed')} ${
+        rewardRule.rewardValue
+      }%`;
+    }
+  };
 
+  const printRewardRuleLabel = (rewardRule: RewardRule): string => {
+    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremiumLabel')}`;
+    } else {
+      return `${t('pages.initiativeDetail.accordion.step4.content.percentageRecognized')}`;
+    }
+  };
   const printMccFilterAsString = (mccFilter: MccFilterDTO): string => {
     // eslint-disable-next-line functional/no-let
     let dataAsString = '';
@@ -60,7 +72,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
     >
       <Divider sx={{ gridColumn: 'span 12', mb: 1 }} />
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-        {t('pages.initiativeDetail.accordion.step4.content.percentageRecognized')}
+        {printRewardRuleLabel(initiativeDetail.rewardRule)}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
         {printRewardRuleAsString(initiativeDetail.rewardRule)}

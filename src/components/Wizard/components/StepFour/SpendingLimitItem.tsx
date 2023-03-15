@@ -8,7 +8,8 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { Threshold } from '../../../../model/Initiative';
+import { RewardRule, Threshold } from '../../../../model/Initiative';
+import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import {
   renderShopRuleIcon,
   handleShopRulesToSubmit,
@@ -29,6 +30,7 @@ type Props = {
   >;
   data: Threshold | undefined;
   setData: Dispatch<SetStateAction<any>>;
+  rewardRuleData: RewardRule;
 };
 
 const SpendingLimitItem = ({
@@ -40,6 +42,7 @@ const SpendingLimitItem = ({
   setShopRulesToSubmit,
   data,
   setData,
+  rewardRuleData,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -55,7 +58,20 @@ const SpendingLimitItem = ({
     from: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
-      .positive(t('validation.positive')),
+      .positive(t('validation.positive'))
+      .test(
+        'reward-rule-type-absolute',
+        t('validation.trxCountMinCap', { x: rewardRuleData.rewardValue }),
+        function (val) {
+          if (
+            rewardRuleData.rewardValueType === RewardValueTypeEnum.ABSOLUTE &&
+            rewardRuleData.rewardValue
+          ) {
+            return typeof val === 'number' && val >= rewardRuleData.rewardValue;
+          }
+          return true;
+        }
+      ),
     to: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))

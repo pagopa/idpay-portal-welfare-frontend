@@ -1,5 +1,6 @@
 import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
+import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 
@@ -98,6 +99,7 @@ export interface DaysOfWeekInterval {
 export interface RewardRule {
   _type: string;
   rewardValue: number | undefined;
+  rewardValueType: RewardValueTypeEnum;
 }
 
 export interface RefundRule {
