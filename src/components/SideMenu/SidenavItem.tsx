@@ -23,7 +23,7 @@ export default function SidenavItem({
       <ListItemIcon sx={{ ml: level }}>
         <Icon component={icon} />
       </ListItemIcon>
-      <ListItemText primary={title} />
+      <ListItemText primary={title} sx={{ wordBreak: 'break-word' }} />
     </ListItemButton>
   );
 }
