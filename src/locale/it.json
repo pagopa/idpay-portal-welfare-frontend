@@ -394,7 +394,8 @@
         "onboardingKo": "Non idoneo",
         "notSignedOn": "Non iscritto",
         "assignee": "Assegnatario",
-        "eligible": "Idoneo"
+        "eligible": "Idoneo",
+        "suspended": "Sospeso"
       }
     },
     "initiativeUserDetails": {

@@ -671,7 +671,7 @@ const InitiativeUserDetails = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box sx={initiativePagesTableContainerStyle}>
+        <Box sx={{ ...initiativePagesTableContainerStyle, height: 'auto' }}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>

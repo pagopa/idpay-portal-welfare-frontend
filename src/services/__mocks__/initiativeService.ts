@@ -34,6 +34,7 @@ import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
+import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -659,7 +660,7 @@ export const mockedOnBoardingStatusResponse = {
   content: [
     {
       beneficiary: 'string',
-      beneficiaryState: 'string',
+      beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
       updateStatusDate: new Date(),
     },
   ],

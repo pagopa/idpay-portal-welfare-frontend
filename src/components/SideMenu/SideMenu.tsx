@@ -131,7 +131,12 @@ export default function SideMenu() {
               onChange={handleChange(`panel-${item.initiativeId}`)}
               disableGutters
               elevation={0}
-              sx={{ border: 'none', '&:before': { backgroundColor: '#fff' }, maxWidth: 300 }}
+              sx={{
+                border: 'none',
+                '&:before': { backgroundColor: '#fff' },
+                minWidth: 300,
+                maxWidth: 316,
+              }}
               data-testid="accordion-click-test"
             >
               <AccordionSummary
