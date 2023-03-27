@@ -107,6 +107,7 @@ const InitiativeUserDetails = () => {
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
         .then((res) => {
+          console.log(res);
           setStatusOnb(res.status);
         })
         .catch((error) => {
