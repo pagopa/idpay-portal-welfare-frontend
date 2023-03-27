@@ -1844,7 +1844,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-                
+
   /{initiativeId}/ranking/notified:
     put:
       tags:
@@ -3777,7 +3777,7 @@ components:
       required:
         - status
       properties:
-        status:
+        beneficiaryState:
           enum:
             - ACCEPTED_TC
             - ON_EVALUATION
