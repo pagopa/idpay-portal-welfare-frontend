@@ -17,6 +17,7 @@ import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/Initiativ
 import { InstrumentListDTO } from '../api/generated/initiative/InstrumentListDTO';
 import { LogoDTO } from '../api/generated/initiative/LogoDTO';
 import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
+import { OnboardingStatusDTO } from '../api/generated/initiative/OnboardingStatusDTO';
 import { OperationDTO } from '../api/generated/initiative/OperationDTO';
 import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
 import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
@@ -449,3 +450,9 @@ export const getRefundDetail = (
   }
   return InitiativeApi.getRefundDetail(initiativeId, eventId);
 };
+
+export const getBeneficiaryOnboardingStatus = (
+  initiativeId: string,
+  fiscalCode: string
+): Promise<OnboardingStatusDTO> =>
+  InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
