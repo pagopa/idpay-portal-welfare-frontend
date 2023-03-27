@@ -423,7 +423,8 @@ const InitiativeUsers = () => {
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState, initiativeSel)}</TableCell>
-                      {/* <TableCell align="right">
+                      {/*
+                       <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>
