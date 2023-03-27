@@ -46,8 +46,10 @@ import {
   getWalletDetail,
   getIban,
   getTimeLine,
+  getBeneficiaryOnboardingStatus,
 } from '../../services/intitativeService';
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
@@ -81,7 +83,7 @@ const InitiativeUserDetails = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
-  const [statusOnb, setStatusOnb] = useState<StatusEnum | undefined>();
+  const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
   // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
@@ -102,10 +104,33 @@ const InitiativeUserDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (typeof id === 'string' && typeof cf === 'string') {
+      getBeneficiaryOnboardingStatus(id, cf)
+        .then((res) => {
+          setStatusOnb(res.status);
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_BENEFICARY_STATUS',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting beneficary status',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  }, [id, cf]);
+
+  useEffect(() => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === 'ONBOARDING_OK' || statusOnb === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
@@ -133,13 +158,14 @@ const InitiativeUserDetails = () => {
         );
     }
     HandleOpenSnackBarOnBoardingStatus();
-  }, [id, cf]);
+  }, [id, cf, statusOnb]);
 
   useEffect(() => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
     ) {
       getInstrumentList(id, cf)
         .then((res) => {
@@ -221,7 +247,8 @@ const InitiativeUserDetails = () => {
       if (
         typeof id === 'string' &&
         typeof cf === 'string' &&
-        (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+        (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
       ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
@@ -250,7 +277,8 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
     ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
@@ -386,9 +414,9 @@ const InitiativeUserDetails = () => {
     setOpenSnackBarOnBoardingStatus(false);
   };
 
-  const renderUserStatusAlert = (status: string | undefined) => {
+  const renderUserStatusAlert = (status: OnboardingStatusEnum | undefined) => {
     switch (status) {
-      case 'ONBOARDING_KO':
+      case OnboardingStatusEnum.ONBOARDING_KO:
         return (
           <>
             <Snackbar
@@ -419,7 +447,7 @@ const InitiativeUserDetails = () => {
             </Snackbar>
           </>
         );
-      case 'ELIGIBLE_KO':
+      case OnboardingStatusEnum.ELIGIBLE_KO:
         return (
           <>
             <Snackbar
@@ -459,7 +487,8 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
@@ -515,7 +544,7 @@ const InitiativeUserDetails = () => {
             </Alert>
           </Snackbar>
         </Box> */}
-        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(status)}</Box>
+        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(statusOnb)}</Box>
       </Box>
 
       <Box

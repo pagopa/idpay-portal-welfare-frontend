@@ -32,6 +32,7 @@ import { OperationDTO } from './generated/initiative/OperationDTO';
 import { ExportSummaryDTO } from './generated/initiative/ExportSummaryDTO';
 import { ExportListDTO } from './generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from './generated/initiative/RefundDetailDTO';
+import { OnboardingStatusDTO } from './generated/initiative/OnboardingStatusDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -385,11 +386,19 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getRefundDetail: async (
-    initiativeId: string,
-    eventId: string
-  ): Promise<RefundDetailDTO> => {
+  getRefundDetail: async (initiativeId: string, eventId: string): Promise<RefundDetailDTO> => {
     const result = await apiClient.getRefundDetail({ initiativeId, eventId });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getBeneficiaryOnboardingStatus: async (
+    initiativeId: string,
+    fiscalCode: string
+  ): Promise<OnboardingStatusDTO> => {
+    const result = await apiClient.getBeneficiaryOnboardingStatus({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 };
