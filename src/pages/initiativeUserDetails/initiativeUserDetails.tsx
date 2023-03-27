@@ -81,10 +81,10 @@ const InitiativeUserDetails = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
+  const [statusOnb, setStatusOnb] = useState<StatusEnum | undefined>();
   // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
-
   const theme = createTheme(itIT);
 
   const match = matchPath(location.pathname, {
@@ -96,17 +96,16 @@ const InitiativeUserDetails = () => {
   interface MatchParams {
     id: string;
     cf: string;
-    status: string;
   }
 
-  const { id, cf, status } = (match?.params as MatchParams) || {};
+  const { id, cf } = (match?.params as MatchParams) || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === 'ONBOARDING_OK' || statusOnb === 'UNSUBSCRIBED')
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
