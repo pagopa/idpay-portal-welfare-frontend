@@ -144,7 +144,7 @@ export default function SideMenu() {
                 aria-controls={`panel-${item.initiativeId}-content`}
                 id={`panel-${item.initiativeId}-header`}
               >
-                <ListItemText primary={item.initiativeName} />
+                <ListItemText sx={{ wordBreak: 'break-word' }} primary={item.initiativeName} />
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
                 <List disablePadding>
