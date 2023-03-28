@@ -110,7 +110,7 @@ const InitiativeUserDetails = () => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
-        .then((res) => {
+        .then((_res) => {
           // console.log(res);
           setStatusOnb(res.status);
           // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
@@ -486,6 +486,26 @@ const InitiativeUserDetails = () => {
                 </Typography>
               </Alert>
             </Snackbar>
+          </>
+        );
+      case OnboardingStatusEnum.SUSPENDED:
+        return (
+          <>
+            <Alert
+              variant="outlined"
+              severity="warning"
+              sx={{
+                position: 'initial',
+                justifyContent: 'center',
+                gridColumn: 'span 24',
+                zIndex: 0,
+                mt: 5,
+              }}
+            >
+              <Typography variant="body2">
+                {t('pages.initiativeUserDetails.onboardingSuspendedDescription')}
+              </Typography>
+            </Alert>
           </>
         );
       default:

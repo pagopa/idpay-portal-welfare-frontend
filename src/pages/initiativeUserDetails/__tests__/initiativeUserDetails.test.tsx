@@ -8,9 +8,7 @@ import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { BASE_ROUTE } from '../../../routes';
 import {
-  mockedFiscalCode,
   mockedIbanInfo,
-  mockedInitiativeId,
   mockedOperationList,
   mockedWallet,
   mockedWalletInstrument,
@@ -33,7 +31,7 @@ beforeEach(() => {
     hostname: 'localhost:3000/portale-enti',
     href: 'http://localhost:3000/portale-enti/dettagli-utente/2333333/55fiscal',
     origin: 'http://localhost:3000/portale-enti',
-    pathname: `${BASE_ROUTE}/dettagli-utente/${mockedInitiativeId}/${mockedFiscalCode}`,
+    pathname: `${BASE_ROUTE}/dettagli-utente/2333333/55fiscal`,
     search: '',
     assign: () => {},
     reload: () => {},
@@ -152,7 +150,7 @@ describe('test suite initiative user details', () => {
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
-  test('test of render TransactionDetailModal with different type of opeType', () => {
+  test('test of render TransactionDetailModal with different type of opeType', async () => {
     const operationTypes = [
       'ADD_IBAN',
       'ADD_INSTRUMENT',
@@ -208,309 +206,19 @@ describe('test suite initiative user details', () => {
     });
   });
 
-  test('test of onClose InitiativeRefundsDetailsModal', async () => {
-    const mockedTimeLine = {
-      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
-      operationList: [
-        {
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'PAID_REFUND',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          circuitType: 'circuito',
-          iban: '',
-          channel: 'App IO',
-          brandLogo: '',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-          eventId: 'vvvvvv',
-        },
-      ],
-      pageNo: 0,
-      pageSize: 10,
-      totalElements: 3,
-      totalPages: 1,
-    };
-    InitiativeApiMocked.getTimeLine = async (
-      _cf: string,
-      _id: string,
-      _opeType?: string,
-      _dateFrom?: string,
-      _dateTo?: string,
-      _page?: number,
-      _size?: number
-    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
-
-    InitiativeApiMocked.getTimelineDetail = async (
-      _cf: string,
-      _id: string,
-      _opeId: string
-    ): Promise<OperationDTO> =>
-      new Promise((resolve) =>
-        resolve({
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'PAID_REFUND',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          iban: '',
-          channel: 'App IO',
-          brandLogo: '',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-          eventId: 'vvvvvv',
-        })
-      );
-
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-    /*
-    const operationTypeBtn = (await screen.findAllByTestId(
-      'operationTypeBtn'
-    )) as HTMLButtonElement[];
-    fireEvent.click(operationTypeBtn[0]);
-*
-    const closeModalBtn = await screen.findByTestId('close-modal-test');
-    fireEvent.click(closeModalBtn);
-    */
-  });
-
-  test('test of onClose TransactionDetailModal', async () => {
-    const mockedTimeLine = {
-      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
-      operationList: [
-        {
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          circuitType: 'circuito',
-          iban: '',
-          channel: 'App IO',
-          brandLogo: '',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-          eventId: 'vvvvvv',
-        },
-      ],
-      pageNo: 0,
-      pageSize: 10,
-      totalElements: 3,
-      totalPages: 1,
-    };
-    InitiativeApiMocked.getTimeLine = async (
-      _cf: string,
-      _id: string,
-      _opeType?: string,
-      _dateFrom?: string,
-      _dateTo?: string,
-      _page?: number,
-      _size?: number
-    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
-
-    InitiativeApiMocked.getTimelineDetail = async (
-      _cf: string,
-      _id: string,
-      _opeId: string
-    ): Promise<OperationDTO> =>
-      new Promise((resolve) =>
-        resolve({
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          iban: '',
-          channel: 'App IO',
-          brandLogo: '',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-          eventId: 'vvvvvv',
-        })
-      );
-
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-    /*
-    const operationTypeBtn = (await screen.findAllByTestId(
-      'operationTypeBtn'
-    )) as HTMLButtonElement[];
-    fireEvent.click(operationTypeBtn[0]);
-*
-    const closeModalBtn = await screen.findByTestId('close-modal-test');
-    fireEvent.click(closeModalBtn);
-    */
-  });
-
-  test('test of render TransactionDetailModal', async () => {
-    const mockedTimeLine = {
-      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
-      operationList: [
-        {
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          circuitType: 'circuito',
-          iban: '',
-          channel: 'App IO',
-          brandLogo: '',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-          eventId: 'vvvvvv',
-        },
-      ],
-      pageNo: 0,
-      pageSize: 10,
-      totalElements: 3,
-      totalPages: 1,
-    };
-    InitiativeApiMocked.getTimeLine = async (
-      _cf: string,
-      _id: string,
-      _opeType?: string,
-      _dateFrom?: string,
-      _dateTo?: string,
-      _page?: number,
-      _size?: number
-    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
-
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-    /*
-    const operationTypeBtn = (await screen.findAllByTestId(
-      'operationTypeBtn'
-    )) as HTMLButtonElement[];
-    fireEvent.click(operationTypeBtn[0]);
-    */
-  });
-
-  test('test of render TransactionDetailModal with path', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
-
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-    /*
-    fireEvent.keyDown(screen.getByTestId('onboarding-ko-snackbar-test'), {
-      key: 'Escape',
-      code: 'Escape',
-      keyCode: 27,
-      charCode: 27,
-    });
-    */
-  });
-
-  test('test of render TransactionDetailModal with path ONBOARDING_KO', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
-
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-  });
-
   test('test else case of getIban without initiaveId in pathName', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
     (InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
       new Promise((resolve) => resolve(mockedIbanInfo))),
       renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
   test('test else case of getWalletDetails without initiaveId in pathName', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
     InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
       new Promise((resolve) => resolve(mockedWallet));
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
   test('test else case of getInstrumentList without initiaveId in pathName', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
     InitiativeApiMocked.getInstrumentList = async (
       _id: string,
       _cf: string
@@ -518,25 +226,7 @@ describe('test suite initiative user details', () => {
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 
-  test('test else case of getTimeLine without initiaveId in pathName', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://http://localhost:3000/portale-enti/dettagli-utente/63eca4cc8483022c3e09c487/GMMMRA79L13H703E',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/dettagli-utente/GMMMRA79L13H703E`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
+  test('test else case of getTimeLine without initiaveId in pathName', async () => {
     InitiativeApiMocked.getTimeLine = async (
       _cf: string,
       _id: string,
@@ -547,6 +237,10 @@ describe('test suite initiative user details', () => {
       _size?: number
     ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList));
     renderWithHistoryAndStore(<InitiativeUserDetails />);
+    const operationTypeButtons = (await screen.findAllByTestId(
+      'operationTypeBtn'
+    )) as HTMLButtonElement[];
+    fireEvent.click(operationTypeButtons[0]);
   });
 
   test('test catch case of getIban api call', () => {
@@ -567,6 +261,12 @@ describe('test suite initiative user details', () => {
 
   test('test catch case of getTimeLine api call', () => {
     InitiativeApiMocked.getTimeLine = async (): Promise<any> => Promise.reject('reason');
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('test catch case of getBeneficiaryOnboardingStatus api call', () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<any> =>
+      Promise.reject('reason');
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
 });

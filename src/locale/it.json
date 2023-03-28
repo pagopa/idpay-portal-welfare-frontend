@@ -427,6 +427,7 @@
       "suspendUser": "Sospendi utente",
       "readmit": "Riammetti",
       "excludeForever": "Escludi per sempre",
+      "onboardingSuspendedDescription": "L’utente è momentaneamente sospeso. Tutte le transazioni in questo periodo non saranno conteggiate ai fini dell’iniziativa.",
       "suspendModal": {
         "suspendUserTitle": "Sospendi utente",
         "suspendUserDescription": "Durante il periodo di sospensione, le transazioni non saranno conteggiate ai fini dell’iniziativa. Potrai decidere in seguito se riammettere l’utente oppure escluderlo per sempre dall’iniziativa.",
