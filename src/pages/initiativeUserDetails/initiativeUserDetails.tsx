@@ -110,7 +110,7 @@ const InitiativeUserDetails = () => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
-        .then((_res) => {
+        .then((res) => {
           // console.log(res);
           setStatusOnb(res.status);
           // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
