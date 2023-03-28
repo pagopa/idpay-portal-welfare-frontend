@@ -110,7 +110,8 @@ const InitiativeUserDetails = () => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
-        .then((_res) => {
+        .then((res) => {
+          console.log(res);
           // setStatusOnb(res.status);
           setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
@@ -491,9 +492,8 @@ const InitiativeUserDetails = () => {
   useEffect(() => {
     if (
       typeof id === 'string' &&
-      typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+      typeof cf === 'string'
+      // && (statusOnb === OnboardingStatusEnum.ONBOARDING_OK || statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
@@ -522,28 +522,36 @@ const InitiativeUserDetails = () => {
           mt: 3,
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
-          <TitleBox
-            title={cf.toUpperCase()}
-            subTitle={''}
-            mtTitle={0}
-            mbTitle={0}
-            variantTitle="h4"
-            variantSubTitle="body1"
-          />
-        </Box>
-        {statusOnb === OnboardingStatusEnum.SUSPENDED ? (
-          <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
-            <Chip
-              label={t('pages.initiativeUserDetails.suspended')}
-              sx={{ fontSize: '14px' }}
-              color="warning"
-              size="small"
+        <Box
+          sx={{
+            display: 'grid',
+            gridColumn: 'span 4',
+            width: '100%',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            alignItems: 'center',
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 9' }}>
+            <TitleBox
+              title={cf.toUpperCase()}
+              subTitle={''}
+              mtTitle={0}
+              mbTitle={0}
+              variantTitle="h4"
+              variantSubTitle="body1"
             />
           </Box>
-        ) : (
-          <Box sx={{ display: 'grid', gridColumn: 'span 1' }}></Box>
-        )}
+          <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
+            {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+              <Chip
+                label={t('pages.initiativeUserDetails.suspended')}
+                sx={{ fontSize: '14px' }}
+                color="warning"
+                size="small"
+              />
+            )}
+          </Box>
+        </Box>
 
         {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
           <Box sx={{ display: 'grid', gridColumn: 'span 8', justifyContent: 'end' }}>

@@ -90,9 +90,9 @@ const SuspensionModal = ({
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(6, 1fr)',
+              gridTemplateColumns: 'repeat(12, 1fr)',
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . cancelBtn cancelBtn suspendBtn suspendBtn"`,
+              gridTemplateAreas: `". . . . . . cancelBtn cancelBtn cancelBtn suspendBtn suspendBtn suspendBtn"`,
               gap: 1,
               mt: 3,
             }}
