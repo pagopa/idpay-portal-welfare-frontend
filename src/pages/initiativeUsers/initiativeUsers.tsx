@@ -412,13 +412,11 @@ const InitiativeUsers = () => {
                             textAlign: 'left',
                           }}
                           onClick={() =>
-                            history.replace(
-                              `${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`
-                            )
+                            history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
                           }
                           data-testid="beneficiary-test"
                         >
-                          {r.beneficiary}
+                          {r.beneficiary?.toUpperCase()}
                         </ButtonNaked>
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
