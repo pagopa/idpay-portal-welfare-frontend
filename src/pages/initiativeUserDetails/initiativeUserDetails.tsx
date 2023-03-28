@@ -136,7 +136,8 @@ const InitiativeUserDetails = () => {
       typeof id === 'string' &&
       typeof cf === 'string' &&
       (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
@@ -171,7 +172,8 @@ const InitiativeUserDetails = () => {
       typeof id === 'string' &&
       typeof cf === 'string' &&
       (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getInstrumentList(id, cf)
         .then((res) => {
@@ -192,7 +194,7 @@ const InitiativeUserDetails = () => {
           })
         );
     }
-  }, [id, cf]);
+  }, [id, cf, statusOnb]);
 
   const getTableData = (
     cf: string,
@@ -254,7 +256,8 @@ const InitiativeUserDetails = () => {
         typeof id === 'string' &&
         typeof cf === 'string' &&
         (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+          statusOnb === OnboardingStatusEnum.SUSPENDED)
       ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
@@ -284,7 +287,8 @@ const InitiativeUserDetails = () => {
       typeof id === 'string' &&
       typeof cf === 'string' &&
       (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
@@ -492,8 +496,10 @@ const InitiativeUserDetails = () => {
   useEffect(() => {
     if (
       typeof id === 'string' &&
-      typeof cf === 'string'
-      // && (statusOnb === OnboardingStatusEnum.ONBOARDING_OK || statusOnb === OnboardingStatusEnum.UNSUBSCRIBED)
+      typeof cf === 'string' &&
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
