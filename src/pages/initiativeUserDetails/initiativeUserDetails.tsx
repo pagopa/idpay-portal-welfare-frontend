@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
   Snackbar,
+  Chip,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -57,6 +58,7 @@ import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
+import SuspensionModal from './SuspensionModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -84,6 +86,8 @@ const InitiativeUserDetails = () => {
   const [totalElements, setTotalElements] = useState<number>(0);
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
+  const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
+  const [buttonType, setButtonType] = useState<string>('');
   // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
@@ -106,9 +110,9 @@ const InitiativeUserDetails = () => {
     window.scrollTo(0, 0);
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
-        .then((res) => {
-          console.log(res);
-          setStatusOnb(res.status);
+        .then((_res) => {
+          // setStatusOnb(res.status);
+          setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
         .catch((error) => {
           addError({
@@ -493,7 +497,12 @@ const InitiativeUserDetails = () => {
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
-  }, [id, cf, page]);
+  }, [id, cf, page, statusOnb]);
+
+  const handleSuspension = (buttonType: string) => {
+    setSuspensionModalOpen(true);
+    setButtonType(buttonType);
+  };
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -508,20 +517,69 @@ const InitiativeUserDetails = () => {
         sx={{
           display: 'grid',
           width: '100%',
-          gridTemplateColumns: 'repeat(24, 1fr)',
+          gridTemplateColumns: 'repeat(12, 1fr)',
           alignItems: 'center',
+          mt: 3,
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 21' }}>
+        <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
           <TitleBox
-            title={cf}
+            title={cf.toUpperCase()}
             subTitle={''}
-            mtTitle={3}
+            mtTitle={0}
             mbTitle={0}
             variantTitle="h4"
             variantSubTitle="body1"
           />
         </Box>
+        {statusOnb === OnboardingStatusEnum.SUSPENDED ? (
+          <Box sx={{ display: 'grid', gridColumn: 'span 1' }}>
+            <Chip
+              label={t('pages.initiativeUserDetails.suspended')}
+              sx={{ fontSize: '14px' }}
+              color="warning"
+              size="small"
+            />
+          </Box>
+        ) : (
+          <Box sx={{ display: 'grid', gridColumn: 'span 1' }}></Box>
+        )}
+
+        {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
+          <Box sx={{ display: 'grid', gridColumn: 'span 8', justifyContent: 'end' }}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => handleSuspension('SUSPEND')}
+              data-testid="suspended"
+              color="error"
+            >
+              {t('pages.initiativeUserDetails.suspendUser')}
+            </Button>
+          </Box>
+        )}
+
+        {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+          <Box sx={{ display: 'flex', gridColumn: 'span 8', justifyContent: 'end', gap: 1 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleSuspension('READMIT')}
+              data-testid="readmit"
+            >
+              {t('pages.initiativeUserDetails.readmit')}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => handleSuspension('EXCLUDE')}
+              data-testid="exclude-forever"
+              color="error"
+            >
+              {t('pages.initiativeUserDetails.excludeForever')}
+            </Button>
+          </Box>
+        )}
         {/* <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
           <Button
             variant="contained"
@@ -781,6 +839,12 @@ const InitiativeUserDetails = () => {
                 handleCloseRefundModal={handleCloseRefundDetailModal}
                 refundEventId={selectedEventId}
                 initiativeId={id}
+              />
+              <SuspensionModal
+                suspensionModalOpen={suspensionModalOpen}
+                setSuspensionModalOpen={setSuspensionModalOpen}
+                statusOnb={statusOnb}
+                buttonType={buttonType}
               />
             </Box>
           </Box>

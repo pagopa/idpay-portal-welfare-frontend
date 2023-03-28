@@ -423,6 +423,22 @@
       "appIo": "App IO",
       "issuer": "Issuer",
       "noData": "Non sono presenti eventi.",
+      "suspended": "Sospeso",
+      "suspendUser": "Sospendi utente",
+      "readmit": "Riammetti",
+      "excludeForever": "Escludi per sempre",
+      "suspendModal": {
+        "suspendUserTitle": "Sospendi utente",
+        "suspendUserDescription": "Durante il periodo di sospensione, le transazioni non saranno conteggiate ai fini dell’iniziativa. Potrai decidere in seguito se riammettere l’utente oppure escluderlo per sempre dall’iniziativa.",
+        "readmitUserTitle": "Riammetti all’iniziativa",
+        "excludeUserTitle": "Escludi per sempre dall’iniziativa",
+        "excludeUserDescription": "L’esclusione dall’iniziativa è irreversibile e l’utente verrà notificato in app. Tutte le transazioni sospese e l’importo in attesa di rimborso verranno cancellati.",
+        "readmitUserDescription": "Dopo la riammissione, tutti gli eventi in sospeso torneranno in attività gli importi in attesa di rimborso saranno erogati correttamente.",
+        "suspendBtn": "Sospendi",
+        "backBtn": "Torna indietro",
+        "readmitBtn": "Riammetti",
+        "excludeBtn": "Escludi per sempre"
+      },
       "table": {
         "dateAndHour": "Data e ora",
         "event": "Evento",
