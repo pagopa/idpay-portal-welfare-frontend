@@ -35,6 +35,7 @@ import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDT
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -1117,3 +1118,7 @@ export const mockedOrganizationsList = [
     organizationName: 'Comune di Genoveffa',
   },
 ];
+
+export const mockedBeneficaryStatus = {
+  status: OnboardingStatusEnum.ONBOARDING_OK,
+};

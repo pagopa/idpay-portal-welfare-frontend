@@ -109,7 +109,6 @@ const SuspensionModal = ({
               variant="contained"
               sx={{ gridArea: 'suspendBtn', justifySelf: 'end' }}
               onClick={() => {
-                console.log('suspend');
                 setSuspensionModalOpen(false);
               }}
               data-testid="suspend-test"

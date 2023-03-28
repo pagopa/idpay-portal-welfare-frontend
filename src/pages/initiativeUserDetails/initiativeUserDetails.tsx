@@ -111,9 +111,9 @@ const InitiativeUserDetails = () => {
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
         .then((res) => {
-          console.log(res);
-          // setStatusOnb(res.status);
-          setStatusOnb(OnboardingStatusEnum.SUSPENDED);
+          // console.log(res);
+          setStatusOnb(res.status);
+          // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
         .catch((error) => {
           addError({
@@ -516,7 +516,7 @@ const InitiativeUserDetails = () => {
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
-          items={[t('breadcrumbs.initiativeUsers'), cf.toUpperCase()]}
+          items={[t('breadcrumbs.initiativeUsers'), cf?.toUpperCase()]}
         />
       </Box>
       <Box
@@ -539,7 +539,7 @@ const InitiativeUserDetails = () => {
         >
           <Box sx={{ display: 'grid', gridColumn: 'span 9' }}>
             <TitleBox
-              title={cf.toUpperCase()}
+              title={cf?.toUpperCase()}
               subTitle={''}
               mtTitle={0}
               mbTitle={0}

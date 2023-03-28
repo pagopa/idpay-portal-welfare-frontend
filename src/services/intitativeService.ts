@@ -454,5 +454,9 @@ export const getRefundDetail = (
 export const getBeneficiaryOnboardingStatus = (
   initiativeId: string,
   fiscalCode: string
-): Promise<OnboardingStatusDTO> =>
-  InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
+): Promise<OnboardingStatusDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
+  }
+  return InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
+};
