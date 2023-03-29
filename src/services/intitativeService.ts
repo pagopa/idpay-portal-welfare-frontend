@@ -460,3 +460,10 @@ export const getBeneficiaryOnboardingStatus = (
   }
   return InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
 };
+
+export const suspendUser = (initiativeId: string, fiscalCode: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.suspendUser(initiativeId, fiscalCode);
+  }
+  return InitiativeApi.suspendUser(initiativeId, fiscalCode);
+};

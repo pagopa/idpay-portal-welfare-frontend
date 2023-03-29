@@ -225,4 +225,7 @@ export const InitiativeApiMocked = {
     _initiativeId: string,
     _fiscalCode: string
   ): Promise<OnboardingStatusDTO> => new Promise((resolve) => resolve(mockedBeneficaryStatus)),
+
+  suspendUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };

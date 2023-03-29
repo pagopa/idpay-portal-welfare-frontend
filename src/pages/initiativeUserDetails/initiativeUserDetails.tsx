@@ -878,7 +878,10 @@ const InitiativeUserDetails = () => {
                 suspensionModalOpen={suspensionModalOpen}
                 setSuspensionModalOpen={setSuspensionModalOpen}
                 statusOnb={statusOnb}
+                setStatusOnb={setStatusOnb}
                 buttonType={buttonType}
+                id={id}
+                cf={cf}
               />
             </Box>
           </Box>

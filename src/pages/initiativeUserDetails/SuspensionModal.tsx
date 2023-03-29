@@ -1,22 +1,61 @@
-import { Backdrop, Modal, Fade, Box, Typography, Button } from '@mui/material';
+import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
+import { suspendUser } from '../../services/intitativeService';
 
 type Props = {
   suspensionModalOpen: boolean;
   setSuspensionModalOpen: Dispatch<SetStateAction<boolean>>;
   statusOnb: OnboardingStatusEnum | undefined;
+  setStatusOnb: Dispatch<SetStateAction<OnboardingStatusEnum | undefined>>;
   buttonType: string;
+  id: string;
+  cf: string;
 };
 
 const SuspensionModal = ({
   suspensionModalOpen,
   setSuspensionModalOpen,
-  // statusOnb,
+  statusOnb,
+  setStatusOnb,
   buttonType,
+  id,
+  cf,
 }: Props) => {
   const { t } = useTranslation();
+  const setLoading = useLoading('SUSPEND_USER');
+  const addError = useErrorDispatcher();
+
+  const handleSuspendUser = () => {
+    if (statusOnb !== OnboardingStatusEnum.SUSPENDED) {
+      setLoading(true);
+      suspendUser(id, cf)
+        .then((_res) => {
+          setStatusOnb(OnboardingStatusEnum.SUSPENDED);
+        })
+        .catch((error) =>
+          addError({
+            id: 'SUSPEND_USER',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred suspending user',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        )
+        .finally(() => {
+          setSuspensionModalOpen(false);
+          setLoading(false);
+        });
+    }
+    setSuspensionModalOpen(false);
+  };
 
   const renderTitle = (buttonType: string) => {
     switch (buttonType) {
@@ -109,7 +148,7 @@ const SuspensionModal = ({
               variant="contained"
               sx={{ gridArea: 'suspendBtn', justifySelf: 'end' }}
               onClick={() => {
-                setSuspensionModalOpen(false);
+                handleSuspendUser();
               }}
               data-testid="suspend-test"
             >

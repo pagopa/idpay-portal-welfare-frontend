@@ -401,4 +401,11 @@ export const InitiativeApi = {
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+  suspendUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.suspendUser({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
 };
