@@ -1,12 +1,14 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import SuspensionModal from '../SuspensionModal';
-import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
+
+afterEach(cleanup);
 
 describe('test suite for suspension modal', () => {
   test('render SuspensionModal with empty props', async () => {
@@ -16,6 +18,13 @@ describe('test suite for suspension modal', () => {
         setSuspensionModalOpen={jest.fn()}
         statusOnb={undefined}
         buttonType={''}
+        setStatusOnb={function (
+          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+        ): void {
+          throw new Error('Function not implemented.');
+        }}
+        id={''}
+        cf={''}
       />
     );
   });
@@ -27,11 +36,21 @@ describe('test suite for suspension modal', () => {
         setSuspensionModalOpen={jest.fn()}
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         buttonType={'SUSPEND'}
+        setStatusOnb={function (
+          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+        ): void {
+          throw new Error('Function not implemented.');
+        }}
+        id={'mockId'}
+        cf={'mockCF'}
       />
     );
 
     const backBtn = screen.getByText('pages.initiativeUserDetails.suspendModal.backBtn');
     fireEvent.click(backBtn);
+
+    const suspendBtn = screen.getByText('pages.initiativeUserDetails.suspendModal.suspendBtn');
+    fireEvent.click(suspendBtn);
   });
 
   test('render SuspensionModal on click of READMIT button and test on press of escape key', async () => {
@@ -41,6 +60,13 @@ describe('test suite for suspension modal', () => {
         setSuspensionModalOpen={jest.fn()}
         statusOnb={OnboardingStatusEnum.SUSPENDED}
         buttonType={'READMIT'}
+        setStatusOnb={function (
+          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+        ): void {
+          throw new Error('Function not implemented.');
+        }}
+        id={'mockId'}
+        cf={'mockCF'}
       />
     );
 
@@ -62,6 +88,13 @@ describe('test suite for suspension modal', () => {
         setSuspensionModalOpen={jest.fn()}
         statusOnb={OnboardingStatusEnum.SUSPENDED}
         buttonType={'EXCLUDE'}
+        setStatusOnb={function (
+          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+        ): void {
+          throw new Error('Function not implemented.');
+        }}
+        id={'mockId'}
+        cf={'mockCF'}
       />
     );
 
