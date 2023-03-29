@@ -456,7 +456,8 @@
         "rejectedRefund": "Errore rimborso",
         "transaction": "Pagamento Pos",
         "paidRefund": "Rimborso",
-        "reversal": "Storno"
+        "reversal": "Storno",
+        "suspended": "Sospensione"
       },
       "filterEvent": "Filtra per evento",
       "transactionDetail": {

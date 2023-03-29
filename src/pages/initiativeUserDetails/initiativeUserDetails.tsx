@@ -378,6 +378,8 @@ const InitiativeUserDetails = () => {
         return t('pages.initiativeUserDetails.operationTypes.reversal');
       case 'TRANSACTION':
         return t('pages.initiativeUserDetails.operationTypes.transaction');
+      case 'SUSPENDED':
+        return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
         return null;
     }
@@ -551,13 +553,13 @@ const InitiativeUserDetails = () => {
         <Box
           sx={{
             display: 'grid',
-            gridColumn: 'span 4',
+            gridColumn: 'span 8',
             width: '100%',
             gridTemplateColumns: 'repeat(12, 1fr)',
             alignItems: 'center',
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 9' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 6' }}>
             <TitleBox
               title={cf?.toUpperCase()}
               subTitle={''}
@@ -567,7 +569,7 @@ const InitiativeUserDetails = () => {
               variantSubTitle="body1"
             />
           </Box>
-          <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
             {statusOnb === OnboardingStatusEnum.SUSPENDED && (
               <Chip
                 label={t('pages.initiativeUserDetails.suspended')}
@@ -580,7 +582,7 @@ const InitiativeUserDetails = () => {
         </Box>
 
         {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
-          <Box sx={{ display: 'grid', gridColumn: 'span 8', justifyContent: 'end' }}>
+          <Box sx={{ display: 'grid', gridColumn: 'span 4', justifyContent: 'end' }}>
             <Button
               variant="outlined"
               size="small"
@@ -594,7 +596,7 @@ const InitiativeUserDetails = () => {
         )}
 
         {statusOnb === OnboardingStatusEnum.SUSPENDED && (
-          <Box sx={{ display: 'flex', gridColumn: 'span 8', justifyContent: 'end', gap: 1 }}>
+          <Box sx={{ display: 'flex', gridColumn: 'span 4', justifyContent: 'end', gap: 1 }}>
             <Button
               variant="contained"
               size="small"
@@ -820,21 +822,34 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        <ButtonNaked
-                          data-testid="operationTypeBtn"
-                          component="button"
-                          sx={{
-                            color: 'primary.main',
-                            fontWeight: 600,
-                            fontSize: '1em',
-                            textAlign: 'left',
-                          }}
-                          onClick={() => {
-                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
-                          }}
-                        >
-                          {operationTypeLabel(r.operationId, r.operationType, r)}
-                        </ButtonNaked>
+                        {r.operationType === 'SUSPENDED' ? (
+                          <Typography
+                            sx={{
+                              color: 'error.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
+                          >
+                            {t('pages.initiativeUserDetails.operationTypes.suspended')}
+                          </Typography>
+                        ) : (
+                          <ButtonNaked
+                            data-testid="operationTypeBtn"
+                            component="button"
+                            sx={{
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
+                            onClick={() => {
+                              handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
+                            }}
+                          >
+                            {operationTypeLabel(r.operationId, r.operationType, r)}
+                          </ButtonNaked>
+                        )}
                       </TableCell>
                       <TableCell sx={{ textAlign: 'left' }}>
                         {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
