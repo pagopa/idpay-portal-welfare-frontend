@@ -31,7 +31,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
@@ -277,6 +277,10 @@ const InitiativeRanking = () => {
       getTableData(id, 0, undefined, undefined);
     }
   };
+
+  useMemo(() => {
+    setPage(0);
+  }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);

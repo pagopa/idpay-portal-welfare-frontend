@@ -17,7 +17,7 @@ import {
   TextField,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -194,6 +194,10 @@ const InitiativeRefunds = () => {
       history.replace(`${BASE_ROUTE}/esiti-rimborsi-iniziativa/${initiativeId}`);
     }
   };
+
+  useMemo(() => {
+    setPage(0);
+  }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
