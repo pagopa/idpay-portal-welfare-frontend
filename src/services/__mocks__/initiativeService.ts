@@ -34,6 +34,8 @@ import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
+import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -363,47 +365,67 @@ export const mockedOperationList: TimelineDTO = {
   // lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
   operationList: [
     {
-      operationId: '1u1u1u1u1u1u1u',
-      operationType: 'PAID_REFUND',
-      operationDate: '2023-02-05T10:22:28.012Z',
-      maskedPan: '1234123412341234',
-      amount: 345,
-      accrued: 10,
-      circuitType: 'circuito',
-      iban: '',
-      channel: 'App IO',
-      brandLogo: '',
-      idTrxAcquirer: '349589304999',
-      idTrxIssuer: '0001923192038',
-      eventId: '111111',
-    },
-    {
-      operationId: '2e2e2e2e2e2e2e2',
+      operationId: 'string',
       operationType: 'TRANSACTION',
-      operationDate: '2023-01-05T10:22:28.012Z',
-      maskedPan: '1234123412341234',
-      amount: 34,
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      amount: 0,
       accrued: 0,
-      circuitType: 'circuito',
-      iban: '',
-      channel: '',
-      brandLogo: '',
-      idTrxAcquirer: '349589304999',
-      idTrxIssuer: '0001923192038',
+      circuitType: 'string',
     },
     {
-      operationId: '3e3e3e3e3e3e3e3e',
+      operationId: 'string',
+      operationType: 'ADD_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'DELETE_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'DELETE_INSTRUMENT_KO',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'REJECTED_ADD_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      instrumentId: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
       operationType: 'ADD_IBAN',
-      operationDate: '2023-01-05T10:22:28.012Z',
-      maskedPan: '1234123412341234',
-      amount: 34,
+      operationDate: '2023-03-28T13:35:25.146Z',
+      iban: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'ONBOARDING',
+      operationDate: '2023-03-28T13:35:25.146Z',
+    },
+    {
+      operationId: 'string',
+      eventId: 'string',
+      operationType: 'PAID_REFUND',
+      operationDate: '2023-03-28',
+      amount: 0,
       accrued: 0,
-      circuitType: 'circuito',
-      iban: 'IT12T1234512345123456789012',
-      channel: 'App IO',
-      brandLogo: '',
-      idTrxAcquirer: '349589304999',
-      idTrxIssuer: '0001923192038',
     },
   ],
   pageNo: 0,
@@ -659,7 +681,7 @@ export const mockedOnBoardingStatusResponse = {
   content: [
     {
       beneficiary: 'string',
-      beneficiaryState: 'string',
+      beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
       updateStatusDate: new Date(),
     },
   ],
@@ -1116,3 +1138,7 @@ export const mockedOrganizationsList = [
     organizationName: 'Comune di Genoveffa',
   },
 ];
+
+export const mockedBeneficaryStatus = {
+  status: OnboardingStatusEnum.ONBOARDING_OK,
+};

@@ -4,6 +4,7 @@ import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSum
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
 import { mockedFile } from '../../services/__mocks__/groupService';
 import {
+  mockedBeneficaryStatus,
   mockedExportsPagedResponse,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
@@ -51,6 +52,7 @@ import { OperationDTO } from '../generated/initiative/OperationDTO';
 import { ExportListDTO } from '../generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
 import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
+import { OnboardingStatusDTO } from '../generated/initiative/OnboardingStatusDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -218,4 +220,12 @@ export const InitiativeApiMocked = {
 
   getOrganizationsList: async (): Promise<OrganizationListDTO> =>
     new Promise((resolve) => resolve(mockedOrganizationsList)),
+
+  getBeneficiaryOnboardingStatus: async (
+    _initiativeId: string,
+    _fiscalCode: string
+  ): Promise<OnboardingStatusDTO> => new Promise((resolve) => resolve(mockedBeneficaryStatus)),
+
+  suspendUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };

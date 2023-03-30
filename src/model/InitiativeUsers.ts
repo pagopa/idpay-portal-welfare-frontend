@@ -1,3 +1,5 @@
+import { BeneficiaryStateEnum } from '../api/generated/initiative/StatusOnboardingDTOS';
+
 export interface InitiativeUser {
   beneficiary: string;
   updateStatusDate: Date | string;
@@ -8,7 +10,7 @@ export interface InitiativeUserToDisplay {
   id: number | undefined;
   beneficiary: string | undefined;
   updateStatusDate: string | undefined;
-  beneficiaryState: string | undefined;
+  beneficiaryState: BeneficiaryStateEnum | undefined;
 }
 
 export interface InitiativeUsersResponse {

@@ -541,11 +541,10 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="20%">
+                    <TableCell width="25%">
                       {t('pages.initiativeRanking.table.beneficiary')}
                     </TableCell>
-
-                    <TableCell width="40%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    <TableCell width="35%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
                     <TableCell width="20%">
                       {t('pages.initiativeRanking.table.rankingValue')}
                     </TableCell>
@@ -560,7 +559,6 @@ const InitiativeRanking = () => {
                       <TableCell>
                         {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.beneficiary}
                       </TableCell>
-                      {/* <TableCell>{r.beneficiary}</TableCell> */}
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>
                       <TableCell>{r.criteriaConsensusTimeStamp}</TableCell>

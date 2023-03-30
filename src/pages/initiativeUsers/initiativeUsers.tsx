@@ -47,6 +47,7 @@ import {
 } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -130,25 +131,27 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  const renderUserStatus = (status: string | undefined, initiative: Initiative) => {
+  const renderUserStatus = (status: BeneficiaryStateEnum | undefined, initiative: Initiative) => {
     switch (status) {
-      case 'INVITED':
-      case 'ACCEPTED_TC':
-      case 'ON_EVALUATION':
+      case BeneficiaryStateEnum.INVITED:
+      case BeneficiaryStateEnum.ACCEPTED_TC:
+      case BeneficiaryStateEnum.ON_EVALUATION:
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-      case 'ONBOARDING_OK':
+      case BeneficiaryStateEnum.ONBOARDING_OK:
         if (initiative.generalInfo.rankingEnabled === 'true') {
           return <Chip label={t('pages.initiativeUsers.status.assignee')} color="success" />;
         } else {
           return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
         }
-      case 'ONBOARDING_KO':
+      case BeneficiaryStateEnum.ONBOARDING_KO:
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
-      case 'ELIGIBLE_KO':
+      case BeneficiaryStateEnum.ELIGIBLE_KO:
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
-      case 'INACTIVE':
-      case 'UNSUBSCRIBED':
+      case BeneficiaryStateEnum.INACTIVE:
+      case BeneficiaryStateEnum.UNSUBSCRIBED:
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
+      case BeneficiaryStateEnum.SUSPENDED:
+        return <Chip label={t('pages.initiativeUsers.status.suspended')} color="error" />;
       default:
         return null;
     }
@@ -318,22 +321,40 @@ const InitiativeUsers = () => {
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
-            <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ON_EVALUATION}
+              data-testid="filterStatusOnEvaluation-test"
+            >
               {t('pages.initiativeUsers.status.onEvaluation')}
             </MenuItem>
-            <MenuItem value="ONBOARDING_OK" data-testid="filterStatusOnboardingOk-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ONBOARDING_OK}
+              data-testid="filterStatusOnboardingOk-test"
+            >
               {initiativeSel.generalInfo.rankingEnabled === 'true'
                 ? t('pages.initiativeUsers.status.assignee')
                 : t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
-            <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligible-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ELIGIBLE_KO}
+              data-testid="filterStatusEligible-test"
+            >
               {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
-            <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ONBOARDING_KO}
+              data-testid="filterStatusOnboardingKo-test"
+            >
               {t('pages.initiativeUsers.status.onboardingKo')}
             </MenuItem>
-            <MenuItem value="INACTIVE" data-testid="filterStatusInactive-test">
+            <MenuItem value={BeneficiaryStateEnum.INACTIVE} data-testid="filterStatusInactive-test">
               {t('pages.initiativeUsers.status.inactive')}
+            </MenuItem>
+            <MenuItem
+              value={BeneficiaryStateEnum.SUSPENDED}
+              data-testid="filterStatusSuspended-test"
+            >
+              {t('pages.initiativeUsers.status.suspended')}
             </MenuItem>
           </Select>
         </FormControl>
@@ -391,18 +412,17 @@ const InitiativeUsers = () => {
                             textAlign: 'left',
                           }}
                           onClick={() =>
-                            history.replace(
-                              `${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}/${r.beneficiaryState}`
-                            )
+                            history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
                           }
                           data-testid="beneficiary-test"
                         >
-                          {r.beneficiary}
+                          {r.beneficiary?.toUpperCase()}
                         </ButtonNaked>
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState, initiativeSel)}</TableCell>
-                      {/* <TableCell align="right">
+                      {/*
+                       <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>

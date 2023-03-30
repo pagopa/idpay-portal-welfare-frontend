@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
   Snackbar,
+  Chip,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -46,8 +47,10 @@ import {
   getWalletDetail,
   getIban,
   getTimeLine,
+  getBeneficiaryOnboardingStatus,
 } from '../../services/intitativeService';
 import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
@@ -55,6 +58,7 @@ import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import UserDetailsSummary from './components/UserDetailsSummary';
 import TransactionDetailModal from './TransactionDetailModal';
+import SuspensionModal from './SuspensionModal';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -81,10 +85,12 @@ const InitiativeUserDetails = () => {
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
+  const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
+  const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
+  const [buttonType, setButtonType] = useState<string>('');
   // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
-
   const theme = createTheme(itIT);
 
   const match = matchPath(location.pathname, {
@@ -96,17 +102,42 @@ const InitiativeUserDetails = () => {
   interface MatchParams {
     id: string;
     cf: string;
-    status: string;
   }
 
-  const { id, cf, status } = (match?.params as MatchParams) || {};
+  const { id, cf } = (match?.params as MatchParams) || {};
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    if (typeof id === 'string' && typeof cf === 'string') {
+      getBeneficiaryOnboardingStatus(id, cf)
+        .then((res) => {
+          // console.log(res);
+          setStatusOnb(res.status);
+          // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
+        })
+        .catch((error) => {
+          addError({
+            id: 'GET_BENEFICARY_STATUS',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting beneficary status',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          });
+        });
+    }
+  }, [id, cf]);
+
+  useEffect(() => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
@@ -134,13 +165,15 @@ const InitiativeUserDetails = () => {
         );
     }
     HandleOpenSnackBarOnBoardingStatus();
-  }, [id, cf]);
+  }, [id, cf, statusOnb]);
 
   useEffect(() => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getInstrumentList(id, cf)
         .then((res) => {
@@ -161,7 +194,7 @@ const InitiativeUserDetails = () => {
           })
         );
     }
-  }, [id, cf]);
+  }, [id, cf, statusOnb]);
 
   const getTableData = (
     cf: string,
@@ -222,7 +255,9 @@ const InitiativeUserDetails = () => {
       if (
         typeof id === 'string' &&
         typeof cf === 'string' &&
-        (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+        (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+          statusOnb === OnboardingStatusEnum.SUSPENDED)
       ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
@@ -251,7 +286,9 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
@@ -341,6 +378,8 @@ const InitiativeUserDetails = () => {
         return t('pages.initiativeUserDetails.operationTypes.reversal');
       case 'TRANSACTION':
         return t('pages.initiativeUserDetails.operationTypes.transaction');
+      case 'SUSPENDED':
+        return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
         return null;
     }
@@ -387,9 +426,9 @@ const InitiativeUserDetails = () => {
     setOpenSnackBarOnBoardingStatus(false);
   };
 
-  const renderUserStatusAlert = (status: string | undefined) => {
+  const renderUserStatusAlert = (status: OnboardingStatusEnum | undefined) => {
     switch (status) {
-      case 'ONBOARDING_KO':
+      case OnboardingStatusEnum.ONBOARDING_KO:
         return (
           <>
             <Snackbar
@@ -420,7 +459,7 @@ const InitiativeUserDetails = () => {
             </Snackbar>
           </>
         );
-      case 'ELIGIBLE_KO':
+      case OnboardingStatusEnum.ELIGIBLE_KO:
         return (
           <>
             <Snackbar
@@ -451,6 +490,26 @@ const InitiativeUserDetails = () => {
             </Snackbar>
           </>
         );
+      case OnboardingStatusEnum.SUSPENDED:
+        return (
+          <>
+            <Alert
+              variant="outlined"
+              severity="warning"
+              sx={{
+                position: 'initial',
+                justifyContent: 'center',
+                gridColumn: 'span 24',
+                zIndex: 0,
+                mt: 5,
+              }}
+            >
+              <Typography variant="body2">
+                {t('pages.initiativeUserDetails.onboardingSuspendedDescription')}
+              </Typography>
+            </Alert>
+          </>
+        );
       default:
         return null;
     }
@@ -460,11 +519,18 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (status === 'ONBOARDING_OK' || status === 'UNSUBSCRIBED')
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
-  }, [id, cf, page]);
+  }, [id, cf, page, statusOnb]);
+
+  const handleSuspension = (buttonType: string) => {
+    setSuspensionModalOpen(true);
+    setButtonType(buttonType);
+  };
 
   return (
     <Box sx={{ width: '100%', p: 2 }}>
@@ -472,27 +538,84 @@ const InitiativeUserDetails = () => {
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/utenti-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
-          items={[t('breadcrumbs.initiativeUsers'), cf]}
+          items={[t('breadcrumbs.initiativeUsers'), cf?.toUpperCase()]}
         />
       </Box>
       <Box
         sx={{
           display: 'grid',
           width: '100%',
-          gridTemplateColumns: 'repeat(24, 1fr)',
+          gridTemplateColumns: 'repeat(12, 1fr)',
           alignItems: 'center',
+          mt: 3,
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 21' }}>
-          <TitleBox
-            title={cf}
-            subTitle={''}
-            mtTitle={3}
-            mbTitle={0}
-            variantTitle="h4"
-            variantSubTitle="body1"
-          />
+        <Box
+          sx={{
+            display: 'grid',
+            gridColumn: 'span 8',
+            width: '100%',
+            gridTemplateColumns: 'repeat(12, 1fr)',
+            alignItems: 'center',
+          }}
+        >
+          <Box sx={{ display: 'grid', gridColumn: 'span 6' }}>
+            <TitleBox
+              title={cf?.toUpperCase()}
+              subTitle={''}
+              mtTitle={0}
+              mbTitle={0}
+              variantTitle="h4"
+              variantSubTitle="body1"
+            />
+          </Box>
+          <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
+            {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+              <Chip
+                label={t('pages.initiativeUserDetails.suspended')}
+                sx={{ fontSize: '14px' }}
+                color="warning"
+                size="small"
+              />
+            )}
+          </Box>
         </Box>
+
+        {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
+          <Box sx={{ display: 'grid', gridColumn: 'span 4', justifyContent: 'end' }}>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => handleSuspension('SUSPEND')}
+              data-testid="suspended"
+              color="error"
+            >
+              {t('pages.initiativeUserDetails.suspendUser')}
+            </Button>
+          </Box>
+        )}
+
+        {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+          <Box sx={{ display: 'flex', gridColumn: 'span 4', justifyContent: 'end', gap: 1 }}>
+            <Button
+              variant="contained"
+              size="small"
+              onClick={() => handleSuspension('READMIT')}
+              data-testid="readmit"
+            >
+              {t('pages.initiativeUserDetails.readmit')}
+            </Button>
+            <Button
+              variant="outlined"
+              size="small"
+              onClick={() => handleSuspension('EXCLUDE')}
+              data-testid="exclude-forever"
+              color="error"
+            >
+              {t('pages.initiativeUserDetails.excludeForever')}
+            </Button>
+          </Box>
+        )}
         {/* <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
           <Button
             variant="contained"
@@ -516,7 +639,7 @@ const InitiativeUserDetails = () => {
             </Alert>
           </Snackbar>
         </Box> */}
-        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(status)}</Box>
+        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(statusOnb)}</Box>
       </Box>
 
       <Box
@@ -671,7 +794,7 @@ const InitiativeUserDetails = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box sx={initiativePagesTableContainerStyle}>
+        <Box sx={{ ...initiativePagesTableContainerStyle, height: 'auto' }}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -699,21 +822,34 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        <ButtonNaked
-                          data-testid="operationTypeBtn"
-                          component="button"
-                          sx={{
-                            color: 'primary.main',
-                            fontWeight: 600,
-                            fontSize: '1em',
-                            textAlign: 'left',
-                          }}
-                          onClick={() => {
-                            handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
-                          }}
-                        >
-                          {operationTypeLabel(r.operationId, r.operationType, r)}
-                        </ButtonNaked>
+                        {r.operationType === 'SUSPENDED' ? (
+                          <Typography
+                            sx={{
+                              color: 'error.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
+                          >
+                            {t('pages.initiativeUserDetails.operationTypes.suspended')}
+                          </Typography>
+                        ) : (
+                          <ButtonNaked
+                            data-testid="operationTypeBtn"
+                            component="button"
+                            sx={{
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
+                            onClick={() => {
+                              handleOpenModalOnOpeType(r.operationType, r.operationId, r.eventId);
+                            }}
+                          >
+                            {operationTypeLabel(r.operationId, r.operationType, r)}
+                          </ButtonNaked>
+                        )}
                       </TableCell>
                       <TableCell sx={{ textAlign: 'left' }}>
                         {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
@@ -752,6 +888,15 @@ const InitiativeUserDetails = () => {
                 handleCloseRefundModal={handleCloseRefundDetailModal}
                 refundEventId={selectedEventId}
                 initiativeId={id}
+              />
+              <SuspensionModal
+                suspensionModalOpen={suspensionModalOpen}
+                setSuspensionModalOpen={setSuspensionModalOpen}
+                statusOnb={statusOnb}
+                setStatusOnb={setStatusOnb}
+                buttonType={buttonType}
+                id={id}
+                cf={cf}
               />
             </Box>
           </Box>

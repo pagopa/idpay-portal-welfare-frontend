@@ -1642,6 +1642,69 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/onboarding/status:
+    get:
+      tags:
+        - initiative-onboarding
+      summary: Returns the actual onboarding status
+      operationId: getBeneficiaryOnboardingStatus
+      parameters:
+        - name: Fiscal-Code
+          in: header
+          schema:
+            type: string
+          required: true
+        - name: initiativeId
+          in: path
+          description: The initiative ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Check successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OnboardingStatusDTO'
+              example:
+                status: ACCEPTED_TC
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: string
   /{initiativeId}/ranking/exports:
     get:
       tags:
@@ -2020,6 +2083,64 @@ paths:
                 $ref: '#/components/schemas/ErrorDTO'
         '409':
           description: Conflict
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/reward/suspend:
+    put:
+      tags:
+        - initiative-reward
+      summary: Suspend user to initiative
+      operationId: suspendUser
+      parameters:
+        - name: initiativeId
+          in: path
+          description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: Fiscal-Code
+          in: header
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
           content:
             application/json:
               schema:
@@ -3097,6 +3218,17 @@ components:
           type: string
         beneficiaryState:
           type: string
+          enum:
+            - INVITED
+            - ACCEPTED_TC
+            - ON_EVALUATION
+            - ONBOARDING_KO
+            - ELIGIBLE_KO
+            - ONBOARDING_OK
+            - ELIGIBLE
+            - INACTIVE
+            - UNSUBSCRIBED
+            - SUSPENDED
         updateStatusDate:
           type: string
           format: date-time
@@ -3362,6 +3494,7 @@ components:
             - REFUNDABLE
             - NOT_REFUNDABLE
             - UNSUBSCRIBED
+            - SUSPENDED
           type: string
         endDate:
           type: string
@@ -3430,6 +3563,7 @@ components:
         - $ref: '#/components/schemas/IbanOperationDTO'
         - $ref: '#/components/schemas/OnboardingOperationDTO'
         - $ref: '#/components/schemas/RefundOperationDTO'
+        - $ref: '#/components/schemas/SuspendOperationDTO'
     TimelineDTO:
       type: object
       required:
@@ -3465,6 +3599,7 @@ components:
         - $ref: '#/components/schemas/IbanOperationDTO'
         - $ref: '#/components/schemas/OnboardingOperationDTO'
         - $ref: '#/components/schemas/RefundOperationDTO'
+        - $ref: '#/components/schemas/SuspendOperationDTO'
     RejectedInstrumentOperationDTO:
       type: object
       required:
@@ -3653,6 +3788,22 @@ components:
         circuitType:
           type: string
           description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+    SuspendOperationDTO:
+      type: object
+      required:
+        - operationId
+        - operationType
+        - operationDate
+      properties:
+        operationId:
+          type: string
+        operationType:
+          enum:
+            - SUSPENDED
+          type: string
+        operationDate:
+          type: string
+          format: date-time
     CsvDTO:
       title: CsvDTO
       type: object
@@ -3696,6 +3847,26 @@ components:
         totalPages:
           type: integer
           format: int32
+    OnboardingStatusDTO:
+      title: OnboardingStatusDTO
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          enum:
+            - INVITED
+            - ACCEPTED_TC
+            - ON_EVALUATION
+            - ONBOARDING_KO
+            - ELIGIBLE_KO
+            - ONBOARDING_OK
+            - ELIGIBLE
+            - INACTIVE
+            - UNSUBSCRIBED
+            - SUSPENDED
+          type: string
+          description: actual status of the citizen onboarding for an initiative
     ExportDetailDTO:
       type: object
       properties:

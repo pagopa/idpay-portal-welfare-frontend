@@ -56,7 +56,7 @@ const ChooseOrganization = () => {
           setOrganizationSelected(res[0]);
         }
       })
-      .catch((error) => console.log('err', error));
+      .catch((error) => console.log('error', error));
   }, []);
 
   const searchOrganization = (searchValue: string) => {

@@ -82,7 +82,7 @@ describe('test suite for ChooseOrganization', () => {
 
   test('test catch case api getOrganizationsList', async () => {
     (InitiativeApiMocked.getOrganizationsList = async (): Promise<any> =>
-      Promise.reject('mocked error response for tests')),
+      Promise.reject('mocked error message for tests')),
       renderWithHistoryAndStore(<ChooseOrganization />);
   });
 });
