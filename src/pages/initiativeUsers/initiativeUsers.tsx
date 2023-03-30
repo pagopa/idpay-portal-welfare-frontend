@@ -1,5 +1,5 @@
 /* eslint-disable functional/no-let */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import {
@@ -151,7 +151,7 @@ const InitiativeUsers = () => {
       case BeneficiaryStateEnum.UNSUBSCRIBED:
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
       case BeneficiaryStateEnum.SUSPENDED:
-        return <Chip label={t('pages.initiativeUsers.status.suspended')} color="error" />;
+        return <Chip label={t('pages.initiativeUsers.status.suspended')} color="warning" />;
       default:
         return null;
     }
@@ -210,6 +210,10 @@ const InitiativeUsers = () => {
       getTableData(id, 0, undefined, undefined, undefined, undefined);
     }
   };
+
+  useMemo(() => {
+    setPage(0);
+  }, [id]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
