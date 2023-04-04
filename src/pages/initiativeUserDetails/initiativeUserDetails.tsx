@@ -111,9 +111,7 @@ const InitiativeUserDetails = () => {
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
         .then((res) => {
-          // console.log(res);
           setStatusOnb(res.status);
-          // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
         .catch((error) => {
           addError({
@@ -532,6 +530,39 @@ const InitiativeUserDetails = () => {
     setButtonType(buttonType);
   };
 
+  const renderNonClicableEvents = (opeType: string | undefined) => {
+    switch (opeType) {
+      case 'SUSPENDED':
+        return (
+          <Typography
+            sx={{
+              color: 'error.main',
+              fontWeight: 600,
+              fontSize: '1em',
+              textAlign: 'left',
+            }}
+          >
+            {t('pages.initiativeUserDetails.operationTypes.suspended')}
+          </Typography>
+        );
+      case 'READMITTED':
+        return (
+          <Typography
+            sx={{
+              color: 'primary.main',
+              fontWeight: 600,
+              fontSize: '1em',
+              textAlign: 'left',
+            }}
+          >
+            {t('pages.initiativeUserDetails.operationTypes.readmitted')}
+          </Typography>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Box sx={{ width: '100%', p: 2 }}>
       <Box sx={initiativePagesBreadcrumbsContainerStyle}>
@@ -823,28 +854,8 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        {r.operationType === 'SUSPENDED' ? (
-                          <Typography
-                            sx={{
-                              color: 'error.main',
-                              fontWeight: 600,
-                              fontSize: '1em',
-                              textAlign: 'left',
-                            }}
-                          >
-                            {t('pages.initiativeUserDetails.operationTypes.suspended')}
-                          </Typography>
-                        ) : r.operationType === 'READMITTED' ? (
-                          <Typography
-                            sx={{
-                              color: 'primary.main',
-                              fontWeight: 600,
-                              fontSize: '1em',
-                              textAlign: 'left',
-                            }}
-                          >
-                            {t('pages.initiativeUserDetails.operationTypes.readmitted')}
-                          </Typography>
+                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' ? (
+                          renderNonClicableEvents(r.operationType)
                         ) : (
                           <ButtonNaked
                             data-testid="operationTypeBtn"

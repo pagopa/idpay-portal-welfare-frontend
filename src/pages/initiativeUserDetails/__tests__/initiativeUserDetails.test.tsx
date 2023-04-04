@@ -1,18 +1,14 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
-import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentListDTO';
-import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
-import { TimelineDTO } from '../../../api/generated/initiative/TimelineDTO';
-import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { BASE_ROUTE } from '../../../routes';
+import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
 import {
-  mockedIbanInfo,
-  mockedOperationList,
-  mockedWallet,
-  mockedWalletInstrument,
-} from '../../../services/__mocks__/initiativeService';
+  OnboardingStatusDTO,
+  StatusEnum as OnboardingStatusEnum,
+} from '../../../api/generated/initiative/OnboardingStatusDTO';
+import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+import { BASE_ROUTE } from '../../../routes';
+import { mockedIbanInfo, mockedWallet } from '../../../services/__mocks__/initiativeService';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeUserDetails from '../initiativeUserDetails';
 
@@ -79,23 +75,10 @@ describe('test suite initiative user details', () => {
     // test sumbit filter btn
     const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
     fireEvent.click(filterBtn);
-
-    // test open statusSnackbar
-    // const dowlnloadBtn = screen.getByText(
-    //   'pages.initiativeUserDetails.downloadCsvBtn'
-    // ) as HTMLButtonElement;
-    // fireEvent.click(dowlnloadBtn);
-    // expect(screen.getByText('pages.initiativeUserDetails.downloadCsv')).toBeInTheDocument();
-
-    // fireEvent.keyDown(screen.getByText('pages.initiativeUserDetails.downloadCsv'), {
-    //   key: 'Escape',
-    //   code: 'Escape',
-    //   keyCode: 27,
-    //   charCode: 27,
-    // });
   });
 
   test('Test of reset filter button', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus('id', 'fiscal');
     renderWithHistoryAndStore(<InitiativeUserDetails />);
 
     // test the select to filter events
@@ -121,8 +104,8 @@ describe('test suite initiative user details', () => {
       },
     });
 
-    //test reset form btn
-    const resetFilterBtn = screen.getByText(
+    // test reset form btn
+    const resetFilterBtn = await screen.findByText(
       'pages.initiativeUsers.form.resetFiltersBtn'
     ) as HTMLButtonElement;
     fireEvent.click(resetFilterBtn);
@@ -149,7 +132,7 @@ describe('test suite initiative user details', () => {
 
     renderWithHistoryAndStore(<InitiativeUserDetails />);
   });
-
+  // try
   test('test of render TransactionDetailModal with different type of opeType', async () => {
     const operationTypes = [
       'ADD_IBAN',
@@ -165,68 +148,24 @@ describe('test suite initiative user details', () => {
       'TRANSACTION',
       undefined,
     ];
-
+    const fullTimeline: any = [];
     operationTypes.forEach((operation) => {
-      InitiativeApiMocked.getTimeLine = async (
-        _cf: string,
-        _id: string,
-        _opeType?: string,
-        _dateFrom?: string,
-        _dateTo?: string,
-        _page?: number,
-        _size?: number
-      ): Promise<any> =>
-        new Promise((resolve) =>
-          resolve({
-            lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
-            operationList: [
-              {
-                operationId: '1u1u1u1u1u1u1u',
-                operationType: operation,
-                operationDate: '2023-02-05T10:22:28.012Z',
-                maskedPan: '1234123412341234',
-                amount: 345,
-                accrued: 10,
-                circuitType: 'circuito',
-                iban: '',
-                channel: 'App IO',
-                brandLogo: '',
-                idTrxAcquirer: '349589304999',
-                idTrxIssuer: '0001923192038',
-              },
-            ],
-            pageNo: 0,
-            pageSize: 10,
-            totalElements: 3,
-            totalPages: 1,
-          })
-        );
-
-      renderWithHistoryAndStore(<InitiativeUserDetails />);
+      return fullTimeline.push({
+        operationId: '1u1u1u1u1u1u1u',
+        operationType: operation,
+        operationDate: '2023-02-05T10:22:28.012Z',
+        maskedPan: '1234123412341234',
+        amount: 345,
+        accrued: 10,
+        circuitType: 'circuito',
+        iban: '',
+        channel: 'App IO',
+        brandLogo: '',
+        idTrxAcquirer: '349589304999',
+        idTrxIssuer: '0001923192038',
+      });
     });
-  });
 
-  test('test else case of getIban without initiaveId in pathName', () => {
-    (InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
-      new Promise((resolve) => resolve(mockedIbanInfo))),
-      renderWithHistoryAndStore(<InitiativeUserDetails />);
-  });
-
-  test('test else case of getWalletDetails without initiaveId in pathName', () => {
-    InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
-      new Promise((resolve) => resolve(mockedWallet));
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-  });
-
-  test('test else case of getInstrumentList without initiaveId in pathName', () => {
-    InitiativeApiMocked.getInstrumentList = async (
-      _id: string,
-      _cf: string
-    ): Promise<InstrumentListDTO> => new Promise((resolve) => resolve(mockedWalletInstrument));
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
-  });
-
-  test('test else case of getTimeLine without initiaveId in pathName', async () => {
     InitiativeApiMocked.getTimeLine = async (
       _cf: string,
       _id: string,
@@ -235,12 +174,65 @@ describe('test suite initiative user details', () => {
       _dateTo?: string,
       _page?: number,
       _size?: number
-    ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList));
+    ): Promise<any> =>
+      new Promise((resolve) =>
+        resolve({
+          lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+          operationList: fullTimeline,
+          pageNo: 0,
+          pageSize: 10,
+          totalElements: 11,
+          totalPages: 2,
+        })
+      );
+
     renderWithHistoryAndStore(<InitiativeUserDetails />);
     const operationTypeButtons = (await screen.findAllByTestId(
       'operationTypeBtn'
     )) as HTMLButtonElement[];
+
+    // click ADD_IBAN
     fireEvent.click(operationTypeButtons[0]);
+    // click PAID_REFUND
+    fireEvent.click(operationTypeButtons[4]);
+    // click REJECTED_REFUND
+    fireEvent.click(operationTypeButtons[8]);
+  });
+
+  test('test getIban ', () => {
+    (InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
+      new Promise((resolve) => resolve(mockedIbanInfo))),
+      renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('testgetWalletDetails ', () => {
+    InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
+      new Promise((resolve) => resolve(mockedWallet));
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+  });
+
+  test('test SUSPEND user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.ONBOARDING_OK', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus('id', 'fiscal');
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    const suspendUserBtn = await screen.findByText('pages.initiativeUserDetails.suspendUser');
+
+    fireEvent.click(suspendUserBtn);
+  });
+
+  test('test READMIT user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.SUSPENDED', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (
+      _initiativeId: string,
+      _fiscalCode: string
+    ): Promise<OnboardingStatusDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          status: OnboardingStatusEnum.SUSPENDED,
+        })
+      );
+    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    const readmitUserBtn = await screen.findByText('pages.initiativeUserDetails.readmit');
+
+    fireEvent.click(readmitUserBtn);
   });
 
   test('test catch case of getIban api call', () => {
