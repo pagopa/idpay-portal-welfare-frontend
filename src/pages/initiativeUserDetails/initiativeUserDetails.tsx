@@ -611,6 +611,7 @@ const InitiativeUserDetails = () => {
               onClick={() => handleSuspension('EXCLUDE')}
               data-testid="exclude-forever"
               color="error"
+              disabled
             >
               {t('pages.initiativeUserDetails.excludeForever')}
             </Button>
@@ -832,6 +833,17 @@ const InitiativeUserDetails = () => {
                             }}
                           >
                             {t('pages.initiativeUserDetails.operationTypes.suspended')}
+                          </Typography>
+                        ) : r.operationType === 'READMITTED' ? (
+                          <Typography
+                            sx={{
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
+                          >
+                            {t('pages.initiativeUserDetails.operationTypes.readmitted')}
                           </Typography>
                         ) : (
                           <ButtonNaked

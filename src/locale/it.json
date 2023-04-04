@@ -457,7 +457,8 @@
         "transaction": "Pagamento Pos",
         "paidRefund": "Rimborso",
         "reversal": "Storno",
-        "suspended": "Sospensione"
+        "suspended": "Sospensione",
+        "readmitted": "Riammissione"
       },
       "filterEvent": "Filtra per evento",
       "transactionDetail": {

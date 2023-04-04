@@ -4,7 +4,7 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
-import { suspendUser } from '../../services/intitativeService';
+import { readmitUser, suspendUser } from '../../services/intitativeService';
 
 type Props = {
   suspensionModalOpen: boolean;
@@ -42,6 +42,31 @@ const SuspensionModal = ({
             blocking: false,
             error,
             techDescription: 'An error occurred suspending user',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        )
+        .finally(() => {
+          setSuspensionModalOpen(false);
+          setLoading(false);
+        });
+    }
+
+    if (statusOnb === OnboardingStatusEnum.SUSPENDED) {
+      setLoading(true);
+      readmitUser(id, cf)
+        .then((_res) => {
+          setStatusOnb(OnboardingStatusEnum.ONBOARDING_OK);
+        })
+        .catch((error) =>
+          addError({
+            id: 'READMIT_USER',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred readmitting user',
             displayableTitle: t('errors.title'),
             displayableDescription: t('errors.getDataDescription'),
             toNotify: true,
