@@ -9,6 +9,7 @@ import {
   Select,
   TextField,
   Typography,
+  Autocomplete,
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
@@ -108,6 +109,7 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
       orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
+      iseeTypes: [],
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -127,6 +129,15 @@ const IseeCriteriaItem = ({
       }
     }
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
+
+  const autocompleteOptionsList = [
+    { value: 'DOTTORATO', label: 'Dottorato' },
+    { value: 'MINORENNI', label: 'Minorenni' },
+    { value: 'ORDINARIO', label: 'Ordinario' },
+    { value: 'RESIDENZA', label: 'Residenza' },
+    { value: 'SOCIO_SANITARIO', label: 'Socio sanitario' },
+    { value: 'UNIVERSITARIO', label: 'Universitario' },
+  ];
 
   return (
     <Box sx={boxItemStyle} data-testid="isee-criteria-test">
@@ -312,6 +323,39 @@ const IseeCriteriaItem = ({
               ),
             }}
             size="small"
+          />
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 2', mt: 2 }}>
+          <Autocomplete
+            multiple={true}
+            id="isee-typology"
+            options={autocompleteOptionsList}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            value={iseeFormik.values.iseeTypes}
+            onChange={async (_e, value) => {
+              handleFieldValueChanged(value, 'iseeTypes', formData.code);
+              await iseeFormik.setFieldValue('iseeTypes', value);
+            }}
+            renderInput={(params) => <TextField {...params} label="Tipologia" size="small" />}
+            sx={{
+              '& .MuiChip-root': {
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0, 0, 0, 0.23)',
+              },
+              '& .MuiChip-label': {
+                padding: '6px 9px',
+              },
+            }}
           />
         </FormControl>
       </Box>
