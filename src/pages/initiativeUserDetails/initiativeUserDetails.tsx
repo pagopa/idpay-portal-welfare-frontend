@@ -496,7 +496,6 @@ const InitiativeUserDetails = () => {
               severity="warning"
               sx={{
                 position: 'initial',
-                justifyContent: 'center',
                 gridColumn: 'span 24',
                 zIndex: 0,
                 mt: 5,
