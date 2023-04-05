@@ -1,3 +1,5 @@
+import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../../../../../api/generated/initiative/MccFilterDTO';
 import { RewardLimit, TrxCount } from '../../../../../model/Initiative';
 import {
@@ -57,7 +59,7 @@ describe('testing helper of step four', () => {
   });
   test('checkTrxCountChecked', () => {
     const trxCount: TrxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
-    const trxCount2: TrxCount = {  };
+    const trxCount2: TrxCount = {};
     expect(checkTrxCountChecked(undefined)).toBeFalsy();
     expect(checkTrxCountChecked(trxCount)).toBeTruthy();
     expect(checkTrxCountChecked(trxCount2)).toBeFalsy();
@@ -153,9 +155,11 @@ describe('testing helper of step four', () => {
   test('mapDataToSend', () => {
     expect(
       mapDataToSend(
+        InitiativeRewardTypeEnum.REFUND,
         {
           _type: 'string',
           rewardValue: 2,
+          rewardValueType: RewardValueTypeEnum.PERCENTAGE,
         },
         {
           allowedList: true,

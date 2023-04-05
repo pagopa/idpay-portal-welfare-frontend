@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import {
   Paper,
   Typography,
@@ -26,6 +27,7 @@ import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
+  initiativeRewardTypeSelector,
   initiativeRefundRulesSelector,
   saveRefundRule,
   generalInfoSelector,
@@ -35,6 +37,7 @@ import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameter
 import { putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import ROUTES from '../../../../routes';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
@@ -52,6 +55,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const initiativeId = useAppSelector(initiativeIdSelector);
   const generalInfo = useAppSelector(generalInfoSelector);
   const budgetPerPerson = generalInfo.beneficiaryBudget;
+  const initiativeRewardTypeSel = useAppSelector(initiativeRewardTypeSelector);
   const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
@@ -147,7 +151,10 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      reimbursmentQuestionGroup: refundRulesSelector?.reimbursmentQuestionGroup,
+      reimbursmentQuestionGroup:
+        initiativeRewardTypeSel !== InitiativeRewardTypeEnum.DISCOUNT
+          ? refundRulesSelector?.reimbursmentQuestionGroup
+          : 'false',
       timeParameter: refundRulesSelector?.timeParameter,
       accumulatedAmount: refundRulesSelector?.accumulatedAmount,
       additionalInfo: refundRulesSelector?.additionalInfo,
@@ -252,6 +259,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
               control={<Radio />}
               label={t('components.wizard.stepFive.form.accumulatedAmount')}
               data-testid="accumulatedAmount-radio-test"
+              disabled={initiativeRewardTypeSel === InitiativeRewardTypeEnum.DISCOUNT}
             />
             <FormControlLabel
               sx={{ ml: 2 }}

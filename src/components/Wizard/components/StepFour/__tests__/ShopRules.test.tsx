@@ -17,12 +17,15 @@ import {
   saveThreshold,
   saveTrxCount,
   setInitiativeId,
+  setInitiativeRewardType,
 } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
 import ShopRules from '../ShopRules';
+import { InitiativeStatisticsDTO } from '../../../../../api/generated/initiative/InitiativeStatisticsDTO';
+import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -45,6 +48,7 @@ afterEach(() => cleanup);
 window.scrollTo = jest.fn();
 
 export const shopRulesToSubmit = [
+  { code: 'TYPE', dispatched: false },
   { code: 'PRCREC', dispatched: false },
   { code: 'THRESHOLD', dispatched: false },
   { code: 'MCC', dispatched: false },
@@ -72,7 +76,11 @@ export const daysOfWeekIntervals = [
     endTime: '23:59',
   },
 ];
-export const perRec = { _type: 'rewardValue', rewardValue: 2, rewardValueType:RewardValueTypeEnum.PERCENTAGE };
+export const perRec = {
+  _type: 'rewardValue',
+  rewardValue: 2,
+  rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+};
 
 describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
@@ -82,6 +90,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
 
   test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
     store.dispatch(saveRewardRule(perRec));
     store.dispatch(saveTrxCount(trxCount));
     store.dispatch(saveThreshold(threshold));

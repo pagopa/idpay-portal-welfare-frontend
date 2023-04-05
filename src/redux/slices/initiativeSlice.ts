@@ -19,6 +19,7 @@ import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -63,6 +64,7 @@ const initialState: Initiative = {
     selfDeclarationCriteria: [],
     automatedCriteria: [],
   },
+  initiativeRewardType: undefined,
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
@@ -211,9 +213,17 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
     },
+    setInitiativeRewardType: (state, action: PayloadAction<InitiativeRewardTypeEnum>) => ({
+      ...state,
+      initiativeRewardType: action.payload,
+    }),
     saveRewardRule: (
       state,
-      action: PayloadAction<{ _type: string; rewardValue: number | undefined ; rewardValueType: RewardValueTypeEnum}>
+      action: PayloadAction<{
+        _type: string;
+        rewardValue: number | undefined;
+        rewardValueType: RewardValueTypeEnum;
+      }>
     ) => ({
       ...state,
       rewardRule: {
@@ -223,7 +233,7 @@ export const initiativeSlice = createSlice({
         rewardValue: action.payload.hasOwnProperty('rewardValue')
           ? action.payload.rewardValue
           : undefined,
-          rewardValueType: action.payload.rewardValueType,
+        rewardValueType: action.payload.rewardValueType,
       },
     }),
     saveMccFilter: (state, action: PayloadAction<MccFilterDTO>) => ({
@@ -305,6 +315,7 @@ export const {
   saveAutomatedCriteria,
   setManualCriteria,
   saveManualCriteria,
+  setInitiativeRewardType,
   saveRewardRule,
   saveMccFilter,
   saveRewardLimits,
@@ -331,6 +342,9 @@ export const beneficiaryRuleSelector = (
   selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
+export const initiativeRewardTypeSelector = (
+  state: RootState
+): InitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
 export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
