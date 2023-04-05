@@ -47,5 +47,7 @@ describe('<RewardType />', () => {
     expect(rewardTypeDiscount).toBeInTheDocument();
     fireEvent.click(rewardTypeDiscount);
     expect(rewardTypeDiscount).toBeChecked();
+    fireEvent.click(rewardTypeRefund);
+    expect(rewardTypeRefund).toBeChecked();
   });
 });
