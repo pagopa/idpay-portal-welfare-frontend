@@ -55,7 +55,7 @@ const ExitModal = ({ title, subtitle, openExitModal, handleCloseExitModal }: Pro
               gridTemplateColumns: 'repeat(6, 1fr)',
 
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . . . cancelBtn exitBtn"`,
+              gridTemplateAreas: `". . . cancelBtn cancelBtn exitBtn"`,
             }}
           >
             <Button
