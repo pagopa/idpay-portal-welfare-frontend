@@ -157,7 +157,7 @@ const mapIseeTypes = (
       case IseeTypologyEnum.Universitario:
       default:
         return {
-          value: IseeTypologyEnum.SocioSanitario,
+          value: IseeTypologyEnum.Universitario,
           label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
         };
     }
