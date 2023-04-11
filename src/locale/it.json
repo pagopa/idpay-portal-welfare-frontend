@@ -736,7 +736,13 @@
             "multi": "Scelta multipla",
             "addOption": "Aggiungi opzione",
             "rankingOrderASC": "Vince il valore minore",
-            "rankingOrderDESC": "Vince il valore maggiore"
+            "rankingOrderDESC": "Vince il valore maggiore",
+            "iseeOrdinario": "Ordinario",
+            "iseeMinorenne": "Minorenni",
+            "iseeUniversitario": "Universitario",
+            "iseeSocioSanitario": "Socio sanitario",
+            "iseeDottorato": "Dottorato",
+            "iseeResidenziale": "Residenziale"
           }
         },
         "upload": {

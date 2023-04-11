@@ -282,3 +282,13 @@ export const boxItemStyle = {
   my: 3,
   p: 3,
 };
+
+export enum IseeTypologyEnum {
+  Corrente = 'Corrente',
+  Ordinario = 'Ordinario',
+  Minorenne = 'Minorenne',
+  Universitario = 'Universitario',
+  SocioSanitario = 'SocioSanitario',
+  Dottorato = 'Dottorato',
+  Residenziale = 'Residenziale',
+}

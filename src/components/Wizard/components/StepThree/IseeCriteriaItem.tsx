@@ -22,6 +22,7 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
+  IseeTypologyEnum,
   boxItemStyle,
   handleCriteriaToSubmit,
   setError,
@@ -131,12 +132,30 @@ const IseeCriteriaItem = ({
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
 
   const autocompleteOptionsList = [
-    { value: 'DOTTORATO', label: 'Dottorato' },
-    { value: 'MINORENNI', label: 'Minorenni' },
-    { value: 'ORDINARIO', label: 'Ordinario' },
-    { value: 'RESIDENZA', label: 'Residenza' },
-    { value: 'SOCIO_SANITARIO', label: 'Socio sanitario' },
-    { value: 'UNIVERSITARIO', label: 'Universitario' },
+    {
+      value: IseeTypologyEnum.Dottorato,
+      label: t('components.wizard.stepThree.form.iseeDottorato'),
+    },
+    {
+      value: IseeTypologyEnum.Minorenne,
+      label: t('components.wizard.stepThree.form.iseeMinorenne'),
+    },
+    {
+      value: IseeTypologyEnum.Ordinario,
+      label: t('components.wizard.stepThree.form.iseeOrdinario'),
+    },
+    {
+      value: IseeTypologyEnum.Residenziale,
+      label: t('components.wizard.stepThree.form.iseeResidenziale'),
+    },
+    {
+      value: IseeTypologyEnum.SocioSanitario,
+      label: t('components.wizard.stepThree.form.iseeSocioSanitario'),
+    },
+    {
+      value: IseeTypologyEnum.Universitario,
+      label: t('components.wizard.stepThree.form.iseeUniversitario'),
+    },
   ];
 
   return (
