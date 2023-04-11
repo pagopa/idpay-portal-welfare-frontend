@@ -26,6 +26,7 @@ import {
   saveThreshold,
   saveTrxCount,
   saveDaysOfWeekIntervals,
+  setInitiativeRewardType,
   saveRewardRule,
   saveRefundRule,
   setInitiativeCreationDate,
@@ -99,6 +100,7 @@ export const useInitiative = () => {
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
           dispatch(saveManualCriteria(selfDeclarationCriteria));
+          dispatch(setInitiativeRewardType(response.initiativeRewardType));
           parseRewardRule(response, dispatch);
           parseThreshold(response, dispatch);
           parseMccFilter(response, dispatch);

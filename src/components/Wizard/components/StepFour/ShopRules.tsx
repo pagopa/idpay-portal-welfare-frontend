@@ -97,6 +97,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   );
 
   useEffect(() => {
+    console.log(initiativeRewardTypeSel);
     window.scrollTo(0, 0);
   }, []);
 

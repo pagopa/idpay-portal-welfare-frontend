@@ -213,7 +213,10 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
     },
-    setInitiativeRewardType: (state, action: PayloadAction<InitiativeRewardTypeEnum>) => ({
+    setInitiativeRewardType: (
+      state,
+      action: PayloadAction<InitiativeRewardTypeEnum | undefined>
+    ) => ({
       ...state,
       initiativeRewardType: action.payload,
     }),
