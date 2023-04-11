@@ -65,6 +65,7 @@ export interface AutomatedCriteriaItem {
   value?: string | undefined;
   value2?: string | undefined;
   orderDirection?: OrderDirectionEnum | undefined;
+  iseeTypes?: Array<string>;
 }
 
 export interface MCCFilter {

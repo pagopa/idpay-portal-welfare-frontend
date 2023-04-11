@@ -124,6 +124,45 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
     }
   });
 
+const mapIseeTypes = (
+  iseeTypes: Array<IseeTypologyEnum | string>
+): Array<{ value: IseeTypologyEnum; label: string }> =>
+  iseeTypes.map((item) => {
+    switch (item) {
+      case IseeTypologyEnum.Dottorato:
+        return {
+          value: IseeTypologyEnum.Dottorato,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
+        };
+      case IseeTypologyEnum.Minorenne:
+        return {
+          value: IseeTypologyEnum.Minorenne,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
+        };
+      case IseeTypologyEnum.Ordinario:
+        return {
+          value: IseeTypologyEnum.Ordinario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
+        };
+      case IseeTypologyEnum.Residenziale:
+        return {
+          value: IseeTypologyEnum.Residenziale,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
+        };
+      case IseeTypologyEnum.SocioSanitario:
+        return {
+          value: IseeTypologyEnum.SocioSanitario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
+        };
+      case IseeTypologyEnum.Universitario:
+      default:
+        return {
+          value: IseeTypologyEnum.SocioSanitario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
+        };
+    }
+  });
+
 export const updateInitialAutomatedCriteriaOnSelector = (
   automatedCriteria: Array<AutomatedCriteriaItem>,
   responseData: Array<AvailableCriteria>,
@@ -147,6 +186,10 @@ export const updateInitialAutomatedCriteriaOnSelector = (
           orderDirection:
             typeof rankingEnabled === 'string' && rankingEnabled === 'true'
               ? a.orderDirection
+              : undefined,
+          iseeTypes:
+            Array.isArray(a.iseeTypes) && a.iseeTypes.length > 0
+              ? [...mapIseeTypes(a.iseeTypes)]
               : undefined,
         };
         // eslint-disable-next-line functional/immutable-data
@@ -196,6 +239,7 @@ export const mapCriteriaToSend = (
   apiKeyClientAssertion: string | undefined
 ) => {
   const criteriaToSave: Array<AutomatedCriteriaItem> = [];
+
   automatedCriteria.forEach((c) => {
     if (c.checked === true && c.code !== 'ISEE') {
       const criteria = {
@@ -217,6 +261,9 @@ export const mapCriteriaToSend = (
         value: c.value,
         value2: c.value2,
         orderDirection: setInitialOrderDirection(rankingEnabled, c.orderDirection),
+        iseeTypes: c.iseeTypes.map(
+          (item: { value: IseeTypologyEnum; label: string }) => item.value
+        ),
       };
       // eslint-disable-next-line functional/immutable-data
       criteriaToSave.push({ ...criteria });

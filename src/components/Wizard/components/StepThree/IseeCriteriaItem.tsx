@@ -87,6 +87,7 @@ const IseeCriteriaItem = ({
         .required(t('validation.required'))
         .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
     }),
+    iseeTypes: Yup.array().min(1, t('validation.required')).required(t('validation.required')),
   });
 
   const setOrderDirection = (
@@ -110,7 +111,7 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
       orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
-      iseeTypes: [],
+      iseeTypes: formData.iseeTypes,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -134,27 +135,27 @@ const IseeCriteriaItem = ({
   const autocompleteOptionsList = [
     {
       value: IseeTypologyEnum.Dottorato,
-      label: t('components.wizard.stepThree.form.iseeDottorato'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
     },
     {
       value: IseeTypologyEnum.Minorenne,
-      label: t('components.wizard.stepThree.form.iseeMinorenne'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
     },
     {
       value: IseeTypologyEnum.Ordinario,
-      label: t('components.wizard.stepThree.form.iseeOrdinario'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
     },
     {
       value: IseeTypologyEnum.Residenziale,
-      label: t('components.wizard.stepThree.form.iseeResidenziale'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
     },
     {
       value: IseeTypologyEnum.SocioSanitario,
-      label: t('components.wizard.stepThree.form.iseeSocioSanitario'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
     },
     {
       value: IseeTypologyEnum.Universitario,
-      label: t('components.wizard.stepThree.form.iseeUniversitario'),
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
     },
   ];
 
@@ -365,7 +366,18 @@ const IseeCriteriaItem = ({
               handleFieldValueChanged(value, 'iseeTypes', formData.code);
               await iseeFormik.setFieldValue('iseeTypes', value);
             }}
-            renderInput={(params) => <TextField {...params} label="Tipologia" size="small" />}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('components.wizard.stepThree.chooseCriteria.form.typology')}
+                size="small"
+                error={setError(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes)}
+                helperText={
+                  setErrorText(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes) ||
+                  t('components.wizard.stepThree.chooseCriteria.form.iseeTypologyHelpText')
+                }
+              />
+            )}
             sx={{
               '& .MuiChip-root': {
                 backgroundColor: '#fff',

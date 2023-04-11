@@ -240,7 +240,15 @@
             "rankingOrderDESC": "Vince il valore maggiore",
             "region": "Regione",
             "value": "Valore",
-            "year": "Anno"
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologia",
+            "iseeTypologyHelpText": "In ordine di priorità"
           },
           "iseeNotPopulatedOnRankingErrorDescription": "È obbligatorio per le iniziative che prevedono una graduatoria.",
           "iseeNotPopulatedOnRankingErrorTitle": "Inserisci un valore nel criterio ISEE",

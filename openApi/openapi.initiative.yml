@@ -3098,7 +3098,6 @@ components:
             $ref: '#/components/schemas/Interval'
     InitiativeRewardAndTrxRulesDTO:
       required:
-        - initiativeRewardType
         - rewardRule
       type: object
       properties:
