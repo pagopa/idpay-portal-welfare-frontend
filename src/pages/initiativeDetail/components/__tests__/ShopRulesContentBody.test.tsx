@@ -8,6 +8,8 @@ import React from 'react';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 import { Initiative } from '../../../../model/Initiative';
 import { BeneficiaryTypeEnum } from '../../../../utils/constants';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -76,12 +78,22 @@ describe('<ShopRulesContentBody />', (injectedStore?: ReturnType<typeof createSt
         privacyPolicyUrl: 'http://test.it',
         termsAndConditions: 'http://test.it',
         assistanceChannels: [{ type: 'web', contact: 'http://test.it' }],
+        logoFileName: 'test.png',
+        logoURL: 'http://test.it',
+        logoUploadDate: '2023-01-31T00:00:00.000Z',
       },
       beneficiaryRule: {
         selfDeclarationCriteria: [],
         automatedCriteria: [],
+        apiKeyClientId: '',
+        apiKeyClientAssertion: '',
       },
-      rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+      initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+      rewardRule: {
+        _type: 'rewardValue',
+        rewardValue: 1,
+        rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+      },
       trxRule: {
         mccFilter: { allowedList: undefined, values: ['string', ''] },
         rewardLimits: [

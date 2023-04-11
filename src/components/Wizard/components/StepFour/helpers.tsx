@@ -19,7 +19,10 @@ import {
   TrxCount,
 } from '../../../../model/Initiative';
 import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
-import { InitiativeRewardAndTrxRulesDTO } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import {
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeRewardTypeEnum,
+} from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { FrequencyEnum } from '../../../../api/generated/initiative/RewardLimitsDTO';
 
 export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
@@ -207,6 +210,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
+  rewardType: InitiativeRewardTypeEnum | undefined,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,
@@ -217,6 +221,7 @@ export const mapDataToSend = (
 ): InitiativeRewardAndTrxRulesDTO => {
   // eslint-disable-next-line functional/no-let, prefer-const
   let body: InitiativeRewardAndTrxRulesDTO = {
+    initiativeRewardType: rewardType,
     rewardRule: { ...rewardRuleData },
     trxRule: {},
   };

@@ -8,6 +8,7 @@ import {
   RewardLimit,
   RewardRule,
 } from '../../../../model/Initiative';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeDTO';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -18,7 +19,9 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
 
   const printRewardRuleAsString = (rewardRule: RewardRule): string => {
     if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
-      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${rewardRule.rewardValue} €`;
+      return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${
+        rewardRule.rewardValue
+      } €`;
     } else {
       return `${t('pages.initiativeDetail.accordion.step4.content.rewardRuleFixed')} ${
         rewardRule.rewardValue
@@ -60,6 +63,15 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
     )}`;
   };
 
+  const printInitiativeTypology = (typology: InitiativeRewardTypeEnum): string => {
+    if (typology === InitiativeRewardTypeEnum.REFUND) {
+      return t('pages.initiativeDetail.accordion.step4.content.refund');
+    } else if (typology === InitiativeRewardTypeEnum.DISCOUNT) {
+      return t('pages.initiativeDetail.accordion.step4.content.discount');
+    }
+    return '';
+  };
+
   return (
     <Box
       sx={{
@@ -71,6 +83,16 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
       }}
     >
       <Divider sx={{ gridColumn: 'span 12', mb: 1 }} />
+      {initiativeDetail.initiativeRewardType && (
+        <Fragment>
+          <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+            {t('pages.initiativeDetail.accordion.step4.content.typology')}
+          </Typography>
+          <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            {printInitiativeTypology(initiativeDetail.initiativeRewardType)}
+          </Typography>
+        </Fragment>
+      )}
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
         {printRewardRuleLabel(initiativeDetail.rewardRule)}
       </Typography>
