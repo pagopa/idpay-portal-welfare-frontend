@@ -44,7 +44,7 @@ import {
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
 import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
-import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
+import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
 // import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 
@@ -100,7 +100,11 @@ export const useInitiative = () => {
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
           dispatch(saveManualCriteria(selfDeclarationCriteria));
-          dispatch(setInitiativeRewardType(response.initiativeRewardType));
+          if (response.initiativeRewardType) {
+            dispatch(setInitiativeRewardType(response.initiativeRewardType));
+          } else {
+            dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+          }
           parseRewardRule(response, dispatch);
           parseThreshold(response, dispatch);
           parseMccFilter(response, dispatch);

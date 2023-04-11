@@ -64,7 +64,7 @@ const initialState: Initiative = {
     selfDeclarationCriteria: [],
     automatedCriteria: [],
   },
-  initiativeRewardType: undefined,
+  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
@@ -213,10 +213,7 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
     },
-    setInitiativeRewardType: (
-      state,
-      action: PayloadAction<InitiativeRewardTypeEnum | undefined>
-    ) => ({
+    setInitiativeRewardType: (state, action: PayloadAction<InitiativeRewardTypeEnum>) => ({
       ...state,
       initiativeRewardType: action.payload,
     }),
@@ -345,9 +342,8 @@ export const beneficiaryRuleSelector = (
   selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
-export const initiativeRewardTypeSelector = (
-  state: RootState
-): InitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
+export const initiativeRewardTypeSelector = (state: RootState): InitiativeRewardTypeEnum =>
+  state.initiative.initiativeRewardType;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
 export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
