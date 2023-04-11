@@ -480,7 +480,14 @@
             "statusKo": "Fallito",
             "statusLoading": "In corso",
             "statusOk": "Corretto",
-            "year": "Anno"
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologie ISEE"
           },
           "description": "Elenco dei destinatari o criteri di idoneità dei richiedenti.",
           "heading": "3",

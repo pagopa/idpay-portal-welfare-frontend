@@ -9,6 +9,7 @@ import {
   ManualCriteriaItem,
 } from '../../../../model/Initiative';
 import { FilterOperator } from '../../../../utils/constants';
+import { IseeTypologyEnum } from '../../../../components/Wizard/components/StepThree/helpers';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -125,6 +126,48 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
     }
   };
 
+  const printIseeTypes = (item: AutomatedCriteriaItem): string => {
+    // eslint-disable-next-line functional/no-let
+    let dataAsString = '';
+    item.iseeTypes?.forEach((it) => {
+      switch (it) {
+        case IseeTypologyEnum.Dottorato:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeDottorato'
+          )}`;
+          break;
+        case IseeTypologyEnum.Minorenne:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeMinorenne'
+          )}`;
+          break;
+        case IseeTypologyEnum.Ordinario:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeOrdinario'
+          )}`;
+          break;
+        case IseeTypologyEnum.Residenziale:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeResidenziale'
+          )}`;
+          break;
+        case IseeTypologyEnum.SocioSanitario:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeSocioSanitario'
+          )}`;
+          break;
+        case IseeTypologyEnum.Universitario:
+          dataAsString = `${dataAsString}, ${t(
+            'pages.initiativeDetail.accordion.step3.content.iseeUniversitario'
+          )}`;
+          break;
+        default:
+          dataAsString = `${dataAsString}, ''`;
+      }
+    });
+    return dataAsString.length ? dataAsString : '-';
+  };
+
   const printManualCriteriaAsString = (manualCriteria: ManualCriteriaItem): string => {
     // eslint-disable-next-line no-underscore-dangle
     const field = `pages.initiativeDetail.accordion.step3.content.${manualCriteria._type}`;
@@ -157,16 +200,33 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
       <Typography variant="body1" sx={{ gridColumn: 'span 12', fontWeight: 600 }}>
         {t('pages.initiativeDetail.accordion.step3.content.admissionCriteria')}
       </Typography>
-      {initiativeDetail.beneficiaryRule.automatedCriteria.map((at) => (
-        <Fragment key={at.code}>
-          <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-            {typeof at.code === 'string' && printAutomatedAdmissionCriteriaLabel(at.code)}
-          </Typography>
-          <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-            {printAutomatedCriteriaDataAsString(at)}
-          </Typography>
-        </Fragment>
-      ))}
+      {initiativeDetail.beneficiaryRule.automatedCriteria.map((at) =>
+        at.code !== 'ISEE' ? (
+          <Fragment key={at.code}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+              {typeof at.code === 'string' && printAutomatedAdmissionCriteriaLabel(at.code)}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {printAutomatedCriteriaDataAsString(at)}
+            </Typography>
+          </Fragment>
+        ) : (
+          <Fragment key={at.code}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+              {typeof at.code === 'string' && printAutomatedAdmissionCriteriaLabel(at.code)}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {printAutomatedCriteriaDataAsString(at)}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+              {t('pages.initiativeDetail.accordion.step3.content.typology')}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {printIseeTypes(at)}
+            </Typography>
+          </Fragment>
+        )
+      )}
       {initiativeDetail.beneficiaryRule.selfDeclarationCriteria.map((sd) => (
         <Fragment data-testId={`selfDeclarationCriteria-${sd.code}`} key={sd.code}>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
