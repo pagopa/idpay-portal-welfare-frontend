@@ -1,5 +1,6 @@
 import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
 import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
@@ -209,6 +210,7 @@ export interface Initiative {
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
+  initiativeRewardType: InitiativeRewardTypeEnum;
   rewardRule: RewardRule;
   trxRule: {
     mccFilter?: MccFilterDTO;

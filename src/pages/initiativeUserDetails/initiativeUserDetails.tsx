@@ -111,9 +111,7 @@ const InitiativeUserDetails = () => {
     if (typeof id === 'string' && typeof cf === 'string') {
       getBeneficiaryOnboardingStatus(id, cf)
         .then((res) => {
-          // console.log(res);
           setStatusOnb(res.status);
-          // setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
         .catch((error) => {
           addError({
@@ -498,7 +496,6 @@ const InitiativeUserDetails = () => {
               severity="warning"
               sx={{
                 position: 'initial',
-                justifyContent: 'center',
                 gridColumn: 'span 24',
                 zIndex: 0,
                 mt: 5,
@@ -530,6 +527,39 @@ const InitiativeUserDetails = () => {
   const handleSuspension = (buttonType: string) => {
     setSuspensionModalOpen(true);
     setButtonType(buttonType);
+  };
+
+  const renderNonClicableEvents = (opeType: string | undefined) => {
+    switch (opeType) {
+      case 'SUSPENDED':
+        return (
+          <Typography
+            sx={{
+              color: 'error.main',
+              fontWeight: 600,
+              fontSize: '1em',
+              textAlign: 'left',
+            }}
+          >
+            {t('pages.initiativeUserDetails.operationTypes.suspended')}
+          </Typography>
+        );
+      case 'READMITTED':
+        return (
+          <Typography
+            sx={{
+              color: 'primary.main',
+              fontWeight: 600,
+              fontSize: '1em',
+              textAlign: 'left',
+            }}
+          >
+            {t('pages.initiativeUserDetails.operationTypes.readmitted')}
+          </Typography>
+        );
+      default:
+        return null;
+    }
   };
 
   return (
@@ -611,6 +641,7 @@ const InitiativeUserDetails = () => {
               onClick={() => handleSuspension('EXCLUDE')}
               data-testid="exclude-forever"
               color="error"
+              disabled
             >
               {t('pages.initiativeUserDetails.excludeForever')}
             </Button>
@@ -822,17 +853,8 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        {r.operationType === 'SUSPENDED' ? (
-                          <Typography
-                            sx={{
-                              color: 'error.main',
-                              fontWeight: 600,
-                              fontSize: '1em',
-                              textAlign: 'left',
-                            }}
-                          >
-                            {t('pages.initiativeUserDetails.operationTypes.suspended')}
-                          </Typography>
+                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' ? (
+                          renderNonClicableEvents(r.operationType)
                         ) : (
                           <ButtonNaked
                             data-testid="operationTypeBtn"

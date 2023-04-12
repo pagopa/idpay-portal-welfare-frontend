@@ -17,6 +17,7 @@ import {
   initiativeMccFilterSelector,
   initiativeRewardLimitsSelector,
   initiativeRewardRuleSelector,
+  initiativeRewardTypeSelector,
   initiativeThresholdSelector,
   initiativeTrxCountSelector,
   saveDaysOfWeekIntervals,
@@ -25,6 +26,7 @@ import {
   saveRewardRule,
   saveThreshold,
   saveTrxCount,
+  setInitiativeRewardType,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
@@ -33,6 +35,7 @@ import {
 } from '../../../../services/intitativeService';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -49,6 +52,7 @@ import MCCItem from './MCCItem';
 import TimeLimitItem from './TimeLimitItem';
 import TransactionNumberItem from './TransactionNumberItem';
 import TransactionTimeItem from './TransactionTimeItem';
+import RewardType from './RewardType';
 
 interface Props {
   action: string;
@@ -64,7 +68,11 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
   const [shopRulesToSubmit, setShopRulesToSubmit] = useState<
     Array<{ code: string | undefined; dispatched: boolean }>
-  >([{ code: 'PRCREC', dispatched: false }]);
+  >([
+    { code: 'TYPE', dispatched: false },
+    { code: 'PRCREC', dispatched: false },
+  ]);
+  const initiativeRewardTypeSel = useAppSelector(initiativeRewardTypeSelector);
   const rewardRule = useAppSelector(initiativeRewardRuleSelector);
   const mccFilter = useAppSelector(initiativeMccFilterSelector);
   const rewardLimits = useAppSelector(initiativeRewardLimitsSelector);
@@ -84,8 +92,10 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const setLoading = useLoading('GET_TRANSACTION_RULES');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
+  const [rewardType, setRewerdType] = useState<InitiativeRewardTypeEnum>(initiativeRewardTypeSel);
 
   useEffect(() => {
+    console.log(initiativeRewardTypeSel);
     window.scrollTo(0, 0);
   }, []);
 
@@ -98,6 +108,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         const responseData = mapResponse(response);
         const newAvailableShopRules: Array<ShopRulesModel> = [];
         const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+          { code: 'TYPE', dispatched: false },
           { code: 'PRCREC', dispatched: false },
         ];
         responseData.forEach((r) => {
@@ -202,6 +213,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const handleShopListItemAdded = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
     const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'TYPE', dispatched: false },
       { code: 'PRCREC', dispatched: false },
     ];
     availableShopRules.forEach((a) => {
@@ -227,6 +239,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const handleShopListItemRemoved = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
     const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'TYPE', dispatched: false },
       { code: 'PRCREC', dispatched: false },
     ];
     availableShopRules.forEach((a) => {
@@ -316,6 +329,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       if (trxCountIsOk || !rewardValueTypeIsAbsolute) {
         const body = {
           ...mapDataToSend(
+            rewardType,
             rewardRuleData,
             mccFilterData,
             rewardLimitsData,
@@ -327,6 +341,9 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         setLoading(true);
         putTrxAndRewardRules(initiativeId, body)
           .then((_response) => {
+            if (typeof rewardType !== 'undefined') {
+              dispatch(setInitiativeRewardType(rewardType));
+            }
             dispatch(saveRewardRule(rewardRuleData));
             if (typeof mccFilterData === 'object') {
               dispatch(saveMccFilter(mccFilterData));
@@ -367,6 +384,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
       const body = {
         ...mapDataToSend(
+          rewardType,
           rewardRuleData,
           mccFilterData,
           rewardLimitsData,
@@ -380,6 +398,9 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((_response) => {
           setOpenDraftSavedToast(true);
+          if (typeof rewardType !== 'undefined') {
+            dispatch(setInitiativeRewardType(rewardType));
+          }
           dispatch(saveRewardRule(rewardRuleData));
           if (typeof mccFilterData === 'object') {
             dispatch(saveMccFilter(mccFilterData));
@@ -475,6 +496,15 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         subtitle={t('components.wizard.stepFour.subtitle')}
         helpLink={t('helpStaticUrls.wizard.shopRules')}
         helpLabel={t('components.wizard.common.links.findOut')}
+      />
+
+      <RewardType
+        code="TYPE"
+        action={action}
+        rewardType={rewardType}
+        setRewardType={setRewerdType}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={setShopRulesToSubmit}
       />
 
       {modalButtonVisible && (

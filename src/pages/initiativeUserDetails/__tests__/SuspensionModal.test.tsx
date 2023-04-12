@@ -70,6 +70,10 @@ describe('test suite for suspension modal', () => {
       />
     );
 
+    const readmitBtn = screen.getByText('pages.initiativeUserDetails.suspendModal.readmitBtn');
+
+    fireEvent.click(readmitBtn);
+
     fireEvent.keyDown(
       screen.getByText('pages.initiativeUserDetails.suspendModal.readmitUserTitle'),
       {

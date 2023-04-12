@@ -148,7 +148,7 @@ const PercentageRecognizedItem = ({
             value={formik.values.rewardValueType}
             onChange={async (e) => {
               handleUpdateStateOnSelect(e.target.value);
-              await formik.setFieldValue('rewardValueType', e.target.value); 
+              await formik.setFieldValue('rewardValueType', e.target.value);
             }}
             error={formik.touched.rewardValueType && Boolean(formik.errors.rewardValueType)}
             inputProps={{

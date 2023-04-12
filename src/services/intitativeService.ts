@@ -467,3 +467,10 @@ export const suspendUser = (initiativeId: string, fiscalCode: string): Promise<v
   }
   return InitiativeApi.suspendUser(initiativeId, fiscalCode);
 };
+
+export const readmitUser = (initiativeId: string, fiscalCode: string): Promise<void> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.readmitUser(initiativeId, fiscalCode);
+  }
+  return InitiativeApi.readmitUser(initiativeId, fiscalCode);
+};

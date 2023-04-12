@@ -228,4 +228,7 @@ export const InitiativeApiMocked = {
 
   suspendUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
     new Promise((resolve) => resolve()),
+
+  readmitUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
 };
