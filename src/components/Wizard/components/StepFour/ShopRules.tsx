@@ -92,11 +92,10 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const setLoading = useLoading('GET_TRANSACTION_RULES');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
-  const [rewardType, setRewerdType] = useState<InitiativeRewardTypeEnum | undefined>(
-    initiativeRewardTypeSel
-  );
+  const [rewardType, setRewerdType] = useState<InitiativeRewardTypeEnum>(initiativeRewardTypeSel);
 
   useEffect(() => {
+    console.log(initiativeRewardTypeSel);
     window.scrollTo(0, 0);
   }, []);
 

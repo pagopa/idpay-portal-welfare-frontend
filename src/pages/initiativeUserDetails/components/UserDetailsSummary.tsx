@@ -94,19 +94,6 @@ const UserDetailsSummary = ({
               variant="body2"
               color="text.primary"
             >
-              {t('pages.initiativeUserDetails.refundedBalance')}
-            </Typography>
-            <Typography
-              sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
-              variant="body2"
-            >
-              {formatedCurrency(refunded, '0,00 €')}
-            </Typography>
-            <Typography
-              sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
-              variant="body2"
-              color="text.primary"
-            >
               {t('pages.initiativeUserDetails.balanceToBeRefunded')}
             </Typography>
             <Typography
@@ -115,6 +102,20 @@ const UserDetailsSummary = ({
             >
               {formatedCurrency(renderToBeRefunded(accrued, refunded), '0,00 €')}
             </Typography>
+            <Typography
+              sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
+              variant="body2"
+              color="text.primary"
+            >
+              {t('pages.initiativeUserDetails.refundedBalance')}
+            </Typography>
+            <Typography
+              sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
+              variant="body2"
+            >
+              {formatedCurrency(refunded, '0,00 €')}
+            </Typography>
+
             <Typography
               sx={{
                 display: 'grid',

@@ -211,7 +211,7 @@ export interface Initiative {
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
-  initiativeRewardType: InitiativeRewardTypeEnum | undefined;
+  initiativeRewardType: InitiativeRewardTypeEnum;
   rewardRule: RewardRule;
   trxRule: {
     mccFilter?: MccFilterDTO;

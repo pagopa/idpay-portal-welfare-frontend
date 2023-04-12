@@ -65,9 +65,9 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
 
   const printInitiativeTypology = (typology: InitiativeRewardTypeEnum): string => {
     if (typology === InitiativeRewardTypeEnum.REFUND) {
-      return t('pages.initiativeDetail.accordion.step4.refund');
+      return t('pages.initiativeDetail.accordion.step4.content.refund');
     } else if (typology === InitiativeRewardTypeEnum.DISCOUNT) {
-      return t('pages.initiativeDetail.accordion.step4.discount');
+      return t('pages.initiativeDetail.accordion.step4.content.discount');
     }
     return '';
   };

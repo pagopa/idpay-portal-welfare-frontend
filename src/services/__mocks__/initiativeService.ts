@@ -5,7 +5,10 @@ import {
   ServiceScopeEnum,
 } from '../../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
+import {
+  InitiativeDTO,
+  InitiativeRewardTypeEnum,
+} from '../../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
@@ -560,6 +563,7 @@ export const mockedRefundRules = {
 };
 
 export const mockedTrxAndRewardRules = {
+  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
   rewardRule: { _type: 'rewardValue', rewardValue: 1 },
 };
 

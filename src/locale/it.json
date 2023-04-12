@@ -50,7 +50,7 @@
           "selectedAccumulatedAmount": "Seleziona il tipo di importo",
           "selectTimeParam": "Seleziona il periodo di tempo",
           "subTitle": "Inserire qui una descrizione sulle info aggiuntive",
-          "timeParameter": "Dopo un periodo di tempo"
+          "timeParameter": "Periodo di tempo"
         },
         "select": {
           "accumulatedAmount": {
@@ -70,8 +70,8 @@
         "title2": "Altre informazioni"
       },
       "stepFour": {
-        "typology": "Tipologia",
         "addNew": "Aggiungi regola",
+        "typology": "Tipologia",
         "form": {
           "addTimeLimitItem": "Aggiungi limite",
           "addTransactionTimeItem": "Aggiungi orario",
@@ -112,9 +112,10 @@
           "trxCountNotPopulatedErrorTitle": "Hai selezionato un importo fisso",
           "tuesday": "Martedì",
           "wednesday": "Mercoledì",
+
           "initiativeRewardType": {
-            "discount": "Iniziativa a sconto",
-            "refund": "Iniziativa a rimborso"
+            "refund": "Iniziativa a rimborso",
+            "discount": "Iniziativa a sconto"
           }
         },
         "mccModal": {
@@ -520,8 +521,8 @@
             "wednesday": "Mercoledì",
             "yearly": "All'anno",
             "typology": "Tipologia",
-            "discount": "Iniziativa a sconto",
-            "refund": "Iniziativa a rimborso"
+            "refund": "Iniziativa a rimborso",
+            "discount": "Iniziativa a sconto"
           },
           "description": "Tipologia e modalità delle transazioni riconosciute.",
           "heading": "4",
@@ -790,7 +791,7 @@
       "alerts": "avvisi",
       "appIo": "App IO",
       "availableBalance": "Disponibile",
-      "balanceToBeRefunded": "Abbiamo preso in carico la richiesta di download del file. Riceverai via e-mail il link per scaricarlo.",
+      "balanceToBeRefunded": "Da rimborsare",
       "downloadCsv": "La richiesta di download è stata presa in carico. Non appena il file sarà generato, ti sarà inviato via email.",
       "downloadCsvBtn": "Scarica .csv",
       "eligibleKo": "Idoneo non assegnataro",
@@ -805,8 +806,8 @@
       "missingPaymentMethod": "Manca il metodo di pagamento",
       "noData": "Non ci sono ancora eventi per questo richiedente.",
       "onboardingKo": "Non idoneo",
-      "onboardingKoDescription": "Abbiamo preso in carico la richiesta di download del file. Riceverai una e-mail con il link per scaricarlo.",
-      "onboardingSuspendedDescription": "L’utente è momentaneamente sospeso. Tutte le transazioni in questo periodo non saranno conteggiate ai fini dell’iniziativa.",
+      "onboardingKoDescription": "Il richiedente non possiede i requisiti per questa iniziativa.",
+      "onboardingSuspendedDescription": "Questo richiedente è sospeso. Le transazioni effettuate durante la sospensione non vengono conteggiate. ",
       "operationTypes": {
         "addIban": "Aggiunto IBAN",
         "addInstrument": "Aggiunto metodo",
