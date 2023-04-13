@@ -280,7 +280,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
 
 export const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
   // eslint-disable-next-line functional/no-let
-  let automatedCriteria: Array<AutomatedCriteriaItem> = [];
+  let automatedCriteria: Array<any> = [];
   if (
     response.beneficiaryRule &&
     response.beneficiaryRule.automatedCriteria &&
