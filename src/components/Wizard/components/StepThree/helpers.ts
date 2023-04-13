@@ -331,11 +331,11 @@ export const boxItemStyle = {
 };
 
 export enum IseeTypologyEnum {
-  Corrente = 'Corrente',
-  Ordinario = 'Ordinario',
-  Minorenne = 'Minorenne',
-  Universitario = 'Universitario',
-  SocioSanitario = 'SocioSanitario',
-  Dottorato = 'Dottorato',
-  Residenziale = 'Residenziale',
+  Corrente = 'CORRENTE',
+  Ordinario = 'ORDINARIO',
+  Minorenne = 'MINORENNE',
+  Universitario = 'UNIVERSITARIO',
+  SocioSanitario = 'SOCIOSANITARIO',
+  Dottorato = 'DOTTORATO',
+  Residenziale = 'RESIDENZIALE',
 }
