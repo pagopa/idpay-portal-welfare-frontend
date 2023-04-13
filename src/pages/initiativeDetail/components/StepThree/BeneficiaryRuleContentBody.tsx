@@ -132,37 +132,37 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
     item.iseeTypes?.forEach((it) => {
       switch (it) {
         case IseeTypologyEnum.Dottorato:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeDottorato'
           )}`;
           break;
         case IseeTypologyEnum.Minorenne:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeMinorenne'
           )}`;
           break;
         case IseeTypologyEnum.Ordinario:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeOrdinario'
           )}`;
           break;
         case IseeTypologyEnum.Residenziale:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeResidenziale'
           )}`;
           break;
         case IseeTypologyEnum.SocioSanitario:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeSocioSanitario'
           )}`;
           break;
         case IseeTypologyEnum.Universitario:
-          dataAsString = `${dataAsString}, ${t(
+          dataAsString = `${dataAsString} ${t(
             'pages.initiativeDetail.accordion.step3.content.iseeUniversitario'
           )}`;
           break;
         default:
-          dataAsString = `${dataAsString}, ''`;
+          dataAsString = `${dataAsString} ''`;
       }
     });
     return dataAsString.length ? dataAsString : '-';
