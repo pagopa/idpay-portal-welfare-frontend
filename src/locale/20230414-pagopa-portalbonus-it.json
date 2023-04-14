@@ -615,9 +615,9 @@
         "join": "Hanno aderito",
         "lastUpdate": "Ultimo aggiornamento: ",
         "modalPublish": {
-          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{InitiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
-          "initiativeWithoutGroupsSubtitle": "Il servizio dell’iniziativa {{InitiativeName}} sarà visibile nell’app IO. Una volta pubblicata, potrai sospenderla in ogni momento.",
-          "subtitle": "Il servizio dell’iniziativa {{InitiativeName}} sarà visibile nell’app IO e {{usersNumber}} utenti saranno avvisati tramite un messaggio. L’operazione è irreversibile.",
+          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
+          "initiativeWithoutGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Una volta pubblicata, potrai sospenderla in ogni momento.",
+          "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO e {{usersNumber}} utenti saranno avvisati tramite un messaggio. L’operazione è irreversibile.",
           "title": "Vuoi pubblicare l’iniziativa?"
         },
         "stats": "Statistiche",
@@ -635,7 +635,7 @@
           "waitForPublish": "Hai approvato l’iniziativa. Attendi la pubblicazione da parte dell’ente.",
           "waitForReview": "Attendi che l’ente modifichi l’iniziativa in base ai tuoi commenti e la invii di nuovo in revisione."
         },
-        "title": "Attvità",
+        "title": "Attività",
         "ViewUsers": "Vedi assegnatari"
       },
       "snackBar": {
@@ -666,7 +666,7 @@
         "alertTitle": "Hai scaricato il .csv della graduatoria?",
         "cancelBtn": "Torna indietro",
         "publishBtn": "Pubblica",
-        "subtitle": "Il servizio dell’iniziativa {{InitiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
+        "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
         "title": "Vuoi pubblicare la graduatoria?"
       },
       "rankingStatus": {

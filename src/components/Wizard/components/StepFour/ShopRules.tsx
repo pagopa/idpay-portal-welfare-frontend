@@ -95,7 +95,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [rewardType, setRewerdType] = useState<InitiativeRewardTypeEnum>(initiativeRewardTypeSel);
 
   useEffect(() => {
-    console.log(initiativeRewardTypeSel);
+    // console.log(initiativeRewardTypeSel);
     window.scrollTo(0, 0);
   }, []);
 
