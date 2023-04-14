@@ -52,10 +52,12 @@ import { GeneralInfo } from '../../../model/Initiative';
 import { createStore, RootState } from '../../store';
 import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
 import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 
 describe('use Initiative slice', () => {
   const mockedInitialState: Initiative = {
     initiativeId: undefined,
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
     organizationId: undefined,
     status: undefined,
     initiativeName: undefined,

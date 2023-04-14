@@ -1,3 +1,4 @@
+import { IseeTypologyEnum } from '../components/Wizard/components/StepThree/helpers';
 import { FilterOperator } from '../utils/constants';
 
 export interface AdmissionCriteriaModel {
@@ -14,6 +15,7 @@ export interface AvailableCriteria extends AdmissionCriteriaModel {
   value: string;
   value2: string;
   orderDirection?: string;
+  iseeTypes?: Array<{ value: IseeTypologyEnum; label: string }>;
 }
 
 export interface DateOfBirthModel {

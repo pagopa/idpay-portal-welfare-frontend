@@ -504,6 +504,7 @@ export const mockedInitiativeDetail = {
         field: 'ISEE',
         operator: 'GT',
         value: '40000',
+        iseeTypes: ['Ordinario', 'Dottorato'],
       },
     ],
   },

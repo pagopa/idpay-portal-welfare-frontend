@@ -9,6 +9,7 @@ import {
   Select,
   TextField,
   Typography,
+  Autocomplete,
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
@@ -21,6 +22,7 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import {
+  IseeTypologyEnum,
   boxItemStyle,
   handleCriteriaToSubmit,
   setError,
@@ -85,6 +87,7 @@ const IseeCriteriaItem = ({
         .required(t('validation.required'))
         .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
     }),
+    iseeTypes: Yup.array().min(1, t('validation.required')).required(t('validation.required')),
   });
 
   const setOrderDirection = (
@@ -108,6 +111,7 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
       orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
+      iseeTypes: formData.iseeTypes,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -127,6 +131,33 @@ const IseeCriteriaItem = ({
       }
     }
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
+
+  const autocompleteOptionsList = [
+    {
+      value: IseeTypologyEnum.Dottorato,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
+    },
+    {
+      value: IseeTypologyEnum.Minorenne,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
+    },
+    {
+      value: IseeTypologyEnum.Ordinario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
+    },
+    {
+      value: IseeTypologyEnum.Residenziale,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
+    },
+    {
+      value: IseeTypologyEnum.SocioSanitario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
+    },
+    {
+      value: IseeTypologyEnum.Universitario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
+    },
+  ];
 
   return (
     <Box sx={boxItemStyle} data-testid="isee-criteria-test">
@@ -312,6 +343,50 @@ const IseeCriteriaItem = ({
               ),
             }}
             size="small"
+          />
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 2', mt: 2 }}>
+          <Autocomplete
+            multiple={true}
+            id="isee-typology"
+            options={autocompleteOptionsList}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            value={iseeFormik.values.iseeTypes}
+            onChange={async (_e, value) => {
+              handleFieldValueChanged(value, 'iseeTypes', formData.code);
+              await iseeFormik.setFieldValue('iseeTypes', value);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('components.wizard.stepThree.chooseCriteria.form.typology')}
+                size="small"
+                error={setError(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes)}
+                helperText={
+                  setErrorText(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes) ||
+                  t('components.wizard.stepThree.chooseCriteria.form.iseeTypologyHelpText')
+                }
+              />
+            )}
+            sx={{
+              '& .MuiChip-root': {
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0, 0, 0, 0.23)',
+              },
+              '& .MuiChip-label': {
+                padding: '6px 9px',
+              },
+            }}
           />
         </FormControl>
       </Box>

@@ -12,7 +12,7 @@ import {
 import { createStore } from '../../../../../redux/store';
 import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
 import AdmissionCriteria from '../AdmissionCriteria';
-import { mapResponse } from '../helpers';
+import { IseeTypologyEnum, mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -36,7 +36,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     window.scrollTo = jest.fn();
   });
 
-  test('should display the second step, with validation on input data', async () => {
+  test('should display the  step 3, with validation on input data', async () => {
     store.dispatch(setInitiativeId('2333333'));
     store.dispatch(
       setGeneralInfo({
@@ -66,25 +66,12 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
           value: '18',
         },
         {
-          authority: 'AUTH1',
-          code: 'BIRTHDATE',
-          field: 'year',
-          operator: 'EQ',
-          value: '18',
-        },
-        {
           authority: 'INPS',
           code: 'ISEE',
           field: 'ISEE',
           operator: 'GT',
           value: '40000',
-        },
-        {
-          authority: 'INPS',
-          code: 'RESIDENCE',
-          field: 'ISEE',
-          operator: 'GT',
-          value: '40000',
+          iseeTypes: [IseeTypologyEnum.Dottorato, IseeTypologyEnum.Ordinario],
         },
       ])
     );
@@ -120,7 +107,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     });
     expect(draft).toBeInTheDocument();
     // click the close icon on toast. id is from MUI
-    fireEvent.click(screen.getByTestId('CloseIcon'));
+    fireEvent.click(screen.getAllByTestId('CloseIcon')[0]);
   });
 
   it('Test onClick of "Sfoglia Criteri" to open the modal must be true', async () => {
