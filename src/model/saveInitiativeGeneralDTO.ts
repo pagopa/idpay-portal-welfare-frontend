@@ -1,4 +1,4 @@
-import { BeneficiaryTypeEnum } from '../utils/constants';
+import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 
 export type SaveInitiativeGeneralDTO = {
   beneficiaryBudget: number;

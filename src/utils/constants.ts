@@ -36,12 +36,6 @@ export enum WIZARD_ACTIONS {
   BACK = 'BACK',
 }
 
-export enum BeneficiaryTypeEnum {
-  PF = 'PF',
-  PG = 'PG',
-  NF = 'NF',
-}
-
 export enum DateOfBirthOptions {
   YEAR = 'year',
   AGE = 'age',

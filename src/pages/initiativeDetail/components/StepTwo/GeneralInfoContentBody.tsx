@@ -1,6 +1,10 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Initiative } from '../../../../model/Initiative';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -23,10 +27,26 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
         {t('pages.initiativeDetail.accordion.step2.content.beneficiaryType')}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-        {initiativeDetail.generalInfo.beneficiaryType === 'PF'
+        {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
           ? t('pages.initiativeDetail.accordion.step2.content.person')
           : t('pages.initiativeDetail.accordion.step2.content.family')}
       </Typography>
+
+      {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF &&
+        initiativeDetail.generalInfo.famylyUnitComposition && (
+          <>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleGroup')}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+              {initiativeDetail.generalInfo.famylyUnitComposition === FamilyUnitCompositionEnum.INPS
+                ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleISEE')
+                : t(
+                    'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleANPR'
+                  )}
+            </Typography>
+          </>
+        )}
 
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
         {t('pages.initiativeDetail.accordion.step2.content.beneficiaryknown')}

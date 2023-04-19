@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import { render } from '@testing-library/react';
 import React from 'react';
-import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 import { createStore } from '../../../../redux/store';

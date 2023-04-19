@@ -23,6 +23,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 type Props = {
   openModal: boolean;
@@ -32,6 +33,7 @@ type Props = {
   setCriteriaToRender: Dispatch<Array<AvailableCriteria>>;
   searchCriteria: string;
   setSearchCriteria: Dispatch<SetStateAction<string>>;
+  beneficiaryType: BeneficiaryTypeEnum | undefined;
 };
 
 const AdmissionCriteriaModal = ({
@@ -42,6 +44,7 @@ const AdmissionCriteriaModal = ({
   setCriteriaToRender,
   searchCriteria,
   setSearchCriteria,
+  beneficiaryType,
 }: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
@@ -72,26 +75,36 @@ const AdmissionCriteriaModal = ({
   const renderAdmissionCriteriaList = (
     list: Array<AvailableCriteria>,
     searchKey: string,
-    handleCriteriaChange: ChangeEventHandler
+    handleCriteriaChange: ChangeEventHandler,
+    beneficiaryType: BeneficiaryTypeEnum | undefined
   ) => {
     if (!searchKey.length) {
-      return list.map((a) => (
-        <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
-          <Box>
-            <Checkbox
-              onChange={(e) => handleCriteriaChange(e)}
-              checked={a.checked}
-              id={a.code}
-              name={a.code}
-              data-testid="check-test-1"
-            />
+      return list.map((a) => {
+        const displayType =
+          a.code === 'ISEE' &&
+          typeof beneficiaryType !== undefined &&
+          beneficiaryType === BeneficiaryTypeEnum.NF
+            ? 'none'
+            : 'flex';
+
+        return (
+          <Box key={a.code} sx={{ display: displayType, my: 2 }}>
+            <Box>
+              <Checkbox
+                onChange={(e) => handleCriteriaChange(e)}
+                checked={a.checked}
+                id={a.code}
+                name={a.code}
+                data-testid="check-test-1"
+              />
+            </Box>
+            <Box>
+              <Typography variant="body2">{a.fieldLabel}</Typography>
+              <Typography variant="caption">{a.authorityLabel}</Typography>
+            </Box>
           </Box>
-          <Box>
-            <Typography variant="body2">{a.fieldLabel}</Typography>
-            <Typography variant="caption">{a.authorityLabel}</Typography>
-          </Box>
-        </Box>
-      ));
+        );
+      });
     } else {
       return list.map((a) => {
         const lowerCaseTitle = typeof a.fieldLabel === 'string' ? a.fieldLabel.toLowerCase() : '';
@@ -210,7 +223,12 @@ const AdmissionCriteriaModal = ({
               maxHeight: 'calc(100% - ' + headingHeight + ')',
             }}
           >
-            {renderAdmissionCriteriaList(criteriaToRender, searchCriteria, handleCriteriaChange)}
+            {renderAdmissionCriteriaList(
+              criteriaToRender,
+              searchCriteria,
+              handleCriteriaChange,
+              beneficiaryType
+            )}
           </Box>
           <Box
             sx={{

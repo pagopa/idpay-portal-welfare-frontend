@@ -446,7 +446,10 @@
             "rankingEndDate": "Al",
             "rankingStartDate": "Dal",
             "startDate": "Dal",
-            "taxCodeList": "Sì, ho una lista di Codici Fiscali"
+            "taxCodeList": "Sì, ho una lista di Codici Fiscali",
+            "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
+            "familyUnitCompositionTitleISEE": "Nucleo familiare su ISEE (INPS)",
+            "familyUnitCompositionTitleANPR": "Stato di famiglia anagrafica (ANPR)"
           },
           "description": "Budget totale, periodo di adesione e spesa.",
           "heading": "2",

@@ -15,11 +15,11 @@ import {
   RefundRule,
 } from '../../model/Initiative';
 
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -336,6 +336,8 @@ export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | unde
   state.initiative.generalInfo.beneficiaryKnown;
 export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.rankingEnabled;
+export const stepTwoBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum | undefined =>
+  state.initiative.generalInfo.beneficiaryType;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {

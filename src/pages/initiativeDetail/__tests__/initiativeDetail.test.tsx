@@ -7,8 +7,8 @@ import { GeneralInfo } from '../../../model/Initiative';
 import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { createStore } from '../../../redux/store';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import InitiativeDetail from '../initiativeDetail';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

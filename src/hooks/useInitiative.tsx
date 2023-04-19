@@ -42,10 +42,10 @@ import {
   RewardLimit,
 } from '../model/Initiative';
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
-import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
+import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 // import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 
 interface MatchParams {

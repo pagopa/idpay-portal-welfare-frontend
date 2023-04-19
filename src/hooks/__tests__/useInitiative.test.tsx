@@ -24,7 +24,7 @@ import { OrderDirectionEnum } from '../../api/generated/initiative/AutomatedCrit
 import { FrequencyEnum } from '../../api/generated/initiative/RewardLimitsDTO';
 import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 jest.mock('react-router-dom', () => Function());
 
