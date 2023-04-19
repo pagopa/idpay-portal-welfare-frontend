@@ -1,12 +1,14 @@
 import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
+import { FamilyUnitCompositionEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
 import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
   beneficiaryType: BeneficiaryTypeEnum;
+  famylyUnitComposition?: FamilyUnitCompositionEnum | undefined;
   beneficiaryKnown: string | undefined;
   rankingEnabled: string | undefined;
   budget: string;

@@ -1,5 +1,4 @@
 import { addDays } from 'date-fns';
-import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 
 export const getMinDate = (date: Date | string | undefined, offset: number) => {
   if (date !== undefined && date instanceof Date) {
@@ -70,8 +69,8 @@ export const parseDescriptionMap = (values: any) => {
 };
 
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
-  beneficiaryType:
-    values.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG,
+  beneficiaryType: values.beneficiaryType,
+  famylyUnitComposition: values.beneficiaryType === 'NF' ? values.famylyUnitComposition : undefined,
   beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
   budget: Number(values.budget),
   beneficiaryBudget: Number(values.beneficiaryBudget),
