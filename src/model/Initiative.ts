@@ -11,7 +11,7 @@ import { FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
   beneficiaryType: BeneficiaryTypeEnum;
-  famylyUnitComposition?: FamilyUnitCompositionEnum | undefined;
+  familyUnitComposition?: FamilyUnitCompositionEnum | undefined;
   beneficiaryKnown: string | undefined;
   rankingEnabled: string | undefined;
   budget: string;

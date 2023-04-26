@@ -111,6 +111,8 @@ const AdmissionCriteria = ({
               return { ...r, checked: true };
             }
           });
+
+          responseT = responseT.filter((r) => r.code === 'ISEE');
         }
 
         const responseData = mapResponse(responseT);
@@ -434,20 +436,24 @@ const AdmissionCriteria = ({
             startIcon={<ListAltIcon />}
             onClick={handleOpenModal}
             data-testid="criteria-button-test"
+            disabled={beneficiaryType !== BeneficiaryTypeEnum.PF}
           >
             {t('components.wizard.stepThree.chooseCriteria.browse')}
           </Button>
-          <AdmissionCriteriaModal
-            openModal={openModal}
-            handleCloseModal={handleCloseModal}
-            handleCriteriaAdded={handleCriteriaAdded}
-            criteriaToRender={criteriaToRender}
-            setCriteriaToRender={setCriteriaToRender}
-            searchCriteria={searchCriteria}
-            setSearchCriteria={setSearchCriteria}
-            data-testid="modal-test"
-            beneficiaryType={beneficiaryType}
-          />
+
+          {beneficiaryType === BeneficiaryTypeEnum.PF && (
+            <AdmissionCriteriaModal
+              openModal={openModal}
+              handleCloseModal={handleCloseModal}
+              handleCriteriaAdded={handleCriteriaAdded}
+              criteriaToRender={criteriaToRender}
+              setCriteriaToRender={setCriteriaToRender}
+              searchCriteria={searchCriteria}
+              setSearchCriteria={setSearchCriteria}
+              data-testid="modal-test"
+              beneficiaryType={beneficiaryType}
+            />
+          )}
           <Button
             variant="text"
             sx={{ gridArea: 'addButton' }}

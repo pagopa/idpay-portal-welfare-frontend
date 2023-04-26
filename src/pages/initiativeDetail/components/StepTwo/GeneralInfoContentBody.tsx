@@ -12,6 +12,7 @@ type Props = {
 
 const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
   const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -33,13 +34,13 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
       </Typography>
 
       {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF &&
-        initiativeDetail.generalInfo.famylyUnitComposition && (
+        initiativeDetail.generalInfo.familyUnitComposition && (
           <>
-            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleGroup')}
             </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-              {initiativeDetail.generalInfo.famylyUnitComposition === FamilyUnitCompositionEnum.INPS
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {initiativeDetail.generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
                 ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleISEE')
                 : t(
                     'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleANPR'

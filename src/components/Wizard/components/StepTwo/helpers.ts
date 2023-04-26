@@ -70,7 +70,7 @@ export const parseDescriptionMap = (values: any) => {
 
 export const parseValuesFormToInitiativeGeneralDTO = (values: any) => ({
   beneficiaryType: values.beneficiaryType,
-  famylyUnitComposition: values.beneficiaryType === 'NF' ? values.famylyUnitComposition : undefined,
+  familyUnitComposition: values.beneficiaryType === 'NF' ? values.familyUnitComposition : undefined,
   beneficiaryKnown: values.beneficiaryKnown === 'true' ? true : false,
   budget: Number(values.budget),
   beneficiaryBudget: Number(values.beneficiaryBudget),

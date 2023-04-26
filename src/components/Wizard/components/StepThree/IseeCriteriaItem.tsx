@@ -114,7 +114,7 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
       orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
-      iseeTypes: formData.iseeTypes,
+      iseeTypes: formData?.iseeTypes,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -366,7 +366,7 @@ const IseeCriteriaItem = ({
             options={autocompleteOptionsList}
             getOptionLabel={(option) => option.label}
             isOptionEqualToValue={(option, value) => option.value === value.value}
-            value={iseeFormik.values.iseeTypes}
+            value={iseeFormik.values.iseeTypes || []}
             onChange={async (_e, value) => {
               handleFieldValueChanged(value, 'iseeTypes', formData.code);
               await iseeFormik.setFieldValue('iseeTypes', value);

@@ -42,7 +42,7 @@ const initialState: Initiative = {
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    famylyUnitComposition: undefined,
+    familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
     rankingEnabled: 'false',
     // beneficiaryKnown: undefined,
@@ -131,7 +131,7 @@ export const initiativeSlice = createSlice({
       ...state,
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
-        famylyUnitComposition: action.payload.famylyUnitComposition,
+        familyUnitComposition: action.payload.familyUnitComposition,
         beneficiaryKnown: action.payload.beneficiaryKnown,
         rankingEnabled: action.payload.rankingEnabled,
         budget: action.payload.budget,

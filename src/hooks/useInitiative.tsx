@@ -194,7 +194,7 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
 export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    famylyUnitComposition: undefined,
+    familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
     rankingEnabled: 'false',
     budget: '',
@@ -216,6 +216,12 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
       dataT.beneficiaryType =
         data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.NF;
     }
+
+    if (typeof data.familyUnitComposition !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.familyUnitComposition = data.familyUnitComposition;
+    }
+
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';

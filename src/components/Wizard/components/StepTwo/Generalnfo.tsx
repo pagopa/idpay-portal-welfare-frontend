@@ -292,7 +292,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const formik = useFormik({
     initialValues: {
       beneficiaryType: generalInfoForm.beneficiaryType,
-      familyUnitComposition: generalInfoForm.famylyUnitComposition,
+      familyUnitComposition: generalInfoForm.familyUnitComposition,
       beneficiaryKnown: generalInfoForm.beneficiaryKnown,
       rankingEnabled: generalInfoForm.rankingEnabled,
       budget: generalInfoForm.budget,
