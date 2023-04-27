@@ -9,10 +9,12 @@ import {
   InitiativeDTO,
   InitiativeRewardTypeEnum,
 } from '../../api/generated/initiative/InitiativeDTO';
-import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  BeneficiaryTypeEnum,
+  InitiativeGeneralDTO,
+} from '../../api/generated/initiative/InitiativeGeneralDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import { InitiativeStatisticsDTO } from '../../api/generated/initiative/InitiativeStatisticsDTO';

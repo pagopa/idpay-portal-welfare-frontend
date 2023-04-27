@@ -16,6 +16,7 @@ import {
   saveAutomatedCriteria,
   saveManualCriteria,
   stepTwoRankingEnabledSelector,
+  stepTwoBeneficiaryTypeSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
@@ -25,6 +26,7 @@ import {
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -68,6 +70,7 @@ const AdmissionCriteria = ({
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
+  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   // const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
@@ -89,6 +92,7 @@ const AdmissionCriteria = ({
       .then((response) => {
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
+
         if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
@@ -98,13 +102,30 @@ const AdmissionCriteria = ({
             }
           });
         }
+
+        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+          responseT = responseT.map((r) => {
+            if (r.code !== 'ISEE') {
+              return { ...r };
+            } else {
+              return { ...r, checked: true };
+            }
+          });
+
+          responseT = responseT.filter((r) => r.code === 'ISEE');
+        }
+
         const responseData = mapResponse(responseT);
+
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
 
         const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
-        if (automatedCriteria.length > 0) {
+        if (
+          automatedCriteria.length > 0 ||
+          (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF)
+        ) {
           const updatedResponseData: Array<AvailableCriteria> =
             updateInitialAutomatedCriteriaOnSelector(
               automatedCriteria,
@@ -421,19 +442,24 @@ const AdmissionCriteria = ({
             startIcon={<ListAltIcon />}
             onClick={handleOpenModal}
             data-testid="criteria-button-test"
+            disabled={beneficiaryType !== BeneficiaryTypeEnum.PF}
           >
             {t('components.wizard.stepThree.chooseCriteria.browse')}
           </Button>
-          <AdmissionCriteriaModal
-            openModal={openModal}
-            handleCloseModal={handleCloseModal}
-            handleCriteriaAdded={handleCriteriaAdded}
-            criteriaToRender={criteriaToRender}
-            setCriteriaToRender={setCriteriaToRender}
-            searchCriteria={searchCriteria}
-            setSearchCriteria={setSearchCriteria}
-            data-testid="modal-test"
-          />
+
+          {beneficiaryType === BeneficiaryTypeEnum.PF && (
+            <AdmissionCriteriaModal
+              openModal={openModal}
+              handleCloseModal={handleCloseModal}
+              handleCriteriaAdded={handleCriteriaAdded}
+              criteriaToRender={criteriaToRender}
+              setCriteriaToRender={setCriteriaToRender}
+              searchCriteria={searchCriteria}
+              setSearchCriteria={setSearchCriteria}
+              data-testid="modal-test"
+              beneficiaryType={beneficiaryType}
+            />
+          )}
           <Button
             variant="text"
             sx={{ gridArea: 'addButton' }}
@@ -487,6 +513,7 @@ const AdmissionCriteria = ({
                   criteriaToSubmit={criteriaToSubmit}
                   setCriteriaToSubmit={setCriteriaToSubmit}
                   rankingEnabled={rankingEnabled}
+                  beneficiaryType={beneficiaryType}
                 />
               );
             }

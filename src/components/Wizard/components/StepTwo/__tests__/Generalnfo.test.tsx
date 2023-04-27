@@ -1,14 +1,17 @@
 import React from 'react';
 import { fireEvent, render, screen, cleanup } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import Generalnfo from '../Generalnfo';
 import { store } from '../../../../../redux/store';
 import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
 import { GeneralInfo } from '../../../../../model/Initiative';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
-import { InitiativeGeneralDTO } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  BeneficiaryTypeEnum,
+  InitiativeGeneralDTO,
+} from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { BASE_ROUTE } from '../../../../../routes';
 
@@ -75,8 +78,7 @@ describe('<Genaralnfo />', () => {
     /* Test of value of radio button */
     const beneficiaryType = screen.getByLabelText(/components.wizard.stepTwo.form.beneficiaryType/);
     const beneficiaryType1 = screen.getByLabelText(/components.wizard.stepTwo.form.person/);
-    const beneficiaryType2 = screen.getByLabelText(/components.wizard.stepTwo.form.family/);
-    // const beneficiaryKnown = getByLabelText(/components.wizard.stepTwo.form.beneficiaryKnown/);
+
     const beneficiaryKnown1 = screen.getByLabelText(
       /components.wizard.stepTwo.form.taxCodeList/
     ) as HTMLInputElement;
@@ -87,7 +89,6 @@ describe('<Genaralnfo />', () => {
     fireEvent.click(beneficiaryType);
 
     expect(beneficiaryType1).toBeChecked();
-    expect(beneficiaryType2).toBeDisabled();
 
     fireEvent.click(beneficiaryKnown1);
     expect(beneficiaryKnown1).toBeChecked();
@@ -125,7 +126,7 @@ describe('<Genaralnfo />', () => {
     fireEvent.change(budget, { target: { value: '1000' } });
 
     const beneficiaryBudget = screen.getByLabelText(
-      'components.wizard.stepTwo.form.beneficiaryBudget'
+      'components.wizard.stepTwo.form.beneficiaryBudgetPerson'
     );
     fireEvent.change(beneficiaryBudget, { target: { value: '100' } });
   });

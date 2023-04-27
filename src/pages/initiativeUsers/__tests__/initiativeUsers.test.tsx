@@ -16,10 +16,13 @@ import {
 } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import { renderWithHistoryAndStore, renderWithProviders } from '../../../utils/test-utils';
 import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
 import InitiativeUsers from '../initiativeUsers';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { BeneficiaryStateEnum } from '../../../api/generated/initiative/StatusOnboardingDTOS';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -60,7 +63,7 @@ describe('<InitiativeUsers />', () => {
     content: [
       {
         beneficiary: 'string',
-        beneficiaryState: 'ONBOARDING_OK',
+        beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
         updateStatusDate: new Date(),
       },
     ],
@@ -150,7 +153,12 @@ describe('<InitiativeUsers />', () => {
         },
       ],
     },
-    rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    rewardRule: {
+      _type: 'rewardValue',
+      rewardValue: 1,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    },
     trxRule: {
       mccFilter: { allowedList: true, values: ['string', ''] },
       rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
@@ -248,15 +256,16 @@ describe('<InitiativeUsers />', () => {
 
   test('render with different Onboarding user Status', async () => {
     const onbUserStatusArr = [
-      'INVITED',
-      'ACCEPTED_TC',
-      'ON_EVALUATION',
-      'ONBOARDING_OK',
-      'ONBOARDING_KO',
-      'ELIGIBLE_KO',
-      'ELIGIBLE_KO',
-      'INACTIVE',
-      'UNSUBSCRIBED',
+      BeneficiaryStateEnum.ACCEPTED_TC,
+      BeneficiaryStateEnum.ELIGIBLE,
+      BeneficiaryStateEnum.ELIGIBLE_KO,
+      BeneficiaryStateEnum.INACTIVE,
+      BeneficiaryStateEnum.INVITED,
+      BeneficiaryStateEnum.ONBOARDING_KO,
+      BeneficiaryStateEnum.ONBOARDING_OK,
+      BeneficiaryStateEnum.ON_EVALUATION,
+      BeneficiaryStateEnum.SUSPENDED,
+      BeneficiaryStateEnum.UNSUBSCRIBED,
     ];
     onbUserStatusArr.forEach((item) => {
       (InitiativeApiMocked.getOnboardingStatus = async (

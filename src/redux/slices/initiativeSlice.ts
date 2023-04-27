@@ -15,11 +15,11 @@ import {
   RefundRule,
 } from '../../model/Initiative';
 
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -42,10 +42,11 @@ const initialState: Initiative = {
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    // beneficiaryKnown: 'false',
-    // rankingEnabled: 'true',
-    beneficiaryKnown: undefined,
-    rankingEnabled: undefined,
+    familyUnitComposition: undefined,
+    beneficiaryKnown: 'false',
+    rankingEnabled: 'false',
+    // beneficiaryKnown: undefined,
+    // rankingEnabled: undefined,
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -130,6 +131,7 @@ export const initiativeSlice = createSlice({
       ...state,
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
+        familyUnitComposition: action.payload.familyUnitComposition,
         beneficiaryKnown: action.payload.beneficiaryKnown,
         rankingEnabled: action.payload.rankingEnabled,
         budget: action.payload.budget,
@@ -334,6 +336,8 @@ export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | unde
   state.initiative.generalInfo.beneficiaryKnown;
 export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.rankingEnabled;
+export const stepTwoBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum | undefined =>
+  state.initiative.generalInfo.beneficiaryType;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {

@@ -7,9 +7,9 @@ import ShopRulesContentBody from '../StepFour/ShopRuleContentBody';
 import React from 'react';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 import { Initiative } from '../../../../model/Initiative';
-import { BeneficiaryTypeEnum } from '../../../../utils/constants';
 import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({

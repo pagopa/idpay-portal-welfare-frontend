@@ -47,12 +47,13 @@ import {
   saveTrxCount,
   saveDaysOfWeekIntervals,
 } from '../initiativeSlice';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
+
 import { GeneralInfo } from '../../../model/Initiative';
 import { createStore, RootState } from '../../store';
 import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
 import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 describe('use Initiative slice', () => {
   const mockedInitialState: Initiative = {
@@ -77,14 +78,15 @@ describe('use Initiative slice', () => {
     },
     generalInfo: {
       beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: undefined,
+      famylyUnitComposition: undefined,
+      beneficiaryKnown: 'false',
       budget: '',
       beneficiaryBudget: '',
       startDate: '',
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
-      rankingEnabled: undefined,
+      rankingEnabled: 'false',
       introductionTextDE: '',
       introductionTextEN: '',
       introductionTextFR: '',
@@ -225,7 +227,14 @@ describe('use Initiative slice', () => {
       initiativeReducer(mockedInitialState, saveManualCriteria([mockedManualCriteriaItem]))
     ).toBeDefined();
     expect(
-      initiativeReducer(mockedInitialState, saveRewardRule({ _type: 'string', rewardValue: 2 , rewardValueType:RewardValueTypeEnum.PERCENTAGE}))
+      initiativeReducer(
+        mockedInitialState,
+        saveRewardRule({
+          _type: 'string',
+          rewardValue: 2,
+          rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+        })
+      )
     ).toBeDefined();
     expect(initiativeReducer(mockedInitialState, saveMccFilter(mockedMccFilterDTO))).toBeDefined();
     expect(

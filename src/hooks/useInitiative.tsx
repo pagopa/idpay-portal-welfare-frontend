@@ -42,10 +42,10 @@ import {
   RewardLimit,
 } from '../model/Initiative';
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
-import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
+import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 // import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 
 interface MatchParams {
@@ -194,8 +194,9 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
 export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
+    familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
-    rankingEnabled: 'true',
+    rankingEnabled: 'false',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -213,8 +214,14 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryType =
-        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
+        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.NF;
     }
+
+    if (typeof data.familyUnitComposition !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.familyUnitComposition = data.familyUnitComposition;
+    }
+
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';

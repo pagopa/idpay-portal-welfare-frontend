@@ -10,10 +10,11 @@ import {
   setInitiativeId,
 } from '../../../../../redux/slices/initiativeSlice';
 import { createStore } from '../../../../../redux/store';
-import { BeneficiaryTypeEnum, WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import AdmissionCriteria from '../AdmissionCriteria';
 import { IseeTypologyEnum, mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
+import { BeneficiaryTypeEnum } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({

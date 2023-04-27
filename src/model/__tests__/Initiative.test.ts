@@ -10,8 +10,10 @@ import {
 } from '../Initiative';
 import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../api/generated/initiative/InitiativeAdditionalDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 
 const mockedGeneralBody: GeneralInfo = {
   beneficiaryType: BeneficiaryTypeEnum.PF,
@@ -223,7 +225,12 @@ export const mockedInitiative: Initiative = {
       },
     ],
   },
-  rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+  rewardRule: {
+    _type: 'rewardValue',
+    rewardValue: 1,
+    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+  },
   trxRule: {
     mccFilter: { allowedList: true, values: ['string', ''] },
     rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
@@ -461,7 +468,12 @@ test('Test initiative2Initiative', () => {
         },
       ],
     },
-    rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    rewardRule: {
+      _type: 'rewardValue',
+      rewardValue: 1,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    },
     trxRule: {
       mccFilter: { allowedList: true, values: ['string', ''] },
       rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],

@@ -23,8 +23,8 @@ import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { mockedInitiativeStatistics } from '../../../services/__mocks__/initiativeService';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import InitiativeOverview from '../initiativeOverview';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
