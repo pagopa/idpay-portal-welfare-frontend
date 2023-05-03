@@ -14,7 +14,7 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography
+  Typography,
 } from '@mui/material';
 import { itIT } from '@mui/material/locale';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -41,12 +41,12 @@ import {
   initiativePagesTableContainerStyle,
   initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
-// import { useInitiative } from '../../hooks/useInitiative';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
+import { useInitiative } from '../../hooks/useInitiative';
 import SuspensionModal from './SuspensionModal';
 import TransactionDetailModal from './TransactionDetailModal';
 import UserDetailsSummary from './components/UserDetailsSummary';
@@ -70,7 +70,6 @@ const InitiativeUserDetails = () => {
   const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
   const [buttonType, setButtonType] = useState<string>('');
   const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
-  // const [openSnackBar, setOpenSnackBar] = useState(false);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
   const theme = createTheme(itIT);
@@ -88,7 +87,7 @@ const InitiativeUserDetails = () => {
 
   const { id, cf } = (match?.params as MatchParams) || {};
 
-  // useInitiative();
+  useInitiative();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -447,7 +446,13 @@ const InitiativeUserDetails = () => {
         </Box> */}
       </Box>
 
-      <UserDetailsSummary id={id} cf={cf} statusOnb={statusOnb} holderBank={holderBank} setHolderBank={setHolderBank}/>
+      <UserDetailsSummary
+        id={id}
+        cf={cf}
+        statusOnb={statusOnb}
+        holderBank={holderBank}
+        setHolderBank={setHolderBank}
+      />
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>

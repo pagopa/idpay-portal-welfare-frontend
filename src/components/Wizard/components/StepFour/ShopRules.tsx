@@ -92,7 +92,9 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const setLoading = useLoading('GET_TRANSACTION_RULES');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
-  const [rewardType, setRewerdType] = useState<InitiativeRewardTypeEnum>(initiativeRewardTypeSel);
+  const [rewardType, setRewardType] = useState<InitiativeRewardTypeEnum | undefined>(
+    initiativeRewardTypeSel
+  );
 
   useEffect(() => {
     // console.log(initiativeRewardTypeSel);
@@ -502,7 +504,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         code="TYPE"
         action={action}
         rewardType={rewardType}
-        setRewardType={setRewerdType}
+        setRewardType={setRewardType}
         shopRulesToSubmit={shopRulesToSubmit}
         setShopRulesToSubmit={setShopRulesToSubmit}
       />

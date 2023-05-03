@@ -43,10 +43,9 @@ import {
 } from '../model/Initiative';
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
-import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
+import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
 import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
-// import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 
 interface MatchParams {
   id: string;
@@ -69,7 +68,7 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
       ROUTES.INITIATIVE_REFUNDS_DETAIL,
-      // ROUTES.INITIATIVE_USER_DETAILS,
+      ROUTES.INITIATIVE_USER_DETAILS,
     ],
     exact: true,
     strict: false,
@@ -102,8 +101,6 @@ export const useInitiative = () => {
           dispatch(saveManualCriteria(selfDeclarationCriteria));
           if (response.initiativeRewardType) {
             dispatch(setInitiativeRewardType(response.initiativeRewardType));
-          } else {
-            dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
           }
           parseRewardRule(response, dispatch);
           parseThreshold(response, dispatch);

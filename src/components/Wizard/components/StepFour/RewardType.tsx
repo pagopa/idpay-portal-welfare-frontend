@@ -19,7 +19,7 @@ interface Props {
   code: string;
   action: string;
   rewardType: string | undefined;
-  setRewardType: Dispatch<SetStateAction<InitiativeRewardTypeEnum>>;
+  setRewardType: Dispatch<SetStateAction<InitiativeRewardTypeEnum | undefined>>;
   shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
@@ -50,7 +50,7 @@ const RewardType = ({
 
   const formik = useFormik({
     initialValues: {
-      initiativeRewardType: rewardType,
+      initiativeRewardType: rewardType || InitiativeRewardTypeEnum.REFUND,
     },
     validateOnMount: true,
     validateOnChange: true,

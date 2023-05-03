@@ -4,7 +4,6 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
@@ -12,9 +11,11 @@ import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
 import { useAppSelector } from '../../../redux/hooks';
 import {
   initiativeRewardTypeSelector,
+  // initiativeIsPopulatedAndRewardTypeIsRefund,
 } from '../../../redux/slices/initiativeSlice';
 import { getIban, getInstrumentList, getWalletDetail } from '../../../services/intitativeService';
 import PaymentMethodsModal from '../PaymentMethodsModal';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 
 type Props = {
   id: string;
@@ -39,37 +40,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const addError = useErrorDispatcher();
   const initiativeRewardType = useAppSelector(initiativeRewardTypeSelector);
-  //  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
-
-  useEffect(() => {
-    if (
-      initiativeRewardType === InitiativeRewardTypeEnum.REFUND &&
-      typeof id === 'string' &&
-      typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
-    ) {
-      getInstrumentList(id, cf)
-        .then((res) => {
-          const walletInst = res.instrumentList.filter((r) => r.status === 'ACTIVE');
-          setPaymentMethodList([...walletInst]);
-        })
-        .catch((error) =>
-          addError({
-            id: 'GET_WALLET_INSTRUMENT',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting wallet instrument',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          })
-        );
-    }
-  }, [id, cf, statusOnb, initiativeRewardType]);
+  // const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
 
   useEffect(() => {
     if (
@@ -108,7 +79,39 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
   }, [id, cf, statusOnb]);
 
   useEffect(() => {
-    if (typeof iban === 'string' && initiativeRewardType !== InitiativeRewardTypeEnum.DISCOUNT) {
+    if (
+      initiativeRewardType === InitiativeRewardTypeEnum.REFUND &&
+      typeof id === 'string' &&
+      typeof cf === 'string' &&
+      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusEnum.SUSPENDED)
+    ) {
+      getInstrumentList(id, cf)
+        .then((res) => {
+          const walletInst = res.instrumentList.filter(
+            (r: { status: string }) => r.status === 'ACTIVE'
+          );
+          setPaymentMethodList([...walletInst]);
+        })
+        .catch((error) =>
+          addError({
+            id: 'GET_WALLET_INSTRUMENT',
+            blocking: false,
+            error,
+            techDescription: 'An error occurred getting wallet instrument',
+            displayableTitle: t('errors.title'),
+            displayableDescription: t('errors.getDataDescription'),
+            toNotify: true,
+            component: 'Toast',
+            showCloseIcon: true,
+          })
+        );
+    }
+  }, [id, cf, statusOnb, initiativeRewardType]);
+
+  useEffect(() => {
+    if (typeof iban === 'string' && initiativeRewardType === InitiativeRewardTypeEnum.REFUND) {
       getIban(id, cf, iban)
         .then((res) => {
           if (typeof res.iban === 'string') {
