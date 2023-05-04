@@ -804,6 +804,7 @@
       "appIo": "App IO",
       "availableBalance": "Disponibile",
       "balanceToBeRefunded": "Da rimborsare",
+      "totalSpentBySingle": "Speso dal singolo",
       "downloadCsv": "La richiesta di download è stata presa in carico. Non appena il file sarà generato, ti sarà inviato via email.",
       "downloadCsvBtn": "Scarica .csv",
       "eligibleKo": "Idoneo non assegnataro",
