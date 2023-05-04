@@ -93,7 +93,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
   const [rewardType, setRewardType] = useState<InitiativeRewardTypeEnum | undefined>(
-    initiativeRewardTypeSel
+    initiativeRewardTypeSel || InitiativeRewardTypeEnum.REFUND
   );
 
   useEffect(() => {
