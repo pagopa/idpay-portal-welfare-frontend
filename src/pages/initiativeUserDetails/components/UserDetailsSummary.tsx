@@ -261,7 +261,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
       });
     }
 
-    return '';
+    return '-';
   };
 
   return (

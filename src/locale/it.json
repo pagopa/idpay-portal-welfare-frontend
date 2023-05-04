@@ -903,7 +903,8 @@
         "onboardingKo": "Non idoneo",
         "onboardingOk": "Iscritto",
         "onEvaluation": "In attesa",
-        "suspended": "Sospeso"
+        "suspended": "Sospeso",
+        "demanded": "Invitato"
       },
       "subtitle": "Visualizza e gestisci l’elenco dei richiedenti.",
       "table": {
