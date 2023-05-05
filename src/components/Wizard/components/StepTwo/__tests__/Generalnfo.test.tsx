@@ -1,19 +1,19 @@
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
-import { fireEvent, render, screen, cleanup } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Generalnfo from '../Generalnfo';
-import { store } from '../../../../../redux/store';
-import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
-import { GeneralInfo } from '../../../../../model/Initiative';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import {
   BeneficiaryTypeEnum,
   InitiativeGeneralDTO,
 } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
-import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { GeneralInfo } from '../../../../../model/Initiative';
+import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
+import { store } from '../../../../../redux/store';
 import { BASE_ROUTE } from '../../../../../routes';
+import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
+import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import Generalnfo from '../Generalnfo';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -21,25 +21,24 @@ jest.mock('react-i18next', () => ({
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
+
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'https://localhost:3000/portale-enti/nuova-iniziativa',
-    origin: 'https://localhost:3000/portale-enti',
-    pathname: `${BASE_ROUTE}/nuova-iniziativa`,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+const oldWindowLocation = global.window.location;
+
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/nuova-iniziativa`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);

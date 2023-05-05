@@ -10,25 +10,21 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-beforeEach(() => {
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.HOME,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+const oldWindowLocation = global.window.location;
+
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: ROUTES.HOME,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 describe('<SideMenu />', () => {
