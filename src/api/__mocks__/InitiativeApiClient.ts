@@ -6,6 +6,7 @@ import { mockedFile } from '../../services/__mocks__/groupService';
 import {
   mockedBeneficaryStatus,
   mockedExportsPagedResponse,
+  mockedFamilyUnitComposition,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
   mockedGetRankingFileDownload,
@@ -53,6 +54,7 @@ import { ExportListDTO } from '../generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
 import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
 import { OnboardingStatusDTO } from '../generated/initiative/OnboardingStatusDTO';
+import { FamilyUnitCompositionDTO } from '../generated/initiative/FamilyUnitCompositionDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -231,4 +233,10 @@ export const InitiativeApiMocked = {
 
   readmitUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
     new Promise((resolve) => resolve()),
+
+  getFamilyComposition: async (
+    _initiativeId: string,
+    _fiscalCode: string
+  ): Promise<FamilyUnitCompositionDTO> =>
+    new Promise((resolve) => resolve(mockedFamilyUnitComposition)),
 };

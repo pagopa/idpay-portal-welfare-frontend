@@ -259,7 +259,7 @@ export const mapDataToSend = (
       from: trxCountData?.from as number,
       fromIncluded: trxCountData?.fromIncluded || true,
       to: trxCountData?.to as number,
-      toIncluded: trxCountData?.toIncluded || true,
+      toIncluded: trxCountData?.to ? trxCountData?.toIncluded || true : undefined,
     };
     // eslint-disable-next-line functional/immutable-data
     trxRule.trxCount = { ...trxCount };

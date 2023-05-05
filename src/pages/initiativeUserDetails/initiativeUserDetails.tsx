@@ -47,9 +47,13 @@ import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
 import { useInitiative } from '../../hooks/useInitiative';
+import { stepTwoBeneficiaryTypeSelector } from '../../redux/slices/initiativeSlice';
+import { useAppSelector } from '../../redux/hooks';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import SuspensionModal from './SuspensionModal';
 import TransactionDetailModal from './TransactionDetailModal';
 import UserDetailsSummary from './components/UserDetailsSummary';
+import FamilyUnitSummary from './components/FamilyUnitSummary';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -73,6 +77,7 @@ const InitiativeUserDetails = () => {
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
   const theme = createTheme(itIT);
+  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USER_DETAILS],
@@ -453,6 +458,8 @@ const InitiativeUserDetails = () => {
         holderBank={holderBank}
         setHolderBank={setHolderBank}
       />
+
+      {beneficiaryType === BeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>

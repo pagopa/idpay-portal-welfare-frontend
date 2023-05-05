@@ -368,3 +368,5 @@ export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
   state.initiative.refundRule;
 export const initiativeStatusSelector = (state: RootState): string | undefined =>
   state.initiative.status;
+export const initiativeBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum =>
+  state.initiative.generalInfo.beneficiaryType;

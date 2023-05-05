@@ -59,16 +59,18 @@ const TransactionNumberItem = ({
     to: Yup.number()
       .integer(t('validation.integer'))
       .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
+      // .required(t('validation.required'))
       .positive(t('validation.positive'))
       .when('from', (from, schema) => {
         if (from) {
-          return Yup.number()
-            .integer(t('validation.integer'))
-            .typeError(t('validation.numeric'))
-            .required(t('validation.required'))
-            .positive(t('validation.positive'))
-            .min(parseFloat(from) + 1, t('validation.outTransactionNumberLimit'));
+          return (
+            Yup.number()
+              .integer(t('validation.integer'))
+              .typeError(t('validation.numeric'))
+              // .required(t('validation.required'))
+              .positive(t('validation.positive'))
+          );
+          // .min(parseFloat(from) + 1, t('validation.outTransactionNumberLimit'));
         }
         return schema;
       }),
