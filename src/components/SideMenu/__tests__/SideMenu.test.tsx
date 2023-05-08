@@ -96,7 +96,7 @@ describe('<SideMenu />', () => {
     const accordion = screen.getAllByTestId('accordion-click-test');
     fireEvent.click(accordion[0]);
 
-    const initiative = screen.getAllByText('sideMenu.initiativeOveview.title');
+    const initiative = screen.getAllByText('sideMenu.initiativeOverview.title');
     fireEvent.click(initiative[0]);
 
     const ranking = screen.getAllByText('sideMenu.initiativeRanking.title');

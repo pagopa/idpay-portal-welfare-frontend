@@ -553,7 +553,7 @@ const InitiativeRanking = () => {
                       {t('pages.initiativeRanking.table.rankingValue')}
                     </TableCell>
                     <TableCell width="20%">
-                      {t('pages.initiativeRanking.table.criteriaConsensusTimeStamp')}
+                      {t('pages.initiativeRanking.table.criteriaConsensusTimestamp')}
                     </TableCell>
                   </TableRow>
                 </TableHead>

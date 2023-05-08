@@ -149,7 +149,7 @@ export default function SideMenu() {
               <AccordionDetails sx={{ p: 0 }}>
                 <List disablePadding>
                   <SidenavItem
-                    title={t('sideMenu.initiativeOveview.title')}
+                    title={t('sideMenu.initiativeOverview.title')}
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);

@@ -3,7 +3,7 @@
     "back": "Indietro",
     "createNew": "Crea iniziativa",
     "exit": "Esci",
-    "initiativeDetail": "Dettaglio iniziativa",
+    "initiativeDetail": "Dettagli iniziativa",
     "initiativeRanking": "Graduatoria",
     "initiativeRefunds": "Rimborsi",
     "initiativeRefundsDetails": "Dettaglio rimborso",
@@ -11,11 +11,11 @@
     "initiatives": "Iniziative",
     "initiativeUserDetails": "Dettaglio nucleo familiare",
     "initiativeUsers": "Richiedenti",
-    "initiativeUsersRanking": "Graduatoria"
+    "initiativeUsersRanking": "Richiedenti"
   },
   "components": {
     "exitModal": {
-      "body": "Tutte le informazioni che hai inserito andranno perse. \nSe vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi ‘Salva bozza’.",
+      "body": "Tutte le informazioni che hai inserito andranno perse. \nSe vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi “Salva bozza”.",
       "cancelBtn": "Torna indietro",
       "exitBtn": "Esci",
       "title": "Vuoi uscire?"
@@ -49,15 +49,15 @@
           "reimbursementThreshold": "Inserisci l’importo",
           "selectedAccumulatedAmount": "Seleziona il tipo di importo",
           "selectTimeParam": "Seleziona il periodo di tempo",
-          "subtitle": "Inserire qui una descrizione sulle info aggiuntive",
-          "timeParameter": "Dopo un periodo di tempo "
+          "subTitle": "Inserire qui una descrizione sulle info aggiuntive",
+          "timeParameter": "Periodo di tempo"
         },
         "select": {
           "accumulatedAmount": {
             "balanceExhausted": "Al raggiungimento dell’importo massimo",
             "certainThreshold": "Al raggiungimento di un certo importo"
           },
-          "timerParameter": {
+          "timrParameter": {
             "everyDay": "Ogni giorno",
             "everyMonth": "Ogni mese",
             "everyThreeMonths": "Ogni tre mesi",
@@ -71,25 +71,22 @@
       },
       "stepFour": {
         "addNew": "Aggiungi regola",
+        "typology": "Tipologia",
         "form": {
           "addTimeLimitItem": "Aggiungi limite",
           "addTransactionTimeItem": "Aggiungi orario",
           "everybodyExceptSelectItem": "Tutti tranne",
           "fixedPlaceholder": "Valore",
           "friday": "Venerdì",
-          "initiativeRewardType": {
-            "discount": "Iniziativa a sconto",
-            "refund": "Iniziativa a rimborso"
-          },
           "maxReward": "Massimo",
-          "maxSpendingLimit": "Massimo",
           "maxSpendingLimitTooltip": "Per le transazioni di importo superiore, la percentuale di rimborso verrà calcolata sul limite massimo",
+          "maxSpeningLimit": "Massimo",
           "maxTime": "Alle",
           "maxTransactionNumber": "Massimo",
           "maxTransactionNumberTooltip": "Numero massimo di transazioni su cui verrà calcolata la percentuale di rimborso",
           "mccCodes": "Inserisci i codici separati da una virgola",
-          "minSpendingLimit": "Minimo",
-          "minSpendingLimitTooltip": "Le transazioni di importo inferiore verranno scartate",
+          "minSpendingLimitTooltip": "Le transazioni di importo inferiore verranno scartate.",
+          "minSpeningLimit": "Minimo",
           "minTime": "Dalle",
           "minTransactionNumber": "Minimo",
           "minTransactionNumberTooltip": "Numero minimo di transazioni per poter ricevere il rimborso",
@@ -114,20 +111,25 @@
           "trxCountNotPopulatedErrorDescription": "È necessario inserire un limite di spesa",
           "trxCountNotPopulatedErrorTitle": "Hai selezionato un importo fisso",
           "tuesday": "Martedì",
-          "wednesday": "Mercoledì"
+          "wednesday": "Mercoledì",
+
+          "initiativeRewardType": {
+            "refund": "Iniziativa a rimborso",
+            "discount": "Iniziativa a sconto"
+          }
         },
         "mccModal": {
           "addButton": "Aggiorna",
           "deselectAllButtonName": "Deseleziona tutti",
           "searchCodeOrDescription": "Cerca per codice o descrizione",
           "selectAllButtonName": "Seleziona tutti",
-          "subtitle": "Sono i codici usati dai circuiti di pagamento per identificare la tipologia di beni o servizi acquistati.",
+          "subtitle": "Sono i codici usati dai circuiti di pagamento per riconoscere la tipologia di beni o servizi acquistati.",
           "title": "Elenco Merchant Category Code"
         },
         "modal": {
           "ateco": {
             "description": "Ammetti o escludi categorie di esercenti",
-            "title": "Codici ATECO"
+            "title": "Codice ATECO"
           },
           "daysHoursWeek": {
             "description": "Definisci una fascia oraria di validità",
@@ -142,7 +144,7 @@
             "title": "Merchant Category Code"
           },
           "rewardLimit": {
-            "description": "Definisci un massimale ricorrente",
+            "description": "Definisci un massimale",
             "title": "Limite temporale"
           },
           "subtitle": "Definisci come gli assegnatari possono fruire dell’iniziativa e quali sono le transazioni valide.",
@@ -151,15 +153,14 @@
             "title": "Limite di spesa"
           },
           "title": "Aggiungi regola",
-          "trxCount": {
+          "trxcount": {
             "description": "Definisci un minimo o massimo",
             "title": "Numero di transazioni"
           }
         },
-        "rulesAddedTitle": "REGOLE AGGIUNTE",
+        "rulesAddedTitle": "Regole aggiunte",
         "subtitle": "Definisci come gli assegnatari possono fruire dell’iniziativa e quali sono le transazioni valide.",
-        "title": "Regole di spesa",
-        "typology": "Tipologia"
+        "title": "Regole di spesa"
       },
       "stepOne": {
         "form": {
@@ -172,31 +173,31 @@
           "initiativeOnIo": "Eroga l’iniziativa su IO",
           "legalInfo": "Informazioni legali",
           "phone": "Numero di telefono",
-          "privacyPolicyUrl": "Informativa Privacy",
-          "serviceArea": "Area di competenza",
-          "serviceDescription": "Che cosa permette di fare questo servizio?",
+          "privacyPolicyUrl": "Privacy policy",
+          "serviceArea": "Area geografica",
+          "serviceDescription": "Cosa permette di fare questo servizio?",
           "serviceName": "Nome del servizio",
           "serviceScopeLocal": "Locale",
           "serviceScopeNational": "Nazionale",
-          "termsAndConditions": "Termini e condizioni d’uso",
+          "termsAndConditions": "Termini e Condizioni d’uso",
           "tryUrl": "Verifica URL",
           "webUrl": "Indirizzo web"
         },
         "modal": {
           "cancelBtn": "Torna indietro",
           "continueBtn": "Continua",
-          "serviceNotOnIoDescription": "Se vuoi che venga erogata su IO, torna indietro e attiva l’opzione ‘Eroga su IO’.",
-          "serviceNotOnIoTitle": "L’iniziativa non verrà erogata su IO"
+          "serviceNotOnIODescription": "Se vuoi che venga erogata su IO, torna indietro e attiva l’opzione “Eroga su IO”.",
+          "serviceNotOnIOTitle": "L’iniziativa non verrà erogata su IO"
         },
-        "subtitle": "Puoi erogare l’iniziativa tramite l’app IO, le app degli Issuer convenzionati e la Rete Anti Digital-Divide. Su IO verrà configurata come servizio dell’ente.",
+        "subtitle": "Puoi erogare l’iniziativa tramite IO, le app degli Issuer convenzionati e la Rete Anti Digital-Divide. Su IO verrà configurata come servizio dell’ente.",
         "title": "Configurazione del servizio",
         "uploadIcon": {
           "changeIcon": "Sostituisci",
-          "dragAreaLink": "selezionalo dal tuo computer.",
+          "dragAreaLink": "selezionalo dal tuo computer",
           "dragAreaText": "Trascina qui il logo del servizio o",
-          "helperText": "Campo opzionale. Carica un file PNG di 300x300 pixel, con sfondo bianco o trasparente.",
-          "iconIsLoading": "Caricamento in corso",
-          "invalidFileDescription": "Si è verificato un errore. Riprova",
+          "helperText": "Campo opzionale. Inserisci un’immagine in formato PNG, di 300×300 pixel, con sfondo bianco o trasparente.",
+          "IconIsLoading": "Caricamento in corso",
+          "invalidFileDescription": "Si è verificato un errore",
           "invalidFileTitle": "File non valido",
           "invalidFileTypeLogoDescription": "Il file deve essere in formato PNG",
           "overMaxUploadLogoDescription": "La dimensione massima supportata è di 1 MB",
@@ -205,33 +206,26 @@
       },
       "stepThree": {
         "chooseCriteria": {
-          "addManually": "Aggiungi criteri da autodichiarare",
-          "admissionCriteriaAdded": "Criteri PDND aggiunti",
+          "addManually": "Aggiungi criteri manuali",
+          "admissionCriteriaAdded": "Criteri automatici aggiunti",
           "apiKeyConnection": {
             "form": {
               "clientAssertion": "Client Assertion",
               "clientId": "Client ID"
             },
-            "subtitle": "Verranno usate per verificare i criteri PDND.",
+            "subtitle": "Verranno usate per verificare i criteri tramite PDND.",
             "title": "API Key di connessione"
           },
-          "browse": "Sfoglia criteri PDND",
+          "browse": "Sfoglia criteri automatici",
           "form": {
             "addOption": "Aggiungi opzione",
             "age": "Età",
             "between": "Compreso tra",
-            "boolean": "Scelta singola",
+            "boolean": "Sì/No",
             "city": "Città",
             "cityCouncil": "Comune",
             "exact": "Uguale a",
             "is": "È",
-            "iseeDottorato": "Dottorato",
-            "iseeMinorenne": "Minorenni",
-            "iseeOrdinario": "Ordinario",
-            "iseeResidenziale": "Residenza",
-            "iseeSocioSanitario": "Socio sanitario",
-            "iseeTypologyHelpText": "Seleziona in ordine di priorità",
-            "iseeUniversitario": "Universitario",
             "isNot": "Non è",
             "majorOrEqualTo": "Maggiore di o uguale a",
             "majorTo": "Maggiore di",
@@ -243,18 +237,25 @@
             "nation": "Nazione",
             "postalCode": "CAP",
             "province": "Provincia",
-            "rankingOrderAsc": "Vince il valore minore",
-            "rankingOrderDesc": "Vince il valore maggiore",
+            "rankingOrderASC": "Vince il valore minore",
+            "rankingOrderDESC": "Vince il valore maggiore",
             "region": "Regione",
-            "typology": "Tipologia",
             "value": "Valore",
-            "year": "Anno"
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologia",
+            "iseeTypologyHelpText": "In ordine di priorità"
           },
           "iseeNotPopulatedOnRankingErrorDescription": "È obbligatorio per le iniziative che prevedono una graduatoria.",
           "iseeNotPopulatedOnRankingErrorTitle": "Inserisci un valore nel criterio ISEE",
-          "manualCriteriaAdded": "Criteri da autodichiarare aggiunti",
+          "manualCriteriaAdded": "Criteri manuali aggiunti",
           "modal": {
-            "addButton": "Aggiungi criteri da autodichiarare",
+            "addButton": "Aggiungi criteri manuali",
             "birthDate": {
               "authorityLabel": "Ministero dell'Interno",
               "fieldLabel": "Data di nascita"
@@ -268,30 +269,30 @@
               "fieldLabel": "Residenza"
             },
             "searchCriteria": "Cerca criteri",
-            "subtitle": "Questi criteri verranno verificati in automatico tramite la piattaforma PDND Interoperabilità."
+            "subtitle": "Questi criteri verranno verificati in automatico."
           },
           "subtitle": "Chi può partecipare all’iniziativa? Definisci i requisiti dei richiedenti impostando uno o più criteri di idoneità.",
           "title": "Criteri di idoneità"
         },
-        "title": "Criteri di idoneità",
+        "title": "Destinatari",
         "upload": {
           "changeFile": "Sostituisci",
           "dragAreaLink": "selezionalo dal tuo computer.",
-          "dragAreaText": "Trascina qui il file csv con la lista dei Codici Fiscali o",
+          "dragAreaText": "Trascina qui il file .csv con la lista dei Codici Fiscali o",
           "fileIsLoading": "Caricamento in corso",
-          "fileUploadHelpFileLinkLabel": "Scarica l’esempio",
           "fileUploadHelpText": "Non sai come preparare il file?",
+          "fileUuploadHelpFileLinkLabel": "Scarica l’esempio",
           "invalidBeneficiaryNumberDescription": "Aumenta il budget o rimuovi i destinatari in più",
-          "invalidBeneficiaryNumberTitle": "II file contiene troppi Codici Fiscali",
-          "invalidFileDescription": "Si è verificato un errore. Riprova",
+          "invalidBeneficiaryNumberTitle": "Il file contiene troppi Codici Fiscali",
+          "invalidFileDescription": "Si è verificato un errore",
           "invalidFileTitle": "Il file non è valido",
-          "invalidFileTypeDescription": "Il file deve essere in formato csv",
+          "invalidFileTypeDescription": "Il file deve essere in formato .csv",
           "invalidRow": "C’è un errore alla riga {{rowNumber}}",
           "notEmptyDescription": "Il file è vuoto",
-          "overMaxUploadDescription": "La dimensione massima supportata è di 1 MB",
+          "overMaxUploadDescription": "La dimensione massima supportata è di 2 MB",
           "retry": "Carica di nuovo",
-          "subtitle": "Aggiungi i Codici Fiscali dei destinatari dell’iniziativa. Diventeranno automaticamente assegnatari.",
-          "subtitle3": "Vuoi escludere alcuni destinatari dall’iniziativa? Aggiungi i loro Codici Fiscali, così non potranno aderire. Puoi modificare questo file in ogni momento.",
+          "subTitle": "Aggiungi i Codici Fiscali dei destinatari dell’iniziativa. Diventeranno automaticamente assegnatari.",
+          "subTitle3": "Se conosci già i destinatari esclusi dall’iniziativa, aggiungi i loro Codici Fiscali così non potranno effettuare l’adesione. Puoi effettuare modifiche o aggiunte anche in un secondo momento.",
           "title": "Destinatari",
           "title3": "Destinatari esclusi",
           "validFile": "File valido"
@@ -300,21 +301,20 @@
       "stepTwo": {
         "form": {
           "beneficiaryBudget": "A persona o nucleo familiare",
-          "beneficiaryBudgetFamily": "A nucleo familiare",
           "beneficiaryBudgetPerson": "A persona",
+          "beneficiaryBudgetFamily": "A nucleo familiare",
           "beneficiaryKnown": "Conosci i destinatari?",
           "beneficiaryType": "A chi è rivolta?",
           "budget": "Totale",
           "budgetTitle": "Qual è il budget?",
           "endDate": "Al",
-          "endDate-1": "Al",
           "family": "Nucleo familiare",
-          "familyUnitCompositionSubtitleAnpr": "ANPR",
-          "familyUnitCompositionSubtitleIsee": "INPS",
-          "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica",
           "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
-          "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE",
-          "introductionSubtitle": "Descrivi in breve le regole dell’iniziativa: cos’è, a chi è rivolta, come e quando si potrà aderire.",
+          "familyUnitCompositionTitleISEE": "Nucleo familiare su ISEE",
+          "familyUnitCompositionSubitleISEE": "INPS",
+          "familyUnitCompositionTitleANPR": "Stato di famiglia anagrafica",
+          "familyUnitCompositionSubitleANPR": "ANPR",
+          "introductionSubTitle": "Serve a introdurre l’inziativa all’utente che aderisce tramite l’app IO, illustrando in maniera sintetica le regole.",
           "introductionTitle": "Regole dell’iniziativa",
           "introductiveInfoLabel": "Quali sono le regole dell’iniziativa?",
           "manualSelection": "No, imposterò dei criteri di idoneità",
@@ -323,15 +323,14 @@
           "preview": "Vedi anteprima",
           "rankingEndDate": "Al",
           "rankingStartDate": "Dal",
-          "reachedFamilies": "Nuclei raggiungibili",
-          "reachedFamiliesTooltip": "Numero di famiglie raggiungibili dall’iniziativa in base al budget",
+          "reachedFamilies": "Famiglie raggiungibili",
           "reachedUsers": "Persone raggiungibili",
+          "reachedFamiliesTooltip": "Numero di famiglie raggiungibili dall’iniziativa in base al budget",
           "reachedUsersTooltip": "Numero di persone raggiungibili dall’iniziativa in base al budget",
           "requiredItalianIntroduction": "Inserisci prima l’italiano",
           "startDate": "Dal",
-          "startDate-2": "Dal",
-          "taxCodeList": "Si, ho una lista di Codici Fiscali",
-          "timeRangeRankingTitle": "Quando si potrà aderire?",
+          "taxCodeList": "Sì, ho una lista di Codici Fiscali",
+          "timeRangeRankingTitle": "Quando è possibile aderire?",
           "timeRangeTitle": "Quando si potrà fruire dell’iniziativa?",
           "withRanking": "È prevista una graduatoria?",
           "yes": "Sì"
@@ -349,10 +348,10 @@
   "errors": {
     "cantApproveInitiative": "Non è stato possibile approvare l’iniziativa. Riprova",
     "cantDeleteInitiative": "Non è stato possibile eliminare l'iniziativa. Riprova",
-    "cantGetTc": "Non è stato possibile recuperare le informazioni sull'accettazione dei Termini e Condizioni. Riprova",
+    "cantGetTC": "Non è stato possibile recuperare le informazioni sull'accettazione dei termini e condizioni. Riprova",
     "cantPublishInitiative": "Non è stato possibile pubblicare l'iniziativa. Riprova",
     "cantRejectInitiative": "Non è stato possibile rifiutare l'iniziativa. Riprova",
-    "cantSaveTc": "Non è stato possibile salvare l'accettazione dei Termini e Condizioni. Riprova",
+    "cantSaveTC": "Non è stato possibile salvare l'accettazione dei termini e condizioni",
     "contactAdmin": "Contatta l'assistenza",
     "getDataDescription": "Riprova",
     "getFileDataDescription": "Carica di nuovo il file",
@@ -375,11 +374,11 @@
   "pages": {
     "assistance": {
       "exitModal": {
-        "body": "Il team di assistenza non riceverà la tua richiesta."
+        "body": "Il team di Assistenza non riceverà la tua richiesta."
       },
       "form": {
         "message": "Descrivi il tuo problema",
-        "sendBtn": "Invia",
+        "sendBtn": "Iniva",
         "subject": "Oggetto"
       },
       "subtitle": "Compila e invia il modulo. Ti risponderemo al più presto.",
@@ -405,7 +404,7 @@
           "reject": "Rifiuta"
         },
         "modal": {
-          "subtitle": "Se hai dei commenti per l’ente, invia un'e-mail.",
+          "subtitle": "Se hai dei commenti per l’ente, invia una e-mail.",
           "title": "Vuoi rifiutare l’iniziativa?"
         },
         "step1": {
@@ -415,16 +414,16 @@
             "email": "E-mail",
             "legalInfo": "Informazioni legali",
             "mobile": "Numero di telefono",
-            "privacyPolicyUrl": "Informativa Privacy",
-            "serviceArea": "Area di competenza",
+            "privacyPolicyURL": "Privacy Policy",
+            "serviceArea": "Area geografica",
             "serviceAreaLocal": "Locale",
             "serviceAreaNational": "Nazionale",
-            "serviceDeliver": "Canali di erogazione",
+            "serviceDeliver": "Erogazione del servizio",
             "serviceDescription": "Di che iniziativa si tratta?",
             "serviceName": "Nome dell’iniziativa",
-            "serviceNotOnIo": "Non erogata sull’app IO",
-            "serviceOnIo": "App IO",
-            "tosUrl": "Termini e condizioni d’uso",
+            "serviceNotOnIO": "Non erogata su App IO",
+            "serviceOnIO": "App IO",
+            "tosURL": "Termini e condizioni d’uso",
             "webUrl": "Indirizzo web"
           },
           "description": "Descrizione del servizio, informazioni legali e contatti per l’assistenza.",
@@ -433,15 +432,12 @@
         },
         "step2": {
           "content": {
-            "beneficiaryBudget": "A persona singola o nucleo familiare",
-            "beneficiaryKnown": "Conosci i destinatari?",
+            "beneficiaryBudget": "A persona o nucleo familiare",
+            "beneficiaryknown": "Conosci i destinatari?",
             "beneficiaryType": "A chi è rivolta?",
-            "budget": "Budget totale",
+            "budget": "Totale",
             "endDate": "Al",
             "family": "Nucleo familiare",
-            "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica (ANPR)",
-            "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
-            "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE (INPS)",
             "manualSelection": "No, imposterò dei criteri di idoneità",
             "person": "Persona singola",
             "rankingEnabledAnswerNo": "No",
@@ -450,7 +446,10 @@
             "rankingEndDate": "Al",
             "rankingStartDate": "Dal",
             "startDate": "Dal",
-            "taxCodeList": "Sì, ho una lista di Codici Fiscali"
+            "taxCodeList": "Sì, ho una lista di Codici Fiscali",
+            "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
+            "familyUnitCompositionTitleISEE": "Nucleo familiare su ISEE (INPS)",
+            "familyUnitCompositionTitleANPR": "Stato di famiglia anagrafica (ANPR)"
           },
           "description": "Budget totale, periodo di adesione e spesa.",
           "heading": "2",
@@ -464,11 +463,11 @@
             "apiClientTitle": "API Key di connessione",
             "apiKeyClientAssertion": "Client Assertion",
             "apiKeyClientId": "Client ID",
-            "beneficiaryList": "Elenco dei richiedenti",
+            "beneficiaryList": "Elenco dei destinatari",
             "beneficiaryNumber": "Persone raggiungibili",
             "between": "Compreso tra",
-            "birthDate": "Data di nascita",
-            "boolean": "Scelta singola",
+            "birthdate": "Data di nascita",
+            "boolean": "Sì/No",
             "city": "Città",
             "cityCouncil": "Comune",
             "exact": "Uguale a",
@@ -477,15 +476,9 @@
             "fileUploadedStatus": "Esito file caricato",
             "is": "È",
             "isee": "ISEE",
-            "iseeDottorato": "Dottorato",
-            "iseeMinorenne": "Minorenni",
-            "iseeOrdinario": "Ordinario",
-            "iseeResidenziale": "Residenza",
-            "iseeSocioSanitario": "Socio Sanitario",
-            "iseeUniversitario": "Universitario",
             "isNot": "Non è",
-            "majorOrEqualTo": "Maggiore di o uguale a",
-            "majorTo": "Maggiore di",
+            "majorOrEqualTo": "maggiore di o uguale a",
+            "majorTo": "maggiore di",
             "manual": "Criterio #",
             "minorOrEqualTo": "Minore di o uguale a",
             "minorTo": "Minore di",
@@ -500,8 +493,14 @@
             "statusKo": "Fallito",
             "statusLoading": "In corso",
             "statusOk": "Corretto",
-            "typology": "Tipologie ISEE",
-            "year": "Anno"
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologie ISEE"
           },
           "description": "Elenco dei destinatari o criteri di idoneità dei richiedenti.",
           "heading": "3",
@@ -510,7 +509,6 @@
         "step4": {
           "content": {
             "daily": "Al giorno",
-            "discount": "Iniziativa a sconto",
             "everybodyExceptItem": "Tutti tranne",
             "fixedPremium": "Fisso",
             "fixedPremiumLabel": "Importo riconosciuto",
@@ -520,7 +518,6 @@
             "monthly": "Al mese",
             "nobodyExceptItem": "Nessuno tranne",
             "percentageRecognized": "Percentuale riconosciuta",
-            "refund": "Iniziativa a rimborso",
             "rewardRuleFixed": "Fissa",
             "saturday": "Sabato",
             "spentLimit": "Limite di spesa",
@@ -529,13 +526,15 @@
             "thursday": "Giovedì",
             "timeInterval": "Dalle {{minTime}} alle {{maxTime}}",
             "timeLimit": "Limite temporale",
-            "transactionNumber": "Numero di transazioni",
+            "transactionNumber": "Numero transazioni",
             "transactionNumberInterval": "Minimo {{minValue}} - Massimo {{maxValue}}",
             "transactionTime": "Orario della transazione",
             "tuesday": "Martedì",
-            "typology": "Tipologia",
             "wednesday": "Mercoledì",
-            "yearly": "All'anno"
+            "yearly": "All'anno",
+            "typology": "Tipologia",
+            "refund": "Iniziativa a rimborso",
+            "discount": "Iniziativa a sconto"
           },
           "description": "Tipologia e modalità delle transazioni riconosciute.",
           "heading": "4",
@@ -556,7 +555,7 @@
             "initiativeDone": "A iniziativa conclusa",
             "refundThreshold": "Inserisci l’importo",
             "timeParam": "Periodo di tempo",
-            "timeParameter": "Dopo un periodo di tempo"
+            "timeParameter": "Periodo di tempo"
           },
           "description": "Erogazione del rimborso e informazioni aggiuntive.",
           "heading": "5",
@@ -582,7 +581,7 @@
       "search": "Cerca per nome dell'iniziativa",
       "status": {
         "approved": "Approvata",
-        "closed": "Conclusa",
+        "closed": "Terminata",
         "draft": "In bozza",
         "inRevision": "In revisione",
         "published": "In corso",
@@ -605,11 +604,11 @@
         "idCode": "Codice identificativo",
         "initiativeState": "Stato",
         "lastModify": "Ultima modifica",
-        "otherInfo": {
+        "otherinfo": {
           "adhesion": "Periodo di adesione",
           "closed": "Concluso",
           "details": "Vedi dettagli",
-          "expiration": "{{days}} giorni rimanenti",
+          "expiration": " {{days}} giorni rimanenti",
           "oneDayExpiration": " {{days}} giorno rimanente",
           "spend": "Periodo di spesa",
           "start": "Inizia il {{date}}",
@@ -620,43 +619,43 @@
       "modal": {
         "cancel": "Torna indietro",
         "delete": "Elimina",
-        "subtitle": "Tutte le informazioni che hai inserito andranno perse. Se vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi ‘Salva bozza’.",
+        "subtitle": "Tutte le informazioni che hai inserito andranno perse. Se vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi “Salva bozza”.",
         "title": "Vuoi eliminare la bozza?"
       },
       "next": {
         "budgetExhausted": "Budget utilizzato",
         "join": "Hanno aderito",
-        "lastUpdate": "Ultimo aggiornamento",
+        "lastUpdate": "Ultimo aggiornamento: ",
         "modalPublish": {
-          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo ai destinatari un messaggio nell’app IO per invitarli ad aderire. L’operazione è irreversibile.",
-          "initiativeWithoutGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli idonei un messaggio nell’app IO con l’esito. L’operazione è irreversibile. ",
+          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
+          "initiativeWithoutGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Una volta pubblicata, potrai sospenderla in ogni momento.",
           "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO e {{usersNumber}} utenti saranno avvisati tramite un messaggio. L’operazione è irreversibile.",
           "title": "Vuoi pubblicare l’iniziativa?"
         },
         "stats": "Statistiche",
         "status": {
           "approved": "Pubblica",
-          "checkInitiative": "Revisiona",
+          "checkInitiative": "Revisiona l’iniziativa",
           "draft": "Modifica bozza",
           "modify": "Modifica iniziativa",
           "review": "In revisione",
-          "reviewInitiative": "Modifica l’iniziativa in base ai commenti del team di Portale Bonus. Poi, inviala di nuovo in revisione.",
+          "reviewInitiative": "Modifica l’iniziativa in base ai commenti del team di PagoPA. Poi, inviala di nuovo in revisione.",
           "subtitleApproved": "L’iniziativa è stata approvata. Puoi pubblicarla in ogni momento.",
           "subtitleDraft": "Completa la creazione dell’iniziativa e inviala in revisione.",
-          "subtitleModify": "Modifica l’iniziativa in base ai commenti del team di Portale Bonus. Poi, inviala di nuovo in revisione.",
-          "subtitleReview": "Aspetta l’esito della revisione da parte del team di Portale Bonus: lo riceverai via e-mail.",
+          "subtitleModify": "Modifica l’iniziativa in base ai commenti del team di PagoPA. Poi, inviala di nuovo in revisione.",
+          "subtitleReview": "Aspetta l’esito della revisione da parte del team di PagoPA: lo riceverai via e-mail.",
           "waitForPublish": "Hai approvato l’iniziativa. Attendi la pubblicazione da parte dell’ente.",
           "waitForReview": "Attendi che l’ente modifichi l’iniziativa in base ai tuoi commenti e la invii di nuovo in revisione."
         },
         "title": "Attività",
-        "viewUsers": "Vedi tutti"
+        "ViewUsers": "Vedi assegnatari"
       },
-      "snackbar": {
+      "snackBar": {
         "approved": "L’iniziativa verrà comunicata a",
-        "pending": "Stiamo elaborando l’elenco dei richiedenti. Quando sarà pronto, potrai pubblicare l’iniziativa.",
-        "recipients": "destinatari",
+        "pending": "Stiamo elaborando l’elenco dei destinatari. Quando sarà pronto, potrai pubblicare l’iniziativa.",
+        "recipients": "Destinatari",
         "uploadFailed": "Non siamo riusciti a elaborare l’elenco dei destinatari. I nostri tecnici sono al lavoro per risolvere il problema.",
-        "users": "Vedi tutti"
+        "users": "Vedi assegnatari"
       }
     },
     "initiativeRanking": {
@@ -675,26 +674,26 @@
       "noData": "Non c’è ancora una graduatoria per questa iniziativa.",
       "publishedSubtitle": "Pubblicata il {{date}} alle {{hour}}",
       "publishModal": {
-        "alertBtn": "Scarica csv",
-        "alertTitle": "Hai scaricato il csv della graduatoria?",
+        "alertBtn": "Scarica .csv",
+        "alertTitle": "Hai scaricato il .csv della graduatoria?",
         "cancelBtn": "Torna indietro",
         "publishBtn": "Pubblica",
-        "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli idonei un messaggio in app con l’esito. L’operazione è irreversibile.",
+        "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli assegnatari un messaggio nell’app IO con l’esito. L’operazione è irreversibile.",
         "title": "Vuoi pubblicare la graduatoria?"
       },
       "rankingStatus": {
         "notReady": "La graduatoria sarà elaborata al termine del periodo di adesione.",
         "publishBtn": "Pubblica",
-        "published": "Gli idonei hanno ricevuto un messaggio nell’app IO con l’esito.",
+        "published": "Gli assegnatari hanno ricevuto un messaggio nell’app IO con l’esito.",
         "publishedCloseBtn": "Ho capito!",
         "publishingTitle": "Stiamo pubblicando la graduatoria",
-        "readyToBePublishedSubtitle": "Invieremo agli idonei un messaggio nell’app IO con l’esito.",
-        "readyToBePublishedTitle": "La graduatoria con gli esiti è pronta per la pubblicazione."
+        "readyToBePublishedSubtitle": "Invieremo agli assegnatari un messaggio nell’app IO con l’esito.",
+        "readyToBePublishedTitle": "La graduatoria con gli esiti è pronta per la pubblicazione"
       },
-      "subtitle": "Vedi la lista dei richiedenti organizzata in base ai criteri di idoneità.",
+      "subtitle": "Vedi la lista dei richiedenti suddivisa per idoneità e organizzata in base ai criteri di idoneità.",
       "table": {
         "beneficiary": "Richiedenti",
-        "criteriaConsensusTimestamp": "Data e ora",
+        "criteriaConsensusTimeStamp": "Data e ora",
         "ranking": "Posizione",
         "rankingValue": "ISEE"
       },
@@ -718,7 +717,7 @@
         "partial": "Esiti parziali ({{percentage}}%)",
         "partialNoPerc": "Esiti parziali"
       },
-      "subtitle": "Visualizza e gestisci i rimborsi dell’iniziativa.",
+      "subtitle": "Visualizza e gestisci i rimborsi dell’iniziativa",
       "table": {
         "amount": "Importo",
         "creationDate": "Creata il",
@@ -736,9 +735,9 @@
       }
     },
     "initiativeRefundsDetails": {
-      "downloadBtn": "Scarica csv",
+      "downloadBtn": "Scarica .csv",
       "form": {
-        "cro": "Inserisci il CRO",
+        "cro": "Inserisci CRO",
         "filterBtn": "Filtra",
         "outcome": "Esito",
         "resetFiltersBtn": "Rimuovi filtri"
@@ -762,12 +761,13 @@
         "percentageSuccess": "Successo",
         "status": "Stato",
         "totalOrders": "Totale ordine",
-        "totalRefunds": "Rimborsato",
+        "totalRefunds": "Totale rimborsato",
         "totalWarrant": "Totale mandati"
       },
       "status": {
         "done": "Eseguito",
-        "failed": "Fallito"
+        "failed": "Fallito",
+        "onEvaluation": "In attesa"
       },
       "table": {
         "amount": "Importo",
@@ -780,15 +780,15 @@
       "uploadPaper": {
         "changeFile": "Sostituisci file",
         "dragAreaLink": "selezionalo dal tuo computer.",
-        "dragAreaText": "Trascina qui il file zip con la lista degli esiti o",
+        "dragAreaText": "Trascina qui il file .zip contenente la lista degli esiti o ",
         "fileIsLoading": "Caricamento in corso",
         "fileIsOnEvaluation": "Stiamo elaborando il file: quando è pronto, te lo faremo sapere via e-mail.",
-        "fileUploadHelpFileLinkLabel": "Scarica l'esempio",
         "fileUploadHelpText": "Non sai come preparare il file?",
+        "fileUuploadHelpFileLinkLabel": "Scarica l'esempio",
         "findOut": "Scopri di più",
-        "invalidFileDescription": "Si è verificato un errore. Riprova",
+        "invalidFileDescription": "Si è verificato un errore",
         "invalidFileTitle": "Il file non è valido",
-        "invalidFileTypeDescription": "Il file deve essere in formato zip",
+        "invalidFileTypeDescription": "Il file deve essere in formato .zip",
         "overMaxUploadDescription": "La dimensione massima supportata è di 175 MB",
         "rewardsAdded": "{{x}} esiti aggiunti",
         "rewardsResulted": "{{x}} esiti trovati",
@@ -799,21 +799,19 @@
       }
     },
     "initiativeUserDetails": {
-      "addedBy": "Aggiunto da",
-      "alerts": "AVVISI",
+      "addedBy": "Aggiunto tramite",
+      "alerts": "avvisi",
       "appIo": "App IO",
       "availableBalance": "Disponibile",
       "balanceToBeRefunded": "Da rimborsare",
-      "downloadCsv": "Stiamo elaborando il file. A breve riceverai un’e-mail con il link per scaricarlo. ",
-      "downloadCsvBtn": "Scarica csv",
-      "eligibleKo": "Idoneo non assegnatario",
-      "eligibleKoDescription": "Il richiedente possiede i requisiti dell'iniziativa, ma non è tra gli assegnatari.",
-      "excludeForever": "Escludi definitivamente",
-      "familyUnitCompositionTitle": "Nucleo familiare di appartenenza",
-      "familyUnitTitle": "Nucleo familiare di appartanenza",
+      "totalSpentBySingle": "Speso dal singolo",
+      "downloadCsv": "La richiesta di download è stata presa in carico. Non appena il file sarà generato, ti sarà inviato via email.",
+      "downloadCsvBtn": "Scarica .csv",
+      "eligibleKo": "Idoneo non assegnataro",
+      "eligibleKoDescription": "Il richiedente possiede i requisiti per l’adesione, ma non è tra gli assegnatari.",
+      "excludeForever": "Escludi per sempre",
       "filterEvent": "Filtra per evento",
-      "fiscalCode": "Codice fiscale",
-      "historyState": "Eventi",
+      "historyState": "Storico eventi",
       "iban": "IBAN associato",
       "initiativeState": "Dettaglio del richiedente",
       "issuer": "Issuer",
@@ -822,11 +820,11 @@
       "noData": "Non ci sono ancora eventi per questo richiedente.",
       "onboardingKo": "Non idoneo",
       "onboardingKoDescription": "Il richiedente non possiede i requisiti per questa iniziativa.",
-      "onboardingSuspendedDescription": "Questo assegnatario è sospeso. Le transazioni effettuate durante la sospensione non saranno conteggiate.",
+      "onboardingSuspendedDescription": "Questo richiedente è sospeso. Le transazioni effettuate durante la sospensione non vengono conteggiate. ",
       "operationTypes": {
-        "addIban": "Aggiunta IBAN",
-        "addInstrument": "Aggiunta metodo",
-        "deleteInstrument": "Eliminazione metodo",
+        "addIban": "Aggiunto IBAN",
+        "addInstrument": "Aggiunto metodo",
+        "deleteInstrument": "Eliminato metodo",
         "onboarding": "Adesione all’iniziativa",
         "paidRefund": "Rimborso",
         "readmitted": "Riammissione",
@@ -860,7 +858,7 @@
         "dateAndHour": "Data e ora",
         "event": "Evento",
         "toRefund": "Da rimborsare",
-        "totExpense": "Speso"
+        "totExpense": "Totale spesa"
       },
       "transactionDetail": {
         "acquirerTransactionId": "ID transazione Acquirer",
@@ -875,17 +873,16 @@
         "paymentMethod": "Metodo di pagamento",
         "positiveResult": "Eseguito",
         "result": "Esito",
-        "totExpense": "Totale speso"
+        "totExpense": "Totale spesa"
       },
       "unsubscribed": "Disiscritto",
       "updatedOn": "Aggiornato il"
     },
     "initiativeUsers": {
       "form": {
-        "all": "Tutti",
+        "all": "Tutti gli stati",
         "filterBtn": "Filtra",
         "from": "Da",
-        "from-1": "Dal",
         "notSuitable": "Non idoneo",
         "registered": "Iscritto",
         "resetFiltersBtn": "Rimuovi filtri",
@@ -893,7 +890,6 @@
         "status": "Stato",
         "suitable": "Idoneo",
         "to": "A",
-        "to-1": "Al",
         "waiting": "In attesa"
       },
       "noData": "Non c’è ancora un elenco richiedenti per questa iniziativa.",
@@ -907,7 +903,8 @@
         "onboardingKo": "Non idoneo",
         "onboardingOk": "Iscritto",
         "onEvaluation": "In attesa",
-        "suspended": "Sospeso"
+        "suspended": "Sospeso",
+        "demanded": "Invitato"
       },
       "subtitle": "Visualizza e gestisci l’elenco dei richiedenti.",
       "table": {
@@ -916,10 +913,10 @@
         "updateStatusDate": "Data e ora"
       },
       "title": "Richiedenti",
-      "titleRanking": "Graduatoria"
+      "titleRanking": "Richiedenti"
     },
     "newInitiative": {
-      "subtitle": "Compila i campi e invia l’iniziativa in revisione. Potrai pubblicarla dopo l’approvazione del team di Portale Bonus.",
+      "subtitle": "Compila i campi e invia l’iniziativa in revisione. Potrai pubblicarla dopo l’approvazione del team di PagoPA.",
       "title": "Crea una nuova iniziativa"
     },
     "thankyouPage": {
@@ -930,11 +927,11 @@
   },
   "roles": {
     "admin": "Amministratore",
-    "incaricato-ente-creditore": "Amministratore ente creditore",
-    "ope_base": "Operatore Portale Bonus",
-    "pagopa_admin": "Amministratore Portale Bonus",
-    "referente-dei-pagamenti": "Amministratore dei pagamenti",
-    "referente-legale": "Rappresentante legale"
+    "incaricato-ente-creditore": "Incaricato Ente Creditore",
+    "ope_base": "Operatore",
+    "pagopa_admin": "Operatore PagoPA",
+    "referente-dei-pagamenti": "Referente Dei Pagamenti",
+    "referente-legale": "Referente Legale"
   },
   "session": {
     "expired": {
@@ -949,7 +946,7 @@
     "initiativeList": {
       "title": "Iniziative"
     },
-    "initiativeOverview": {
+    "initiativeOveview": {
       "title": "Panoramica"
     },
     "initiativeRanking": {
@@ -959,7 +956,7 @@
       "title": "Rimborsi"
     },
     "initiativeUsers": {
-      "rankingTitle": "Graduatoria",
+      "rankingTitle": "Richiedenti",
       "title": "Richiedenti"
     },
     "newInitiative": {
@@ -998,8 +995,8 @@
     "maxServiceNameChar": "Scrivi massimo 50 caratteri",
     "maxTwoHundred": "Scrivi massimo 200 caratteri",
     "maxValue": "Il valore deve essere inferiore o uguale a {{value}}",
-    "minOne": "Inserisci un valore maggiore o uguale a {{value}}",
-    "notValidMccList": "Alcuni valori non sono validi",
+    "minOne": "Inserisci un valore maggiore o uguale a 1",
+    "notValidMccLis": "Alcuni valori non sono validi",
     "numeric": "Inserisci un numero",
     "outBudgetPerPerson": "Il budget a persona deve essere inferiore al budget totale",
     "outDateTo": "La data di fine deve essere successiva a quella di inizio",

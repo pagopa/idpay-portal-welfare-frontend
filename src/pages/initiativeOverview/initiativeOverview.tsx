@@ -454,7 +454,7 @@ const InitiativeOverview = () => {
             }
             data-testid="view-users-test"
           >
-            {t('pages.initiativeOverview.next.ViewUsers')}
+            {t('pages.initiativeOverview.next.viewUsers')}
           </Button>
         </Box>
       </>

@@ -48,13 +48,14 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
             // eslint-disable-next-line react/jsx-no-bind
             setCriteriaToSubmit={setCriteriaToSubmit}
             rankingEnabled={'true'}
+            beneficiaryType={undefined}
           />
         </Provider>
       );
       const iseeRelationSelect = screen.getByTestId('isee-realtion-select') as HTMLSelectElement;
       const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
       const menuASC = await waitFor(() => {
-        return screen.getByText('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC');
+        return screen.getByText('components.wizard.stepThree.chooseCriteria.form.rankingOrderAsc');
       });
       const rankingBtn = await waitFor(() => {
         return screen.getByTestId('ranking-button-test');
@@ -106,6 +107,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
             //
           }}
           rankingEnabled={undefined}
+          beneficiaryType={undefined}
         />
       );
     });
@@ -132,6 +134,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
           //
         }}
         rankingEnabled={'false'}
+        beneficiaryType={undefined}
       />
     );
 

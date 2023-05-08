@@ -120,8 +120,8 @@ export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesMod
         case 'TRXCOUNT':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.trxcount.title'),
-            i18n.t('components.wizard.stepFour.modal.trxcount.description'),
+            i18n.t('components.wizard.stepFour.modal.trxCount.title'),
+            i18n.t('components.wizard.stepFour.modal.trxCount.description'),
             true
           );
         case 'REWARDLIMIT':

@@ -41,9 +41,9 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {initiativeDetail.generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
-                ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleISEE')
+                ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleIsee')
                 : t(
-                    'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleANPR'
+                    'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleAnpr'
                   )}
             </Typography>
           </>

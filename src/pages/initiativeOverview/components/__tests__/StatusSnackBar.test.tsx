@@ -86,7 +86,7 @@ describe('<StatusSnacBar />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const pending = screen.getByText('pages.initiativeOverview.snackBar.pending');
+    const pending = screen.getByText('pages.initiativeOverview.snackbar.pending');
     expect(pending).toBeInTheDocument();
   });
 

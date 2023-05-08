@@ -49,16 +49,16 @@ const FamilyUnitSummary = ({ id, cf }: Props) => {
       }}
     >
       <Box sx={{ gridColumn: 'span 12', mb: 2 }}>
-        <Typography variant="h6">{t('pages.initiativeUserDetails.initiativeState')}</Typography>
+        <Typography variant="h6">
+          {t('pages.initiativeUserDetails.familyUnitCompositionTitle')}
+        </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', height: 'auto' }}>
         <Box sx={{ width: '100%', height: '100%' }}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell width="25%">
-                  {t('pages.initiativeUserDetails.table.dateAndHour')}
-                </TableCell>
+                <TableCell width="25%">{t('pages.initiativeUserDetails.fiscalCode')}</TableCell>
                 <TableCell width="25%"></TableCell>
                 <TableCell width="25%"></TableCell>
                 <TableCell width="25%"></TableCell>

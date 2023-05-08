@@ -189,7 +189,7 @@ const InitiativeRefundsOutcome = () => {
             variant="body2"
             sx={{ fontSize: '0.875rem', fontWeight: 600 }}
           >
-            {t('pages.initiativeRefundsOutcome.uploadPaper.fileUuploadHelpFileLinkLabel')}
+            {t('pages.initiativeRefundsOutcome.uploadPaper.fileUploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText> */}
       </Box>

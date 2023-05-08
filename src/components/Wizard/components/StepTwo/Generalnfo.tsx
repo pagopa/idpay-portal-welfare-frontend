@@ -489,10 +489,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 label={
                   <div>
                     <Typography>
-                      {t('components.wizard.stepTwo.form.familyUnitCompositionTitleISEE')}
+                      {t('components.wizard.stepTwo.form.familyUnitCompositionTitleIsee')}
                     </Typography>
                     <Typography variant="caption" display="block" gutterBottom>
-                      {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleISEE')}
+                      {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleIsee')}
                     </Typography>
                   </div>
                 }
@@ -506,10 +506,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   label={
                     <div>
                       <Typography color="#A2ADB8">
-                        {t('components.wizard.stepTwo.form.familyUnitCompositionTitleANPR')}
+                        {t('components.wizard.stepTwo.form.familyUnitCompositionTitleAnpr')}
                       </Typography>
                       <Typography color="#A2ADB8" variant="caption" display="block" gutterBottom>
-                        {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleANPR')}
+                        {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleAnpr')}
                       </Typography>
                     </div>
                   }

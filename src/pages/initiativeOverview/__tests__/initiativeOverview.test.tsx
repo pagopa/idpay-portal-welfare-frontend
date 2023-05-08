@@ -252,7 +252,7 @@ describe('<InitiativeOverview />', (injectedHistory?: ReturnType<typeof createMe
     store.dispatch(setStatus('PUBLISHED'));
     store.dispatch(setInitiativeId(mockedInitiativeId));
 
-    const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
+    const viewUsers = screen.getByText(/pages.initiativeOverview.next.viewUsers/);
     fireEvent.click(viewUsers);
   });
 

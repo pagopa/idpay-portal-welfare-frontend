@@ -153,7 +153,7 @@ const InitiativeUsers = () => {
       case BeneficiaryStateEnum.SUSPENDED:
         return <Chip label={t('pages.initiativeUsers.status.suspended')} color="warning" />;
       case BeneficiaryStateEnum.DEMANDED:
-        return <Chip label={t('pages.initiativeUsers.status.demanded')} color="default" />;
+        return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       default:
         return null;
     }

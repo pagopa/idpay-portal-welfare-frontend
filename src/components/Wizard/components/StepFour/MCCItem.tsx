@@ -104,7 +104,7 @@ const MCCItem = ({
     allowedList: Yup.string().required(t('validation.required')),
     values: Yup.string()
       .required(t('validation.required'))
-      .test('valid-mccCode-values', t('validation.notValidMccLis'), function (val) {
+      .test('valid-mccCode-values', t('validation.notValidMccList'), function (val) {
         if (val && val.length > 0) {
           const mccCodesValue = val.replace(/\W+/g, ' ').trim();
           const mccCodesArr = mccCodesValue.split(' ');

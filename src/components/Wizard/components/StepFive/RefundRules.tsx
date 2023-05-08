@@ -379,19 +379,19 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                 }}
               >
                 <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
-                  {t('components.wizard.stepFive.select.timrParameter.initiativeDone')}
+                  {t('components.wizard.stepFive.select.timerParameter.initiativeDone')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.DAILY} data-testid="every-day">
-                  {t('components.wizard.stepFive.select.timrParameter.everyDay')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyDay')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.WEEKLY} data-testid="every-week">
-                  {t('components.wizard.stepFive.select.timrParameter.everyWeek')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyWeek')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.MONTHLY} data-testid="every-month">
-                  {t('components.wizard.stepFive.select.timrParameter.everyMonth')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyMonth')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.QUARTERLY} data-testid="every-three-months">
-                  {t('components.wizard.stepFive.select.timrParameter.everyThreeMonths')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyThreeMonths')}
                 </MenuItem>
               </Select>
               <FormHelperText
@@ -420,7 +420,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
             }}
             id="import-time-label"
           >
-            {t('components.wizard.stepFive.form.subTitle')}
+            {t('components.wizard.stepFive.form.subtitle')}
           </FormLabel>
         </FormControl>
 
