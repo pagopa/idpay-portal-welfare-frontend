@@ -1,26 +1,53 @@
 {
-  "breadcrumbs": {
-    "back": "Indietro",
-    "createNew": "Crea iniziativa",
-    "exit": "Esci",
-    "initiativeDetail": "Dettaglio iniziativa",
-    "initiativeRanking": "Graduatoria",
-    "initiativeRefunds": "Rimborsi",
-    "initiativeRefundsDetails": "Dettaglio rimborso",
-    "initiativeRefundsOutcome": "Esiti",
-    "initiatives": "Iniziative",
-    "initiativeUserDetails": "Dettaglio nucleo familiare",
-    "initiativeUsers": "Richiedenti",
-    "initiativeUsersRanking": "Graduatoria"
-  },
   "components": {
-    "exitModal": {
-      "body": "Tutte le informazioni che hai inserito andranno perse. \nSe vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi ‘Salva bozza’.",
-      "cancelBtn": "Torna indietro",
-      "exitBtn": "Esci",
-      "title": "Vuoi uscire?"
-    },
     "wizard": {
+      "stepTwo": {
+        "form": {
+          "rankingStartDate": "Dal",
+          "rankingEndDate": "Al",
+          "endDate-1": "Al",
+          "startDate-2": "Dal",
+          "beneficiaryBudgetFamily": "A nucleo familiare",
+          "beneficiaryBudgetPerson": "A persona",
+          "beneficiaryBudget": "A persona o nucleo familiare",
+          "beneficiaryKnown": "Conosci i destinatari?",
+          "beneficiaryType": "A chi è rivolta?",
+          "budget": "Totale",
+          "budgetTitle": "Qual è il budget?",
+          "endDate": "Al",
+          "family": "Nucleo familiare",
+          "introductionSubtitle": "Descrivi in breve le regole dell’iniziativa: cos’è, a chi è rivolta, come e quando si potrà aderire.",
+          "introductionTitle": "Regole dell’iniziativa",
+          "introductiveInfoLabel": "Quali sono le regole dell’iniziativa?",
+          "manualSelection": "No, imposterò dei criteri di idoneità",
+          "no": "No",
+          "person": "Persona singola",
+          "preview": "Vedi anteprima",
+          "reachedUsers": "Persone raggiungibili",
+          "reachedUsersTooltip": "Numero di persone raggiungibili dall’iniziativa in base al budget",
+          "requiredItalianIntroduction": "Inserisci prima l’italiano",
+          "startDate": "Dal",
+          "taxCodeList": "Si, ho una lista di Codici Fiscali",
+          "timeRangeRankingTitle": "Quando si potrà aderire?",
+          "timeRangeTitle": "Quando si potrà fruire dell’iniziativa?",
+          "withRanking": "È prevista una graduatoria?",
+          "yes": "Sì",
+          "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
+          "reachedFamiliesTooltip": "Numero di famiglie raggiungibili dall’iniziativa in base al budget",
+          "familyUnitCompositionSubtitleAnpr": "ANPR",
+          "familyUnitCompositionSubtitleIsee": "INPS",
+          "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica",
+          "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE",
+          "reachedFamilies": "Nuclei raggiungibili"
+        },
+        "previewModal": {
+          "alertDescription": "Ecco come si visualizzeranno le regole dell’iniziativa su IO.",
+          "checkGuide": "Dubbi? Vai al manuale",
+          "closeBtn": "Chiudi",
+          "title": "Anteprima"
+        },
+        "title": "Informazioni generali"
+      },
       "common": {
         "buttons": {
           "back": "Indietro",
@@ -47,8 +74,8 @@
           "idCodeBalance": "Codice identificativo (opzionale)",
           "radioQuestion": "Quando vuoi erogare il rimborso?",
           "reimbursementThreshold": "Inserisci l’importo",
-          "selectedAccumulatedAmount": "Seleziona il tipo di importo",
           "selectTimeParam": "Seleziona il periodo di tempo",
+          "selectedAccumulatedAmount": "Seleziona il tipo di importo",
           "subtitle": "Inserire qui una descrizione sulle info aggiuntive",
           "timeParameter": "Dopo un periodo di tempo "
         },
@@ -75,19 +102,18 @@
           "addTimeLimitItem": "Aggiungi limite",
           "addTransactionTimeItem": "Aggiungi orario",
           "everybodyExceptSelectItem": "Tutti tranne",
-          "fixedPlaceholder": "Valore",
           "friday": "Venerdì",
           "initiativeRewardType": {
             "discount": "Iniziativa a sconto",
             "refund": "Iniziativa a rimborso"
           },
+          "mccCodes": "Inserisci i codici separati da una virgola",
           "maxReward": "Massimo",
           "maxSpendingLimit": "Massimo",
           "maxSpendingLimitTooltip": "Per le transazioni di importo superiore, la percentuale di rimborso verrà calcolata sul limite massimo",
           "maxTime": "Alle",
           "maxTransactionNumber": "Massimo",
           "maxTransactionNumberTooltip": "Numero massimo di transazioni su cui verrà calcolata la percentuale di rimborso",
-          "mccCodes": "Inserisci i codici separati da una virgola",
           "minSpendingLimit": "Minimo",
           "minSpendingLimitTooltip": "Le transazioni di importo inferiore verranno scartate",
           "minTime": "Dalle",
@@ -100,6 +126,13 @@
           "rewardLimitMonthly": "Al mese",
           "rewardLimitYearly": "All'anno",
           "saturday": "Sabato",
+          "selectFromList": "Sfoglia dall'elenco",
+          "sunday": "Domenica",
+          "thursday": "Giovedì",
+          "timeFormatTooltip": "Usa il formato hh:mm",
+          "tuesday": "Martedì",
+          "wednesday": "Mercoledì",
+          "fixedPlaceholder": "Valore",
           "select": {
             "selectedAccumulatedAmount": {
               "fixedPremium": "Fisso",
@@ -107,14 +140,8 @@
             }
           },
           "selectedAccumulatedAmount": "Importo riconosciuto",
-          "selectFromList": "Sfoglia dall'elenco",
-          "sunday": "Domenica",
-          "thursday": "Giovedì",
-          "timeFormatTooltip": "Usa il formato hh:mm",
           "trxCountNotPopulatedErrorDescription": "È necessario inserire un limite di spesa",
-          "trxCountNotPopulatedErrorTitle": "Hai selezionato un importo fisso",
-          "tuesday": "Martedì",
-          "wednesday": "Mercoledì"
+          "trxCountNotPopulatedErrorTitle": "Hai selezionato un importo fisso"
         },
         "mccModal": {
           "addButton": "Aggiorna",
@@ -205,16 +232,16 @@
       },
       "stepThree": {
         "chooseCriteria": {
-          "addManually": "Aggiungi criteri da autodichiarare",
-          "admissionCriteriaAdded": "Criteri PDND aggiunti",
           "apiKeyConnection": {
             "form": {
-              "clientAssertion": "Client Assertion",
-              "clientId": "Client ID"
+              "clientId": "Client ID",
+              "clientAssertion": "Client Assertion"
             },
             "subtitle": "Verranno usate per verificare i criteri PDND.",
             "title": "API Key di connessione"
           },
+          "addManually": "Aggiungi criteri da autodichiarare",
+          "admissionCriteriaAdded": "Criteri PDND aggiunti",
           "browse": "Sfoglia criteri PDND",
           "form": {
             "addOption": "Aggiungi opzione",
@@ -225,13 +252,6 @@
             "cityCouncil": "Comune",
             "exact": "Uguale a",
             "is": "È",
-            "iseeDottorato": "Dottorato",
-            "iseeMinorenne": "Minorenni",
-            "iseeOrdinario": "Ordinario",
-            "iseeResidenziale": "Residenza",
-            "iseeSocioSanitario": "Socio sanitario",
-            "iseeTypologyHelpText": "Seleziona in ordine di priorità",
-            "iseeUniversitario": "Universitario",
             "isNot": "Non è",
             "majorOrEqualTo": "Maggiore di o uguale a",
             "majorTo": "Maggiore di",
@@ -246,9 +266,16 @@
             "rankingOrderAsc": "Vince il valore minore",
             "rankingOrderDesc": "Vince il valore maggiore",
             "region": "Regione",
-            "typology": "Tipologia",
             "value": "Valore",
-            "year": "Anno"
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio sanitario",
+            "iseeTypologyHelpText": "Seleziona in ordine di priorità",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologia"
           },
           "iseeNotPopulatedOnRankingErrorDescription": "È obbligatorio per le iniziative che prevedono una graduatoria.",
           "iseeNotPopulatedOnRankingErrorTitle": "Inserisci un valore nel criterio ISEE",
@@ -296,54 +323,13 @@
           "title3": "Destinatari esclusi",
           "validFile": "File valido"
         }
-      },
-      "stepTwo": {
-        "form": {
-          "beneficiaryBudget": "A persona o nucleo familiare",
-          "beneficiaryBudgetFamily": "A nucleo familiare",
-          "beneficiaryBudgetPerson": "A persona",
-          "beneficiaryKnown": "Conosci i destinatari?",
-          "beneficiaryType": "A chi è rivolta?",
-          "budget": "Totale",
-          "budgetTitle": "Qual è il budget?",
-          "endDate": "Al",
-          "endDate-1": "Al",
-          "family": "Nucleo familiare",
-          "familyUnitCompositionSubtitleAnpr": "ANPR",
-          "familyUnitCompositionSubtitleIsee": "INPS",
-          "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica",
-          "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
-          "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE",
-          "introductionSubtitle": "Descrivi in breve le regole dell’iniziativa: cos’è, a chi è rivolta, come e quando si potrà aderire.",
-          "introductionTitle": "Regole dell’iniziativa",
-          "introductiveInfoLabel": "Quali sono le regole dell’iniziativa?",
-          "manualSelection": "No, imposterò dei criteri di idoneità",
-          "no": "No",
-          "person": "Persona singola",
-          "preview": "Vedi anteprima",
-          "rankingEndDate": "Al",
-          "rankingStartDate": "Dal",
-          "reachedFamilies": "Nuclei raggiungibili",
-          "reachedFamiliesTooltip": "Numero di famiglie raggiungibili dall’iniziativa in base al budget",
-          "reachedUsers": "Persone raggiungibili",
-          "reachedUsersTooltip": "Numero di persone raggiungibili dall’iniziativa in base al budget",
-          "requiredItalianIntroduction": "Inserisci prima l’italiano",
-          "startDate": "Dal",
-          "startDate-2": "Dal",
-          "taxCodeList": "Si, ho una lista di Codici Fiscali",
-          "timeRangeRankingTitle": "Quando si potrà aderire?",
-          "timeRangeTitle": "Quando si potrà fruire dell’iniziativa?",
-          "withRanking": "È prevista una graduatoria?",
-          "yes": "Sì"
-        },
-        "previewModal": {
-          "alertDescription": "Ecco come si visualizzeranno le regole dell’iniziativa su IO.",
-          "checkGuide": "Dubbi? Vai al manuale",
-          "closeBtn": "Chiudi",
-          "title": "Anteprima"
-        },
-        "title": "Informazioni generali"
       }
+    },
+    "exitModal": {
+      "body": "Tutte le informazioni che hai inserito andranno perse. \nSe vuoi riprendere la compilazione dell’iniziativa in un secondo momento, torna indietro e premi ‘Salva bozza’.",
+      "cancelBtn": "Torna indietro",
+      "exitBtn": "Esci",
+      "title": "Vuoi uscire?"
     }
   },
   "errors": {
@@ -395,6 +381,89 @@
       "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
       "title": "Iniziative"
     },
+    "initiativeUserDetails": {
+      "addedBy": "Aggiunto da",
+      "alerts": "AVVISI",
+      "appIo": "App IO",
+      "availableBalance": "Disponibile",
+      "balanceToBeRefunded": "Da rimborsare",
+      "downloadCsv": "Stiamo elaborando il file. A breve riceverai un’e-mail con il link per scaricarlo. ",
+      "downloadCsvBtn": "Scarica csv",
+      "eligibleKo": "Idoneo non assegnatario",
+      "eligibleKoDescription": "Il richiedente possiede i requisiti dell'iniziativa, ma non è tra gli assegnatari.",
+      "excludeForever": "Escludi definitivamente",
+      "filterEvent": "Filtra per evento",
+      "historyState": "Eventi",
+      "iban": "IBAN associato",
+      "initiativeState": "Dettaglio del richiedente",
+      "issuer": "Issuer",
+      "missingIban": "Manca l’IBAN",
+      "missingPaymentMethod": "Manca il metodo di pagamento",
+      "noData": "Non ci sono ancora eventi per questo richiedente.",
+      "onboardingKo": "Non idoneo",
+      "onboardingKoDescription": "Il richiedente non possiede i requisiti per questa iniziativa.",
+      "onboardingSuspendedDescription": "Questo assegnatario è sospeso. Le transazioni effettuate durante la sospensione non saranno conteggiate.",
+      "operationTypes": {
+        "readmitted": "Riammissione",
+        "suspended": "Sospensione",
+        "addIban": "Aggiunta IBAN",
+        "addInstrument": "Aggiunta metodo",
+        "deleteInstrument": "Eliminazione metodo",
+        "onboarding": "Adesione all’iniziativa",
+        "paidRefund": "Rimborso",
+        "rejectedAddInstrument": "Errore aggiunta metodo",
+        "rejectedDeleteInstrument": "Errore eliminazione metodo",
+        "rejectedRefund": "Errore rimborso",
+        "reversal": "Storno",
+        "transaction": "Pagamento POS"
+      },
+      "paymentMethod": "Metodi di pagamento aggiunti",
+      "readmit": "Riammetti",
+      "refundDetail": "Dati per il rimborso",
+      "refundedBalance": "Rimborsato",
+      "summary": "RIEPILOGO",
+      "suspended": "Sospeso",
+      "table": {
+        "dateAndHour": "Data e ora",
+        "event": "Evento",
+        "toRefund": "Da rimborsare",
+        "totExpense": "Speso"
+      },
+      "transactionDetail": {
+        "acquirerTransactionId": "ID transazione Acquirer",
+        "bank": "Banca",
+        "brand": "Brand",
+        "date": "Data",
+        "iban": "IBAN",
+        "import": "Importo",
+        "importToRefund": "Da rimborsare",
+        "issuerTransactionId": "ID transazione Issuer",
+        "negativeResult": "Fallito",
+        "paymentMethod": "Metodo di pagamento",
+        "positiveResult": "Eseguito",
+        "result": "Esito",
+        "totExpense": "Totale speso"
+      },
+      "unsubscribed": "Disiscritto",
+      "updatedOn": "Aggiornato il",
+      "familyUnitCompositionTitle": "Nucleo familiare di appartenenza",
+      "suspendModal": {
+        "backBtn": "Torna indietro",
+        "excludeUserDescription": "L’esclusione dall’iniziativa è irreversibile e l’utente verrà notificato in app. Tutte le transazioni sospese e l’importo in attesa di rimborso verranno cancellati.",
+        "excludeUserTitle": "Escludi per sempre dall’iniziativa",
+        "excludeBtn": "Escludi per sempre",
+        "readmitBtn": "Riammetti",
+        "readmitUserDescription": "Dopo la riammissione, tutti gli eventi in sospeso torneranno in attività gli importi in attesa di rimborso saranno erogati correttamente.",
+        "readmitUserTitle": "Riammetti all’iniziativa",
+        "suspendBtn": "Sospendi",
+        "suspendUserDescription": "Durante il periodo di sospensione, le transazioni non saranno conteggiate ai fini dell’iniziativa. Potrai decidere in seguito se riammettere l’utente oppure escluderlo per sempre dall’iniziativa.",
+        "suspendUserTitle": "Sospendi utente"
+      },
+      "suspendUser": "Sospendi utente",
+      "familyUnitTitle": "Nucleo familiare di appartanenza",
+      "fiscalCode": "Codice fiscale",
+      "totalSpentBySingle": "Speso dal singolo"
+    },
     "initiativeDetail": {
       "accordion": {
         "buttons": {
@@ -439,9 +508,6 @@
             "budget": "Budget totale",
             "endDate": "Al",
             "family": "Nucleo familiare",
-            "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica (ANPR)",
-            "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
-            "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE (INPS)",
             "manualSelection": "No, imposterò dei criteri di idoneità",
             "person": "Persona singola",
             "rankingEnabledAnswerNo": "No",
@@ -450,7 +516,10 @@
             "rankingEndDate": "Al",
             "rankingStartDate": "Dal",
             "startDate": "Dal",
-            "taxCodeList": "Sì, ho una lista di Codici Fiscali"
+            "taxCodeList": "Sì, ho una lista di Codici Fiscali",
+            "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica (ANPR)",
+            "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
+            "familyUnitCompositionTitleIsee": "Nucleo familiare su ISEE (INPS)"
           },
           "description": "Budget totale, periodo di adesione e spesa.",
           "heading": "2",
@@ -458,12 +527,12 @@
         },
         "step3": {
           "content": {
+            "apiClientTitle": "API Key di connessione",
+            "apiKeyClientId": "Client ID",
+            "apiKeyClientAssertion": "Client Assertion",
             "admissionCriteria": "Criteri di idoneità",
             "age": "Età",
             "and": "e",
-            "apiClientTitle": "API Key di connessione",
-            "apiKeyClientAssertion": "Client Assertion",
-            "apiKeyClientId": "Client ID",
             "beneficiaryList": "Elenco dei richiedenti",
             "beneficiaryNumber": "Persone raggiungibili",
             "between": "Compreso tra",
@@ -475,14 +544,8 @@
             "fileProcessingStatus": "Esito elaborazione",
             "fileUploadedErrorMessage": "L’elaborazione dell’elenco dei destinatari non è andata a buon fine. Chiedi all’ente di caricare di nuovo il file.",
             "fileUploadedStatus": "Esito file caricato",
-            "is": "È",
             "isee": "ISEE",
-            "iseeDottorato": "Dottorato",
-            "iseeMinorenne": "Minorenni",
-            "iseeOrdinario": "Ordinario",
-            "iseeResidenziale": "Residenza",
-            "iseeSocioSanitario": "Socio Sanitario",
-            "iseeUniversitario": "Universitario",
+            "is": "È",
             "isNot": "Non è",
             "majorOrEqualTo": "Maggiore di o uguale a",
             "majorTo": "Maggiore di",
@@ -498,10 +561,16 @@
             "region": "Regione",
             "residency": "Residenza",
             "statusKo": "Fallito",
-            "statusLoading": "In corso",
             "statusOk": "Corretto",
-            "typology": "Tipologie ISEE",
-            "year": "Anno"
+            "statusLoading": "In corso",
+            "year": "Anno",
+            "iseeDottorato": "Dottorato",
+            "iseeMinorenne": "Minorenni",
+            "iseeOrdinario": "Ordinario",
+            "iseeResidenziale": "Residenza",
+            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeUniversitario": "Universitario",
+            "typology": "Tipologie ISEE"
           },
           "description": "Elenco dei destinatari o criteri di idoneità dei richiedenti.",
           "heading": "3",
@@ -510,17 +579,13 @@
         "step4": {
           "content": {
             "daily": "Al giorno",
-            "discount": "Iniziativa a sconto",
             "everybodyExceptItem": "Tutti tranne",
-            "fixedPremium": "Fisso",
-            "fixedPremiumLabel": "Importo riconosciuto",
             "friday": "Venerdì",
             "mcc": "Merchant Category Code",
             "monday": "Lunedì",
             "monthly": "Al mese",
             "nobodyExceptItem": "Nessuno tranne",
             "percentageRecognized": "Percentuale riconosciuta",
-            "refund": "Iniziativa a rimborso",
             "rewardRuleFixed": "Fissa",
             "saturday": "Sabato",
             "spentLimit": "Limite di spesa",
@@ -533,9 +598,13 @@
             "transactionNumberInterval": "Minimo {{minValue}} - Massimo {{maxValue}}",
             "transactionTime": "Orario della transazione",
             "tuesday": "Martedì",
-            "typology": "Tipologia",
             "wednesday": "Mercoledì",
-            "yearly": "All'anno"
+            "yearly": "All'anno",
+            "discount": "Iniziativa a sconto",
+            "fixedPremium": "Fisso",
+            "fixedPremiumLabel": "Importo riconosciuto",
+            "refund": "Iniziativa a rimborso",
+            "typology": "Tipologia"
           },
           "description": "Tipologia e modalità delle transazioni riconosciute.",
           "heading": "4",
@@ -563,10 +632,10 @@
           "title": "Regole di rimborso"
         }
       },
+      "alertText": "Verifica le informazioni inserite dall’ente e approva o rifiuta l’iniziativa.",
       "alert": {
         "approved": "Operazione completata!"
       },
-      "alertText": "Verifica le informazioni inserite dall’ente e approva o rifiuta l’iniziativa.",
       "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa."
     },
     "initiativeList": {
@@ -673,7 +742,6 @@
         "search": "Cerca per Codice Fiscale"
       },
       "noData": "Non c’è ancora una graduatoria per questa iniziativa.",
-      "publishedSubtitle": "Pubblicata il {{date}} alle {{hour}}",
       "publishModal": {
         "alertBtn": "Scarica csv",
         "alertTitle": "Hai scaricato il csv della graduatoria?",
@@ -682,6 +750,7 @@
         "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli idonei un messaggio in app con l’esito. L’operazione è irreversibile.",
         "title": "Vuoi pubblicare la graduatoria?"
       },
+      "publishedSubtitle": "Pubblicata il {{date}} alle {{hour}}",
       "rankingStatus": {
         "notReady": "La graduatoria sarà elaborata al termine del periodo di adesione.",
         "publishBtn": "Pubblica",
@@ -699,41 +768,6 @@
         "rankingValue": "ISEE"
       },
       "title": "Graduatoria"
-    },
-    "initiativeRefunds": {
-      "form": {
-        "completed": "Completato",
-        "filterBtn": "Filtra",
-        "from": "Da",
-        "partial": "Esiti parziali",
-        "resetFiltersBtn": "Rimuovi filtri",
-        "status": "Stato",
-        "to": "A",
-        "toLoad": "Da caricare"
-      },
-      "noData": "Non hai ancora caricato rimborsi per questa iniziativa.",
-      "status": {
-        "complete": "Completato",
-        "exported": "Esiti da caricare",
-        "partial": "Esiti parziali ({{percentage}}%)",
-        "partialNoPerc": "Esiti parziali"
-      },
-      "subtitle": "Visualizza e gestisci i rimborsi dell’iniziativa.",
-      "table": {
-        "amount": "Importo",
-        "creationDate": "Creata il",
-        "refunds": "Rimborsi",
-        "status": "Stato",
-        "successPercentage": "Successo",
-        "typeOrdinary": "Ordinario",
-        "typology": "Tipologia"
-      },
-      "title": "Rimborsi",
-      "uploadBtn": "Carica esiti",
-      "uploadFile": {
-        "feedbackKo": "File non caricato. Riprova",
-        "feedbackOk": "File caricato"
-      }
     },
     "initiativeRefundsDetails": {
       "downloadBtn": "Scarica csv",
@@ -798,94 +832,46 @@
         "validFile": "File valido"
       }
     },
-    "initiativeUserDetails": {
-      "addedBy": "Aggiunto da",
-      "alerts": "AVVISI",
-      "appIo": "App IO",
-      "availableBalance": "Disponibile",
-      "balanceToBeRefunded": "Da rimborsare",
-      "downloadCsv": "Stiamo elaborando il file. A breve riceverai un’e-mail con il link per scaricarlo. ",
-      "downloadCsvBtn": "Scarica csv",
-      "eligibleKo": "Idoneo non assegnatario",
-      "eligibleKoDescription": "Il richiedente possiede i requisiti dell'iniziativa, ma non è tra gli assegnatari.",
-      "excludeForever": "Escludi definitivamente",
-      "familyUnitCompositionTitle": "Nucleo familiare di appartenenza",
-      "familyUnitTitle": "Nucleo familiare di appartanenza",
-      "filterEvent": "Filtra per evento",
-      "fiscalCode": "Codice fiscale",
-      "historyState": "Eventi",
-      "iban": "IBAN associato",
-      "initiativeState": "Dettaglio del richiedente",
-      "issuer": "Issuer",
-      "missingIban": "Manca l’IBAN",
-      "missingPaymentMethod": "Manca il metodo di pagamento",
-      "noData": "Non ci sono ancora eventi per questo richiedente.",
-      "onboardingKo": "Non idoneo",
-      "onboardingKoDescription": "Il richiedente non possiede i requisiti per questa iniziativa.",
-      "onboardingSuspendedDescription": "Questo assegnatario è sospeso. Le transazioni effettuate durante la sospensione non saranno conteggiate.",
-      "operationTypes": {
-        "addIban": "Aggiunta IBAN",
-        "addInstrument": "Aggiunta metodo",
-        "deleteInstrument": "Eliminazione metodo",
-        "onboarding": "Adesione all’iniziativa",
-        "paidRefund": "Rimborso",
-        "readmitted": "Riammissione",
-        "rejectedAddInstrument": "Errore aggiunta metodo",
-        "rejectedDeleteInstrument": "Errore eliminazione metodo",
-        "rejectedRefund": "Errore rimborso",
-        "reversal": "Storno",
-        "suspended": "Sospensione",
-        "transaction": "Pagamento POS"
+    "initiativeRefunds": {
+      "form": {
+        "completed": "Completato",
+        "filterBtn": "Filtra",
+        "from": "Da",
+        "partial": "Esiti parziali",
+        "resetFiltersBtn": "Rimuovi filtri",
+        "status": "Stato",
+        "to": "A",
+        "toLoad": "Da caricare"
       },
-      "paymentMethod": "Metodi di pagamento aggiunti",
-      "readmit": "Riammetti",
-      "refundDetail": "Dati per il rimborso",
-      "refundedBalance": "Rimborsato",
-      "summary": "Riepilogo",
-      "suspended": "Sospeso",
-      "suspendModal": {
-        "backBtn": "Torna indietro",
-        "excludeBtn": "Escludi per sempre",
-        "excludeUserDescription": "L’esclusione dall’iniziativa è irreversibile e l’utente verrà notificato in app. Tutte le transazioni sospese e l’importo in attesa di rimborso verranno cancellati.",
-        "excludeUserTitle": "Escludi per sempre dall’iniziativa",
-        "readmitBtn": "Riammetti",
-        "readmitUserDescription": "Dopo la riammissione, tutti gli eventi in sospeso torneranno in attività gli importi in attesa di rimborso saranno erogati correttamente.",
-        "readmitUserTitle": "Riammetti all’iniziativa",
-        "suspendBtn": "Sospendi",
-        "suspendUserDescription": "Durante il periodo di sospensione, le transazioni non saranno conteggiate ai fini dell’iniziativa. Potrai decidere in seguito se riammettere l’utente oppure escluderlo per sempre dall’iniziativa.",
-        "suspendUserTitle": "Sospendi utente"
+      "noData": "Non hai ancora caricato rimborsi per questa iniziativa.",
+      "status": {
+        "complete": "Completato",
+        "exported": "Esiti da caricare",
+        "partial": "Esiti parziali ({{percentage}}%)",
+        "partialNoPerc": "Esiti parziali"
       },
-      "suspendUser": "Sospendi utente",
+      "subtitle": "Visualizza e gestisci i rimborsi dell’iniziativa.",
       "table": {
-        "dateAndHour": "Data e ora",
-        "event": "Evento",
-        "toRefund": "Da rimborsare",
-        "totExpense": "Speso"
+        "amount": "Importo",
+        "creationDate": "Creata il",
+        "refunds": "Rimborsi",
+        "status": "Stato",
+        "successPercentage": "Successo",
+        "typeOrdinary": "Ordinario",
+        "typology": "Tipologia"
       },
-      "transactionDetail": {
-        "acquirerTransactionId": "ID transazione Acquirer",
-        "bank": "Banca",
-        "brand": "Brand",
-        "date": "Data",
-        "iban": "IBAN",
-        "import": "Importo",
-        "importToRefund": "Da rimborsare",
-        "issuerTransactionId": "ID transazione Issuer",
-        "negativeResult": "Fallito",
-        "paymentMethod": "Metodo di pagamento",
-        "positiveResult": "Eseguito",
-        "result": "Esito",
-        "totExpense": "Totale speso"
-      },
-      "unsubscribed": "Disiscritto",
-      "updatedOn": "Aggiornato il"
+      "title": "Rimborsi",
+      "uploadBtn": "Carica esiti",
+      "uploadFile": {
+        "feedbackKo": "File non caricato. Riprova",
+        "feedbackOk": "File caricato"
+      }
     },
     "initiativeUsers": {
       "form": {
         "all": "Tutti",
         "filterBtn": "Filtra",
         "from": "Da",
-        "from-1": "Dal",
         "notSuitable": "Non idoneo",
         "registered": "Iscritto",
         "resetFiltersBtn": "Rimuovi filtri",
@@ -893,8 +879,9 @@
         "status": "Stato",
         "suitable": "Idoneo",
         "to": "A",
-        "to-1": "Al",
-        "waiting": "In attesa"
+        "waiting": "In attesa",
+        "from-1": "Dal",
+        "to-1": "Al"
       },
       "noData": "Non c’è ancora un elenco richiedenti per questa iniziativa.",
       "status": {
@@ -906,8 +893,8 @@
         "notSignedOn": "Non iscritto",
         "onboardingKo": "Non idoneo",
         "onboardingOk": "Iscritto",
-        "onEvaluation": "In attesa",
-        "suspended": "Sospeso"
+        "suspended": "Sospeso",
+        "onEvaluation": "In attesa"
       },
       "subtitle": "Visualizza e gestisci l’elenco dei richiedenti.",
       "table": {
@@ -930,9 +917,9 @@
   },
   "roles": {
     "admin": "Amministratore",
-    "incaricato-ente-creditore": "Amministratore ente creditore",
     "ope_base": "Operatore Portale Bonus",
     "pagopa_admin": "Amministratore Portale Bonus",
+    "incaricato-ente-creditore": "Amministratore ente creditore",
     "referente-dei-pagamenti": "Amministratore dei pagamenti",
     "referente-legale": "Rappresentante legale"
   },
@@ -979,8 +966,8 @@
     "linkPrivacy": "Informativa Privacy",
     "linkTos": "Termini e condizioni d’uso",
     "termsDescription": "Accedendo, accetti i",
-    "termsDescription2": "del servizio e confermi di aver letto l’",
     "termsDescriptionChanged": "Recentemente abbiamo cambiato i",
+    "termsDescription2": "del servizio e confermi di aver letto l’",
     "title": "Portale Bonus"
   },
   "validation": {
@@ -1003,7 +990,6 @@
     "numeric": "Inserisci un numero",
     "outBudgetPerPerson": "Il budget a persona deve essere inferiore al budget totale",
     "outDateTo": "La data di fine deve essere successiva a quella di inizio",
-    "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "outJoinFrom": "La data di inizio adesione non può essere antecedente ad oggi",
     "outJoinTo": "La data di fine adesione deve essere successiva a quella di inizio",
     "outMaxSpendingLimit": "Il valore di spesa massimo deve essere maggiore del minimo",
@@ -1016,10 +1002,25 @@
     "outValue": "Il secondo valore deve essere maggiore del primo",
     "positive": "Inserisci un valore positivo",
     "required": "Campo obbligatorio",
-    "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €",
     "uniqueFrequency": "Non puoi inserire due importi diversi per lo stesso limite",
     "uniqueInterval": "Non puoi inserire due intervalli uguali per lo stesso giorno",
     "web": "Indirizzo web non valido",
-    "webValid": "Inserisci un indirizzo web"
+    "webValid": "Inserisci un indirizzo web",
+    "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
+    "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €"
+  },
+  "breadcrumbs": {
+    "back": "Indietro",
+    "createNew": "Crea iniziativa",
+    "exit": "Esci",
+    "initiativeDetail": "Dettaglio iniziativa",
+    "initiativeRanking": "Graduatoria",
+    "initiativeRefunds": "Rimborsi",
+    "initiativeRefundsDetails": "Dettaglio rimborso",
+    "initiativeRefundsOutcome": "Esiti",
+    "initiativeUserDetails": "Dettaglio nucleo familiare",
+    "initiativeUsers": "Richiedenti",
+    "initiativeUsersRanking": "Graduatoria",
+    "initiatives": "Iniziative"
   }
 }
