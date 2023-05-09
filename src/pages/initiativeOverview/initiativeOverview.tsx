@@ -224,7 +224,7 @@ const InitiativeOverview = () => {
                 variant="contained"
                 data-testid="view-datails-test"
               >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
+                {t('pages.initiativeOverview.info.otherInfo.details')}
               </ButtonNaked>
             </Box>
           );

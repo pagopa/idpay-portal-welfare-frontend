@@ -492,7 +492,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                       {t('components.wizard.stepTwo.form.familyUnitCompositionTitleIsee')}
                     </Typography>
                     <Typography variant="caption" display="block" gutterBottom>
-                      {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleIsee')}
+                      {t('components.wizard.stepTwo.form.familyUnitCompositionSubtitleIsee')}
                     </Typography>
                   </div>
                 }
@@ -509,7 +509,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                         {t('components.wizard.stepTwo.form.familyUnitCompositionTitleAnpr')}
                       </Typography>
                       <Typography color="#A2ADB8" variant="caption" display="block" gutterBottom>
-                        {t('components.wizard.stepTwo.form.familyUnitCompositionSubitleAnpr')}
+                        {t('components.wizard.stepTwo.form.familyUnitCompositionSubtitleAnpr')}
                       </Typography>
                     </div>
                   }
@@ -866,7 +866,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
         <TitleBoxWithHelpLink
           title={t('components.wizard.stepTwo.form.introductionTitle')}
-          subtitle={t('components.wizard.stepTwo.form.introductionSubTitle')}
+          subtitle={t('components.wizard.stepTwo.form.introductionSubtitle')}
           helpLink={t('helpStaticUrls.wizard.generalInfo')}
           helpLabel={t('components.wizard.common.links.findOut')}
         />

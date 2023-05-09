@@ -50,7 +50,7 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
         )}
 
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-        {t('pages.initiativeDetail.accordion.step2.content.beneficiaryknown')}
+        {t('pages.initiativeDetail.accordion.step2.content.beneficiaryKnown')}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
         {initiativeDetail.generalInfo.beneficiaryKnown === 'true'
