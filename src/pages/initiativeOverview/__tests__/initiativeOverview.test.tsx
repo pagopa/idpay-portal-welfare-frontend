@@ -5,26 +5,16 @@ import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TypeEnum } from '../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeStatisticsDTO } from '../../../api/generated/initiative/InitiativeStatisticsDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { Initiative } from '../../../model/Initiative';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
-import {
-  setGeneralInfo,
-  setInitiative,
-  setInitiativeId,
-  setStatus,
-} from '../../../redux/slices/initiativeSlice';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeStatisticsDTO } from '../../../api/generated/initiative/InitiativeStatisticsDTO';
+import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { mockedInitiativeStatistics } from '../../../services/__mocks__/initiativeService';
 import InitiativeOverview from '../initiativeOverview';
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 export function mockLocationFunction() {
   const original = jest.requireActual('react-router-dom');
@@ -43,24 +33,23 @@ export function mockLocationFunction() {
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/panoramica-iniziativa/2333333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: `${BASE_ROUTE}/panoramica-iniziativa/${mockedInitiativeId}`,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/panoramica-iniziativa/${mockedInitiativeId}`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
@@ -263,7 +252,7 @@ describe('<InitiativeOverview />', (injectedHistory?: ReturnType<typeof createMe
     store.dispatch(setStatus('PUBLISHED'));
     store.dispatch(setInitiativeId(mockedInitiativeId));
 
-    const viewUsers = screen.getByText(/pages.initiativeOverview.next.ViewUsers/);
+    const viewUsers = screen.getByText(/pages.initiativeOverview.next.viewUsers/);
     fireEvent.click(viewUsers);
   });
 
@@ -358,24 +347,19 @@ describe('<InitiativeOverview />', (injectedHistory?: ReturnType<typeof createMe
   });
 
   test('render initiativeOverview without id in the header', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://localhost:3000/portale-enti/panoramica-iniziativa/2333333',
-      origin: 'http://localhost:3000/portale-enti',
+    const oldWindowLocation = global.window.location;
+
+    const mockedLocation = {
+      assign: jest.fn(),
       pathname: `${BASE_ROUTE}/panoramica-iniziativa`,
+      origin: 'MOCKED_ORIGIN',
       search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
+      hash: '',
     };
+
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+
+    Object.defineProperty(window, 'location', { value: oldWindowLocation });
 
     render(
       <Provider store={store}>

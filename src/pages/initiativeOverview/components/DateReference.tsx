@@ -42,24 +42,24 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
     if (typeof sD === 'object' && typeof eD === 'object') {
       eD.setHours(23, 59, 59);
       if (now > eD) {
-        return t('pages.initiativeOverview.info.otherinfo.closed');
+        return t('pages.initiativeOverview.info.otherInfo.closed');
       }
       if (now >= sD && now <= eD) {
         const eDTimestamp = eD.getTime();
         const nowTimestamp = now.getTime();
         const remainingDays = Math.ceil((eDTimestamp - nowTimestamp) / 86400000);
         if (remainingDays > 1) {
-          return t('pages.initiativeOverview.info.otherinfo.expiration', {
+          return t('pages.initiativeOverview.info.otherInfo.expiration', {
             days: remainingDays,
           });
         } else {
-          return t('pages.initiativeOverview.info.otherinfo.oneDayExpiration', {
+          return t('pages.initiativeOverview.info.otherInfo.oneDayExpiration', {
             days: remainingDays,
           });
         }
       }
       if (now < sD) {
-        return t('pages.initiativeOverview.info.otherinfo.start', {
+        return t('pages.initiativeOverview.info.otherInfo.start', {
           date: formatDate(sD),
         });
       }
@@ -81,12 +81,12 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
       <Divider sx={{ gridColumn: 'span 12' }} />
       <Box sx={{ gridColumn: 'span 12', pb: 1 }}>
         <Typography variant="subtitle1">
-          {t('pages.initiativeOverview.info.otherinfo.title')}
+          {t('pages.initiativeOverview.info.otherInfo.title')}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 4' }}>
         <Typography variant="body2">
-          {t('pages.initiativeOverview.info.otherinfo.adhesion')}
+          {t('pages.initiativeOverview.info.otherInfo.adhesion')}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
@@ -115,7 +115,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
       </Box>
       <Box sx={{ gridColumn: 'span 4' }}>
         <Typography variant="body2">
-          {t('pages.initiativeOverview.info.otherinfo.spend')}
+          {t('pages.initiativeOverview.info.otherInfo.spend')}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', textAlign: 'start' }}>
@@ -137,7 +137,7 @@ const DateReference = ({ initiative, handleViewDetails }: Prop) => {
           variant="contained"
           data-testid="view-datails-test"
         >
-          {t('pages.initiativeOverview.info.otherinfo.details')}
+          {t('pages.initiativeOverview.info.otherInfo.details')}
         </ButtonNaked>
       </Box>
     </Box>

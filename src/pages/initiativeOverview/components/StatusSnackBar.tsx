@@ -48,7 +48,7 @@ const StatusSnackBar = ({
               data-testid="view-users-test"
               onClick={() => history.replace(`${BASE_ROUTE}/utenti-iniziativa/${initiativeId}`)}
             >
-              {t('pages.initiativeOverview.snackBar.users')}
+              {t('pages.initiativeOverview.snackbar.users')}
             </ButtonNaked>
             <IconButton
               aria-label="close"
@@ -90,11 +90,11 @@ const StatusSnackBar = ({
               width: '100%',
             }}
           >
-            <Typography>{t('pages.initiativeOverview.snackBar.approved')}&nbsp;</Typography>
+            <Typography>{t('pages.initiativeOverview.snackbar.approved')}&nbsp;</Typography>
             <Typography sx={{ fontWeight: 600, textAlign: 'center' }}>
               {beneficiaryReached}
             </Typography>
-            <Typography>&nbsp;{t('pages.initiativeOverview.snackBar.recipients')}</Typography>
+            <Typography>&nbsp;{t('pages.initiativeOverview.snackbar.recipients')}</Typography>
           </Box>
         );
       case 'TO_SCHEDULE':
@@ -108,7 +108,7 @@ const StatusSnackBar = ({
               width: '100%',
             }}
           >
-            <Typography>{t('pages.initiativeOverview.snackBar.pending')}</Typography>
+            <Typography>{t('pages.initiativeOverview.snackbar.pending')}</Typography>
           </Box>
         );
       case 'KO':
@@ -122,7 +122,7 @@ const StatusSnackBar = ({
               width: '100%',
             }}
           >
-            <Typography>{t('pages.initiativeOverview.snackBar.uploadFailed')}</Typography>
+            <Typography>{t('pages.initiativeOverview.snackbar.uploadFailed')}</Typography>
           </Box>
         );
     }

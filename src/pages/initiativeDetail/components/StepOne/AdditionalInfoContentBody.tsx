@@ -52,8 +52,8 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
         </Typography>
         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
           {initiativeDetail.additionalInfo.initiativeOnIO
-            ? t('pages.initiativeDetail.accordion.step1.content.serviceOnIO')
-            : t('pages.initiativeDetail.accordion.step1.content.serviceNotOnIO')}
+            ? t('pages.initiativeDetail.accordion.step1.content.serviceOnIo')
+            : t('pages.initiativeDetail.accordion.step1.content.serviceNotOnIo')}
         </Typography>
 
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
@@ -94,7 +94,7 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
         }}
       >
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('pages.initiativeDetail.accordion.step1.content.privacyPolicyURL')}
+          {t('pages.initiativeDetail.accordion.step1.content.privacyPolicyUrl')}
         </Typography>
         <ButtonNaked
           size="medium"
@@ -113,7 +113,7 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
           {initiativeDetail.additionalInfo.privacyPolicyUrl}
         </ButtonNaked>
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('pages.initiativeDetail.accordion.step1.content.tosURL')}
+          {t('pages.initiativeDetail.accordion.step1.content.tosUrl')}
         </Typography>
         <ButtonNaked
           size="medium"

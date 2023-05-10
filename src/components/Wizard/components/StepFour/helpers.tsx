@@ -120,8 +120,8 @@ export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesMod
         case 'TRXCOUNT':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.trxcount.title'),
-            i18n.t('components.wizard.stepFour.modal.trxcount.description'),
+            i18n.t('components.wizard.stepFour.modal.trxCount.title'),
+            i18n.t('components.wizard.stepFour.modal.trxCount.description'),
             true
           );
         case 'REWARDLIMIT':
@@ -210,7 +210,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
-  rewardType: InitiativeRewardTypeEnum,
+  rewardType: InitiativeRewardTypeEnum | undefined,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,
@@ -259,7 +259,7 @@ export const mapDataToSend = (
       from: trxCountData?.from as number,
       fromIncluded: trxCountData?.fromIncluded || true,
       to: trxCountData?.to as number,
-      toIncluded: trxCountData?.toIncluded || true,
+      toIncluded: trxCountData?.to ? trxCountData?.toIncluded || true : undefined,
     };
     // eslint-disable-next-line functional/immutable-data
     trxRule.trxCount = { ...trxCount };

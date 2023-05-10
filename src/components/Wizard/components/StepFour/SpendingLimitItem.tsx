@@ -125,14 +125,14 @@ const SpendingLimitItem = ({
           display: 'grid',
           gridTemplateColumns: 'repeat(3, 1fr)',
           gridTemplateRows: 'auto',
-          gridTemplateAreas: `"minSpeningLimitField minSpendingLimitTooltip . . "
+          gridTemplateAreas: `"minSpendingLimitField minSpendingLimitTooltip . . "
                               "maxSpendingLimitField maxSpendingLimitTooltip . . "`,
           alignItems: 'center',
           gap: 2,
           mt: 1,
         }}
       >
-        <FormControl sx={{ gridArea: 'minSpeningLimitField' }}>
+        <FormControl sx={{ gridArea: 'minSpendingLimitField' }}>
           <TextField
             inputProps={{
               step: 0.01,
@@ -140,7 +140,7 @@ const SpendingLimitItem = ({
               type: 'number',
               'data-testid': 'min-spending-limit',
             }}
-            placeholder={t('components.wizard.stepFour.form.minSpeningLimit')}
+            placeholder={t('components.wizard.stepFour.form.minSpendingLimit')}
             name="from"
             value={formik.values.from}
             onChange={(e) => {
@@ -175,7 +175,7 @@ const SpendingLimitItem = ({
               type: 'number',
               'data-testid': 'max-spending-limit',
             }}
-            placeholder={t('components.wizard.stepFour.form.maxSpeningLimit')}
+            placeholder={t('components.wizard.stepFour.form.maxSpendingLimit')}
             name="to"
             value={formik.values.to}
             onChange={(e) => {

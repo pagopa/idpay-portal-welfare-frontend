@@ -32,6 +32,7 @@ import { WalletDTO } from '../api/generated/initiative/WalletDTO';
 import { InitiativeApi } from '../api/InitiativeApiClient';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import { decode } from '../utils/io-utils';
+import { FamilyUnitCompositionDTO } from '../api/generated/initiative/FamilyUnitCompositionDTO';
 import { mockedFile } from './__mocks__/groupService';
 import {
   mockedExportsPagedParam,
@@ -473,4 +474,14 @@ export const readmitUser = (initiativeId: string, fiscalCode: string): Promise<v
     return InitiativeApiMocked.readmitUser(initiativeId, fiscalCode);
   }
   return InitiativeApi.readmitUser(initiativeId, fiscalCode);
+};
+
+export const getFamilyComposition = (
+  initiativeId: string,
+  fiscalCode: string
+): Promise<FamilyUnitCompositionDTO> => {
+  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+    return InitiativeApiMocked.getFamilyComposition(initiativeId, fiscalCode);
+  }
+  return InitiativeApi.getFamilyComposition(initiativeId, fiscalCode);
 };

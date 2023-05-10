@@ -224,7 +224,7 @@ const InitiativeOverview = () => {
                 variant="contained"
                 data-testid="view-datails-test"
               >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
+                {t('pages.initiativeOverview.info.otherInfo.details')}
               </ButtonNaked>
             </Box>
           );
@@ -454,7 +454,7 @@ const InitiativeOverview = () => {
             }
             data-testid="view-users-test"
           >
-            {t('pages.initiativeOverview.next.ViewUsers')}
+            {t('pages.initiativeOverview.next.viewUsers')}
           </Button>
         </Box>
       </>

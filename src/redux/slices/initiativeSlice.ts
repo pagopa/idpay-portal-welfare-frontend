@@ -65,7 +65,7 @@ const initialState: Initiative = {
     selfDeclarationCriteria: [],
     automatedCriteria: [],
   },
-  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+  initiativeRewardType: undefined,
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
@@ -346,8 +346,9 @@ export const beneficiaryRuleSelector = (
   selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
-export const initiativeRewardTypeSelector = (state: RootState): InitiativeRewardTypeEnum =>
-  state.initiative.initiativeRewardType;
+export const initiativeRewardTypeSelector = (
+  state: RootState
+): InitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
 export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
@@ -367,3 +368,5 @@ export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
   state.initiative.refundRule;
 export const initiativeStatusSelector = (state: RootState): string | undefined =>
   state.initiative.status;
+export const initiativeBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum =>
+  state.initiative.generalInfo.beneficiaryType;

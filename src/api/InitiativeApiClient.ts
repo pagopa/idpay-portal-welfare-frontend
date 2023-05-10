@@ -33,6 +33,7 @@ import { ExportSummaryDTO } from './generated/initiative/ExportSummaryDTO';
 import { ExportListDTO } from './generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from './generated/initiative/RefundDetailDTO';
 import { OnboardingStatusDTO } from './generated/initiative/OnboardingStatusDTO';
+import { FamilyUnitCompositionDTO } from './generated/initiative/FamilyUnitCompositionDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -412,6 +413,17 @@ export const InitiativeApi = {
 
   readmitUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
     const result = await apiClient.readmitUser({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getFamilyComposition: async (
+    initiativeId: string,
+    fiscalCode: string
+  ): Promise<FamilyUnitCompositionDTO> => {
+    const result = await apiClient.getFamilyComposition({
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });

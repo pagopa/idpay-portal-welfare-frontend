@@ -1,7 +1,8 @@
 /* eslint-disable functional/no-let */
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import {
-  Alert,
   Button,
+  Chip,
   FormControl,
   InputLabel,
   MenuItem,
@@ -14,65 +15,50 @@ import {
   TableRow,
   TextField,
   Typography,
-  Snackbar,
-  Chip,
 } from '@mui/material';
-import { Box } from '@mui/system';
-import { ButtonNaked } from '@pagopa/mui-italia';
-import { matchPath } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
-import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { useEffect, useState } from 'react';
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Box } from '@mui/system';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { ButtonNaked } from '@pagopa/mui-italia';
+import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
-import ROUTES, { BASE_ROUTE } from '../../routes';
+import { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { matchPath } from 'react-router-dom';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import {
   cleanDate,
+  formatStringToDate,
   formatedCurrency,
   formatedTimeLineCurrency,
-  formatStringToDate,
   getTimeLineMaskedPan,
-  initiativeUsersAndRefundsValidationSchema,
+  initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
   initiativePagesTableContainerStyle,
-  initiativePagesBreadcrumbsContainerStyle,
+  initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
-import {
-  getInstrumentList,
-  getWalletDetail,
-  getIban,
-  getTimeLine,
-  getBeneficiaryOnboardingStatus,
-} from '../../services/intitativeService';
-import { StatusEnum } from '../../api/generated/initiative/WalletDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
-import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
-import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
-import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
-import EmptyList from '../components/EmptyList';
+import ROUTES, { BASE_ROUTE } from '../../routes';
+import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
-import UserDetailsSummary from './components/UserDetailsSummary';
-import TransactionDetailModal from './TransactionDetailModal';
+import EmptyList from '../components/EmptyList';
+import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
+import { useInitiative } from '../../hooks/useInitiative';
+import { stepTwoBeneficiaryTypeSelector } from '../../redux/slices/initiativeSlice';
+import { useAppSelector } from '../../redux/hooks';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import SuspensionModal from './SuspensionModal';
+import TransactionDetailModal from './TransactionDetailModal';
+import UserDetailsSummary from './components/UserDetailsSummary';
+import FamilyUnitSummary from './components/FamilyUnitSummary';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
   const { t } = useTranslation();
-  const [amount, setAmount] = useState<number | undefined>(undefined);
-  const [accrued, setAccrued] = useState<number | undefined>(undefined);
-  const [refunded, setRefunded] = useState<number | undefined>(undefined);
-  const [iban, setIban] = useState<string | undefined>(undefined);
-  const [walletStatus, setWalletStatus] = useState<StatusEnum | undefined>(undefined);
-  const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
-  const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
-  const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
-  const [channel, setChannel] = useState<string | undefined>(undefined);
-  const [paymentMethodList, setPaymentMethodList] = useState<Array<InstrumentDTO>>([]);
+
   const [rows, setRows] = useState<Array<any>>([]);
   const [filterByDateFrom, setFilterByDateFrom] = useState<string | undefined>();
   const [filterByDateTo, setFilterByDateTo] = useState<string | undefined>();
@@ -84,14 +70,14 @@ const InitiativeUserDetails = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
   const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
   const [buttonType, setButtonType] = useState<string>('');
-  // const [openSnackBar, setOpenSnackBar] = useState(false);
+  const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
   const theme = createTheme(itIT);
+  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USER_DETAILS],
@@ -105,6 +91,8 @@ const InitiativeUserDetails = () => {
   }
 
   const { id, cf } = (match?.params as MatchParams) || {};
+
+  useInitiative();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -128,71 +116,6 @@ const InitiativeUserDetails = () => {
         });
     }
   }, [id, cf]);
-
-  useEffect(() => {
-    if (
-      typeof id === 'string' &&
-      typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
-    ) {
-      getWalletDetail(id, cf)
-        .then((res) => {
-          setAmount(res.amount);
-          setAccrued(res.accrued);
-          setRefunded(res.refunded);
-          if (typeof res.lastCounterUpdate === 'object') {
-            setLastCounterUpdate(res.lastCounterUpdate);
-          }
-          setIban(res.iban);
-          setWalletStatus(res.status);
-        })
-        .catch((error) =>
-          addError({
-            id: 'GET_WALLET_INFO',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting wallet info',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          })
-        );
-    }
-    HandleOpenSnackBarOnBoardingStatus();
-  }, [id, cf, statusOnb]);
-
-  useEffect(() => {
-    if (
-      typeof id === 'string' &&
-      typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
-    ) {
-      getInstrumentList(id, cf)
-        .then((res) => {
-          const walletInst = res.instrumentList.filter((r) => r.status === 'ACTIVE');
-          setPaymentMethodList([...walletInst]);
-        })
-        .catch((error) =>
-          addError({
-            id: 'GET_WALLET_INSTRUMENT',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting wallet instrument',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          })
-        );
-    }
-  }, [id, cf, statusOnb]);
 
   const getTableData = (
     cf: string,
@@ -332,21 +255,6 @@ const InitiativeUserDetails = () => {
     setPage(newPage);
   };
 
-  const formatDate = (date: Date | undefined) => {
-    if (date) {
-      return date.toLocaleString('it-IT', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-        timeZone: 'Europe/Rome',
-        hour: 'numeric',
-        minute: 'numeric',
-      });
-    }
-
-    return '';
-  };
-
   const operationTypeLabel = (id: string, opeType: string, event: OperationDTO) => {
     switch (opeType) {
       case 'ADD_IBAN':
@@ -378,135 +286,6 @@ const InitiativeUserDetails = () => {
         return t('pages.initiativeUserDetails.operationTypes.transaction');
       case 'SUSPENDED':
         return t('pages.initiativeUserDetails.operationTypes.suspended');
-      default:
-        return null;
-    }
-  };
-
-  useEffect(() => {
-    if (typeof iban === 'string') {
-      getIban(id, cf, iban)
-        .then((res) => {
-          if (typeof res.iban === 'string') {
-            setIban(iban);
-          }
-          if (typeof res.holderBank === 'string') {
-            setHolderBank(res.holderBank);
-          }
-          if (typeof res.checkIbanResponseDate === 'object') {
-            setCheckIbanResponseDate(res.checkIbanResponseDate);
-          }
-          if (typeof res.channel === 'string') {
-            setChannel(res.channel);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_WALLET_INFO',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting wallet info',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        });
-    }
-  }, [iban]);
-
-  const HandleOpenSnackBarOnBoardingStatus = () => {
-    setOpenSnackBarOnBoardingStatus(true);
-  };
-
-  const HandleCloseSnackBarOnBoardingStatus = () => {
-    setOpenSnackBarOnBoardingStatus(false);
-  };
-
-  const renderUserStatusAlert = (status: OnboardingStatusEnum | undefined) => {
-    switch (status) {
-      case OnboardingStatusEnum.ONBOARDING_KO:
-        return (
-          <>
-            <Snackbar
-              open={openSnackBarOnBoardingStatus}
-              onClose={() => HandleCloseSnackBarOnBoardingStatus()}
-              autoHideDuration={4000}
-              sx={{
-                position: 'initial',
-                justifyContent: 'center',
-                gridColumn: 'span 24',
-                zIndex: 0,
-                mt: 5,
-              }}
-              data-testid="onboarding-ko-snackbar-test"
-            >
-              <Alert
-                variant="outlined"
-                severity="error"
-                sx={{ gridColumn: 'span 24', width: '100%' }}
-              >
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t('pages.initiativeUserDetails.onboardingKo')}
-                </Typography>
-                <Typography variant="body2">
-                  {t('pages.initiativeUserDetails.onboardingKoDescription')}
-                </Typography>
-              </Alert>
-            </Snackbar>
-          </>
-        );
-      case OnboardingStatusEnum.ELIGIBLE_KO:
-        return (
-          <>
-            <Snackbar
-              open={openSnackBarOnBoardingStatus}
-              onClose={() => HandleCloseSnackBarOnBoardingStatus()}
-              autoHideDuration={4000}
-              sx={{
-                position: 'initial',
-                justifyContent: 'center',
-                gridColumn: 'span 24',
-                zIndex: 0,
-                mt: 5,
-              }}
-              data-testid="eligible-ko-snackbar-test"
-            >
-              <Alert
-                variant="outlined"
-                severity="warning"
-                sx={{ gridColumn: 'span 24', width: '100%' }}
-              >
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  {t('pages.initiativeUserDetails.eligibleKo')}
-                </Typography>
-                <Typography variant="body2">
-                  {t('pages.initiativeUserDetails.eligibleKoDescription')}
-                </Typography>
-              </Alert>
-            </Snackbar>
-          </>
-        );
-      case OnboardingStatusEnum.SUSPENDED:
-        return (
-          <>
-            <Alert
-              variant="outlined"
-              severity="warning"
-              sx={{
-                position: 'initial',
-                gridColumn: 'span 24',
-                zIndex: 0,
-                mt: 5,
-              }}
-            >
-              <Typography variant="body2">
-                {t('pages.initiativeUserDetails.onboardingSuspendedDescription')}
-              </Typography>
-            </Alert>
-          </>
-        );
       default:
         return null;
     }
@@ -670,43 +449,17 @@ const InitiativeUserDetails = () => {
             </Alert>
           </Snackbar>
         </Box> */}
-        <Box sx={{ gridColumn: 'span 24' }}>{renderUserStatusAlert(statusOnb)}</Box>
-      </Box>
-
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mt: 5,
-        }}
-      >
-        <Box sx={{ display: 'inline-flex', gridColumn: 'span 6' }}>
-          <Typography variant="h6">{t('pages.initiativeUserDetails.initiativeState')}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 6', display: 'inline-flex', justifyContent: 'end' }}>
-          <Typography variant="body2" color="text.secondary" sx={{ pr: 1 }}>
-            {t('pages.initiativeUserDetails.updatedOn')}
-          </Typography>
-          <Typography variant="body2" fontWeight={600}>
-            {formatDate(lastCounterUpdate)}
-          </Typography>
-        </Box>
       </Box>
 
       <UserDetailsSummary
-        amount={amount}
-        refunded={refunded}
-        accrued={accrued}
-        walletStatus={walletStatus}
-        paymentMethodList={paymentMethodList}
-        iban={iban}
+        id={id}
+        cf={cf}
+        statusOnb={statusOnb}
         holderBank={holderBank}
-        checkIbanResponseDate={checkIbanResponseDate}
-        channel={channel}
+        setHolderBank={setHolderBank}
       />
+
+      {beneficiaryType === BeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>

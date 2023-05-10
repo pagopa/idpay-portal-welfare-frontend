@@ -48,10 +48,10 @@ const InitiativeNotOnIOModal = ({
           }}
         >
           <Typography variant="h6">
-            {t('components.wizard.stepOne.modal.serviceNotOnIOTitle')}
+            {t('components.wizard.stepOne.modal.serviceNotOnIoTitle')}
           </Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('components.wizard.stepOne.modal.serviceNotOnIODescription')}
+            {t('components.wizard.stepOne.modal.serviceNotOnIoDescription')}
           </Typography>
           <Box
             sx={{

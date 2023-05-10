@@ -21,7 +21,7 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
   const printAutomatedAdmissionCriteriaLabel = (code: string): string => {
     switch (code) {
       case 'BIRTHDATE':
-        return t('pages.initiativeDetail.accordion.step3.content.birthdate');
+        return t('pages.initiativeDetail.accordion.step3.content.birthDate');
       case 'ISEE':
         return t('pages.initiativeDetail.accordion.step3.content.isee');
       case 'RESIDENCE':

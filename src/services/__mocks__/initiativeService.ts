@@ -41,6 +41,7 @@ import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
+import { FamilyUnitCompositionDTO } from '../../api/generated/initiative/FamilyUnitCompositionDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -265,6 +266,9 @@ export const mockedRankingStatus = {
   beneficiary: 'MCCGRL01C25M052R',
   state: 'DEFAULT',
 };
+
+export const getFamilyComposition = (_id: string, _cf: string): Promise<FamilyUnitCompositionDTO> =>
+  InitiativeApiMocked.getFamilyComposition(mockedInitiativeId, mockedFiscalCode);
 
 export const mockedInitiativeSummary = [
   {
@@ -1148,4 +1152,27 @@ export const mockedOrganizationsList = [
 
 export const mockedBeneficaryStatus = {
   status: OnboardingStatusEnum.ONBOARDING_OK,
+};
+
+export const mockedFamilyUnitComposition = {
+  usersList: [
+    {
+      familyId: 'qwerty1',
+      fiscalCode: 'XXXYYY99M11',
+      status: OnboardingStatusEnum.ONBOARDING_OK,
+      onboardingDate: new Date(),
+    },
+    {
+      familyId: 'qwerty1',
+      fiscalCode: 'ZZZYYY99M11',
+      status: OnboardingStatusEnum.DEMANDED,
+      onboardingDate: new Date(),
+    },
+    {
+      familyId: 'qwerty1',
+      fiscalCode: 'WWWYYY99M11',
+      status: OnboardingStatusEnum.DEMANDED,
+      onboardingDate: new Date(),
+    },
+  ],
 };

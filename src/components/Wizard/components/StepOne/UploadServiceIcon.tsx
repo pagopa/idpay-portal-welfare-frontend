@@ -159,7 +159,7 @@ const UploadServiceIcon = ({
       )}
 
       {fileIsLoading ? (
-        <LoadingFile message={t('components.wizard.stepOne.uploadIcon.IconIsLoading')} />
+        <LoadingFile message={t('components.wizard.stepOne.uploadIcon.iconIsLoading')} />
       ) : fileIsAcceppted ? (
         <AcceptedFile
           fileName={fileName}

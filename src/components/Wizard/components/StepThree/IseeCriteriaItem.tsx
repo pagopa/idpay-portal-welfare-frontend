@@ -128,9 +128,9 @@ const IseeCriteriaItem = ({
   useEffect(() => {
     if (rankingEnabled === 'true' && typeof iseeFormik.values.orderDirection === 'string') {
       if (iseeFormik.values.orderDirection === 'ASC') {
-        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC'));
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderAsc'));
       } else if (iseeFormik.values.orderDirection === 'DESC') {
-        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC'));
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDesc'));
       }
     }
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
@@ -203,7 +203,7 @@ const IseeCriteriaItem = ({
                 await iseeFormik.setFieldValue('orderDirection', 'ASC');
               }}
             >
-              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC')}
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderAsc')}
             </MenuItem>
             <MenuItem
               onClick={async () => {
@@ -211,7 +211,7 @@ const IseeCriteriaItem = ({
                 await iseeFormik.setFieldValue('orderDirection', 'DESC');
               }}
             >
-              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC')}
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDesc')}
             </MenuItem>
           </Menu>
         </Box>

@@ -273,7 +273,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
             variant="body2"
             sx={{ fontSize: '0.875rem', fontWeight: 600 }}
           >
-            {t('components.wizard.stepThree.upload.fileUuploadHelpFileLinkLabel')}
+            {t('components.wizard.stepThree.upload.fileUploadHelpFileLinkLabel')}
           </Link>
         </FormHelperText>
       </Box>
@@ -284,7 +284,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
       <TitleBoxWithHelpLink
         title={t('components.wizard.stepThree.upload.title')}
-        subtitle={t('components.wizard.stepThree.upload.subTitle')}
+        subtitle={t('components.wizard.stepThree.upload.subtitle')}
         helpLink={t('helpStaticUrls.wizard.fileUpload')}
         helpLabel={t('components.wizard.common.links.findOut')}
       />
