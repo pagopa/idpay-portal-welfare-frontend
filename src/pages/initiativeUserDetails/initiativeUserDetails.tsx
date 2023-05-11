@@ -47,9 +47,13 @@ import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
 import { useInitiative } from '../../hooks/useInitiative';
-import { stepTwoBeneficiaryTypeSelector } from '../../redux/slices/initiativeSlice';
+import {
+  stepTwoBeneficiaryTypeSelector,
+  initiativeRewardTypeSelector,
+} from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
 import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import SuspensionModal from './SuspensionModal';
 import TransactionDetailModal from './TransactionDetailModal';
 import UserDetailsSummary from './components/UserDetailsSummary';
@@ -78,6 +82,7 @@ const InitiativeUserDetails = () => {
   const addError = useErrorDispatcher();
   const theme = createTheme(itIT);
   const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
+  const rewardType = useAppSelector(initiativeRewardTypeSelector);
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_USER_DETAILS],
@@ -398,6 +403,7 @@ const InitiativeUserDetails = () => {
               onClick={() => handleSuspension('SUSPEND')}
               data-testid="suspended"
               color="error"
+              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.suspendUser')}
             </Button>
@@ -411,6 +417,7 @@ const InitiativeUserDetails = () => {
               size="small"
               onClick={() => handleSuspension('READMIT')}
               data-testid="readmit"
+              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.readmit')}
             </Button>
