@@ -4,7 +4,7 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+// import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
@@ -12,7 +12,7 @@ import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
 import { useAppSelector } from '../../../redux/hooks';
 import {
   initiativeRewardTypeSelector,
-  stepTwoBeneficiaryTypeSelector,
+  // stepTwoBeneficiaryTypeSelector,
 } from '../../../redux/slices/initiativeSlice';
 import { getIban, getInstrumentList, getWalletDetail } from '../../../services/intitativeService';
 import PaymentMethodsModal from '../PaymentMethodsModal';
@@ -40,7 +40,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const addError = useErrorDispatcher();
   const initiativeRewardType = useAppSelector(initiativeRewardTypeSelector);
-  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
+  // const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
 
   useEffect(() => {
     if (
@@ -543,9 +543,11 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   variant="body2"
                   color="text.primary"
                 >
-                  {beneficiaryType === BeneficiaryTypeEnum.NF
+                  {/* {beneficiaryType === BeneficiaryTypeEnum.NF
                     ? t('pages.initiativeUserDetails.totalSpentBySingle')
-                    : t('pages.initiativeUserDetails.refundedBalance')}
+                    : t('pages.initiativeUserDetails.refundedBalance')} */}
+
+                  {t('pages.initiativeUserDetails.transactionDetail.totExpense')}
                 </Typography>
                 <Typography
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
