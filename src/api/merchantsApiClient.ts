@@ -17,7 +17,7 @@ const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (par
 };
 
 const merchantsApiClient = createClient({
-  baseUrl: ENV.URL_API.INITIATIVE,
+  baseUrl: ENV.URL_API.MERCHANTS,
   basePath: '',
   fetchApi: buildFetchApi(ENV.API_TIMEOUT_MS.MERCHANTS),
   withDefaults: withBearerAndPartyId,

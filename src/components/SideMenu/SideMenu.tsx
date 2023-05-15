@@ -64,6 +64,7 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
       ROUTES.INITIATIVE_REFUNDS_DETAIL,
       ROUTES.INITIATIVE_USER_DETAILS,
+      ROUTES.INITIATIVE_MERCHANT,
     ],
     exact: true,
     strict: false,
@@ -201,6 +202,22 @@ export default function SideMenu() {
                     icon={GroupIcon}
                     level={2}
                     data-testid="initiativeUsers-click-test"
+                  />
+                   <SidenavItem
+                    title='TempEsercenti'
+                    handleClick={() =>
+                      onExit(() => {
+                        history.replace(`${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}`);
+                      })
+                    }
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/esercenti-iniziativa//${item.initiativeId}`
+                      // ||
+                      // pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
+                    }
+                    icon={GroupIcon}
+                    level={2}
+                    data-testid="initiativeMerchant-click-test"
                   />
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
