@@ -1,7 +1,7 @@
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Paper } from '@mui/material';
 import { Box } from '@mui/system';
-import { TitleBox, Toast, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend';
+import { TitleBox, Toast, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
@@ -16,18 +16,20 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { uploadMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import AcceptedFile from '../../components/AcceptedFile/AcceptedFile';
 
 const InitativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
-  const setLoading = useLoading('PUT_INITIATIVE_MERCHANTS_UPLOAD');
   const addError = useErrorDispatcher();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileRejected, setFileRejected] = useState(false);
   const [fileAccepted, setFileAccepted] = useState(false);
   const [alertTitle, setAlertTitle] = useState('');
   const [alertDescription, setAlertDescription] = useState('');
+  const [fileName, setFileName] = useState('');
+  const [fileDate, setFileDate] = useState('');
 
   const match = matchPath(location.pathname, {
     path: [ROUTES.INITIATIVE_MERCHANT_UPLOAD],
@@ -50,6 +52,18 @@ const InitativeUploadMerchants = () => {
     },
     onDropAccepted: (files) => {
       setFileIsLoading(true);
+
+      setFileAccepted(true);
+
+      setFileName(files[0].name);
+
+      const dateField =
+        Object.prototype.toString.call(files[0].lastModified) === '[object Date]'
+          ? files[0].lastModified
+          : new Date();
+      const fileDate = dateField && dateField.toLocaleString('fr-BE');
+
+      setFileDate(fileDate || '');
 
       if (typeof id === 'string') {
         uploadMerchantList(id, files[0])
@@ -107,13 +121,23 @@ const InitativeUploadMerchants = () => {
     },
   });
 
+  const setIntiStatus = () => {
+    setAlertTitle('');
+    setAlertDescription('');
+    setFileName('');
+    setFileDate('');
+    setFileIsLoading(false);
+    setFileRejected(false);
+    setFileAccepted(false);
+  };
+
   const InitStatusPartial = (
     <Box
       sx={{
         display: 'grid',
         gridTemplateColumns: 'repeat(12, 1fr)',
-        py: 2,
-        my: 1,
+        pt: 2,
+        mt: 1,
       }}
     >
       <Box
@@ -186,7 +210,7 @@ const InitativeUploadMerchants = () => {
         </Box>
       </Box>
 
-      <Paper sx={{ display: 'grid', width: '100%', mt: 2, px: 3 }}>
+      <Paper sx={{ display: 'grid', width: '100%', my: 2, p: 3 }}>
         <TitleBoxWithHelpLink
           title={t('pages.initiativeRefundsOutcome.uploadPaper.title')}
           subtitle={t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
@@ -211,6 +235,14 @@ const InitativeUploadMerchants = () => {
 
         {fileIsLoading ? (
           <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} />
+        ) : fileAccepted ? (
+          <AcceptedFile
+            fileName={fileName}
+            fileDate={fileDate}
+            chipLabel={t('components.wizard.stepThree.upload.validFile')}
+            buttonLabel={t('components.wizard.stepThree.upload.changeFile')}
+            buttonHandler={setIntiStatus}
+          />
         ) : (
           InitStatusPartial
         )}
