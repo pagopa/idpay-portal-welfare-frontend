@@ -50,17 +50,18 @@ const InitativeMerchant = () => {
     {
       merchantId: 'aaaa',
       merchantName: 'aaaa',
-      merchantStatus: MerchantStatusEnum.INVITED,
+      merchantStatus: MerchantStatusEnum.WAITING,
       merchantVat: '12345678901',
       updateStatusDate: new Date(),
     },
     {
       merchantId: 'bbbb',
       merchantName: 'bbbb',
-      merchantStatus: MerchantStatusEnum.ONBOARDING_OK,
+      merchantStatus: MerchantStatusEnum.ACTIVE,
       merchantVat: '12345678901',
       updateStatusDate: new Date(),
-    }]);
+    },
+  ]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
@@ -153,9 +154,9 @@ const InitativeMerchant = () => {
 
   const renderMerchantStatus = (status: MerchantStatusEnum | undefined) => {
     switch (status) {
-      case MerchantStatusEnum.INVITED:
+      case MerchantStatusEnum.WAITING:
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-      case MerchantStatusEnum.ONBOARDING_OK:
+      case MerchantStatusEnum.ACTIVE:
         return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
       default:
         return null;
@@ -243,15 +244,12 @@ const InitativeMerchant = () => {
             value={formik.values.filterStatus}
           >
             <MenuItem
-              value={MerchantStatusEnum.INVITED}
+              value={MerchantStatusEnum.WAITING}
               data-testid="filterStatusOnEvaluation-test"
             >
               {t('pages.initiativeUsers.status.onEvaluation')}
             </MenuItem>
-            <MenuItem
-              value={MerchantStatusEnum.ONBOARDING_OK}
-              data-testid="filterStatusOnboardingOk-test"
-            >
+            <MenuItem value={MerchantStatusEnum.ACTIVE} data-testid="filterStatusOnboardingOk-test">
               {t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
           </Select>
