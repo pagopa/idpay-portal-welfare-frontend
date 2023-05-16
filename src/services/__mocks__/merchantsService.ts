@@ -86,6 +86,13 @@ export const mockedMerchantsOnboardingList: MerchantOnboardingDTO = {
       merchantVat: '12345678901',
       updateStatusDate: new Date(),
     },
+    {
+      merchantId: 'llll',
+      merchantName: 'llll',
+      merchantStatus: undefined,
+      merchantVat: '12345678901',
+      updateStatusDate: new Date(),
+    },
   ],
   pageNo: 0,
   pageSize: 10,

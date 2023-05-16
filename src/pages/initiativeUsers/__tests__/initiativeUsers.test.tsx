@@ -231,7 +231,7 @@ describe('<InitiativeUsers />', () => {
     // fireEvent.click(resetFilterBtn);
   });
 
-  test('Reset Form on Click Annulla filtri and test click beneficiaryBtn', async () => {
+  test('Reset Form on Click reset button and test click beneficiaryBtn', async () => {
     renderWithHistoryAndStore(<InitiativeUsers />);
 
     const searchUser = screen.getByLabelText(
@@ -241,11 +241,11 @@ describe('<InitiativeUsers />', () => {
     fireEvent.change(searchUser, { target: { value: 'searchUser' } });
     expect(searchUser.value).toBe('searchUser');
 
-    const annullaFiltriBtn = screen.getByText(
+    const resetBtn = screen.getByText(
       'pages.initiativeUsers.form.resetFiltersBtn'
     ) as HTMLButtonElement;
 
-    fireEvent.click(annullaFiltriBtn);
+    fireEvent.click(resetBtn);
 
     await waitFor(() => expect(searchUser.value).toEqual(''));
 
