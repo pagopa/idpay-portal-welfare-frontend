@@ -1,11 +1,15 @@
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Paper } from '@mui/material';
+// import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import { Alert, AlertTitle, IconButton, Paper, Typography } from '@mui/material';
 import { Box } from '@mui/system';
-import { TitleBox, Toast, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import {
+  TitleBox,
+  //  useErrorDispatcher
+} from '@pagopa/selfcare-common-frontend';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
@@ -22,7 +26,7 @@ const InitativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
-  const addError = useErrorDispatcher();
+  // const addError = useErrorDispatcher();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileRejected, setFileRejected] = useState(false);
   const [fileAccepted, setFileAccepted] = useState(false);
@@ -72,22 +76,23 @@ const InitativeUploadMerchants = () => {
             setFileRejected(false);
             setFileAccepted(true);
           })
-          .catch((error) => {
+          .catch((_error) => {
             setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
             setAlertDescription(
               t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
             );
-            addError({
-              id: 'PUT_DISP_FILE_ERROR',
-              blocking: false,
-              error,
-              techDescription: 'An error occurred saving dispositive file',
-              displayableTitle: t('errors.title'),
-              displayableDescription: t('errors.getFileDataDescription'),
-              toNotify: true,
-              component: 'Toast',
-              showCloseIcon: true,
-            });
+            // addError({
+            //   id: 'PUT_DISP_FILE_ERROR',
+            //   blocking: false,
+            //   error,
+            //   techDescription: 'An error occurred saving dispositive file',
+            //   displayableTitle: t('errors.title'),
+            //   displayableDescription: t('errors.getFileDataDescription'),
+            //   toNotify: false,
+            //   component: 'Toast',
+            //   showCloseIcon: true,
+            // });
+            setFileRejected(true);
             setFileIsLoading(false);
             setFileAccepted(false);
           });
@@ -219,18 +224,25 @@ const InitativeUploadMerchants = () => {
         />
 
         {fileRejected && (
-          <Toast
-            open={fileRejected}
-            title={t(alertTitle)}
-            message={t(alertDescription)}
-            onCloseToast={() => {
-              setFileRejected(false);
-            }}
-            logo={InfoOutlinedIcon}
-            leftBorderColor="#FE6666"
-            toastColorIcon="#FE6666"
-            showToastCloseIcon={true}
-          />
+          <Alert
+            severity="error"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setFileRejected(false);
+                }}
+                data-testid="close-icon"
+              >
+                <CloseIcon color="primary" fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            <AlertTitle>{t(alertTitle)}</AlertTitle>
+            <Typography variant="body2">{t(alertDescription)}</Typography>
+          </Alert>
         )}
 
         {fileIsLoading ? (
