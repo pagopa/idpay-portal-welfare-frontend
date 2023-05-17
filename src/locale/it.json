@@ -74,10 +74,10 @@
           "idCodeBalance": "Codice identificativo (opzionale)",
           "radioQuestion": "Quando vuoi erogare il rimborso?",
           "reimbursementThreshold": "Inserisci l’importo",
-          "selectTimeParam": "Seleziona il periodo di tempo",
+          "selectTimeParam": "Seleziona la cadenza temporale",
           "selectedAccumulatedAmount": "Seleziona il tipo di importo",
-          "subtitle": "Inserire qui una descrizione sulle info aggiuntive",
-          "timeParameter": "Dopo un periodo di tempo "
+          "subtitle": "Inserisci il codice identificativo del capitolo di bilancio per questa iniziativa.",
+          "timeParameter": "Con cadenza temporale"
         },
         "select": {
           "accumulatedAmount": {
@@ -104,8 +104,8 @@
           "everybodyExceptSelectItem": "Tutti tranne",
           "friday": "Venerdì",
           "initiativeRewardType": {
-            "discount": "Iniziativa a sconto",
-            "refund": "Iniziativa a rimborso"
+            "discount": "A sconto",
+            "refund": "A rimborso"
           },
           "mccCodes": "Inserisci i codici separati da una virgola",
           "maxReward": "Massimo",
@@ -140,7 +140,7 @@
             }
           },
           "selectedAccumulatedAmount": "Importo riconosciuto",
-          "trxCountNotPopulatedErrorDescription": "È necessario inserire un limite di spesa",
+          "trxCountNotPopulatedErrorDescription": "Inserisci un limite di spesa",
           "trxCountNotPopulatedErrorTitle": "Hai selezionato un importo fisso"
         },
         "mccModal": {
@@ -186,7 +186,7 @@
         "rulesAddedTitle": "REGOLE AGGIUNTE",
         "subtitle": "Definisci come gli assegnatari possono fruire dell’iniziativa e quali sono le transazioni valide.",
         "title": "Regole di spesa",
-        "typology": "Tipologia"
+        "typology": "Tipologia di iniziativa"
       },
       "stepOne": {
         "form": {
@@ -219,7 +219,7 @@
         "title": "Configurazione del servizio",
         "uploadIcon": {
           "changeIcon": "Sostituisci",
-          "dragAreaLink": "selezionalo dal tuo computer.",
+          "dragAreaLink": "selezionalo dal tuo computer",
           "dragAreaText": "Trascina qui il logo del servizio o",
           "helperText": "Campo opzionale. Carica un file PNG di 300x300 pixel, con sfondo bianco o trasparente.",
           "iconIsLoading": "Caricamento in corso",
@@ -281,7 +281,7 @@
           "iseeNotPopulatedOnRankingErrorTitle": "Inserisci un valore nel criterio ISEE",
           "manualCriteriaAdded": "Criteri da autodichiarare aggiunti",
           "modal": {
-            "addButton": "Aggiungi criteri da autodichiarare",
+            "addButton": "Aggiungi criteri PDND",
             "birthDate": {
               "authorityLabel": "Ministero dell'Interno",
               "fieldLabel": "Data di nascita"
@@ -303,7 +303,7 @@
         "title": "Criteri di idoneità",
         "upload": {
           "changeFile": "Sostituisci",
-          "dragAreaLink": "selezionalo dal tuo computer.",
+          "dragAreaLink": "selezionalo dal tuo computer",
           "dragAreaText": "Trascina qui il file csv con la lista dei Codici Fiscali o",
           "fileIsLoading": "Caricamento in corso",
           "fileUploadHelpFileLinkLabel": "Scarica l’esempio",
@@ -335,10 +335,10 @@
   "errors": {
     "cantApproveInitiative": "Non è stato possibile approvare l’iniziativa. Riprova",
     "cantDeleteInitiative": "Non è stato possibile eliminare l'iniziativa. Riprova",
-    "cantGetTc": "Non è stato possibile recuperare le informazioni sull'accettazione dei Termini e Condizioni. Riprova",
+    "cantGetTc": "Non siamo riusciti a recuperare le informazioni sull'accettazione dei Termini e condizioni d’uso. Riprova",
     "cantPublishInitiative": "Non è stato possibile pubblicare l'iniziativa. Riprova",
     "cantRejectInitiative": "Non è stato possibile rifiutare l'iniziativa. Riprova",
-    "cantSaveTc": "Non è stato possibile salvare l'accettazione dei Termini e Condizioni. Riprova",
+    "cantSaveTc": "Non siamo riusciti a salvare l'accettazione dei Termini e condizioni d’uso. Riprova",
     "contactAdmin": "Contatta l'assistenza",
     "getDataDescription": "Riprova",
     "getFileDataDescription": "Carica di nuovo il file",
@@ -391,11 +391,11 @@
       "downloadCsvBtn": "Scarica csv",
       "eligibleKo": "Idoneo non assegnatario",
       "eligibleKoDescription": "Il richiedente possiede i requisiti dell'iniziativa, ma non è tra gli assegnatari.",
-      "excludeForever": "Escludi definitivamente",
+      "excludeForever": "Escludi per sempre",
       "filterEvent": "Filtra per evento",
       "historyState": "Eventi",
       "iban": "IBAN associato",
-      "initiativeState": "Dettaglio del richiedente",
+      "initiativeState": "Stato dell’iniziativa",
       "issuer": "Issuer",
       "missingIban": "Manca l’IBAN",
       "missingPaymentMethod": "Manca il metodo di pagamento",
@@ -419,7 +419,7 @@
       },
       "paymentMethod": "Metodi di pagamento aggiunti",
       "readmit": "Riammetti",
-      "refundDetail": "Dati per il rimborso",
+      "refundDetail": "DATI PER IL RIMBORSO",
       "refundedBalance": "Rimborsato",
       "summary": "RIEPILOGO",
       "suspended": "Sospeso",
@@ -459,9 +459,9 @@
         "suspendUserDescription": "Durante il periodo di sospensione, le transazioni non saranno conteggiate ai fini dell’iniziativa. Potrai decidere in seguito se riammettere l’utente oppure escluderlo per sempre dall’iniziativa.",
         "suspendUserTitle": "Sospendi utente"
       },
-      "suspendUser": "Sospendi utente",
+      "suspendUser": "Sospendi",
       "familyUnitTitle": "Nucleo familiare di appartanenza",
-      "fiscalCode": "Codice fiscale",
+      "fiscalCode": "Codice Fiscale",
       "totalSpentBySingle": "Speso dal singolo"
     },
     "initiativeDetail": {
@@ -489,7 +489,7 @@
             "serviceAreaLocal": "Locale",
             "serviceAreaNational": "Nazionale",
             "serviceDeliver": "Canali di erogazione",
-            "serviceDescription": "Di che iniziativa si tratta?",
+            "serviceDescription": "Descrizione del servizio",
             "serviceName": "Nome dell’iniziativa",
             "serviceNotOnIo": "Non erogata sull’app IO",
             "serviceOnIo": "App IO",
@@ -506,16 +506,16 @@
             "beneficiaryKnown": "Conosci i destinatari?",
             "beneficiaryType": "A chi è rivolta?",
             "budget": "Budget totale",
-            "endDate": "Al",
+            "endDate": "Fine periodo di spesa",
             "family": "Nucleo familiare",
             "manualSelection": "No, imposterò dei criteri di idoneità",
             "person": "Persona singola",
             "rankingEnabledAnswerNo": "No",
             "rankingEnabledAnswerYes": "Sì",
             "rankingEnabledQuestion": "È prevista una graduatoria?",
-            "rankingEndDate": "Al",
-            "rankingStartDate": "Dal",
-            "startDate": "Dal",
+            "rankingEndDate": "Fine periodo di adesione",
+            "rankingStartDate": "Inizio periodo di adesione",
+            "startDate": "Inizio periodo di spesa",
             "taxCodeList": "Sì, ho una lista di Codici Fiscali",
             "familyUnitCompositionTitleAnpr": "Stato di famiglia anagrafica (ANPR)",
             "familyUnitCompositionTitleGroup": "Composizione del nucleo familiare",
@@ -568,11 +568,11 @@
             "iseeMinorenne": "Minorenni",
             "iseeOrdinario": "Ordinario",
             "iseeResidenziale": "Residenza",
-            "iseeSocioSanitario": "Socio Sanitario",
+            "iseeSocioSanitario": "Socio sanitario",
             "iseeUniversitario": "Universitario",
             "typology": "Tipologie ISEE"
           },
-          "description": "Elenco dei destinatari o criteri di idoneità dei richiedenti.",
+          "description": "Criteri di idoneità dei richiedenti o elenco dei destinatari.",
           "heading": "3",
           "title": "Destinatari"
         },
@@ -600,11 +600,11 @@
             "tuesday": "Martedì",
             "wednesday": "Mercoledì",
             "yearly": "All'anno",
-            "discount": "Iniziativa a sconto",
+            "discount": "A sconto",
             "fixedPremium": "Fisso",
             "fixedPremiumLabel": "Importo riconosciuto",
-            "refund": "Iniziativa a rimborso",
-            "typology": "Tipologia"
+            "refund": "A rimborso",
+            "typology": "Tipologia di iniziativa"
           },
           "description": "Tipologia e modalità delle transazioni riconosciute.",
           "heading": "4",
@@ -624,8 +624,8 @@
             "idCode": "Codice identificativo (opzionale)",
             "initiativeDone": "A iniziativa conclusa",
             "refundThreshold": "Inserisci l’importo",
-            "timeParam": "Periodo di tempo",
-            "timeParameter": "Dopo un periodo di tempo"
+            "timeParam": "Cadenza temporale",
+            "timeParameter": "Con cadenza temporale"
           },
           "description": "Erogazione del rimborso e informazioni aggiuntive.",
           "heading": "5",
@@ -693,11 +693,11 @@
         "title": "Vuoi eliminare la bozza?"
       },
       "next": {
-        "budgetExhausted": "Budget utilizzato",
+        "budgetExhausted": "Budget speso",
         "join": "Hanno aderito",
         "lastUpdate": "Ultimo aggiornamento",
         "modalPublish": {
-          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo ai destinatari un messaggio nell’app IO per invitarli ad aderire. L’operazione è irreversibile.",
+          "initiativeWithGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile in IO. Invieremo ai destinatari un messaggio in app per invitarli ad aderire. L’operazione è irreversibile.",
           "initiativeWithoutGroupsSubtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO. Invieremo agli idonei un messaggio nell’app IO con l’esito. L’operazione è irreversibile. ",
           "subtitle": "Il servizio dell’iniziativa {{initiativeName}} sarà visibile nell’app IO e {{usersNumber}} utenti saranno avvisati tramite un messaggio. L’operazione è irreversibile.",
           "title": "Vuoi pubblicare l’iniziativa?"
@@ -801,7 +801,8 @@
       },
       "status": {
         "done": "Eseguito",
-        "failed": "Fallito"
+        "failed": "Fallito",
+        "onEvaluation": "In attesa"
       },
       "table": {
         "amount": "Importo",
@@ -813,7 +814,7 @@
       "title": "Gestione esiti",
       "uploadPaper": {
         "changeFile": "Sostituisci file",
-        "dragAreaLink": "selezionalo dal tuo computer.",
+        "dragAreaLink": "selezionalo dal tuo computer",
         "dragAreaText": "Trascina qui il file zip con la lista degli esiti o",
         "fileIsLoading": "Caricamento in corso",
         "fileIsOnEvaluation": "Stiamo elaborando il file: quando è pronto, te lo faremo sapere via e-mail.",
@@ -836,14 +837,14 @@
       "form": {
         "completed": "Completato",
         "filterBtn": "Filtra",
-        "from": "Da",
+        "from": "Dal",
         "partial": "Esiti parziali",
         "resetFiltersBtn": "Rimuovi filtri",
         "status": "Stato",
-        "to": "A",
+        "to": "Al",
         "toLoad": "Da caricare"
       },
-      "noData": "Non hai ancora caricato rimborsi per questa iniziativa.",
+      "noData": "Non hai ancora caricato esiti per questa iniziativa.",
       "status": {
         "complete": "Completato",
         "exported": "Esiti da caricare",
@@ -871,14 +872,14 @@
       "form": {
         "all": "Tutti",
         "filterBtn": "Filtra",
-        "from": "Da",
+        "from": "Dal",
         "notSuitable": "Non idoneo",
         "registered": "Iscritto",
         "resetFiltersBtn": "Rimuovi filtri",
         "search": "Cerca per Codice Fiscale",
         "status": "Stato",
         "suitable": "Idoneo",
-        "to": "A",
+        "to": "Al",
         "waiting": "In attesa",
         "from-1": "Dal",
         "to-1": "Al"
