@@ -56,10 +56,10 @@ const TransactionNumberItem = ({
         .nullable()
         .integer(t('validation.integer'))
         .typeError(t('validation.numeric'))
-        .positive(t('validation.positive'))
+        .min(1, t('validation.positive'))
         .when('to', (to, schema) => {
           if (!to) {
-            return Yup.number().required(t('validation.positive'));
+            return Yup.number().required(t('validation.positive')).min(1, t('validation.positive'));
           }
           return schema;
         }),
@@ -67,10 +67,10 @@ const TransactionNumberItem = ({
         .nullable()
         .integer(t('validation.integer'))
         .typeError(t('validation.numeric'))
-        .positive(t('validation.positive'))
+        .min(1, t('validation.positive'))
         .when('from', (from, _schema) => {
           if (!from) {
-            return Yup.number().required('');
+            return Yup.number().required('').min(1, t('validation.positive'));
           } else {
             return Yup.number().min(
               parseFloat(from) + 1,
