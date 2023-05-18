@@ -14,7 +14,7 @@ const InitUploadBox = ({ text, link }: Props) => (
     </Typography>
     <Typography
       variant="body2"
-      sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
+      sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6', cursor: 'pointer' }}
     >
       {link}
     </Typography>

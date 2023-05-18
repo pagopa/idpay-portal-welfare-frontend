@@ -21,7 +21,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { TitleBox, useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
@@ -373,25 +373,21 @@ const InitiativeUserDetails = () => {
             alignItems: 'center',
           }}
         >
-          <Box sx={{ display: 'grid', gridColumn: 'span 6' }}>
-            <TitleBox
-              title={cf?.toUpperCase()}
-              subTitle={''}
-              mtTitle={0}
-              mbTitle={0}
-              variantTitle="h4"
-              variantSubTitle="body1"
-            />
-          </Box>
-          <Box sx={{ display: 'grid', gridColumn: 'span 2' }}>
-            {statusOnb === OnboardingStatusEnum.SUSPENDED && (
-              <Chip
-                label={t('pages.initiativeUserDetails.suspended')}
-                sx={{ fontSize: '14px' }}
-                color="warning"
-                size="small"
-              />
-            )}
+          <Box sx={{ display: 'grid', gridColumn: 'span 8' }}>
+            <Box sx={{ display: 'flex' }}>
+              <Typography variant="h4" sx={{ mr: 3 }}>
+                {cf?.toUpperCase()}
+              </Typography>
+
+              {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+                <Chip
+                  label={t('pages.initiativeUserDetails.suspended')}
+                  sx={{ fontSize: '14px' }}
+                  color="warning"
+                  size="small"
+                />
+              )}
+            </Box>
           </Box>
         </Box>
 
