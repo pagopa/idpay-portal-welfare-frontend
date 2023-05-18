@@ -10,7 +10,8 @@ paths:
     put:
       tags:
         - merchant-upload
-      summary: Upload CSV file containing a group of Merchants
+      summary: Upload CSV file containing a list of merchants
+      description: 'ENG: Upload CSV file containing a list of merchants <br> IT: Caricamento del file CSV conentente una lista di esercenti'
       operationId: uploadMerchantList
       parameters:
         - name: initiativeId
@@ -79,12 +80,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorDTO'
-  /{initiativeId}/onboardings:
+  /{initiativeId}:
     get:
       tags:
         - merchant-onboarding
-      summary: Returns the merchants onboardings list
-      description: Returns the merchants onboardings list
+      summary: Returns the merchants list
+      description: 'ENG: Returns the merchants list <br> IT: Lista degli esercenti'
       operationId: getMerchantsOnboardingList
       parameters:
         - name: initiativeId
@@ -110,15 +111,9 @@ paths:
           required: false
           schema:
             type: string
-        - name: search
+        - name: fiscalCode
           in: query
-          description: Fiscal Code/VAT Number or Business Name
-          required: false
-          schema:
-            type: string
-        - name: status
-          in: query
-          description: Merchant onboarding status
+          description: Fiscal Code
           required: false
           schema:
             type: string
@@ -160,14 +155,18 @@ components:
       properties:
         status:
           type: string
+          description: 'ENG: Upload file status <br>IT: Stato di caricamento del file'
         errorRow:
           type: integer
           format: int32
+          description: "ENG: Row where an error occurs during file uploading <br>IT: Riga alla quale c'è stato un errore durante il caricamento del file"
         errorKey:
           type: string
+          description: 'ENG: Error Key: <ul><li>merchant.invalid.file.format: file format not valid</li><li>merchant.invalid.file.empty: empty file</li><li>merchant.invalid.file.size: file size exceeds limit</li><li>merchant.invalid.file.vat.wrong: VAT Number or fiscal code not valid</li><li>merchant.invalid.file.iban.wrong: IBAN not valid</li></ul><br>IT: Chiave di errore: <ul><li>merchant.invalid.file.format: formato del file non valido</li><li>merchant.invalid.file.empty: file vuoto</li><li>merchant.invalid.file.size: la dimensione del file supera il limite consentito</li><li>merchant.invalid.file.vat.wrong: partita IVA o CF non valido</li><li>merchant.invalid.file.iban.wrong: IBAN non valido</li></ul>'
         elabTimeStamp:
           type: string
           format: date-time
+          description: "ENG: Time and date of file elaboration <br>IT: Data e ora dell'elaborazione del file"
     MerchantOnboardingDTO:
       type: object
       properties:
@@ -178,32 +177,40 @@ components:
         pageNo:
           type: integer
           format: int32
+          description: 'ENG: The number of the page <br> IT: Il numero della pagina'
         pageSize:
           type: integer
           format: int32
+          description: 'ENG: The element size for page <br> IT: Il numero di elementi per pagina'
         totalElements:
           type: integer
           format: int32
+          description: 'ENG: The total number of the elements <br> IT: Il numero totale degli elementi'
         totalPages:
           type: integer
           format: int32
+          description: 'ENG: The total number of the pages <br> IT: Il numero totale delle pagine'
     MerchantOnboardingStatusDTO:
       type: object
       properties:
         merchantId:
           type: string
-        merchantName:
+          description: "ENG: The ID of the merchant <br> IT: L'ID' dell'esercente"
+        businessName:
           type: string
-        merchantVat:
+          description: "ENG: The name of the merchant <br> IT: La ragione sociale dell'esercente"
+        fiscalCode:
           type: string
+          description: "ENG: The fiscal code/vat number of the merchant <br> IT: Il codice fiscale/partita iva dell'esercente"
         merchantStatus:
           type: string
           enum:
-            - WAITING
-            - ACTIVE
+            - UPLOADED
+          description: "ENG: One of the possible merchant onboarding status: <ul><li>UPLOADED:This is the initial status after the csv upload</li></ul>IT: Uno dei possibili stati dell'onboarding da parte dell'esercente: <ul><li>UPLOADED:Questo è lo stato iniziale dopo il caricamento del file csv</li></ul>"
         updateStatusDate:
           type: string
           format: date-time
+          description: "ENG: Time and date of the last status update <br> IT: La data ed ora dell'ultimo aggiornamento dello stato"
     ErrorDTO:
       type: object
       properties:

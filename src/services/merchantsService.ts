@@ -13,11 +13,10 @@ export const uploadMerchantList = async (id: string, file: File): Promise<Mercha
 export const getMerchantsOnboardingList = async (
   id: string,
   page: number,
-  search?: string,
-  status?: string
+  fiscalCode?: string
 ): Promise<MerchantOnboardingDTO> => {
   if (process.env.REACT_APP_API_MOCK_MERCHANTS === 'true') {
     return merchantsApiMocked.getMerchantsOnboardingList(id, page);
   }
-  return merchantsApi.getMerchantsOnboardingList(id, page, search, status);
+  return merchantsApi.getMerchantsOnboardingList(id, page, fiscalCode);
 };

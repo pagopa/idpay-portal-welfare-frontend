@@ -51,16 +51,16 @@ const InitativeMerchant = () => {
   const [rows, setRows] = useState<Array<MerchantOnboardingStatusDTO>>([
     {
       merchantId: 'aaaa',
-      merchantName: 'aaaa',
-      merchantStatus: MerchantStatusEnum.WAITING,
-      merchantVat: '12345678901',
+      businessName: 'aaaa',
+      merchantStatus: MerchantStatusEnum.UPLOADED,
+      fiscalCode: '12345678901',
       updateStatusDate: new Date(),
     },
     {
       merchantId: 'bbbb',
-      merchantName: 'bbbb',
-      merchantStatus: MerchantStatusEnum.ACTIVE,
-      merchantVat: '12345678901',
+      businessName: 'bbbb',
+      merchantStatus: MerchantStatusEnum.UPLOADED,
+      fiscalCode: '12345678901',
       updateStatusDate: new Date(),
     },
   ]);
@@ -84,14 +84,9 @@ const InitativeMerchant = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  const getTableData = (
-    initiativeId: string,
-    page: number,
-    merchant: string | undefined,
-    filterStatus: string | undefined
-  ) => {
+  const getTableData = (initiativeId: string, page: number, merchant: string | undefined) => {
     setLoading(true);
-    getMerchantsOnboardingList(initiativeId, page, merchant, filterStatus)
+    getMerchantsOnboardingList(initiativeId, page, merchant)
       .then((res) => {
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
@@ -140,7 +135,7 @@ const InitativeMerchant = () => {
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
         */
-        getTableData(id, 0, filterByMerchant, undefined);
+        getTableData(id, 0, filterByMerchant);
       }
     },
   });
@@ -155,7 +150,7 @@ const InitativeMerchant = () => {
     // setFilterByStatus(undefined);
     setRows([]);
     if (typeof id === 'string') {
-      getTableData(id, 0, undefined, undefined);
+      getTableData(id, 0, undefined);
     }
   };
   /*
@@ -184,7 +179,7 @@ const InitativeMerchant = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
-      getTableData(id, page, filterByMerchant, undefined);
+      getTableData(id, page, filterByMerchant);
     }
   }, [id, page]);
 
@@ -309,9 +304,9 @@ const InitativeMerchant = () => {
                   {rows.map((r) => (
                     <TableRow key={r.merchantId}>
                       <TableCell>
-                        <Typography>{r.merchantName}</Typography>
+                        <Typography>{r.businessName}</Typography>
                       </TableCell>
-                      <TableCell>{r.merchantVat}</TableCell>
+                      <TableCell>{r.fiscalCode}</TableCell>
                       <TableCell>
                         {
                           // renderMerchantStatus(r.merchantStatus)

@@ -45,14 +45,12 @@ export const merchantsApi = {
   getMerchantsOnboardingList: async (
     id: string,
     page: number,
-    search?: string,
-    status?: string
+    fiscalCode?: string
   ): Promise<MerchantOnboardingDTO> => {
     const result = await merchantsApiClient.getMerchantsOnboardingList({
       initiativeId: id,
       page,
-      search,
-      status,
+      fiscalCode,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
