@@ -1,11 +1,11 @@
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import {
   Button,
-  Chip,
+  // Chip,
   FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
+  // InputLabel,
+  // MenuItem,
+  // Select,
   Table,
   TableBody,
   TableCell,
@@ -14,9 +14,11 @@ import {
   TableRow,
   TextField,
   Typography,
+  Box,
 } from '@mui/material';
-import { Box, ThemeProvider } from '@mui/system';
-import { ButtonNaked, theme } from '@pagopa/mui-italia';
+import { itIT } from '@mui/material/locale';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ButtonNaked } from '@pagopa/mui-italia';
 import { TitleBox, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
@@ -45,7 +47,7 @@ const InitativeMerchant = () => {
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const [filterByMerchant, setFilterByMerchant] = useState<string | undefined>();
-  const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
+  // const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
   const [rows, setRows] = useState<Array<MerchantOnboardingStatusDTO>>([
     {
       merchantId: 'aaaa',
@@ -63,8 +65,9 @@ const InitativeMerchant = () => {
     },
   ]);
   const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(0);
-  const [totalElements, setTotalElements] = useState<number>(0);
+  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+  const [totalElements, setTotalElements] = useState<number>(2);
+  const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_MERCHANTS');
   const addError = useErrorDispatcher();
   const history = useHistory();
@@ -125,7 +128,7 @@ const InitativeMerchant = () => {
   const formik = useFormik({
     initialValues: {
       searchMerchant: '',
-      filterStatus: '',
+      // filterStatus: '',
     },
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -133,25 +136,29 @@ const InitativeMerchant = () => {
         const searchMerchant =
           values.searchMerchant.length > 0 ? values.searchMerchant.toUpperCase() : undefined;
         setFilterByMerchant(searchMerchant);
-
+        /*
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
-        getTableData(id, 0, filterByMerchant, filterByStatus);
+        */
+        getTableData(id, 0, filterByMerchant, undefined);
       }
     },
   });
 
   const resetForm = () => {
-    const initialValues = { searchMerchant: '', filterStatus: '' };
+    const initialValues = {
+      searchMerchant: '',
+      // , filterStatus: ''
+    };
     formik.resetForm({ values: initialValues });
     setFilterByMerchant(undefined);
-    setFilterByStatus(undefined);
+    // setFilterByStatus(undefined);
     setRows([]);
     if (typeof id === 'string') {
       getTableData(id, 0, undefined, undefined);
     }
   };
-
+  /*
   const renderMerchantStatus = (status: MerchantStatusEnum | undefined) => {
     switch (status) {
       case MerchantStatusEnum.WAITING:
@@ -162,7 +169,7 @@ const InitativeMerchant = () => {
         return null;
     }
   };
-
+*/
   const handleChangePage = (
     _event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number
@@ -177,7 +184,7 @@ const InitativeMerchant = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
-      getTableData(id, page, filterByMerchant, filterByStatus);
+      getTableData(id, page, filterByMerchant, undefined);
     }
   }, [id, page]);
 
@@ -215,7 +222,7 @@ const InitativeMerchant = () => {
       </Box>
 
       <Box sx={initiativePagesFiltersFormContainerStyle}>
-        <FormControl sx={{ gridColumn: 'span 8' }}>
+        <FormControl sx={{ gridColumn: 'span 4' }}>
           <TextField
             label={t('pages.initiativeUsers.form.search')}
             placeholder={t('pages.initiativeUsers.form.search')}
@@ -229,7 +236,7 @@ const InitativeMerchant = () => {
             data-testid="searchMerchant-test"
           />
         </FormControl>
-
+        {/*
         <FormControl sx={{ gridColumn: 'span 2' }} size="small">
           <InputLabel>{t('pages.initiativeUsers.form.status')}</InputLabel>
           <Select
@@ -254,6 +261,7 @@ const InitativeMerchant = () => {
             </MenuItem>
           </Select>
         </FormControl>
+        */}
         <FormControl sx={{ gridColumn: 'span 1' }}>
           <Button
             sx={{ py: 2, height: '44px' }}
@@ -290,7 +298,9 @@ const InitativeMerchant = () => {
                       {t('pages.initiativeUsers.table.updateStatusDate')}
                     </TableCell>
                     <TableCell width="20%">
-                      {t('pages.initiativeUsers.table.beneficiaryState')}
+                      {
+                        // t('pages.initiativeUsers.table.beneficiaryState')
+                      }
                     </TableCell>
                     {/* <TableCell width="10%"></TableCell> */}
                   </TableRow>
@@ -302,7 +312,11 @@ const InitativeMerchant = () => {
                         <Typography>{r.merchantName}</Typography>
                       </TableCell>
                       <TableCell>{r.merchantVat}</TableCell>
-                      <TableCell>{renderMerchantStatus(r.merchantStatus)}</TableCell>
+                      <TableCell>
+                        {
+                          // renderMerchantStatus(r.merchantStatus)
+                        }
+                      </TableCell>
                       {/*
                        <TableCell align="right">
                         <IconButton disabled>
