@@ -2,9 +2,9 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
 import React from 'react';
 import { date } from 'yup';
-import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import ROUTES, { BASE_ROUTE } from '../../../routes';
+import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
+import ROUTES from '../../../routes';
 import { renderWithHistoryAndStore } from '../../../utils/test-utils';
 import InitiativeRefunds from '../initiativeRefunds';
 
@@ -19,24 +19,22 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/rimborsi-iniziativa/2333333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.INITIATIVE_REFUNDS,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: ROUTES.INITIATIVE_REFUNDS,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
@@ -186,25 +184,6 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   test('test getExportsPaged call without initiativeId in the header', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: 'http://localhost:3000/portale-enti/rimborsi-iniziativa',
-      origin: 'http://localhost:3000/portale-enti',
-      pathname: `${BASE_ROUTE}/rimborsi-iniziativa`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
-
     InitiativeApiMocked.getExportsPaged = async (): Promise<PageRewardExportsDTO> =>
       new Promise((resolve) =>
         resolve({

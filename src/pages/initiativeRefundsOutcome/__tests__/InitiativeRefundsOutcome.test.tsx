@@ -1,40 +1,34 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { PageRewardImportsDTO } from '../../../api/generated/initiative/PageRewardImportsDTO';
 import { StatusEnum } from '../../../api/generated/initiative/RewardImportsDTO';
-import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { mockedFile, mockedInitiativeId } from '../../../services/__mocks__/groupService';
-import {
-  mockedFileName,
-  mockedNotificationReward,
-} from '../../../services/__mocks__/initiativeService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { renderWithProviders } from '../../../utils/test-utils';
 import InitiativeRefundsOutcome from '../initiativeRefundsOutcome';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/esiti-rimborsi-iniziativa/',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${mockedInitiativeId}`,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${mockedInitiativeId}`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
