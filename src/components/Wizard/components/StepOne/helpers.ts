@@ -1,3 +1,4 @@
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { TypeEnum } from '../../../../api/generated/initiative/ChannelDTO';
 import { InitiativeAdditionalDTO } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
@@ -5,17 +6,17 @@ export const contacts = [
   {
     id: 1,
     value: 'web',
-    name: 'Web URL',
+    name: i18n.t('components.wizard.stepOne.form.webUrl'),
   },
   {
     id: 2,
     value: 'email',
-    name: 'Email',
+    name: i18n.t('components.wizard.stepOne.form.email'),
   },
   {
     id: 3,
     value: 'mobile',
-    name: 'Numero di telefono',
+    name: i18n.t('components.wizard.stepOne.form.phone'),
   },
 ];
 

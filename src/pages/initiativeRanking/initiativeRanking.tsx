@@ -572,6 +572,11 @@ const InitiativeRanking = () => {
               </Table>
               <ThemeProvider theme={theme}>
                 <TablePagination
+                  sx={{
+                    '.MuiTablePagination-displayedRows': {
+                      fontFamily: '"Titillium Web",sans-serif',
+                    },
+                  }}
                   component="div"
                   onPageChange={handleChangePage}
                   page={page}
