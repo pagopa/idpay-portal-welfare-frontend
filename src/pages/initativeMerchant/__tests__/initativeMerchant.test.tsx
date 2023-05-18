@@ -64,7 +64,7 @@ describe('test suite for InitativeMerchant ', () => {
     await waitFor(() => expect(oldLocPathname !== history.location.pathname).toBeTruthy());
   });
 
-  test('test that location changes on click of back button', async () => {
+  test('test filters of merchant list, submit button and reset button  ', async () => {
     renderWithHistoryAndStore(<InitativeMerchant />);
 
     //TEXTFIELD TEST
