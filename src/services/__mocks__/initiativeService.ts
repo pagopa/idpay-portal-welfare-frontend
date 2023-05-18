@@ -733,7 +733,7 @@ export const mockedRefundsDetailsByEventRes = {
   startDate: new Date(),
   endDate: new Date(),
   status: 'DONE',
-  refundType: 'Ordinario',
+  refundType: 'ORDINARY',
   cro: '12345678901',
   transferDate: new Date(),
   userNotificationDate: new Date(),
