@@ -22,23 +22,6 @@ window.scrollTo = jest.fn();
 describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
 
-  test('test MCCItem with action DRAFT', async () => {
-    render(
-      <Provider store={store}>
-        <MCCItem
-          title={'title'}
-          code={'MCC'}
-          handleShopListItemRemoved={jest.fn()}
-          action={WIZARD_ACTIONS.DRAFT}
-          shopRulesToSubmit={shopRulesToSubmit}
-          setShopRulesToSubmit={jest.fn()}
-          data={mccFilter}
-          setData={jest.fn()}
-        />
-      </Provider>
-    );
-  });
-
   test('test MCCItem with no action', async () => {
     render(
       <Provider store={store}>
@@ -110,7 +93,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
         title={'title'}
         code={'MCC'}
         handleShopListItemRemoved={jest.fn()}
-        action={WIZARD_ACTIONS.SUBMIT}
+        action={WIZARD_ACTIONS.DRAFT}
         shopRulesToSubmit={shopRulesToSubmit}
         setShopRulesToSubmit={jest.fn()}
         data={mccFilter}
