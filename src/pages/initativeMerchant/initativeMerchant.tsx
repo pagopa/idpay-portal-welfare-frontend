@@ -25,9 +25,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import {
-  MerchantOnboardingStatusDTO,
-  MerchantStatusEnum,
-} from '../../api/generated/merchants/MerchantOnboardingStatusDTO';
+  MerchantDTO,
+  // MerchantStatusEnum,
+} from '../../api/generated/merchants/MerchantDTO';
 import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
@@ -37,10 +37,9 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { getMerchantsOnboardingList } from '../../services/merchantsService';
+import { getMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
-// import { mockedMerchantsOnboardingList } from '../../services/__mocks__/merchantsService';
 
 const InitativeMerchant = () => {
   const { t } = useTranslation();
@@ -48,22 +47,7 @@ const InitativeMerchant = () => {
   const initiativeSel = useAppSelector(initiativeSelector);
   const [filterByMerchant, setFilterByMerchant] = useState<string | undefined>();
   // const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
-  const [rows, setRows] = useState<Array<MerchantOnboardingStatusDTO>>([
-    {
-      merchantId: 'aaaa',
-      businessName: 'aaaa',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
-      fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
-    },
-    {
-      merchantId: 'bbbb',
-      businessName: 'bbbb',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
-      fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
-    },
-  ]);
+  const [rows, setRows] = useState<Array<MerchantDTO>>([]);
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [totalElements, setTotalElements] = useState<number>(2);
@@ -86,7 +70,7 @@ const InitativeMerchant = () => {
 
   const getTableData = (initiativeId: string, page: number, merchant: string | undefined) => {
     setLoading(true);
-    getMerchantsOnboardingList(initiativeId, page, merchant)
+    getMerchantList(initiativeId, page, merchant)
       .then((res) => {
         if (typeof res.pageNo === 'number') {
           setPage(res.pageNo);
@@ -135,7 +119,7 @@ const InitativeMerchant = () => {
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterByStatus(filterStatus);
         */
-        getTableData(id, 0, filterByMerchant);
+        getTableData(id, 0, searchMerchant);
       }
     },
   });

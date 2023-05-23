@@ -1,5 +1,13 @@
 // import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { Alert, AlertTitle, IconButton, Paper, Typography } from '@mui/material';
+import {
+  Alert,
+  AlertTitle,
+  FormHelperText,
+  IconButton,
+  Link,
+  Paper,
+  Typography,
+} from '@mui/material';
 import { Box } from '@mui/system';
 import {
   TitleBox,
@@ -178,8 +186,8 @@ const InitativeUploadMerchants = () => {
           px: 3,
         }}
       >
-        {/* <FormHelperText sx={{ fontSize: '0.875rem' }}>
-          {t('pages.initiativeRefundsOutcome.uploadPaper.fileUploadHelpText')}&#160;
+        <FormHelperText sx={{ fontSize: '0.875rem' }}>
+          {t('pages.initiativeMerchantUpload.uploadPaper.fileUploadHelpText')}&#160;
           <Link
             href="#"
             download
@@ -187,9 +195,9 @@ const InitativeUploadMerchants = () => {
             variant="body2"
             sx={{ fontSize: '0.875rem', fontWeight: 600 }}
           >
-            {t('pages.initiativeRefundsOutcome.uploadPaper.fileUploadHelpFileLinkLabel')}
+            {t('pages.initiativeMerchantUpload.uploadPaper.fileUploadHelpLinkLabel')}
           </Link>
-        </FormHelperText> */}
+        </FormHelperText>
       </Box>
     </Box>
   );
@@ -223,7 +231,7 @@ const InitativeUploadMerchants = () => {
         <TitleBoxWithHelpLink
           title={t('pages.initiativeMerchantUpload.uploadPaper.title')}
           subtitle={t('pages.initiativeMerchantUpload.uploadPaper.subtitle')}
-          helpLink={t('helpStaticUrls.pages.initiativeRefundsOutcome')} // TODO
+          helpLink={t('helpStaticUrls.pages.initiativeMerchantUpload')}
           helpLabel={t('pages.initiativeMerchantUpload.uploadPaper.helpLinkLabel')}
         />
 

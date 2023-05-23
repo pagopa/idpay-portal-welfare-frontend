@@ -363,7 +363,8 @@
   },
   "helpStaticUrls": {
     "pages": {
-      "initiativeRefundsOutcome": "https://www.google.it"
+      "initiativeRefundsOutcome": "https://www.google.it",
+      "initiativeMerchantUpload": "https://www.google.it"
     },
     "wizard": {
       "admissionCriteria": "https://www.google.it",

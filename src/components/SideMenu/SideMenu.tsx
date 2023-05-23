@@ -211,7 +211,9 @@ export default function SideMenu() {
                       })
                     }
                     isSelected={
-                      pathname === `${BASE_ROUTE}/esercenti-iniziativa//${item.initiativeId}`
+                      pathname === `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}` ||
+                      pathname ===
+                        `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
                     }
                     icon={GroupIcon}
                     level={2}

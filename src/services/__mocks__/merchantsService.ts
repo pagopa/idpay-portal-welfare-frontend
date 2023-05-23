@@ -1,7 +1,7 @@
 import { merchantsApiMocked } from '../../api/__mocks__/merchantsApiClient';
-import { MerchantOnboardingDTO } from '../../api/generated/merchants/MerchantOnboardingDTO';
-import { MerchantStatusEnum } from '../../api/generated/merchants/MerchantOnboardingStatusDTO';
 import { MerchantUpdateDTO } from '../../api/generated/merchants/MerchantUpdateDTO';
+import { MerchantListDTO } from '../../api/generated/merchants/MerchantListDTO';
+import { MerchantStatusEnum } from '../../api/generated/merchants/MerchantDTO';
 
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 
@@ -14,7 +14,7 @@ export const mockedMerchantUdatedStatus: MerchantUpdateDTO = {
   status: 'OK',
 };
 
-export const mockedMerchantsOnboardingList: MerchantOnboardingDTO = {
+export const mockedMerchantsOnboardingList: MerchantListDTO = {
   content: [
     {
       merchantId: 'aaaa',
@@ -103,5 +103,5 @@ export const mockedMerchantsOnboardingList: MerchantOnboardingDTO = {
 export const uploadMerchantList = (mockedInitiativeId: string, mockedFile: File) =>
   merchantsApiMocked.uploadMerchantList(mockedInitiativeId, mockedFile);
 
-export const getMerchantsOnboardingList = (mockedInitiativeId: string, mockedPage: number) =>
-  merchantsApiMocked.getMerchantsOnboardingList(mockedInitiativeId, mockedPage);
+export const getMerchantList = (mockedInitiativeId: string, mockedPage: number) =>
+  merchantsApiMocked.getMerchantList(mockedInitiativeId, mockedPage);
