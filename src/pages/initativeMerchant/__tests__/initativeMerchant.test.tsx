@@ -70,7 +70,7 @@ describe('test suite for InitativeMerchant ', () => {
     //TEXTFIELD TEST
 
     const searcMerchant = screen.getByLabelText(
-      'pages.initiativeUsers.form.search'
+      'pages.initiativeMerchant.form.search'
     ) as HTMLInputElement;
 
     fireEvent.change(searcMerchant, { target: { value: 'searcMerchant' } });
@@ -101,7 +101,7 @@ describe('test suite for InitativeMerchant ', () => {
     expect(searcMerchant.value).toBe('searchUser');
 
     const resetBtn = screen.getByText(
-      'pages.initiativeUsers.form.resetFiltersBtn'
+      'pages.initiativeMerchant.form.removeFiltersBtn'
     ) as HTMLButtonElement;
 
     fireEvent.click(resetBtn);
