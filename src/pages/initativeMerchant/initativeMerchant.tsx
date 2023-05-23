@@ -189,13 +189,13 @@ const InitativeMerchant = () => {
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
-          items={[initiativeSel.initiativeName, 'temp']}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeMerchants')]}
         />
 
         <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
           <TitleBox
-            title={'tempTitle'}
-            subTitle={'temp subtititle'}
+            title={t('pages.initiativeMerchant.title')}
+            subTitle={t('pages.initiativeMerchant.subtitle')}
             mbTitle={2}
             mtTitle={2}
             mbSubTitle={5}
@@ -211,7 +211,7 @@ const InitativeMerchant = () => {
             onClick={() => history.replace(`${BASE_ROUTE}/gestione-esercenti-iniziativa/${id}`)}
             data-testid="upload-btn-test"
           >
-            tempUpload
+            {t('pages.initiativeMerchant.uploadBtn')}
           </Button>
         </Box>
       </Box>
@@ -219,8 +219,8 @@ const InitativeMerchant = () => {
       <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 4' }}>
           <TextField
-            label={t('pages.initiativeUsers.form.search')}
-            placeholder={t('pages.initiativeUsers.form.search')}
+            label={t('pages.initiativeMerchant.form.search')}
+            placeholder={t('pages.initiativeMerchant.form.search')}
             name="searchMerchant"
             aria-label="searchMerchant"
             role="input"
@@ -265,7 +265,7 @@ const InitativeMerchant = () => {
             onClick={() => formik.handleSubmit()}
             data-testid="apply-filters-test"
           >
-            {t('pages.initiativeUsers.form.filterBtn')}
+            {t('pages.initiativeMerchant.form.filterBtn')}
           </Button>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 1' }}>
@@ -274,7 +274,7 @@ const InitativeMerchant = () => {
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={resetForm}
           >
-            {t('pages.initiativeUsers.form.resetFiltersBtn')}
+            {t('pages.initiativeMerchant.form.removeFiltersBtn')}
           </ButtonNaked>
         </FormControl>
       </Box>
@@ -287,14 +287,14 @@ const InitativeMerchant = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell width="30%">
-                      {t('pages.initiativeUsers.table.beneficiary')}
+                      {t('pages.initiativeMerchant.recap.businessName')}
                     </TableCell>
                     <TableCell width="50%">
-                      {t('pages.initiativeUsers.table.updateStatusDate')}
+                      {t('pages.initiativeMerchant.recap.fiscalCode')}
                     </TableCell>
                     <TableCell width="20%">
                       {
-                        // t('pages.initiativeUsers.table.beneficiaryState')
+                        // t('pages.initiativeMerchant.recap.status')
                       }
                     </TableCell>
                     {/* <TableCell width="10%"></TableCell> */}
@@ -341,7 +341,7 @@ const InitativeMerchant = () => {
           </Box>
         </Box>
       ) : (
-        <EmptyList message={t('pages.initiativeUsers.noData')} />
+        <EmptyList message={t('pages.initiativeMerchant.noData')} />
       )}
     </Box>
   );

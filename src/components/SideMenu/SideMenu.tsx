@@ -203,8 +203,8 @@ export default function SideMenu() {
                     level={2}
                     data-testid="initiativeUsers-click-test"
                   />
-                   <SidenavItem
-                    title='TempEsercenti'
+                  <SidenavItem
+                    title={t('sideMenu.initiativeMerchant.title')}
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}`);
@@ -212,8 +212,6 @@ export default function SideMenu() {
                     }
                     isSelected={
                       pathname === `${BASE_ROUTE}/esercenti-iniziativa//${item.initiativeId}`
-                      // ||
-                      // pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
                     }
                     icon={GroupIcon}
                     level={2}

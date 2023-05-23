@@ -77,6 +77,7 @@ const InitativeUploadMerchants = () => {
             setFileAccepted(true);
           })
           .catch((_error) => {
+            // TODO
             setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
             setAlertDescription(
               t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
@@ -102,18 +103,21 @@ const InitativeUploadMerchants = () => {
       const errorKey = files[0].errors[0].code;
       switch (errorKey) {
         case 'file-invalid-type':
+          // TODO
           setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
           setAlertDescription(
             t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTypeDescription')
           );
           break;
         case 'file-too-large':
+          // TODO
           setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
           setAlertDescription(
             t('pages.initiativeRefundsOutcome.uploadPaper.overMaxUploadDescription')
           );
           break;
         default:
+          // TODO
           setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
           setAlertDescription(
             t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
@@ -160,8 +164,8 @@ const InitativeUploadMerchants = () => {
       >
         <input {...getInputProps()} data-testid="drop-input" />
         <InitUploadBox
-          text={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}
-          link={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
+          text={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaText')}
+          link={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaLink')}
         />
       </Box>
       <Box
@@ -198,14 +202,14 @@ const InitativeUploadMerchants = () => {
           backLabel={t('breadcrumbs.back')}
           items={[
             initiativeSel.initiativeName,
-            t('breadcrumbs.initiativeRefunds'),
-            t('breadcrumbs.initiativeRefundsOutcome'),
+            t('breadcrumbs.initiativeMerchants'),
+            t('breadcrumbs.initiativeMerchantUpload'),
           ]}
         />
 
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
-            title={t('pages.initiativeRefundsOutcome.title')}
+            title={t('pages.initiativeMerchantUpload.title')}
             mbTitle={2}
             mtTitle={2}
             mbSubTitle={5}
@@ -217,10 +221,10 @@ const InitativeUploadMerchants = () => {
 
       <Paper sx={{ display: 'grid', width: '100%', my: 2, p: 3 }}>
         <TitleBoxWithHelpLink
-          title={t('pages.initiativeRefundsOutcome.uploadPaper.title')}
-          subtitle={t('pages.initiativeRefundsOutcome.uploadPaper.subtitle')}
-          helpLink={t('helpStaticUrls.pages.initiativeRefundsOutcome')}
-          helpLabel={t('pages.initiativeRefundsOutcome.uploadPaper.findOut')}
+          title={t('pages.initiativeMerchantUpload.uploadPaper.title')}
+          subtitle={t('pages.initiativeMerchantUpload.uploadPaper.subtitle')}
+          helpLink={t('helpStaticUrls.pages.initiativeRefundsOutcome')} // TODO
+          helpLabel={t('pages.initiativeMerchantUpload.uploadPaper.helpLinkLabel')}
         />
 
         {fileRejected && (
@@ -246,13 +250,13 @@ const InitativeUploadMerchants = () => {
         )}
 
         {fileIsLoading ? (
-          <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} />
+          <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} /> // TODO
         ) : fileAccepted ? (
           <AcceptedFile
             fileName={fileName}
             fileDate={fileDate}
-            chipLabel={t('components.wizard.stepThree.upload.validFile')}
-            buttonLabel={t('components.wizard.stepThree.upload.changeFile')}
+            chipLabel={t('components.wizard.stepThree.upload.validFile')} // TODO
+            buttonLabel={t('components.wizard.stepThree.upload.changeFile')} // TODO
             buttonHandler={setIntiStatus}
           />
         ) : (

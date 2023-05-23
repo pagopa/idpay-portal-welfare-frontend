@@ -1,20 +1,4 @@
 {
-  "breadcrumbs": {
-    "initiativeMerchantUpload": "Gestione esercenti",
-    "back": "Indietro",
-    "createNew": "Crea iniziativa",
-    "exit": "Esci",
-    "initiativeDetail": "Dettaglio iniziativa",
-    "initiativeMerchants": "Esercenti",
-    "initiativeRanking": "Graduatoria",
-    "initiativeRefunds": "Rimborsi",
-    "initiativeRefundsDetails": "Dettaglio rimborso",
-    "initiativeRefundsOutcome": "Esiti",
-    "initiativeUserDetails": "Dettaglio nucleo familiare",
-    "initiativeUsers": "Richiedenti",
-    "initiativeUsersRanking": "Graduatoria",
-    "initiatives": "Iniziative"
-  },
   "components": {
     "wizard": {
       "stepTwo": {
@@ -396,36 +380,6 @@
     "home": {
       "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
       "title": "Iniziative"
-    },
-    "initiativeMerchantUpload": {
-      "uploadPaper": {
-        "dragAreaLink": "selezionalo dal tuo computer",
-        "dragAreaText": "Trascina qui il file csv con la lista degli esercenti o",
-        "fileUploadHelpLinkLabel": "Scarica l’esempio",
-        "fileUploadHelpText": "Non sai come preparare il file?",
-        "helpLinkLabel": "Dubbi? Vai al manuale",
-        "title": "Carica un nuovo file",
-        "subtitle": "Lo elaboreremo per aggiornare lo stato dei rimborsi."
-      },
-      "title": "Gestione esercenti"
-    },
-    "initiativeMerchant": {
-      "form": {
-        "all": "Tutti",
-        "filterBtn": "Filtra",
-        "removeFiltersBtn": "Rimuovi filtri",
-        "filterByStatus": "Stato",
-        "search": "Cerca per Codice Fiscale"
-      },
-      "recap": {
-        "status": "Stato",
-        "businessName": "Ragione sociale",
-        "fiscalCode": "P. IVA/Codice Fiscale"
-      },
-      "subtitle": "Visualizza e gestisci gli esercenti",
-      "title": "Esercenti",
-      "uploadBtn": "Carica esercenti",
-      "noData": "Non c’è ancora un elenco esercenti per questa iniziativa."
     },
     "initiativeUserDetails": {
       "addedBy": "Aggiunto da",
@@ -861,7 +815,7 @@
       "uploadPaper": {
         "changeFile": "Sostituisci file",
         "dragAreaLink": "selezionalo dal tuo computer",
-        "dragAreaText": "Trascina qui il file zip con la lista degli esercenti o",
+        "dragAreaText": "Trascina qui il file zip con la lista degli esiti o",
         "fileIsLoading": "Caricamento in corso",
         "fileIsOnEvaluation": "Stiamo elaborando il file: quando è pronto, te lo faremo sapere via e-mail.",
         "fileUploadHelpFileLinkLabel": "Scarica l'esempio",
@@ -983,9 +937,6 @@
     "initiativeList": {
       "title": "Iniziative"
     },
-    "initiativeMerchant": {
-      "title": "Esercenti"
-    },
     "initiativeOverview": {
       "title": "Panoramica"
     },
@@ -1058,5 +1009,19 @@
     "webValid": "Inserisci un indirizzo web",
     "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €"
+  },
+  "breadcrumbs": {
+    "back": "Indietro",
+    "createNew": "Crea iniziativa",
+    "exit": "Esci",
+    "initiativeDetail": "Dettaglio iniziativa",
+    "initiativeRanking": "Graduatoria",
+    "initiativeRefunds": "Rimborsi",
+    "initiativeRefundsDetails": "Dettaglio rimborso",
+    "initiativeRefundsOutcome": "Esiti",
+    "initiativeUserDetails": "Dettaglio nucleo familiare",
+    "initiativeUsers": "Richiedenti",
+    "initiativeUsersRanking": "Graduatoria",
+    "initiatives": "Iniziative"
   }
 }
