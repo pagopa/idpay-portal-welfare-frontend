@@ -230,21 +230,12 @@ const InitiativeUsers = () => {
         <BreadcrumbsBox
           backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
-          items={[
-            initiativeSel.initiativeName,
-            initiativeSel.generalInfo.rankingEnabled === 'true'
-              ? t('breadcrumbs.initiativeUsersRanking')
-              : t('breadcrumbs.initiativeUsers'),
-          ]}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeUsers')]}
         />
 
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
-            title={
-              initiativeSel.generalInfo.rankingEnabled === 'true'
-                ? t('pages.initiativeUsers.titleRanking')
-                : t('pages.initiativeUsers.title')
-            }
+            title={t('pages.initiativeUsers.title')}
             subTitle={t('pages.initiativeUsers.subtitle')}
             mbTitle={2}
             mtTitle={2}

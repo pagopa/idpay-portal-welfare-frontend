@@ -210,7 +210,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
-  rewardType: InitiativeRewardTypeEnum | undefined,
+  rewardType: InitiativeRewardTypeEnum,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,

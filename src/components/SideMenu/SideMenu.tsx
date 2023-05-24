@@ -185,11 +185,7 @@ export default function SideMenu() {
                     />
                   ) : null}
                   <SidenavItem
-                    title={
-                      item.hasOwnProperty('rankingEnabled') && item.rankingEnabled
-                        ? t('sideMenu.initiativeUsers.rankingTitle')
-                        : t('sideMenu.initiativeUsers.title')
-                    }
+                    title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
@@ -203,22 +199,27 @@ export default function SideMenu() {
                     level={2}
                     data-testid="initiativeUsers-click-test"
                   />
-                  <SidenavItem
-                    title={t('sideMenu.initiativeMerchant.title')}
-                    handleClick={() =>
-                      onExit(() => {
-                        history.replace(`${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}`);
-                      })
-                    }
-                    isSelected={
-                      pathname === `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}` ||
-                      pathname ===
-                        `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
-                    }
-                    icon={GroupIcon}
-                    level={2}
-                    data-testid="initiativeMerchant-click-test"
-                  />
+                  {item.hasOwnProperty('initiativeRewardType') &&
+                    item.initiativeRewardType === 'DISCOUNT' && (
+                      <SidenavItem
+                        title={t('sideMenu.initiativeMerchant.title')}
+                        handleClick={() =>
+                          onExit(() => {
+                            history.replace(
+                              `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}`
+                            );
+                          })
+                        }
+                        isSelected={
+                          pathname === `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}` ||
+                          pathname ===
+                            `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
+                        }
+                        icon={GroupIcon}
+                        level={2}
+                        data-testid="initiativeMerchant-click-test"
+                      />
+                    )}
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
