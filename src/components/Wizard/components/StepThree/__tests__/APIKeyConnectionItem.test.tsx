@@ -1,7 +1,7 @@
 import React from 'react';
 import APIKeyConnectionItem from '../APIKeyConnectionItem';
 import { cleanup, fireEvent, screen } from '@testing-library/react';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import { store } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 
@@ -24,7 +24,7 @@ describe('<APIKeyConnectionItem />', () => {
     const handleApyKeyClientAssertionChanged = jest.fn();
     const handleApiKeyClientDispathed = jest.fn();
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <APIKeyConnectionItem
         action={WIZARD_ACTIONS.SUBMIT}
         apiKeyClientId={store.getState().initiative.beneficiaryRule.apiKeyClientId}
@@ -49,7 +49,7 @@ describe('<APIKeyConnectionItem />', () => {
   });
 
   it('Should display the APIKeyConnectionItem action draft', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <APIKeyConnectionItem
         action={WIZARD_ACTIONS.DRAFT}
         apiKeyClientId={store.getState().initiative.beneficiaryRule.apiKeyClientId}

@@ -228,7 +228,6 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
           rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
           threshold: threshold,
           trxCount: { from: 2, to: 3 },
-          // daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
           daysOfWeek: [
             {
               daysOfWeek: [

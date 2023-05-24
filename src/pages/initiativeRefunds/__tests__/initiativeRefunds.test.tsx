@@ -5,7 +5,7 @@ import { date } from 'yup';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
 import ROUTES from '../../../routes';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefunds from '../initiativeRefunds';
 
 jest.mock('react-i18next', () => ({
@@ -45,7 +45,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   it('Test Initiativerefunds Inputs and Element', async () => {
-    const { history } = renderWithHistoryAndStore(<InitiativeRefunds />);
+    const { history } = renderWithContext(<InitiativeRefunds />);
 
     const oldLocPathname = history.location.pathname;
 
@@ -119,7 +119,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   it('Test searchFrom and searchTo undefined case', async () => {
-    renderWithHistoryAndStore(<InitiativeRefunds />);
+    renderWithContext(<InitiativeRefunds />);
 
     const searchFrom = screen.getByLabelText(/pages.initiativeRefunds.form.from/);
     const searchTo = screen.getByLabelText(/pages.initiativeRefunds.form.to/);
@@ -135,7 +135,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   it('test download file refunds button', async () => {
-    renderWithHistoryAndStore(<InitiativeRefunds />);
+    renderWithContext(<InitiativeRefunds />);
     fireEvent.click(await screen.findByTestId('download-file-refunds'));
   });
 
@@ -167,7 +167,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
           totalPages: 0,
         })
       )),
-      renderWithHistoryAndStore(<InitiativeRefunds />);
+      renderWithContext(<InitiativeRefunds />);
   });
 
   test('test else case of getExportsPaged ', () => {
@@ -180,7 +180,7 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
         })
       );
 
-    renderWithHistoryAndStore(<InitiativeRefunds />);
+    renderWithContext(<InitiativeRefunds />);
   });
 
   test('test getExportsPaged call without initiativeId in the header', () => {
@@ -212,11 +212,11 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
         })
       );
 
-    renderWithHistoryAndStore(<InitiativeRefunds />);
+    renderWithContext(<InitiativeRefunds />);
   });
 
   it(' test catch case with promise reject', async () => {
     (InitiativeApiMocked.getExportsPaged = async (): Promise<any> => Promise.reject('reason')),
-      renderWithHistoryAndStore(<InitiativeRefunds />);
+      renderWithContext(<InitiativeRefunds />);
   });
 });

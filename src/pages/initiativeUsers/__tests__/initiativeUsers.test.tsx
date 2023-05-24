@@ -13,7 +13,7 @@ import { Initiative } from '../../../model/Initiative';
 import { setInitiative } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { renderWithHistoryAndStore, renderWithProviders } from '../../../utils/test-utils';
+import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
 import InitiativeUsers from '../initiativeUsers';
 
 jest.mock('react-i18next', () => ({
@@ -222,7 +222,7 @@ describe('<InitiativeUsers />', () => {
   });
 
   test('Reset Form on Click reset button and test click beneficiaryBtn', async () => {
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
 
     const searchUser = screen.getByLabelText(
       'pages.initiativeUsers.form.search'
@@ -280,7 +280,7 @@ describe('<InitiativeUsers />', () => {
             totalPages: 0,
           })
         )),
-        renderWithHistoryAndStore(<InitiativeUsers />);
+        renderWithContext(<InitiativeUsers />);
     });
   });
 
@@ -294,7 +294,7 @@ describe('<InitiativeUsers />', () => {
       _status: string | undefined
     ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedResponde));
 
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
   });
 
   test('render component without id in header', () => {
@@ -308,11 +308,11 @@ describe('<InitiativeUsers />', () => {
 
     Object.defineProperty(window, 'location', { value: mockedLocationWithoutPathParam });
 
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
   });
 
   test('test catch case of onboarding api call', () => {
     InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
   });
 });

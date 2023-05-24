@@ -12,7 +12,7 @@ import { store } from '../../../../../redux/store';
 import { BASE_ROUTE } from '../../../../../routes';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import Generalnfo from '../Generalnfo';
 
 jest.mock('react-i18next', () => ({
@@ -64,7 +64,7 @@ describe('<Genaralnfo />', () => {
 
   it('BeneficiaryTypes / BeneficiaryKnowns have the correct values', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Generalnfo
         action={WIZARD_ACTIONS.SUBMIT}
         setAction={jest.fn()}
@@ -111,7 +111,7 @@ describe('<Genaralnfo />', () => {
 
   it('Total Budget / Budget per Person Test', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Generalnfo
         action={WIZARD_ACTIONS.DRAFT}
         setAction={jest.fn()}
@@ -132,7 +132,7 @@ describe('<Genaralnfo />', () => {
 
   it('Date Join / Spend Test', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Generalnfo
         action={WIZARD_ACTIONS.SUBMIT}
         setAction={jest.fn()}
@@ -168,7 +168,7 @@ describe('<Genaralnfo />', () => {
 
   it('Test markdown with different language', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Generalnfo
         action={WIZARD_ACTIONS.SUBMIT}
         setAction={jest.fn()}

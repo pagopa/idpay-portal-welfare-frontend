@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import LoadingFile from '../LoadingFile';
 
 beforeEach(() => {
@@ -8,6 +8,6 @@ beforeEach(() => {
 
 describe('test suite for LoadingFile', () => {
   test('render LoadingFile', () => {
-    renderWithHistoryAndStore(<LoadingFile message="message" />);
+    renderWithContext(<LoadingFile message="message" />);
   });
 });

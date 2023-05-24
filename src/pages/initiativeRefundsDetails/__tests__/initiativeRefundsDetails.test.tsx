@@ -7,7 +7,7 @@ import { SasToken } from '../../../api/generated/initiative/SasToken';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { mockedGetRewardFileDownload } from '../../../services/__mocks__/initiativeService';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 
 beforeEach(() => {
@@ -35,7 +35,7 @@ afterEach(() => cleanup);
 
 describe('test suite for refund details', () => {
   test('test render of component InitiativeRefundsDetails ', async () => {
-    const { history } = renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    const { history } = renderWithContext(<InitiativeRefundsDetails />);
 
     // on click of back location changes
     const oldLocPathname = history.location.pathname;
@@ -52,14 +52,14 @@ describe('test suite for refund details', () => {
       _filePath: string
     ): Promise<SasToken> => new Promise((resolve) => resolve(mockedGetRewardFileDownload));
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
 
     const downloadCsvBtn = screen.getByTestId('download-btn-test') as HTMLButtonElement;
     fireEvent.click(downloadCsvBtn);
   });
 
   test('test on filters of refund Details', async () => {
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
     const filterByCro = screen.getByLabelText(
       'pages.initiativeRefundsDetails.form.cro'
     ) as HTMLInputElement;
@@ -90,7 +90,7 @@ describe('test suite for refund details', () => {
   });
 
   test('test open modal and close modal', async () => {
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
 
     // click on arrow icon to open modal
     const openModalArrowBtn = (await screen.findAllByTestId(
@@ -125,14 +125,14 @@ describe('test suite for refund details', () => {
       _cro?: string,
       _status?: string
     ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test catch case of getRewardFileDownload api call', async () => {
     InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test render component without parameter in the header', async () => {
@@ -146,7 +146,7 @@ describe('test suite for refund details', () => {
 
     Object.defineProperty(window, 'location', { value: mockedLocationWithoutPathParams });
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test addError with reject case for getExportSummary, getExportRefundsListPaged and getRewardFileDownload', async () => {
@@ -158,6 +158,6 @@ describe('test suite for refund details', () => {
 
     InitiativeApiMocked.getExportRefundsListPaged = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 });

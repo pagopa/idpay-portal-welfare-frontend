@@ -1,15 +1,13 @@
 import {
   formatedCurrency,
   formatedDate,
-  formatedDateHoursAndMin,
   formatFileName,
   formatIban,
   formatStringToDate,
   getMaskedPan,
-  mappedChannel,
   numberWithCommas,
   peopleReached,
-  renderInitiativeStatus,
+  renderInitiativeStatus
 } from '../helpers';
 
 describe('switch initiative status', () => {
@@ -68,11 +66,7 @@ describe('switch initiative status', () => {
   test('test formatFileName with undefined as param', () => {
     expect(formatIban(undefined)).toEqual('');
   });
-  /*
-  test('test formatedCurrency with number as param', () => {
-    expect(formatedCurrency(1200)).toEqual('\U+00a0');
-  });
-*/
+ 
   test('test formatedCurrency with undefined as param', () => {
     expect(formatedCurrency(undefined)).toEqual('-');
   });
@@ -83,14 +77,6 @@ describe('switch initiative status', () => {
 
   test('test formatedDate with undefined as param', () => {
     expect(formatedDate(undefined)).toEqual('-');
-  });
-
-  test('test formatedDateHoursAndMin with Date object as param', () => {
-    expect(formatedDateHoursAndMin(date)).toEqual('01/10/2022, 02:00');
-  });
-
-  test('test formatedDateHoursAndMin with undefined as param', () => {
-    expect(formatedDateHoursAndMin(undefined)).toEqual('-');
   });
 
   test('test formatStringToDate with Date object as param', () => {
