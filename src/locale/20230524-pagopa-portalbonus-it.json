@@ -363,8 +363,8 @@
   },
   "helpStaticUrls": {
     "pages": {
-      "initiativeMerchantUpload": "https://www.google.it",
-      "initiativeRefundsOutcome": "https://www.google.it"
+      "initiativeRefundsOutcome": "https://www.google.it",
+      "initiativeMerchantUpload": "https://www.google.it"
     },
     "wizard": {
       "admissionCriteria": "https://www.google.it",
@@ -402,21 +402,10 @@
       "uploadPaper": {
         "dragAreaLink": "selezionalo dal tuo computer",
         "dragAreaText": "Trascina qui il file csv con la lista degli esercenti o",
-        "emptyFile": "Il file non può essere vuoto",
-        "errorDescription": "Si è verificato un errore. Riprova",
-        "errorTitle": "II file contiene degli errori",
         "fileUploadHelpLinkLabel": "Scarica l’esempio",
         "fileUploadHelpText": "Non sai come preparare il file?",
-        "fileIsLoading": "Caricamento in corso",
-        "fileNameError": "Il nome del file è già in uso",
-        "fileTooLarge": "La dimensione del file non deve superare i {{x}} mb",
         "helpLinkLabel": "Dubbi? Vai al manuale",
-        "missingRow": "Campi obbligatori mancanti alla riga {{x}}",
         "title": "Carica un nuovo file",
-        "wrongIban": "IBAN non valido alla riga {{x}}",
-        "wrongCf": "Codice fiscale non valido alla riga {{x}}",
-        "wrongEmail": "Email non valida alla riga {{x}}",
-        "wrongFileType": "Il formato del file deve essere csv",
         "subtitle": "Lo elaboreremo per aggiornare lo stato dei rimborsi."
       },
       "title": "Gestione esercenti"
@@ -432,9 +421,9 @@
       "recap": {
         "status": "Stato",
         "businessName": "Ragione sociale",
-        "fiscalCode": "Codice Fiscale o Partita IVA"
+        "fiscalCode": "P. IVA/Codice Fiscale"
       },
-      "subtitle": "Visualizza e gestisci l’elenco degli esercenti.",
+      "subtitle": "Visualizza e gestisci gli esercenti",
       "title": "Esercenti",
       "uploadBtn": "Carica esercenti",
       "noData": "Non c’è ancora un elenco esercenti per questa iniziativa."

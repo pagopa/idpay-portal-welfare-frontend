@@ -1,4 +1,3 @@
-// import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import {
   Alert,
   AlertTitle,
@@ -9,10 +8,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import {
-  TitleBox,
-  //  useErrorDispatcher
-} from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
@@ -34,7 +30,6 @@ const InitativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
-  // const addError = useErrorDispatcher();
   const [fileIsLoading, setFileIsLoading] = useState(false);
   const [fileRejected, setFileRejected] = useState(false);
   const [fileAccepted, setFileAccepted] = useState(false);
@@ -57,53 +52,84 @@ const InitativeUploadMerchants = () => {
 
   const { getRootProps, getInputProps } = useDropzone({
     maxFiles: 1,
-    maxSize: 183500800,
+    maxSize: 2097152,
     accept: 'text/csv',
     onDrop: () => {
       setFileRejected(false);
     },
     onDropAccepted: (files) => {
-      setFileIsLoading(true);
-
-      setFileAccepted(true);
-
-      setFileName(files[0].name);
-
-      const dateField =
-        Object.prototype.toString.call(files[0].lastModified) === '[object Date]'
-          ? files[0].lastModified
-          : new Date();
-      const fileDate = dateField && dateField.toLocaleString('fr-BE');
-
-      setFileDate(fileDate || '');
-
       if (typeof id === 'string') {
         uploadMerchantList(id, files[0])
-          .then((_res) => {
-            setFileIsLoading(false);
-            setFileRejected(false);
-            setFileAccepted(true);
+          .then((res) => {
+            if (res.status === 'OK') {
+              setFileName(files[0].name);
+              const dateField =
+                Object.prototype.toString.call(files[0].lastModified) === '[object Date]'
+                  ? files[0].lastModified
+                  : new Date();
+              const fileDate = dateField && dateField.toLocaleString('fr-BE');
+              setFileDate(fileDate || '');
+              setFileIsLoading(false);
+              setFileRejected(false);
+              setFileAccepted(true);
+            } else {
+              setAlertTitle(t('pages.initiativeMerchantUpload.uploadPaper.errorTitle'));
+              switch (res.errorKey) {
+                case 'merchant.invalid.file.empty':
+                  setAlertDescription(t('pages.initiativeMerchantUpload.uploadPaper.emptyFile'));
+                  break;
+                case 'merchant.invalid.file.format':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongFileType')
+                  );
+                  break;
+                case 'merchant.invalid.file.name':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.fileNameError')
+                  );
+                  break;
+                case 'merchant.invalid.file.size':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.fileTooLarge', { x: 2 })
+                  );
+                  break;
+                case 'merchant.missing.required.fields':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.missingRow', { x: res.errorRow })
+                  );
+                  break;
+                case 'merchant.invalid.file.cf.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongCf', { x: res.errorRow })
+                  );
+                  break;
+                case 'merchant.invalid.file.iban.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongIban', { x: res.errorRow })
+                  );
+                  break;
+                case 'merchant.invalid.file.email.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongEmail', { x: res.errorRow })
+                  );
+                  break;
+                default:
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.errorDescription')
+                  );
+                  break;
+              }
+              setFileIsLoading(false);
+              setFileAccepted(false);
+              setFileRejected(true);
+            }
           })
           .catch((_error) => {
-            // TODO
-            setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
-            setAlertDescription(
-              t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
-            );
-            // addError({
-            //   id: 'PUT_DISP_FILE_ERROR',
-            //   blocking: false,
-            //   error,
-            //   techDescription: 'An error occurred saving dispositive file',
-            //   displayableTitle: t('errors.title'),
-            //   displayableDescription: t('errors.getFileDataDescription'),
-            //   toNotify: false,
-            //   component: 'Toast',
-            //   showCloseIcon: true,
-            // });
-            setFileRejected(true);
+            setAlertTitle(t('pages.initiativeMerchantUpload.uploadPaper.errorTitle'));
+            setAlertDescription(t('pages.initiativeMerchantUpload.uploadPaper.errorDescription'));
             setFileIsLoading(false);
             setFileAccepted(false);
+            setFileRejected(true);
           });
       }
     },
@@ -111,25 +137,18 @@ const InitativeUploadMerchants = () => {
       const errorKey = files[0].errors[0].code;
       switch (errorKey) {
         case 'file-invalid-type':
-          // TODO
-          setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
-          setAlertDescription(
-            t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTypeDescription')
-          );
+          setAlertTitle(t('pages.initiativeMerchantUpload.uploadPaper.errorTitle'));
+          setAlertDescription(t('pages.initiativeMerchantUpload.uploadPaper.wrongFileType'));
           break;
         case 'file-too-large':
-          // TODO
-          setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
+          setAlertTitle(t('pages.initiativeMerchantUpload.uploadPaper.errorTitle'));
           setAlertDescription(
-            t('pages.initiativeRefundsOutcome.uploadPaper.overMaxUploadDescription')
+            t('pages.initiativeMerchantUpload.uploadPaper.fileTooLarge', { x: 2 })
           );
           break;
         default:
-          // TODO
-          setAlertTitle(t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileTitle'));
-          setAlertDescription(
-            t('pages.initiativeRefundsOutcome.uploadPaper.invalidFileDescription')
-          );
+          setAlertTitle(t('pages.initiativeMerchantUpload.uploadPaper.errorTitle'));
+          setAlertDescription(t('pages.initiativeMerchantUpload.uploadPaper.errorDescription'));
           break;
       }
       setFileIsLoading(false);
@@ -258,13 +277,13 @@ const InitativeUploadMerchants = () => {
         )}
 
         {fileIsLoading ? (
-          <LoadingFile message={t('pages.initiativeRefundsOutcome.uploadPaper.fileIsLoading')} /> // TODO
+          <LoadingFile message={t('pages.initiativeMerchantUpload.uploadPaper.fileIsLoading')} />
         ) : fileAccepted ? (
           <AcceptedFile
             fileName={fileName}
             fileDate={fileDate}
-            chipLabel={t('components.wizard.stepThree.upload.validFile')} // TODO
-            buttonLabel={t('components.wizard.stepThree.upload.changeFile')} // TODO
+            chipLabel={t('components.wizard.stepThree.upload.validFile')}
+            buttonLabel={t('components.wizard.stepThree.upload.changeFile')}
             buttonHandler={setIntiStatus}
           />
         ) : (
