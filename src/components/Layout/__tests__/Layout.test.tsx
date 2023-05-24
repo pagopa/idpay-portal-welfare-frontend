@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import Layout from '../Layout';
 import InitiativeList from '../../../pages/initiativeList/InitiativeList';
 
@@ -10,6 +10,6 @@ beforeEach(() => {
 
 describe('test suite for Layout', () => {
   test('test render Layout', () => {
-    renderWithHistoryAndStore(<Layout children={<InitiativeList />} />);
+    renderWithContext(<Layout children={<InitiativeList />} />);
   });
 });

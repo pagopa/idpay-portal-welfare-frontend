@@ -1,7 +1,7 @@
 import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { RefundDetailDTO } from '../../../api/generated/initiative/RefundDetailDTO';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetailsModal';
 
 beforeEach(() => {
@@ -11,7 +11,7 @@ beforeEach(() => {
 
 describe('initiativeRefundsDetailsModal', () => {
   test('render of initiativeRefundsDetailsModal', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <InitiativeRefundsDetailsModal
         openRefundsDetailModal={true}
         handleCloseRefundModal={function (_event: React.MouseEvent<Element, MouseEvent>): void {
@@ -47,7 +47,7 @@ describe('initiativeRefundsDetailsModal', () => {
     InitiativeApiMocked.getRefundDetail = async (): Promise<RefundDetailDTO> =>
       Promise.reject('mocked error response for tests');
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <InitiativeRefundsDetailsModal
         openRefundsDetailModal={true}
         handleCloseRefundModal={function (_event: React.MouseEvent<Element, MouseEvent>): void {

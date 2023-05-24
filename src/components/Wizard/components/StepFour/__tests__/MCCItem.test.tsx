@@ -6,7 +6,7 @@ import { ConfigMccArrayDTO } from '../../../../../api/generated/initiative/Confi
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import MCCItem from '../MCCItem';
 import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
 
@@ -40,7 +40,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   });
 
   test('Test MCCItem codes onChange', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <MCCItem
         title={'title'}
         code={'MCC'}
@@ -71,7 +71,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
 
   test('Test MCCItem codes with shopRulesToSubmit and data undefined', async () => {
     const shopRulesToSubmitMccTrue = [{ code: undefined, dispatched: false }];
-    renderWithHistoryAndStore(
+    renderWithContext(
       <MCCItem
         title={'title'}
         code={'MCC'}
@@ -88,7 +88,7 @@ describe('<MCCItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   test('test catch case api getMccConfig', async () => {
     InitiativeApiMocked.getMccConfig = async (): Promise<ConfigMccArrayDTO> =>
       Promise.reject('mocked error response for tests');
-    renderWithHistoryAndStore(
+    renderWithContext(
       <MCCItem
         title={'title'}
         code={'MCC'}

@@ -2,7 +2,7 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 // import { StatusEnum as WalletStatusEnum } from '../../../api/generated/initiative/WalletDTO';
 import { StatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 
 beforeEach(() => {
@@ -57,7 +57,7 @@ const walletInstrument = [
 describe('test suite initiative user details', () => {
   test('test of component TransactionDetailModal open', async () => {
     window.scrollTo = jest.fn();
-    renderWithHistoryAndStore(
+    renderWithContext(
       <PaymentMethodsModal
         openPaymentMethodModal={true}
         handleClosePaymentMethodModal={jest.fn()}
@@ -71,7 +71,7 @@ describe('test suite initiative user details', () => {
 
   test('test of component TransactionDetailModal open', async () => {
     window.scrollTo = jest.fn();
-    renderWithHistoryAndStore(
+    renderWithContext(
       <PaymentMethodsModal
         openPaymentMethodModal={false}
         handleClosePaymentMethodModal={jest.fn()}

@@ -28,23 +28,6 @@ export const renderWithContext = (
   injectedStore?: ReturnType<typeof createStore>,
   injectedHistory?: ReturnType<typeof createMemoryHistory>
 ) => {
-  const history = injectedHistory ? injectedHistory : createMemoryHistory();
-  const storeInjected = injectedStore ? injectedStore : createStore();
-  render(
-    <Provider store={storeInjected}>
-      <ThemeProvider theme={theme}>
-        <Router history={history}>{element}</Router>
-      </ThemeProvider>
-    </Provider>
-  );
-  return { store, history };
-};
-
-export const renderWithHistoryAndStore = (
-  element?: React.ReactNode,
-  injectedStore?: ReturnType<typeof createStore>,
-  injectedHistory?: ReturnType<typeof createMemoryHistory>
-) => {
   const store = injectedStore ? injectedStore : createStore();
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
   render(
@@ -57,5 +40,3 @@ export const renderWithHistoryAndStore = (
   return { store, history };
 };
 
-export * from '@testing-library/react';
-// export { customRender as renderWithProviders };

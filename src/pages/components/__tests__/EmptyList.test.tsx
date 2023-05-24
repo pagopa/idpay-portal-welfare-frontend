@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import EmptyList from '../EmptyList';
 
 beforeEach(() => {
@@ -8,6 +8,6 @@ beforeEach(() => {
 
 describe('test suite for EmptyList', () => {
   test('render EmptyList', () => {
-    renderWithHistoryAndStore(<EmptyList message="message" />);
+    renderWithContext(<EmptyList message="message" />);
   });
 });

@@ -23,7 +23,7 @@ import {
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import ShopRules from '../ShopRules';
 
 beforeEach(() => {
@@ -234,7 +234,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test percentage-recognized-value input', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Layout>
         <ShopRules
           action={WIZARD_ACTIONS.SUBMIT}
@@ -261,7 +261,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (): Promise<void> =>
       Promise.reject('mocked error response for tests');
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <ShopRules
         action={''}
         setAction={setAction}

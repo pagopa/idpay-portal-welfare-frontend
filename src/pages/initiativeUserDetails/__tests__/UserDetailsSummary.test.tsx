@@ -8,7 +8,7 @@ import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentL
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import UserDetailsSummary from '../components/UserDetailsSummary';
 
 beforeEach(() => {
@@ -80,7 +80,7 @@ describe('test suite initiative user details', () => {
   ];
 
   test('test render of component with UserDetailsSummary status ONBOARDING_OK', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -94,7 +94,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test render of component UserDetailsSummary with status ELIGIBLE_KO', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -117,7 +117,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test render of component UserDetailsSummary with status ONBOARDING_KO', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -140,7 +140,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test render of component UserDetailsSummary with status SUSPENDED', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -154,7 +154,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test render with initiativeRewardType = Refund', async () => {
-    const { store } = renderWithHistoryAndStore(
+    const { store } = renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -179,7 +179,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test render with initiativeRewardType = DISCOUNT', async () => {
-    const { store } = renderWithHistoryAndStore(
+    const { store } = renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}
@@ -209,7 +209,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
       await Promise.reject('test reject getIban addError');
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <UserDetailsSummary
         id={'id2132121iniziativa'}
         cf={'fakecf12212'}

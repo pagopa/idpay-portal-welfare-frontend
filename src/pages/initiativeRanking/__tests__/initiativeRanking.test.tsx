@@ -4,7 +4,7 @@ import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient'
 import { PageOnboardingRankingsDTO } from '../../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { SasToken } from '../../../api/generated/initiative/SasToken';
 import ROUTES from '../../../routes';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRanking from '../initiativeRanking';
 
 jest.mock('react-i18next', () => ({
@@ -79,7 +79,7 @@ describe('<InitiativeRefunds />', () => {
   };
 
   it('Test InitiativeRanking to be Rendered with state', async () => {
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
@@ -113,7 +113,7 @@ describe('<InitiativeRefunds />', () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
       async (): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedRes));
 
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
 
     // test reset filter btn click
     const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
@@ -146,7 +146,7 @@ describe('<InitiativeRefunds />', () => {
       async (): Promise<PageOnboardingRankingsDTO> =>
         new Promise((resolve) => resolve(mockedResEmptyContent));
 
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test case getBeneficiaryStatus ELIGIBLE_KO', () => {
@@ -178,25 +178,25 @@ describe('<InitiativeRefunds />', () => {
             rankingFilePath: 'string',
           })
         );
-      renderWithHistoryAndStore(<InitiativeRanking />);
+      renderWithContext(<InitiativeRanking />);
     });
   });
 
   test('test catch case of getInitiativeOnboardingRankingStatus', async () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
       async (): Promise<PageOnboardingRankingsDTO> => Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test catch case of getRankingFileDownload', async () => {
     InitiativeApiMocked.getRankingFileDownload = async (): Promise<SasToken> =>
       Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test catch case of notifyCitizenRankings', async () => {
     InitiativeApiMocked.notifyCitizenRankings = async (): Promise<void> =>
       Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 });

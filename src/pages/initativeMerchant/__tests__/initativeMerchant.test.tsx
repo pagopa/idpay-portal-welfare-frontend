@@ -4,7 +4,7 @@ import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 // import { MerchantStatusEnum } from '../../../api/generated/merchants/MerchantOnboardingStatusDTO';
 import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpdateDTO';
 import ROUTES from '../../../routes';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitativeMerchant from '../initativeMerchant';
 
 window.scrollTo = jest.fn();
@@ -37,11 +37,11 @@ afterEach(cleanup);
 
 describe('test suite for InitativeMerchant ', () => {
   test('render of compoment InitativeMerchant', async () => {
-    renderWithHistoryAndStore(<InitativeMerchant />);
+    renderWithContext(<InitativeMerchant />);
   });
 
   test('test that location changes on click of back button', async () => {
-    const { history } = renderWithHistoryAndStore(<InitativeMerchant />);
+    const { history } = renderWithContext(<InitativeMerchant />);
 
     const merchantBackBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
 
@@ -53,7 +53,7 @@ describe('test suite for InitativeMerchant ', () => {
   });
 
   test('test that location changes on click of upload button', async () => {
-    const { history } = renderWithHistoryAndStore(<InitativeMerchant />);
+    const { history } = renderWithContext(<InitativeMerchant />);
 
     const merchantUploadBtn = screen.getByTestId('upload-btn-test') as HTMLButtonElement;
 
@@ -65,7 +65,7 @@ describe('test suite for InitativeMerchant ', () => {
   });
 
   test('test filters of merchant list, submit button and reset button  ', async () => {
-    renderWithHistoryAndStore(<InitativeMerchant />);
+    renderWithContext(<InitativeMerchant />);
 
     //TEXTFIELD TEST
 
@@ -116,6 +116,6 @@ describe('test suite for InitativeMerchant ', () => {
     ): Promise<MerchantUpdateDTO> =>
       await Promise.reject('test reject getMerchantsOnboardingList addError');
 
-    renderWithHistoryAndStore(<InitativeMerchant />);
+    renderWithContext(<InitativeMerchant />);
   });
 });
