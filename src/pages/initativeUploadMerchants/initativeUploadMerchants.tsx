@@ -61,7 +61,7 @@ const InitativeUploadMerchants = () => {
       if (typeof id === 'string') {
         uploadMerchantList(id, files[0])
           .then((res) => {
-            if (res.status === 'OK') {
+            if (res.status === 'VALIDATED') {
               setFileName(files[0].name);
               const dateField =
                 Object.prototype.toString.call(files[0].lastModified) === '[object Date]'
