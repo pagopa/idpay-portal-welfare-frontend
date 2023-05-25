@@ -69,6 +69,8 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
       ROUTES.INITIATIVE_REFUNDS_DETAIL,
       ROUTES.INITIATIVE_USER_DETAILS,
+      ROUTES.INITIATIVE_MERCHANT,
+      ROUTES.INITIATIVE_MERCHANT_UPLOAD,
     ],
     exact: true,
     strict: false,
@@ -433,7 +435,7 @@ export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): v
         ...response.trxRule.trxCount,
         from: undefined,
       };
-      dispatch(saveThreshold(trxCount));
+      dispatch(saveTrxCount(trxCount));
     } else if (
       response.trxRule.trxCount.hasOwnProperty('from') &&
       !response.trxRule.trxCount.hasOwnProperty('to')
@@ -442,7 +444,7 @@ export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): v
         ...response.trxRule.trxCount,
         to: undefined,
       };
-      dispatch(saveThreshold(trxCount));
+      dispatch(saveTrxCount(trxCount));
     }
   }
 };

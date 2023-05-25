@@ -130,19 +130,28 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
         )}
 
       {typeof initiativeDetail.trxRule.trxCount?.from === 'number' &&
-        typeof initiativeDetail.trxRule.trxCount?.to === 'number' && (
-          <Fragment>
-            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-              {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
-            </Typography>
-            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {t('pages.initiativeDetail.accordion.step4.content.transactionNumberInterval', {
-                minValue: initiativeDetail.trxRule.trxCount.from,
-                maxValue: initiativeDetail.trxRule.trxCount.to,
-              })}
-            </Typography>
-          </Fragment>
-        )}
+      typeof initiativeDetail.trxRule.trxCount?.to === 'number' ? (
+        <Fragment>
+          <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+            {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
+          </Typography>
+          <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            {t('pages.initiativeDetail.accordion.step4.content.transactionNumberInterval', {
+              minValue: initiativeDetail.trxRule.trxCount.from,
+              maxValue: initiativeDetail.trxRule.trxCount.to,
+            })}
+          </Typography>
+        </Fragment>
+      ) : (
+        <Fragment>
+          <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+            {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
+          </Typography>
+          <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            {initiativeDetail.trxRule.trxCount?.from}
+          </Typography>
+        </Fragment>
+      )}
 
       {initiativeDetail.trxRule.rewardLimits?.map((rl, index) =>
         typeof rl.rewardLimit === 'number' ? (

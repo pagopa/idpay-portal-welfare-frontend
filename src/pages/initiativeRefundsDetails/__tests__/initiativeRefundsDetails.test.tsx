@@ -1,43 +1,41 @@
 /* eslint-disable functional/immutable-data */
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { ExportListDTO } from '../../../api/generated/initiative/ExportListDTO';
 import { SasToken } from '../../../api/generated/initiative/SasToken';
-import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import ROUTES, { BASE_ROUTE } from '../../../routes';
+import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { mockedGetRewardFileDownload } from '../../../services/__mocks__/initiativeService';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  // @ts-expect-error need for matchPath to work
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
-    origin: `${BASE_ROUTE}`,
-    pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(() => cleanup);
 
 describe('test suite for refund details', () => {
   test('test render of component InitiativeRefundsDetails ', async () => {
-    const { history } = renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    const { history } = renderWithContext(<InitiativeRefundsDetails />);
 
     // on click of back location changes
     const oldLocPathname = history.location.pathname;
@@ -54,14 +52,14 @@ describe('test suite for refund details', () => {
       _filePath: string
     ): Promise<SasToken> => new Promise((resolve) => resolve(mockedGetRewardFileDownload));
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
 
     const downloadCsvBtn = screen.getByTestId('download-btn-test') as HTMLButtonElement;
     fireEvent.click(downloadCsvBtn);
   });
 
   test('test on filters of refund Details', async () => {
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
     const filterByCro = screen.getByLabelText(
       'pages.initiativeRefundsDetails.form.cro'
     ) as HTMLInputElement;
@@ -92,7 +90,7 @@ describe('test suite for refund details', () => {
   });
 
   test('test open modal and close modal', async () => {
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
 
     // click on arrow icon to open modal
     const openModalArrowBtn = (await screen.findAllByTestId(
@@ -127,56 +125,28 @@ describe('test suite for refund details', () => {
       _cro?: string,
       _status?: string
     ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test catch case of getRewardFileDownload api call', async () => {
-    // @ts-expect-error need for matchPath to work
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
-      origin: `${BASE_ROUTE}`,
-      pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
-      search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
-    };
-
     InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test render component without parameter in the header', async () => {
-    // @ts-expect-error need for matchPath to work
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'http:',
-      hostname: 'localhost:3000/portale-enti',
-      href: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
-      origin: `${BASE_ROUTE}`,
+    let mockedLocationWithoutPathParams = {
+      assign: jest.fn(),
       pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/`,
+      origin: 'MOCKED_ORIGIN',
       search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
+      hash: '',
     };
 
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    Object.defineProperty(window, 'location', { value: mockedLocationWithoutPathParams });
+
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 
   test('test addError with reject case for getExportSummary, getExportRefundsListPaged and getRewardFileDownload', async () => {
@@ -188,6 +158,6 @@ describe('test suite for refund details', () => {
 
     InitiativeApiMocked.getExportRefundsListPaged = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
-    renderWithHistoryAndStore(<InitiativeRefundsDetails />);
+    renderWithContext(<InitiativeRefundsDetails />);
   });
 });

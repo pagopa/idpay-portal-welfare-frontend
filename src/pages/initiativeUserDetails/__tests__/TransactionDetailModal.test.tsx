@@ -2,7 +2,7 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -14,7 +14,7 @@ afterEach(cleanup);
 describe('test suite initiative user details', () => {
   window.scrollTo = jest.fn();
   test('test of component TransactionDetailModal open', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
@@ -30,7 +30,7 @@ describe('test suite initiative user details', () => {
   });
 
   test('test of component TransactionDetailModal closed', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={''}
         openModal={false}
@@ -80,7 +80,7 @@ describe('test suite initiative user details', () => {
           })
         );
 
-      renderWithHistoryAndStore(
+      renderWithContext(
         <TransactionDetailModal
           operationId={'7e7e7e7e7e7e7e7e'}
           openModal={true}
@@ -115,7 +115,7 @@ describe('test suite initiative user details', () => {
         })
       );
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
@@ -149,7 +149,7 @@ describe('test suite initiative user details', () => {
         })
       );
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
@@ -183,7 +183,7 @@ describe('test suite initiative user details', () => {
         })
       );
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
@@ -198,7 +198,7 @@ describe('test suite initiative user details', () => {
   test('test catch case of getTimelineDetail not an object', () => {
     InitiativeApiMocked.getTimelineDetail = async (): Promise<any> =>
       new Promise<void>((res) => res());
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}
@@ -212,7 +212,7 @@ describe('test suite initiative user details', () => {
 
   test('test catch case of getTimelineDetail api call', () => {
     InitiativeApiMocked.getTimelineDetail = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionDetailModal
         operationId={'7e7e7e7e7e7e7e7e'}
         openModal={true}

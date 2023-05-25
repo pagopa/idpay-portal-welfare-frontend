@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import TitleBoxWithHelpLink from '../TitleBoxWithHelpLink';
 
 beforeEach(() => {
@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('test suite for TitleBoxWithHelpLink', () => {
   test('render TitleBoxWithHelpLink', () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TitleBoxWithHelpLink
         title="title"
         subtitle="subtitle"

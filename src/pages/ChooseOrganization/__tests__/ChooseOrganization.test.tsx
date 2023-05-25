@@ -1,7 +1,7 @@
 import { act, cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import ChooseOrganization from '../ChooseOrganization';
 
 beforeEach(() => {
@@ -14,7 +14,7 @@ afterEach(() => cleanup);
 describe('test suite for ChooseOrganization', () => {
   test('render ChooseOrganization without crashing', async () => {
     await act(async () => {
-      renderWithHistoryAndStore(<ChooseOrganization />);
+      renderWithContext(<ChooseOrganization />);
     });
     // search organizations
     const searchOrganizationInput = screen.getByLabelText(
@@ -37,7 +37,7 @@ describe('test suite for ChooseOrganization', () => {
 
   test('test reset organization list on click endAdornment X icon', async () => {
     await act(async () => {
-      renderWithHistoryAndStore(<ChooseOrganization />);
+      renderWithContext(<ChooseOrganization />);
     });
     // search organizations
     const searchOrganizationInput = screen.getByLabelText(
@@ -54,7 +54,7 @@ describe('test suite for ChooseOrganization', () => {
 
   test('test reset organization after one organization has been selected', async () => {
     await act(async () => {
-      renderWithHistoryAndStore(<ChooseOrganization />);
+      renderWithContext(<ChooseOrganization />);
     });
     // search organizations
     const searchOrganizationInput = screen.getByLabelText(
@@ -77,12 +77,12 @@ describe('test suite for ChooseOrganization', () => {
   test('test case api getOrganizationsList response length is less than 1', async () => {
     (InitiativeApiMocked.getOrganizationsList = async (): Promise<any> =>
       new Promise((resolve) => resolve([]))),
-      renderWithHistoryAndStore(<ChooseOrganization />);
+      renderWithContext(<ChooseOrganization />);
   });
 
   test('test catch case api getOrganizationsList', async () => {
     (InitiativeApiMocked.getOrganizationsList = async (): Promise<any> =>
       Promise.reject('mocked error message for tests')),
-      renderWithHistoryAndStore(<ChooseOrganization />);
+      renderWithContext(<ChooseOrganization />);
   });
 });

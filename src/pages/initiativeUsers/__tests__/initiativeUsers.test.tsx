@@ -1,28 +1,20 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import { isDate, parse } from 'date-fns';
 import React from 'react';
-import { date } from 'yup';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
 import { TypeEnum } from '../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { OnboardingDTO } from '../../../api/generated/initiative/OnboardingDTO';
-import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { Initiative } from '../../../model/Initiative';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
-import {
-  setGeneralInfo,
-  setInitiative,
-  setInitiativeId,
-} from '../../../redux/slices/initiativeSlice';
-import { store } from '../../../redux/store';
-import { BASE_ROUTE } from '../../../routes';
-import { renderWithHistoryAndStore, renderWithProviders } from '../../../utils/test-utils';
-import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
-import InitiativeUsers from '../initiativeUsers';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { OnboardingDTO } from '../../../api/generated/initiative/OnboardingDTO';
 import { BeneficiaryStateEnum } from '../../../api/generated/initiative/StatusOnboardingDTOS';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { Initiative } from '../../../model/Initiative';
+import { setInitiative } from '../../../redux/slices/initiativeSlice';
+import { store } from '../../../redux/store';
+import { BASE_ROUTE } from '../../../routes';
+import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
+import InitiativeUsers from '../initiativeUsers';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -35,24 +27,22 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/utenti-iniziativa/23232333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: '/portale-enti/utenti-iniziativa/23232333',
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/utenti-iniziativa/23232333`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
@@ -231,8 +221,8 @@ describe('<InitiativeUsers />', () => {
     // fireEvent.click(resetFilterBtn);
   });
 
-  test('Reset Form on Click Annulla filtri and test click beneficiaryBtn', async () => {
-    renderWithHistoryAndStore(<InitiativeUsers />);
+  test('Reset Form on Click reset button and test click beneficiaryBtn', async () => {
+    renderWithContext(<InitiativeUsers />);
 
     const searchUser = screen.getByLabelText(
       'pages.initiativeUsers.form.search'
@@ -241,11 +231,11 @@ describe('<InitiativeUsers />', () => {
     fireEvent.change(searchUser, { target: { value: 'searchUser' } });
     expect(searchUser.value).toBe('searchUser');
 
-    const annullaFiltriBtn = screen.getByText(
+    const resetBtn = screen.getByText(
       'pages.initiativeUsers.form.resetFiltersBtn'
     ) as HTMLButtonElement;
 
-    fireEvent.click(annullaFiltriBtn);
+    fireEvent.click(resetBtn);
 
     await waitFor(() => expect(searchUser.value).toEqual(''));
 
@@ -290,7 +280,7 @@ describe('<InitiativeUsers />', () => {
             totalPages: 0,
           })
         )),
-        renderWithHistoryAndStore(<InitiativeUsers />);
+        renderWithContext(<InitiativeUsers />);
     });
   });
 
@@ -304,34 +294,25 @@ describe('<InitiativeUsers />', () => {
       _status: string | undefined
     ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedResponde));
 
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
   });
 
   test('render component without id in header', () => {
-    //@ts-expect-error
-    delete global.window.location;
-    global.window = Object.create(window);
-    global.window.location = {
-      ancestorOrigins: ['string'] as unknown as DOMStringList,
-      hash: 'hash',
-      host: 'localhost',
-      port: '3000',
-      protocol: 'https//:',
-      hostname: 'localhost:3000/portale-enti',
-      href: `${BASE_ROUTE}/utenti-iniziativa`,
-      origin: `${BASE_ROUTE}`,
+    let mockedLocationWithoutPathParam = {
+      assign: jest.fn(),
       pathname: `${BASE_ROUTE}/utenti-iniziativa`,
+      origin: 'MOCKED_ORIGIN',
       search: '',
-      assign: () => {},
-      reload: () => {},
-      replace: () => {},
+      hash: '',
     };
 
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    Object.defineProperty(window, 'location', { value: mockedLocationWithoutPathParam });
+
+    renderWithContext(<InitiativeUsers />);
   });
 
   test('test catch case of onboarding api call', () => {
     InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />);
   });
 });

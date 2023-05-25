@@ -531,7 +531,7 @@ const InitiativeList = () => {
                 }}
               >
                 <Typography sx={{ display: 'inline' }}>
-                  {t('pages.initiativeList.emptyList')}
+                  {t('pages.initiativeList.emptyList')}{' '}
                 </Typography>
                 {userCanCreateInitiative && (
                   <Button

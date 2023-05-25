@@ -50,31 +50,37 @@ const TransactionNumberItem = ({
     }
   }, [action]);
 
-  const validationSchema = Yup.object().shape({
-    from: Yup.number()
-      .integer(t('validation.integer'))
-      .typeError(t('validation.numeric'))
-      .required(t('validation.required'))
-      .positive(t('validation.positive')),
-    to: Yup.number()
-      .integer(t('validation.integer'))
-      .typeError(t('validation.numeric'))
-      // .required(t('validation.required'))
-      .positive(t('validation.positive'))
-      .when('from', (from, schema) => {
-        if (from) {
-          return (
-            Yup.number()
-              .integer(t('validation.integer'))
-              .typeError(t('validation.numeric'))
-              // .required(t('validation.required'))
-              .positive(t('validation.positive'))
-          );
-          // .min(parseFloat(from) + 1, t('validation.outTransactionNumberLimit'));
-        }
-        return schema;
-      }),
-  });
+  const validationSchema = Yup.object().shape(
+    {
+      from: Yup.number()
+        .nullable()
+        .integer(t('validation.integer'))
+        .typeError(t('validation.numeric'))
+        .min(1, t('validation.positive'))
+        .when('to', (to, schema) => {
+          if (!to) {
+            return Yup.number().required(t('validation.positive')).min(1, t('validation.positive'));
+          }
+          return schema;
+        }),
+      to: Yup.number()
+        .nullable()
+        .integer(t('validation.integer'))
+        .typeError(t('validation.numeric'))
+        .min(1, t('validation.positive'))
+        .when('from', (from, _schema) => {
+          if (!from) {
+            return Yup.number().required('').min(1, t('validation.positive'));
+          } else {
+            return Yup.number().min(
+              parseFloat(from) + 1,
+              t('validation.outTransactionNumberLimit')
+            );
+          }
+        }),
+    },
+    [['from', 'to']]
+  );
 
   const formik = useFormik({
     initialValues: {

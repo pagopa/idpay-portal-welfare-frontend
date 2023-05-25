@@ -773,15 +773,6 @@ paths:
               example:
                 code: 0
                 message: string
-        '404':
-          description: The requested ID was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorDTO'
-              example:
-                code: 0
-                message: string
         '500':
           description: Server ERROR
           content:
@@ -2950,6 +2941,8 @@ components:
           type: string
         organizationId:
           type: string
+        organizationName:
+          type: string
         creationDate:
           type: string
           description: Creation Date
@@ -2981,6 +2974,8 @@ components:
           $ref: '#/components/schemas/InitiativeTrxConditionsDTO'
         refundRule:
           $ref: '#/components/schemas/InitiativeRefundRuleDTO'
+        isLogoPresent:
+          type: boolean
     DescriptionLanguageMap:
       type: object
       properties:
@@ -3000,6 +2995,8 @@ components:
         initiativeId:
           type: string
         initiativeName:
+          type: string
+        initiativeRewardType:
           type: string
         status:
           type: string
@@ -3166,6 +3163,7 @@ components:
             $ref: '#/components/schemas/Interval'
     InitiativeRewardAndTrxRulesDTO:
       required:
+        - initiativeRewardType
         - rewardRule
       type: object
       properties:

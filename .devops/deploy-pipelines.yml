@@ -40,6 +40,7 @@ variables:
     react_app_url_api_groups: '$(UAT_REACT_APP_URL_API_GROUPS)'
     react_app_url_api_role_permission: '$(UAT_REACT_APP_URL_API_ROLE_PERMISSION)'
     react_app_url_api_email_notification: '$(UAT_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
+    react_app_url_api_merchants: '$(UAT_REACT_APP_URL_API_MERCHANTS)'
 
     react_app_url_storage: '$(UAT_REACT_APP_URL_STORAGE)'
 
@@ -75,6 +76,7 @@ variables:
     react_app_url_api_groups: '$(PROD_REACT_APP_URL_API_GROUPS)'
     react_app_url_api_role_permission: '$(PROD_REACT_APP_URL_API_ROLE_PERMISSION)'
     react_app_url_api_email_notification: '$(PROD_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
+    react_app_url_api_merchants: '$(PROD_REACT_APP_URL_API_MERCHANTS)'
 
     react_app_url_storage: '$(PROD_REACT_APP_URL_STORAGE)'
 
@@ -112,6 +114,7 @@ variables:
     react_app_url_api_groups: '$(DEV_REACT_APP_URL_API_GROUPS)'
     react_app_url_api_role_permission: '$(DEV_REACT_APP_URL_API_ROLE_PERMISSION)'
     react_app_url_api_email_notification: '$(DEV_REACT_APP_URL_API_EMAIL_NOTIFICATION)'
+    react_app_url_api_merchants: '$(DEV_REACT_APP_URL_API_MERCHANTS)'
 
     react_app_url_storage: '$(DEV_REACT_APP_URL_STORAGE)'
 
@@ -217,6 +220,7 @@ stages:
               REACT_APP_URL_API_GROUPS: '$(react_app_url_api_groups)'
               REACT_APP_URL_API_ROLE_PERMISSION: '$(react_app_url_api_role_permission)'
               REACT_APP_URL_API_EMAIL_NOTIFICATION: '$(react_app_url_api_email_notification)'
+              REACT_APP_URL_API_MERCHANTS: '$(react_app_url_api_merchants)'
 
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
 

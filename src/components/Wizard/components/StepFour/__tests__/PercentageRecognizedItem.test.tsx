@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import PercentageRecognizedItem from '../PercentageRecognizedItem';
 import { perRec, shopRulesToSubmit } from './ShopRules.test';
 
@@ -18,7 +18,7 @@ describe('<PercentageRecognizedItem />', () => {
       rewardValueType: RewardValueTypeEnum.ABSOLUTE,
     };
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <PercentageRecognizedItem
         code={'PRCREC'}
         action={WIZARD_ACTIONS.DRAFT}
@@ -34,7 +34,7 @@ describe('<PercentageRecognizedItem />', () => {
   });
 
   it('test PercentageRecognizedItem with data', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <PercentageRecognizedItem
         code={'PRCREC'}
         action={WIZARD_ACTIONS.SUBMIT}
