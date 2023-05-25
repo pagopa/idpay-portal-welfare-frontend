@@ -98,7 +98,7 @@ describe('helpers.ts of Step three', () => {
     expect(setErrorText(true, 'string')).toBe('string');
   });
   test('setFieldType ', () => {
-    expect(setFieldType('BTW_OPEN', setterFunction)).not.toBeNull();
+    expect(setFieldType('BTW_CLOSED', setterFunction)).not.toBeNull();
     expect(setFieldType('', setterFunction)).not.toBeNull();
   });
   test('setFormControlDisplayProp', () => {

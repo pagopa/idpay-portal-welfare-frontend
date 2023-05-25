@@ -20,7 +20,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
     value2: 'value2',
     authority: '',
     field: '',
-    operator: FilterOperator.BTW_OPEN,
+    operator: FilterOperator.BTW_CLOSED,
     checked: true,
   };
 

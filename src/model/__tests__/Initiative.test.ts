@@ -150,7 +150,7 @@ export const mockedInitiative: Initiative = {
         authority: 'AUTH1',
         code: 'BIRTHDATE',
         field: 'year',
-        operator: 'BTW_OPEN',
+        operator: 'BTW_CLOSED',
         value: '18',
       },
       {
@@ -213,7 +213,7 @@ export const mockedInitiative: Initiative = {
         authority: 'INPS',
         code: 'ISEE',
         field: 'ISEE',
-        operator: 'BTW_OPEN',
+        operator: 'BTW_CLOSED',
         value: '40000',
       },
       {
@@ -393,7 +393,7 @@ test('Test initiative2Initiative', () => {
           authority: 'AUTH1',
           code: 'BIRTHDATE',
           field: 'year',
-          operator: 'BTW_OPEN',
+          operator: 'BTW_CLOSED',
           value: '18',
         },
         {
@@ -456,7 +456,7 @@ test('Test initiative2Initiative', () => {
           authority: 'INPS',
           code: 'ISEE',
           field: 'ISEE',
-          operator: 'BTW_OPEN',
+          operator: 'BTW_CLOSED',
           value: '40000',
         },
         {

@@ -59,7 +59,7 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
           dataAsString = `${dataAsString}${t(
             'pages.initiativeDetail.accordion.step3.content.minorOrEqualTo'
           )} ${automatedCriteria.value}`;
-        } else if (automatedCriteria.operator === FilterOperator.BTW_OPEN) {
+        } else if (automatedCriteria.operator === FilterOperator.BTW_CLOSED) {
           dataAsString = `${dataAsString}${t(
             'pages.initiativeDetail.accordion.step3.content.between'
           )} ${automatedCriteria.value} ${t(
@@ -102,7 +102,7 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
           dataAsString = `${dataAsString}${t(
             'pages.initiativeDetail.accordion.step3.content.minorOrEqualTo'
           )} ${automatedCriteria.value} €`;
-        } else if (automatedCriteria.operator === FilterOperator.BTW_OPEN) {
+        } else if (automatedCriteria.operator === FilterOperator.BTW_CLOSED) {
           dataAsString = `${dataAsString}${t(
             'pages.initiativeDetail.accordion.step3.content.between'
           )} ${automatedCriteria.value} € ${t(
