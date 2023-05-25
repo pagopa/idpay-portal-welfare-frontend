@@ -11,7 +11,7 @@ export const mockedFile = new File([''], 'filename', { type: 'text/html' });
 
 export const mockedMerchantUdatedStatus: MerchantUpdateDTO = {
   elabTimeStamp: new Date(),
-  status: 'OK',
+  status: 'VALIDATED',
 };
 
 export const mockedMerchantsOnboardingList: MerchantListDTO = {

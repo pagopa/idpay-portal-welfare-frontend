@@ -46,9 +46,12 @@ describe('test suite for InitativeUploadMerchants component', () => {
     const file = new File(['file'], 'text.csv', {
       type: 'text/csv',
     });
+    Object.defineProperty(file, 'size', { value: 184500 });
+
     Object.defineProperty(inputEl, 'files', {
       value: [file],
     });
+
     fireEvent.drop(inputEl);
 
     expect(
@@ -71,9 +74,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
     fireEvent.drop(inputEl);
 
     expect(
-      await screen.findByText(
-        'pages.initiativeRefundsOutcome.uploadPaper.invalidFileTypeDescription'
-      )
+      await screen.findByText('pages.initiativeMerchantUpload.uploadPaper.wrongFileType')
     ).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId('close-icon'));
@@ -111,7 +112,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
     fireEvent.drop(inputEl);
 
     expect(
-      await screen.findByText('pages.initiativeRefundsOutcome.uploadPaper.overMaxUploadDescription')
+      await screen.findByText('pages.initiativeMerchantUpload.uploadPaper.fileTooLarge')
     ).toBeInTheDocument();
   });
 
@@ -132,6 +133,5 @@ describe('test suite for InitativeUploadMerchants component', () => {
       value: [file],
     });
     fireEvent.drop(inputEl);
-
   });
 });
