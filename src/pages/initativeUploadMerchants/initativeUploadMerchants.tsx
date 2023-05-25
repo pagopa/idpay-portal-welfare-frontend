@@ -208,7 +208,7 @@ const InitativeUploadMerchants = () => {
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('pages.initiativeMerchantUpload.uploadPaper.fileUploadHelpText')}&#160;
           <Link
-            href="#"
+            href="example_merchant.csv"
             download
             target="_blank"
             variant="body2"
