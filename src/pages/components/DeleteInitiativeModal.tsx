@@ -89,15 +89,15 @@ const DeleteInitiativeModal = ({
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(5, 1fr)',
+              gridTemplateColumns: 'repeat(6, 1fr)',
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . . cancelBtn deleteBtn"`,
+              gridTemplateAreas: `". . . cancelBtn cancelBtn deleteBtn"`,
               gap: 2,
             }}
           >
             <Button
               variant="outlined"
-              sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
+              sx={{ gridArea: 'cancelBtn', justifySelf: 'start' }}
               onClick={handleCloseInitiativeDeleteModal}
               data-testid="cancel-button-test"
             >
