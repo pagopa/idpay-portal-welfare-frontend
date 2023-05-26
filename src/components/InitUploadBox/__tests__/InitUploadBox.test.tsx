@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitUploadBox from '../InitUploadBox';
 
 beforeEach(() => {
@@ -8,6 +8,6 @@ beforeEach(() => {
 
 describe('test suite for InitUploadBox', () => {
   test('render InitUploadBox', () => {
-    renderWithHistoryAndStore(<InitUploadBox text="text" link="link" />);
+    renderWithContext(<InitUploadBox text="text" link="link" />);
   });
 });

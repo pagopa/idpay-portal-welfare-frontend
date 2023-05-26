@@ -4,10 +4,11 @@ import { createMemoryHistory } from 'history';
 import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
+import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { ConfigTrxRuleArrayDTO } from '../../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
+import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
 import { InitiativeRewardAndTrxRulesDTO } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import Layout from '../../../../../components/Layout/Layout';
 import {
   saveDaysOfWeekIntervals,
@@ -22,27 +23,13 @@ import {
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import ShopRules from '../ShopRules';
-import { InitiativeStatisticsDTO } from '../../../../../api/generated/initiative/InitiativeStatisticsDTO';
-import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
-
-jest.mock('react-i18next', () => ({
-  ...jest.requireActual('react-i18next'),
-  useTranslation: () => {
-    return {
-      t: (str: string) => str,
-      i18n: {
-        changeLanguage: () => new Promise(() => {}),
-      },
-    };
-  },
-}));
 
 afterEach(() => cleanup);
 window.scrollTo = jest.fn();
@@ -97,6 +84,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     store.dispatch(saveMccFilter(mccFilter));
     store.dispatch(saveRewardLimits(rewardLimits));
     store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
+
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -246,7 +234,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test percentage-recognized-value input', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <Layout>
         <ShopRules
           action={WIZARD_ACTIONS.SUBMIT}
@@ -266,26 +254,16 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test catch case api getTransactionConfigRules', async () => {
-    (InitiativeApiMocked.getTransactionConfigRules = async (): Promise<any> =>
-      Promise.reject('mocked error response for tests')),
-      renderWithHistoryAndStore(
-        <ShopRules
-          action={''}
-          setAction={setAction}
-          currentStep={3}
-          setCurrentStep={setCurrentStep(3)}
-          setDisabledNext={setDisabledNext}
-        />
-      );
-  });
+    InitiativeApiMocked.getTransactionConfigRules = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
 
-  test('test catch case api putTrxAndRewardRulesDraft', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
     InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (): Promise<void> =>
       Promise.reject('mocked error response for tests');
-    renderWithHistoryAndStore(
+
+    renderWithContext(
       <ShopRules
-        action={WIZARD_ACTIONS.DRAFT}
+        action={''}
         setAction={setAction}
         currentStep={3}
         setCurrentStep={setCurrentStep(3)}

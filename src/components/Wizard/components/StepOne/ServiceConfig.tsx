@@ -41,7 +41,7 @@ import {
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
 import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import { contacts, parseDataToSend } from './helpers';
+import { parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
 import UploadServiceIcon from './UploadServiceIcon';
 
@@ -75,6 +75,24 @@ const ServiceConfig = ({
   const handleCloseInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(false);
 
   const handleOpenInitiativeNotOnIOModal = () => setOpenInitiativeNotOnIOModal(true);
+
+  const contacts = [
+    {
+      id: 1,
+      value: 'web',
+      name: `${t('components.wizard.stepOne.form.webUrl')}`,
+    },
+    {
+      id: 2,
+      value: 'email',
+      name: `${t('components.wizard.stepOne.form.email')}`,
+    },
+    {
+      id: 3,
+      value: 'mobile',
+      name: `${t('components.wizard.stepOne.form.phone')}`,
+    },
+  ];
 
   useEffect(() => {
     window.scrollTo(0, 0);

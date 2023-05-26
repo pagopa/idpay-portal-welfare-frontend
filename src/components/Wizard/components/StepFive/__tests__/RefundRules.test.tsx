@@ -12,7 +12,7 @@ import { saveRefundRule, setInitiativeId } from '../../../../../redux/slices/ini
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import RefundRules from '../RefundRules';
 
 beforeEach(() => {
@@ -119,7 +119,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test render RefundRules with no action', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <RefundRules
         action={''}
         setAction={setAction}
@@ -133,7 +133,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   test('test reimbursmentThreshold onChange', async () => {
     store.dispatch(saveRefundRule(refundRulesEmpty));
     store.dispatch(setInitiativeId(mockedInitiativeId));
-    renderWithHistoryAndStore(
+    renderWithContext(
       <RefundRules
         action={WIZARD_ACTIONS.SUBMIT}
         setAction={setAction}

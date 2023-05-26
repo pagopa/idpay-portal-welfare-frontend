@@ -1,5 +1,6 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../utils/test-utils';
+import { RolePermissionApiMocked } from '../../api/__mocks__/rolePermissionApiClient';
+import { renderWithContext } from '../../utils/test-utils';
 import useTCAgreement from '../useTCAgreement';
 
 beforeEach(() => {
@@ -20,6 +21,20 @@ const HookWrapper = () => {
 
 describe('test suite for usTCAgreement hook', () => {
   test('test call of useTCAgreement hook', () => {
-    renderWithHistoryAndStore(<HookWrapper />);
+    renderWithContext(<HookWrapper />);
+  });
+
+  test('test catch case of RolePermissionApiMocked.getPortalConsent api call', async () => {
+    RolePermissionApiMocked.getPortalConsent = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+
+    renderWithContext(<HookWrapper />);
+  });
+
+  test('test catch case of getFamilyComposition api call', async () => {
+    RolePermissionApiMocked.getPortalConsent = async (): Promise<any> =>
+      Promise.reject('mocked error response for tests');
+
+    renderWithContext(<HookWrapper />);
   });
 });

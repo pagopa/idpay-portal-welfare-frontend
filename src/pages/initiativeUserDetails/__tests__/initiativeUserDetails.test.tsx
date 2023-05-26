@@ -9,31 +9,30 @@ import {
 import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedIbanInfo, mockedWallet } from '../../../services/__mocks__/initiativeService';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeUserDetails from '../initiativeUserDetails';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/dettagli-utente/2333333/55fiscal',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: `${BASE_ROUTE}/dettagli-utente/2333333/55fiscal`,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
 });
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/dettagli-utente/2333333/55fiscal`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
+});
+
 
 afterEach(cleanup);
 
@@ -41,7 +40,7 @@ describe('test suite initiative user details', () => {
   window.scrollTo = jest.fn();
 
   test('test of render InitiativeUserDetails and filter button', async () => {
-    const { history } = renderWithHistoryAndStore(<InitiativeUserDetails />);
+    const { history } = renderWithContext(<InitiativeUserDetails />);
 
     // on click of back btn location has changed
     const oldLocPathname = history.location.pathname;
@@ -79,7 +78,7 @@ describe('test suite initiative user details', () => {
 
   test('Test of reset filter button', async () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus('id', 'fiscal');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
 
     // test the select to filter events
     const eventsFilterSelect = screen.getByTestId('filterEvent-select');
@@ -130,7 +129,7 @@ describe('test suite initiative user details', () => {
       _size?: number
     ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
 
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
   // try
   test('test of render TransactionDetailModal with different type of opeType', async () => {
@@ -186,7 +185,7 @@ describe('test suite initiative user details', () => {
         })
       );
 
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
     const operationTypeButtons = (await screen.findAllByTestId(
       'operationTypeBtn'
     )) as HTMLButtonElement[];
@@ -202,18 +201,18 @@ describe('test suite initiative user details', () => {
   test('test getIban ', () => {
     (InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
       new Promise((resolve) => resolve(mockedIbanInfo))),
-      renderWithHistoryAndStore(<InitiativeUserDetails />);
+      renderWithContext(<InitiativeUserDetails />);
   });
 
   test('testgetWalletDetails ', () => {
     InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
       new Promise((resolve) => resolve(mockedWallet));
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 
   test('test SUSPEND user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.ONBOARDING_OK', async () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus('id', 'fiscal');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
     const suspendUserBtn = await screen.findByText('pages.initiativeUserDetails.suspendUser');
 
     fireEvent.click(suspendUserBtn);
@@ -229,7 +228,7 @@ describe('test suite initiative user details', () => {
           status: OnboardingStatusEnum.SUSPENDED,
         })
       );
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
     const readmitUserBtn = await screen.findByText('pages.initiativeUserDetails.readmit');
 
     fireEvent.click(readmitUserBtn);
@@ -238,27 +237,27 @@ describe('test suite initiative user details', () => {
   test('test catch case of getIban api call', () => {
     InitiativeApiMocked.getIban = async (): Promise<IbanDTO> =>
       Promise.reject('catch case of getIban');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 
   test('test catch case of getWalletDetail api call', () => {
     InitiativeApiMocked.getWalletDetail = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 
   test('test catch case of getInstrumentList api call', () => {
     InitiativeApiMocked.getInstrumentList = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 
   test('test catch case of getTimeLine api call', () => {
     InitiativeApiMocked.getTimeLine = async (): Promise<any> => Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 
   test('test catch case of getBeneficiaryOnboardingStatus api call', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<any> =>
       Promise.reject('reason');
-    renderWithHistoryAndStore(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />);
   });
 });

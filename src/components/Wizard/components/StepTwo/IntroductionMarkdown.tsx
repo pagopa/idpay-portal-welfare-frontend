@@ -116,7 +116,7 @@ const IntroductionMarkdown = ({
               </Tabs>
             ) : null}
             <Alert severity="info" variant="standard" sx={{ py: 3 }}>
-              {t('components.wizard.stepTwo.previewModal.alertDescription')}
+              {t('components.wizard.stepTwo.previewModal.alertDescription')}{' '}
               <Link
                 href="#"
                 target="_blank"

@@ -18,8 +18,8 @@ import { handleShopRulesToSubmit } from './helpers';
 interface Props {
   code: string;
   action: string;
-  rewardType: string | undefined;
-  setRewardType: Dispatch<SetStateAction<InitiativeRewardTypeEnum | undefined>>;
+  rewardType: string;
+  setRewardType: Dispatch<SetStateAction<InitiativeRewardTypeEnum>>;
   shopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }>;
   setShopRulesToSubmit: Dispatch<
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>

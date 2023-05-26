@@ -16,6 +16,7 @@ import {
   InputAdornment,
   Tabs,
   Tab,
+  TextFieldProps,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -765,9 +766,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.rankingStartDate}
               onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
               minDate={new Date()}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="rankingStartDate"
                   data-testid="ranking-start-date-test"
                   name="rankingStartDate"
@@ -776,6 +777,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                   helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -785,9 +787,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.rankingEndDate}
               onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
               minDate={getMinDate(formik.values.rankingStartDate, 1)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="rankingEndDate"
                   data-testid="ranking-end-date-test"
                   name="rankingEndDate"
@@ -796,6 +798,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                   helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -822,9 +825,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.startDate}
               onChange={(value) => formik.setFieldValue('startDate', value)}
               minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="startDate"
                   data-testid="start-date-test"
                   name="startDate"
@@ -835,6 +838,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   required
                   InputLabelProps={{ required: false }}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -844,9 +848,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.endDate}
               onChange={(value) => formik.setFieldValue('endDate', value)}
               minDate={getMinDate(formik.values.startDate, 1)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="endDate"
                   data-testid="end-date-test"
                   name="endDate"
@@ -857,6 +861,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   required
                   InputLabelProps={{ required: false }}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />

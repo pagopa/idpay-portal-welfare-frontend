@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 import RewardType from '../RewardType';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { shopRulesToSubmit } from './ShopRules.test';
@@ -10,7 +10,7 @@ window.scrollTo = jest.fn();
 
 describe('<RewardType />', () => {
   test('should render correctly the RewardType component correctly', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <RewardType
         code={'TYPE'}
         action={WIZARD_ACTIONS.DRAFT}
@@ -23,7 +23,7 @@ describe('<RewardType />', () => {
   });
 
   test('test form input onChange event', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <RewardType
         code={'TYPE'}
         action={WIZARD_ACTIONS.DRAFT}

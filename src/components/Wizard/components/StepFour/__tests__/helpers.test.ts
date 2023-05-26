@@ -51,30 +51,43 @@ const threshhold = { from: 2, fromIncluded: false };
 describe('testing helper of step four', () => {
   test('Test checkThresholdChecked', () => {
     expect(checkThresholdChecked(threshhold)).toBeTruthy();
+    
+    expect(checkThresholdChecked(undefined)).toBeFalsy();
   });
   test('checkMccFilterChecked', () => {
     const MccFilter: MccFilterDTO = { allowedList: true, values: ['string', 'string2'] };
+
     expect(checkMccFilterChecked(undefined)).toBeFalsy();
+
     expect(checkMccFilterChecked(MccFilter)).toEqual(true);
   });
   test('checkTrxCountChecked', () => {
     const trxCount: TrxCount = { from: 2, fromIncluded: true, to: 3, toIncluded: true };
+
     const trxCount2: TrxCount = {};
+
     expect(checkTrxCountChecked(undefined)).toBeFalsy();
+
     expect(checkTrxCountChecked(trxCount)).toBeTruthy();
+
     expect(checkTrxCountChecked(trxCount2)).toBeFalsy();
   });
 
   test('checkRewardLimitsChecked', () => {
     const rewardLimit: Array<RewardLimit> = [{ frequency: 'string', rewardLimit: 2 }];
+
     const rewardLimit2: Array<RewardLimit> = [];
+
     expect(checkRewardLimitsChecked(undefined)).toEqual(false);
+
     expect(checkRewardLimitsChecked(rewardLimit)).toEqual(true);
+
     expect(checkRewardLimitsChecked(rewardLimit2)).toEqual(false);
   });
 
   test('checkDaysOfWeekIntervalsChecked', () => {
     expect(checkDaysOfWeekIntervalsChecked(undefined)).toEqual(false);
+
     expect(
       checkDaysOfWeekIntervalsChecked([
         {
@@ -90,7 +103,9 @@ describe('testing helper of step four', () => {
     switchOptions.forEach((item) => {
       expect(mapResponse(mockedMapResponse(item))).toBeDefined();
     });
+
     expect(mapResponse(mockedMapResponse(undefined))).toBeDefined();
+
     expect(
       mapResponse([
         {
@@ -105,6 +120,7 @@ describe('testing helper of step four', () => {
     switchOptions.forEach((item) => {
       expect(renderShopRuleIcon(item, 2, 'inherit')).toBeDefined();
     });
+
     expect(renderShopRuleIcon('stringa per default', 2, 'inherit')).toBeNull();
   });
 
@@ -147,6 +163,7 @@ describe('testing helper of step four', () => {
   });
   test('setError', () => {
     expect(setError(false, '')).toBeFalsy();
+
     expect(setError(true, 'string')).toBeTruthy();
   });
   test('setErrorText', () => {

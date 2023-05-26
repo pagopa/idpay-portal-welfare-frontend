@@ -2,7 +2,7 @@ import React from 'react';
 import { findByTestId, fireEvent, screen } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 
 beforeEach(() => {
   jest.mock('@mui/material');
@@ -34,7 +34,7 @@ describe('<AdmissionCriteriaModal />', () => {
     },
   ];
   test('Should display the Modal', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <AdmissionCriteriaModal
         openModal={true}
         handleCloseModal={jest.fn()}
@@ -71,7 +71,7 @@ describe('<AdmissionCriteriaModal />', () => {
       },
     ];
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <AdmissionCriteriaModal
         openModal={true}
         handleCloseModal={jest.fn()}

@@ -5,7 +5,7 @@ import { act } from 'react-dom/test-utils';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TimeLimitItem from '../TimeLimitItem';
 import { rewardLimits, shopRulesToSubmit } from './ShopRules.test';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -18,7 +18,7 @@ describe('<TimeLimitItem />', () => {
   const data = [{ frequency: 'DAILY', rewardLimit: 2 }];
   window.scrollTo = jest.fn();
   test('should render correctly the TimeLimitItem component', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TimeLimitItem
         key={0}
         title={''}
@@ -35,7 +35,7 @@ describe('<TimeLimitItem />', () => {
 
   it('test on handleSubmit', async () => {
     const data = [{ frequency: 'DAILY', rewardLimit: 2 }];
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TimeLimitItem
         key={1}
         title={'title'}
@@ -71,7 +71,7 @@ describe('<TimeLimitItem />', () => {
 
   test('Test TimeLimitItem with rewardLimit 0', async () => {
     const data = [{ frequency: '', rewardLimit: 2 }];
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TimeLimitItem
         key={0}
         title={''}
@@ -91,7 +91,7 @@ describe('<TimeLimitItem />', () => {
       { frequency: 'DAILY', rewardLimit: 2 },
       { frequency: 'DAILY', rewardLimit: 2 },
     ];
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TimeLimitItem
         key={1}
         title={''}
@@ -114,7 +114,7 @@ describe('<TimeLimitItem />', () => {
   });
 
   test('Test TimeLimitItem with data undefined', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TimeLimitItem
         key={1}
         title={''}

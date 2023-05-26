@@ -19,7 +19,6 @@ const FamilyUnitSummary = ({ id, cf }: Props) => {
   useEffect(() => {
     getFamilyComposition(id, cf)
       .then((res) => {
-        console.log(res);
         setFamilyUnit(res);
       })
       .catch((error) => {

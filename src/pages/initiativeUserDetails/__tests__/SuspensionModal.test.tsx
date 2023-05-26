@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import SuspensionModal from '../SuspensionModal';
 
 beforeEach(() => {
@@ -12,7 +12,7 @@ afterEach(cleanup);
 
 describe('test suite for suspension modal', () => {
   test('render SuspensionModal with empty props', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <SuspensionModal
         suspensionModalOpen={false}
         setSuspensionModalOpen={jest.fn()}
@@ -30,7 +30,7 @@ describe('test suite for suspension modal', () => {
   });
 
   test('render SuspensionModal on click of SUSPEND button and test click on back button', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <SuspensionModal
         suspensionModalOpen={true}
         setSuspensionModalOpen={jest.fn()}
@@ -54,7 +54,7 @@ describe('test suite for suspension modal', () => {
   });
 
   test('render SuspensionModal on click of READMIT button and test on press of escape key', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <SuspensionModal
         suspensionModalOpen={true}
         setSuspensionModalOpen={jest.fn()}
@@ -86,7 +86,7 @@ describe('test suite for suspension modal', () => {
   });
 
   test('render SuspensionModal on click of EXCLUDE button and test click of  confirm exclude button', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <SuspensionModal
         suspensionModalOpen={true}
         setSuspensionModalOpen={jest.fn()}

@@ -102,7 +102,7 @@ describe('<SideMenu />', () => {
     const ranking = screen.getAllByText('sideMenu.initiativeRanking.title');
     fireEvent.click(ranking[0]);
 
-    const user = screen.getAllByText('sideMenu.initiativeUsers.rankingTitle');
+    const user = screen.getAllByText('sideMenu.initiativeUsers.title');
     fireEvent.click(user[0]);
 
     const refunds = screen.getAllByText('sideMenu.initiativeRefunds.title');

@@ -1,23 +1,28 @@
+// import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { TypeEnum } from '../../../../api/generated/initiative/ChannelDTO';
 import { InitiativeAdditionalDTO } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 
-export const contacts = [
-  {
-    id: 1,
-    value: 'web',
-    name: 'Web URL',
-  },
-  {
-    id: 2,
-    value: 'email',
-    name: 'Email',
-  },
-  {
-    id: 3,
-    value: 'mobile',
-    name: 'Numero di telefono',
-  },
-];
+// const webUrlabel = i18n.t('components.wizard.stepOne.form.webUrl');
+// const emailLabel = i18n.t('components.wizard.stepOne.form.email');
+// const phoneLabel = i18n.t('components.wizard.stepOne.form.phone');
+
+// export const contacts = [
+//   {
+//     id: 1,
+//     value: 'web',
+//     name: i18n.t('components.wizard.stepOne.form.webUrl'),
+//   },
+//   {
+//     id: 2,
+//     value: 'email',
+//     name: i18n.t('components.wizard.stepOne.form.email'),
+//   },
+//   {
+//     id: 3,
+//     value: 'mobile',
+//     name: i18n.t('components.wizard.stepOne.form.phone'),
+//   },
+// ];
 
 export const parseDataToSend = (values: any): InitiativeAdditionalDTO => {
   const channels: Array<{ type: TypeEnum; contact: string }> = [];

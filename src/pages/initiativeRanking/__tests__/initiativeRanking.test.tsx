@@ -1,10 +1,10 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { PageOnboardingRankingsDTO } from '../../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { SasToken } from '../../../api/generated/initiative/SasToken';
-import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import ROUTES from '../../../routes';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRanking from '../initiativeRanking';
 
 jest.mock('react-i18next', () => ({
@@ -18,24 +18,22 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/graduatoria-iniziativa/2333333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.INITIATIVE_RANKING,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: ROUTES.INITIATIVE_RANKING,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
@@ -81,7 +79,7 @@ describe('<InitiativeRefunds />', () => {
   };
 
   it('Test InitiativeRanking to be Rendered with state', async () => {
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
@@ -115,7 +113,7 @@ describe('<InitiativeRefunds />', () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
       async (): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedRes));
 
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
 
     // test reset filter btn click
     const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
@@ -148,7 +146,7 @@ describe('<InitiativeRefunds />', () => {
       async (): Promise<PageOnboardingRankingsDTO> =>
         new Promise((resolve) => resolve(mockedResEmptyContent));
 
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test case getBeneficiaryStatus ELIGIBLE_KO', () => {
@@ -180,25 +178,25 @@ describe('<InitiativeRefunds />', () => {
             rankingFilePath: 'string',
           })
         );
-      renderWithHistoryAndStore(<InitiativeRanking />);
+      renderWithContext(<InitiativeRanking />);
     });
   });
 
   test('test catch case of getInitiativeOnboardingRankingStatus', async () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
       async (): Promise<PageOnboardingRankingsDTO> => Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test catch case of getRankingFileDownload', async () => {
     InitiativeApiMocked.getRankingFileDownload = async (): Promise<SasToken> =>
       Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 
   test('test catch case of notifyCitizenRankings', async () => {
     InitiativeApiMocked.notifyCitizenRankings = async (): Promise<void> =>
       Promise.reject('test of catch case');
-    renderWithHistoryAndStore(<InitiativeRanking />);
+    renderWithContext(<InitiativeRanking />);
   });
 });

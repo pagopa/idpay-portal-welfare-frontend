@@ -64,16 +64,16 @@ const ConfirmPublishInitiativeModal = ({
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(6, 1fr)',
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . cancelBtn pubBtn"`,
+              gridTemplateAreas: `". . . cancelBtn cancelBtn pubBtn"`,
               gap: 2,
               mt: 2,
             }}
           >
             <Button
               variant="outlined"
-              sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
+              sx={{ gridArea: 'cancelBtn', justifySelf: 'start' }}
               onClick={() => setPublishModalOpen(false)}
               data-testid="cancel-button-test"
             >

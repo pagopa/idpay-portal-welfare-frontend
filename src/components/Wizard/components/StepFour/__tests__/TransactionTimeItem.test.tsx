@@ -4,7 +4,7 @@ import React from 'react';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TransactionTimeItem from '../TransactionTimeItem';
 import { daysOfWeekIntervals, shopRulesToSubmit } from './ShopRules.test';
-import { renderWithHistoryAndStore } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 
 window.scrollTo = jest.fn();
 
@@ -18,7 +18,7 @@ describe('<TransactionTimeItem />', () => {
   ];
 
   test('should render correctly the TransactionTimeItem component', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionTimeItem
         key={0}
         title={'title'}
@@ -45,7 +45,7 @@ describe('<TransactionTimeItem />', () => {
   });
 
   it('test on handleSubmit', async () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionTimeItem
         key={0}
         title={'title'}
@@ -83,7 +83,7 @@ describe('<TransactionTimeItem />', () => {
       },
     ];
 
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionTimeItem
         key={0}
         title={'title'}
@@ -99,7 +99,7 @@ describe('<TransactionTimeItem />', () => {
   });
 
   test('render component with action DRAFT and data undefined', () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <TransactionTimeItem
         key={0}
         title={'title'}

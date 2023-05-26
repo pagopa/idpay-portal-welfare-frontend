@@ -57,7 +57,7 @@ const IseeCriteriaItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState(
-    formData.operator === FilterOperator.BTW_OPEN ? 'number' : 'hidden'
+    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -85,7 +85,7 @@ const IseeCriteriaItem = ({
     iseeStartValue: Yup.number().required(t('validation.required')),
     iseeEndValue: Yup.number().when(['iseeRelationSelect', 'iseeStartValue'], {
       is: (iseeRelationSelect: string, iseeStartValue: number) =>
-        iseeRelationSelect === FilterOperator.BTW_OPEN && iseeStartValue,
+        iseeRelationSelect === FilterOperator.BTW_CLOSED && iseeStartValue,
       then: Yup.number()
         .required(t('validation.required'))
         .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
@@ -275,7 +275,7 @@ const IseeCriteriaItem = ({
             <MenuItem value={FilterOperator.LE} data-testid="minorOrEqualTo">
               {t('components.wizard.stepThree.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.BTW_OPEN} data-testid="between">
+            <MenuItem value={FilterOperator.BTW_CLOSED} data-testid="between">
               {t('components.wizard.stepThree.chooseCriteria.form.between')}
             </MenuItem>
           </Select>

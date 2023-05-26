@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderWithHistoryAndStore } from '../../../utils/test-utils';
+import { renderWithContext } from '../../../utils/test-utils';
 import AcceptedFile from '../AcceptedFile';
 
 beforeEach(() => {
@@ -8,7 +8,7 @@ beforeEach(() => {
 
 describe('test suite for AcceptedFile', () => {
   test('render AcceptedFile', () => {
-    renderWithHistoryAndStore(
+    renderWithContext(
       <AcceptedFile
         fileName={'test'}
         fileDate={'24/02/2023'}
