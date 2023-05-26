@@ -142,7 +142,8 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
             })}
           </Typography>
         </Fragment>
-      ) : (
+      ) : typeof initiativeDetail.trxRule.trxCount?.from === 'number' &&
+        typeof initiativeDetail.trxRule.trxCount?.to === 'undefined' ? (
         <Fragment>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
             {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
@@ -151,7 +152,17 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
             {initiativeDetail.trxRule.trxCount?.from}
           </Typography>
         </Fragment>
-      )}
+      ) : typeof initiativeDetail.trxRule.trxCount?.from === 'undefined' &&
+        typeof initiativeDetail.trxRule.trxCount?.to === 'number' ? (
+        <Fragment>
+          <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+            {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
+          </Typography>
+          <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+            {initiativeDetail.trxRule.trxCount?.to}
+          </Typography>
+        </Fragment>
+      ) : null}
 
       {initiativeDetail.trxRule.rewardLimits?.map((rl, index) =>
         typeof rl.rewardLimit === 'number' ? (
