@@ -75,7 +75,16 @@ const AdditionalInfoContentBody = ({ initiativeDetail }: Props) => {
         <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
           {t('pages.initiativeDetail.accordion.step1.content.serviceDescription')}
         </Typography>
-        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+        <Typography
+          variant="body2"
+          sx={{
+            gridColumn: 'span 7',
+            fontWeight: 600,
+            wordWrap: 'break-word',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-word',
+          }}
+        >
           {initiativeDetail.additionalInfo.serviceDescription}
         </Typography>
       </Box>

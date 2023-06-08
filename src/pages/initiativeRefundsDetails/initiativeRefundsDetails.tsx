@@ -344,7 +344,7 @@ const InitiativeRefundsDetails = () => {
               {t('pages.initiativeRefundsDetails.recap.percentageSuccess')}
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {detailsSummary?.successPercentage ? detailsSummary.successPercentage : '-'}
+              {detailsSummary?.successPercentage ? `${detailsSummary.successPercentage}%` : '-'}
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.status')}
