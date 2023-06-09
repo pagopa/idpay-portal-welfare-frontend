@@ -553,7 +553,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(refunded, '0,00 €')}
+                  {formatedCurrency(accrued, '0,00 €')}
                 </Typography>
               </Box>
             </CardContent>
