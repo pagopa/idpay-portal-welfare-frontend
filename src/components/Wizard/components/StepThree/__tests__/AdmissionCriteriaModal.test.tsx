@@ -1,13 +1,9 @@
 import React from 'react';
-import { waitFor, fireEvent, screen } from '@testing-library/react';
+import { findByTestId, fireEvent, screen } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
-import { renderWithProviders } from '../../../../../utils/test-utils';
+import { renderWithContext } from '../../../../../utils/test-utils';
 
-/*
-jest.mock('@mui/material', () => ({
-  Modal: () => ({ t: (key: any) => key }),
-}));*/
 beforeEach(() => {
   jest.mock('@mui/material');
 });
@@ -38,53 +34,53 @@ describe('<AdmissionCriteriaModal />', () => {
     },
   ];
   test('Should display the Modal', async () => {
-    await waitFor(() => {
-      const { debug } = renderWithProviders(
-        <AdmissionCriteriaModal
-          openModal={true}
-          // eslint-disable-next-line react/jsx-no-bind
-          handleCloseModal={function (event: React.MouseEvent<Element, MouseEvent>): void {
-            console.log(event);
-          }}
-          // eslint-disable-next-line react/jsx-no-bind
-          handleCriteriaAdded={function (
-            event: React.MouseEvent<HTMLInputElement, MouseEvent>
-          ): void {
-            console.log(event);
-          }}
-          criteriaToRender={mockedCriteria}
-          // eslint-disable-next-line react/jsx-no-bind
-          setCriteriaToRender={jest.fn()}
-        />
-      );
-    });
-    /*
-    await waitFor(() => {
-      screen.debug();
-    });
-    */
-    const modal = document.querySelector('[data-testid="admission-modal"') as HTMLElement;
-    expect(modal).toBeInTheDocument();
-    const fade = document.querySelector('[data-testid="admission-fade"]') as HTMLElement;
-    const searchCriteriaInput = screen.getByTestId('search-criteria-test') as HTMLInputElement;
-    const checkBoxCriteria = screen.getAllByTestId('check-test-1') as HTMLInputElement[];
+    renderWithContext(
+      <AdmissionCriteriaModal
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        handleCriteriaAdded={jest.fn()}
+        criteriaToRender={mockedCriteria}
+        setCriteriaToRender={jest.fn()}
+        searchCriteria={''}
+        setSearchCriteria={jest.fn()}
+      />
+    );
+
+    const checkBoxCriteria = (await screen.findAllByTestId('check-test-1')) as HTMLInputElement[];
     const firstCheckBox = checkBoxCriteria[0].querySelector('input') as HTMLInputElement;
 
-    expect(fade).toBeInTheDocument();
-
-    await waitFor(() => expect(firstCheckBox).toBeInTheDocument());
-    await waitFor(() => expect(firstCheckBox.checked).toEqual(false));
+    expect(firstCheckBox).toBeInTheDocument();
+    expect(firstCheckBox.checked).toEqual(false);
     fireEvent.click(firstCheckBox);
-    await waitFor(() => expect(firstCheckBox.checked).toEqual(true));
+    expect(firstCheckBox.checked).toEqual(true);
 
-    const searchCriteria = document.querySelector(
-      '[data-testid="search-criteria-test"]'
-    ) as HTMLInputElement;
-    fireEvent.change(searchCriteria, { target: { value: 'search critera' } });
-    expect(searchCriteria).toBeInTheDocument();
-
+    const searchCriteriaInput = screen.getByTestId('search-criteria-test') as HTMLInputElement;
     fireEvent.change(searchCriteriaInput, { target: { value: 'search criteria' } });
+  });
 
-    await waitFor(() => expect(searchCriteria.value).toBe('search criteria'));
+  test('Should display the Modal', async () => {
+    const mockedCriteria: Array<AvailableCriteria> = [
+      {
+        authorityLabel: 'ISEE',
+        fieldLabel: 'ISEE',
+        value: 'value2',
+        value2: 'value2',
+        code: 'code1',
+        authority: 'auth1',
+        operator: 'ope1',
+      },
+    ];
+
+    renderWithContext(
+      <AdmissionCriteriaModal
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        handleCriteriaAdded={jest.fn()}
+        criteriaToRender={mockedCriteria}
+        setCriteriaToRender={jest.fn()}
+        searchCriteria={'ISEE'}
+        setSearchCriteria={jest.fn()}
+      />
+    );
   });
 });

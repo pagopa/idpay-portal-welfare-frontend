@@ -92,149 +92,81 @@ const IntroductionMarkdown = ({
         }}
       >
         <Fade in={showMarkdown}>
-          {moreThanOneTextAreaCompiled() ? (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 600,
-                bgcolor: 'background.paper',
-                borderRadius: '4px',
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              <Typography variant="h6" component="h6">
-                {t('components.wizard.stepTwo.previewModal.title')}
-              </Typography>
-              <Tabs
-                variant="fullWidth"
-                value={value}
-                onChange={handleTabChange}
-                aria-label="tabs"
-                sx={{ py: 3 }}
-              >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 600,
+              bgcolor: 'background.paper',
+              borderRadius: '4px',
+              boxShadow: 24,
+              p: 4,
+            }}
+          >
+            <Typography variant="h6" component="h6" sx={{ pb: 3 }} fontWeight={600}>
+              {t('components.wizard.stepTwo.previewModal.title')}
+            </Typography>
+            {moreThanOneTextAreaCompiled() ? (
+              <Tabs variant="fullWidth" value={value} onChange={handleTabChange} aria-label="tabs">
                 {fiteredForEmptyString().map((item, index) => (
                   <Tab key={index} label={item.label} />
                 ))}
               </Tabs>
-
-              <Alert severity="info" variant="standard" sx={{ py: 3 }}>
-                {t('components.wizard.stepTwo.previewModal.alertDescription')}
-                <Link
-                  href="#"
-                  target="_blank"
-                  underline="none"
-                  // variant="body2"
-                  sx={{ fontSize: '1rem', fontWeight: 600 }}
-                >
-                  {t('components.wizard.stepTwo.previewModal.checkGuide')}
-                </Link>
-              </Alert>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(12, 1fr)',
-                  alignItems: 'center',
-                  pt: 3,
-                }}
+            ) : null}
+            <Alert severity="info" variant="standard" sx={{ py: 3 }}>
+              {t('components.wizard.stepTwo.previewModal.alertDescription')}{' '}
+              <Link
+                href="#"
+                target="_blank"
+                underline="none"
+                // variant="body2"
+                sx={{ fontSize: '1rem', fontWeight: 600 }}
               >
-                <Box sx={{ gridColumn: 'span 11' }}>
-                  <Typography variant="h4" component="h4">
-                    {serviceName ?? ''}
-                  </Typography>
-                  <Typography variant="body1">{selectedParty ?? ''}</Typography>
-                </Box>
-
-                {logoUrl.length > 0 ? (
-                  <Box sx={{ gridColumn: 'span 1' }}>
-                    <img width={'50'} alt="logo" src={logoUrl} loading="lazy" />
-                  </Box>
-                ) : null}
+                {t('components.wizard.stepTwo.previewModal.checkGuide')}
+              </Link>
+            </Alert>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+                alignItems: 'center',
+                pt: 3,
+              }}
+            >
+              <Box sx={{ gridColumn: 'span 11' }}>
+                <Typography variant="h5" component="h2" fontWeight={700}>
+                  {serviceName ?? ''}
+                </Typography>
+                <Typography variant="body1">{selectedParty ?? ''}</Typography>
               </Box>
 
-              {fiteredForEmptyString().map((item, index) => (
+              {logoUrl.length > 0 ? (
+                <Box sx={{ gridColumn: 'span 1' }}>
+                  <img width={'50'} alt="logo" src={logoUrl} loading="lazy" />
+                </Box>
+              ) : null}
+            </Box>
+            {moreThanOneTextAreaCompiled() ? (
+              fiteredForEmptyString().map((item, index) => (
                 <IntrudoctionTabPanel key={index} value={value} index={index} {...a11yProps(index)}>
                   <ReactMarkdown>{`${item?.formikValue}` ?? ''}</ReactMarkdown>
                 </IntrudoctionTabPanel>
-              ))}
-
-              <Box sx={{ display: 'grid' }}>
-                <Button
-                  variant="outlined"
-                  sx={{ justifySelf: 'right' }}
-                  onClick={() => setShowMarkdown(false)}
-                >
-                  {t('components.wizard.stepTwo.previewModal.closeBtn')}
-                </Button>
-              </Box>
-            </Box>
-          ) : (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                width: 600,
-                bgcolor: 'background.paper',
-                borderRadius: '4px',
-                boxShadow: 24,
-                p: 4,
-              }}
-            >
-              <Typography sx={{ py: 3 }} variant="h6" component="h6">
-                {t('components.wizard.stepTwo.previewModal.title')}
-              </Typography>
-              <Alert severity="info" variant="standard">
-                {t('components.wizard.stepTwo.previewModal.alertDescription')}
-                <Link
-                  href="#"
-                  target="_blank"
-                  underline="none"
-                  // variant="body2"
-                  sx={{ fontSize: '1rem', fontWeight: 600 }}
-                >
-                  {t('components.wizard.stepTwo.previewModal.checkGuide')}
-                </Link>
-              </Alert>
-              <Box
-                sx={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(12, 1fr)',
-                  alignItems: 'center',
-                  pt: 3,
-                }}
-              >
-                <Box sx={{ gridColumn: 'span 11' }}>
-                  <Typography variant="h4" component="h4">
-                    {serviceName ?? ''}
-                  </Typography>
-                  <Typography variant="body1">{selectedParty ?? ''}</Typography>
-                </Box>
-
-                {logoUrl.length > 0 ? (
-                  <Box sx={{ gridColumn: 'span 1' }}>
-                    <img width={'50'} alt="logo" src={logoUrl} loading="lazy" />
-                  </Box>
-                ) : null}
-              </Box>
-
+              ))
+            ) : (
               <ReactMarkdown>{fiteredForEmptyString()[0]?.formikValue ?? ''}</ReactMarkdown>
-
-              <Box sx={{ display: 'grid' }}>
-                <Button
-                  variant="outlined"
-                  sx={{ justifySelf: 'right' }}
-                  onClick={() => setShowMarkdown(false)}
-                >
-                  {t('components.wizard.stepTwo.previewModal.closeBtn')}
-                </Button>
-              </Box>
+            )}
+            <Box sx={{ display: 'grid' }}>
+              <Button
+                variant="outlined"
+                sx={{ justifySelf: 'right' }}
+                onClick={() => setShowMarkdown(false)}
+              >
+                {t('components.wizard.stepTwo.previewModal.closeBtn')}
+              </Button>
             </Box>
-          )}
+          </Box>
         </Fade>
       </Modal>
     </Box>

@@ -4,16 +4,27 @@ import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSum
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
 import { mockedFile } from '../../services/__mocks__/groupService';
 import {
+  mockedBeneficaryStatus,
   mockedExportsPagedResponse,
+  mockedFamilyUnitComposition,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
   mockedGetRankingFileDownload,
   mockedGetRewardFileDownload,
+  mockedIbanInfo,
   mockedInitiativeDetail,
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
   mockedNotificationReward,
-  mockedOnBoardingStatusResponse
+  mockedOnBoardingStatusResponse,
+  mockedOperationDetail,
+  mockedOperationList,
+  mockedOrganizationsList,
+  mockedRefundsDetailsByEventRes,
+  mockedRefundsDetailsListItem,
+  mockedRefundsDetailsSummary,
+  mockedWallet,
+  mockedWalletInstrument,
 } from '../../services/__mocks__/initiativeService';
 import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
@@ -33,6 +44,17 @@ import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardin
 import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
 import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { SasToken } from '../generated/initiative/SasToken';
+import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
+import { WalletDTO } from '../generated/initiative/WalletDTO';
+import { IbanDTO } from '../generated/initiative/IbanDTO';
+import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from '../generated/initiative/TimelineDTO';
+import { OperationDTO } from '../generated/initiative/OperationDTO';
+import { ExportListDTO } from '../generated/initiative/ExportListDTO';
+import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
+import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
+import { OnboardingStatusDTO } from '../generated/initiative/OnboardingStatusDTO';
+import { FamilyUnitCompositionDTO } from '../generated/initiative/FamilyUnitCompositionDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -126,6 +148,22 @@ export const InitiativeApiMocked = {
     _status: string | undefined
   ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedOnBoardingStatusResponse)),
 
+  getExportSummary: async (_initiativeId: string, _exportId: string): Promise<ExportSummaryDTO> =>
+    new Promise((resolve) => resolve(mockedRefundsDetailsSummary)),
+
+  getExportRefundsListPaged: async (
+    _initiativeId: string,
+    _exportId: string,
+    _page: number,
+    _cro?: string,
+    _status?: string
+  ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem)),
+
+  getRefundDetail: async (
+    _initiativeId: string,
+    _refundEventId: string
+  ): Promise<RefundDetailDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsByEventRes)),
+
   getRewardFileDownload: async (_id: string, _filePath: string): Promise<SasToken> =>
     new Promise((resolve) => resolve(mockedGetRewardFileDownload)),
 
@@ -159,4 +197,46 @@ export const InitiativeApiMocked = {
 
   getMccConfig: async (): Promise<ConfigMccArrayDTO> =>
     new Promise((resolve) => resolve(mockedMccCodes)),
+
+  getWalletDetail: async (_id: string, _cf: string): Promise<WalletDTO> =>
+    new Promise((resolve) => resolve(mockedWallet)),
+
+  getIban: async (_iban: string): Promise<IbanDTO> =>
+    new Promise((resolve) => resolve(mockedIbanInfo)),
+
+  getTimeLine: async (
+    _cf: string,
+    _id: string,
+    _opeType?: string,
+    _dateFrom?: string,
+    _dateTo?: string,
+    _page?: number,
+    _size?: number
+  ): Promise<TimelineDTO> => new Promise((resolve) => resolve(mockedOperationList)),
+
+  getTimelineDetail: async (_cf: string, _id: string, _opeId: string): Promise<OperationDTO> =>
+    new Promise((resolve) => resolve(mockedOperationDetail)),
+
+  getInstrumentList: async (_id: string, _cf: string): Promise<InstrumentListDTO> =>
+    new Promise((resolve) => resolve(mockedWalletInstrument)),
+
+  getOrganizationsList: async (): Promise<OrganizationListDTO> =>
+    new Promise((resolve) => resolve(mockedOrganizationsList)),
+
+  getBeneficiaryOnboardingStatus: async (
+    _initiativeId: string,
+    _fiscalCode: string
+  ): Promise<OnboardingStatusDTO> => new Promise((resolve) => resolve(mockedBeneficaryStatus)),
+
+  suspendUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  readmitUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  getFamilyComposition: async (
+    _initiativeId: string,
+    _fiscalCode: string
+  ): Promise<FamilyUnitCompositionDTO> =>
+    new Promise((resolve) => resolve(mockedFamilyUnitComposition)),
 };

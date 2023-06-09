@@ -64,7 +64,7 @@ const PublishInitiativeRankingModal = ({
                 weight="default"
                 size="small"
                 startIcon={<FileDownloadIcon />}
-                data-testid="alert-btn-test"
+                data-testid="download-btn-test"
               >
                 {t('pages.initiativeRanking.publishModal.alertBtn')}
               </ButtonNaked>
@@ -95,7 +95,7 @@ const PublishInitiativeRankingModal = ({
               onClick={() => {
                 publishInitiativeRanking(initiativeId);
               }}
-              data-testid="exit-button-test"
+              data-testid="publish-button-test"
             >
               {t('pages.initiativeRanking.publishModal.publishBtn')}
             </Button>

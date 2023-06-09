@@ -10,8 +10,10 @@ import {
 } from '../Initiative';
 import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../api/generated/initiative/InitiativeAdditionalDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 
 const mockedGeneralBody: GeneralInfo = {
   beneficiaryType: BeneficiaryTypeEnum.PF,
@@ -93,6 +95,8 @@ export const mockedInitiative: Initiative = {
     logoURL: 'logo url',
   },
   beneficiaryRule: {
+    apiKeyClientId: 'string',
+    apiKeyClientAssertion: 'string',
     selfDeclarationCriteria: [
       {
         _type: 'boolean',
@@ -146,7 +150,7 @@ export const mockedInitiative: Initiative = {
         authority: 'AUTH1',
         code: 'BIRTHDATE',
         field: 'year',
-        operator: 'BTW_OPEN',
+        operator: 'BTW_CLOSED',
         value: '18',
       },
       {
@@ -209,7 +213,7 @@ export const mockedInitiative: Initiative = {
         authority: 'INPS',
         code: 'ISEE',
         field: 'ISEE',
-        operator: 'BTW_OPEN',
+        operator: 'BTW_CLOSED',
         value: '40000',
       },
       {
@@ -221,7 +225,12 @@ export const mockedInitiative: Initiative = {
       },
     ],
   },
-  rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+  rewardRule: {
+    _type: 'rewardValue',
+    rewardValue: 1,
+    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+  },
   trxRule: {
     mccFilter: { allowedList: true, values: ['string', ''] },
     rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
@@ -329,6 +338,8 @@ test('Test initiative2Initiative', () => {
       logoURL: 'logo url',
     },
     beneficiaryRule: {
+      apiKeyClientId: 'string',
+      apiKeyClientAssertion: 'string',
       selfDeclarationCriteria: [
         {
           _type: 'boolean',
@@ -382,7 +393,7 @@ test('Test initiative2Initiative', () => {
           authority: 'AUTH1',
           code: 'BIRTHDATE',
           field: 'year',
-          operator: 'BTW_OPEN',
+          operator: 'BTW_CLOSED',
           value: '18',
         },
         {
@@ -445,7 +456,7 @@ test('Test initiative2Initiative', () => {
           authority: 'INPS',
           code: 'ISEE',
           field: 'ISEE',
-          operator: 'BTW_OPEN',
+          operator: 'BTW_CLOSED',
           value: '40000',
         },
         {
@@ -457,7 +468,12 @@ test('Test initiative2Initiative', () => {
         },
       ],
     },
-    rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    rewardRule: {
+      _type: 'rewardValue',
+      rewardValue: 1,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    },
     trxRule: {
       mccFilter: { allowedList: true, values: ['string', ''] },
       rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],

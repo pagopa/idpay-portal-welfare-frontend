@@ -206,8 +206,8 @@ export const mockedParties: Array<Party> = [
     // if change these roles, change them also in testToken
     roles: [
       {
-        partyRole: 'OPERATOR',
-        roleKey: 'ope_base', // TODO use real product role
+        partyRole: 'ADMIN',
+        roleKey: 'pagopa_admin', // TODO use real product role
       },
     ],
     description: 'Comune di Jesolo',
@@ -233,7 +233,11 @@ export const verifyFetchPartiesMockExecution = (parties: Array<Party>) => {
 export const fetchParties = () => new Promise((resolve) => resolve(mockedParties));
 
 export const verifyFetchPartyDetailsMockExecution = (party: Party) => {
-  expect(party).toStrictEqual(mockedParties.filter((p) => p.partyId === party.partyId)[0]);
+  expect(party).toStrictEqual(
+    mockedParties.filter(
+      (p) => p.partyId === party.partyId && p.roles[0].roleKey === party.roles[0].roleKey
+    )[0]
+  );
 };
 
 export const fetchPartyDetails = (

@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Typography, Link } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
@@ -11,9 +11,12 @@ import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaSe
 import {
   beneficiaryRuleSelector,
   initiativeIdSelector,
+  // saveApiKeyClientId,
+  // saveApiKeyClientAssertion,
   saveAutomatedCriteria,
   saveManualCriteria,
   stepTwoRankingEnabledSelector,
+  stepTwoBeneficiaryTypeSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
@@ -22,6 +25,8 @@ import {
   putBeneficiaryRuleDraftService,
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -32,6 +37,7 @@ import {
 import DateOdBirthCriteriaItem from './DateOfBirthCriteriaItem';
 import ResidencyCriteriaItem from './ResidencyCriteriaItem';
 import ManualCriteria from './ManualCriteria';
+// import APIKeyConnectionItem from './APIKeyConnectionItem';
 
 type Props = {
   action: string;
@@ -64,8 +70,16 @@ const AdmissionCriteria = ({
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
+  const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
+  // const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
+  //   beneficiaryRule.apiKeyClientId
+  // );
+  // const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>(
+  //   beneficiaryRule.apiKeyClientAssertion
+  // );
+  // const [apiKeyClientDispatched, setApiKeyClientDispatched] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -78,6 +92,7 @@ const AdmissionCriteria = ({
       .then((response) => {
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
+
         if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
@@ -87,13 +102,30 @@ const AdmissionCriteria = ({
             }
           });
         }
+
+        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+          responseT = responseT.map((r) => {
+            if (r.code !== 'ISEE') {
+              return { ...r };
+            } else {
+              return { ...r, checked: true };
+            }
+          });
+
+          responseT = responseT.filter((r) => r.code === 'ISEE');
+        }
+
         const responseData = mapResponse(responseT);
+
         setAvailableCriteria([...responseData]);
         setCriteriaToRender([...responseData]);
 
         const { automatedCriteria, selfDeclarationCriteria } = beneficiaryRule;
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
-        if (automatedCriteria.length > 0) {
+        if (
+          automatedCriteria.length > 0 ||
+          (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF)
+        ) {
           const updatedResponseData: Array<AvailableCriteria> =
             updateInitialAutomatedCriteriaOnSelector(
               automatedCriteria,
@@ -269,6 +301,19 @@ const AdmissionCriteria = ({
     }
   };
 
+  // const handleApyKeyClientIdChanged = (value: string | undefined) => {
+  //   setApiKeyClientId(value);
+  // };
+
+  // const handleApyKeyClientAssertionChanged = (value: string | undefined) => {
+  //   setApiKeyClientAssertion(value);
+  // };
+
+  // const handleApiKeyClientDispathed = (value: boolean) => {
+  //   setApiKeyClientDispatched(value);
+  // };
+
+  // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
     // eslint-disable-next-line functional/no-let
     let toSubmit = true;
@@ -277,12 +322,29 @@ const AdmissionCriteria = ({
       criteriaToSubmit.forEach((c) => {
         toSubmit = toSubmit && c.dispatched;
       });
+      // const automatedCriteriaChecked = criteriaToRender.map((c) => c.checked);
+      // const almostOneCriteriaChecked =
+      //   automatedCriteriaChecked.length > 0
+      //     ? automatedCriteriaChecked.reduce((prev, curr) => prev || curr)
+      //     : false;
+      // if (almostOneCriteriaChecked) {
+      //   toSubmit = toSubmit && apiKeyClientDispatched;
+      // }
     } else {
       toSubmit = false;
       setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
+      // const body = mapCriteriaToSend(
+      //   criteriaToRender,
+      //   manualCriteriaToRender,
+      //   rankingEnabled,
+      //   apiKeyClientId,
+      //   apiKeyClientAssertion
+      // );
+
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
+
       const automatedCriteriaCodes = body.automatedCriteria.map((c) => c.code);
       const iseeCriteriaPopulated = automatedCriteriaCodes.includes('ISEE');
 
@@ -290,6 +352,8 @@ const AdmissionCriteria = ({
         setLoading(true);
         putBeneficiaryRuleService(initiativeId, body)
           .then((_response) => {
+            // dispatch(saveApiKeyClientId(body.apiKeyClientId));
+            // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
             dispatch(saveAutomatedCriteria(body.automatedCriteria));
             dispatch(saveManualCriteria(manualCriteriaToRender));
             setCurrentStep(currentStep + 1);
@@ -314,10 +378,20 @@ const AdmissionCriteria = ({
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
+      // const body = mapCriteriaToSend(
+      //   criteriaToRender,
+      //   manualCriteriaToRender,
+      //   rankingEnabled,
+      //   apiKeyClientId,
+      //   apiKeyClientAssertion
+      // );
+
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
+          // dispatch(saveApiKeyClientId(body.apiKeyClientId));
+          // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
           dispatch(saveManualCriteria(manualCriteriaToRender));
           setOpenDraftSavedToast(true);
@@ -338,169 +412,172 @@ const AdmissionCriteria = ({
         .finally(() => setLoading(false));
     }
     setAction('');
+    // }, [action, criteriaToSubmit, apiKeyClientDispatched]);
   }, [action, criteriaToSubmit]);
 
   return (
-    <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">
-          {t('components.wizard.stepThree.chooseCriteria.title')}
-        </Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">
-            {t('components.wizard.stepThree.chooseCriteria.subtitle')}
-          </Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.admissionCriteria')}
-            target="_blank"
-            underline="none"
-            variant="body2"
+    <>
+      <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
+        <TitleBoxWithHelpLink
+          title={t('components.wizard.stepThree.chooseCriteria.title')}
+          subtitle={t('components.wizard.stepThree.chooseCriteria.subtitle')}
+          helpLink={t('helpStaticUrls.wizard.admissionCriteria')}
+          helpLabel={t('components.wizard.common.links.findOut')}
+        />
+
+        <Box
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 1,
+            gridTemplateRows: 'auto',
+            gridTemplateAreas: `"criteriaButton addButton .  "`,
+            py: 2,
+            mb: 3,
+          }}
+        >
+          <Button
+            variant="contained"
+            sx={{ gridArea: 'criteriaButton' }}
+            startIcon={<ListAltIcon />}
+            onClick={handleOpenModal}
+            data-testid="criteria-button-test"
+            disabled={beneficiaryType !== BeneficiaryTypeEnum.PF}
           >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
+            {t('components.wizard.stepThree.chooseCriteria.browse')}
+          </Button>
+
+          {beneficiaryType === BeneficiaryTypeEnum.PF && (
+            <AdmissionCriteriaModal
+              openModal={openModal}
+              handleCloseModal={handleCloseModal}
+              handleCriteriaAdded={handleCriteriaAdded}
+              criteriaToRender={criteriaToRender}
+              setCriteriaToRender={setCriteriaToRender}
+              searchCriteria={searchCriteria}
+              setSearchCriteria={setSearchCriteria}
+              data-testid="modal-test"
+              beneficiaryType={beneficiaryType}
+            />
+          )}
+          <Button
+            variant="text"
+            sx={{ gridArea: 'addButton' }}
+            onClick={handleManualCriteriaAdded}
+            data-testid="add-manually-test"
+          >
+            {t('components.wizard.stepThree.chooseCriteria.addManually')}
+          </Button>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 1,
-          gridTemplateRows: 'auto',
-          gridTemplateAreas: `"criteriaButton addButton .  "`,
-          py: 2,
-          mb: 3,
-        }}
-      >
-        <Button
-          variant="contained"
-          sx={{ gridArea: 'criteriaButton' }}
-          startIcon={<ListAltIcon />}
-          onClick={handleOpenModal}
-          data-testid="criteria-button-test"
-        >
-          {t('components.wizard.stepThree.chooseCriteria.browse')}
-        </Button>
-        <AdmissionCriteriaModal
-          openModal={openModal}
-          handleCloseModal={handleCloseModal}
-          handleCriteriaAdded={handleCriteriaAdded}
-          criteriaToRender={criteriaToRender}
-          setCriteriaToRender={setCriteriaToRender}
-          searchCriteria={searchCriteria}
-          setSearchCriteria={setSearchCriteria}
-          data-testid="modal-test"
-        />
-        <Button
-          variant="text"
-          sx={{ gridArea: 'addButton' }}
-          onClick={handleManualCriteriaAdded}
-          data-testid="add-manually-test"
-        >
-          {t('components.wizard.stepThree.chooseCriteria.addManually')}
-        </Button>
-      </Box>
-      <Box>
-        {criteriaToRenderNumber > 0 && (
-          <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
-            {t('components.wizard.stepThree.chooseCriteria.admissionCriteriaAdded')}
-          </Typography>
-        )}
-        {availableCriteria.map((a) => {
-          if (a.code === 'BIRTHDATE' && a.checked === true) {
-            return (
-              <DateOdBirthCriteriaItem
-                key={a.code}
-                formData={a}
-                action={action}
-                handleCriteriaRemoved={handleCriteriaRemoved}
-                handleFieldValueChanged={handleFieldValueChanged}
-                criteriaToSubmit={criteriaToSubmit}
-                setCriteriaToSubmit={setCriteriaToSubmit}
-              />
-            );
-          }
-          if (a.code === 'RESIDENCE' && a.checked === true) {
-            return (
-              <ResidencyCriteriaItem
-                key={a.code}
-                formData={a}
-                action={action}
-                handleCriteriaRemoved={handleCriteriaRemoved}
-                handleFieldValueChanged={handleFieldValueChanged}
-                criteriaToSubmit={criteriaToSubmit}
-                setCriteriaToSubmit={setCriteriaToSubmit}
-              />
-            );
-          }
-          if (a.code === 'ISEE' && a.checked === true) {
-            return (
-              <IseeCriteriaItem
-                key={a.code}
-                formData={a}
-                action={action}
-                handleCriteriaRemoved={handleCriteriaRemoved}
-                handleFieldValueChanged={handleFieldValueChanged}
-                criteriaToSubmit={criteriaToSubmit}
-                setCriteriaToSubmit={setCriteriaToSubmit}
-                rankingEnabled={rankingEnabled}
-              />
-            );
-          }
-          return null;
-        })}
-        {showMandatoryIseeToast && (
+        <Box>
+          {criteriaToRenderNumber > 0 && (
+            <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
+              {t('components.wizard.stepThree.chooseCriteria.admissionCriteriaAdded')}
+            </Typography>
+          )}
+          {availableCriteria.map((a) => {
+            if (a.code === 'BIRTHDATE' && a.checked === true) {
+              return (
+                <DateOdBirthCriteriaItem
+                  key={a.code}
+                  formData={a}
+                  action={action}
+                  handleCriteriaRemoved={handleCriteriaRemoved}
+                  handleFieldValueChanged={handleFieldValueChanged}
+                  criteriaToSubmit={criteriaToSubmit}
+                  setCriteriaToSubmit={setCriteriaToSubmit}
+                />
+              );
+            }
+            if (a.code === 'RESIDENCE' && a.checked === true) {
+              return (
+                <ResidencyCriteriaItem
+                  key={a.code}
+                  formData={a}
+                  action={action}
+                  handleCriteriaRemoved={handleCriteriaRemoved}
+                  handleFieldValueChanged={handleFieldValueChanged}
+                  criteriaToSubmit={criteriaToSubmit}
+                  setCriteriaToSubmit={setCriteriaToSubmit}
+                />
+              );
+            }
+            if (a.code === 'ISEE' && a.checked === true) {
+              return (
+                <IseeCriteriaItem
+                  key={a.code}
+                  formData={a}
+                  action={action}
+                  handleCriteriaRemoved={handleCriteriaRemoved}
+                  handleFieldValueChanged={handleFieldValueChanged}
+                  criteriaToSubmit={criteriaToSubmit}
+                  setCriteriaToSubmit={setCriteriaToSubmit}
+                  rankingEnabled={rankingEnabled}
+                  beneficiaryType={beneficiaryType}
+                />
+              );
+            }
+            return null;
+          })}
+          {showMandatoryIseeToast && (
+            <Toast
+              open={showMandatoryIseeToast}
+              title={t(
+                'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorTitle'
+              )}
+              message={t(
+                'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorDescription'
+              )}
+              onCloseToast={() => {
+                setShowMandatoryIseeToast(false);
+              }}
+              logo={InfoOutlinedIcon}
+              leftBorderColor="#FE6666"
+              toastColorIcon="#FE6666"
+              showToastCloseIcon={true}
+            />
+          )}
+        </Box>
+        <Box>
+          {manualCriteriaToRender.length > 0 && (
+            <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
+              {t('components.wizard.stepThree.chooseCriteria.manualCriteriaAdded')}
+            </Typography>
+          )}
+          {manualCriteriaToRender.map((m) => (
+            <ManualCriteria
+              key={m.code}
+              data={m}
+              action={action}
+              handleCriteriaRemoved={handleManualCriteriaRemoved}
+              manualCriteriaToRender={manualCriteriaToRender}
+              setManualCriteriaToRender={setManualCriteriaToRender}
+              criteriaToSubmit={criteriaToSubmit}
+              setCriteriaToSubmit={setCriteriaToSubmit}
+              data-testid="manually-added-test"
+            />
+          ))}
+        </Box>
+        {openDraftSavedToast && (
           <Toast
-            open={showMandatoryIseeToast}
-            title={t(
-              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorTitle'
-            )}
-            message={t(
-              'components.wizard.stepThree.chooseCriteria.iseeNotPopulatedOnRankingErrorDescription'
-            )}
-            onCloseToast={() => {
-              setShowMandatoryIseeToast(false);
-            }}
-            logo={InfoOutlinedIcon}
-            leftBorderColor="#FE6666"
-            toastColorIcon="#FE6666"
+            open={openDraftSavedToast}
+            title={t('components.wizard.common.draftSaved')}
             showToastCloseIcon={true}
+            onCloseToast={() => setOpenDraftSavedToast(false)}
           />
         )}
-      </Box>
-      <Box>
-        {manualCriteriaToRender.length > 0 && (
-          <Typography variant="caption" sx={{ textTransform: 'uppercase', fontWeight: '700' }}>
-            {t('components.wizard.stepThree.chooseCriteria.manualCriteriaAdded')}
-          </Typography>
-        )}
-        {manualCriteriaToRender.map((m) => (
-          <ManualCriteria
-            key={m.code}
-            data={m}
-            action={action}
-            handleCriteriaRemoved={handleManualCriteriaRemoved}
-            manualCriteriaToRender={manualCriteriaToRender}
-            setManualCriteriaToRender={setManualCriteriaToRender}
-            criteriaToSubmit={criteriaToSubmit}
-            setCriteriaToSubmit={setCriteriaToSubmit}
-            data-testid="manually-added-test"
-          />
-        ))}
-      </Box>
-      {openDraftSavedToast && (
-        <Toast
-          open={openDraftSavedToast}
-          title={t('components.wizard.common.draftSaved')}
-          showToastCloseIcon={true}
-          onCloseToast={() => setOpenDraftSavedToast(false)}
+      </Paper>
+      {/* {criteriaToRenderNumber > 0 && (
+        <APIKeyConnectionItem
+          action={action}
+          apiKeyClientId={apiKeyClientId}
+          handleApyKeyClientIdChanged={handleApyKeyClientIdChanged}
+          apiKeyClientAssertion={apiKeyClientAssertion}
+          handleApyKeyClientAssertionChanged={handleApyKeyClientAssertionChanged}
+          handleApiKeyClientDispathed={handleApiKeyClientDispathed}
         />
-      )}
-    </Paper>
+      )} */}
+    </>
   );
 };
 

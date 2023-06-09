@@ -4,6 +4,7 @@ export interface IDPayUser {
   name: string;
   surname: string;
   email: string;
+  org_name: string;
   org_party_role: string;
   org_role: string;
 }

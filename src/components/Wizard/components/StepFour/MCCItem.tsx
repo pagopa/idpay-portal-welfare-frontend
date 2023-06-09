@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { grey } from '@mui/material/colors';
 import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
@@ -22,7 +21,13 @@ import { fetchMccCodes } from '../../../../services/mccCodesService';
 import { MccCodesModel } from '../../../../model/MccCodes';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
-import { handleShopRulesToSubmit, renderShopRuleIcon, setError, setErrorText } from './helpers';
+import {
+  boxItemStyle,
+  handleShopRulesToSubmit,
+  renderShopRuleIcon,
+  setError,
+  setErrorText,
+} from './helpers';
 import MCCModal from './MCCModal';
 
 type Props = {
@@ -99,7 +104,7 @@ const MCCItem = ({
     allowedList: Yup.string().required(t('validation.required')),
     values: Yup.string()
       .required(t('validation.required'))
-      .test('valid-mccCode-values', t('validation.notValidMccLis'), function (val) {
+      .test('valid-mccCode-values', t('validation.notValidMccList'), function (val) {
         if (val && val.length > 0) {
           const mccCodesValue = val.replace(/\W+/g, ' ').trim();
           const mccCodesArr = mccCodesValue.split(' ');
@@ -175,27 +180,14 @@ const MCCItem = ({
   }, [formik.values.values]);
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(24, 1fr)',
-        alignItems: 'start',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="mcc-item-test"
-    >
+    <Box sx={boxItemStyle} data-testid="mcc-item-test">
       <Box sx={{ gridColumn: 'span 1' }}>{renderShopRuleIcon(code, 0, 'inherit')}</Box>
       <Box sx={{ gridColumn: 'span 22' }}>
         <Typography variant="subtitle1">{title}</Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
         <IconButton
-          data-testid="delete-button-test"
+          data-testid="delete-button-mcc-test"
           onClick={() => handleShopListItemRemoved(code)}
         >
           <DeleteOutlineIcon

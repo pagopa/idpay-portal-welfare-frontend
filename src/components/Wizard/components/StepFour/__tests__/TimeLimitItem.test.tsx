@@ -1,85 +1,131 @@
 /* eslint-disable react/jsx-no-bind */
 import React from 'react';
-import { fireEvent, render } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
-import { Provider } from 'react-redux';
-import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TimeLimitItem from '../TimeLimitItem';
 import { rewardLimits, shopRulesToSubmit } from './ShopRules.test';
+import { renderWithContext } from '../../../../../utils/test-utils';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
+beforeEach(() => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
 
-window.scrollTo = jest.fn();
+afterEach(cleanup);
 
-describe('<TimeLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+describe('<TimeLimitItem />', () => {
   const data = [{ frequency: 'DAILY', rewardLimit: 2 }];
-
+  window.scrollTo = jest.fn();
   test('should render correctly the TimeLimitItem component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <TimeLimitItem
-            key={0}
-            title={''}
-            code={'REWARDLIMIT'}
-            handleShopListItemRemoved={undefined}
-            action={WIZARD_ACTIONS.DRAFT}
-            shopRulesToSubmit={shopRulesToSubmit}
-            setShopRulesToSubmit={jest.fn()}
-            data={rewardLimits}
-            setData={jest.fn()}
-          />
-        </Provider>
-      );
-    });
+    renderWithContext(
+      <TimeLimitItem
+        key={0}
+        title={''}
+        code={'REWARDLIMIT'}
+        handleShopListItemRemoved={undefined}
+        action={WIZARD_ACTIONS.DRAFT}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={rewardLimits}
+        setData={jest.fn()}
+      />
+    );
   });
 
   it('test on handleSubmit', async () => {
-    await act(async () => {
-      const mockedHandleShopListItemRemoved = jest.fn();
-      const { getByText, getByTestId, getByPlaceholderText } = render(
-        <Provider store={store}>
-          <TimeLimitItem
-            key={1}
-            title={'title'}
-            code={'REWARDLIMIT'}
-            handleShopListItemRemoved={mockedHandleShopListItemRemoved}
-            action={WIZARD_ACTIONS.SUBMIT}
-            shopRulesToSubmit={shopRulesToSubmit}
-            setShopRulesToSubmit={jest.fn()}
-            data={data}
-            setData={jest.fn()}
-          />
-        </Provider>
-      );
+    const data = [{ frequency: 'DAILY', rewardLimit: 2 }];
+    renderWithContext(
+      <TimeLimitItem
+        key={1}
+        title={'title'}
+        code={'REWARDLIMIT'}
+        handleShopListItemRemoved={jest.fn()}
+        action={WIZARD_ACTIONS.SUBMIT}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={data}
+        setData={jest.fn()}
+      />
+    );
 
-      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
-      const addTimeLimitBtn = getByText(
-        'components.wizard.stepFour.form.addTimeLimitItem'
-      ) as HTMLButtonElement;
+    const deleteBtn = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+    fireEvent.click(deleteBtn);
 
-      const rewardLimit = getByPlaceholderText(
-        /components.wizard.stepFour.form.maxReward/i
-      ) as HTMLInputElement;
+    const rewardLimit = screen.getAllByTestId('timeLimit[0].rewardLimit') as HTMLInputElement[];
 
-      fireEvent.click(deleteBtn);
-      expect(mockedHandleShopListItemRemoved).toHaveBeenCalledTimes(1);
+    fireEvent.click(rewardLimit[0]);
+    fireEvent.change(rewardLimit[0], { target: { value: 'temp text' } });
+    fireEvent.change(rewardLimit[0], { target: { value: '' } });
 
-      fireEvent.click(addTimeLimitBtn);
-      expect(addTimeLimitBtn).toBeInTheDocument();
+    const addTimeLimitBtn = screen.getByTestId('addTimeLimitItem-test') as HTMLButtonElement;
+    fireEvent.click(addTimeLimitBtn);
 
-      const selectFrequeny = getByTestId('select-frequency-test') as HTMLSelectElement;
-      fireEvent.click(selectFrequeny);
-      fireEvent.change(selectFrequeny, { target: { value: 'DAILY' } });
-      expect(selectFrequeny).toBeInTheDocument();
+    const removeItem = screen.getByTestId('removeCircleIconLimit');
+    fireEvent.click(removeItem);
 
-      fireEvent.change(rewardLimit, { target: { value: 'temp text' } });
-      expect(rewardLimit).toBeInTheDocument();
-    });
+    const selectFrequency = screen.getByTestId('select-frequency-test');
+    fireEvent.click(selectFrequency);
+    fireEvent.change(selectFrequency, { target: { value: 'MONTHLY' } });
+  });
+
+  test('Test TimeLimitItem with rewardLimit 0', async () => {
+    const data = [{ frequency: '', rewardLimit: 2 }];
+    renderWithContext(
+      <TimeLimitItem
+        key={0}
+        title={''}
+        code={'REWARDLIMIT'}
+        handleShopListItemRemoved={undefined}
+        action={WIZARD_ACTIONS.DRAFT}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={data}
+        setData={jest.fn()}
+      />
+    );
+  });
+
+  test('Test TimeLimitItem with key not 0', async () => {
+    const data = [
+      { frequency: 'DAILY', rewardLimit: 2 },
+      { frequency: 'DAILY', rewardLimit: 2 },
+    ];
+    renderWithContext(
+      <TimeLimitItem
+        key={1}
+        title={''}
+        code={'REWARDLIMIT'}
+        handleShopListItemRemoved={undefined}
+        action={''}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={data}
+        setData={jest.fn()}
+      />
+    );
+
+    const removeItem = screen.getByTestId('removeCircleIconLimit');
+    fireEvent.click(removeItem);
+
+    const selectFrequency = screen.getByTestId('select-frequency-test');
+    fireEvent.click(selectFrequency);
+    fireEvent.change(selectFrequency, { target: { value: 'MONTHLY' } });
+  });
+
+  test('Test TimeLimitItem with data undefined', async () => {
+    renderWithContext(
+      <TimeLimitItem
+        key={1}
+        title={''}
+        code={'REWARDLIMIT'}
+        handleShopListItemRemoved={undefined}
+        action={WIZARD_ACTIONS.SUBMIT}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={jest.fn()}
+        data={undefined}
+        setData={jest.fn()}
+      />
+    );
   });
 });

@@ -8,6 +8,7 @@ import {
   updateInitialAutomatedCriteriaOnSelector,
   mapCriteriaToSend,
   setInitialOrderDirection,
+  IseeTypologyEnum,
 } from '../helpers';
 // import {FilterOperator} from "../../../../../utils/constants";
 const setterFunction = jest.fn();
@@ -23,6 +24,7 @@ export const mockedMapResponse = (
       code: stringOrUndefined,
       field: 'string',
       operator: operator,
+      iseeTypes: [IseeTypologyEnum.Dottorato, IseeTypologyEnum.Minorenne],
     },
   ];
 };
@@ -96,7 +98,7 @@ describe('helpers.ts of Step three', () => {
     expect(setErrorText(true, 'string')).toBe('string');
   });
   test('setFieldType ', () => {
-    expect(setFieldType('BTW_OPEN', setterFunction)).not.toBeNull();
+    expect(setFieldType('BTW_CLOSED', setterFunction)).not.toBeNull();
     expect(setFieldType('', setterFunction)).not.toBeNull();
   });
   test('setFormControlDisplayProp', () => {
@@ -159,11 +161,19 @@ describe('helpers.ts of Step three', () => {
         mapCriteriaToSend(
           mockedMapResponse('ISEE', 'string', 'string'),
           mockedManualCriteria(item),
-          'true'
+          'true',
+          'aaa',
+          'bbb'
         )
       ).not.toBeNull();
       expect(
-        mapCriteriaToSend(mockedMapResponse('', '', ''), mockedManualCriteria(item), 'true')
+        mapCriteriaToSend(
+          mockedMapResponse('', '', ''),
+          mockedManualCriteria(item),
+          'true',
+          'aaa',
+          'bbb'
+        )
       ).not.toBeNull();
     });
   });

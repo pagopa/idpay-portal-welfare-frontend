@@ -11,7 +11,7 @@ import ROUTES from '../../routes';
 import { getInstitutionProductUserInfo, sendEmail } from '../../services/emailNotificationService';
 import { ENV } from '../../utils/env';
 import { EmailMessageDTO } from '../../api/generated/email-notification/EmailMessageDTO';
-import ExitModal from './components/ExitModal/ExitModal';
+import ExitModal from '../../components/ExitModal/ExitModal';
 
 const Assistance = () => {
   const { t } = useTranslation();
@@ -198,7 +198,12 @@ const Assistance = () => {
             <Button variant="outlined" onClick={handleOpenExitModal} data-testid="open-exit-test">
               {t('components.wizard.common.buttons.back')}
             </Button>
-            <ExitModal openExitModal={openExitModal} handleCloseExitModal={handleCloseExitModal} />
+            <ExitModal
+              title={t('components.exitModal.title')}
+              subtitle={t('pages.assistance.exitModal.body')}
+              openExitModal={openExitModal}
+              handleCloseExitModal={handleCloseExitModal}
+            />
           </Box>
         </Box>
       ) : (

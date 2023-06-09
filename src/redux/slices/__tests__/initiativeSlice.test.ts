@@ -10,51 +10,54 @@ import {
   TrxCount,
 } from '../../../model/Initiative';
 import {
+  additionalInfoSelector,
+  beneficiaryRuleSelector,
+  generalInfoSelector,
+  initiativeDaysOfWeekIntervalsSelector,
+  initiativeIdSelector,
+  initiativeMccFilterSelector,
   initiativeReducer,
+  initiativeRefundRulesSelector,
+  initiativeRewardLimitsSelector,
+  initiativeRewardRuleSelector,
+  initiativeSelector,
+  initiativeStatusSelector,
+  initiativeThresholdSelector,
+  initiativeTrxCountSelector,
   resetInitiative,
+  saveAutomatedCriteria,
+  saveDaysOfWeekIntervals,
+  saveManualCriteria,
+  saveMccFilter,
+  saveRefundRule,
+  saveRewardLimits,
+  saveRewardRule,
+  saveThreshold,
+  saveTrxCount,
+  setAdditionalInfo,
+  setAutomatedCriteria,
   setGeneralInfo,
   setInitiative,
   setInitiativeCreationDate,
   setInitiativeId,
   setInitiativeName,
   setInitiativeUpdateDate,
+  setManualCriteria,
   setOrganizationId,
   setStatus,
-  setAdditionalInfo,
-  saveRefundRule,
-  initiativeSelector,
-  beneficiaryRuleSelector,
-  generalInfoSelector,
-  additionalInfoSelector,
   stepTwoBeneficiaryKnownSelector,
-  initiativeIdSelector,
-  initiativeRewardRuleSelector,
-  initiativeMccFilterSelector,
-  initiativeRewardLimitsSelector,
-  initiativeThresholdSelector,
-  initiativeTrxCountSelector,
-  initiativeDaysOfWeekIntervalsSelector,
-  initiativeRefundRulesSelector,
-  initiativeStatusSelector,
-  setAutomatedCriteria,
-  saveAutomatedCriteria,
-  setManualCriteria,
-  saveManualCriteria,
-  saveRewardRule,
-  saveMccFilter,
-  saveRewardLimits,
-  saveThreshold,
-  saveTrxCount,
-  saveDaysOfWeekIntervals,
 } from '../initiativeSlice';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
-import { GeneralInfo } from '../../../model/Initiative';
-import { createStore, RootState } from '../../store';
+
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
+import { GeneralInfo } from '../../../model/Initiative';
+import { createStore } from '../../store';
 
 describe('use Initiative slice', () => {
   const mockedInitialState: Initiative = {
     initiativeId: undefined,
+    initiativeRewardType: undefined,
     organizationId: undefined,
     status: undefined,
     initiativeName: undefined,
@@ -74,14 +77,15 @@ describe('use Initiative slice', () => {
     },
     generalInfo: {
       beneficiaryType: BeneficiaryTypeEnum.PF,
-      beneficiaryKnown: undefined,
+      familyUnitComposition: undefined,
+      beneficiaryKnown: 'false',
       budget: '',
       beneficiaryBudget: '',
       startDate: '',
       endDate: '',
       rankingStartDate: '',
       rankingEndDate: '',
-      rankingEnabled: undefined,
+      rankingEnabled: 'false',
       introductionTextDE: '',
       introductionTextEN: '',
       introductionTextFR: '',
@@ -89,12 +93,15 @@ describe('use Initiative slice', () => {
       introductionTextSL: '',
     },
     beneficiaryRule: {
+      apiKeyClientId: undefined,
+      apiKeyClientAssertion: undefined,
       selfDeclarationCriteria: [],
       automatedCriteria: [],
     },
     rewardRule: {
       _type: 'rewardValue',
       rewardValue: undefined,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
     },
     trxRule: {
       mccFilter: {
@@ -219,7 +226,14 @@ describe('use Initiative slice', () => {
       initiativeReducer(mockedInitialState, saveManualCriteria([mockedManualCriteriaItem]))
     ).toBeDefined();
     expect(
-      initiativeReducer(mockedInitialState, saveRewardRule({ _type: 'string', rewardValue: 2 }))
+      initiativeReducer(
+        mockedInitialState,
+        saveRewardRule({
+          _type: 'string',
+          rewardValue: 2,
+          rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+        })
+      )
     ).toBeDefined();
     expect(initiativeReducer(mockedInitialState, saveMccFilter(mockedMccFilterDTO))).toBeDefined();
     expect(

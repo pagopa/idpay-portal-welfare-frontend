@@ -1,13 +1,13 @@
 import { Box } from '@mui/system';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
-import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { Chip, FormHelperText, LinearProgress, Typography } from '@mui/material';
+import { FormHelperText } from '@mui/material';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
-import { ButtonNaked } from '@pagopa/mui-italia';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LoadingFile from '../../../LoadingFile/LoadingFile';
+import InitUploadBox from '../../../InitUploadBox/InitUploadBox';
+import AcceptedFile from '../../../AcceptedFile/AcceptedFile';
 
 interface Props {
   setUploadFile: Dispatch<SetStateAction<File | undefined>>;
@@ -105,86 +105,6 @@ const UploadServiceIcon = ({
     setFileUploadedOk(false);
   };
 
-  const loadingFilePartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          width: '100%',
-          border: '1px solid #E3E7EB',
-          borderRadius: '10px',
-          px: 3,
-          py: 2,
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-        }}
-      >
-        <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-          {t('components.wizard.stepOne.uploadIcon.IconIsLoading')}
-        </Typography>
-        <Box sx={{ gridColumn: 'span 9' }}>
-          <LinearProgress />
-        </Box>
-      </Box>
-    </Box>
-  );
-
-  const FileAcceptedPartial = (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-      }}
-    >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          px: 2,
-          py: 1,
-          borderRadius: '10px',
-          border: '1px solid #E3E7EB',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 1', mt: 1 }}>
-          <CheckCircleIcon color="success" />
-        </Box>
-        <Box sx={{ gridColumn: 'span 3' }}>
-          <Typography variant="body2" fontWeight={600}>
-            {fileName}
-          </Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 3', textAlign: 'right' }}>
-          <Typography variant="body2">{fileUploadDate}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 5', justifySelf: 'right', px: 2 }}>
-          <Chip label={t('components.wizard.stepOne.uploadIcon.validIcon')} color="success" />
-        </Box>
-      </Box>
-      <Box sx={{ gridColumn: 'span 12', pt: 1 }}>
-        <ButtonNaked
-          size="small"
-          component="button"
-          onClick={resetStatus}
-          startIcon={<FileUploadIcon />}
-          sx={{ color: 'primary.main', fontSize: '14px', fontWeight: 700 }}
-          weight="default"
-        >
-          {t('components.wizard.stepOne.uploadIcon.changeIcon')}
-        </ButtonNaked>
-      </Box>
-    </Box>
-  );
-
   const InitStatusPartial = (
     <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
       <Box
@@ -201,18 +121,10 @@ const UploadServiceIcon = ({
         {...getRootProps()}
       >
         <input {...getInputProps()} data-testid="drop-input" />
-        <Box sx={{ textAlign: 'center', gridColumn: 'span 12', cursor: 'pointer' }}>
-          <FileUploadIcon sx={{ verticalAlign: 'bottom', color: '#0073E6' }} />
-          <Typography variant="body2" sx={{ textAlign: 'center', display: 'inline-grid' }}>
-            {t('components.wizard.stepOne.uploadIcon.dragAreaText')}&#160;
-          </Typography>
-          <Typography
-            variant="body2"
-            sx={{ textAlign: 'center', display: 'inline-grid', color: '#0073E6' }}
-          >
-            {t('components.wizard.stepOne.uploadIcon.dragAreaLink')}
-          </Typography>
-        </Box>
+        <InitUploadBox
+          text={t('components.wizard.stepOne.uploadIcon.dragAreaText')}
+          link={t('components.wizard.stepOne.uploadIcon.dragAreaLink')}
+        />
       </Box>
       <Box
         sx={{
@@ -246,11 +158,19 @@ const UploadServiceIcon = ({
         />
       )}
 
-      {fileIsLoading
-        ? loadingFilePartial
-        : fileIsAcceppted
-        ? FileAcceptedPartial
-        : InitStatusPartial}
+      {fileIsLoading ? (
+        <LoadingFile message={t('components.wizard.stepOne.uploadIcon.iconIsLoading')} />
+      ) : fileIsAcceppted ? (
+        <AcceptedFile
+          fileName={fileName}
+          fileDate={fileUploadDate}
+          chipLabel={t('components.wizard.stepOne.uploadIcon.validIcon')}
+          buttonLabel={t('components.wizard.stepOne.uploadIcon.changeIcon')}
+          buttonHandler={resetStatus}
+        />
+      ) : (
+        InitStatusPartial
+      )}
     </Box>
   );
 };

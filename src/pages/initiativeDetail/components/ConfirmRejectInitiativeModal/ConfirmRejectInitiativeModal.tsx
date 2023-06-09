@@ -55,16 +55,16 @@ const ConfirmRejectInitiativeModal = ({
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(6, 1fr)',
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . cancelBtn exitBtn"`,
+              gridTemplateAreas: `". . . cancelBtn cancelBtn exitBtn"`,
               gap: 2,
               mt: 2,
             }}
           >
             <Button
               variant="outlined"
-              sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
+              sx={{ gridArea: 'cancelBtn', justifySelf: 'start' }}
               onClick={() => setRejectModalOpen(false)}
               data-testid="cancel-button-test"
               id="cancel-button-test"
@@ -73,7 +73,7 @@ const ConfirmRejectInitiativeModal = ({
             </Button>
             <Button
               variant="contained"
-              sx={{ gridArea: 'exitBtn', justifySelf: 'end' }}
+              sx={{ gridArea: 'exitBtn', justifySelf: 'end', ml: 4 }}
               onClick={() => {
                 handleRejectInitiative(initiativeId, userCanRejectInitiative);
                 setRejectModalOpen(false);

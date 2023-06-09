@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import {
   Paper,
   Typography,
@@ -26,6 +27,7 @@ import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
+  initiativeRewardTypeSelector,
   initiativeRefundRulesSelector,
   saveRefundRule,
   generalInfoSelector,
@@ -35,6 +37,7 @@ import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameter
 import { putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import ROUTES from '../../../../routes';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
@@ -52,6 +55,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
   const initiativeId = useAppSelector(initiativeIdSelector);
   const generalInfo = useAppSelector(generalInfoSelector);
   const budgetPerPerson = generalInfo.beneficiaryBudget;
+  const initiativeRewardTypeSel = useAppSelector(initiativeRewardTypeSelector);
   const refundRulesSelector = useAppSelector(initiativeRefundRulesSelector);
   const dispatch = useAppDispatch();
   const addError = useErrorDispatcher();
@@ -147,7 +151,10 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
 
   const formik = useFormik({
     initialValues: {
-      reimbursmentQuestionGroup: refundRulesSelector?.reimbursmentQuestionGroup,
+      reimbursmentQuestionGroup:
+        initiativeRewardTypeSel !== InitiativeRewardTypeEnum.DISCOUNT
+          ? refundRulesSelector?.reimbursmentQuestionGroup
+          : 'false',
       timeParameter: refundRulesSelector?.timeParameter,
       accumulatedAmount: refundRulesSelector?.accumulatedAmount,
       additionalInfo: refundRulesSelector?.additionalInfo,
@@ -252,6 +259,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
               control={<Radio />}
               label={t('components.wizard.stepFive.form.accumulatedAmount')}
               data-testid="accumulatedAmount-radio-test"
+              disabled={initiativeRewardTypeSel === InitiativeRewardTypeEnum.DISCOUNT}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
@@ -371,19 +379,19 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                 }}
               >
                 <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
-                  {t('components.wizard.stepFive.select.timrParameter.initiativeDone')}
+                  {t('components.wizard.stepFive.select.timerParameter.initiativeDone')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.DAILY} data-testid="every-day">
-                  {t('components.wizard.stepFive.select.timrParameter.everyDay')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyDay')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.WEEKLY} data-testid="every-week">
-                  {t('components.wizard.stepFive.select.timrParameter.everyWeek')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyWeek')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.MONTHLY} data-testid="every-month">
-                  {t('components.wizard.stepFive.select.timrParameter.everyMonth')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyMonth')}
                 </MenuItem>
                 <MenuItem value={TimeTypeEnum.QUARTERLY} data-testid="every-three-months">
-                  {t('components.wizard.stepFive.select.timrParameter.everyThreeMonths')}
+                  {t('components.wizard.stepFive.select.timerParameter.everyThreeMonths')}
                 </MenuItem>
               </Select>
               <FormHelperText
@@ -412,7 +420,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
             }}
             id="import-time-label"
           >
-            {t('components.wizard.stepFive.form.subTitle')}
+            {t('components.wizard.stepFive.form.subtitle')}
           </FormLabel>
         </FormControl>
 

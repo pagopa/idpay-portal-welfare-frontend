@@ -3,7 +3,9 @@ import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import RefundRuleContentBody from '../StepFive/RefundRuleContentBody';
-import { BeneficiaryTypeEnum } from '../../../../utils/constants';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeDTO';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -89,6 +91,9 @@ describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createS
         privacyPolicyUrl: '',
         termsAndConditions: '',
         assistanceChannels: [{ type: 'web', contact: '' }],
+        logoFileName: '',
+        logoURL: '',
+        logoUploadDate: '',
       },
       generalInfo: {
         beneficiaryType: BeneficiaryTypeEnum.PF,
@@ -109,10 +114,14 @@ describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createS
       beneficiaryRule: {
         selfDeclarationCriteria: [],
         automatedCriteria: [],
+        apiKeyClientId: undefined,
+        apiKeyClientAssertion: undefined,
       },
+      initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
       rewardRule: {
         _type: 'rewardValue',
         rewardValue: undefined,
+        rewardValueType: RewardValueTypeEnum.PERCENTAGE,
       },
       trxRule: {
         mccFilter: {

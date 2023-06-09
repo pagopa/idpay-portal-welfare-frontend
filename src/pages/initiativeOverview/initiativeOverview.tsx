@@ -1,4 +1,4 @@
-import { Paper, Box, Typography, Button, Breadcrumbs } from '@mui/material';
+import { Paper, Box, Typography, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import EditIcon from '@mui/icons-material/Edit';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -6,7 +6,6 @@ import UpdateIcon from '@mui/icons-material/Update';
 import PublishIcon from '@mui/icons-material/Publish';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
@@ -31,6 +30,7 @@ import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
 import { numberWithCommas, renderInitiativeStatus } from '../../helpers';
 import { Initiative } from '../../model/Initiative';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import StatusSnackBar from './components/StatusSnackBar';
 import DateReference from './components/DateReference';
 
@@ -124,19 +124,25 @@ const InitiativeOverview = () => {
         setLoading(true);
         initiativeStatistics(id)
           .then((res) => {
-            if (typeof res.accruedRewards === 'string') {
-              setAccruedRewards(res.accruedRewards);
-            }
-            if (typeof res.onboardedCitizenCount === 'number') {
-              setOnboardedCitizenCount(res.onboardedCitizenCount);
-            }
-            if (typeof res.lastUpdatedDateTime === 'object') {
-              const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
-              const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
-                0,
-                lastUpdateDateTimeStr.length - 3
-              );
-              setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+            if (res) {
+              if (typeof res.accruedRewards === 'string') {
+                setAccruedRewards(res.accruedRewards);
+              }
+              if (typeof res.onboardedCitizenCount === 'number') {
+                setOnboardedCitizenCount(res.onboardedCitizenCount);
+              }
+              if (typeof res.lastUpdatedDateTime === 'object') {
+                const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
+                const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
+                  0,
+                  lastUpdateDateTimeStr.length - 3
+                );
+                setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+              }
+            } else {
+              setAccruedRewards('0');
+              setOnboardedCitizenCount(0);
+              setLastUpdatedDateTime('-');
             }
           })
           .catch((error) => {
@@ -218,7 +224,7 @@ const InitiativeOverview = () => {
                 variant="contained"
                 data-testid="view-datails-test"
               >
-                {t('pages.initiativeOverview.info.otherinfo.details')}
+                {t('pages.initiativeOverview.info.otherInfo.details')}
               </ButtonNaked>
             </Box>
           );
@@ -448,7 +454,7 @@ const InitiativeOverview = () => {
             }
             data-testid="view-users-test"
           >
-            {t('pages.initiativeOverview.next.ViewUsers')}
+            {t('pages.initiativeOverview.next.viewUsers')}
           </Button>
         </Box>
       </>
@@ -580,26 +586,11 @@ const InitiativeOverview = () => {
           alignItems: 'center',
         }}
       >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(ROUTES.HOME)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="overview-back-bread"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {t('breadcrumbs.initiatives')}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+        <BreadcrumbsBox
+          backUrl={ROUTES.HOME}
+          backLabel={t('breadcrumbs.back')}
+          items={[t('breadcrumbs.initiatives'), initiativeSel.initiativeName]}
+        />
         <Box sx={{ gridColumn: 'span 10' }}>
           <TitleBox
             title={

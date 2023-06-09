@@ -5,11 +5,16 @@ import {
   ServiceScopeEnum,
 } from '../../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
-import { InitiativeGeneralDTO } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  InitiativeDTO,
+  InitiativeRewardTypeEnum,
+} from '../../api/generated/initiative/InitiativeDTO';
+import {
+  BeneficiaryTypeEnum,
+  InitiativeGeneralDTO,
+} from '../../api/generated/initiative/InitiativeGeneralDTO';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import { InitiativeStatisticsDTO } from '../../api/generated/initiative/InitiativeStatisticsDTO';
@@ -24,6 +29,19 @@ import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
 import { CsvDTO } from '../../api/generated/initiative/CsvDTO';
 import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOnboardingRankingsDTO';
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
+import { WalletDTO } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as WalletStatusEnum } from '../../api/generated/initiative/WalletDTO';
+import { StatusEnum as InstrumentStatusEnum } from '../../api/generated/initiative/InstrumentDTO';
+import { IbanDTO } from '../../api/generated/initiative/IbanDTO';
+import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
+import { TimelineDTO } from '../../api/generated/initiative/TimelineDTO';
+import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
+import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
+import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
+import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
+import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
+import { FamilyUnitCompositionDTO } from '../../api/generated/initiative/FamilyUnitCompositionDTO';
 import { mockedFile } from './groupService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
@@ -179,6 +197,23 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.state
   );
 
+export const getExportSummary = (
+  initaitveId: string,
+  exportId: string
+): Promise<ExportSummaryDTO> => InitiativeApiMocked.getExportSummary(initaitveId, exportId);
+
+export const getExportRefundsListPaged = (
+  initaitveId: string,
+  exportId: string,
+  page: number,
+  _cro?: string,
+  _status?: string
+): Promise<ExportListDTO> =>
+  InitiativeApiMocked.getExportRefundsListPaged(initaitveId, exportId, page);
+
+export const getRefundDetail = (initiativeId: string, eventId: string): Promise<RefundDetailDTO> =>
+  InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
+
 export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
 
@@ -191,12 +226,49 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const saveGeneralInfoService = (_mockedInitiativeGeneralBody: InitiativeInfoDTO) =>
 //   new Promise((resolve) => resolve('createdInitiativeId'));
 
+// export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
+//   InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
+
+export const getIban = (_iban: string): Promise<IbanDTO> => InitiativeApiMocked.getIban(mockedIban);
+
+export const getTimeLine = (
+  _cf: string,
+  _id: string,
+  _opeType?: string,
+  _dateFrom?: string,
+  _dateTo?: string,
+  _page?: number,
+  _size?: number
+): Promise<TimelineDTO> => InitiativeApiMocked.getTimeLine(mockedFiscalCode, mockedInitiativeId);
+
+export const getInstrumentList = (_id: string, _cf: string): Promise<InstrumentListDTO> =>
+  InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
+
+export const getTimelineDetail = (
+  _cf: string,
+  _id: string,
+  _operationId: string
+): Promise<OperationDTO> =>
+  InitiativeApiMocked.getTimelineDetail(
+    mockedOperationId,
+    mockedOperationType,
+    mockedOperationDate
+  );
+
+export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
+  InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
+
+export const mockedFiscalCode = 'TRNFNC96R02H501I';
+export const mockedIban = 'IT12T1234512345123456789012';
 export const mockedRankingStatus = {
   id: '62e29002aac2e94cfa3763dd',
   page: 10,
   beneficiary: 'MCCGRL01C25M052R',
   state: 'DEFAULT',
 };
+
+export const getFamilyComposition = (_id: string, _cf: string): Promise<FamilyUnitCompositionDTO> =>
+  InitiativeApiMocked.getFamilyComposition(mockedInitiativeId, mockedFiscalCode);
 
 export const mockedInitiativeSummary = [
   {
@@ -228,6 +300,167 @@ export const mockedInitiativeSummary = [
     updateDate: new Date('2022-07-28T16:49:46.982'),
   },
 ];
+
+export const mockedWallet = {
+  initiativeId: '62e29002aac2e94cfa3763dd',
+  initiativeName: 'Test wallet',
+  status: WalletStatusEnum.REFUNDABLE,
+  endDate: new Date('2023-01-04T15:44:53.816Z'),
+  amount: 5,
+  accrued: 10,
+  refunded: 15,
+  lastCounterUpdate: new Date('2023-01-04T15:44:53.816Z'),
+  iban: 'IT12T1234512345123456789012',
+  nInstr: 0,
+};
+
+export const mockedIbanInfo = {
+  iban: 'IT12T1234512345123456789012',
+  checkIbanStatus: 'ok',
+  holderBank: 'Intesa Sanpaolo S.p.A',
+  description: 'descrizione',
+  channel: 'IO',
+  bicCode: 'bic code',
+  queueDate: 'queue Date',
+  checkIbanResponseDate: new Date('2023-01-04T16:38:43.590Z'),
+};
+
+export const mockedWalletInstrument = {
+  instrumentList: [
+    {
+      idWallet: '12345',
+      instrumentId: '1122334455',
+      maskedPan: '1111 2222 3333 4444',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.ACTIVE,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.ACTIVE,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.PENDING_DEACTIVATION_REQUEST,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+    {
+      idWallet: '678910',
+      instrumentId: '667788991010',
+      maskedPan: '5555 6666 7777 8888',
+      channel: 'channel',
+      brandLogo:
+        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
+      status: InstrumentStatusEnum.PENDING_ENROLLMENT_REQUEST,
+      activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    },
+  ],
+};
+
+export const mockedOperationList: TimelineDTO = {
+  // lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+  operationList: [
+    {
+      operationId: 'string',
+      operationType: 'TRANSACTION',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      amount: 0,
+      accrued: 0,
+      circuitType: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'ADD_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'DELETE_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'DELETE_INSTRUMENT_KO',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'REJECTED_ADD_INSTRUMENT',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      brandLogo: 'string',
+      instrumentId: 'string',
+      maskedPan: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'ADD_IBAN',
+      operationDate: '2023-03-28T13:35:25.146Z',
+      iban: 'string',
+      channel: 'string',
+    },
+    {
+      operationId: 'string',
+      operationType: 'ONBOARDING',
+      operationDate: '2023-03-28T13:35:25.146Z',
+    },
+    {
+      operationId: 'string',
+      eventId: 'string',
+      operationType: 'PAID_REFUND',
+      operationDate: '2023-03-28',
+      amount: 0,
+      accrued: 0,
+    },
+  ],
+  pageNo: 0,
+  pageSize: 10,
+  totalElements: 3,
+  totalPages: 1,
+};
+
+export const mockedOperationDetail: OperationDTO = {
+  operationId: '1u1u1u1u1u1u1u',
+  operationType: 'PAID_REFUND',
+  operationDate: '2023-02-05T10:22:28.012Z',
+  maskedPan: '1234123412341234',
+  amount: 345,
+  accrued: 10,
+  brand: 'VISA',
+  iban: '',
+  channel: 'App IO',
+  brandLogo: '',
+  idTrxAcquirer: '349589304999',
+  idTrxIssuer: '0001923192038',
+};
+
+export const mockedOperationType = 'PAID_REFUND';
+export const mockedOperationId = '63ecc1eb10dc9d6cfb01371e';
+export const mockedOperationDate = '2023-02-15T12:28:42.949';
 
 export const mockedInitiativeDetail = {
   initiativeId: '62e29002aac2e94cfa3763dd',
@@ -277,6 +510,7 @@ export const mockedInitiativeDetail = {
         field: 'ISEE',
         operator: 'GT',
         value: '40000',
+        iseeTypes: ['Ordinario', 'Dottorato'],
       },
     ],
   },
@@ -316,13 +550,14 @@ export const mockedInitiativeBeneficiaryRuleBody = {
 };
 
 export const mockedServiceInfoData = {
-  serviceIO: true,
+  initiativeOnIO: true,
   serviceName: 'newStepOneTest',
   serviceScope: ServiceScopeEnum.NATIONAL,
-  description: 'newStepOneTest',
-  privacyLink: 'http://test.it',
-  tcLink: 'http://test.it',
+  serviceDescription: 'newStepOneTest',
+  privacyPolicyUrl: 'http://test.it',
+  termsAndConditions: 'http://test.it',
   channels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+  assistanceChannels: [{ type: 'web', contact: 'string' }],
 };
 
 export const mockedRefundRules = {
@@ -334,6 +569,7 @@ export const mockedRefundRules = {
 };
 
 export const mockedTrxAndRewardRules = {
+  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
   rewardRule: { _type: 'rewardValue', rewardValue: 1 },
 };
 
@@ -393,14 +629,14 @@ export const mockedGetIniOnboardingRankingStatusPaged = {
       criteriaConsensusTimestamp: new Date(),
       rankingValue: 0,
       ranking: 0,
-      beneficiaryRankingStatus: 'string',
+      beneficiaryRankingStatus: 'ELIGIBLE_OK',
     },
   ],
   pageNumber: 0,
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
-  rankingStatus: StatusEnum.COMPLETE,
+  rankingStatus: 'COMPLETED',
   rankingPublishedTimestamp: new Date(),
   rankingGeneratedTimestamp: new Date(),
   totalEligibleOk: 0,
@@ -456,7 +692,7 @@ export const mockedOnBoardingStatusResponse = {
   content: [
     {
       beneficiary: 'string',
-      beneficiaryState: 'string',
+      beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
       updateStatusDate: new Date(),
     },
   ],
@@ -464,6 +700,43 @@ export const mockedOnBoardingStatusResponse = {
   pageSize: 0,
   totalElements: 0,
   totalPages: 0,
+};
+
+export const mockedRefundsDetailsSummary = {
+  createDate: new Date(),
+  totalAmount: 5678090800,
+  totalRefundedAmount: 3500090800,
+  totalRefunds: 2250789,
+  successPercentage: '10',
+  status: 'EXPORTED',
+};
+
+export const mockedRefundsDetailsListItem = {
+  content: [
+    {
+      id: 'string',
+      iban: 'string',
+      amount: 0,
+      status: 'string',
+    },
+  ],
+  pageNo: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
+};
+
+export const mockedRefundsDetailsByEventRes = {
+  fiscalCode: 'AAAAAA00A00A000C',
+  iban: 'IT99C1234567890123456789012',
+  amount: 9999999999,
+  startDate: new Date(),
+  endDate: new Date(),
+  status: 'DONE',
+  refundType: 'ORDINARY',
+  cro: '12345678901',
+  transferDate: new Date(),
+  userNotificationDate: new Date(),
 };
 
 export const mockedFilePath = 'download';
@@ -844,4 +1117,62 @@ export const fetchInitiativeUsers = (page: number) => {
   } else {
     return new Promise<InitiativeUsersResponse>((resolve) => resolve(mockedInitiativeUsersPage2));
   }
+};
+
+export const mockedOrganizationsList = [
+  {
+    organizationId: '1',
+    organizationName: 'Comune di Milano',
+  },
+  {
+    organizationId: '2',
+    organizationName: 'Comune di Roma',
+  },
+  {
+    organizationId: '3',
+    organizationName: 'Comune di Genova',
+  },
+  {
+    organizationId: '4',
+    organizationName: 'Comune di Firenze',
+  },
+  {
+    organizationId: '5',
+    organizationName: 'Comune di Aosta',
+  },
+  {
+    organizationId: '6',
+    organizationName: 'Comune di Venezia',
+  },
+  {
+    organizationId: '7',
+    organizationName: 'Comune di Genoveffa',
+  },
+];
+
+export const mockedBeneficaryStatus = {
+  status: OnboardingStatusEnum.ONBOARDING_OK,
+};
+
+export const mockedFamilyUnitComposition = {
+  usersList: [
+    {
+      familyId: 'qwerty1',
+      fiscalCode: 'XXXYYY99M11',
+      status: OnboardingStatusEnum.ONBOARDING_OK,
+      onboardingDate: new Date(),
+    },
+    {
+      familyId: 'qwerty2',
+      fiscalCode: 'ZZZYYY99M11',
+      status: OnboardingStatusEnum.DEMANDED,
+      onboardingDate: new Date(),
+    },
+    {
+      familyId: 'qwerty3',
+      fiscalCode: 'WWWYYY99M11',
+      status: OnboardingStatusEnum.DEMANDED,
+      onboardingDate: new Date(),
+    },
+  ],
 };

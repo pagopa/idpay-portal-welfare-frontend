@@ -9,6 +9,7 @@ import {
   Select,
   TextField,
   Typography,
+  Autocomplete,
 } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
@@ -16,13 +17,14 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useFormik } from 'formik';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { grey } from '@mui/material/colors';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from 'react';
-import _ from 'lodash';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
+import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import {
+  IseeTypologyEnum,
+  boxItemStyle,
   handleCriteriaToSubmit,
   setError,
   setErrorText,
@@ -40,6 +42,7 @@ type Props = {
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
   rankingEnabled: string | undefined;
+  beneficiaryType: BeneficiaryTypeEnum | undefined;
 };
 
 const IseeCriteriaItem = ({
@@ -50,10 +53,11 @@ const IseeCriteriaItem = ({
   criteriaToSubmit,
   setCriteriaToSubmit,
   rankingEnabled,
+  beneficiaryType,
 }: Props) => {
   const { t } = useTranslation();
   const [iseeEndValueVisible, setIseeEndValueVisible] = useState(
-    formData.operator === FilterOperator.BTW_OPEN ? 'number' : 'hidden'
+    formData.operator === FilterOperator.BTW_CLOSED ? 'number' : 'hidden'
   );
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -81,11 +85,12 @@ const IseeCriteriaItem = ({
     iseeStartValue: Yup.number().required(t('validation.required')),
     iseeEndValue: Yup.number().when(['iseeRelationSelect', 'iseeStartValue'], {
       is: (iseeRelationSelect: string, iseeStartValue: number) =>
-        iseeRelationSelect === FilterOperator.BTW_OPEN && iseeStartValue,
+        iseeRelationSelect === FilterOperator.BTW_CLOSED && iseeStartValue,
       then: Yup.number()
         .required(t('validation.required'))
         .moreThan(Yup.ref('iseeStartValue'), t('validation.outValue')),
     }),
+    iseeTypes: Yup.array().min(1, t('validation.required')).required(t('validation.required')),
   });
 
   const setOrderDirection = (
@@ -109,6 +114,7 @@ const IseeCriteriaItem = ({
       iseeStartValue: formData.value,
       iseeEndValue: formData.value2,
       orderDirection: setOrderDirection(rankingEnabled, formData.orderDirection),
+      iseeTypes: formData?.iseeTypes,
     },
     validateOnMount: true,
     validateOnChange: true,
@@ -122,28 +128,42 @@ const IseeCriteriaItem = ({
   useEffect(() => {
     if (rankingEnabled === 'true' && typeof iseeFormik.values.orderDirection === 'string') {
       if (iseeFormik.values.orderDirection === 'ASC') {
-        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC'));
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderAsc'));
       } else if (iseeFormik.values.orderDirection === 'DESC') {
-        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC'));
+        setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDesc'));
       }
     }
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
 
+  const autocompleteOptionsList = [
+    {
+      value: IseeTypologyEnum.Dottorato,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
+    },
+    {
+      value: IseeTypologyEnum.Minorenne,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
+    },
+    {
+      value: IseeTypologyEnum.Ordinario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
+    },
+    {
+      value: IseeTypologyEnum.Residenziale,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
+    },
+    {
+      value: IseeTypologyEnum.SocioSanitario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
+    },
+    {
+      value: IseeTypologyEnum.Universitario,
+      label: t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
+    },
+  ];
+
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="isee-criteria-test"
-    >
+    <Box sx={boxItemStyle} data-testid="isee-criteria-test">
       <Box
         sx={{
           gridColumn:
@@ -183,7 +203,7 @@ const IseeCriteriaItem = ({
                 await iseeFormik.setFieldValue('orderDirection', 'ASC');
               }}
             >
-              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderASC')}
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderAsc')}
             </MenuItem>
             <MenuItem
               onClick={async () => {
@@ -191,21 +211,27 @@ const IseeCriteriaItem = ({
                 await iseeFormik.setFieldValue('orderDirection', 'DESC');
               }}
             >
-              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDESC')}
+              {t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDesc')}
             </MenuItem>
           </Menu>
         </Box>
       )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        <IconButton data-id={formData.code} onClick={(event: any) => handleCriteriaRemoved(event)} data-testid="delete-button-test">
-          <DeleteOutlineIcon
-            color="error"
+        {typeof beneficiaryType !== undefined && beneficiaryType !== BeneficiaryTypeEnum.NF && (
+          <IconButton
             data-id={formData.code}
-            sx={{
-              cursor: 'pointer',
-            }}
-          />
-        </IconButton>
+            onClick={(event: any) => handleCriteriaRemoved(event)}
+            data-testid="delete-button-test"
+          >
+            <DeleteOutlineIcon
+              color="error"
+              data-id={formData.code}
+              sx={{
+                cursor: 'pointer',
+              }}
+            />
+          </IconButton>
+        )}
       </Box>
       <Box
         sx={{
@@ -249,7 +275,7 @@ const IseeCriteriaItem = ({
             <MenuItem value={FilterOperator.LE} data-testid="minorOrEqualTo">
               {t('components.wizard.stepThree.chooseCriteria.form.minorOrEqualTo')}
             </MenuItem>
-            <MenuItem value={FilterOperator.BTW_OPEN} data-testid="between">
+            <MenuItem value={FilterOperator.BTW_CLOSED} data-testid="between">
               {t('components.wizard.stepThree.chooseCriteria.form.between')}
             </MenuItem>
           </Select>
@@ -322,6 +348,50 @@ const IseeCriteriaItem = ({
               ),
             }}
             size="small"
+          />
+        </FormControl>
+      </Box>
+      <Box
+        sx={{
+          gridColumn: 'span 12',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 2,
+        }}
+      >
+        <FormControl sx={{ gridColumn: 'span 2', mt: 2 }}>
+          <Autocomplete
+            multiple={true}
+            id="isee-typology"
+            options={autocompleteOptionsList}
+            getOptionLabel={(option) => option.label}
+            isOptionEqualToValue={(option, value) => option.value === value.value}
+            value={iseeFormik.values.iseeTypes || []}
+            onChange={async (_e, value) => {
+              handleFieldValueChanged(value, 'iseeTypes', formData.code);
+              await iseeFormik.setFieldValue('iseeTypes', value);
+            }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label={t('components.wizard.stepThree.chooseCriteria.form.typology')}
+                size="small"
+                error={setError(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes)}
+                helperText={
+                  setErrorText(iseeFormik.touched.iseeTypes, iseeFormik.errors.iseeTypes) ||
+                  t('components.wizard.stepThree.chooseCriteria.form.iseeTypologyHelpText')
+                }
+              />
+            )}
+            sx={{
+              '& .MuiChip-root': {
+                backgroundColor: '#fff',
+                border: '1px solid rgba(0, 0, 0, 0.23)',
+              },
+              '& .MuiChip-label': {
+                padding: '6px 9px',
+              },
+            }}
           />
         </FormControl>
       </Box>

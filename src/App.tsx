@@ -4,7 +4,7 @@ import {
   UnloadEventHandler,
   UserNotifyHandle,
 } from '@pagopa/selfcare-common-frontend';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
@@ -22,11 +22,46 @@ import { usePermissions } from './hooks/usePermissions';
 import Assistance from './pages/assistance/assistance';
 import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativeRefundsOutcome';
 import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
+import InitiativeUserDetails from './pages/initiativeUserDetails/initiativeUserDetails';
+import TOSWall from './components/TOS/TOSWall';
+import TOSLayout from './components/TOSLayout/TOSLayout';
+import TOS from './pages/tos/TOS';
+import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
+import ChooseOrganization from './pages/ChooseOrganization/ChooseOrganization';
+import useTCAgreement from './hooks/useTCAgreement';
+import InitiativeRefundsDetails from './pages/initiativeRefundsDetails/initiativeRefundsDetails';
+import InitativeMerchant from './pages/initativeMerchant/initativeMerchant';
+import InitativeUploadMerchants from './pages/initativeUploadMerchants/initativeUploadMerchants';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+    const location = useLocation();
+    const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
+
+    if (
+      isTOSAccepted === false &&
+      location.pathname !== routes.PRIVACY_POLICY &&
+      location.pathname !== routes.TOS
+    ) {
+      return (
+        <TOSLayout>
+          <TOSWall
+            acceptTOS={acceptTOS}
+            privacyRoute={routes.PRIVACY_POLICY}
+            tosRoute={routes.TOS}
+            firstAcceptance={firstAcceptance}
+          />
+        </TOSLayout>
+      );
+    } else if (
+      typeof isTOSAccepted === 'undefined' &&
+      location.pathname !== routes.PRIVACY_POLICY &&
+      location.pathname !== routes.TOS
+    ) {
+      return <></>;
+    }
 
     return (
       <Layout>
@@ -52,6 +87,9 @@ const SecuredRoutes = withLogin(
           <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
             <InitiativeRefundsOutcome />
           </Route>
+          <Route path={routes.INITIATIVE_REFUNDS_DETAIL} exact={true}>
+            <InitiativeRefundsDetails />
+          </Route>
           <Route path={routes.INITIATIVE_DETAIL} exact={true}>
             <InitiativeDetail />
           </Route>
@@ -60,6 +98,24 @@ const SecuredRoutes = withLogin(
           </Route>
           <Route path={routes.ASSISTANCE} exact={true}>
             <Assistance />
+          </Route>
+          <Route path={routes.INITIATIVE_USER_DETAILS} exact={true}>
+            <InitiativeUserDetails />
+          </Route>
+          <Route path={routes.INITIATIVE_MERCHANT} exact={true}>
+            <InitativeMerchant />
+          </Route>
+          <Route path={routes.INITIATIVE_MERCHANT_UPLOAD} exact={true}>
+            <InitativeUploadMerchants />
+          </Route>
+          <Route path={routes.TOS} exact={true}>
+            <TOS />
+          </Route>
+          <Route path={routes.PRIVACY_POLICY} exact={true}>
+            <PrivacyPolicy />
+          </Route>
+          <Route path={routes.CHOOSE_ORGANIZATION} exact={true}>
+            {!userCanCreateInitiative ? <ChooseOrganization /> : <Redirect to={routes.HOME} />}
           </Route>
           <Route path="*">
             <Redirect to={routes.HOME} />

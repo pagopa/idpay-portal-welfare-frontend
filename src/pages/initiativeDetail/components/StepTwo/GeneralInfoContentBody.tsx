@@ -1,6 +1,10 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Initiative } from '../../../../model/Initiative';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -8,6 +12,7 @@ type Props = {
 
 const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
   const { t } = useTranslation();
+
   return (
     <Box
       sx={{
@@ -23,13 +28,29 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
         {t('pages.initiativeDetail.accordion.step2.content.beneficiaryType')}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-        {initiativeDetail.generalInfo.beneficiaryType === 'PF'
+        {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
           ? t('pages.initiativeDetail.accordion.step2.content.person')
           : t('pages.initiativeDetail.accordion.step2.content.family')}
       </Typography>
 
+      {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF &&
+        initiativeDetail.generalInfo.familyUnitComposition && (
+          <>
+            <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
+              {t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleGroup')}
+            </Typography>
+            <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+              {initiativeDetail.generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
+                ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleIsee')
+                : t(
+                    'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleAnpr'
+                  )}
+            </Typography>
+          </>
+        )}
+
       <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
-        {t('pages.initiativeDetail.accordion.step2.content.beneficiaryknown')}
+        {t('pages.initiativeDetail.accordion.step2.content.beneficiaryKnown')}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
         {initiativeDetail.generalInfo.beneficiaryKnown === 'true'

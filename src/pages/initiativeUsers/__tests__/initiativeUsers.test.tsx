@@ -1,48 +1,175 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { isDate, parse } from 'date-fns';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
-import { date } from 'yup';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
+import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
+import { TypeEnum } from '../../../api/generated/initiative/ChannelDTO';
+import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { OnboardingDTO } from '../../../api/generated/initiative/OnboardingDTO';
+import { BeneficiaryStateEnum } from '../../../api/generated/initiative/StatusOnboardingDTOS';
+import { Initiative } from '../../../model/Initiative';
 import { setInitiative } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
-import { renderWithProviders } from '../../../utils/test-utils';
-import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
+import { BASE_ROUTE } from '../../../routes';
+import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
 import InitiativeUsers from '../initiativeUsers';
 
-jest.mock('react-router-dom', () => mockLocationFunction());
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: any) => key }),
+}));
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
+jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
+  TitleBox: () => <div>Test</div>,
 }));
 
 beforeEach(() => {
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/utenti-iniziativa/23232333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: '/portale-enti/utenti-iniziativa/23232333',
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: `${BASE_ROUTE}/utenti-iniziativa/23232333`,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
+});
+
+afterEach(cleanup);
+
 describe('<InitiativeUsers />', () => {
-  test('renders without crashing', () => {
-    window.scrollTo = jest.fn();
-  });
+  window.scrollTo = jest.fn();
+  const mockedResponde = {
+    content: [
+      {
+        beneficiary: 'string',
+        beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
+        updateStatusDate: new Date(),
+      },
+    ],
+    pageNo: 0,
+    pageSize: 3,
+    totalElements: 6,
+    totalPages: 2,
+  };
+
+  const mockedInitiative: Initiative = {
+    initiativeId: '62e29002aac2e94cfa3763dd',
+    initiativeName: 'prova313',
+    organizationId: '2f63a151-da4e-4e1e-acf9-adecc0c4d727',
+    status: 'DRAFT',
+    creationDate: new Date('2022-07-28T13:32:50.002'),
+    updateDate: new Date('2022-08-09T08:35:36.516'),
+    generalInfo: {
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryKnown: 'false',
+      budget: '8515',
+      beneficiaryBudget: '801',
+      rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
+      rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
+      startDate: new Date('2022-10-01T00:00:00.000Z'),
+      endDate: new Date('2023-01-31T00:00:00.000Z'),
+      introductionTextIT: 'string',
+      introductionTextEN: 'string',
+      introductionTextFR: 'string',
+      introductionTextDE: 'string',
+      introductionTextSL: 'string',
+      rankingEnabled: 'true',
+    },
+    additionalInfo: {
+      initiativeOnIO: true,
+      serviceName: 'prova313',
+      serviceArea: ServiceScopeEnum.NATIONAL,
+      serviceDescription: 'newStepOneTest',
+      privacyPolicyUrl: 'http://test.it',
+      termsAndConditions: 'http://test.it',
+      assistanceChannels: [
+        { type: TypeEnum.web, contact: 'http://test.it' },
+        { type: TypeEnum.email, contact: 'http://test.it' },
+        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: '', contact: '' },
+      ],
+      logoFileName: 'logo file name',
+      logoUploadDate: 'logo date',
+      logoURL: 'logo url',
+    },
+    beneficiaryRule: {
+      apiKeyClientId: 'string',
+      apiKeyClientAssertion: 'string',
+      selfDeclarationCriteria: [
+        {
+          _type: 'boolean',
+          description: 'string',
+          code: 'string',
+        },
+        {
+          _type: 'multi',
+          description: 'string',
+          code: 'string',
+          multiValue: [],
+        },
+      ],
+      automatedCriteria: [
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'GT',
+          value: '18',
+        },
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'EQ',
+          value: '18',
+        },
+        {
+          authority: 'AUTH1',
+          code: 'BIRTHDATE',
+          field: 'year',
+          operator: 'LT',
+          value: '18',
+        },
+      ],
+    },
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    rewardRule: {
+      _type: 'rewardValue',
+      rewardValue: 1,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    },
+    trxRule: {
+      mccFilter: { allowedList: true, values: ['string', ''] },
+      rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
+      threshold: undefined,
+      trxCount: { from: 2, to: 3 },
+      daysOfWeekIntervals: [
+        {
+          daysOfWeek: 'string',
+          startTime: 'string',
+          endTime: 'string',
+        },
+      ],
+    },
+    refundRule: {
+      reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
+      reimbursmentQuestionGroup: 'true',
+      additionalInfo: 'aaaaaa',
+      timeParameter: '',
+      accumulatedAmount: '',
+    },
+  };
 
   test('Test of breadcrumbs/searchUser and onChange of searchUser', async () => {
     store.dispatch(setInitiative(mockedInitiative));
@@ -58,9 +185,9 @@ describe('<InitiativeUsers />', () => {
 
     //TEXTFIELD TEST
 
-    const searchUser = screen
-      .getByTestId('searchUser-test')
-      .querySelector('input') as HTMLInputElement;
+    const searchUser = screen.getByLabelText(
+      'pages.initiativeUsers.form.search'
+    ) as HTMLInputElement;
 
     fireEvent.change(searchUser, { target: { value: 'searchUser' } });
     expect(searchUser.value).toBe('searchUser');
@@ -84,39 +211,108 @@ describe('<InitiativeUsers />', () => {
     const searchFrom = screen.getByLabelText(/pages.initiativeUsers.form.from/);
     const searchTo = screen.getByLabelText(/pages.initiativeUsers.form.to/);
 
-    function parseDateString(_value: any, originalValue: string) {
-      return isDate(originalValue) ? originalValue : parse(originalValue, 'dd-MM-yyyy', new Date());
-    }
-
-    function isValidDate(date: any): date is Date {
-      return date instanceof Date && !isNaN(date.getTime());
-    }
-
-    const d = date().transform(parseDateString);
-
-    // Checking if invalid cast return invalid date
-    expect(isValidDate(d.cast(null, { assert: false }))).toBe(false);
-    expect(isValidDate(d.cast('', { assert: false }))).toBe(false);
-
-    // Casting
-    expect(d.cast(new Date())).toBeInstanceOf(Date);
-
     fireEvent.click(searchFrom);
-    fireEvent.change(searchFrom, { target: { value: '12/12/2022' } });
-
-    expect(
-      d
-        .cast('12-12-2022')
-        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-    ).toBe('12/12/2022');
+    fireEvent.change(searchFrom, { target: { value: new Date('2022-09-30T00:00:00.000Z') } });
 
     fireEvent.click(searchTo);
-    fireEvent.change(searchTo, { target: { value: '12/12/2022' } });
+    fireEvent.change(searchTo, { target: { value: new Date('2022-09-30T00:00:00.000Z') } });
 
-    expect(
-      d
-        .cast('12-12-2022')
-        ?.toLocaleDateString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric' })
-    ).toBe('12/12/2022');
+    // const resetFilterBtn = screen.getByText('pages.initiativeUsers.form.resetFiltersBtn');
+    // fireEvent.click(resetFilterBtn);
+  });
+
+  test('Reset Form on Click reset button and test click beneficiaryBtn', async () => {
+    renderWithContext(<InitiativeUsers />);
+
+    const searchUser = screen.getByLabelText(
+      'pages.initiativeUsers.form.search'
+    ) as HTMLInputElement;
+
+    fireEvent.change(searchUser, { target: { value: 'searchUser' } });
+    expect(searchUser.value).toBe('searchUser');
+
+    const resetBtn = screen.getByText(
+      'pages.initiativeUsers.form.resetFiltersBtn'
+    ) as HTMLButtonElement;
+
+    fireEvent.click(resetBtn);
+
+    await waitFor(() => expect(searchUser.value).toEqual(''));
+
+    // click beneficiaryBtn
+    const beneficiaryBtn = (await screen.findByTestId('beneficiary-test')) as HTMLButtonElement;
+    fireEvent.click(beneficiaryBtn);
+  });
+
+  test('render with different Onboarding user Status', async () => {
+    const onbUserStatusArr = [
+      BeneficiaryStateEnum.ACCEPTED_TC,
+      BeneficiaryStateEnum.ELIGIBLE,
+      BeneficiaryStateEnum.ELIGIBLE_KO,
+      BeneficiaryStateEnum.INACTIVE,
+      BeneficiaryStateEnum.INVITED,
+      BeneficiaryStateEnum.ONBOARDING_KO,
+      BeneficiaryStateEnum.ONBOARDING_OK,
+      BeneficiaryStateEnum.ON_EVALUATION,
+      BeneficiaryStateEnum.SUSPENDED,
+      BeneficiaryStateEnum.UNSUBSCRIBED,
+    ];
+    onbUserStatusArr.forEach((item) => {
+      (InitiativeApiMocked.getOnboardingStatus = async (
+        _id: string,
+        _page: number,
+        _notificationDateFrom: string | undefined,
+        _notificationDateTo: string | undefined,
+        _status: string | undefined
+      ): Promise<OnboardingDTO> =>
+        new Promise((resolve) =>
+          resolve({
+            content: [
+              {
+                beneficiary: 'string',
+                beneficiaryState: item,
+                updateStatusDate: new Date(),
+              },
+            ],
+            pageNo: 0,
+            pageSize: 0,
+            totalElements: 0,
+            totalPages: 0,
+          })
+        )),
+        renderWithContext(<InitiativeUsers />);
+    });
+  });
+
+  test('Render InitiativeUser with status ONBOARDING_OK and rankingEnabled true', () => {
+    store.dispatch(setInitiative(mockedInitiative));
+    InitiativeApiMocked.getOnboardingStatus = async (
+      _id: string,
+      _page: number,
+      _notificationDateFrom: string | undefined,
+      _notificationDateTo: string | undefined,
+      _status: string | undefined
+    ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedResponde));
+
+    renderWithContext(<InitiativeUsers />);
+  });
+
+  test('render component without id in header', () => {
+    let mockedLocationWithoutPathParam = {
+      assign: jest.fn(),
+      pathname: `${BASE_ROUTE}/utenti-iniziativa`,
+      origin: 'MOCKED_ORIGIN',
+      search: '',
+      hash: '',
+    };
+
+    Object.defineProperty(window, 'location', { value: mockedLocationWithoutPathParam });
+
+    renderWithContext(<InitiativeUsers />);
+  });
+
+  test('test catch case of onboarding api call', () => {
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
+    renderWithContext(<InitiativeUsers />);
   });
 });

@@ -13,11 +13,9 @@ import { useFormik } from 'formik';
 import { Dispatch, MouseEventHandler, SetStateAction, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { grey } from '@mui/material/colors';
-import _ from 'lodash';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { FilterOperator, ResidencyOptions, WIZARD_ACTIONS } from '../../../../utils/constants';
-import { handleCriteriaToSubmit } from './helpers';
+import { boxItemStyle, handleCriteriaToSubmit } from './helpers';
 
 type Props = {
   action: string;
@@ -76,20 +74,7 @@ const ResidencyCriteriaItem = ({
     touched && errorText;
 
   return (
-    <Box
-      sx={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(12, 1fr)',
-        alignItems: 'center',
-        borderColor: grey.A200,
-        borderStyle: 'solid',
-        borderWidth: '1px',
-        borderRadius: 2,
-        my: 3,
-        p: 3,
-      }}
-      data-testid="residency-criteria-test"
-    >
+    <Box sx={boxItemStyle} data-testid="residency-criteria-test">
       <Box sx={{ gridColumn: 'span 11' }}>
         <Typography variant="subtitle1">{formData.fieldLabel}</Typography>
       </Box>

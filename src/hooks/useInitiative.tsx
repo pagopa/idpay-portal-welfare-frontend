@@ -12,6 +12,8 @@ import { getInitiativeDetail } from '../services/intitativeService';
 import { useAppDispatch } from '../redux/hooks';
 import {
   resetInitiative,
+  saveApiKeyClientId,
+  saveApiKeyClientAssertion,
   saveAutomatedCriteria,
   saveManualCriteria,
   setAdditionalInfo,
@@ -24,6 +26,7 @@ import {
   saveThreshold,
   saveTrxCount,
   saveDaysOfWeekIntervals,
+  setInitiativeRewardType,
   saveRewardRule,
   saveRefundRule,
   setInitiativeCreationDate,
@@ -39,10 +42,10 @@ import {
   RewardLimit,
 } from '../model/Initiative';
 import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
-import { BeneficiaryTypeEnum } from '../utils/constants';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
 import { AppDispatch } from '../redux/store';
+import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 
 interface MatchParams {
   id: string;
@@ -64,6 +67,10 @@ export const useInitiative = () => {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+      ROUTES.INITIATIVE_REFUNDS_DETAIL,
+      ROUTES.INITIATIVE_USER_DETAILS,
+      ROUTES.INITIATIVE_MERCHANT,
+      ROUTES.INITIATIVE_MERCHANT_UPLOAD,
     ],
     exact: true,
     strict: false,
@@ -88,10 +95,15 @@ export const useInitiative = () => {
           dispatch(setAdditionalInfo(additionalInfo));
           const generalInfo = parseGeneralInfo(response.general);
           dispatch(setGeneralInfo(generalInfo));
+          dispatch(saveApiKeyClientId(response.beneficiaryRule?.apiKeyClientId));
+          dispatch(saveApiKeyClientAssertion(response.beneficiaryRule?.apiKeyClientAssertion));
           const automatedCriteria = [...parseAutomatedCriteria(response)];
           dispatch(saveAutomatedCriteria(automatedCriteria));
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
           dispatch(saveManualCriteria(selfDeclarationCriteria));
+          if (response.initiativeRewardType) {
+            dispatch(setInitiativeRewardType(response.initiativeRewardType));
+          }
           parseRewardRule(response, dispatch);
           parseThreshold(response, dispatch);
           parseMccFilter(response, dispatch);
@@ -181,8 +193,9 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
 export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT: GeneralInfo = {
     beneficiaryType: BeneficiaryTypeEnum.PF,
+    familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
-    rankingEnabled: 'true',
+    rankingEnabled: 'false',
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -200,8 +213,14 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (typeof data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryType =
-        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.PG;
+        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.NF;
     }
+
+    if (typeof data.familyUnitComposition !== undefined) {
+      // eslint-disable-next-line functional/immutable-data
+      dataT.familyUnitComposition = data.familyUnitComposition;
+    }
+
     if (typeof data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
@@ -267,7 +286,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
 
 export const parseAutomatedCriteria = (response: InitiativeDTO): Array<AutomatedCriteriaItem> => {
   // eslint-disable-next-line functional/no-let
-  let automatedCriteria: Array<AutomatedCriteriaItem> = [];
+  let automatedCriteria: Array<any> = [];
   if (
     response.beneficiaryRule &&
     response.beneficiaryRule.automatedCriteria &&
@@ -331,11 +350,27 @@ export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch):
     // eslint-disable-next-line no-underscore-dangle
     response.rewardRule._type === 'rewardValue' &&
     // eslint-disable-next-line no-prototype-builtins
-    response.rewardRule.hasOwnProperty('rewardValue')
+    response.rewardRule.hasOwnProperty('rewardValue') &&
+    // eslint-disable-next-line no-prototype-builtins
+    response.rewardRule.hasOwnProperty('rewardValueType')
   ) {
     const rewardRule = { ...response.rewardRule } as any;
     dispatch(saveRewardRule(rewardRule));
   }
+  // TEMP REMOVE LATER elseIf
+  //  else if (
+  //   response.rewardRule &&
+  //   typeof response.rewardRule !== undefined &&
+  //   // eslint-disable-next-line no-underscore-dangle
+  //   response.rewardRule._type === 'rewardValue' &&
+  //   // eslint-disable-next-line no-prototype-builtins
+  //   response.rewardRule.hasOwnProperty('rewardValue') &&
+  //   // eslint-disable-next-line no-prototype-builtins
+  //   !response.rewardRule.hasOwnProperty('rewardValueType')
+  // ) {
+  //   const rewardRule = { ...response.rewardRule, rewardValueType:RewardValueTypeEnum.PERCENTAGE  } as any;
+  //   dispatch(saveRewardRule(rewardRule));
+  // }
 };
 
 export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): void => {
@@ -400,7 +435,7 @@ export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): v
         ...response.trxRule.trxCount,
         from: undefined,
       };
-      dispatch(saveThreshold(trxCount));
+      dispatch(saveTrxCount(trxCount));
     } else if (
       response.trxRule.trxCount.hasOwnProperty('from') &&
       !response.trxRule.trxCount.hasOwnProperty('to')
@@ -409,7 +444,7 @@ export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): v
         ...response.trxRule.trxCount,
         to: undefined,
       };
-      dispatch(saveThreshold(trxCount));
+      dispatch(saveTrxCount(trxCount));
     }
   }
 };

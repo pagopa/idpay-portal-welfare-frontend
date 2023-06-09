@@ -1,10 +1,17 @@
 import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
 import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
+import { InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../api/generated/initiative/InitiativeGeneralDTO';
+import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
 import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
-import { BeneficiaryTypeEnum, FilterOperator } from '../utils/constants';
+import { FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
   beneficiaryType: BeneficiaryTypeEnum;
+  familyUnitComposition?: FamilyUnitCompositionEnum | undefined;
   beneficiaryKnown: string | undefined;
   rankingEnabled: string | undefined;
   budget: string;
@@ -63,6 +70,7 @@ export interface AutomatedCriteriaItem {
   value?: string | undefined;
   value2?: string | undefined;
   orderDirection?: OrderDirectionEnum | undefined;
+  iseeTypes?: Array<string>;
 }
 
 export interface MCCFilter {
@@ -98,6 +106,7 @@ export interface DaysOfWeekInterval {
 export interface RewardRule {
   _type: string;
   rewardValue: number | undefined;
+  rewardValueType: RewardValueTypeEnum;
 }
 
 export interface RefundRule {
@@ -107,6 +116,90 @@ export interface RefundRule {
   additionalInfo: string;
   reimbursementThreshold: string;
 }
+
+// Start Dati mockati in attesa dei DTO Reali
+
+export enum MockedStatusWallet {
+  NOT_REFUNDABLE_ONLY_IBAN = 'NOT_REFUNDABLE_ONLY_IBAN',
+  NOT_REFUNDABLE_ONLY_INSTRUMENT = 'NOT_REFUNDABLE_ONLY_INSTRUMENT',
+  REFUNDABLE = 'REFUNDABLE',
+  NOT_REFUNDABLE = 'NOT_REFUNDABLE',
+  UNSUBSCRIBED = 'UNSUBSCRIBED',
+}
+
+export enum MockedOperationType {
+  REJECTED_ADD_INSTRUMENT = 'REJECTED_ADD_INSTRUMENT',
+  REJECTED_DELETE_INSTRUMENT = 'REJECTED_DELETE_INSTRUMENT',
+  TRANSACTION = 'TRANSACTION',
+  REVERSAL = 'REVERSAL',
+  ADD_INSTRUMENT = 'ADD_INSTRUMENT',
+  DELETE_INSTRUMENT = 'DELETE_INSTRUMENT',
+  ADD_IBAN = 'ADD_IBAN',
+  ONBOARDING = 'ONBOARDING',
+  PAID_REFUND = 'PAID_REFUND',
+  REJECTED_REFUND = 'REJECTED_REFUND',
+}
+
+export enum MockedStatusInstrument {
+  ACTIVE = 'ACTIVE',
+  PENDING_ENROLLMENT_REQUEST = 'PENDING_ENROLLMENT_REQUEST',
+  PENDING_DEACTIVATION_REQUEST = 'PENDING_DEACTIVATION_REQUEST',
+}
+
+export interface MockedWalletDTO {
+  initiativeId: string | undefined;
+  initiativeName: string | undefined;
+  status: MockedStatusWallet | undefined;
+  endDate: Date | undefined;
+  amount: number | undefined;
+  accrued: number | undefined;
+  refunded: number | undefined;
+  lastCounterUpdate: Date | undefined;
+  iban: string | undefined;
+  nInstr: number | undefined;
+}
+
+export interface MockedIbanDTO {
+  iban: string | undefined;
+  checkIbanStatus: string | undefined;
+  holderBank: string | undefined;
+  description: string | undefined;
+  channel: string | undefined;
+  bicCode: string | undefined;
+  queueDate: string | undefined;
+  checkIbanResponseDate: Date | undefined;
+}
+
+export interface MockedOperation {
+  operationId: string;
+  operationType: MockedOperationType;
+  operationDate: Date;
+  brandLogo: string | undefined;
+  maskedPan: string | undefined;
+  amount: number | undefined;
+  accrued: number | undefined;
+  circuitType: string | undefined;
+  iban: string | undefined;
+  channel: string | undefined;
+  aquirerId: string | undefined;
+  issuerId: string | undefined;
+}
+
+export interface MockedOperationListDTO {
+  lastUpdate: Date | undefined;
+  operationList: Array<MockedOperation>;
+}
+export interface MockedInstrumentDTO {
+  idWallet: string | undefined;
+  instrumentId: string | undefined;
+  maskedPan: string | undefined;
+  channel: string | undefined;
+  brandLog: string | undefined;
+  status: MockedStatusInstrument | undefined;
+  activationDate: Date | undefined;
+}
+
+// End Dati mockati in attesa dei DTO Reali
 
 export interface Initiative {
   initiativeId: string | undefined;
@@ -118,9 +211,12 @@ export interface Initiative {
   generalInfo: GeneralInfo;
   additionalInfo: AdditionalInfo;
   beneficiaryRule: {
+    apiKeyClientId: string | undefined;
+    apiKeyClientAssertion: string | undefined;
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
+  initiativeRewardType: InitiativeRewardTypeEnum | undefined;
   rewardRule: RewardRule;
   trxRule: {
     mccFilter?: MccFilterDTO;
@@ -178,6 +274,7 @@ export const Initiative2Initiative = (resources: Initiative) => ({
   generalInfo: resources.generalInfo,
   additionalInfo: resources.additionalInfo,
   beneficiaryRule: resources.beneficiaryRule,
+  initiativeRewardType: resources.initiativeRewardType,
   rewardRule: resources.rewardRule,
   trxRule: resources.trxRule,
   refundRule: resources.refundRule,

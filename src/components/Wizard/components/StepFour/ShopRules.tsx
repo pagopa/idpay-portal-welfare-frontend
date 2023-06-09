@@ -1,6 +1,7 @@
 /* eslint-disable functional/no-let */
 /* eslint-disable prefer-const */
-import { Box, Button, Paper, Typography, Link } from '@mui/material';
+import { Box, Button, Paper, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
@@ -16,6 +17,7 @@ import {
   initiativeMccFilterSelector,
   initiativeRewardLimitsSelector,
   initiativeRewardRuleSelector,
+  initiativeRewardTypeSelector,
   initiativeThresholdSelector,
   initiativeTrxCountSelector,
   saveDaysOfWeekIntervals,
@@ -24,12 +26,16 @@ import {
   saveRewardRule,
   saveThreshold,
   saveTrxCount,
+  setInitiativeRewardType,
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
 } from '../../../../services/intitativeService';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -46,6 +52,7 @@ import MCCItem from './MCCItem';
 import TimeLimitItem from './TimeLimitItem';
 import TransactionNumberItem from './TransactionNumberItem';
 import TransactionTimeItem from './TransactionTimeItem';
+import RewardType from './RewardType';
 
 interface Props {
   action: string;
@@ -61,7 +68,11 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [availableShopRules, setAvailableShopRules] = useState(Array<ShopRulesModel>);
   const [shopRulesToSubmit, setShopRulesToSubmit] = useState<
     Array<{ code: string | undefined; dispatched: boolean }>
-  >([{ code: 'PRCREC', dispatched: false }]);
+  >([
+    { code: 'TYPE', dispatched: false },
+    { code: 'PRCREC', dispatched: false },
+  ]);
+  const initiativeRewardTypeSel = useAppSelector(initiativeRewardTypeSelector);
   const rewardRule = useAppSelector(initiativeRewardRuleSelector);
   const mccFilter = useAppSelector(initiativeMccFilterSelector);
   const rewardLimits = useAppSelector(initiativeRewardLimitsSelector);
@@ -80,8 +91,13 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const [modalButtonVisible, setModalButtonVisible] = useState(true);
   const setLoading = useLoading('GET_TRANSACTION_RULES');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
+  const [mandatoryTrxCountToast, setMandatoryTrxCountToast] = useState(false);
+  const [rewardType, setRewardType] = useState<InitiativeRewardTypeEnum>(
+    initiativeRewardTypeSel || InitiativeRewardTypeEnum.REFUND
+  );
 
   useEffect(() => {
+    // console.log(initiativeRewardTypeSel);
     window.scrollTo(0, 0);
   }, []);
 
@@ -94,6 +110,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         const responseData = mapResponse(response);
         const newAvailableShopRules: Array<ShopRulesModel> = [];
         const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+          { code: 'TYPE', dispatched: false },
           { code: 'PRCREC', dispatched: false },
         ];
         responseData.forEach((r) => {
@@ -198,6 +215,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const handleShopListItemAdded = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
     const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'TYPE', dispatched: false },
       { code: 'PRCREC', dispatched: false },
     ];
     availableShopRules.forEach((a) => {
@@ -223,6 +241,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
   const handleShopListItemRemoved = (code: string) => {
     const newAvailableShopRules: Array<ShopRulesModel> = [];
     const newShopRulesToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [
+      { code: 'TYPE', dispatched: false },
       { code: 'PRCREC', dispatched: false },
     ];
     availableShopRules.forEach((a) => {
@@ -302,58 +321,72 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       submit = false;
     }
 
-    // console.log(shopRulesToSubmit);
+    const shopRulesCodes = shopRulesToSubmit.map((s) => s.code);
+    const trxCountPresent = shopRulesCodes.includes('THRESHOLD');
+    const rewardValueTypeIsAbsolute =
+      rewardRuleData.rewardValueType === RewardValueTypeEnum.ABSOLUTE;
+    const trxCountIsOk = trxCountPresent && rewardValueTypeIsAbsolute;
+
     if (submit && typeof initiativeId === 'string') {
-      const body = {
-        ...mapDataToSend(
-          rewardRuleData,
-          mccFilterData,
-          rewardLimitsData,
-          thresholdData,
-          trxCountData,
-          daysOfWeekIntervalsData
-        ),
-      };
-      setLoading(true);
-      putTrxAndRewardRules(initiativeId, body)
-        .then((_response) => {
-          dispatch(saveRewardRule(rewardRuleData));
-          if (typeof mccFilterData === 'object') {
-            dispatch(saveMccFilter(mccFilterData));
-          }
-          if (Array.isArray(rewardLimitsData)) {
-            dispatch(saveRewardLimits(rewardLimitsData));
-          }
-          if (typeof thresholdData === 'object') {
-            dispatch(saveThreshold(thresholdData));
-          }
-          if (typeof trxCountData === 'object') {
-            dispatch(saveTrxCount(trxCountData));
-          }
-          if (Array.isArray(daysOfWeekIntervalsData)) {
-            dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
-          }
-          setCurrentStep(currentStep + 1);
-        })
-        .catch((error) => {
-          addError({
-            id: 'EDIT_TRANSACTION_RULES_SAVE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred editing initiative transaction rules',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.invalidDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
-        })
-        .finally(() => setLoading(false));
+      if (trxCountIsOk || !rewardValueTypeIsAbsolute) {
+        const body = {
+          ...mapDataToSend(
+            rewardType,
+            rewardRuleData,
+            mccFilterData,
+            rewardLimitsData,
+            thresholdData,
+            trxCountData,
+            daysOfWeekIntervalsData
+          ),
+        };
+        setLoading(true);
+        putTrxAndRewardRules(initiativeId, body)
+          .then((_response) => {
+            if (typeof rewardType !== 'undefined') {
+              dispatch(setInitiativeRewardType(rewardType));
+            }
+            dispatch(saveRewardRule(rewardRuleData));
+            if (typeof mccFilterData === 'object') {
+              dispatch(saveMccFilter(mccFilterData));
+            }
+            if (Array.isArray(rewardLimitsData)) {
+              dispatch(saveRewardLimits(rewardLimitsData));
+            }
+            if (typeof thresholdData === 'object') {
+              dispatch(saveThreshold(thresholdData));
+            }
+            if (typeof trxCountData === 'object') {
+              dispatch(saveTrxCount(trxCountData));
+            }
+            if (Array.isArray(daysOfWeekIntervalsData)) {
+              dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervalsData));
+            }
+            setCurrentStep(currentStep + 1);
+          })
+          .catch((error) => {
+            addError({
+              id: 'EDIT_TRANSACTION_RULES_SAVE_ERROR',
+              blocking: false,
+              error,
+              techDescription: 'An error occurred editing initiative transaction rules',
+              displayableTitle: t('errors.title'),
+              displayableDescription: t('errors.invalidDataDescription'),
+              toNotify: true,
+              component: 'Toast',
+              showCloseIcon: true,
+            });
+          })
+          .finally(() => setLoading(false));
+      } else {
+        setMandatoryTrxCountToast(true);
+      }
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
       const body = {
         ...mapDataToSend(
+          rewardType,
           rewardRuleData,
           mccFilterData,
           rewardLimitsData,
@@ -367,6 +400,9 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         // eslint-disable-next-line sonarjs/no-identical-functions
         .then((_response) => {
           setOpenDraftSavedToast(true);
+          if (typeof rewardType !== 'undefined') {
+            dispatch(setInitiativeRewardType(rewardType));
+          }
           dispatch(saveRewardRule(rewardRuleData));
           if (typeof mccFilterData === 'object') {
             dispatch(saveMccFilter(mccFilterData));
@@ -457,25 +493,22 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
 
   return (
     <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-      <Box sx={{ py: 3 }}>
-        <Typography variant="h6">{t('components.wizard.stepFour.title')}</Typography>
-      </Box>
-      <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Typography variant="body1">{t('components.wizard.stepFour.subtitle')}</Typography>
-        </Box>
-        <Box sx={{ gridColumn: 'span 12' }}>
-          <Link
-            sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-            href={t('helpStaticUrls.wizard.shopRules')}
-            target="_blank"
-            underline="none"
-            variant="body2"
-          >
-            {t('components.wizard.common.links.findOut')}
-          </Link>
-        </Box>
-      </Box>
+      <TitleBoxWithHelpLink
+        title={t('components.wizard.stepFour.title')}
+        subtitle={t('components.wizard.stepFour.subtitle')}
+        helpLink={t('helpStaticUrls.wizard.shopRules')}
+        helpLabel={t('components.wizard.common.links.findOut')}
+      />
+
+      <RewardType
+        code="TYPE"
+        action={action}
+        rewardType={rewardType}
+        setRewardType={setRewardType}
+        shopRulesToSubmit={shopRulesToSubmit}
+        setShopRulesToSubmit={setShopRulesToSubmit}
+      />
+
       {modalButtonVisible && (
         <Box
           sx={{
@@ -534,6 +567,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
               setShopRulesToSubmit={setShopRulesToSubmit}
               data={thresholdData}
               setData={setThresholdData}
+              rewardRuleData={rewardRuleData}
             />
           );
         } else if (a.code === 'MCC' && a.checked === true) {
@@ -602,6 +636,20 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           title={t('components.wizard.common.draftSaved')}
           showToastCloseIcon={true}
           onCloseToast={() => setOpenDraftSavedToast(false)}
+        />
+      )}
+      {mandatoryTrxCountToast && (
+        <Toast
+          open={mandatoryTrxCountToast}
+          title={t('components.wizard.stepFour.form.trxCountNotPopulatedErrorTitle')}
+          message={t('components.wizard.stepFour.form.trxCountNotPopulatedErrorDescription')}
+          onCloseToast={() => {
+            setMandatoryTrxCountToast(false);
+          }}
+          logo={InfoOutlinedIcon}
+          leftBorderColor="#FE6666"
+          toastColorIcon="#FE6666"
+          showToastCloseIcon={true}
         />
       )}
     </Paper>

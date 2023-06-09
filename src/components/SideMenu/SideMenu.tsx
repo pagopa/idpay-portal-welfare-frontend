@@ -62,6 +62,9 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
+      ROUTES.INITIATIVE_REFUNDS_DETAIL,
+      ROUTES.INITIATIVE_USER_DETAILS,
+      ROUTES.INITIATIVE_MERCHANT,
     ],
     exact: true,
     strict: false,
@@ -129,7 +132,12 @@ export default function SideMenu() {
               onChange={handleChange(`panel-${item.initiativeId}`)}
               disableGutters
               elevation={0}
-              sx={{ border: 'none', '&:before': { backgroundColor: '#fff' } }}
+              sx={{
+                border: 'none',
+                '&:before': { backgroundColor: '#fff' },
+                minWidth: 300,
+                maxWidth: 316,
+              }}
               data-testid="accordion-click-test"
             >
               <AccordionSummary
@@ -137,12 +145,12 @@ export default function SideMenu() {
                 aria-controls={`panel-${item.initiativeId}-content`}
                 id={`panel-${item.initiativeId}-header`}
               >
-                <ListItemText primary={item.initiativeName} />
+                <ListItemText sx={{ wordBreak: 'break-word' }} primary={item.initiativeName} />
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
                 <List disablePadding>
                   <SidenavItem
-                    title={t('sideMenu.initiativeOveview.title')}
+                    title={t('sideMenu.initiativeOverview.title')}
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);
@@ -177,21 +185,41 @@ export default function SideMenu() {
                     />
                   ) : null}
                   <SidenavItem
-                    title={
-                      item.hasOwnProperty('rankingEnabled') && item.rankingEnabled
-                        ? t('sideMenu.initiativeUsers.rankingTitle')
-                        : t('sideMenu.initiativeUsers.title')
-                    }
+                    title={t('sideMenu.initiativeUsers.title')}
                     handleClick={() =>
                       onExit(() => {
                         history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
                       })
                     }
-                    isSelected={pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`}
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}` ||
+                      pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
+                    }
                     icon={GroupIcon}
                     level={2}
                     data-testid="initiativeUsers-click-test"
                   />
+                  {item.hasOwnProperty('initiativeRewardType') &&
+                    item.initiativeRewardType === 'DISCOUNT' && (
+                      <SidenavItem
+                        title={t('sideMenu.initiativeMerchant.title')}
+                        handleClick={() =>
+                          onExit(() => {
+                            history.replace(
+                              `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}`
+                            );
+                          })
+                        }
+                        isSelected={
+                          pathname === `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}` ||
+                          pathname ===
+                            `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
+                        }
+                        icon={GroupIcon}
+                        level={2}
+                        data-testid="initiativeMerchant-click-test"
+                      />
+                    )}
                   <SidenavItem
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
@@ -201,7 +229,10 @@ export default function SideMenu() {
                     }
                     isSelected={
                       pathname === `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}` ||
-                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}`
+                      pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}` ||
+                      pathname.includes(
+                        `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`
+                      )
                     }
                     icon={EuroSymbolIcon}
                     level={2}

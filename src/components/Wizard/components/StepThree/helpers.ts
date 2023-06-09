@@ -1,4 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
+import { grey } from '@mui/material/colors';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
@@ -32,7 +34,7 @@ export const setFieldType = (
   value: string | number,
   setterFunction: Dispatch<SetStateAction<string>>
 ) => {
-  if (value === FilterOperator.BTW_OPEN) {
+  if (value === FilterOperator.BTW_CLOSED) {
     setterFunction('number');
   } else {
     setterFunction('hidden');
@@ -55,8 +57,10 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: 'ISEE',
-            fieldLabel: 'ISEE',
-            authorityLabel: 'INPS',
+            fieldLabel: i18n.t('components.wizard.stepThree.chooseCriteria.modal.isee.fieldLabel'),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.isee.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -67,8 +71,12 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: 'Data di nascita',
-            authorityLabel: "Ministero dell'interno",
+            fieldLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.birthDate.fieldLabel'
+            ),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.birthDate.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -79,8 +87,12 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: 'Residenza',
-            authorityLabel: "Ministero dell'interno",
+            fieldLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.residency.fieldLabel'
+            ),
+            authorityLabel: i18n.t(
+              'components.wizard.stepThree.chooseCriteria.modal.residency.authorityLabel'
+            ),
             value: '',
             value2: '',
           };
@@ -112,6 +124,45 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
     }
   });
 
+const mapIseeTypes = (
+  iseeTypes: Array<IseeTypologyEnum | string>
+): Array<{ value: IseeTypologyEnum; label: string }> =>
+  iseeTypes.map((item) => {
+    switch (item) {
+      case IseeTypologyEnum.Dottorato:
+        return {
+          value: IseeTypologyEnum.Dottorato,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
+        };
+      case IseeTypologyEnum.Minorenne:
+        return {
+          value: IseeTypologyEnum.Minorenne,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
+        };
+      case IseeTypologyEnum.Ordinario:
+        return {
+          value: IseeTypologyEnum.Ordinario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
+        };
+      case IseeTypologyEnum.Residenziale:
+        return {
+          value: IseeTypologyEnum.Residenziale,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
+        };
+      case IseeTypologyEnum.SocioSanitario:
+        return {
+          value: IseeTypologyEnum.SocioSanitario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
+        };
+      case IseeTypologyEnum.Universitario:
+      default:
+        return {
+          value: IseeTypologyEnum.Universitario,
+          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
+        };
+    }
+  });
+
 export const updateInitialAutomatedCriteriaOnSelector = (
   automatedCriteria: Array<AutomatedCriteriaItem>,
   responseData: Array<AvailableCriteria>,
@@ -135,6 +186,10 @@ export const updateInitialAutomatedCriteriaOnSelector = (
           orderDirection:
             typeof rankingEnabled === 'string' && rankingEnabled === 'true'
               ? a.orderDirection
+              : undefined,
+          iseeTypes:
+            Array.isArray(a.iseeTypes) && a.iseeTypes.length > 0
+              ? [...mapIseeTypes(a.iseeTypes)]
               : undefined,
         };
         // eslint-disable-next-line functional/immutable-data
@@ -176,12 +231,21 @@ export const setInitialOrderDirection = (
   }
 };
 
+// export const mapCriteriaToSend = (
+//   automatedCriteria: Array<any>,
+//   manualCriteria: Array<any>,
+//   rankingEnabled: string | undefined,
+//   apiKeyClientId: string | undefined,
+//   apiKeyClientAssertion: string | undefined
+// ) => {
+
 export const mapCriteriaToSend = (
   automatedCriteria: Array<any>,
   manualCriteria: Array<any>,
   rankingEnabled: string | undefined
 ) => {
   const criteriaToSave: Array<AutomatedCriteriaItem> = [];
+
   automatedCriteria.forEach((c) => {
     if (c.checked === true && c.code !== 'ISEE') {
       const criteria = {
@@ -203,6 +267,9 @@ export const mapCriteriaToSend = (
         value: c.value,
         value2: c.value2,
         orderDirection: setInitialOrderDirection(rankingEnabled, c.orderDirection),
+        iseeTypes: c.iseeTypes.map(
+          (item: { value: IseeTypologyEnum; label: string }) => item.value
+        ),
       };
       // eslint-disable-next-line functional/immutable-data
       criteriaToSave.push({ ...criteria });
@@ -250,7 +317,31 @@ export const mapCriteriaToSend = (
   });
 
   return {
+    // apiKeyClientId: criteriaToSave.length > 0 ? apiKeyClientId : undefined,
+    // apiKeyClientAssertion: criteriaToSave.length > 0 ? apiKeyClientAssertion : undefined,
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],
   };
 };
+
+export const boxItemStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
+  borderColor: grey.A200,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: 2,
+  my: 3,
+  p: 3,
+};
+
+export enum IseeTypologyEnum {
+  Corrente = 'CORRENTE',
+  Ordinario = 'ORDINARIO',
+  Minorenne = 'MINORENNE',
+  Universitario = 'UNIVERSITARIO',
+  SocioSanitario = 'SOCIOSANITARIO',
+  Dottorato = 'DOTTORATO',
+  Residenziale = 'RESIDENZIALE',
+}

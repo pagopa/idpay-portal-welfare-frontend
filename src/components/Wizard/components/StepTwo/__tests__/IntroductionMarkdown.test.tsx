@@ -39,13 +39,6 @@ describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createSt
       fireEvent.click(showMarkdownBtn);
       setValue(true);
       expect(showMarkdownBtn).toBeDefined();
-      /*
-      expect(
-        within(document.body).getByText('components.wizard.stepTwo.previewModal.closeBtn')
-      ).toHaveTextContent('components.wizard.stepTwo.previewModal.title');
-      console.log('baseElement', baseElement);
-      screen.debug(baseElement);
-      */
     });
   });
 

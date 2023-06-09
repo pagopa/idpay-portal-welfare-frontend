@@ -3,15 +3,12 @@ import { fireEvent, render } from '@testing-library/react';
 import React, { SetStateAction } from 'react';
 import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
+import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import SpendingLimitItem from '../SpendingLimitItem';
 import { shopRulesToSubmit, threshold } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
 window.scrollTo = jest.fn();
 describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
@@ -31,6 +28,11 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
             ): void {}}
             data={threshold}
             setData={function (_value: any): void {}}
+            rewardRuleData={{
+              _type: 'rewardValue',
+              rewardValue: 10,
+              rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+            }}
           />
         </Provider>
       );
@@ -52,10 +54,15 @@ describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore
             setShopRulesToSubmit={jest.fn()}
             data={threshold}
             setData={jest.fn()}
+            rewardRuleData={{
+              _type: 'rewardValue',
+              rewardValue: 10,
+              rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+            }}
           />
         </Provider>
       );
-      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
+      const deleteBtn = getByTestId('delete-button-spending-limit-test') as HTMLButtonElement;
       const minSpendingLimit = getByTestId('min-spending-limit') as HTMLInputElement;
       const maxSpendingLimit = getByTestId('max-spending-limit') as HTMLInputElement;
 

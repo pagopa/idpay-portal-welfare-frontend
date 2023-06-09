@@ -38,6 +38,7 @@ const ShopRulesModal = ({
             key={a.code}
             sx={{ display: 'flex', my: 2, alignItems: 'center', cursor: 'pointer' }}
             onClick={() => handleShopListItemAdded(a.code)}
+            data-testid={`add-shopList-${a.code}-btn`}
           >
             <Box>{renderShopRuleIcon(a.code, 2, 'primary')}</Box>
             <Box>

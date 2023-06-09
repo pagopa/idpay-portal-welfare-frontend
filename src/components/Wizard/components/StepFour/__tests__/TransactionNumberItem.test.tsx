@@ -8,11 +8,6 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TransactionNumberItem from '../TransactionNumberItem';
 import { shopRulesToSubmit, trxCount } from './ShopRules.test';
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
-}));
-
 window.scrollTo = jest.fn();
 
 describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createStore>) => {

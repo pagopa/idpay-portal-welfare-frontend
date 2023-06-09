@@ -3,10 +3,11 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
 import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { Initiative } from '../../../model/Initiative';
 import { createStore } from '../../../redux/store';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import ConfirmPublishInitiativeModal from '../ConfirmPublishInitiativeModal';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -56,10 +57,17 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
       logoURL: 'logo url',
     },
     beneficiaryRule: {
+      apiKeyClientId: 'string',
+      apiKeyClientAssertion: 'string',
       selfDeclarationCriteria: [],
       automatedCriteria: [],
     },
-    rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    rewardRule: {
+      _type: 'rewardValue',
+      rewardValue: 1,
+      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    },
     trxRule: {
       mccFilter: { allowedList: true, values: ['string', ''] },
       rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],

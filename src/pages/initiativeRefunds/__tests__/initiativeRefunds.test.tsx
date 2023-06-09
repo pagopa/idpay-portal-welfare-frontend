@@ -1,11 +1,12 @@
-import React from 'react';
-import { renderWithProviders } from '../../../utils/test-utils';
-import { mockLocationFunction } from '../../initiativeOverview/__tests__/initiativeOverview.test';
-import InitiativeRefunds from '../initiativeRefunds';
-import { screen, fireEvent, cleanup } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
+import React from 'react';
 import { date } from 'yup';
+import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
+import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
 import ROUTES from '../../../routes';
+import { renderWithContext } from '../../../utils/test-utils';
+import InitiativeRefunds from '../initiativeRefunds';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -15,34 +16,25 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
-jest.mock('react-router-dom', () => mockLocationFunction());
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
-}));
-
 beforeEach(() => {
-  //@ts-expect-error
-  delete global.window.location;
-  global.window = Object.create(window);
-  global.window.location = {
-    ancestorOrigins: ['string'] as unknown as DOMStringList,
-    hash: 'hash',
-    host: 'localhost',
-    port: '3000',
-    protocol: 'http:',
-    hostname: 'localhost:3000/portale-enti',
-    href: 'http://localhost:3000/portale-enti/rimborsi-iniziativa/2333333',
-    origin: 'http://localhost:3000/portale-enti',
-    pathname: ROUTES.INITIATIVE_REFUNDS,
-    search: '',
-    assign: () => {},
-    reload: () => {},
-    replace: () => {},
-  };
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(console, 'warn').mockImplementation(() => {});
+});
+
+const oldWindowLocation = global.window.location;
+const mockedLocation = {
+  assign: jest.fn(),
+  pathname: ROUTES.INITIATIVE_REFUNDS,
+  origin: 'MOCKED_ORIGIN',
+  search: '',
+  hash: '',
+};
+
+beforeAll(() => {
+  Object.defineProperty(window, 'location', { value: mockedLocation });
+});
+afterAll(() => {
+  Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
 afterEach(cleanup);
@@ -53,18 +45,16 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
   });
 
   it('Test Initiativerefunds Inputs and Element', async () => {
-    renderWithProviders(<InitiativeRefunds />);
+    const { history } = renderWithContext(<InitiativeRefunds />);
 
-    // const history = injectedHistory ? injectedHistory : createMemoryHistory();
+    const oldLocPathname = history.location.pathname;
 
-    // const oldLocPathname = history.location.pathname;
-
-    //BUTTONS TEST
+    // BUTTONS TEST
 
     const backBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     fireEvent.click(backBtn);
 
-    // expect(oldLocPathname !== history.location.pathname).toBeTruthy();
+    expect(oldLocPathname !== history.location.pathname).toBeTruthy();
 
     const uploadBtn = screen.getByTestId('upload-btn-test') as HTMLButtonElement;
     fireEvent.click(uploadBtn);
@@ -126,5 +116,107 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
     });
 
     expect(filterStatus).toBeInTheDocument();
+  });
+
+  it('Test searchFrom and searchTo undefined case', async () => {
+    renderWithContext(<InitiativeRefunds />);
+
+    const searchFrom = screen.getByLabelText(/pages.initiativeRefunds.form.from/);
+    const searchTo = screen.getByLabelText(/pages.initiativeRefunds.form.to/);
+
+    fireEvent.click(searchFrom);
+    fireEvent.change(searchFrom, { target: { value: undefined } });
+
+    fireEvent.click(searchTo);
+    fireEvent.change(searchTo, { target: { value: undefined } });
+
+    const filterBtn = screen.getByTestId('apply-filters-test') as HTMLButtonElement;
+    fireEvent.click(filterBtn);
+  });
+
+  it('test download file refunds button', async () => {
+    renderWithContext(<InitiativeRefunds />);
+    fireEvent.click(await screen.findByTestId('download-file-refunds'));
+  });
+
+  it('test render with response EXPORTED', async () => {
+    (InitiativeApiMocked.getExportsPaged = async (): Promise<PageRewardExportsDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          content: [
+            {
+              feedbackDate: new Date(),
+              filePath: 'string',
+              id: 'string',
+              initiativeId: 'string',
+              initiativeName: 'string',
+              notificationDate: new Date(),
+              organizationId: 'string',
+              percentageResulted: 'string',
+              percentageResultedOk: 'string',
+              percentageResults: 'string',
+              rewardsExported: 'string',
+              rewardsNotified: 0,
+              rewardsResulted: 0,
+              rewardsResultedOk: 0,
+              rewardsResults: 'string',
+              status: 'EXPORTED',
+            },
+          ],
+          totalElements: 0,
+          totalPages: 0,
+        })
+      )),
+      renderWithContext(<InitiativeRefunds />);
+  });
+
+  test('test else case of getExportsPaged ', () => {
+    InitiativeApiMocked.getExportsPaged = async (): Promise<PageRewardExportsDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          content: [],
+          totalElements: undefined,
+          totalPages: 0,
+        })
+      );
+
+    renderWithContext(<InitiativeRefunds />);
+  });
+
+  test('test getExportsPaged call without initiativeId in the header', () => {
+    InitiativeApiMocked.getExportsPaged = async (): Promise<PageRewardExportsDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          content: [
+            {
+              feedbackDate: new Date(),
+              filePath: 'string',
+              id: 'string',
+              initiativeId: 'string',
+              initiativeName: 'string',
+              notificationDate: new Date(),
+              organizationId: 'string',
+              percentageResulted: 'string',
+              percentageResultedOk: 'string',
+              percentageResults: 'string',
+              rewardsExported: 'string',
+              rewardsNotified: 0,
+              rewardsResulted: 0,
+              rewardsResultedOk: 0,
+              rewardsResults: 'string',
+              status: 'EXPORTED',
+            },
+          ],
+          totalElements: 0,
+          totalPages: 0,
+        })
+      );
+
+    renderWithContext(<InitiativeRefunds />);
+  });
+
+  it(' test catch case with promise reject', async () => {
+    (InitiativeApiMocked.getExportsPaged = async (): Promise<any> => Promise.reject('reason')),
+      renderWithContext(<InitiativeRefunds />);
   });
 });

@@ -6,6 +6,9 @@ import TagIcon from '@mui/icons-material/Tag';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PinDropIcon from '@mui/icons-material/PinDrop';
+import { Dispatch, SetStateAction } from 'react';
+import { grey } from '@mui/material/colors';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import {
@@ -16,7 +19,10 @@ import {
   TrxCount,
 } from '../../../../model/Initiative';
 import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
-import { InitiativeRewardAndTrxRulesDTO } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import {
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeRewardTypeEnum,
+} from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { FrequencyEnum } from '../../../../api/generated/initiative/RewardLimitsDTO';
 
 export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
@@ -67,94 +73,83 @@ export const checkDaysOfWeekIntervalsChecked = (
   return false;
 };
 
+const makeObject = (r: any, title: string, subtitle: string, enabled: boolean) => ({
+  checked: r.checked || false,
+  code: r.code,
+  description: r.description || '',
+  enabled: r.enabled || enabled,
+  title,
+  subtitle,
+});
+
+const makeDefaultObject = () => ({
+  checked: false,
+  code: '',
+  description: '',
+  enabled: false,
+  title: '',
+  subtitle: '',
+});
+
 export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesModel> =>
-  // eslint-disable-next-line sonarjs/cognitive-complexity
   response.map((r) => {
     // eslint-disable-next-line no-prototype-builtins
     if (r.hasOwnProperty('code') && typeof r.code !== undefined) {
       switch (r.code) {
         case 'THRESHOLD':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || true,
-            title: 'Limite di spesa',
-            subtitle: 'Definisci importo minimo o massimo',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.threshold.title'),
+            i18n.t('components.wizard.stepFour.modal.threshold.description'),
+            true
+          );
         case 'MCC':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || true,
-            title: 'Merchant Category Code',
-            subtitle: 'Ammetti o escludi categorie',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.mcc.title'),
+            i18n.t('components.wizard.stepFour.modal.mcc.description'),
+            true
+          );
         case 'ATECO':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || false,
-            title: 'Codice Ateco',
-            subtitle: 'Ammetti o escludi categorie',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.ateco.title'),
+            i18n.t('components.wizard.stepFour.modal.ateco.desctiption'),
+            false
+          );
         case 'TRXCOUNT':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || true,
-            title: 'Numero di transazioni',
-            subtitle: 'Definisci un minimo o massimo',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.trxCount.title'),
+            i18n.t('components.wizard.stepFour.modal.trxCount.description'),
+            true
+          );
         case 'REWARDLIMIT':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || true,
-            title: 'Limite temporale',
-            subtitle: 'Definisci un massimale ricorrente',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.rewardLimit.title'),
+            i18n.t('components.wizard.stepFour.modal.rewardLimit.description'),
+            true
+          );
         case 'DAYHOURSWEEK':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || true,
-            title: 'Orario della transazione',
-            subtitle: 'Definisci una fascia oraria di validità',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.title'),
+            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.description'),
+            true
+          );
         case 'GIS':
-          return {
-            checked: r.checked || false,
-            code: r.code,
-            description: r.description || '',
-            enabled: r.enabled || false,
-            title: 'Area geografica',
-            subtitle: 'Scegli la zona di operativà',
-          };
+          return makeObject(
+            r,
+            i18n.t('components.wizard.stepFour.modal.gis.title'),
+            i18n.t('components.wizard.stepFour.modal.gis.description'),
+            false
+          );
         default:
-          return {
-            checked: false,
-            code: '',
-            description: '',
-            enabled: false,
-            title: '',
-            subtitle: '',
-          };
+          return makeDefaultObject();
       }
     } else {
-      return {
-        checked: false,
-        code: '',
-        description: '',
-        enabled: false,
-        title: '',
-        subtitle: '',
-      };
+      return makeDefaultObject();
     }
   });
 
@@ -215,6 +210,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
+  rewardType: InitiativeRewardTypeEnum,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,
@@ -225,6 +221,7 @@ export const mapDataToSend = (
 ): InitiativeRewardAndTrxRulesDTO => {
   // eslint-disable-next-line functional/no-let, prefer-const
   let body: InitiativeRewardAndTrxRulesDTO = {
+    initiativeRewardType: rewardType,
     rewardRule: { ...rewardRuleData },
     trxRule: {},
   };
@@ -262,7 +259,7 @@ export const mapDataToSend = (
       from: trxCountData?.from as number,
       fromIncluded: trxCountData?.fromIncluded || true,
       to: trxCountData?.to as number,
-      toIncluded: trxCountData?.toIncluded || true,
+      toIncluded: trxCountData?.to ? trxCountData?.toIncluded || true : undefined,
     };
     // eslint-disable-next-line functional/immutable-data
     trxRule.trxCount = { ...trxCount };
@@ -305,4 +302,27 @@ export const mapDataToSend = (
   // eslint-disable-next-line functional/immutable-data
   body.trxRule = { ...trxRule };
   return body;
+};
+
+export const handleUpdateFromToFieldState = (
+  value: string | undefined,
+  key: string,
+  data: any,
+  setData: Dispatch<SetStateAction<any>>
+) => {
+  const valueNumber = typeof value === 'string' && value.length > 0 ? parseFloat(value) : undefined;
+  const newState = { ...data, [key]: valueNumber };
+  setData({ ...newState });
+};
+
+export const boxItemStyle = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(24, 1fr)',
+  alignItems: 'start',
+  borderColor: grey.A200,
+  borderStyle: 'solid',
+  borderWidth: '1px',
+  borderRadius: 2,
+  my: 3,
+  p: 3,
 };

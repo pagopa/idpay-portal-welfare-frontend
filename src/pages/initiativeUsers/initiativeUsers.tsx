@@ -1,10 +1,9 @@
 /* eslint-disable functional/no-let */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { matchPath } from 'react-router';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import {
   Box,
-  Breadcrumbs,
   Button,
   Chip,
   FormControl,
@@ -19,11 +18,9 @@ import {
   TablePagination,
   TableRow,
   TextField,
-  Typography,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
@@ -33,8 +30,6 @@ import { useFormik } from 'formik';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import * as Yup from 'yup';
-import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -43,6 +38,16 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getOnboardingStatus } from '../../services/intitativeService';
 import { InitiativeUserToDisplay } from '../../model/InitiativeUsers';
 import { Initiative } from '../../model/Initiative';
+import {
+  cleanDate,
+  initiativePagesFiltersFormContainerStyle,
+  initiativePagesTableContainerStyle,
+  initiativePagesBreadcrumbsContainerStyle,
+  initiativeUsersAndRefundsValidationSchema,
+} from '../../helpers';
+import EmptyList from '../components/EmptyList';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -126,25 +131,29 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  const renderUserStatus = (status: string | undefined, initiative: Initiative) => {
+  const renderUserStatus = (status: BeneficiaryStateEnum | undefined, initiative: Initiative) => {
     switch (status) {
-      case 'INVITED':
-      case 'ACCEPTED_TC':
-      case 'ON_EVALUATION':
+      case BeneficiaryStateEnum.INVITED:
+      case BeneficiaryStateEnum.ACCEPTED_TC:
+      case BeneficiaryStateEnum.ON_EVALUATION:
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-      case 'ONBOARDING_OK':
+      case BeneficiaryStateEnum.ONBOARDING_OK:
         if (initiative.generalInfo.rankingEnabled === 'true') {
           return <Chip label={t('pages.initiativeUsers.status.assignee')} color="success" />;
         } else {
           return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
         }
-      case 'ONBOARDING_KO':
+      case BeneficiaryStateEnum.ONBOARDING_KO:
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
-      case 'ELIGIBLE_KO':
+      case BeneficiaryStateEnum.ELIGIBLE_KO:
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
-      case 'INACTIVE':
-      case 'UNSUBSCRIBED':
+      case BeneficiaryStateEnum.INACTIVE:
+      case BeneficiaryStateEnum.UNSUBSCRIBED:
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
+      case BeneficiaryStateEnum.SUSPENDED:
+        return <Chip label={t('pages.initiativeUsers.status.suspended')} color="warning" />;
+      case BeneficiaryStateEnum.DEMANDED:
+        return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       default:
         return null;
     }
@@ -157,39 +166,6 @@ const InitiativeUsers = () => {
     setPage(newPage);
   };
 
-  const validationSchema = Yup.object().shape({
-    searchFrom: Yup.date()
-      .nullable()
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate')),
-    searchTo: Yup.date()
-      .nullable()
-      // eslint-disable-next-line sonarjs/no-identical-functions
-      .transform(function (value, originalValue) {
-        if (this.isType(value)) {
-          return value;
-        }
-        return parse(originalValue, 'dd/MM/yyyy', new Date());
-      })
-      .typeError(t('validation.invalidDate'))
-      .when('searchFrom', (searchFrom, _schema) => {
-        const timestamp = Date.parse(searchFrom);
-        if (isNaN(timestamp) === false) {
-          return Yup.date()
-            .nullable()
-            .min(searchFrom, t('validation.outDateTo'))
-            .typeError(t('validation.invalidDate'));
-        } else {
-          return Yup.date().nullable().typeError(t('validation.invalidDate'));
-        }
-      }),
-  });
-
   const formik = useFormik({
     initialValues: {
       searchUser: '',
@@ -197,41 +173,24 @@ const InitiativeUsers = () => {
       searchTo: null,
       filterStatus: '',
     },
-    validationSchema,
+    validationSchema: initiativeUsersAndRefundsValidationSchema,
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
       let searchFromStr;
       let searchToStr;
       if (typeof id === 'string') {
-        const filterBeneficiary = values.searchUser.length > 0 ? values.searchUser : undefined;
+        const filterBeneficiary =
+          values.searchUser.length > 0 ? values.searchUser.toUpperCase() : undefined;
         setFilterByBeneficiary(filterBeneficiary);
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
-          searchFromStr =
-            searchFrom.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchFrom
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchFrom.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T00:00:00Z`
-              : undefined;
+          searchFromStr = cleanDate(searchFrom, 'start');
           setFilterByDateFrom(searchFromStr);
         }
         if (values.searchTo) {
           const searchTo = values.searchTo as unknown as Date;
-          searchToStr =
-            searchTo.toLocaleString('en-CA').split(' ')[0].length > 0
-              ? `${searchTo
-                  .toLocaleString('en-CA')
-                  .split(' ')[0]
-                  .substring(
-                    0,
-                    searchTo.toLocaleString('en-CA').split(' ')[0].length - 1
-                  )}T23:59:59Z`
-              : undefined;
+          searchToStr = cleanDate(searchTo, 'end');
           setFilterByDateTo(searchToStr);
         }
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
@@ -254,9 +213,8 @@ const InitiativeUsers = () => {
     }
   };
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    resetForm();
+  useMemo(() => {
+    setPage(0);
   }, [id]);
 
   useEffect(() => {
@@ -264,47 +222,20 @@ const InitiativeUsers = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
-  }, [page]);
+  }, [id, page]);
 
   return (
-    <Box sx={{ width: '100%', p: 2 }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'center',
-        }}
-      >
-        <Box sx={{ display: 'grid', gridColumn: 'span 12' }}>
-          <Breadcrumbs aria-label="breadcrumb">
-            <ButtonNaked
-              component="button"
-              onClick={() => history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${id}`)}
-              startIcon={<ArrowBackIcon />}
-              sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-              weight="default"
-              data-testid="back-btn-test"
-            >
-              {t('breadcrumbs.back')}
-            </ButtonNaked>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.initiativeName}
-            </Typography>
-            <Typography color="text.primary" variant="body2">
-              {initiativeSel.generalInfo.rankingEnabled === 'true'
-                ? t('breadcrumbs.initiativeUsersRanking')
-                : t('breadcrumbs.initiativeUsers')}
-            </Typography>
-          </Breadcrumbs>
-        </Box>
+    <Box sx={{ width: '100%', padding: 2 }}>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+          backLabel={t('breadcrumbs.back')}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeUsers')]}
+        />
+
         <Box sx={{ display: 'grid', gridColumn: 'span 12', mt: 2 }}>
           <TitleBox
-            title={
-              initiativeSel.generalInfo.rankingEnabled === 'true'
-                ? t('pages.initiativeUsers.titleRanking')
-                : t('pages.initiativeUsers.title')
-            }
+            title={t('pages.initiativeUsers.title')}
             subTitle={t('pages.initiativeUsers.subtitle')}
             mbTitle={2}
             mtTitle={2}
@@ -315,16 +246,7 @@ const InitiativeUsers = () => {
         </Box>
       </Box>
 
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          alignItems: 'baseline',
-          gap: 2,
-          mb: 4,
-        }}
-      >
+      <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 4' }}>
           <TextField
             label={t('pages.initiativeUsers.form.search')}
@@ -396,22 +318,40 @@ const InitiativeUsers = () => {
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
-            <MenuItem value="ON_EVALUATION" data-testid="filterStatusOnEvaluation-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ON_EVALUATION}
+              data-testid="filterStatusOnEvaluation-test"
+            >
               {t('pages.initiativeUsers.status.onEvaluation')}
             </MenuItem>
-            <MenuItem value="ONBOARDING_OK" data-testid="filterStatusOnboardingOk-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ONBOARDING_OK}
+              data-testid="filterStatusOnboardingOk-test"
+            >
               {initiativeSel.generalInfo.rankingEnabled === 'true'
                 ? t('pages.initiativeUsers.status.assignee')
                 : t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
-            <MenuItem value="ELIGIBLE_KO" data-testid="filterStatusEligible-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ELIGIBLE_KO}
+              data-testid="filterStatusEligible-test"
+            >
               {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
-            <MenuItem value="ONBOARDING_KO" data-testid="filterStatusOnboardingKo-test">
+            <MenuItem
+              value={BeneficiaryStateEnum.ONBOARDING_KO}
+              data-testid="filterStatusOnboardingKo-test"
+            >
               {t('pages.initiativeUsers.status.onboardingKo')}
             </MenuItem>
-            <MenuItem value="INACTIVE" data-testid="filterStatusInactive-test">
+            <MenuItem value={BeneficiaryStateEnum.INACTIVE} data-testid="filterStatusInactive-test">
               {t('pages.initiativeUsers.status.inactive')}
+            </MenuItem>
+            <MenuItem
+              value={BeneficiaryStateEnum.SUSPENDED}
+              data-testid="filterStatusSuspended-test"
+            >
+              {t('pages.initiativeUsers.status.suspended')}
             </MenuItem>
           </Select>
         </FormControl>
@@ -438,15 +378,7 @@ const InitiativeUsers = () => {
       </Box>
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            height: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-          }}
-        >
+        <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
               <Table>
@@ -470,15 +402,24 @@ const InitiativeUsers = () => {
                       <TableCell>
                         <ButtonNaked
                           component="button"
-                          sx={{ color: 'primary.main', fontWeight: 600, fontSize: '1em' }}
-                          onClick={() => console.log('handle detail')}
+                          sx={{
+                            color: 'primary.main',
+                            fontWeight: 600,
+                            fontSize: '1em',
+                            textAlign: 'left',
+                          }}
+                          onClick={() =>
+                            history.replace(`${BASE_ROUTE}/dettagli-utente/${id}/${r.beneficiary}`)
+                          }
+                          data-testid="beneficiary-test"
                         >
-                          {r.beneficiary}
+                          {r.beneficiary?.toUpperCase()}
                         </ButtonNaked>
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState, initiativeSel)}</TableCell>
-                      {/* <TableCell align="right">
+                      {/*
+                       <TableCell align="right">
                         <IconButton disabled>
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>
@@ -489,6 +430,11 @@ const InitiativeUsers = () => {
               </Table>
               <ThemeProvider theme={theme}>
                 <TablePagination
+                  sx={{
+                    '.MuiTablePagination-displayedRows': {
+                      fontFamily: '"Titillium Web",sans-serif',
+                    },
+                  }}
                   component="div"
                   onPageChange={handleChangePage}
                   page={page}
@@ -501,19 +447,7 @@ const InitiativeUsers = () => {
           </Box>
         </Box>
       ) : (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            backgroundColor: 'white',
-          }}
-        >
-          <Box sx={{ display: 'grid', gridColumn: 'span 12', justifyContent: 'center', py: 2 }}>
-            <Typography variant="body2">{t('pages.initiativeUsers.noData')}</Typography>
-          </Box>
-        </Box>
+        <EmptyList message={t('pages.initiativeUsers.noData')} />
       )}
     </Box>
   );

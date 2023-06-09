@@ -13,8 +13,15 @@ const ROUTES = {
   INITIATIVE_RANKING: `${BASE_ROUTE}/graduatoria-iniziativa/:id`,
   INITIATIVE_REFUNDS: `${BASE_ROUTE}/rimborsi-iniziativa/:id`,
   INITIATIVE_REFUNDS_OUTCOME: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/:id`,
+  INITIATIVE_REFUNDS_DETAIL: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/:initiativeId/:exportId/:filePath`,
   INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
+  INITIATIVE_MERCHANT: `${BASE_ROUTE}/esercenti-iniziativa/:id`,
+  INITIATIVE_MERCHANT_UPLOAD: `${BASE_ROUTE}/gestione-esercenti-iniziativa/:id`,
   ASSISTANCE: `${BASE_ROUTE}/assistenza`,
+  INITIATIVE_USER_DETAILS: `${BASE_ROUTE}/dettagli-utente/:id/:cf`,
+  TOS: `${BASE_ROUTE}/terms-of-service`,
+  PRIVACY_POLICY: `${BASE_ROUTE}/privacy-policy`,
+  CHOOSE_ORGANIZATION: `${BASE_ROUTE}/selezione-ente`,
 };
 
 export default ROUTES;

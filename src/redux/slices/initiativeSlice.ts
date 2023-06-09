@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from '../store';
 import {
@@ -14,9 +15,11 @@ import {
   RefundRule,
 } from '../../model/Initiative';
 
-import { BeneficiaryTypeEnum } from '../../utils/constants';
 import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
 import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
+import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -39,10 +42,11 @@ const initialState: Initiative = {
   },
   generalInfo: {
     beneficiaryType: BeneficiaryTypeEnum.PF,
-    // beneficiaryKnown: 'false',
-    // rankingEnabled: 'true',
-    beneficiaryKnown: undefined,
-    rankingEnabled: undefined,
+    familyUnitComposition: undefined,
+    beneficiaryKnown: 'false',
+    rankingEnabled: 'false',
+    // beneficiaryKnown: undefined,
+    // rankingEnabled: undefined,
     budget: '',
     beneficiaryBudget: '',
     startDate: '',
@@ -56,12 +60,16 @@ const initialState: Initiative = {
     introductionTextSL: '',
   },
   beneficiaryRule: {
+    apiKeyClientId: undefined,
+    apiKeyClientAssertion: undefined,
     selfDeclarationCriteria: [],
     automatedCriteria: [],
   },
+  initiativeRewardType: undefined,
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
+    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
   },
   trxRule: {
     mccFilter: {
@@ -123,6 +131,7 @@ export const initiativeSlice = createSlice({
       ...state,
       generalInfo: {
         beneficiaryType: action.payload.beneficiaryType,
+        familyUnitComposition: action.payload.familyUnitComposition,
         beneficiaryKnown: action.payload.beneficiaryKnown,
         rankingEnabled: action.payload.rankingEnabled,
         budget: action.payload.budget,
@@ -146,6 +155,28 @@ export const initiativeSlice = createSlice({
       ...state,
       additionalInfo: { ...state.additionalInfo, ...action.payload },
     }),
+    saveApiKeyClientId: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      beneficiaryRule: {
+        ...state.beneficiaryRule,
+        apiKeyClientId: action.payload,
+      },
+    }),
+    saveApiKeyClientAssertion: (state, action: PayloadAction<string | undefined>) => ({
+      ...state,
+      beneficiaryRule: {
+        ...state.beneficiaryRule,
+        apiKeyClientAssertion: action.payload,
+      },
+    }),
+    saveAutomatedCriteria: (state, action: PayloadAction<Array<AutomatedCriteriaItem>>) => {
+      state.beneficiaryRule.automatedCriteria = [];
+      state.beneficiaryRule.automatedCriteria = [...action.payload];
+    },
+    saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
+      state.beneficiaryRule.selfDeclarationCriteria = [];
+      state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
+    },
     setAutomatedCriteria: (state, action: PayloadAction<AutomatedCriteriaItem>) => {
       /* eslint-disable functional/no-let */
       let criteriaFound = false;
@@ -164,10 +195,6 @@ export const initiativeSlice = createSlice({
       } else {
         state.beneficiaryRule.automatedCriteria.push(action.payload);
       }
-    },
-    saveAutomatedCriteria: (state, action: PayloadAction<Array<AutomatedCriteriaItem>>) => {
-      state.beneficiaryRule.automatedCriteria = [];
-      state.beneficiaryRule.automatedCriteria = [...action.payload];
     },
     setManualCriteria: (state, action: PayloadAction<ManualCriteriaItem>) => {
       /* eslint-disable functional/no-let */
@@ -188,13 +215,17 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
     },
-    saveManualCriteria: (state, action: PayloadAction<Array<ManualCriteriaItem>>) => {
-      state.beneficiaryRule.selfDeclarationCriteria = [];
-      state.beneficiaryRule.selfDeclarationCriteria = [...action.payload];
-    },
+    setInitiativeRewardType: (state, action: PayloadAction<InitiativeRewardTypeEnum>) => ({
+      ...state,
+      initiativeRewardType: action.payload,
+    }),
     saveRewardRule: (
       state,
-      action: PayloadAction<{ _type: string; rewardValue: number | undefined }>
+      action: PayloadAction<{
+        _type: string;
+        rewardValue: number | undefined;
+        rewardValueType: RewardValueTypeEnum;
+      }>
     ) => ({
       ...state,
       rewardRule: {
@@ -204,6 +235,7 @@ export const initiativeSlice = createSlice({
         rewardValue: action.payload.hasOwnProperty('rewardValue')
           ? action.payload.rewardValue
           : undefined,
+        rewardValueType: action.payload.rewardValueType,
       },
     }),
     saveMccFilter: (state, action: PayloadAction<MccFilterDTO>) => ({
@@ -279,10 +311,13 @@ export const {
   setGeneralInfo,
   setAdditionalInfo,
   setInitiativeLogo,
+  saveApiKeyClientId,
+  saveApiKeyClientAssertion,
   setAutomatedCriteria,
   saveAutomatedCriteria,
   setManualCriteria,
   saveManualCriteria,
+  setInitiativeRewardType,
   saveRewardRule,
   saveMccFilter,
   saveRewardLimits,
@@ -301,12 +336,19 @@ export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | unde
   state.initiative.generalInfo.beneficiaryKnown;
 export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.rankingEnabled;
+export const stepTwoBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum | undefined =>
+  state.initiative.generalInfo.beneficiaryType;
 export const beneficiaryRuleSelector = (
   state: RootState
 ): {
+  apiKeyClientId: string | undefined;
+  apiKeyClientAssertion: string | undefined;
   selfDeclarationCriteria: Array<ManualCriteriaItem>;
   automatedCriteria: Array<AutomatedCriteriaItem>;
 } => state.initiative.beneficiaryRule;
+export const initiativeRewardTypeSelector = (
+  state: RootState
+): InitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
 export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>
@@ -326,3 +368,5 @@ export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
   state.initiative.refundRule;
 export const initiativeStatusSelector = (state: RootState): string | undefined =>
   state.initiative.status;
+export const initiativeBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum =>
+  state.initiative.generalInfo.beneficiaryType;

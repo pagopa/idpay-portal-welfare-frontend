@@ -477,10 +477,15 @@ const InitiativeList = () => {
                     const labelId = `enhanced-table-row-${index}`;
                     return (
                       <TableRow tabIndex={-1} key={row.id} sx={{}}>
-                        <TableCell component="th" id={labelId} scope="row">
+                        <TableCell id={labelId} scope="row">
                           <ButtonNaked
                             component="button"
-                            sx={{ color: 'primary.main', fontWeight: 700, fontSize: '1em' }}
+                            sx={{
+                              color: 'primary.main',
+                              fontWeight: 600,
+                              fontSize: '1em',
+                              textAlign: 'left',
+                            }}
                             onClick={() =>
                               history.replace(
                                 `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
@@ -526,7 +531,7 @@ const InitiativeList = () => {
                 }}
               >
                 <Typography sx={{ display: 'inline' }}>
-                  {t('pages.initiativeList.emptyList')}
+                  {t('pages.initiativeList.emptyList')}{' '}
                 </Typography>
                 {userCanCreateInitiative && (
                   <Button

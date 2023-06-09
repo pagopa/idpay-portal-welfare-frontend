@@ -7,8 +7,8 @@ import { GeneralInfo } from '../../../model/Initiative';
 import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slices/initiativeSlice';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { createStore } from '../../../redux/store';
-import { BeneficiaryTypeEnum } from '../../../utils/constants';
 import InitiativeDetail from '../initiativeDetail';
+import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -63,7 +63,7 @@ describe('<InitiativeDetail />', (injectedStore?: ReturnType<
       </Provider>
     );
 
-    const backBtnDetail = screen.getByTestId('backButtonDetail') as HTMLButtonElement;
+    const backBtnDetail = screen.getByTestId('back-btn-test') as HTMLButtonElement;
     const secondBackButton = screen.getByText(/pages.initiativeDetail.accordion.buttons.back/i);
 
     const oldLocPathname = history.location.pathname;

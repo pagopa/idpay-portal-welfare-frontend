@@ -16,7 +16,7 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  Link,
+  TextFieldProps,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
@@ -50,6 +50,11 @@ import {
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
+import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
@@ -114,8 +119,22 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   const validationSchema = Yup.object().shape({
     beneficiaryType: Yup.string().required(t('validation.required')),
+    familyUnitComposition: Yup.string()
+      .default(undefined)
+      .when('beneficiaryType', {
+        is: BeneficiaryTypeEnum.NF,
+        then: Yup.string().required(t('validation.required')),
+        otherwise: Yup.string().default(undefined),
+      }),
     beneficiaryKnown: Yup.string().default(undefined).required(t('validation.required')),
-    rankingEnabled: Yup.string().default(undefined).required(t('validation.required')),
+    rankingEnabled: Yup.string()
+      .default(undefined)
+      .required(t('validation.required'))
+      .when('beneficiaryType', {
+        is: BeneficiaryTypeEnum.PF,
+        then: Yup.string().required(t('validation.required')),
+        otherwise: Yup.string().default(undefined),
+      }),
     budget: Yup.number()
       .typeError(t('validation.numeric'))
       .required(t('validation.required'))
@@ -274,6 +293,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
   const formik = useFormik({
     initialValues: {
       beneficiaryType: generalInfoForm.beneficiaryType,
+      familyUnitComposition: generalInfoForm.familyUnitComposition,
       beneficiaryKnown: generalInfoForm.beneficiaryKnown,
       rankingEnabled: generalInfoForm.rankingEnabled,
       budget: generalInfoForm.budget,
@@ -407,24 +427,35 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             row
             aria-labelledby="beneficiaryType--label"
             name="beneficiaryType"
-            value={formik.values.beneficiaryType}
-            defaultValue="persons"
-            onChange={(value) => formik.setFieldValue('beneficiaryType', value)}
+            value={formik.values.beneficiaryType || ''}
+            defaultValue={formik.values.beneficiaryType || ''}
+            onChange={async (e) => {
+              await formik.setFieldValue('beneficiaryType', e.target.value, false);
+              if (e.target.value === BeneficiaryTypeEnum.NF) {
+                await formik.setFieldValue('rankingEnabled', 'false', false);
+                await formik.setFieldValue('beneficiaryKnown', 'false', false);
+                await formik.setFieldValue(
+                  'familyUnitComposition',
+                  FamilyUnitCompositionEnum.INPS,
+                  false
+                );
+              } else {
+                await formik.setFieldValue('familyUnitComposition', undefined, false);
+              }
+            }}
             data-testid="beneficiary-type-test"
           >
             <FormControlLabel
-              value="PF"
-              name="person"
+              value={BeneficiaryTypeEnum.PF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.person')}
               data-testid="beneficiary-radio-test"
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value="families" // TBD
+              value={BeneficiaryTypeEnum.NF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.family')}
-              disabled
             />
           </RadioGroup>
           <FormHelperText
@@ -434,6 +465,70 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {formik.touched.beneficiaryType && formik.errors.beneficiaryType}
           </FormHelperText>
         </FormControl>
+
+        {formik.values.beneficiaryType === BeneficiaryTypeEnum.NF && (
+          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+            <Typography
+              sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
+              id="familyUnitComposition--label"
+            >
+              {t('components.wizard.stepTwo.form.familyUnitCompositionTitleGroup')}
+            </Typography>
+            <RadioGroup
+              row
+              sx={{ gridColumn: 'span 12' }}
+              aria-labelledby="familyUnitComposition--label"
+              name="familyUnitComposition"
+              data-testid="family-unit-composition-test"
+              value={formik.values.familyUnitComposition || ''}
+              defaultValue={formik.values.familyUnitComposition || ''}
+              onChange={(e) => formik.setFieldValue('familyUnitComposition', e.target.value, false)}
+            >
+              <FormControlLabel
+                value={FamilyUnitCompositionEnum.INPS}
+                control={<Radio />}
+                label={
+                  <div>
+                    <Typography>
+                      {t('components.wizard.stepTwo.form.familyUnitCompositionTitleIsee')}
+                    </Typography>
+                    <Typography variant="caption" display="block" gutterBottom>
+                      {t('components.wizard.stepTwo.form.familyUnitCompositionSubtitleIsee')}
+                    </Typography>
+                  </div>
+                }
+                data-testid="family-unit-composition-radio-test"
+              />
+              <FormControl>
+                <FormControlLabel
+                  sx={{ ml: 2 }}
+                  value={FamilyUnitCompositionEnum.ANPR}
+                  control={<Radio />}
+                  label={
+                    <div>
+                      <Typography color="#A2ADB8">
+                        {t('components.wizard.stepTwo.form.familyUnitCompositionTitleAnpr')}
+                      </Typography>
+                      <Typography color="#A2ADB8" variant="caption" display="block" gutterBottom>
+                        {t('components.wizard.stepTwo.form.familyUnitCompositionSubtitleAnpr')}
+                      </Typography>
+                    </div>
+                  }
+                  disabled
+                />
+              </FormControl>
+            </RadioGroup>
+            <FormHelperText
+              error={
+                formik.touched.familyUnitComposition && Boolean(formik.errors.familyUnitComposition)
+              }
+              sx={{ gridColumn: 'span 12' }}
+            >
+              {formik.touched.familyUnitComposition && formik.errors.familyUnitComposition}
+            </FormHelperText>
+          </FormControl>
+        )}
+
         <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
           <Typography
             sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
@@ -458,6 +553,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value="true"
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.taxCodeList')}
+              disabled={formik.values.beneficiaryType === BeneficiaryTypeEnum.NF}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
@@ -474,47 +570,48 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormHelperText>
         </FormControl>
 
-        {formik.values.beneficiaryKnown === 'false' && (
-          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-            <Typography
-              sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
-              id="witRanking--label"
-            >
-              {t('components.wizard.stepTwo.form.withRanking')}
-            </Typography>
-            <RadioGroup
-              sx={{ gridColumn: 'span 12' }}
-              row
-              aria-labelledby="witRanking--label"
-              name="witRanking--label"
-              value={formik.values.rankingEnabled || ''}
-              defaultValue={formik.values.rankingEnabled || ''}
-              onChange={async (e) => {
-                await formik.setFieldValue('rankingEnabled', e.target.value, false);
-                formik.handleBlur(e);
-              }}
-              data-testid="witRanking-test"
-            >
-              <FormControlLabel
-                value="true"
-                control={<Radio />}
-                label={t('components.wizard.stepTwo.form.yes')}
-              />
-              <FormControlLabel
-                sx={{ ml: 2 }}
-                value="false"
-                control={<Radio />}
-                label={t('components.wizard.stepTwo.form.no')}
-              />
-            </RadioGroup>
-            <FormHelperText
-              error={formik.touched.rankingEnabled && Boolean(formik.errors.rankingEnabled)}
-              sx={{ gridColumn: 'span 12' }}
-            >
-              {formik.touched.rankingEnabled && formik.errors.rankingEnabled}
-            </FormHelperText>
-          </FormControl>
-        )}
+        {formik.values.beneficiaryKnown === 'false' &&
+          formik.values.beneficiaryType !== BeneficiaryTypeEnum.NF && (
+            <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+              <Typography
+                sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
+                id="witRanking--label"
+              >
+                {t('components.wizard.stepTwo.form.withRanking')}
+              </Typography>
+              <RadioGroup
+                sx={{ gridColumn: 'span 12' }}
+                row
+                aria-labelledby="witRanking--label"
+                name="witRanking--label"
+                value={formik.values.rankingEnabled || ''}
+                defaultValue={formik.values.rankingEnabled || ''}
+                onChange={async (e) => {
+                  await formik.setFieldValue('rankingEnabled', e.target.value, false);
+                  formik.handleBlur(e);
+                }}
+                data-testid="witRanking-test"
+              >
+                <FormControlLabel
+                  value="true"
+                  control={<Radio />}
+                  label={t('components.wizard.stepTwo.form.yes')}
+                />
+                <FormControlLabel
+                  sx={{ ml: 2 }}
+                  value="false"
+                  control={<Radio />}
+                  label={t('components.wizard.stepTwo.form.no')}
+                />
+              </RadioGroup>
+              <FormHelperText
+                error={formik.touched.rankingEnabled && Boolean(formik.errors.rankingEnabled)}
+                sx={{ gridColumn: 'span 12' }}
+              >
+                {formik.touched.rankingEnabled && formik.errors.rankingEnabled}
+              </FormHelperText>
+            </FormControl>
+          )}
 
         <FormControl
           sx={{
@@ -565,9 +662,21 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               min: 1,
               type: 'number',
             }}
-            label={t('components.wizard.stepTwo.form.beneficiaryBudget')}
-            placeholder={t('components.wizard.stepTwo.form.beneficiaryBudget')}
-            aria-labelledby={t('components.wizard.stepTwo.form.beneficiaryBudget')}
+            label={
+              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
+                : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
+            }
+            placeholder={
+              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
+                : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
+            }
+            aria-labelledby={
+              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
+                : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
+            }
             id="beneficiaryBudget"
             name="beneficiaryBudget"
             value={formik.values.beneficiaryBudget}
@@ -606,7 +715,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 component="span"
                 sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
               >
-                {t('components.wizard.stepTwo.form.reachedUsers')}
+                {formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                  ? t('components.wizard.stepTwo.form.reachedUsers')
+                  : t('components.wizard.stepTwo.form.reachedFamilies')}
               </Typography>
               <Typography
                 variant="subtitle2"
@@ -618,7 +729,11 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   : '-'}
               </Typography>
               <Tooltip
-                title={t('components.wizard.stepTwo.form.reachedUsersTooltip')}
+                title={
+                  formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                    ? t('components.wizard.stepTwo.form.reachedUsersTooltip')
+                    : t('components.wizard.stepTwo.form.reachedFamiliesTooltip')
+                }
                 placement="top"
                 arrow
               >
@@ -651,9 +766,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.rankingStartDate}
               onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
               minDate={new Date()}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="rankingStartDate"
                   data-testid="ranking-start-date-test"
                   name="rankingStartDate"
@@ -662,6 +777,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
                   helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -671,9 +787,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.rankingEndDate}
               onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
               minDate={getMinDate(formik.values.rankingStartDate, 1)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="rankingEndDate"
                   data-testid="ranking-end-date-test"
                   name="rankingEndDate"
@@ -682,6 +798,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
                   helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -708,9 +825,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.startDate}
               onChange={(value) => formik.setFieldValue('startDate', value)}
               minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="startDate"
                   data-testid="start-date-test"
                   name="startDate"
@@ -721,6 +838,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   required
                   InputLabelProps={{ required: false }}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -730,9 +848,9 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value={formik.values.endDate}
               onChange={(value) => formik.setFieldValue('endDate', value)}
               minDate={getMinDate(formik.values.startDate, 1)}
-              renderInput={(props) => (
+              renderInput={(params: TextFieldProps) => (
                 <TextField
-                  {...props}
+                  {...params}
                   id="endDate"
                   data-testid="end-date-test"
                   name="endDate"
@@ -743,6 +861,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   required
                   InputLabelProps={{ required: false }}
                   size="small"
+                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
                 />
               )}
             />
@@ -750,30 +869,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
         </FormControl>
       </Paper>
       <Paper sx={{ display: 'grid', width: '100%', my: 4, px: 3 }}>
-        <Box sx={{ py: 3 }}>
-          <Typography variant="h6">
-            {t('components.wizard.stepTwo.form.introductionTitle')}
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)' }}>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Typography variant="body2">
-              {t('components.wizard.stepTwo.form.introductionSubTitle')}
-            </Typography>
-          </Box>
-          <Box sx={{ gridColumn: 'span 12' }}>
-            <Link
-              sx={{ fontSize: '0.875rem', fontWeight: 700 }}
-              href={t('helpStaticUrls.wizard.generalInfo')}
-              target="_blank"
-              underline="none"
-              variant="body2"
-            >
-              {t('components.wizard.common.links.findOut')}
-            </Link>
-          </Box>
-        </Box>
+        <TitleBoxWithHelpLink
+          title={t('components.wizard.stepTwo.form.introductionTitle')}
+          subtitle={t('components.wizard.stepTwo.form.introductionSubtitle')}
+          helpLink={t('helpStaticUrls.wizard.generalInfo')}
+          helpLabel={t('components.wizard.common.links.findOut')}
+        />
 
         <Box sx={{ width: '100%', pt: 2 }}>
           <Box>

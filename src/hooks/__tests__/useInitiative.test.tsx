@@ -24,7 +24,7 @@ import { OrderDirectionEnum } from '../../api/generated/initiative/AutomatedCrit
 import { FrequencyEnum } from '../../api/generated/initiative/RewardLimitsDTO';
 import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
-import { BeneficiaryTypeEnum } from '../../utils/constants';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 jest.mock('react-router-dom', () => Function());
 
@@ -228,7 +228,6 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
           rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
           threshold: threshold,
           trxCount: { from: 2, to: 3 },
-          // daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
           daysOfWeek: [
             {
               daysOfWeek: [
