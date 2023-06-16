@@ -117,6 +117,9 @@ const InitiativeOverview = () => {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
+    setAccruedRewards('0');
+    setOnboardedCitizenCount(0);
+    setLastUpdatedDateTime('-');
     // eslint-disable-next-line no-prototype-builtins
     if (match !== null && match.params.hasOwnProperty('id')) {
       const { id } = match.params as MatchParams;
@@ -139,7 +142,8 @@ const InitiativeOverview = () => {
                 );
                 setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
               }
-            } else {
+            } // TO CHECK FOR REMOVE
+            else {
               setAccruedRewards('0');
               setOnboardedCitizenCount(0);
               setLastUpdatedDateTime('-');
