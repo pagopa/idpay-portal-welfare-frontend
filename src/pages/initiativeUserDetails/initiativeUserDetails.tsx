@@ -28,6 +28,8 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import {
@@ -41,23 +43,21 @@ import {
   initiativePagesTableContainerStyle,
   initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
+import { useInitiative } from '../../hooks/useInitiative';
+import { useAppSelector } from '../../redux/hooks';
+import {
+  initiativeRewardTypeSelector,
+  stepTwoBeneficiaryTypeSelector,
+} from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
-import { useInitiative } from '../../hooks/useInitiative';
-import {
-  stepTwoBeneficiaryTypeSelector,
-  initiativeRewardTypeSelector,
-} from '../../redux/slices/initiativeSlice';
-import { useAppSelector } from '../../redux/hooks';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import SuspensionModal from './SuspensionModal';
 import TransactionDetailModal from './TransactionDetailModal';
-import UserDetailsSummary from './components/UserDetailsSummary';
 import FamilyUnitSummary from './components/FamilyUnitSummary';
+import UserDetailsSummary from './components/UserDetailsSummary';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -288,7 +288,10 @@ const InitiativeUserDetails = () => {
       case 'REVERSAL':
         return t('pages.initiativeUserDetails.operationTypes.reversal');
       case 'TRANSACTION':
-        return t('pages.initiativeUserDetails.operationTypes.transaction');
+        if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+          return t('pages.initiativeUserDetails.operationTypes.transaction');
+        }
+        return 'Pagamento';
       case 'SUSPENDED':
         return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
@@ -485,33 +488,58 @@ const InitiativeUserDetails = () => {
             <MenuItem value={'ONBOARDING'}>
               {t('pages.initiativeUserDetails.operationTypes.onboarding')}
             </MenuItem>
-            <MenuItem value={'ADD_IBAN'}>
-              {t('pages.initiativeUserDetails.operationTypes.addIban')}
-            </MenuItem>
-            <MenuItem value={'ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
-            </MenuItem>
-            <MenuItem value={'DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_REFUND'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
-            </MenuItem>
-            <MenuItem value={'TRANSACTION'}>
-              {t('pages.initiativeUserDetails.operationTypes.transaction')}
-            </MenuItem>
-            <MenuItem value={'PAID_REFUND'}>
-              {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
-            </MenuItem>
-            <MenuItem value={'REVERSAL'}>
-              {t('pages.initiativeUserDetails.operationTypes.reversal')}
-            </MenuItem>
+
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'ADD_IBAN'}>
+                {t('pages.initiativeUserDetails.operationTypes.addIban')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'ADD_INSTRUMENT'}>
+                {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'DELETE_INSTRUMENT'}>
+                {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
+                {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
+                {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'REJECTED_REFUND'}>
+                {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'TRANSACTION'}>
+                {t('pages.initiativeUserDetails.operationTypes.transaction')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'PAID_REFUND'}>
+                {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <MenuItem value={'REVERSAL'}>
+                {t('pages.initiativeUserDetails.operationTypes.reversal')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
+              <MenuItem value="AUTHORIZED">Buono sconto autorizzato</MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
+              <MenuItem value="CANCELLED"> Buono sconto annullato</MenuItem>
+            )}
           </Select>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
@@ -594,11 +622,15 @@ const InitiativeUserDetails = () => {
                       {t('pages.initiativeUserDetails.table.event')}
                     </TableCell>
                     <TableCell width="10%">
-                      {t('pages.initiativeUserDetails.table.totExpense')}
+                      {rewardType === InitiativeRewardTypeEnum.REFUND
+                        ? t('pages.initiativeUserDetails.table.totExpense')
+                        : 'Importo'}
                     </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeUserDetails.table.toRefund')}
-                    </TableCell>
+                    {rewardType === InitiativeRewardTypeEnum.REFUND && (
+                      <TableCell width="15%">
+                        {t('pages.initiativeUserDetails.table.toRefund')}
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -629,11 +661,15 @@ const InitiativeUserDetails = () => {
                           </ButtonNaked>
                         )}
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'left' }}>
-                        {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
-                          ? '-'
-                          : formatedCurrency(r.amount)}
-                      </TableCell>
+                      {rewardType === InitiativeRewardTypeEnum.REFUND && (
+                        <TableCell sx={{ textAlign: 'left' }}>
+                          {r.operationType === 'PAID_REFUND' ||
+                          r.operationType === 'REJECTED_REFUND'
+                            ? '-'
+                            : formatedCurrency(r.amount)}
+                        </TableCell>
+                      )}
+
                       <TableCell sx={{ textAlign: 'left' }}>
                         {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
                           ? '-'
