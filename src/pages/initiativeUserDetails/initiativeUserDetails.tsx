@@ -290,8 +290,15 @@ const InitiativeUserDetails = () => {
       case 'TRANSACTION':
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
           return t('pages.initiativeUserDetails.operationTypes.transaction');
+        } else if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
+          if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
+            return 'Pagamento';
+          } else if (event.status === 'CANCELLED') {
+            return 'Pagamento anullato';
+          }
         }
-        return 'Pagamento';
+        return '';
+
       case 'SUSPENDED':
         return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
