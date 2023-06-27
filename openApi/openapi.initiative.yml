@@ -2996,6 +2996,8 @@ components:
           type: string
         initiativeName:
           type: string
+        initiativeRewardType:
+          type: string
         status:
           type: string
         creationDate:
