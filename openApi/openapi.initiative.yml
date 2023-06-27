@@ -2996,8 +2996,6 @@ components:
           type: string
         initiativeName:
           type: string
-        initiativeRewardType:
-          type: string
         status:
           type: string
         creationDate:
@@ -3808,6 +3806,8 @@ components:
             - TRANSACTION
             - REVERSAL
           type: string
+        eventId:
+          type: string
         brandLogo:
           type: string
         maskedPan:
@@ -3825,6 +3825,19 @@ components:
         idTrxIssuer:
           type: string
         idTrxAcquirer:
+          type: string
+        status:
+          type: string
+          enum:
+            - AUTHORIZED
+            - REWARDED
+            - CANCELLED
+        channel:
+          type: string
+          enum:
+            - RTD
+            - QRCODE
+        businessName:
           type: string
     InstrumentOperationDTO:
       type: object
@@ -3933,6 +3946,8 @@ components:
             - TRANSACTION
             - REVERSAL
           type: string
+        eventId:
+          type: string
         operationDate:
           type: string
           format: date-time
@@ -3947,6 +3962,19 @@ components:
         circuitType:
           type: string
           description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+        status:
+          type: string
+          enum:
+            - AUTHORIZED
+            - REWARDED
+            - CANCELLED
+        channel:
+          type: string
+          enum:
+            - RTD
+            - QRCODE
+        businessName:
+          type: string
     SuspendOperationDTO:
       type: object
       required:
