@@ -294,7 +294,7 @@ const InitiativeUserDetails = () => {
           if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
             return 'Pagamento';
           } else if (event.status === 'CANCELLED') {
-            return 'Pagamento anullato';
+            return 'Pagamento annullato';
           }
         }
         return '';
@@ -708,6 +708,7 @@ const InitiativeUserDetails = () => {
                 handleCloseModal={handleCloseModal}
                 initiativeId={id}
                 holderBank={holderBank}
+                rewardType={rewardType}
               />
               <InitiativeRefundsDetailsModal
                 openRefundsDetailModal={openRefundDetailModal}
