@@ -159,10 +159,10 @@ const TransactionDetailModal = ({
             transactionDetail?.status === 'AUTHORIZED' ||
             transactionDetail?.status === 'REWARDED'
           ) {
-            return 'Buono sconto autorizzato';
+            return t('pages.initiativeUserDetails.operationTypes.discountAuthorized');
           }
           if (transactionDetail?.status === 'CANCELLED') {
-            return 'Buono sconto annullato';
+            return t('pages.initiativeUserDetails.operationTypes.discountCancelled');
           }
         } else if (rewardType === InitiativeRewardTypeEnum.REFUND) {
           return t('pages.initiativeUserDetails.operationTypes.transaction');
@@ -427,15 +427,16 @@ const TransactionDetailModal = ({
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Alert severity="info">
                     <Typography variant="body2">
-                      Il buono sconto è stato annullato e l’importo è stato riaccreditato sul saldo
-                      disponibile.
+                      {t(
+                        'pages.initiativeUserDetails.transactionDetail.discountCancelledAlertText'
+                      )}
                     </Typography>
                   </Alert>
                 </Box>
               )}
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  Esercente
+                  {t('pages.initiativeUserDetails.transactionDetail.merchant')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
@@ -445,7 +446,7 @@ const TransactionDetailModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  Importo spesa
+                  {t('pages.initiativeUserDetails.transactionDetail.expenseAmount')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
@@ -455,7 +456,7 @@ const TransactionDetailModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  Buono sconto applicato
+                  {t('pages.initiativeUserDetails.transactionDetail.discountApplied')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
@@ -465,7 +466,7 @@ const TransactionDetailModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  Data
+                  {t('pages.initiativeUserDetails.transactionDetail.date')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
@@ -475,7 +476,7 @@ const TransactionDetailModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  ID transazione
+                  {t('pages.initiativeUserDetails.transactionDetail.transactionId')}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 10' }}>
