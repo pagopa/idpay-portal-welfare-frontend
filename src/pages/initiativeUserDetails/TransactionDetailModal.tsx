@@ -497,6 +497,7 @@ const TransactionDetailModal = ({
                   onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
                   color="primary"
                   sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
+                  data-testid="transaction-modal-copy"
                 />
               </Box>
             </Box>
