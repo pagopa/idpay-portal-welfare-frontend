@@ -292,9 +292,9 @@ const InitiativeUserDetails = () => {
           return t('pages.initiativeUserDetails.operationTypes.transaction');
         } else if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
           if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
-            return 'Pagamento';
+            return t('pages.initiativeUserDetails.operationTypes.payment');
           } else if (event.status === 'CANCELLED') {
-            return 'Pagamento annullato';
+            return t('pages.initiativeUserDetails.operationTypes.paymentCancelled');
           }
         }
         return '';
@@ -542,10 +542,14 @@ const InitiativeUserDetails = () => {
               </MenuItem>
             )}
             {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
-              <MenuItem value="AUTHORIZED">Buono sconto autorizzato</MenuItem>
+              <MenuItem value="AUTHORIZED">
+                {t('pages.initiativeUserDetails.operationTypes.discountAuthorized')}
+              </MenuItem>
             )}
             {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
-              <MenuItem value="CANCELLED"> Buono sconto annullato</MenuItem>
+              <MenuItem value="CANCELLED">
+                {t('pages.initiativeUserDetails.operationTypes.discountCancelled')}
+              </MenuItem>
             )}
           </Select>
         </FormControl>
@@ -644,7 +648,6 @@ const InitiativeUserDetails = () => {
                   {rows.map((r) => (
                     <TableRow key={r.operationId}>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {/* {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)} */}
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
