@@ -21,7 +21,8 @@ describe('test suite initiative user details', () => {
         handleCloseModal={jest.fn()}
         initiativeId={''}
         holderBank={''}
-        fiscalCode={''}
+        fiscalCode={'FAKEFISCALCODE'}
+        rewardType={undefined}
       />
     );
 
@@ -38,6 +39,7 @@ describe('test suite initiative user details', () => {
         initiativeId={''}
         holderBank={undefined}
         fiscalCode={''}
+        rewardType={undefined}
       />
     );
   });
@@ -88,6 +90,7 @@ describe('test suite initiative user details', () => {
           initiativeId={''}
           holderBank={undefined}
           fiscalCode={''}
+          rewardType={undefined}
         />
       );
     });
@@ -123,6 +126,7 @@ describe('test suite initiative user details', () => {
         initiativeId={''}
         holderBank={'undefined'}
         fiscalCode={''}
+        rewardType={undefined}
       />
     );
   });
@@ -157,6 +161,7 @@ describe('test suite initiative user details', () => {
         initiativeId={''}
         holderBank={'banca'}
         fiscalCode={''}
+        rewardType={undefined}
       />
     );
   });
@@ -191,6 +196,7 @@ describe('test suite initiative user details', () => {
         initiativeId={'banca'}
         holderBank={'banca'}
         fiscalCode={'banca'}
+        rewardType={'DISCOUNT'}
       />
     );
   });
@@ -206,6 +212,7 @@ describe('test suite initiative user details', () => {
         initiativeId={''}
         holderBank={''}
         fiscalCode={''}
+        rewardType={undefined}
       />
     );
   });
@@ -220,6 +227,7 @@ describe('test suite initiative user details', () => {
         initiativeId={''}
         holderBank={''}
         fiscalCode={''}
+        rewardType={undefined}
       />
     );
   });
