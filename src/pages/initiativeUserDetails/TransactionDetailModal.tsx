@@ -10,7 +10,13 @@ import { useTranslation } from 'react-i18next';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
-import { formatIban, formatedCurrency, getMaskedPan, mappedChannel } from '../../helpers';
+import {
+  copyTextToClipboard,
+  formatIban,
+  formatedCurrency,
+  getMaskedPan,
+  mappedChannel,
+} from '../../helpers';
 import { getTimelineDetail } from '../../services/intitativeService';
 
 type Props = {
@@ -488,6 +494,7 @@ const TransactionDetailModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 2' }}>
                 <ContentCopyIcon
+                  onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
                   color="primary"
                   sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
                 />

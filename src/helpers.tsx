@@ -120,7 +120,6 @@ export const formatedDate = (date: Date | undefined, symbol: string = '-') => {
   return symbol;
 };
 
-
 export const formatStringToDate = (date: string | undefined) => {
   if (typeof date === 'string') {
     const newDate = new Date(date);
@@ -282,4 +281,10 @@ export const initiativePagesTableContainerStyle = {
   height: '100%',
   gridTemplateColumns: 'repeat(12, 1fr)',
   alignItems: 'center',
+};
+
+export const copyTextToClipboard = (text: string | undefined) => {
+  if (typeof text === 'string') {
+    void navigator.clipboard.writeText(text);
+  }
 };
