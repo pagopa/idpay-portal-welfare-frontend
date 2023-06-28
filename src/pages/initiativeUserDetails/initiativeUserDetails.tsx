@@ -631,7 +631,7 @@ const InitiativeUserDetails = () => {
                     <TableCell width="10%">
                       {rewardType === InitiativeRewardTypeEnum.REFUND
                         ? t('pages.initiativeUserDetails.table.totExpense')
-                        : 'Importo'}
+                        : t('pages.initiativeUserDetails.transactionDetail.import')}
                     </TableCell>
                     {rewardType === InitiativeRewardTypeEnum.REFUND && (
                       <TableCell width="15%">

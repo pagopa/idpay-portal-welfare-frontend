@@ -3793,13 +3793,8 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
-        - amount
         - accrued
-        - brand
-        - idTrxIssuer
-        - idTrxAcquirer
+        - status
       properties:
         operationId:
           type: string
@@ -3812,6 +3807,8 @@ components:
           type: string
         brandLogo:
           type: string
+        brand:
+          type: string
         maskedPan:
           type: string
         amount:
@@ -3821,9 +3818,12 @@ components:
         operationDate:
           type: string
           format: date-time
-        brand:
+        circuitType:
           type: string
-          description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+          description: >-
+            00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB,
+            05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay,
+            09->Satispay, 10->PrivateCircuit
         idTrxIssuer:
           type: string
         idTrxAcquirer:
@@ -3936,10 +3936,8 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
-        - amount
-        - circuitType
+        - accrued
+        - status
       properties:
         operationId:
           type: string
@@ -3964,6 +3962,10 @@ components:
         circuitType:
           type: string
           description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+        idTrxIssuer:
+          type: string
+        idTrxAcquirer:
+          type: string
         status:
           type: string
           enum:

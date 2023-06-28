@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
@@ -6,6 +7,7 @@ import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { formatIban, formatedCurrency, getMaskedPan, mappedChannel } from '../../helpers';
@@ -29,8 +31,7 @@ const TransactionDetailModal = ({
   initiativeId,
   holderBank,
   rewardType,
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-Props) => {
+}: Props) => {
   const { t } = useTranslation();
   const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
@@ -416,6 +417,16 @@ Props) => {
                   )}
                 </Typography>
               </Box>
+              {transactionDetail?.status === 'CANCELLED' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Alert severity="info">
+                    <Typography variant="body2">
+                      Il buono sconto è stato annullato e l’importo è stato riaccreditato sul saldo
+                      disponibile.
+                    </Typography>
+                  </Alert>
+                </Box>
+              )}
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
                   Esercente
@@ -433,39 +444,17 @@ Props) => {
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {transactionDetail?.amount}
-                </Typography>
-              </Box>
-              {transactionDetail?.status === 'CANCELLED' && (
-                <>
-                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                    <Alert severity="info">
-                      <Typography variant="body2">
-                        Il buono sconto è stato annullato e l’importo è stato riaccreditato sul
-                        saldo disponibile.
-                      </Typography>
-                    </Alert>
-                  </Box>
-                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                    <Typography variant="body2" color="text.secondary" textAlign="left">
-                      Buono sconto applicato
-                    </Typography>
-                  </Box>
-                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                    <Typography variant="body2" color="text.secondary" textAlign="left">
-                      {transactionDetail?.accrued}
-                    </Typography>
-                  </Box>
-                </>
-              )}
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  Modalità di autorizzazione
+                  {formatedCurrency(transactionDetail?.amount)}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {transactionDetail?.channel}
+                  Buono sconto applicato
+                </Typography>
+              </Box>
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="body2" fontWeight={600}>
+                  {formatedCurrency(transactionDetail?.accrued)}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -473,9 +462,9 @@ Props) => {
                   Data
                 </Typography>
               </Box>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {transactionDetail?.operationDate}
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="body2" fontWeight={600}>
+                  {formatDate(transactionDetail?.operationDate)}
                 </Typography>
               </Box>
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -483,8 +472,25 @@ Props) => {
                   ID transazione
                 </Typography>
               </Box>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left"></Typography>
+              <Box sx={{ gridColumn: 'span 10' }}>
+                <Typography
+                  variant="body2"
+                  fontWeight={600}
+                  sx={{
+                    width: '260px',
+                    textOverflow: 'ellipsis',
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {transactionDetail?.eventId}
+                </Typography>
+              </Box>
+              <Box sx={{ gridColumn: 'span 2' }}>
+                <ContentCopyIcon
+                  color="primary"
+                  sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
+                />
               </Box>
             </Box>
           )}
