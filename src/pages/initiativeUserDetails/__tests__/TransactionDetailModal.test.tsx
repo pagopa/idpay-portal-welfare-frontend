@@ -1,15 +1,18 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
+import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
 import { renderWithContext } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
+
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
 });
 
 afterEach(cleanup);
+
+const mockedFiscalCode = 'FAKEFISCALCODE';
 
 describe('test suite initiative user details', () => {
   window.scrollTo = jest.fn();
@@ -21,7 +24,7 @@ describe('test suite initiative user details', () => {
         handleCloseModal={jest.fn()}
         initiativeId={''}
         holderBank={''}
-        fiscalCode={'FAKEFISCALCODE'}
+        fiscalCode={mockedFiscalCode}
         rewardType={undefined}
       />
     );
@@ -30,15 +33,15 @@ describe('test suite initiative user details', () => {
     fireEvent.click(closeModal);
   });
 
-  test('test of component TransactionDetailModal closed', async () => {
+  test('test of component TransactionDetailModal closed an all optional props to undefined', async () => {
     renderWithContext(
       <TransactionDetailModal
         operationId={''}
         openModal={false}
         handleCloseModal={jest.fn()}
-        initiativeId={''}
+        initiativeId={'initativeId'}
         holderBank={undefined}
-        fiscalCode={''}
+        fiscalCode={mockedFiscalCode}
         rewardType={undefined}
       />
     );
@@ -87,86 +90,16 @@ describe('test suite initiative user details', () => {
           operationId={'7e7e7e7e7e7e7e7e'}
           openModal={true}
           handleCloseModal={jest.fn()}
-          initiativeId={''}
-          holderBank={undefined}
-          fiscalCode={''}
-          rewardType={undefined}
+          initiativeId={'initiativeId'}
+          holderBank={'BankName'}
+          fiscalCode={mockedFiscalCode}
+          rewardType={'REFUND'}
         />
       );
     });
   });
 
-  test('test of render TransactionDetailModal with brand', () => {
-    InitiativeApiMocked.getTimelineDetail = async (
-      _cf: string,
-      _id: string,
-      _opeId: string
-    ): Promise<OperationDTO> =>
-      new Promise((resolve) =>
-        resolve({
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          brand: 'undefined',
-          iban: '',
-          channel: 'App IO',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-        })
-      );
-
-    renderWithContext(
-      <TransactionDetailModal
-        operationId={'7e7e7e7e7e7e7e7e'}
-        openModal={true}
-        handleCloseModal={jest.fn()}
-        initiativeId={''}
-        holderBank={'undefined'}
-        fiscalCode={''}
-        rewardType={undefined}
-      />
-    );
-  });
-
-  test('test of render TransactionDetailModal with holderBank', () => {
-    InitiativeApiMocked.getTimelineDetail = async (
-      _cf: string,
-      _id: string,
-      _opeId: string
-    ): Promise<OperationDTO> =>
-      new Promise((resolve) =>
-        resolve({
-          operationId: '1u1u1u1u1u1u1u',
-          operationType: 'ADD_IBAN',
-          operationDate: '2023-02-05T10:22:28.012Z',
-          maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
-          brand: 'undefined',
-          iban: '',
-          channel: 'App IO',
-          idTrxAcquirer: '349589304999',
-          idTrxIssuer: '0001923192038',
-        })
-      );
-
-    renderWithContext(
-      <TransactionDetailModal
-        operationId={'7e7e7e7e7e7e7e7e'}
-        openModal={true}
-        handleCloseModal={jest.fn()}
-        initiativeId={''}
-        holderBank={'banca'}
-        fiscalCode={''}
-        rewardType={undefined}
-      />
-    );
-  });
-
-  test('test of formatDate condition', () => {
+  test('render of Transaction modal in status AUTHORIZED', async () => {
     InitiativeApiMocked.getTimelineDetail = async (
       _cf: string,
       _id: string,
@@ -180,11 +113,53 @@ describe('test suite initiative user details', () => {
           maskedPan: '1234123412341234',
           amount: 345,
           accrued: 10,
-          brand: 'undefined',
+          brand: 'brandName',
           iban: '',
           channel: 'App IO',
           idTrxAcquirer: '349589304999',
           idTrxIssuer: '0001923192038',
+          businessName: 'FakeBusinessName',
+          status: 'AUTHORIZED',
+        })
+      );
+
+    renderWithContext(
+      <TransactionDetailModal
+        operationId={'7e7e7e7e7e7e7e7e'}
+        openModal={true}
+        handleCloseModal={jest.fn()}
+        initiativeId={'initativeId'}
+        holderBank={'banca'}
+        fiscalCode={mockedFiscalCode}
+        rewardType={'DISCOUNT'}
+      />
+    );
+
+    const copyBtn = await screen.findByTestId('transaction-modal-copy');
+    fireEvent.click(copyBtn);
+  });
+
+  test('render of Transaction modal in status CANCELLED', () => {
+    InitiativeApiMocked.getTimelineDetail = async (
+      _cf: string,
+      _id: string,
+      _opeId: string
+    ): Promise<OperationDTO> =>
+      new Promise((resolve) =>
+        resolve({
+          operationId: '1u1u1u1u1u1u1u',
+          operationType: 'TRANSACTION',
+          operationDate: 'aaaaa',
+          maskedPan: '1234123412341234',
+          amount: 345,
+          accrued: 10,
+          brand: 'brandName',
+          iban: '',
+          channel: 'App IO',
+          idTrxAcquirer: '349589304999',
+          idTrxIssuer: '0001923192038',
+          businessName: 'FakeBusinessName',
+          status: 'CANCELLED',
         })
       );
 
@@ -195,29 +170,13 @@ describe('test suite initiative user details', () => {
         handleCloseModal={jest.fn()}
         initiativeId={'banca'}
         holderBank={'banca'}
-        fiscalCode={'banca'}
+        fiscalCode={mockedFiscalCode}
         rewardType={'DISCOUNT'}
       />
     );
   });
 
-  test('test catch case of getTimelineDetail not an object', () => {
-    InitiativeApiMocked.getTimelineDetail = async (): Promise<any> =>
-      new Promise<void>((res) => res());
-    renderWithContext(
-      <TransactionDetailModal
-        operationId={'7e7e7e7e7e7e7e7e'}
-        openModal={true}
-        handleCloseModal={jest.fn()}
-        initiativeId={''}
-        holderBank={''}
-        fiscalCode={''}
-        rewardType={undefined}
-      />
-    );
-  });
-
-  test('test catch case of getTimelineDetail api call', () => {
+  test(' catch case of getTimelineDetail api call', () => {
     InitiativeApiMocked.getTimelineDetail = async (): Promise<any> => Promise.reject('reason');
     renderWithContext(
       <TransactionDetailModal

@@ -1,9 +1,10 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
+import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { setInitiativeSummaryList } from '../../../redux/slices/initiativeSummarySlice';
 import { store } from '../../../redux/store';
-import ROUTES from '../../../routes';
-import { renderWithProviders } from '../../../utils/test-utils';
+import { BASE_ROUTE } from '../../../routes';
+import { renderWithContext } from '../../../utils/test-utils';
 import SideMenu from '../SideMenu';
 
 jest.mock('react-i18next', () => ({
@@ -14,15 +15,18 @@ const oldWindowLocation = global.window.location;
 
 const mockedLocation = {
   assign: jest.fn(),
-  pathname: ROUTES.HOME,
+  pathname: `${BASE_ROUTE}/panoramica-iniziativa/fakeIDIniziativa`,
   origin: 'MOCKED_ORIGIN',
   search: '',
   hash: '',
 };
 
-beforeAll(() => {
+beforeEach(() => {
   Object.defineProperty(window, 'location', { value: mockedLocation });
 });
+
+afterEach(cleanup);
+
 afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
@@ -32,7 +36,7 @@ describe('<SideMenu />', () => {
     window.scrollTo = jest.fn();
   });
 
-  const mockedSummary = [
+  const mockedSummary: InitiativeSummaryArrayDTO = [
     {
       creationDate: new Date('2022-12-16T11:24:23.96'),
       initiativeId: '639c4757f9904d5a4e5a3c2e',
@@ -40,6 +44,7 @@ describe('<SideMenu />', () => {
       rankingEnabled: true,
       status: 'PUBLISHED',
       updateDate: new Date('2022-12-16T11:46:26.335'),
+      initiativeRewardType: 'REFUND',
     },
     {
       creationDate: new Date('2022-12-16T15:46:05.37'),
@@ -48,6 +53,7 @@ describe('<SideMenu />', () => {
       rankingEnabled: false,
       status: 'PUBLISHED',
       updateDate: new Date('2022-12-16T15:52:27.644'),
+      initiativeRewardType: 'DISCOUNT',
     },
     {
       creationDate: new Date('2022-12-16T16:20:18.877'),
@@ -56,6 +62,7 @@ describe('<SideMenu />', () => {
       rankingEnabled: false,
       status: 'PUBLISHED',
       updateDate: new Date('2022-12-19T18:07:34.364'),
+      initiativeRewardType: 'REFUND',
     },
     {
       creationDate: new Date('2022-12-19T11:19:41.23'),
@@ -64,6 +71,7 @@ describe('<SideMenu />', () => {
       rankingEnabled: true,
       status: 'IN_REVISION',
       updateDate: new Date('2022-12-19T16:19:39.483'),
+      initiativeRewardType: 'REFUND',
     },
     {
       creationDate: new Date('2022-12-19T11:19:45.113'),
@@ -72,6 +80,7 @@ describe('<SideMenu />', () => {
       rankingEnabled: false,
       status: 'DRAFT',
       updateDate: new Date('2022-12-23T17:12:15.819'),
+      initiativeRewardType: 'DISCOUNT',
     },
     {
       creationDate: new Date('2022-12-19T11:22:45.797'),
@@ -84,7 +93,7 @@ describe('<SideMenu />', () => {
   ];
 
   test('testing rendering of SideMenu component', async () => {
-    renderWithProviders(<SideMenu />);
+    renderWithContext(<SideMenu />, store);
     // screen.debug();
     const listBtn = screen.getByText(/sideMenu.initiativeList.title/) as HTMLElement;
     fireEvent.click(listBtn);
@@ -92,7 +101,7 @@ describe('<SideMenu />', () => {
 
   test('testing setExpanded', async () => {
     store.dispatch(setInitiativeSummaryList(mockedSummary));
-    renderWithProviders(<SideMenu />);
+    renderWithContext(<SideMenu />, store);
     const accordion = screen.getAllByTestId('accordion-click-test');
     fireEvent.click(accordion[0]);
 
@@ -107,5 +116,8 @@ describe('<SideMenu />', () => {
 
     const refunds = screen.getAllByText('sideMenu.initiativeRefunds.title');
     fireEvent.click(refunds[0]);
+
+    const discountInitativeTitle = await screen.findAllByText('sideMenu.initiativeMerchant.title');
+    fireEvent.click(discountInitativeTitle[1]);
   });
 });

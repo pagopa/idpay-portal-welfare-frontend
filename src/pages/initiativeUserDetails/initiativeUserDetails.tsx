@@ -298,7 +298,6 @@ const InitiativeUserDetails = () => {
           }
         }
         return '';
-
       case 'SUSPENDED':
         return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
