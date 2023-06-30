@@ -1,5 +1,6 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
+// test commit
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
