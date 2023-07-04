@@ -434,36 +434,49 @@ const TransactionDetailModal = ({
                   </Alert>
                 </Box>
               )}
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeUserDetails.transactionDetail.merchant')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {transactionDetail?.businessName}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeUserDetails.transactionDetail.expenseAmount')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatedCurrency(transactionDetail?.amount)}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeUserDetails.transactionDetail.discountApplied')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatedCurrency(transactionDetail?.accrued)}
-                </Typography>
-              </Box>
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.merchant')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {transactionDetail?.businessName}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.expenseAmount')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.amount)}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.discountApplied')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.accrued)}
+                  </Typography>
+                </Box>
+              )}
+
               <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                 <Typography variant="body2" color="text.secondary" textAlign="left">
                   {t('pages.initiativeUserDetails.transactionDetail.date')}
@@ -474,33 +487,42 @@ const TransactionDetailModal = ({
                   {formatDate(transactionDetail?.operationDate)}
                 </Typography>
               </Box>
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeUserDetails.transactionDetail.transactionId')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 10' }}>
-                <Typography
-                  variant="body2"
-                  fontWeight={600}
-                  sx={{
-                    width: '260px',
-                    textOverflow: 'ellipsis',
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {transactionDetail?.eventId}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 2' }}>
-                <ContentCopyIcon
-                  onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
-                  color="primary"
-                  sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
-                  data-testid="transaction-modal-copy"
-                />
-              </Box>
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.transactionId')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 10' }}>
+                  <Typography
+                    variant="body2"
+                    fontWeight={600}
+                    sx={{
+                      width: '260px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {transactionDetail?.eventId}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 2' }}>
+                  <ContentCopyIcon
+                    onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
+                    color="primary"
+                    sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
+                    data-testid="transaction-modal-copy"
+                  />
+                </Box>
+              )}
+
+              {transactionDetail?.operationType === 'ONBOARDING' &&
+                transactionResult(transactionDetail?.operationType)}
             </Box>
           )}
         </Box>
