@@ -1,11 +1,12 @@
-import { Box } from '@mui/material';
+import { Box, Drawer, IconButton, Toolbar } from '@mui/material';
 import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLocation } from 'react-router-dom';
 import { matchPath } from 'react-router';
+import MenuIcon from '@mui/icons-material/Menu';
 import Header from '../Header/Header';
 import SideMenu from '../SideMenu/SideMenu';
 import ROUTES from '../../routes';
@@ -20,6 +21,11 @@ const Layout = ({ children }: Props) => {
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
   const location = useLocation();
   const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
   const match = matchPath(location.pathname, {
     path: [
@@ -61,9 +67,75 @@ const Layout = ({ children }: Props) => {
         />
       </Box>
       {match !== null ? (
-        <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
+        <Box
+          sx={{
+            '@media (max-width: 1000px)': {
+              gridArea: 'body',
+              display: 'grid',
+              gridTemplateColumns: '12fr',
+            },
+            '@media (min-width: 1001px)': {
+              gridArea: 'body',
+              display: 'grid',
+              gridTemplateColumns: 'minmax(300px, 2fr) 10fr',
+            },
+          }}
+        >
+          <Box
+            sx={{
+              '@media (max-width: 1000px)': {
+                display: 'grid',
+                backgroundColor: 'background.paper',
+              },
+              '@media (min-width: 1001px)': {
+                display: 'none',
+              },
+            }}
+          >
+            <Toolbar>
+              <IconButton
+                color="primary"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                sx={{ mr: 2 }}
+              >
+                <MenuIcon />
+              </IconButton>
+            </Toolbar>
+          </Box>
           <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
-            <SideMenu />
+            <Drawer
+              variant="temporary"
+              anchor="left"
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              sx={{
+                width: '375px',
+                flexShrink: 0,
+                '@media (max-width: 1000px)': {
+                  display: 'grid',
+                  '& .MuiDrawer-paper': { boxSizing: 'border-box', width: '375px' },
+                },
+                '@media (min-width: 1001px)': {
+                  display: 'none',
+                },
+              }}
+            >
+              <SideMenu />
+            </Drawer>
+            <Box
+              sx={{
+                '@media (max-width: 1000px)': {
+                  display: 'none',
+                },
+                '@media (min-width: 1001px)': {
+                  display: 'grid',
+                },
+              }}
+            >
+              <SideMenu />
+            </Box>
           </Box>
           <Box
             gridColumn="auto"
@@ -108,5 +180,4 @@ const Layout = ({ children }: Props) => {
     </Box>
   );
 };
-// export default withParties(Layout);
 export default Layout;
