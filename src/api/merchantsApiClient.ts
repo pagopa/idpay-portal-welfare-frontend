@@ -7,6 +7,10 @@ import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/merchants/client';
 import { MerchantUpdateDTO } from './generated/merchants/MerchantUpdateDTO';
 import { MerchantListDTO } from './generated/merchants/MerchantListDTO';
+import { MerchantDetailDTO } from './generated/merchants/MerchantDetailDTO';
+import { MerchantStatisticsDTO } from './generated/merchants/MerchantStatisticsDTO';
+import { MerchantTransactionsProcessedListDTO } from './generated/merchants/MerchantTransactionsProcessedListDTO';
+import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTransactionsListDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -52,6 +56,61 @@ export const merchantsApi = {
       page,
       fiscalCode,
       size: 10,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMerchantDetail: async (
+    initiativeId: string,
+    merchantId: string
+  ): Promise<MerchantDetailDTO> => {
+    const result = await merchantsApiClient.getMerchantDetail({ initiativeId, merchantId });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMerchantInitiativeStatistics: async (
+    initiativeId: string,
+    merchantId: string
+  ): Promise<MerchantStatisticsDTO> => {
+    const result = await merchantsApiClient.getMerchantInitiativeStatistics({
+      initiativeId,
+      merchantId,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMerchantTransactions: async (
+    merchantId: string,
+    initiativeId: string,
+    page: number,
+    fiscalCode?: string,
+    status?: string
+  ): Promise<MerchantTransactionsListDTO> => {
+    const result = await merchantsApiClient.getMerchantTransactions({
+      merchantId,
+      initiativeId,
+      page,
+      size: 10,
+      fiscalCode,
+      status,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getMerchantTransactionsProcessed: async (
+    merchantId: string,
+    initiativeId: string,
+    page: number,
+    fiscalCode?: string,
+    status?: string
+  ): Promise<MerchantTransactionsProcessedListDTO> => {
+    const result = await merchantsApiClient.getMerchantTransactionsProcessed({
+      merchantId,
+      initiativeId,
+      page,
+      size: 10,
+      fiscalCode,
+      status,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
