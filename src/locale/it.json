@@ -414,6 +414,7 @@
         "missingRow": "Campi obbligatori mancanti alla riga {{x}}",
         "title": "Carica un nuovo file",
         "wrongIban": "IBAN non valido alla riga {{x}}",
+        "wrongAcquirer": "Acquirer non valido alla riga {{x}}",
         "wrongCf": "Codice fiscale non valido alla riga {{x}}",
         "wrongEmail": "Email non valida alla riga {{x}}",
         "wrongFileType": "Il formato del file deve essere csv",

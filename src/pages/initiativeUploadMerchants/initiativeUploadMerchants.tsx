@@ -113,6 +113,13 @@ const InitiativeUploadMerchants = () => {
                     t('pages.initiativeMerchantUpload.uploadPaper.wrongEmail', { x: res.errorRow })
                   );
                   break;
+                case 'merchant.invalid.file.acquirer.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongAcquirer', {
+                      x: res.errorRow,
+                    })
+                  );
+                  break;
                 default:
                   setAlertDescription(
                     t('pages.initiativeMerchantUpload.uploadPaper.errorDescription')
