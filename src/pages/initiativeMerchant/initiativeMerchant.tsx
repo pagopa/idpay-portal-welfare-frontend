@@ -15,6 +15,7 @@ import {
   TextField,
   Typography,
   Box,
+  IconButton,
 } from '@mui/material';
 import { itIT } from '@mui/material/locale';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -24,6 +25,7 @@ import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import {
   MerchantDTO,
   // MerchantStatusEnum,
@@ -281,7 +283,7 @@ const InitativeMerchant = () => {
                         // t('pages.initiativeMerchant.recap.status')
                       }
                     </TableCell>
-                    {/* <TableCell width="10%"></TableCell> */}
+                    <TableCell width="10%"></TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -296,12 +298,18 @@ const InitativeMerchant = () => {
                           // renderMerchantStatus(r.merchantStatus)
                         }
                       </TableCell>
-                      {/*
-                       <TableCell align="right">
-                        <IconButton disabled>
+
+                      <TableCell align="right">
+                        <IconButton
+                          onClick={() =>
+                            history.replace(
+                              `${BASE_ROUTE}/esercenti-iniziativa/dettagli-esercente/${id}/${r.merchantId}`
+                            )
+                          }
+                        >
                           <ArrowForwardIosIcon color="primary" />
                         </IconButton>
-                      </TableCell> */}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -30,8 +30,9 @@ import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
 import ChooseOrganization from './pages/ChooseOrganization/ChooseOrganization';
 import useTCAgreement from './hooks/useTCAgreement';
 import InitiativeRefundsDetails from './pages/initiativeRefundsDetails/initiativeRefundsDetails';
-import InitativeMerchant from './pages/initativeMerchant/initativeMerchant';
-import InitativeUploadMerchants from './pages/initativeUploadMerchants/initativeUploadMerchants';
+import InitiativeMerchant from './pages/initiativeMerchant/initiativeMerchant';
+import InitiativeUploadMerchants from './pages/initiativeUploadMerchants/initiativeUploadMerchants';
+import InitiativeMerchantDetail from './pages/initiativeMerchantDetail/initiativeMerchantDetail';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -103,10 +104,13 @@ const SecuredRoutes = withLogin(
             <InitiativeUserDetails />
           </Route>
           <Route path={routes.INITIATIVE_MERCHANT} exact={true}>
-            <InitativeMerchant />
+            <InitiativeMerchant />
+          </Route>
+          <Route path={routes.INITIATIVE_MERCHANT_DETAIL} exact={true}>
+            <InitiativeMerchantDetail />
           </Route>
           <Route path={routes.INITIATIVE_MERCHANT_UPLOAD} exact={true}>
-            <InitativeUploadMerchants />
+            <InitiativeUploadMerchants />
           </Route>
           <Route path={routes.TOS} exact={true}>
             <TOS />

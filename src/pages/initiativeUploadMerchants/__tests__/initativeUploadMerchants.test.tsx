@@ -4,7 +4,7 @@ import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpdateDTO';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
-import InitativeUploadMerchants from '../initativeUploadMerchants';
+import InitiativeUploadMerchants from '../initiativeUploadMerchants';
 
 const oldWindowLocation = global.window.location;
 
@@ -32,15 +32,15 @@ beforeEach(() => {
 
 describe('test suite for InitativeUploadMerchants component', () => {
   test('render of InitativeUploadMerchants component', () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
   });
 
   test('render of InitativeUploadMerchants component', () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
   });
 
   test('upload succes of csv file type', async () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
 
     const inputEl = screen.getByTestId('drop-input');
     const file = new File(['file'], 'text.csv', {
@@ -62,7 +62,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
   });
 
   test('upload error with wrong file type (png)', async () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
 
     const inputEl = screen.getByTestId('drop-input');
     const file = new File(['file'], 'img.png', {
@@ -81,7 +81,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
   });
 
   test('upload error with multiple files', () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
 
     const inputEl = screen.getByTestId('drop-input') as HTMLInputElement;
     const file = new File(['file'], 'text.csv', {
@@ -99,7 +99,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
   });
 
   test('upload error with file size to large', async () => {
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
 
     const inputEl = screen.getByTestId('drop-input');
     const file = new File(['file'], 'text.csv', {
@@ -123,7 +123,7 @@ describe('test suite for InitativeUploadMerchants component', () => {
     ): Promise<MerchantUpdateDTO> =>
       await Promise.reject('test reject uploadMerchantList addError');
 
-    renderWithContext(<InitativeUploadMerchants />);
+    renderWithContext(<InitiativeUploadMerchants />);
 
     const inputEl = screen.getByTestId('drop-input');
     const file = new File(['file'], 'text.csv', {

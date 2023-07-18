@@ -106,9 +106,19 @@ export const formatIban = (iban: string | undefined) => {
   return '';
 };
 
-export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
-  if (number) {
+export const formatedCurrency = (
+  number: number | undefined,
+  symbol: string = '-',
+  cents = false
+) => {
+  if (number && cents === false) {
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  } else if (number && cents === true) {
+    const roundedNumberStr = number.toFixed(2);
+    const roundedNumber = parseFloat(roundedNumberStr) / 100;
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
+      roundedNumber
+    );
   }
   return symbol;
 };
@@ -135,6 +145,20 @@ export const formatStringToDate = (date: string | undefined) => {
     }
   }
   return '';
+};
+
+export const formatAddress = (
+  street: string | undefined,
+  municipality: string | undefined,
+  province: string | undefined,
+  zipCpde: string | undefined
+) => {
+  const s = street || '-';
+  const m = municipality || ' -';
+  const p = province || ' -';
+  const z = zipCpde || ' -';
+
+  return `${s}, ${m}, ${p}, ${z}`;
 };
 
 export const getMaskedPan = (pan: string | undefined) => {

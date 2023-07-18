@@ -16,6 +16,7 @@ const ROUTES = {
   INITIATIVE_REFUNDS_DETAIL: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/:initiativeId/:exportId/:filePath`,
   INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
   INITIATIVE_MERCHANT: `${BASE_ROUTE}/esercenti-iniziativa/:id`,
+  INITIATIVE_MERCHANT_DETAIL: `${BASE_ROUTE}/esercenti-iniziativa/dettagli-esercente/:id/:merchantId`,
   INITIATIVE_MERCHANT_UPLOAD: `${BASE_ROUTE}/gestione-esercenti-iniziativa/:id`,
   ASSISTANCE: `${BASE_ROUTE}/assistenza`,
   INITIATIVE_USER_DETAILS: `${BASE_ROUTE}/dettagli-utente/:id/:cf`,

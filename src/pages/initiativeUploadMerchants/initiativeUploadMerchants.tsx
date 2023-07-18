@@ -26,7 +26,7 @@ import { uploadMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import AcceptedFile from '../../components/AcceptedFile/AcceptedFile';
 
-const InitativeUploadMerchants = () => {
+const InitiativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
@@ -294,4 +294,4 @@ const InitativeUploadMerchants = () => {
   );
 };
 
-export default InitativeUploadMerchants;
+export default InitiativeUploadMerchants;
