@@ -1152,6 +1152,7 @@ export const mockedOrganizationsList = [
 
 export const mockedBeneficaryStatus = {
   status: OnboardingStatusEnum.ONBOARDING_OK,
+  statusDate: new Date(),
 };
 
 export const mockedFamilyUnitComposition = {
