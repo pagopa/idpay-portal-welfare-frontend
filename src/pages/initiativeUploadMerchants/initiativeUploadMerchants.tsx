@@ -26,7 +26,7 @@ import { uploadMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import AcceptedFile from '../../components/AcceptedFile/AcceptedFile';
 
-const InitativeUploadMerchants = () => {
+const InitiativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
@@ -111,6 +111,13 @@ const InitativeUploadMerchants = () => {
                 case 'merchant.invalid.file.email.wrong':
                   setAlertDescription(
                     t('pages.initiativeMerchantUpload.uploadPaper.wrongEmail', { x: res.errorRow })
+                  );
+                  break;
+                case 'merchant.invalid.file.acquirer.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongAcquirer', {
+                      x: res.errorRow,
+                    })
                   );
                   break;
                 default:
@@ -294,4 +301,4 @@ const InitativeUploadMerchants = () => {
   );
 };
 
-export default InitativeUploadMerchants;
+export default InitiativeUploadMerchants;
