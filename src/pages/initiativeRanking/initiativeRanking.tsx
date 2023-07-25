@@ -41,7 +41,7 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getInitiativeOnboardingRankingStatusPaged,
-  getRankingFileDownload,
+  // getRankingFileDownload,
   notifyCitizenRankings,
 } from '../../services/intitativeService';
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
@@ -51,10 +51,11 @@ import {
   initiativePagesTableContainerStyle,
   numberWithCommas,
 } from '../../helpers';
-import { SasToken } from '../../api/generated/initiative/SasToken';
+// import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { ENV } from '../../utils/env';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
@@ -199,10 +200,10 @@ const InitiativeRanking = () => {
     }
   };
 
-  const downloadURI = (uri: string) => {
+  const downloadURI = (uri: string, filename: string) => {
     const link = document.createElement('a');
     // eslint-disable-next-line functional/immutable-data
-    link.download = 'download';
+    link.download = filename;
     // eslint-disable-next-line functional/immutable-data
     link.href = uri;
     // eslint-disable-next-line functional/immutable-data
@@ -217,12 +218,29 @@ const InitiativeRanking = () => {
     filename: string | undefined
   ) => {
     if (typeof initiativeId === 'string' && typeof filename === 'string') {
-      getRankingFileDownload(initiativeId, filename)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
+      fetch(`${ENV.URL_API.INITIATIVE}/${initiativeId}/ranking/exports/${filename}`)
+        .then((res) => {
+          const reader = res.body?.getReader();
+          return new ReadableStream({
+            start(controller) {
+              return pump();
+              function pump(): Promise<any> | undefined {
+                return reader?.read().then(({ done, value }) => {
+                  if (done) {
+                    controller.close();
+                    return;
+                  }
+                  controller.enqueue(value);
+                  return pump();
+                });
+              }
+            },
+          });
         })
+        .then((stream) => new Response(stream))
+        .then((response) => response.blob())
+        .then((blob) => URL.createObjectURL(blob))
+        .then((url) => downloadURI(url, filename))
         .catch((error) => {
           addError({
             id: 'DOWNLOAD_INITIATIVE_RANKING_CSV_ERROR',

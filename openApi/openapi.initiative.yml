@@ -1855,12 +1855,17 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '200':
           description: Created
           content:
-            application/json:
+            application/octet-stream:
               schema:
-                $ref: '#/components/schemas/SasToken'
+                $ref: '#/components/schemas/ContentDTO'
+
+              # schema:
+              #   $ref: '#/components/schemas/SasToken'
+              #   type: string
+
         '400':
           description: Bad request
           content:
@@ -4160,6 +4165,9 @@ components:
             - UNSUBSCRIBED
             - SUSPENDED
           type: string
+    ContentDTO:
+      type: string
+      format: binary
   securitySchemes:
     Bearer:
       type: apiKey

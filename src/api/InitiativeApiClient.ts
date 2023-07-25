@@ -34,6 +34,7 @@ import { ExportListDTO } from './generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from './generated/initiative/RefundDetailDTO';
 import { OnboardingStatusDTO } from './generated/initiative/OnboardingStatusDTO';
 import { FamilyUnitCompositionDTO } from './generated/initiative/FamilyUnitCompositionDTO';
+// import { ContentDTO } from './generated/initiative/ContentDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -305,9 +306,12 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getRankingFileDownload: async (id: string, filename: string): Promise<SasToken> => {
+  getRankingFileDownload: async (id: string, filename: string): Promise<any> => {
     const result = await apiClient.getRankingFileDownload({ initiativeId: id, filename });
-    return extractResponse(result, 201, onRedirectToLogin);
+    console.log(result);
+
+    // eslint-disable-next-line no-underscore-dangle
+    return { content: result._tag };
   },
 
   notifyCitizenRankings: async (id: string): Promise<void> => {
