@@ -188,11 +188,11 @@ describe('<InitiativeRefunds />', () => {
     renderWithContext(<InitiativeRanking />);
   });
 
-  test('test catch case of getRankingFileDownload', async () => {
-    InitiativeApiMocked.getRankingFileDownload = async (): Promise<SasToken> =>
-      Promise.reject('test of catch case');
-    renderWithContext(<InitiativeRanking />);
-  });
+  // test('test catch case of getRankingFileDownload', async () => {
+  //   InitiativeApiMocked.getRankingFileDownload = async (): Promise<SasToken> =>
+  //     Promise.reject('test of catch case');
+  //   renderWithContext(<InitiativeRanking />);
+  // });
 
   test('test catch case of notifyCitizenRankings', async () => {
     InitiativeApiMocked.notifyCitizenRankings = async (): Promise<void> =>

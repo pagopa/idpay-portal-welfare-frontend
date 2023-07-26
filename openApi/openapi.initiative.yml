@@ -139,12 +139,12 @@ paths:
                   operator: EQ
                   checked: false
                 - code: BIRTHDATE
-                  authority: AUTH1
+                  authority: AGID
                   field: Year
                   operator: EQ
                   checked: false
                 - code: RESIDENCE
-                  authority: AUTH2
+                  authority: AGID
                   field: City
                   operator: EQ
                   checked: false
@@ -1720,8 +1720,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OnboardingStatusDTO'
-              example:
-                status: ACCEPTED_TC
         '400':
           description: Bad Request
           content:
@@ -1855,17 +1853,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        '201':
           description: Created
           content:
-            application/octet-stream:
+            application/json:
               schema:
-                $ref: '#/components/schemas/ContentDTO'
-
-              # schema:
-              #   $ref: '#/components/schemas/SasToken'
-              #   type: string
-
+                $ref: '#/components/schemas/SasToken'
         '400':
           description: Bad request
           content:
@@ -4080,15 +4073,15 @@ components:
             - UNSUBSCRIBED
             - SUSPENDED
           type: string
-          description: actual status of the citizen onboarding for an initiative
+          description: "ENG: Actual status of the citizen onboarding for an initiative - IT: Stato attuale del cittadino rispetto ad un'iniziativa"
         statusDate:
           type: string
           format: date-time
-          description: date on which the status change happened
+          description: 'ENG: Date on which the status changed to the current one - IT: Data in cui lo stato è cambiato allo stato attuale'
         onboardingOkDate:
           type: string
           format: date-time
-          description: date on which the onboarding successfully went through
+          description: "ENG: Date on which the onboarding successfully went through - IT: Data in cui l'adesione è avvenuta con successo"
     ExportDetailDTO:
       type: object
       properties:
@@ -4165,9 +4158,6 @@ components:
             - UNSUBSCRIBED
             - SUSPENDED
           type: string
-    ContentDTO:
-      type: string
-      format: binary
   securitySchemes:
     Bearer:
       type: apiKey

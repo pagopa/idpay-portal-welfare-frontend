@@ -9,7 +9,7 @@ import {
   mockedFamilyUnitComposition,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
-  mockedGetRankingFileDownload,
+  // mockedGetRankingFileDownload,
   mockedGetRewardFileDownload,
   mockedIbanInfo,
   mockedInitiativeDetail,
@@ -190,8 +190,8 @@ export const InitiativeApiMocked = {
   ): Promise<PageOnboardingRankingsDTO> =>
     new Promise((resolve) => resolve(mockedGetIniOnboardingRankingStatusPaged)),
 
-  getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
-    new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
+  // getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
+  //   new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
 
   notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
 

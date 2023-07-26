@@ -214,8 +214,8 @@ export const getExportRefundsListPaged = (
 export const getRefundDetail = (initiativeId: string, eventId: string): Promise<RefundDetailDTO> =>
   InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
 
-export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
-  InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
+// export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
+//   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
 
 export const notifyCitizenRankings = (_id: string): Promise<void> =>
   InitiativeApiMocked.notifyCitizenRankings(mockedInitiativeId);
