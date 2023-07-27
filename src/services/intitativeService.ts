@@ -33,6 +33,7 @@ import { InitiativeApi } from '../api/InitiativeApiClient';
 import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 import { decode } from '../utils/io-utils';
 import { FamilyUnitCompositionDTO } from '../api/generated/initiative/FamilyUnitCompositionDTO';
+// import { ContentDTO } from '../api/generated/initiative/ContentDTO';
 import { mockedFile } from './__mocks__/groupService';
 import {
   mockedExportsPagedParam,
@@ -352,12 +353,14 @@ export const getInitiativeOnboardingRankingStatusPaged = (
   );
 };
 
-export const getRankingFileDownload = (id: string, filename: string): Promise<SasToken> => {
-  if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
-  }
-  return InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
-};
+// export const getRankingFileDownload = (id: string, filename: string): Promise<any> => {
+//   // if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
+//   //   return InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
+//   // }
+//   const res = InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
+//   console.log(res);
+//   return res;
+// };
 
 export const notifyCitizenRankings = (id: string): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
