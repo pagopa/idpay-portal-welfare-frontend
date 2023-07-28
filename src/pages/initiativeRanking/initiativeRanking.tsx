@@ -35,6 +35,7 @@ import { useEffect, useState, useMemo } from 'react';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -213,47 +214,54 @@ const InitiativeRanking = () => {
     document.body.removeChild(link);
   };
 
-  const downloadInitiativeRanking = (
+  const downloadInitiativeRanking = async (
     initiativeId: string | undefined,
     filename: string | undefined
   ) => {
     if (typeof initiativeId === 'string' && typeof filename === 'string') {
-      fetch(`${ENV.URL_API.INITIATIVE}/${initiativeId}/ranking/exports/${filename}`)
-        .then((res) => {
-          const reader = res.body?.getReader();
-          return new ReadableStream({
-            start(controller) {
-              return pump();
-              function pump(): Promise<any> | undefined {
-                return reader?.read().then(({ done, value }) => {
-                  if (done) {
-                    controller.close();
-                    return;
-                  }
-                  controller.enqueue(value);
-                  return pump();
-                });
-              }
-            },
-          });
-        })
-        .then((stream) => new Response(stream))
-        .then((response) => response.blob())
-        .then((blob) => URL.createObjectURL(blob))
-        .then((url) => downloadURI(url, filename))
-        .catch((error) => {
-          addError({
-            id: 'DOWNLOAD_INITIATIVE_RANKING_CSV_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred downloading initiative ranking csv file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+      const token = storageTokenOps.read();
+      const res = await fetch(
+        `${ENV.URL_API.INITIATIVE}/${initiativeId}/ranking/exports/${filename}`,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.status === 200) {
+        const reader = res.body?.getReader();
+        const stream = new ReadableStream({
+          start(controller) {
+            return pump();
+            function pump(): Promise<any> | undefined {
+              return reader?.read().then(({ done, value }) => {
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          },
         });
+        const response = new Response(stream);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        downloadURI(url, filename);
+      } else {
+        const error = new Error(res.statusText);
+        addError({
+          id: 'DOWNLOAD_INITIATIVE_RANKING_CSV_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred downloading initiative ranking csv file',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      }
     }
   };
 
