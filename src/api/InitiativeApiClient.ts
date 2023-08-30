@@ -428,7 +428,7 @@ export const InitiativeApi = {
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 
   readmitUserDiscount: async (initiativeId: string, fiscalCode: string): Promise<void> => {
@@ -436,7 +436,7 @@ export const InitiativeApi = {
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });
-    return extractResponse(result, 200, onRedirectToLogin);
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 
   getFamilyComposition: async (

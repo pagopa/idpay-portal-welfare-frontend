@@ -581,7 +581,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        '204':
           description: OK
         '400':
           description: Bad request
@@ -639,7 +639,7 @@ paths:
             type: string
           required: true
       responses:
-        '200':
+        '204':
           description: OK
         '400':
           description: Bad request
