@@ -407,16 +407,32 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  suspendUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
-    const result = await apiClient.suspendUser({
+  suspendUserRefund: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.suspendUserRefund({
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  readmitUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
-    const result = await apiClient.readmitUser({
+  readmitUserRefund: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.readmitUserRefund({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  suspendUserDiscount: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.suspendUserDiscount({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  readmitUserDiscount: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.readmitUserDiscount({
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });

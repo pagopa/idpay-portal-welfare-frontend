@@ -5,7 +5,7 @@ import { ExportSummaryDTO } from '../api/generated/initiative/ExportSummaryDTO';
 import { IbanDTO } from '../api/generated/initiative/IbanDTO';
 import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
+import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
 import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
 import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import {
@@ -465,18 +465,44 @@ export const getBeneficiaryOnboardingStatus = (
   return InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
 };
 
-export const suspendUser = (initiativeId: string, fiscalCode: string): Promise<void> => {
+export const suspendUser = (
+  initiativeId: string,
+  fiscalCode: string,
+  rewardType: InitiativeRewardTypeEnum
+): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.suspendUser(initiativeId, fiscalCode);
+    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+      return InitiativeApiMocked.suspendUserRefund(initiativeId, fiscalCode);
+    } else {
+      return InitiativeApiMocked.suspendUserDiscount(initiativeId, fiscalCode);
+    }
+  } else {
+    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+      return InitiativeApi.suspendUserRefund(initiativeId, fiscalCode);
+    } else {
+      return InitiativeApi.suspendUserDiscount(initiativeId, fiscalCode);
+    }
   }
-  return InitiativeApi.suspendUser(initiativeId, fiscalCode);
 };
 
-export const readmitUser = (initiativeId: string, fiscalCode: string): Promise<void> => {
+export const readmitUser = (
+  initiativeId: string,
+  fiscalCode: string,
+  rewardType: InitiativeRewardTypeEnum
+): Promise<void> => {
   if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-    return InitiativeApiMocked.readmitUser(initiativeId, fiscalCode);
+    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+      return InitiativeApiMocked.readmitUserRefund(initiativeId, fiscalCode);
+    } else {
+      return InitiativeApiMocked.readmitUserDiscount(initiativeId, fiscalCode);
+    }
+  } else {
+    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+      return InitiativeApi.readmitUserRefund(initiativeId, fiscalCode);
+    } else {
+      return InitiativeApi.readmitUserDiscount(initiativeId, fiscalCode);
+    }
   }
-  return InitiativeApi.readmitUser(initiativeId, fiscalCode);
 };
 
 export const getFamilyComposition = (

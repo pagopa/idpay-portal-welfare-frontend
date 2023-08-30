@@ -3,6 +3,7 @@ import React from 'react';
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { renderWithContext } from '../../../utils/test-utils';
 import SuspensionModal from '../SuspensionModal';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -25,6 +26,7 @@ describe('test suite for suspension modal', () => {
         }}
         id={''}
         cf={''}
+        rewardType={InitiativeRewardTypeEnum.REFUND}
       />
     );
   });
@@ -43,6 +45,7 @@ describe('test suite for suspension modal', () => {
         }}
         id={'mockId'}
         cf={'mockCF'}
+        rewardType={InitiativeRewardTypeEnum.REFUND}
       />
     );
 
@@ -67,6 +70,7 @@ describe('test suite for suspension modal', () => {
         }}
         id={'mockId'}
         cf={'mockCF'}
+        rewardType={InitiativeRewardTypeEnum.REFUND}
       />
     );
 
@@ -99,6 +103,7 @@ describe('test suite for suspension modal', () => {
         }}
         id={'mockId'}
         cf={'mockCF'}
+        rewardType={InitiativeRewardTypeEnum.REFUND}
       />
     );
 
