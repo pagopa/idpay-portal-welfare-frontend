@@ -5,6 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { readmitUser, suspendUser } from '../../services/intitativeService';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 
 type Props = {
   suspensionModalOpen: boolean;
@@ -14,6 +15,7 @@ type Props = {
   buttonType: string;
   id: string;
   cf: string;
+  rewardType: InitiativeRewardTypeEnum | undefined;
 };
 
 const SuspensionModal = ({
@@ -24,15 +26,16 @@ const SuspensionModal = ({
   buttonType,
   id,
   cf,
+  rewardType,
 }: Props) => {
   const { t } = useTranslation();
   const setLoading = useLoading('SUSPEND_USER');
   const addError = useErrorDispatcher();
 
   const handleSuspendUser = () => {
-    if (statusOnb !== OnboardingStatusEnum.SUSPENDED) {
+    if (statusOnb !== OnboardingStatusEnum.SUSPENDED && rewardType) {
       setLoading(true);
-      suspendUser(id, cf)
+      suspendUser(id, cf, rewardType)
         .then((_res) => {
           setStatusOnb(OnboardingStatusEnum.SUSPENDED);
         })
@@ -55,9 +58,9 @@ const SuspensionModal = ({
         });
     }
 
-    if (statusOnb === OnboardingStatusEnum.SUSPENDED) {
+    if (statusOnb === OnboardingStatusEnum.SUSPENDED && rewardType) {
       setLoading(true);
-      readmitUser(id, cf)
+      readmitUser(id, cf, rewardType)
         .then((_res) => {
           setStatusOnb(OnboardingStatusEnum.ONBOARDING_OK);
         })

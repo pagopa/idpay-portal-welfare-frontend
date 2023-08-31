@@ -276,6 +276,7 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           status: OnboardingStatusEnum.SUSPENDED,
+          statusDate: new Date(),
         })
       );
     renderWithContext(<InitiativeUserDetails />);

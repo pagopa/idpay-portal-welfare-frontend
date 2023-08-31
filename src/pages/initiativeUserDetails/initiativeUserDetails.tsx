@@ -408,7 +408,7 @@ const InitiativeUserDetails = () => {
               onClick={() => handleSuspension('SUSPEND')}
               data-testid="suspended"
               color="error"
-              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
+              // disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.suspendUser')}
             </Button>
@@ -422,7 +422,7 @@ const InitiativeUserDetails = () => {
               size="small"
               onClick={() => handleSuspension('READMIT')}
               data-testid="readmit"
-              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
+              // disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.readmit')}
             </Button>
@@ -726,6 +726,7 @@ const InitiativeUserDetails = () => {
                 buttonType={buttonType}
                 id={id}
                 cf={cf}
+                rewardType={rewardType}
               />
             </Box>
           </Box>
