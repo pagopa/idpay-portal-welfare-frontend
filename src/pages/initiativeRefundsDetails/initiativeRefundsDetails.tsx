@@ -178,7 +178,7 @@ const InitiativeRefundsDetails = () => {
       const token = storageTokenOps.read();
 
       const res = await fetch(
-        `${ENV.URL_API.INITIATIVE}/${initiativeId}/reward/exports/${filePath}`,
+        `${ENV.URL_API.INITIATIVE}/${data.initiativeId}/reward/exports/${data.filePath}`,
         {
           method: 'GET',
           headers: { Authorization: `Bearer ${token}` },
@@ -205,7 +205,7 @@ const InitiativeRefundsDetails = () => {
         const response = new Response(stream);
         const blob = await response.blob();
         const url = URL.createObjectURL(blob);
-        downloadURI(url, filePath);
+        downloadURI(url, data.filePath);
       } else {
         const error = new Error(res.statusText);
         addError({
