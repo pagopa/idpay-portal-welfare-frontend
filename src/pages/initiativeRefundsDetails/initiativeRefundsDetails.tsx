@@ -29,10 +29,11 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
-import { SasToken } from '../../api/generated/initiative/SasToken';
+
 import {
   formatedCurrency,
   formatIban,
@@ -44,14 +45,11 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import {
-  getExportRefundsListPaged,
-  getExportSummary,
-  getRewardFileDownload,
-} from '../../services/intitativeService';
+import { getExportRefundsListPaged, getExportSummary } from '../../services/intitativeService';
 import { getRefundStatusChip } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { ENV } from '../../utils/env';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 import { getRefundStatus } from './helpers';
 
@@ -159,40 +157,69 @@ const InitiativeRefundsDetails = () => {
       });
   };
 
-  const downloadURI = (uri: string) => {
+  const downloadURI = (uri: string, filename: string) => {
     const link = document.createElement('a');
-    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.download = filename;
+    // eslint-disable-next-line functional/immutable-data
     link.href = uri;
+    // eslint-disable-next-line functional/immutable-data
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleDownloadFile = (data: {
+  const handleDownloadFile = async (data: {
     initiativeId: string | undefined;
     filePath: string | undefined;
   }) => {
     if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+      const token = storageTokenOps.read();
+
+      const res = await fetch(
+        `${ENV.URL_API.INITIATIVE}/${initiativeId}/reward/exports/${filePath}`,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.status === 200) {
+        const reader = res.body?.getReader();
+        const stream = new ReadableStream({
+          start(controller) {
+            return pump();
+            function pump(): Promise<any> | undefined {
+              return reader?.read().then(({ done, value }) => {
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          },
         });
+        const response = new Response(stream);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        downloadURI(url, filePath);
+      } else {
+        const error = new Error(res.statusText);
+        addError({
+          id: 'GET_EXPORTS_FILE_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting export file',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      }
     }
   };
 
