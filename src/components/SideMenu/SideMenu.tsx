@@ -17,7 +17,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import RuleIcon from '@mui/icons-material/Rule';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
 import { useAppDispatch } from '../../redux/hooks';
@@ -45,6 +45,7 @@ export default function SideMenu() {
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
+  const [listHeight, setListHeight] = useState(0);
   const [pathname, setPathName] = useState(() => {
     /*
     For some reason, push on history will not notify this component.
@@ -115,10 +116,24 @@ export default function SideMenu() {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const elementRef = useCallback(
+    (node: { getBoundingClientRect: () => { (): any; new (): any; y: any } }) => {
+      if (node !== null) {
+        const startPosition = node.getBoundingClientRect().y;
+        const height = document.body.clientHeight;
+        setListHeight(height - startPosition);
+      }
+    },
+    []
+  );
+
   return (
-    <Box display="grid" mt={1}>
+    <Box display="grid" ref={elementRef}>
       <Box gridColumn="auto">
-        <List data-testid="list-test">
+        <List
+          data-testid="list-test"
+          sx={{ position: 'relative', overflow: 'auto', maxHeight: listHeight }}
+        >
           <SidenavItem
             title={t('sideMenu.initiativeList.title')}
             handleClick={() => onExit(() => history.replace(ROUTES.HOME))}
