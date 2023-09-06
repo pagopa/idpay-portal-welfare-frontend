@@ -18,6 +18,9 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
+  // const [listHeight, setListHeight] = useState(0);
+  // const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  // const [scrollTop, setScrollTop] = useState(0);
   const location = useLocation();
   const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
 
@@ -43,6 +46,32 @@ const Layout = ({ children }: Props) => {
     setShowAssistanceInfo(location.pathname !== ROUTES.ASSISTANCE);
   }, [location.pathname]);
 
+  // const handleResize = () => {
+  //   setWindowHeight(window.innerHeight);
+  // };
+
+  // useEffect(() => {
+  //   window.addEventListener('resize', handleResize);
+  //   return () => {
+  //     window.removeEventListener('resize', handleResize);
+  //   };
+  // }, []);
+
+  // const handleScroll = (event: { currentTarget: { scrollTop: React.SetStateAction<number> } }) => {
+  //   setScrollTop(event.currentTarget.scrollTop);
+  //   console.log(event.currentTarget);
+  // };
+
+  // const sidebarRef = useCallback(
+  //   (node: { getBoundingClientRect: () => { (): any; new (): any; y: any } }) => {
+  //     if (node !== null) {
+  //       const startPosition = node.getBoundingClientRect().y;
+  //       setListHeight(windowHeight - startPosition);
+  //     }
+  //   },
+  //   []
+  // );
+
   return (
     <Box
       display="grid"
@@ -63,7 +92,17 @@ const Layout = ({ children }: Props) => {
       </Box>
       {match !== null ? (
         <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
-          <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
+          <Box
+            gridColumn="auto"
+            // ref={sidebarRef}
+            sx={{
+              backgroundColor: 'background.paper',
+              // top: 0,
+              // position: 'sticky',
+              // maxHeight: listHeight,
+              // overflow: 'auto',
+            }}
+          >
             <SideMenu />
           </Box>
           <Box
