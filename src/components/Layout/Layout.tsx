@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLocation } from 'react-router-dom';
@@ -18,11 +18,10 @@ type Props = {
 const Layout = ({ children }: Props) => {
   const onExit = useUnloadEventOnExit();
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
-  // const [listHeight, setListHeight] = useState(0);
-  // const [windowHeight, setWindowHeight] = useState(window.innerHeight);
-  // const [scrollTop, setScrollTop] = useState(0);
   const location = useLocation();
   const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
+  const sidebarRef = useRef<any>();
+  const [sidebarHeight, setSidebarHeight] = useState(0);
 
   const match = matchPath(location.pathname, {
     path: [
@@ -46,31 +45,19 @@ const Layout = ({ children }: Props) => {
     setShowAssistanceInfo(location.pathname !== ROUTES.ASSISTANCE);
   }, [location.pathname]);
 
-  // const handleResize = () => {
-  //   setWindowHeight(window.innerHeight);
-  // };
+  useEffect(() => {
+    const handleResize = () => {
+      if (sidebarRef.current !== null) {
+        setSidebarHeight(window.innerHeight - sidebarRef.current.getBoundingClientRect().y);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
 
-  // useEffect(() => {
-  //   window.addEventListener('resize', handleResize);
-  //   return () => {
-  //     window.removeEventListener('resize', handleResize);
-  //   };
-  // }, []);
-
-  // const handleScroll = (event: { currentTarget: { scrollTop: React.SetStateAction<number> } }) => {
-  //   setScrollTop(event.currentTarget.scrollTop);
-  //   console.log(event.currentTarget);
-  // };
-
-  // const sidebarRef = useCallback(
-  //   (node: { getBoundingClientRect: () => { (): any; new (): any; y: any } }) => {
-  //     if (node !== null) {
-  //       const startPosition = node.getBoundingClientRect().y;
-  //       setListHeight(windowHeight - startPosition);
-  //     }
-  //   },
-  //   []
-  // );
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <Box
@@ -81,6 +68,7 @@ const Layout = ({ children }: Props) => {
                           "body"
                           "footer"`}
       minHeight="100vh"
+      sx={{ backgroundColor: match !== null ? 'background.paper' : 'inherit' }}
     >
       <Box gridArea="header">
         <Header
@@ -93,14 +81,15 @@ const Layout = ({ children }: Props) => {
       {match !== null ? (
         <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
           <Box
+            ref={sidebarRef}
             gridColumn="auto"
-            // ref={sidebarRef}
             sx={{
               backgroundColor: 'background.paper',
-              // top: 0,
-              // position: 'sticky',
-              // maxHeight: listHeight,
-              // overflow: 'auto',
+              top: 0,
+              position: 'sticky',
+              maxHeight: sidebarHeight,
+              overflowY: 'auto',
+              overflowX: 'hidden',
             }}
           >
             <SideMenu />
