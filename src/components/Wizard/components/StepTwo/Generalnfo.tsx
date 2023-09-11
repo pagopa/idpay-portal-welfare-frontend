@@ -570,48 +570,47 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormHelperText>
         </FormControl>
 
-        {formik.values.beneficiaryKnown === 'false' &&
-          formik.values.beneficiaryType !== BeneficiaryTypeEnum.NF && (
-            <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
-              <Typography
-                sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
-                id="witRanking--label"
-              >
-                {t('components.wizard.stepTwo.form.withRanking')}
-              </Typography>
-              <RadioGroup
-                sx={{ gridColumn: 'span 12' }}
-                row
-                aria-labelledby="witRanking--label"
-                name="witRanking--label"
-                value={formik.values.rankingEnabled || ''}
-                defaultValue={formik.values.rankingEnabled || ''}
-                onChange={async (e) => {
-                  await formik.setFieldValue('rankingEnabled', e.target.value, false);
-                  formik.handleBlur(e);
-                }}
-                data-testid="witRanking-test"
-              >
-                <FormControlLabel
-                  value="true"
-                  control={<Radio />}
-                  label={t('components.wizard.stepTwo.form.yes')}
-                />
-                <FormControlLabel
-                  sx={{ ml: 2 }}
-                  value="false"
-                  control={<Radio />}
-                  label={t('components.wizard.stepTwo.form.no')}
-                />
-              </RadioGroup>
-              <FormHelperText
-                error={formik.touched.rankingEnabled && Boolean(formik.errors.rankingEnabled)}
-                sx={{ gridColumn: 'span 12' }}
-              >
-                {formik.touched.rankingEnabled && formik.errors.rankingEnabled}
-              </FormHelperText>
-            </FormControl>
-          )}
+        {formik.values.beneficiaryKnown === 'false' && (
+          <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
+            <Typography
+              sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
+              id="witRanking--label"
+            >
+              {t('components.wizard.stepTwo.form.withRanking')}
+            </Typography>
+            <RadioGroup
+              sx={{ gridColumn: 'span 12' }}
+              row
+              aria-labelledby="witRanking--label"
+              name="witRanking--label"
+              value={formik.values.rankingEnabled || ''}
+              defaultValue={formik.values.rankingEnabled || ''}
+              onChange={async (e) => {
+                await formik.setFieldValue('rankingEnabled', e.target.value, false);
+                formik.handleBlur(e);
+              }}
+              data-testid="witRanking-test"
+            >
+              <FormControlLabel
+                value="true"
+                control={<Radio />}
+                label={t('components.wizard.stepTwo.form.yes')}
+              />
+              <FormControlLabel
+                sx={{ ml: 2 }}
+                value="false"
+                control={<Radio />}
+                label={t('components.wizard.stepTwo.form.no')}
+              />
+            </RadioGroup>
+            <FormHelperText
+              error={formik.touched.rankingEnabled && Boolean(formik.errors.rankingEnabled)}
+              sx={{ gridColumn: 'span 12' }}
+            >
+              {formik.touched.rankingEnabled && formik.errors.rankingEnabled}
+            </FormHelperText>
+          </FormControl>
+        )}
 
         <FormControl
           sx={{

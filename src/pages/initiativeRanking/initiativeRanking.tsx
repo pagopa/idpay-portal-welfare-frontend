@@ -57,6 +57,7 @@ import { OnboardingRankingsDTO } from '../../api/generated/initiative/Onboarding
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { ENV } from '../../utils/env';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
@@ -144,6 +145,7 @@ const InitiativeRanking = () => {
         }
         if (Array.isArray(res.content) && res.content.length > 0) {
           const rowsData = res.content.map((r: OnboardingRankingsDTO) => ({
+            familyId: r.familyId,
             beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
@@ -571,10 +573,15 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%">
+                    <TableCell width="20%">
                       {t('pages.initiativeRanking.table.beneficiary')}
                     </TableCell>
-                    <TableCell width="35%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                      <TableCell width="25%">
+                        {t('pages.initiativeRanking.table.familyId')}
+                      </TableCell>
+                    )}
+                    <TableCell width="15%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
                     <TableCell width="20%">
                       {t('pages.initiativeRanking.table.rankingValue')}
                     </TableCell>
@@ -589,6 +596,9 @@ const InitiativeRanking = () => {
                       <TableCell>
                         {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.beneficiary}
                       </TableCell>
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                        <TableCell>{r.familyId}</TableCell>
+                      )}
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>
                       <TableCell>{r.criteriaConsensusTimeStamp}</TableCell>

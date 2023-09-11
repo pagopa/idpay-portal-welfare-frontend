@@ -3553,6 +3553,8 @@ components:
     OnboardingRankingsDTO:
       type: object
       properties:
+        familyId:
+          type: string
         beneficiary:
           type: string
         criteriaConsensusTimestamp:

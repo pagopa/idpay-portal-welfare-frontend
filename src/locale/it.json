@@ -867,6 +867,7 @@
       "table": {
         "beneficiary": "Richiedenti",
         "criteriaConsensusTimestamp": "Data e ora",
+        "familyId": "ID nucleo familiare",
         "ranking": "Posizione",
         "rankingValue": "ISEE"
       },
