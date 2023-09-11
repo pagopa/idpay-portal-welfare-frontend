@@ -57,7 +57,7 @@ const Layout = ({ children }: Props) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [location.pathname]);
 
   return (
     <Box
