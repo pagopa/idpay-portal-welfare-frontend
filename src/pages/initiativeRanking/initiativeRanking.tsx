@@ -149,7 +149,10 @@ const InitiativeRanking = () => {
             beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
-            rankingValue: r.rankingValue ? `${numberWithCommas(r.rankingValue / 100)} €` : '-',
+            rankingValue:
+              r.rankingValue && r.rankingValue > 0
+                ? `${numberWithCommas(r.rankingValue / 100)} €`
+                : '-',
             criteriaConsensusTimeStamp:
               typeof r.criteriaConsensusTimestamp === 'object'
                 ? r.criteriaConsensusTimestamp.toLocaleString('fr-BE')
