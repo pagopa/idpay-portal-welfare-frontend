@@ -47,7 +47,7 @@ const Layout = ({ children }: Props) => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (sidebarRef.current !== null) {
+      if (sidebarRef.current && sidebarRef.current !== null) {
         setSidebarHeight(window.innerHeight - sidebarRef.current.getBoundingClientRect().y);
       }
     };
@@ -57,7 +57,7 @@ const Layout = ({ children }: Props) => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [location.pathname]);
 
   return (
     <Box
