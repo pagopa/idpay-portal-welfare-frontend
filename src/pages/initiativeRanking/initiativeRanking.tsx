@@ -466,7 +466,7 @@ const InitiativeRanking = () => {
                 openPublishInitiativeRankingModal={openPublishInitiativeRankingModal}
                 handleClosePublishInitiativeRankingModal={handleClosePublishInitiativeRankingModal}
                 initiativeId={id}
-                initiativeName={initiativeSel.initiativeRewardType}
+                initiativeName={initiativeSel.initiativeName}
                 fileName={fileName}
                 publishInitiativeRanking={publishInitiativeRanking}
                 downloadInitiativeRanking={downloadInitiativeRanking}
