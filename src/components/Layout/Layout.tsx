@@ -1,7 +1,7 @@
 import { Box } from '@mui/material';
 import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { userSelectors } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { useLocation } from 'react-router-dom';
@@ -20,6 +20,8 @@ const Layout = ({ children }: Props) => {
   const loggedUser = useSelector(userSelectors.selectLoggedUser);
   const location = useLocation();
   const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
+  const sidebarRef = useRef<any>();
+  const [sidebarHeight, setSidebarHeight] = useState(0);
 
   const match = matchPath(location.pathname, {
     path: [
@@ -43,6 +45,20 @@ const Layout = ({ children }: Props) => {
     setShowAssistanceInfo(location.pathname !== ROUTES.ASSISTANCE);
   }, [location.pathname]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (sidebarRef.current && sidebarRef.current !== null) {
+        setSidebarHeight(window.innerHeight - sidebarRef.current.getBoundingClientRect().y);
+      }
+    };
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [location.pathname]);
+
   return (
     <Box
       display="grid"
@@ -52,6 +68,7 @@ const Layout = ({ children }: Props) => {
                           "body"
                           "footer"`}
       minHeight="100vh"
+      sx={{ backgroundColor: match !== null ? 'background.paper' : 'inherit' }}
     >
       <Box gridArea="header">
         <Header
@@ -63,7 +80,18 @@ const Layout = ({ children }: Props) => {
       </Box>
       {match !== null ? (
         <Box gridArea="body" display="grid" gridTemplateColumns="minmax(300px, 2fr) 10fr">
-          <Box gridColumn="auto" sx={{ backgroundColor: 'background.paper' }}>
+          <Box
+            ref={sidebarRef}
+            gridColumn="auto"
+            sx={{
+              backgroundColor: 'background.paper',
+              top: 0,
+              position: 'sticky',
+              maxHeight: sidebarHeight,
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            }}
+          >
             <SideMenu />
           </Box>
           <Box

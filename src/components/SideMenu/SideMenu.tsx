@@ -45,6 +45,7 @@ export default function SideMenu() {
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
+
   const [pathname, setPathName] = useState(() => {
     /*
     For some reason, push on history will not notify this component.
@@ -116,7 +117,7 @@ export default function SideMenu() {
   };
 
   return (
-    <Box display="grid" mt={1}>
+    <Box display="grid" sx={{ backgroundColor: 'background.paper' }}>
       <Box gridColumn="auto">
         <List data-testid="list-test">
           <SidenavItem

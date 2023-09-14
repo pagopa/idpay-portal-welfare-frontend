@@ -866,7 +866,9 @@
       "subtitle": "Vedi la lista dei richiedenti organizzata in base ai criteri di idoneità.",
       "table": {
         "beneficiary": "Richiedenti",
+        "familyBeneficiary": "Referente nucleo famigliare",
         "criteriaConsensusTimestamp": "Data e ora",
+        "familyId": "ID nucleo familiare",
         "ranking": "Posizione",
         "rankingValue": "ISEE"
       },
@@ -1109,7 +1111,7 @@
     "outValue": "Il secondo valore deve essere maggiore del primo",
     "positive": "Inserisci un valore positivo",
     "required": "Campo obbligatorio",
-    "uniqueFrequency": "Non puoi inserire due importi diversi per lo stesso limite",
+    "uniqueFrequency": "Non puoi inserire lo stesso limite temporale più volte",
     "uniqueInterval": "Non puoi inserire due intervalli uguali per lo stesso giorno",
     "web": "Indirizzo web non valido",
     "webValid": "Inserisci un indirizzo web",

@@ -21,13 +21,24 @@ const ShopRulesModal = ({
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
 
-  const elementRef = useCallback((node) => {
-    if (node !== null) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      const h = node.getBoundingClientRect().height.toString() + 'px';
-      setHeadingHeight(h);
-    }
-  }, []);
+  const elementRef = useCallback(
+    (
+      node: {
+        getBoundingClientRect: () => {
+          (): any;
+          new (): any;
+          height: { (): any; new (): any; toString: { (): string; new (): any } };
+        };
+      } | null
+    ) => {
+      if (node !== null) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        const h = node.getBoundingClientRect().height.toString() + 'px';
+        setHeadingHeight(h);
+      }
+    },
+    []
+  );
 
   // eslint-disable-next-line arrow-body-style
   const renderShopRulesList = (availableShopRules: Array<ShopRulesModel>) => {

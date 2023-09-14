@@ -51,13 +51,16 @@ Props) => {
     handleMccCodesSelected(mccCodesList, setMccCodesSelectedCounter, setAtLeastOneCodeSelected);
   }, [mccCodesList]);
 
-  const elementRef = useCallback((node) => {
-    if (node !== null) {
-      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
-      const h = (node.getBoundingClientRect().height + 150).toString() + 'px';
-      setHeadingHeight(h);
-    }
-  }, []);
+  const elementRef = useCallback(
+    (node: { getBoundingClientRect: () => { (): any; new (): any; height: number } } | null) => {
+      if (node !== null) {
+        // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+        const h = (node.getBoundingClientRect().height + 150).toString() + 'px';
+        setHeadingHeight(h);
+      }
+    },
+    []
+  );
 
   const handleSearchMccCode = (s: string) => {
     const searchMccCode = s.toLowerCase();

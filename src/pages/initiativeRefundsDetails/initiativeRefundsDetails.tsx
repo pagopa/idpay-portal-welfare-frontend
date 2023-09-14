@@ -29,10 +29,11 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
-import { SasToken } from '../../api/generated/initiative/SasToken';
+
 import {
   formatedCurrency,
   formatIban,
@@ -44,14 +45,11 @@ import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import {
-  getExportRefundsListPaged,
-  getExportSummary,
-  getRewardFileDownload,
-} from '../../services/intitativeService';
+import { getExportRefundsListPaged, getExportSummary } from '../../services/intitativeService';
 import { getRefundStatusChip } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { ENV } from '../../utils/env';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 import { getRefundStatus } from './helpers';
 
@@ -72,7 +70,7 @@ const InitiativeRefundsDetails = () => {
   const [filterStatus, setFilterStatus] = useState<string | undefined>();
 
   interface MatchParams {
-    initiativeId: string;
+    id: string;
     exportId: string;
     filePath: string;
   }
@@ -83,12 +81,12 @@ const InitiativeRefundsDetails = () => {
     strict: false,
   });
 
-  const { initiativeId, exportId, filePath } = (match?.params as MatchParams) || {};
+  const { id, exportId, filePath } = (match?.params as MatchParams) || {};
 
   useEffect(() => {
-    if (typeof initiativeId !== undefined && typeof exportId !== undefined) {
+    if (typeof id !== undefined && typeof exportId !== undefined) {
       setLoading(true);
-      getExportSummary(initiativeId, exportId)
+      getExportSummary(id, exportId)
         .then((res: any) => {
           setDetailsSummary(res);
         })
@@ -109,13 +107,13 @@ const InitiativeRefundsDetails = () => {
           setLoading(false);
         });
     }
-  }, [initiativeId, exportId]);
+  }, [id, exportId]);
 
   useEffect(() => {
-    if (typeof initiativeId !== undefined && typeof exportId !== undefined) {
-      getTableData(initiativeId, exportId, page, cro, filterStatus);
+    if (typeof id !== undefined && typeof exportId !== undefined) {
+      getTableData(id, exportId, page, cro, filterStatus);
     }
-  }, [initiativeId, exportId, page]);
+  }, [id, exportId, page]);
 
   const getTableData = (
     initiativeId: string,
@@ -159,40 +157,66 @@ const InitiativeRefundsDetails = () => {
       });
   };
 
-  const downloadURI = (uri: string) => {
+  const downloadURI = (uri: string, filename: string) => {
     const link = document.createElement('a');
-    link.download = 'download';
+    // eslint-disable-next-line functional/immutable-data
+    link.download = filename;
+    // eslint-disable-next-line functional/immutable-data
     link.href = uri;
+    // eslint-disable-next-line functional/immutable-data
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const handleDownloadFile = (data: {
-    initiativeId: string | undefined;
-    filePath: string | undefined;
-  }) => {
-    if (typeof data.initiativeId === 'string' && typeof data.filePath === 'string') {
-      getRewardFileDownload(data.initiativeId, data.filePath)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'GET_EXPORTS_FILE_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting export file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+  const handleDownloadFile = async (data: { id: string; filePath: string | undefined }) => {
+    if (typeof data.id === 'string' && typeof data.filePath === 'string') {
+      const token = storageTokenOps.read();
+
+      const res = await fetch(
+        `${ENV.URL_API.INITIATIVE}/${data.id}/reward/exports/${data.filePath}`,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (res.status === 200) {
+        const reader = res.body?.getReader();
+        const stream = new ReadableStream({
+          start(controller) {
+            return pump();
+            function pump(): Promise<any> | undefined {
+              return reader?.read().then(({ done, value }) => {
+                if (done) {
+                  controller.close();
+                  return;
+                }
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          },
         });
+        const response = new Response(stream);
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        downloadURI(url, data.filePath);
+      } else {
+        const error = new Error(res.statusText);
+        addError({
+          id: 'GET_EXPORTS_FILE_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred getting export file',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        });
+      }
     }
   };
 
@@ -213,12 +237,12 @@ const InitiativeRefundsDetails = () => {
     validateOnChange: true,
     enableReinitialize: true,
     onSubmit: (values) => {
-      if (typeof initiativeId === 'string') {
+      if (typeof id === 'string') {
         const searchCRO = values.searchCRO.length > 0 ? values.searchCRO : undefined;
         setCRO(searchCRO);
         const filterStatus = values.filterStatus.length > 0 ? values.filterStatus : undefined;
         setFilterStatus(filterStatus);
-        getTableData(initiativeId, exportId, 0, searchCRO, filterStatus);
+        getTableData(id, exportId, 0, searchCRO, filterStatus);
       }
     },
   });
@@ -229,8 +253,8 @@ const InitiativeRefundsDetails = () => {
     setCRO(undefined);
     setFilterStatus(undefined);
     setRows([]);
-    if (typeof initiativeId === 'string' && typeof exportId === 'string') {
-      getTableData(initiativeId, exportId, 0, undefined, undefined);
+    if (typeof id === 'string' && typeof exportId === 'string') {
+      getTableData(id, exportId, 0, undefined, undefined);
     }
   };
 
@@ -250,7 +274,7 @@ const InitiativeRefundsDetails = () => {
         }}
       >
         <BreadcrumbsBox
-          backUrl={`${BASE_ROUTE}/rimborsi-iniziativa/${initiativeId}`}
+          backUrl={`${BASE_ROUTE}/rimborsi-iniziativa/${id}`}
           backLabel={t('breadcrumbs.back')}
           items={[
             initiativeSel.initiativeName,
@@ -273,7 +297,7 @@ const InitiativeRefundsDetails = () => {
             variant="outlined"
             size="small"
             startIcon={<FileDownloadIcon />}
-            onClick={() => handleDownloadFile({ initiativeId, filePath })}
+            onClick={() => handleDownloadFile({ id, filePath })}
             data-testid="download-btn-test"
           >
             {t('pages.initiativeRefundsDetails.downloadBtn')}
@@ -483,7 +507,7 @@ const InitiativeRefundsDetails = () => {
                 openRefundsDetailModal={openRefundsDetailModal}
                 handleCloseRefundModal={handleCloseRefundModal}
                 refundEventId={refundEventId}
-                initiativeId={initiativeId}
+                initiativeId={id}
               />
             </Box>
           </Box>
