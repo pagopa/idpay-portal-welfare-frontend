@@ -80,6 +80,7 @@ const InitiativeRanking = () => {
   const [totalEligibleOk, setTotalEligibleOk] = useState<number | undefined>(0);
   const [totalEligibleKo, setTotalEligibleKo] = useState<number | undefined>(0);
   const [totalOnboardingKo, setTotalOnboardingKo] = useState<number | undefined>(0);
+  const [totalElementsFromPartials, setTotalElementsFromPartials] = useState(0);
   const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_RANKING');
   const addError = useErrorDispatcher();
@@ -134,15 +135,21 @@ const InitiativeRanking = () => {
         if (typeof res.rankingFilePath === 'string') {
           setFileName(res.rankingFilePath);
         }
+        // eslint-disable-next-line functional/no-let
+        let tefp = 0;
         if (typeof res.totalEligibleOk === 'number') {
           setTotalEligibleOk(res.totalEligibleOk);
+          tefp += res.totalEligibleOk;
         }
         if (typeof res.totalEligibleKo === 'number') {
           setTotalEligibleKo(res.totalEligibleKo);
+          tefp += res.totalEligibleKo;
         }
         if (typeof res.totalOnboardingKo === 'number') {
           setTotalOnboardingKo(res.totalOnboardingKo);
+          tefp += res.totalOnboardingKo;
         }
+        setTotalElementsFromPartials(tefp);
         if (Array.isArray(res.content) && res.content.length > 0) {
           const rowsData = res.content.map((r: OnboardingRankingsDTO) => ({
             familyId: r.familyId,
@@ -526,7 +533,7 @@ const InitiativeRanking = () => {
             >
               <MenuItem value="DEFAULT" data-testid="filterStatusDefault-test">
                 {t('pages.initiativeRanking.beneficiaryStatus.total', {
-                  tot: totalElements,
+                  tot: totalElementsFromPartials,
                 })}
               </MenuItem>
               <MenuItem value="ELIGIBLE_OK" data-testid="filterStatusEligibleOK-test">
@@ -576,16 +583,18 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="20%">
-                      {t('pages.initiativeRanking.table.beneficiary')}
-                    </TableCell>
                     {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
-                      <TableCell width="25%">
+                      <TableCell width="35%">
                         {t('pages.initiativeRanking.table.familyId')}
                       </TableCell>
                     )}
-                    <TableCell width="15%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
                     <TableCell width="20%">
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+                        ? t('pages.initiativeRanking.table.beneficiary')
+                        : t('pages.initiativeRanking.table.familyBeneficiary')}
+                    </TableCell>
+                    <TableCell width="15%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    <TableCell width="10%">
                       {t('pages.initiativeRanking.table.rankingValue')}
                     </TableCell>
                     <TableCell width="20%">
@@ -596,12 +605,16 @@ const InitiativeRanking = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>
-                        {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.beneficiary}
-                      </TableCell>
                       {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
-                        <TableCell>{r.familyId}</TableCell>
+                        <TableCell>
+                          {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.familyId}
+                        </TableCell>
                       )}
+                      <TableCell>
+                        {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF &&
+                          getBeneficiaryStatus(r.beneficiaryRankingStatus)}{' '}
+                        {r.beneficiary}
+                      </TableCell>
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>
                       <TableCell>{r.criteriaConsensusTimeStamp}</TableCell>

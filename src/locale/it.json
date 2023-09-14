@@ -866,6 +866,7 @@
       "subtitle": "Vedi la lista dei richiedenti organizzata in base ai criteri di idoneità.",
       "table": {
         "beneficiary": "Richiedenti",
+        "familyBeneficiary": "Referente nucleo famigliare",
         "criteriaConsensusTimestamp": "Data e ora",
         "familyId": "ID nucleo familiare",
         "ranking": "Posizione",
