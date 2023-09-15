@@ -1,24 +1,6 @@
-import {
-  Box,
-  Button,
-  Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TextField,
-} from '@mui/material';
-import { ButtonNaked } from '@pagopa/mui-italia';
+import { Box, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { itIT } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
@@ -29,6 +11,10 @@ import {
 import { getMerchantTransactionsProcessed } from '../../services/merchantsService';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
+import FiltersForm from './FiltersForm';
+import { filterByStatusOptionsListMTP, resetForm, tableHeadData } from './helpers';
+import TableHeader from './TableHeader';
+import TablePaginator from './TablePaginator';
 
 type Props = {
   initiativeId: string | undefined;
@@ -41,9 +27,8 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   const [rows, setRows] = useState<Array<MerchantTransactionProcessedDTO>>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [filterByUser, setFilterByUser] = useState<string | undefined>();
-  const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
-  const theme = createTheme(itIT);
+  const [filterDataByUser, setFilterDataByUser] = useState<string | undefined>();
+  const [filterDataByStatus, setFilterDataByStatus] = useState<string | undefined>();
   const setLoading = useLoading('GET_INITIATIVE_MERCHANT_TRANSACTIONS_PROCESSED_LIST');
   const addError = useErrorDispatcher();
 
@@ -91,47 +76,28 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
       if (typeof merchantId === 'string' && typeof initiativeId === 'string') {
         const fU = values.searchUser.length > 0 ? values.searchUser : undefined;
         const fS = values.filterStatus.length > 0 ? values.filterStatus : undefined;
-        setFilterByUser(fU);
-        setFilterByStatus(fS);
+        setFilterDataByUser(fU);
+        setFilterDataByStatus(fS);
         getTableData(merchantId, initiativeId, 0, fU, fS);
       }
     },
   });
 
-  const resetForm = () => {
-    const initialValues = { searchUser: '', filterStatus: '' };
-    formik.resetForm({ values: initialValues });
-    setFilterByUser(undefined);
-    setFilterByStatus(undefined);
-    setRows([]);
-    if (typeof merchantId === 'string' && typeof initiativeId === 'string') {
-      getTableData(merchantId, initiativeId, 0, undefined, undefined);
-    }
-  };
-
   useMemo(() => {
     setPage(0);
-    setFilterByUser(undefined);
-    setFilterByStatus(undefined);
+    setFilterDataByUser(undefined);
+    setFilterDataByStatus(undefined);
   }, [merchantId, initiativeId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof merchantId === 'string' && typeof initiativeId === 'string') {
-      getTableData(merchantId, initiativeId, page, filterByUser, filterByStatus);
+      getTableData(merchantId, initiativeId, page, filterDataByUser, filterDataByStatus);
     }
     return () => {
       setRows([]);
     };
   }, [merchantId, initiativeId, page]);
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    window.scrollTo(0, 0);
-    setPage(newPage);
-  };
 
   const renderTrasactionProcessedStatus = (status: TransactionProcessedStatusEnum) => {
     switch (status) {
@@ -157,71 +123,22 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 2,
-          alignItems: 'baseline',
-        }}
-      >
-        <FormControl sx={{ gridColumn: 'span 4' }}>
-          <TextField
-            label={t('pages.initiativeMerchantDetail.searchByFiscalCode')}
-            placeholder={t('pages.initiativeMerchantDetail.searchByFiscalCode')}
-            name="searchUser"
-            aria-label="searchUser"
-            role="input"
-            InputLabelProps={{ required: false }}
-            value={formik.values.searchUser}
-            onChange={(e) => formik.handleChange(e)}
-            size="small"
-            data-testid="searchUser-test"
-          />
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }} size="small">
-          <InputLabel>{t('pages.initiativeMerchantDetail.transactionStatus')}</InputLabel>
-          <Select
-            id="filterStatus"
-            inputProps={{
-              'data-testid': 'filterStatus-select',
-            }}
-            name="filterStatus"
-            label={t('pages.initiativeMerchantDetail.transactionStatus')}
-            placeholder={t('pages.initiativeMerchantDetail.transactionStatus')}
-            onChange={(e) => formik.handleChange(e)}
-            value={formik.values.filterStatus}
-          >
-            <MenuItem value={'REWARDED'}>
-              {t('pages.initiativeMerchantDetail.transactionStatusEnum.rewarded')}
-            </MenuItem>
-            <MenuItem value={'CANCELLED'}>
-              {t('pages.initiativeMerchantDetail.transactionStatusEnum.cancelled')}
-            </MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
-          <Button
-            sx={{ height: '44.5px' }}
-            variant="outlined"
-            size="small"
-            onClick={() => formik.handleSubmit()}
-            data-testid="apply-filters-test"
-          >
-            {t('pages.initiativeMerchantDetail.filterBtn')}
-          </Button>
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
-          <ButtonNaked
-            component="button"
-            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
-            onClick={resetForm}
-          >
-            {t('pages.initiativeMerchantDetail.removeFiltersBtn')}
-          </ButtonNaked>
-        </FormControl>
-      </Box>
+      <FiltersForm
+        formik={formik}
+        resetForm={() =>
+          resetForm(
+            merchantId,
+            initiativeId,
+            formik,
+            setFilterDataByUser,
+            setFilterDataByStatus,
+            setRows,
+            getTableData
+          )
+        }
+        filterByStatusOptionsList={filterByStatusOptionsListMTP}
+      />
+
       {rows.length > 0 ? (
         <Box
           sx={{
@@ -235,23 +152,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%' }}>
               <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell width="20%">{t('pages.initiativeMerchantDetail.date')}</TableCell>
-                    <TableCell width="40%">
-                      {t('pages.initiativeMerchantDetail.beneficiary')}
-                    </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeMerchantDetail.totalSpent')}
-                    </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeMerchantDetail.authorizedAmount')}
-                    </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeMerchantDetail.transactionStatus')}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+                <TableHeader data={tableHeadData} />
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
@@ -264,21 +165,12 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={rowsPerPage}
+              />
             </Box>
           </Box>
         </Box>

@@ -1,26 +1,8 @@
-import {
-  Box,
-  Button,
-  Chip,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  TextField,
-} from '@mui/material';
+import { Box, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { ButtonNaked } from '@pagopa/mui-italia';
-import { itIT } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { getMerchantTransactions } from '../../services/merchantsService';
 import {
@@ -29,6 +11,10 @@ import {
 } from '../../api/generated/merchants/MerchantTransactionDTO';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
+import FiltersForm from './FiltersForm';
+import { filterByStatusOptionsListMT, resetForm, tableHeadData } from './helpers';
+import TableHeader from './TableHeader';
+import TablePaginator from './TablePaginator';
 
 type Props = {
   initiativeId: string | undefined;
@@ -39,7 +25,6 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
   const { t } = useTranslation();
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_INITIATIVE_MERCHANT_TRANSACTIONS_LIST');
-  const theme = createTheme(itIT);
   const [page, setPage] = useState<number>(0);
   const [rows, setRows] = useState<Array<MerchantTransactionDTO>>([]);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
@@ -96,15 +81,6 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
     },
   });
 
-  const resetForm = () => {
-    const initialValues = { searchUser: '', filterStatus: '' };
-    formik.resetForm({ values: initialValues });
-    setFilterByUser(undefined);
-    setFilterByStatus(undefined);
-    setRows([]);
-    getTableData(merchantId as string, initiativeId as string, 0, undefined, undefined);
-  };
-
   useMemo(() => {
     setPage(0);
     setFilterByUser(undefined);
@@ -115,14 +91,6 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
     window.scrollTo(0, 0);
     getTableData(merchantId as string, initiativeId as string, page, filterByUser, filterByStatus);
   }, [initiativeId, merchantId, page]);
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    window.scrollTo(0, 0);
-    setPage(newPage);
-  };
 
   const renderTransactionCreatedStatus = (status: TransactionStatusEnum) => {
     switch (status) {
@@ -156,74 +124,21 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Box
-        sx={{
-          display: 'grid',
-          width: '100%',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          gap: 2,
-          alignItems: 'baseline',
-        }}
-      >
-        <FormControl sx={{ gridColumn: 'span 4' }}>
-          <TextField
-            label={t('pages.initiativeMerchantDetail.searchByFiscalCode')}
-            placeholder={t('pages.initiativeMerchantDetail.searchByFiscalCode')}
-            name="searchUser"
-            aria-label="searchUser"
-            role="input"
-            InputLabelProps={{ required: false }}
-            value={formik.values.searchUser}
-            onChange={(e) => formik.handleChange(e)}
-            size="small"
-            data-testid="searchUser-test"
-          />
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 2' }} size="small">
-          <InputLabel>{t('pages.initiativeMerchantDetail.transactionStatus')}</InputLabel>
-          <Select
-            id="filterStatus"
-            inputProps={{
-              'data-testid': 'filterStatus-select',
-            }}
-            name="filterStatus"
-            label={t('pages.initiativeMerchantDetail.transactionStatus')}
-            placeholder={t('pages.initiativeMerchantDetail.transactionStatus')}
-            onChange={(e) => formik.handleChange(e)}
-            value={formik.values.filterStatus}
-          >
-            <MenuItem value={'IDENTIFIED'}>
-              {t('pages.initiativeMerchantDetail.transactionStatusEnum.identified')}
-            </MenuItem>
-            <MenuItem value={'AUTHORIZED'}>
-              {t('pages.initiativeMerchantDetail.transactionStatusEnum.authorized')}
-            </MenuItem>
-            <MenuItem value={'REJECTED'}>
-              {t('pages.initiativeMerchantDetail.transactionStatusEnum.invalidated')}
-            </MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
-          <Button
-            sx={{ height: '44.5px' }}
-            variant="outlined"
-            size="small"
-            onClick={() => formik.handleSubmit()}
-            data-testid="apply-filters-test"
-          >
-            {t('pages.initiativeMerchantDetail.filterBtn')}
-          </Button>
-        </FormControl>
-        <FormControl sx={{ gridColumn: 'span 1' }}>
-          <ButtonNaked
-            component="button"
-            sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
-            onClick={resetForm}
-          >
-            {t('pages.initiativeMerchantDetail.removeFiltersBtn')}
-          </ButtonNaked>
-        </FormControl>
-      </Box>
+      <FiltersForm
+        formik={formik}
+        resetForm={() =>
+          resetForm(
+            merchantId,
+            initiativeId,
+            formik,
+            setFilterByUser,
+            setFilterByStatus,
+            setRows,
+            getTableData
+          )
+        }
+        filterByStatusOptionsList={filterByStatusOptionsListMT}
+      />
       {rows.length > 0 ? (
         <Box
           sx={{
@@ -237,23 +152,7 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%' }}>
               <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell width="20%">{t('pages.initiativeMerchantDetail.date')}</TableCell>
-                    <TableCell width="40%">
-                      {t('pages.initiativeMerchantDetail.beneficiary')}
-                    </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeMerchantDetail.totalSpent')}
-                    </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeMerchantDetail.authorizedAmount')}
-                    </TableCell>
-                    <TableCell width="10%">
-                      {t('pages.initiativeMerchantDetail.transactionStatus')}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
+                <TableHeader data={tableHeadData} />
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
@@ -268,21 +167,12 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={rowsPerPage}
+              />
             </Box>
           </Box>
         </Box>
