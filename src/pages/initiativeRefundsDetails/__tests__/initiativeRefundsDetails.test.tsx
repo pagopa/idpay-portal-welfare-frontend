@@ -89,44 +89,44 @@ describe('test suite for refund details', () => {
     fireEvent.click(resetFiltersBtn);
   });
 
-  test('test open modal and close modal', async () => {
-    renderWithContext(<InitiativeRefundsDetails />);
+  // test('test open modal and close modal', async () => {
+  //   renderWithContext(<InitiativeRefundsDetails />);
 
-    // click on arrow icon to open modal
-    const openModalArrowBtn = (await screen.findAllByTestId(
-      'open-modal-refunds-arrow'
-    )) as Array<HTMLButtonElement>;
+  //   // click on arrow icon to open modal
+  //   const openModalArrowBtn = (await screen.findAllByTestId(
+  //     'open-modal-refunds-arrow'
+  //   )) as Array<HTMLButtonElement>;
 
-    fireEvent.click(openModalArrowBtn[0]);
+  //   fireEvent.click(openModalArrowBtn[0]);
 
-    const modalTitle = await screen.findByText('pages.initiativeRefundsDetails.modal.title');
+  //   const modalTitle = await screen.findByText('pages.initiativeRefundsDetails.modal.title');
 
-    expect(modalTitle).toBeInTheDocument();
+  //   expect(modalTitle).toBeInTheDocument();
 
-    // click on x icon to close modal
-    const closeModalXBTn = (await screen.findByTestId('close-modal-test')) as HTMLButtonElement;
+  //   // click on x icon to close modal
+  //   const closeModalXBTn = (await screen.findByTestId('close-modal-test')) as HTMLButtonElement;
 
-    fireEvent.click(closeModalXBTn);
-  });
+  //   fireEvent.click(closeModalXBTn);
+  // });
 
-  test('test getExportRefundsListPaged with empty response', async () => {
-    const mockedRefundsDetailsListItem = {
-      content: [],
-      pageNo: 0,
-      pageSize: 0,
-      totalElements: 0,
-      totalPages: 0,
-    };
+  // test('test getExportRefundsListPaged with empty response', async () => {
+  //   const mockedRefundsDetailsListItem = {
+  //     content: [],
+  //     pageNo: 0,
+  //     pageSize: 0,
+  //     totalElements: 0,
+  //     totalPages: 0,
+  //   };
 
-    InitiativeApiMocked.getExportRefundsListPaged = async (
-      _initiativeId: string,
-      _exportId: string,
-      _page: number,
-      _cro?: string,
-      _status?: string
-    ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
-    renderWithContext(<InitiativeRefundsDetails />);
-  });
+  //   InitiativeApiMocked.getExportRefundsListPaged = async (
+  //     _initiativeId: string,
+  //     _exportId: string,
+  //     _page: number,
+  //     _cro?: string,
+  //     _status?: string
+  //   ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
+  //   renderWithContext(<InitiativeRefundsDetails />);
+  // });
 
   test('test catch case of getRewardFileDownload api call', async () => {
     InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>

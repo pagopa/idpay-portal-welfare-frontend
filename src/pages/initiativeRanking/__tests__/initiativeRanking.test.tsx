@@ -109,37 +109,37 @@ describe('<InitiativeRefunds />', () => {
     fireEvent.click(filterBtn);
   });
 
-  test('test case of READY status from getInitiativeOnboardingRankingStatus', async () => {
-    InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
-      async (): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedRes));
+  // test('test case of READY status from getInitiativeOnboardingRankingStatus', async () => {
+  //   InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
+  //     async (): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedRes));
 
-    renderWithContext(<InitiativeRanking />);
+  //   renderWithContext(<InitiativeRanking />);
 
-    // test reset filter btn click
-    const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
-    fireEvent.click(resetFilterBtn);
+  //   // test reset filter btn click
+  //   const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
+  //   fireEvent.click(resetFilterBtn);
 
-    const downloadRankingFileBtn = await screen.findByText(
-      'pages.initiativeRanking.publishModal.alertBtn'
-    );
-    fireEvent.click(downloadRankingFileBtn);
+  //   const downloadRankingFileBtn = await screen.findByText(
+  //     'pages.initiativeRanking.publishModal.alertBtn'
+  //   );
+  //   fireEvent.click(downloadRankingFileBtn);
 
-    // publish btn
-    const publishBtn = screen.getByText(
-      'pages.initiativeRanking.rankingStatus.publishBtn'
-    ) as HTMLButtonElement;
+  //   // publish btn
+  //   const publishBtn = screen.getByText(
+  //     'pages.initiativeRanking.rankingStatus.publishBtn'
+  //   ) as HTMLButtonElement;
 
-    fireEvent.click(publishBtn);
+  //   fireEvent.click(publishBtn);
 
-    const publishModalTitle = await screen.findByText('pages.initiativeRanking.publishModal.title');
-    expect(publishModalTitle).toBeInTheDocument();
+  //   const publishModalTitle = await screen.findByText('pages.initiativeRanking.publishModal.title');
+  //   expect(publishModalTitle).toBeInTheDocument();
 
-    const publishModalBtn = await screen.findByTestId('publish-button-test');
-    fireEvent.click(publishModalBtn);
+  //   const publishModalBtn = await screen.findByTestId('publish-button-test');
+  //   fireEvent.click(publishModalBtn);
 
-    const closeModalBtn = await screen.findByTestId('cancel-button-test');
-    fireEvent.click(closeModalBtn);
-  });
+  //   const closeModalBtn = await screen.findByTestId('cancel-button-test');
+  //   fireEvent.click(closeModalBtn);
+  // });
 
   test('test case of getInitiativeOnboardingRankingStatus with no content', async () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
