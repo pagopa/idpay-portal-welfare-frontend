@@ -9,6 +9,7 @@ import {
   getMerchantInitiativeStatistics,
 } from '../../services/merchantsService';
 import { formatAddress, formatIban, formatedCurrency } from '../../helpers';
+import { merchantSummaryBoxStyle } from './helpers';
 
 type Props = {
   initiativeId: string | undefined;
@@ -75,14 +76,7 @@ const MerchantSummary = ({
         columnGap: 3,
       }}
     >
-      <Box
-        sx={{
-          gridColumn: 'span 6',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          rowGap: 2,
-        }}
-      >
+      <Box sx={merchantSummaryBoxStyle}>
         <Box sx={{ gridColumn: 'span 12' }}>
           <Typography variant="overline" color="text.primary" sx={{ fontWeight: 600 }}>
             {t('pages.initiativeMerchantDetail.refundsStatusTitle')}
@@ -107,14 +101,7 @@ const MerchantSummary = ({
           </Typography>
         </Box>
       </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 6',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(12, 1fr)',
-          rowGap: 2,
-        }}
-      >
+      <Box sx={merchantSummaryBoxStyle}>
         <Box sx={{ gridColumn: 'span 12' }}>
           <Typography variant="overline" color="text.primary" sx={{ fontWeight: 600 }}>
             {t('pages.initiativeMerchantDetail.refundsDataTitle')}

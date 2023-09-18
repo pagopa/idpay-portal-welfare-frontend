@@ -67,3 +67,10 @@ export const containerStyle = {
   alignItems: 'center',
   mt: 3,
 };
+
+export const merchantSummaryBoxStyle = {
+  gridColumn: 'span 6',
+  display: 'grid',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  rowGap: 2,
+};
