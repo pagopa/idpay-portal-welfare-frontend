@@ -17,7 +17,11 @@ import CloseIcon from '@mui/icons-material/Close';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import { initiativePagesBreadcrumbsContainerStyle } from '../../helpers';
+import {
+  initUploadBoxStyle,
+  initUploadHelperBoxStyle,
+  initiativePagesBreadcrumbsContainerStyle,
+} from '../../helpers';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -183,35 +187,14 @@ const InitiativeUploadMerchants = () => {
         mt: 1,
       }}
     >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          border: '1px dashed #0073E6',
-          borderRadius: '10px',
-          backgroundColor: 'rgba(0, 115, 230, 0.08)',
-          p: 3,
-        }}
-        {...getRootProps({ className: 'dropzone' })}
-      >
+      <Box sx={initUploadBoxStyle} {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} data-testid="drop-input" />
         <InitUploadBox
           text={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaText')}
           link={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaLink')}
         />
       </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          py: 1,
-          px: 3,
-        }}
-      >
+      <Box sx={initUploadHelperBoxStyle}>
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('pages.initiativeMerchantUpload.uploadPaper.fileUploadHelpText')}&#160;
           <Link

@@ -346,3 +346,23 @@ export const downloadURI = (uri: string, filename: string) => {
   link.click();
   document.body.removeChild(link);
 };
+
+export const initUploadBoxStyle = {
+  gridColumn: 'span 12',
+  alignItems: 'center',
+  justifyItems: 'center',
+  width: '100%',
+  border: '1px dashed #0073E6',
+  borderRadius: '10px',
+  backgroundColor: 'rgba(0, 115, 230, 0.08)',
+  p: 3,
+};
+
+export const initUploadHelperBoxStyle = {
+  gridColumn: 'span 12',
+  alignItems: 'center',
+  justifyItems: 'center',
+  width: '100%',
+  py: 1,
+  px: 3,
+};

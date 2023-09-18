@@ -39,10 +39,10 @@ const InitativeMerchant = () => {
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
   const [filterByMerchant, setFilterByMerchant] = useState<string | undefined>();
-  const [rows, setRows] = useState<Array<MerchantDTO>>([]);
+  const [rowsData, setRowsData] = useState<Array<MerchantDTO>>([]);
   const [page, setPage] = useState<number>(0);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-  const [totalElements, setTotalElements] = useState<number>(2);
+  const [rowsPerPageValue, setRowsPerPageValue] = useState<number>(10);
+  const [totalElementsValue, setTotalElementsValue] = useState<number>(2);
   const setLoading = useLoading('GET_INITIATIVE_MERCHANTS');
   const addError = useErrorDispatcher();
   const history = useHistory();
@@ -68,15 +68,15 @@ const InitativeMerchant = () => {
         }
 
         if (Array.isArray(res.content)) {
-          setRows(res.content);
+          setRowsData(res.content);
         } else {
-          setRows([]);
+          setRowsData([]);
         }
         if (typeof res.pageSize === 'number') {
-          setRowsPerPage(res.pageSize);
+          setRowsPerPageValue(res.pageSize);
         }
         if (typeof res.totalElements === 'number') {
-          setTotalElements(res.totalElements);
+          setTotalElementsValue(res.totalElements);
         }
       })
       .catch((error) => {
@@ -117,7 +117,7 @@ const InitativeMerchant = () => {
     formik.resetForm({ values: initialValues });
     setFilterByMerchant(undefined);
     // setFilterByStatus(undefined);
-    setRows([]);
+    setRowsData([]);
     if (typeof id === 'string') {
       getTableData(id, 0, undefined);
     }
@@ -204,7 +204,7 @@ const InitativeMerchant = () => {
         </FormControl>
       </Box>
 
-      {rows?.length > 0 ? (
+      {rowsData?.length > 0 ? (
         <Box sx={initiativePagesTableContainerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%', height: '100%' }}>
@@ -226,7 +226,7 @@ const InitativeMerchant = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
-                  {rows.map((r) => (
+                  {rowsData.map((r) => (
                     <TableRow key={r.merchantId}>
                       <TableCell>
                         <Typography>{r.businessName}</Typography>
@@ -256,8 +256,8 @@ const InitativeMerchant = () => {
               <TablePaginator
                 page={page}
                 setPage={setPage}
-                totalElements={totalElements}
-                rowsPerPage={rowsPerPage}
+                totalElements={totalElementsValue}
+                rowsPerPage={rowsPerPageValue}
               />
             </Box>
           </Box>
