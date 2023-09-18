@@ -40,6 +40,8 @@ import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import {
   downloadURI,
+  initUploadBoxStyle,
+  initUploadHelperBoxStyle,
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesTableContainerStyle,
 } from '../../helpers';
@@ -149,35 +151,14 @@ const InitiativeRefundsOutcome = () => {
         my: 1,
       }}
     >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          border: '1px dashed #0073E6',
-          borderRadius: '10px',
-          backgroundColor: 'rgba(0, 115, 230, 0.08)',
-          p: 3,
-        }}
-        {...getRootProps({ className: 'dropzone' })}
-      >
+      <Box sx={initUploadBoxStyle} {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} data-testid="drop-input" />
         <InitUploadBox
           text={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaText')}
           link={t('pages.initiativeRefundsOutcome.uploadPaper.dragAreaLink')}
         />
       </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          py: 1,
-          px: 3,
-        }}
-      >
+      <Box sx={initUploadHelperBoxStyle}>
         {/* <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('pages.initiativeRefundsOutcome.uploadPaper.fileUploadHelpText')}&#160;
           <Link
