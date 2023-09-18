@@ -11,10 +11,10 @@ import {
 import { getMerchantTransactionsProcessed } from '../../services/merchantsService';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
+import TablePaginator from '../components/TablePaginator';
 import FiltersForm from './FiltersForm';
 import { filterByStatusOptionsListMTP, resetForm, tableHeadData } from './helpers';
 import TableHeader from './TableHeader';
-import TablePaginator from './TablePaginator';
 
 type Props = {
   initiativeId: string | undefined;

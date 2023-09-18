@@ -7,7 +7,6 @@ import {
   Button,
   Chip,
   FormControl,
-  // IconButton,
   InputLabel,
   MenuItem,
   Select,
@@ -15,7 +14,6 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TextField,
 } from '@mui/material';
@@ -27,8 +25,6 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -48,6 +44,7 @@ import {
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
+import TablePaginator from '../components/TablePaginator';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -64,8 +61,6 @@ const InitiativeUsers = () => {
   const [filterByStatus, setFilterByStatus] = useState<string | undefined>();
   const setLoading = useLoading('GET_INITIATIVE_USERS');
   const addError = useErrorDispatcher();
-
-  const theme = createTheme(itIT);
 
   const getTableData = (
     initiativeId: string,
@@ -157,13 +152,6 @@ const InitiativeUsers = () => {
       default:
         return null;
     }
-  };
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
   };
 
   const formik = useFormik({
@@ -393,7 +381,6 @@ const InitiativeUsers = () => {
                     <TableCell width="15%">
                       {t('pages.initiativeUsers.table.beneficiaryState')}
                     </TableCell>
-                    {/* <TableCell width="10%"></TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
@@ -418,31 +405,16 @@ const InitiativeUsers = () => {
                       </TableCell>
                       <TableCell>{r.updateStatusDate}</TableCell>
                       <TableCell>{renderUserStatus(r.beneficiaryState, initiativeSel)}</TableCell>
-                      {/*
-                       <TableCell align="right">
-                        <IconButton disabled>
-                          <ArrowForwardIosIcon color="primary" />
-                        </IconButton>
-                      </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  rowsPerPageOptions={[rowsPerPage]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={rowsPerPage}
+              />
             </Box>
           </Box>
         </Box>

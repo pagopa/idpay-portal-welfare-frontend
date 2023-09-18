@@ -35,6 +35,8 @@ import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 
 import {
+  downloadURI,
+  fileFromReader,
   formatedCurrency,
   formatIban,
   initiativePagesBreadcrumbsContainerStyle,
@@ -157,19 +159,6 @@ const InitiativeRefundsDetails = () => {
       });
   };
 
-  const downloadURI = (uri: string, filename: string) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    link.download = filename;
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    // eslint-disable-next-line functional/immutable-data
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handleDownloadFile = async (data: { id: string; filePath: string | undefined }) => {
     if (typeof data.id === 'string' && typeof data.filePath === 'string') {
       const token = storageTokenOps.read();
@@ -183,25 +172,7 @@ const InitiativeRefundsDetails = () => {
       );
 
       if (res.status === 200) {
-        const reader = res.body?.getReader();
-        const stream = new ReadableStream({
-          start(controller) {
-            return pump();
-            function pump(): Promise<any> | undefined {
-              return reader?.read().then(({ done, value }) => {
-                if (done) {
-                  controller.close();
-                  return;
-                }
-                controller.enqueue(value);
-                return pump();
-              });
-            }
-          },
-        });
-        const response = new Response(stream);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+        const url = await fileFromReader(res.body?.getReader());
         downloadURI(url, data.filePath);
       } else {
         const error = new Error(res.statusText);
