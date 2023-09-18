@@ -13,7 +13,7 @@ import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import TablePaginator from '../components/TablePaginator';
 import FiltersForm from './FiltersForm';
-import { filterByStatusOptionsListMT, resetForm, tableHeadData } from './helpers';
+import { containerStyle, filterByStatusOptionsListMT, resetForm, tableHeadData } from './helpers';
 import TableHeader from './TableHeader';
 
 type Props = {
@@ -140,15 +140,7 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
         filterByStatusOptionsList={filterByStatusOptionsListMT}
       />
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            mt: 3,
-          }}
-        >
+        <Box sx={containerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%' }}>
               <Table>

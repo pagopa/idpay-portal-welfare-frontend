@@ -59,3 +59,11 @@ export const tableHeadData = [
   { width: '15%', label: 'pages.initiativeMerchantDetail.authorizedAmount' },
   { width: '10%', label: 'pages.initiativeMerchantDetail.transactionStatus' },
 ];
+
+export const containerStyle = {
+  display: 'grid',
+  width: '100%',
+  gridTemplateColumns: 'repeat(12, 1fr)',
+  alignItems: 'center',
+  mt: 3,
+};

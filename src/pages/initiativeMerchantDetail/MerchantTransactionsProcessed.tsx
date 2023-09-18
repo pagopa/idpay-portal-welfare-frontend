@@ -13,7 +13,7 @@ import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import TablePaginator from '../components/TablePaginator';
 import FiltersForm from './FiltersForm';
-import { filterByStatusOptionsListMTP, resetForm, tableHeadData } from './helpers';
+import { containerStyle, filterByStatusOptionsListMTP, resetForm, tableHeadData } from './helpers';
 import TableHeader from './TableHeader';
 
 type Props = {
@@ -23,10 +23,10 @@ type Props = {
 
 const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   const { t } = useTranslation();
-  const [page, setPage] = useState<number>(0);
+  const [pageValue, setPageValue] = useState<number>(0);
   const [rows, setRows] = useState<Array<MerchantTransactionProcessedDTO>>([]);
-  const [rowsPerPage, setRowsPerPage] = useState<number>(0);
-  const [totalElements, setTotalElements] = useState<number>(0);
+  const [rowsPerPageValue, setRowsPerPageValue] = useState<number>(0);
+  const [totalElementsValue, setTotalElementsValue] = useState<number>(0);
   const [filterDataByUser, setFilterDataByUser] = useState<string | undefined>();
   const [filterDataByStatus, setFilterDataByStatus] = useState<string | undefined>();
   const setLoading = useLoading('GET_INITIATIVE_MERCHANT_TRANSACTIONS_PROCESSED_LIST');
@@ -42,9 +42,9 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     setLoading(true);
     getMerchantTransactionsProcessed(merchantId, initiativeId, page, fiscalCode, status)
       .then((response) => {
-        setPage(response.pageNo);
-        setRowsPerPage(response.pageSize);
-        setTotalElements(response.totalElements);
+        setPageValue(response.pageNo);
+        setRowsPerPageValue(response.pageSize);
+        setTotalElementsValue(response.totalElements);
         if (response.content.length > 0) {
           setRows([...response.content]);
         } else {
@@ -53,10 +53,10 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
       })
       .catch((error) => {
         addError({
-          id: 'GET_INITIATIVE_MERCHANT_DISCOUNTS_LIST_ERROR',
+          id: 'GET_INITIATIVE_MERCHANT_PROCESSED_DISCOUNTS_LIST_ERROR',
           blocking: false,
           error,
-          techDescription: 'An error occurred getting initiative merchant discounts list',
+          techDescription: 'An error occurred getting initiative merchant processed discounts list',
           displayableTitle: t('errors.title'),
           displayableDescription: t('errors.getDataDescription'),
           toNotify: true,
@@ -84,7 +84,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   });
 
   useMemo(() => {
-    setPage(0);
+    setPageValue(0);
     setFilterDataByUser(undefined);
     setFilterDataByStatus(undefined);
   }, [merchantId, initiativeId]);
@@ -92,12 +92,12 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof merchantId === 'string' && typeof initiativeId === 'string') {
-      getTableData(merchantId, initiativeId, page, filterDataByUser, filterDataByStatus);
+      getTableData(merchantId, initiativeId, pageValue, filterDataByUser, filterDataByStatus);
     }
     return () => {
       setRows([]);
     };
-  }, [merchantId, initiativeId, page]);
+  }, [merchantId, initiativeId, pageValue]);
 
   const renderTrasactionProcessedStatus = (status: TransactionProcessedStatusEnum) => {
     switch (status) {
@@ -140,15 +140,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
       />
 
       {rows.length > 0 ? (
-        <Box
-          sx={{
-            display: 'grid',
-            width: '100%',
-            gridTemplateColumns: 'repeat(12, 1fr)',
-            alignItems: 'center',
-            mt: 3,
-          }}
-        >
+        <Box sx={containerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%' }}>
               <Table>
@@ -166,10 +158,10 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
                 </TableBody>
               </Table>
               <TablePaginator
-                page={page}
-                setPage={setPage}
-                totalElements={totalElements}
-                rowsPerPage={rowsPerPage}
+                page={pageValue}
+                setPage={setPageValue}
+                totalElements={totalElementsValue}
+                rowsPerPage={rowsPerPageValue}
               />
             </Box>
           </Box>
