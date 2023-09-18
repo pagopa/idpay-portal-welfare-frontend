@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import * as Yup from 'yup';
@@ -311,4 +312,37 @@ export const copyTextToClipboard = (text: string | undefined) => {
   if (typeof text === 'string') {
     void navigator.clipboard.writeText(text);
   }
+};
+
+export const fileFromReader = async (
+  reader: ReadableStreamDefaultReader<Uint8Array> | undefined
+): Promise<string> => {
+  const stream = new ReadableStream({
+    start(controller) {
+      return pump();
+      function pump(): Promise<any> | undefined {
+        return reader?.read().then(({ done, value }) => {
+          if (done) {
+            controller.close();
+            return;
+          }
+          controller.enqueue(value);
+          return pump();
+        });
+      }
+    },
+  });
+  const response = new Response(stream);
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};
+
+export const downloadURI = (uri: string, filename: string) => {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = uri;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };

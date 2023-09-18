@@ -8,20 +8,15 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  // SortDirection,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  // TableSortLabel,
   TextField,
   Typography,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
 import SyncIcon from '@mui/icons-material/Sync';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -42,22 +37,23 @@ import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getInitiativeOnboardingRankingStatusPaged,
-  // getRankingFileDownload,
   notifyCitizenRankings,
 } from '../../services/intitativeService';
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
 import {
+  downloadURI,
+  fileFromReader,
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
   initiativePagesTableContainerStyle,
   numberWithCommas,
 } from '../../helpers';
-// import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { ENV } from '../../utils/env';
 import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import TablePaginator from '../components/TablePaginator';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
@@ -81,7 +77,6 @@ const InitiativeRanking = () => {
   const [totalEligibleKo, setTotalEligibleKo] = useState<number | undefined>(0);
   const [totalOnboardingKo, setTotalOnboardingKo] = useState<number | undefined>(0);
   const [totalElementsFromPartials, setTotalElementsFromPartials] = useState(0);
-  const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_RANKING');
   const addError = useErrorDispatcher();
 
@@ -213,19 +208,6 @@ const InitiativeRanking = () => {
     }
   };
 
-  const downloadURI = (uri: string, filename: string) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    link.download = filename;
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    // eslint-disable-next-line functional/immutable-data
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const downloadInitiativeRanking = async (
     initiativeId: string | undefined,
     filename: string | undefined
@@ -240,25 +222,7 @@ const InitiativeRanking = () => {
         }
       );
       if (res.status === 200) {
-        const reader = res.body?.getReader();
-        const stream = new ReadableStream({
-          start(controller) {
-            return pump();
-            function pump(): Promise<any> | undefined {
-              return reader?.read().then(({ done, value }) => {
-                if (done) {
-                  controller.close();
-                  return;
-                }
-                controller.enqueue(value);
-                return pump();
-              });
-            }
-          },
-        });
-        const response = new Response(stream);
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
+        const url = await fileFromReader(res.body?.getReader());
         downloadURI(url, filename);
       } else {
         const error = new Error(res.statusText);
@@ -275,13 +239,6 @@ const InitiativeRanking = () => {
         });
       }
     }
-  };
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
   };
 
   const formik = useFormik({
@@ -623,21 +580,12 @@ const InitiativeRanking = () => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={10}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={10}
+              />
             </Box>
           </Box>
         </Box>

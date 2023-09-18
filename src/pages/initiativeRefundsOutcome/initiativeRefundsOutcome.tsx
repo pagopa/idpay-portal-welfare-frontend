@@ -1,13 +1,11 @@
 import {
   Box,
-  // FormHelperText,
   Paper,
   Typography,
   Table,
   TableBody,
   TableRow,
   TableCell,
-  TablePagination,
   Alert,
   IconButton,
 } from '@mui/material';
@@ -25,8 +23,7 @@ import { useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
+
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -42,10 +39,12 @@ import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import {
+  downloadURI,
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesTableContainerStyle,
 } from '../../helpers';
 import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import TablePaginator from '../components/TablePaginator';
 
 const InitiativeRefundsOutcome = () => {
   const { t } = useTranslation();
@@ -59,7 +58,6 @@ const InitiativeRefundsOutcome = () => {
   const [page, setPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [rows, setRows] = useState<Array<InitiativeRefundImports>>([]);
-  const theme = createTheme(itIT);
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_INITIATIVE_REWARD_IMPORTS');
 
@@ -253,13 +251,6 @@ const InitiativeRefundsOutcome = () => {
     }
   };
 
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
-
   useEffect(() => {
     window.scrollTo(0, 0);
     if (typeof id === 'string') {
@@ -275,20 +266,6 @@ const InitiativeRefundsOutcome = () => {
     }
   }, [fileAccepted]);
 
-  const downloadURI = (uri: string, filePath: string | undefined) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    const fileName = typeof filePath === 'string' ? `${filePath}.csv` : 'download.csv';
-    link.setAttribute('download', fileName);
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    // eslint-disable-next-line functional/immutable-data
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   const handleDownloadFile = (data: {
     initiativeId: string | undefined;
     filePath: string | undefined;
@@ -299,9 +276,8 @@ const InitiativeRefundsOutcome = () => {
           // eslint-disable-next-line no-prototype-builtins
           if (res.hasOwnProperty('data') && typeof res.data === 'string') {
             const blob = new Blob([res.data], { type: 'text/csv' });
-
             const url = window.URL.createObjectURL(blob);
-            downloadURI(url, data.filePath);
+            downloadURI(url, data.filePath as string);
           }
         })
         .catch((error) => {
@@ -429,21 +405,12 @@ const InitiativeRefundsOutcome = () => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={10}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={10}
+              />
             </Box>
           </Box>
         </Box>

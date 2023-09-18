@@ -12,7 +12,6 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TextField,
 } from '@mui/material';
@@ -21,14 +20,11 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-// import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
@@ -50,6 +46,7 @@ import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDT
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import TablePaginator from '../components/TablePaginator';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -60,7 +57,6 @@ const InitiativeRefunds = () => {
   const [page, setPage] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [rows, setRows] = useState<Array<InitiativeRefundToDisplay>>([]);
-  const theme = createTheme(itIT);
   const setLoading = useLoading('GET_INITIATIVE_REFUNDS');
   const [filterByNotificationDateFrom, setFilterByNotificationDateFrom] = useState<
     string | undefined
@@ -169,13 +165,6 @@ const InitiativeRefunds = () => {
       }
     },
   });
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
 
   const resetForm = () => {
     const initialValues = { searchFrom: null, searchTo: null, filterStatus: '' };
@@ -380,21 +369,12 @@ const InitiativeRefunds = () => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={10}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={10}
+              />
             </Box>
           </Box>
         </Box>
