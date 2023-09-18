@@ -461,49 +461,35 @@ const InitiativeUserDetails = () => {
             </MenuItem>
 
             {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'ADD_IBAN'}>
-                {t('pages.initiativeUserDetails.operationTypes.addIban')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'ADD_INSTRUMENT'}>
-                {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'DELETE_INSTRUMENT'}>
-                {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
-                {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
-                {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'REJECTED_REFUND'}>
-                {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'TRANSACTION'}>
-                {t('pages.initiativeUserDetails.operationTypes.transaction')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'PAID_REFUND'}>
-                {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <MenuItem value={'REVERSAL'}>
-                {t('pages.initiativeUserDetails.operationTypes.reversal')}
-              </MenuItem>
+              <>
+                <MenuItem value={'ADD_IBAN'}>
+                  {t('pages.initiativeUserDetails.operationTypes.addIban')}
+                </MenuItem>
+                <MenuItem value={'ADD_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
+                </MenuItem>
+                <MenuItem value={'DELETE_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_REFUND'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
+                </MenuItem>
+                <MenuItem value={'TRANSACTION'}>
+                  {t('pages.initiativeUserDetails.operationTypes.transaction')}
+                </MenuItem>
+                <MenuItem value={'PAID_REFUND'}>
+                  {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
+                </MenuItem>
+                <MenuItem value={'REVERSAL'}>
+                  {t('pages.initiativeUserDetails.operationTypes.reversal')}
+                </MenuItem>
+              </>
             )}
             {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
               <MenuItem value="AUTHORIZED">
