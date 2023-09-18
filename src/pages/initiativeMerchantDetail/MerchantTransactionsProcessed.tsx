@@ -24,7 +24,7 @@ type Props = {
 const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   const { t } = useTranslation();
   const [pageValue, setPageValue] = useState<number>(0);
-  const [rows, setRows] = useState<Array<MerchantTransactionProcessedDTO>>([]);
+  const [rowsData, setRowsData] = useState<Array<MerchantTransactionProcessedDTO>>([]);
   const [rowsPerPageValue, setRowsPerPageValue] = useState<number>(0);
   const [totalElementsValue, setTotalElementsValue] = useState<number>(0);
   const [filterDataByUser, setFilterDataByUser] = useState<string | undefined>();
@@ -46,9 +46,9 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
         setRowsPerPageValue(response.pageSize);
         setTotalElementsValue(response.totalElements);
         if (response.content.length > 0) {
-          setRows([...response.content]);
+          setRowsData([...response.content]);
         } else {
-          setRows([]);
+          setRowsData([]);
         }
       })
       .catch((error) => {
@@ -95,7 +95,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
       getTableData(merchantId, initiativeId, pageValue, filterDataByUser, filterDataByStatus);
     }
     return () => {
-      setRows([]);
+      setRowsData([]);
     };
   }, [merchantId, initiativeId, pageValue]);
 
@@ -132,21 +132,21 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
             formik,
             setFilterDataByUser,
             setFilterDataByStatus,
-            setRows,
+            setRowsData,
             getTableData
           )
         }
         filterByStatusOptionsList={filterByStatusOptionsListMTP}
       />
 
-      {rows.length > 0 ? (
+      {rowsData.length > 0 ? (
         <Box sx={containerStyle}>
           <Box sx={{ display: 'grid', gridColumn: 'span 12', height: '100%' }}>
             <Box sx={{ width: '100%' }}>
               <Table>
                 <TableHeader data={tableHeadData} />
                 <TableBody sx={{ backgroundColor: 'white' }}>
-                  {rows.map((r, i) => (
+                  {rowsData.map((r, i) => (
                     <TableRow key={i}>
                       <TableCell>{formatedDate(r.updateDate)}</TableCell>
                       <TableCell>{r.fiscalCode}</TableCell>
