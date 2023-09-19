@@ -80,8 +80,12 @@ describe('switch initiative status', () => {
     expect(formatedCurrency(undefined)).toEqual('-');
   });
 
-  test('test formatedCurrency with a number as param', () => {
+  test('test formatedCurrency with a number as param and cents param as true', () => {
     expect(formatedCurrency(10, '-', true)).toContain('10');
+  });
+
+  test('test formatedCurrency with a number as param', () => {
+    expect(formatedCurrency(10)).toContain('10');
   });
 
   test('test formatedDate with Date object as param', () => {
@@ -155,6 +159,10 @@ describe('switch initiative status', () => {
 
   test('test getRefundStatusChip with status PARTIAL', () => {
     expect(getRefundStatusChip({ status: 'PARTIAL', percentageResulted: '10' }));
+  });
+
+  test('test getRefundStatusChip with status PARTIAL and percentageResulted undefined', () => {
+    expect(getRefundStatusChip({ status: 'PARTIAL', percentageResulted: undefined }));
   });
 
   test('test getRefundStatusChip with status COMPLETE', () => {

@@ -43,6 +43,11 @@ jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
 describe('<InitiativeRefundsOutcome />', () => {
   window.scrollTo = jest.fn();
 
+  test('Test InitiativeRefundsOutcome', async () => {
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+    renderWithProviders(<InitiativeRefundsOutcome />);
+  });
+
   test('Test InitiativeRefundsOutcome should upload with sucess', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
     renderWithProviders(<InitiativeRefundsOutcome />);
