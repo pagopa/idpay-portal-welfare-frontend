@@ -1,13 +1,20 @@
 import {
+  cleanDate,
+  copyTextToClipboard,
+  downloadURI,
+  fileFromReader,
   formatedCurrency,
   formatedDate,
+  formatedTimeLineCurrency,
   formatFileName,
   formatIban,
   formatStringToDate,
   getMaskedPan,
+  getTimeLineMaskedPan,
+  mappedChannel,
   numberWithCommas,
   peopleReached,
-  renderInitiativeStatus
+  renderInitiativeStatus,
 } from '../helpers';
 
 describe('switch initiative status', () => {
@@ -42,7 +49,7 @@ describe('switch initiative status', () => {
     expect(numberWithCommas('2')).toEqual('2');
   });
 
-  test('test numberWithCommas string type ', () => {
+  test('test peopleReached ', () => {
     expect(peopleReached('20', '2')).toBeDefined();
   });
 
@@ -66,7 +73,7 @@ describe('switch initiative status', () => {
   test('test formatFileName with undefined as param', () => {
     expect(formatIban(undefined)).toEqual('');
   });
- 
+
   test('test formatedCurrency with undefined as param', () => {
     expect(formatedCurrency(undefined)).toEqual('-');
   });
@@ -97,5 +104,42 @@ describe('switch initiative status', () => {
 
   test('test getMaskedPan with undefined pan as param', () => {
     expect(getMaskedPan(undefined)).toEqual('****');
+  });
+
+  test('test downloadURI ', () => {
+    expect(downloadURI('testdomain.com', 'testfilename.csv'));
+  });
+
+  test('test mappedChannel with APP_IO input', () => {
+    expect(mappedChannel('APP_IO'));
+  });
+  test('test mappedChannel with ISSUER input', () => {
+    expect(mappedChannel('ISSUER'));
+  });
+  test('test mappedChannel with unexpected input', () => {
+    expect(mappedChannel('test')).toEqual('-');
+  });
+
+  test('test getTimeLineMaskedPan with undefined value', () => {
+    expect(getTimeLineMaskedPan('1234', undefined)).toEqual('****');
+  });
+  test('test getTimeLineMaskedPan with string numeric value', () => {
+    expect(getTimeLineMaskedPan('1234', '5678')).toEqual('**** 5678');
+  });
+
+  test('test getTimeLineMaskedPan with string char value', () => {
+    expect(getTimeLineMaskedPan('1234', 'abcd')).toEqual('abcd');
+  });
+
+  test('test formatedTimeLineCurrency with undefined value', () => {
+    expect(formatedTimeLineCurrency('1234', undefined)).toEqual('');
+  });
+
+  test('test formatedTimeLineCurrency with number value', () => {
+    expect(formatedTimeLineCurrency('1234', 12)).toContain('12');
+  });
+
+  test('test cleanDate with start mod', () => {
+    expect(cleanDate(new Date('2023-01-01'), 'start')).toEqual('2023-01-01T00:00:00Z');
   });
 });

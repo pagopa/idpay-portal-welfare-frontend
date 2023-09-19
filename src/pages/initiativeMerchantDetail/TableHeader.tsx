@@ -12,7 +12,7 @@ const TableHeader = ({ data }: Props) => {
       <TableRow>
         {data.map((d, index) => (
           <TableCell key={index} width={d.width}>
-            {d.label.length > 0 ? t(d.label) : d.label}
+            {t(d.label)}
           </TableCell>
         ))}
       </TableRow>
