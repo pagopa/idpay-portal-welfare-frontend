@@ -32,7 +32,7 @@ const FiltersForm = ({ formik, resetForm, filterByStatusOptionsList }: Props) =>
           value={formik.values.searchUser}
           onChange={(e) => formik.handleChange(e)}
           size="small"
-          data-testid="searchUser-test"
+          data-testid="searchUserField-test"
         />
       </FormControl>
       <FormControl sx={{ gridColumn: 'span 2' }} size="small">
@@ -61,7 +61,7 @@ const FiltersForm = ({ formik, resetForm, filterByStatusOptionsList }: Props) =>
           variant="outlined"
           size="small"
           onClick={() => formik.handleSubmit()}
-          data-testid="apply-filters-test"
+          data-testid="apply-filters-btn-test"
         >
           {t('pages.initiativeMerchantDetail.filterBtn')}
         </Button>
