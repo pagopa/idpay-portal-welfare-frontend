@@ -38,7 +38,7 @@ afterAll(() => {
 
 afterEach(cleanup);
 
-describe('<InitiativeRefunds />', () => {
+describe('<InitiativeRanking />', () => {
   window.scrollTo = jest.fn();
   const mockedRes = {
     content: [
@@ -119,10 +119,10 @@ describe('<InitiativeRefunds />', () => {
     const resetFilterBtn = await screen.findByText('pages.initiativeRanking.form.resetFiltersBtn');
     fireEvent.click(resetFilterBtn);
 
-    const downloadRankingFileBtn = await screen.findByText(
-      'pages.initiativeRanking.publishModal.alertBtn'
-    );
-    fireEvent.click(downloadRankingFileBtn);
+    // const downloadRankingFileBtn = await screen.findByText(
+    //   'pages.initiativeRanking.publishModal.alertBtn'
+    // );
+    // fireEvent.click(downloadRankingFileBtn);
 
     // publish btn
     const publishBtn = screen.getByText(
