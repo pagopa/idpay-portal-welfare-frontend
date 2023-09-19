@@ -105,21 +105,21 @@ describe('<InitiativeRefundsOutcome />', () => {
     });
   });
 
-  // test('Test InitiativeRefundsOutcome should fail upload with multiple files', async () => {
-  //   renderWithProviders(<InitiativeRefundsOutcome />);
+  test('Test InitiativeRefundsOutcome should fail upload with multiple files', async () => {
+    renderWithProviders(<InitiativeRefundsOutcome />);
 
-  //   const inputEl = screen.getByTestId('drop-input');
-  //   const file = new File(['file'], 'application/zip', {
-  //     type: 'application/zip',
-  //   });
-  //   const file2 = new File(['file'], 'application/zip', {
-  //     type: 'application/zip',
-  //   });
-  //   Object.defineProperty(inputEl, 'files', {
-  //     value: [file, file2],
-  //   });
-  //   fireEvent.drop(inputEl);
-  // });
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+    const file2 = new File(['file'], 'application/zip', {
+      type: 'application/zip',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file, file2],
+    });
+    fireEvent.drop(inputEl);
+  });
 
   test('Test InitiativeRefundsOutcome should fail upload with wrong type', async () => {
     renderWithProviders(<InitiativeRefundsOutcome />);
