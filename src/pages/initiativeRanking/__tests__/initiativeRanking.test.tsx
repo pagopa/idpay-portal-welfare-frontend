@@ -79,6 +79,22 @@ describe('<InitiativeRanking />', () => {
     rankingFilePath: 'string',
   };
 
+  const mockedResWrongContent = {
+    content: [
+      {
+        beneficiary: 'string',
+        criteriaConsensusTimestamp: undefined,
+        rankingValue: -1,
+        ranking: 0,
+        beneficiaryRankingStatus: 'ELIGIBLE_OK',
+      },
+    ],
+    rankingStatus: 'COMPLETED',
+    rankingPublishedTimestamp: new Date(),
+    rankingGeneratedTimestamp: new Date(),
+    rankingFilePath: 'string',
+  };
+
   it('Test InitiativeRanking to be Rendered with state', async () => {
     renderWithContext(<InitiativeRanking />);
 
@@ -116,6 +132,14 @@ describe('<InitiativeRanking />', () => {
   test('test case of READY status from getInitiativeOnboardingRankingStatus', async () => {
     InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
       async (): Promise<PageOnboardingRankingsDTO> => new Promise((resolve) => resolve(mockedRes));
+
+    renderWithContext(<InitiativeRanking />);
+  });
+
+  test('test case of READY status from getInitiativeOnboardingRankingStatus', async () => {
+    InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged =
+      async (): Promise<PageOnboardingRankingsDTO> =>
+        new Promise((resolve) => resolve(mockedResWrongContent));
 
     renderWithContext(<InitiativeRanking />);
   });
