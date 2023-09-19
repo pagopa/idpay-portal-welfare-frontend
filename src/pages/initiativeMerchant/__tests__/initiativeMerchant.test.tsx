@@ -5,6 +5,7 @@ import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeMerchant from '../initiativeMerchant';
 import { MerchantListDTO } from '../../../api/generated/merchants/MerchantListDTO';
+import userEvent from '@testing-library/user-event';
 
 window.scrollTo = jest.fn();
 
@@ -115,5 +116,23 @@ describe('test suite for InitativeMerchant ', () => {
     ): Promise<MerchantListDTO> => await Promise.reject('test reject getMerchantList addError');
 
     renderWithContext(<InitiativeMerchant />);
+  });
+
+  test('Render component when user resets filters', async () => {
+    renderWithContext(<InitiativeMerchant />);
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId('reset-filters-button-test'));
+  });
+
+  test('Render component when user filters results', async () => {
+    renderWithContext(<InitiativeMerchant />);
+    const user = userEvent.setup();
+    const filterByUser = screen.getByLabelText(
+      'pages.initiativeMerchant.form.search'
+    ) as HTMLInputElement;
+
+    await user.type(filterByUser, 'test');
+
+    await user.click(screen.getByTestId('apply-filters-button-test'));
   });
 });

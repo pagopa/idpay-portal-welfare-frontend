@@ -198,6 +198,7 @@ const InitativeMerchant = () => {
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={resetForm}
+            data-testid="reset-filters-button-test"
           >
             {t('pages.initiativeMerchant.form.removeFiltersBtn')}
           </ButtonNaked>

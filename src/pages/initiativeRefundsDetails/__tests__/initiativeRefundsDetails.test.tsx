@@ -53,6 +53,18 @@ describe('test suite for refund details', () => {
     await user.click(screen.getByTestId('reset-filters-test'));
   });
 
+  test('Render component when user filters results', async () => {
+    renderWithContext(<InitiativeRefundsDetails />);
+    const user = userEvent.setup();
+    const filterByUser = screen.getByLabelText(
+      'pages.initiativeRefundsDetails.form.cro'
+    ) as HTMLInputElement;
+
+    await user.type(filterByUser, 'test');
+
+    await user.click(screen.getByTestId('apply-filters-test'));
+  });
+
   test('on click of download file', () => {
     InitiativeApiMocked.getRewardFileDownload = async (
       _id: string,
