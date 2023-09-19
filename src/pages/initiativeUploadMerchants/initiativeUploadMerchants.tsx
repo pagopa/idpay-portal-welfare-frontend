@@ -1,19 +1,10 @@
-import {
-  Alert,
-  AlertTitle,
-  FormHelperText,
-  IconButton,
-  Link,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { FormHelperText, Link, Paper } from '@mui/material';
 import { Box } from '@mui/system';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
@@ -29,6 +20,7 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { uploadMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import AcceptedFile from '../../components/AcceptedFile/AcceptedFile';
+import RejectedFile from '../../components/RejectedFile/RejectedFile';
 
 const InitiativeUploadMerchants = () => {
   const { t } = useTranslation();
@@ -245,25 +237,11 @@ const InitiativeUploadMerchants = () => {
         />
 
         {fileRejected && (
-          <Alert
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setFileRejected(false);
-                }}
-                data-testid="close-icon"
-              >
-                <CloseIcon color="primary" fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            <AlertTitle>{t(alertTitle)}</AlertTitle>
-            <Typography variant="body2">{t(alertDescription)}</Typography>
-          </Alert>
+          <RejectedFile
+            title={t(alertTitle)}
+            description={t(alertDescription)}
+            dismissFn={() => setFileRejected(false)}
+          />
         )}
 
         {fileIsLoading ? (

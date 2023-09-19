@@ -1,20 +1,10 @@
-import {
-  Alert,
-  AlertTitle,
-  Box,
-  FormHelperText,
-  IconButton,
-  Link,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { Box, FormHelperText, Link, Paper } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import CloseIcon from '@mui/icons-material/Close';
 import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
@@ -27,6 +17,8 @@ import LoadingFile from '../../../LoadingFile/LoadingFile';
 import InitUploadBox from '../../../InitUploadBox/InitUploadBox';
 import AcceptedFile from '../../../AcceptedFile/AcceptedFile';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
+import RejectedFile from '../../../RejectedFile/RejectedFile';
+import { initUploadBoxStyle, initUploadHelperBoxStyle } from '../../../../helpers';
 
 interface Props {
   action: string;
@@ -235,35 +227,14 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         my: 1,
       }}
     >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          border: '1px dashed #0073E6',
-          borderRadius: '10px',
-          backgroundColor: 'rgba(0, 115, 230, 0.08)',
-          p: 3,
-        }}
-        {...getRootProps({ className: 'dropzone' })}
-      >
+      <Box sx={initUploadBoxStyle} {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} data-testid="drop-input-step3" />
         <InitUploadBox
           text={t('components.wizard.stepThree.upload.dragAreaText')}
           link={t('components.wizard.stepThree.upload.dragAreaLink')}
         />
       </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          py: 1,
-          px: 3,
-        }}
-      >
+      <Box sx={initUploadHelperBoxStyle}>
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('components.wizard.stepThree.upload.fileUploadHelpText')}&#160;
           <Link
@@ -290,25 +261,11 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       />
 
       {fileRejected && (
-        <Alert
-          severity="error"
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setFileRejected(false);
-              }}
-              data-testid="close-icon"
-            >
-              <CloseIcon color="primary" fontSize="inherit" />
-            </IconButton>
-          }
-        >
-          <AlertTitle>{t(alertTitle)}</AlertTitle>
-          <Typography variant="body2">{t(alertDescription)}</Typography>
-        </Alert>
+        <RejectedFile
+          title={t(alertTitle)}
+          description={t(alertDescription)}
+          dismissFn={() => setFileRejected(false)}
+        />
       )}
 
       {fileIsLoading ? (
