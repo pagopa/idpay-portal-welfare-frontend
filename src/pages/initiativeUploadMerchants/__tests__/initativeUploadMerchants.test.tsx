@@ -134,4 +134,254 @@ describe('test suite for InitativeUploadMerchants component', () => {
     });
     fireEvent.drop(inputEl);
   });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.empty', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.empty',
+      errorRow: 0,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.format', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.format',
+      errorRow: 0,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.name', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.name',
+      errorRow: 0,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.size', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.size',
+      errorRow: 0,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.missing.required.fields', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.missing.required.fields',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.cf.wrong', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.cf.wrong',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.iban.wrong', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.iban.wrong',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.email.wrong', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.email.wrong',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status merchant.invalid.file.acquirer.wrong', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'merchant.invalid.file.acquirer.wrong',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
+
+  test('upload catch case of uploadMerchantList status unexpected', async () => {
+    const mockedResponse = {
+      elabTimeStamp: new Date(),
+      errorKey: 'unexpected',
+      errorRow: 1,
+      status: 'REJECTED',
+    };
+
+    merchantsApiMocked.uploadMerchantList = async (
+      _id: string,
+      _file: File
+    ): Promise<MerchantUpdateDTO> => await Promise.resolve(mockedResponse);
+
+    renderWithContext(<InitiativeUploadMerchants />);
+
+    const inputEl = screen.getByTestId('drop-input');
+    const file = new File(['file'], 'text.csv', {
+      type: 'text/csv',
+    });
+    Object.defineProperty(inputEl, 'files', {
+      value: [file],
+    });
+    fireEvent.drop(inputEl);
+  });
 });
