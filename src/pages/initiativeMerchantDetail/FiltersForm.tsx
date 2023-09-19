@@ -71,6 +71,7 @@ const FiltersForm = ({ formik, resetForm, filterByStatusOptionsList }: Props) =>
           component="button"
           sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
           onClick={resetForm}
+          data-testid="reset-filters-btn-test"
         >
           {t('pages.initiativeMerchantDetail.removeFiltersBtn')}
         </ButtonNaked>

@@ -4,6 +4,7 @@ import { renderWithContext } from '../../../utils/test-utils';
 import MerchantTransactions from '../MerchantTransactions';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import { MerchantTransactionsListDTO } from '../../../api/generated/merchants/MerchantTransactionsListDTO';
+import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -15,6 +16,27 @@ describe('Test suite for MerchantTransactions component', () => {
     renderWithContext(
       <MerchantTransactions initiativeId={'initativeTestId321'} merchantId={'merchantTestId123'} />
     );
+  });
+
+  test('Render component when user resets filters', async () => {
+    renderWithContext(
+      <MerchantTransactions initiativeId={'initativeTestId321'} merchantId={'merchantTestId123'} />
+    );
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId('reset-filters-btn-test'));
+  });
+
+  test('Render component when user applies filters', async () => {
+    renderWithContext(
+      <MerchantTransactions initiativeId={'initativeTestId321'} merchantId={'merchantTestId123'} />
+    );
+    const user = userEvent.setup();
+    const filterByUser = screen.getByLabelText(
+      'pages.initiativeMerchantDetail.searchByFiscalCode'
+    ) as HTMLInputElement;
+
+    await user.type(filterByUser, 'test');
+    await user.click(screen.getByTestId('apply-filters-btn-test'));
   });
 
   test('should render MerchantTransactions content array is empty from getMerchantTransactions API response', async () => {
