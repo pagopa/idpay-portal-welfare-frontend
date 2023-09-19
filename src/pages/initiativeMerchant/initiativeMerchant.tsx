@@ -188,7 +188,7 @@ const InitativeMerchant = () => {
             variant="outlined"
             size="small"
             onClick={() => formik.handleSubmit()}
-            data-testid="apply-filters-test"
+            data-testid="apply-filters-button-test"
           >
             {t('pages.initiativeMerchant.form.filterBtn')}
           </Button>

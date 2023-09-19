@@ -91,7 +91,7 @@ describe('test suite for InitativeMerchant ', () => {
 
     // SUBMIT BUTTON TEST
 
-    const filterBtn = screen.getByTestId('apply-filters-test') as HTMLButtonElement;
+    const filterBtn = screen.getByTestId('apply-filters-button-test') as HTMLButtonElement;
     fireEvent.click(filterBtn);
 
     // RESET BUTTON TEST
