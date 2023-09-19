@@ -133,7 +133,25 @@ describe('test suite initiative user details', () => {
 
     renderWithContext(<InitiativeUserDetails />);
   });
-  // try
+
+  test('test of getTimeLine with wrong data', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [],
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    renderWithContext(<InitiativeUserDetails />);
+  });
+
   test('test of render TransactionDetailModal with different type of opeType', async () => {
     store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
     const operationTypes = [

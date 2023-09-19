@@ -147,6 +147,21 @@ describe('test suite for refund details', () => {
     renderWithContext(<InitiativeRefundsDetails />);
   });
 
+  test('test getExportRefundsListPaged with wrong response', async () => {
+    const mockedRefundsDetailsListItem = {
+      content: [],
+    };
+
+    InitiativeApiMocked.getExportRefundsListPaged = async (
+      _initiativeId: string,
+      _exportId: string,
+      _page: number,
+      _cro?: string,
+      _status?: string
+    ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
+    renderWithContext(<InitiativeRefundsDetails />);
+  });
+
   test('test catch case of getRewardFileDownload api call', async () => {
     InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
