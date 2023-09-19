@@ -9,6 +9,7 @@ import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
 import { mockedGetRewardFileDownload } from '../../../services/__mocks__/initiativeService';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
+import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -44,6 +45,12 @@ describe('test suite for refund details', () => {
     fireEvent.click(backBtn);
 
     expect(oldLocPathname !== history.location.pathname).toBeTruthy();
+  });
+
+  test('Render component when user resets filters', async () => {
+    renderWithContext(<InitiativeRefundsDetails />);
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId('reset-filters-test'));
   });
 
   test('on click of download file', () => {
@@ -109,24 +116,24 @@ describe('test suite for refund details', () => {
   //   fireEvent.click(closeModalXBTn);
   // });
 
-  // test('test getExportRefundsListPaged with empty response', async () => {
-  //   const mockedRefundsDetailsListItem = {
-  //     content: [],
-  //     pageNo: 0,
-  //     pageSize: 0,
-  //     totalElements: 0,
-  //     totalPages: 0,
-  //   };
+  test('test getExportRefundsListPaged with empty response', async () => {
+    const mockedRefundsDetailsListItem = {
+      content: [],
+      pageNo: 0,
+      pageSize: 0,
+      totalElements: 0,
+      totalPages: 0,
+    };
 
-  //   InitiativeApiMocked.getExportRefundsListPaged = async (
-  //     _initiativeId: string,
-  //     _exportId: string,
-  //     _page: number,
-  //     _cro?: string,
-  //     _status?: string
-  //   ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
-  //   renderWithContext(<InitiativeRefundsDetails />);
-  // });
+    InitiativeApiMocked.getExportRefundsListPaged = async (
+      _initiativeId: string,
+      _exportId: string,
+      _page: number,
+      _cro?: string,
+      _status?: string
+    ): Promise<ExportListDTO> => new Promise((resolve) => resolve(mockedRefundsDetailsListItem));
+    renderWithContext(<InitiativeRefundsDetails />);
+  });
 
   test('test catch case of getRewardFileDownload api call', async () => {
     InitiativeApiMocked.getRewardFileDownload = async (): Promise<any> =>

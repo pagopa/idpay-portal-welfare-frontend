@@ -15,6 +15,8 @@ import {
   numberWithCommas,
   peopleReached,
   renderInitiativeStatus,
+  getRefundStatusChip,
+  formatAddress,
 } from '../helpers';
 
 describe('switch initiative status', () => {
@@ -76,6 +78,10 @@ describe('switch initiative status', () => {
 
   test('test formatedCurrency with undefined as param', () => {
     expect(formatedCurrency(undefined)).toEqual('-');
+  });
+
+  test('test formatedCurrency with a number as param', () => {
+    expect(formatedCurrency(10, '-', true)).toContain('10');
   });
 
   test('test formatedDate with Date object as param', () => {
@@ -141,5 +147,27 @@ describe('switch initiative status', () => {
 
   test('test cleanDate with start mod', () => {
     expect(cleanDate(new Date('2023-01-01'), 'start')).toEqual('2023-01-01T00:00:00Z');
+  });
+
+  test('test getRefundStatusChip with status EXPORTED', () => {
+    expect(getRefundStatusChip({ status: 'EXPORTED', percentageResulted: undefined }));
+  });
+
+  test('test getRefundStatusChip with status PARTIAL', () => {
+    expect(getRefundStatusChip({ status: 'PARTIAL', percentageResulted: '10' }));
+  });
+
+  test('test getRefundStatusChip with status COMPLETE', () => {
+    expect(getRefundStatusChip({ status: 'COMPLETE', percentageResulted: undefined }));
+  });
+
+  test('test getRefundStatusChip with unexpected status ', () => {
+    expect(getRefundStatusChip({ status: 'TEST', percentageResulted: undefined }));
+  });
+
+  test('test formatAddress with strings params', () => {
+    expect(formatAddress('via test 1', 'milano', 'mi', '20100')).toEqual(
+      'via test 1, milano, mi, 20100'
+    );
   });
 });

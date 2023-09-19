@@ -410,6 +410,7 @@ const InitiativeRefundsDetails = () => {
             component="button"
             sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.875rem' }}
             onClick={resetForm}
+            data-testid="reset-filters-test"
           >
             {t('pages.initiativeRefundsDetails.form.resetFiltersBtn')}
           </ButtonNaked>
