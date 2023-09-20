@@ -15,8 +15,16 @@ export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (orderBy === 'creationDate' || orderBy === 'updateDate') {
     const dAArr = dA.split('/');
     const dBArr = dB.split('/');
-    const dateA = new Date(parseInt(dAArr[2], 10), parseInt(dAArr[1], 10), parseInt(dAArr[0], 10));
-    const dateB = new Date(parseInt(dBArr[2], 10), parseInt(dBArr[1], 10), parseInt(dBArr[0], 10));
+    const dateA = new Date(
+      parseInt(dAArr[2], 10),
+      parseInt(dAArr[1], 10) - 1,
+      parseInt(dAArr[0], 10)
+    );
+    const dateB = new Date(
+      parseInt(dBArr[2], 10),
+      parseInt(dBArr[1], 10) - 1,
+      parseInt(dBArr[0], 10)
+    );
     if (dateB.getTime() < dateA.getTime()) {
       return -1;
     }

@@ -11,13 +11,10 @@ import {
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
   TextField,
   Typography,
 } from '@mui/material';
-import { itIT } from '@mui/material/locale';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { Box } from '@mui/system';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ButtonNaked } from '@pagopa/mui-italia';
@@ -28,6 +25,8 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import {
@@ -41,23 +40,22 @@ import {
   initiativePagesTableContainerStyle,
   initiativeUsersAndRefundsValidationSchema,
 } from '../../helpers';
+import { useInitiative } from '../../hooks/useInitiative';
+import { useAppSelector } from '../../redux/hooks';
+import {
+  initiativeRewardTypeSelector,
+  stepTwoBeneficiaryTypeSelector,
+} from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
-import { useInitiative } from '../../hooks/useInitiative';
-import {
-  stepTwoBeneficiaryTypeSelector,
-  initiativeRewardTypeSelector,
-} from '../../redux/slices/initiativeSlice';
-import { useAppSelector } from '../../redux/hooks';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import TablePaginator from '../components/TablePaginator';
 import SuspensionModal from './SuspensionModal';
 import TransactionDetailModal from './TransactionDetailModal';
-import UserDetailsSummary from './components/UserDetailsSummary';
 import FamilyUnitSummary from './components/FamilyUnitSummary';
+import UserDetailsSummary from './components/UserDetailsSummary';
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const InitiativeUserDetails = () => {
@@ -80,7 +78,6 @@ const InitiativeUserDetails = () => {
   const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
   const setLoading = useLoading('GET_INITIATIVE_USER_DETAILS');
   const addError = useErrorDispatcher();
-  const theme = createTheme(itIT);
   const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
   const rewardType = useAppSelector(initiativeRewardTypeSelector);
 
@@ -253,13 +250,6 @@ const InitiativeUserDetails = () => {
     }
   };
 
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
-  };
-
   const operationTypeLabel = (id: string, opeType: string, event: OperationDTO) => {
     switch (opeType) {
       case 'ADD_IBAN':
@@ -288,7 +278,16 @@ const InitiativeUserDetails = () => {
       case 'REVERSAL':
         return t('pages.initiativeUserDetails.operationTypes.reversal');
       case 'TRANSACTION':
-        return t('pages.initiativeUserDetails.operationTypes.transaction');
+        if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+          return t('pages.initiativeUserDetails.operationTypes.transaction');
+        } else if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
+          if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
+            return t('pages.initiativeUserDetails.operationTypes.payment');
+          } else if (event.status === 'CANCELLED') {
+            return t('pages.initiativeUserDetails.operationTypes.paymentCancelled');
+          }
+        }
+        return '';
       case 'SUSPENDED':
         return t('pages.initiativeUserDetails.operationTypes.suspended');
       default:
@@ -399,7 +398,6 @@ const InitiativeUserDetails = () => {
               onClick={() => handleSuspension('SUSPEND')}
               data-testid="suspended"
               color="error"
-              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.suspendUser')}
             </Button>
@@ -413,7 +411,6 @@ const InitiativeUserDetails = () => {
               size="small"
               onClick={() => handleSuspension('READMIT')}
               data-testid="readmit"
-              disabled={rewardType === InitiativeRewardTypeEnum.DISCOUNT}
             >
               {t('pages.initiativeUserDetails.readmit')}
             </Button>
@@ -429,29 +426,6 @@ const InitiativeUserDetails = () => {
             </Button>
           </Box>
         )}
-        {/* <Box sx={{ display: 'grid', gridColumn: 'span 3' }}>
-          <Button
-            variant="contained"
-            size="small"
-            onClick={() => setOpenSnackBar(true)}
-            data-testid="download-csv-test"
-          >
-            {t('pages.initiativeUserDetails.downloadCsvBtn')}
-          </Button>
-
-          <Snackbar
-            sx={{ pb: 2 }}
-            open={openSnackBar}
-            onClose={() => setOpenSnackBar(false)}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            autoHideDuration={3000}
-            data-testid="snack-bar-test"
-          >
-            <Alert severity="success" elevation={6} variant="outlined">
-              {t('pages.initiativeUserDetails.downloadCsv')}
-            </Alert>
-          </Snackbar>
-        </Box> */}
       </Box>
 
       <UserDetailsSummary
@@ -485,33 +459,48 @@ const InitiativeUserDetails = () => {
             <MenuItem value={'ONBOARDING'}>
               {t('pages.initiativeUserDetails.operationTypes.onboarding')}
             </MenuItem>
-            <MenuItem value={'ADD_IBAN'}>
-              {t('pages.initiativeUserDetails.operationTypes.addIban')}
-            </MenuItem>
-            <MenuItem value={'ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
-            </MenuItem>
-            <MenuItem value={'DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_REFUND'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
-            </MenuItem>
-            <MenuItem value={'TRANSACTION'}>
-              {t('pages.initiativeUserDetails.operationTypes.transaction')}
-            </MenuItem>
-            <MenuItem value={'PAID_REFUND'}>
-              {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
-            </MenuItem>
-            <MenuItem value={'REVERSAL'}>
-              {t('pages.initiativeUserDetails.operationTypes.reversal')}
-            </MenuItem>
+
+            {rewardType === InitiativeRewardTypeEnum.REFUND && (
+              <>
+                <MenuItem value={'ADD_IBAN'}>
+                  {t('pages.initiativeUserDetails.operationTypes.addIban')}
+                </MenuItem>
+                <MenuItem value={'ADD_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
+                </MenuItem>
+                <MenuItem value={'DELETE_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
+                </MenuItem>
+                <MenuItem value={'REJECTED_REFUND'}>
+                  {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
+                </MenuItem>
+                <MenuItem value={'TRANSACTION'}>
+                  {t('pages.initiativeUserDetails.operationTypes.transaction')}
+                </MenuItem>
+                <MenuItem value={'PAID_REFUND'}>
+                  {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
+                </MenuItem>
+                <MenuItem value={'REVERSAL'}>
+                  {t('pages.initiativeUserDetails.operationTypes.reversal')}
+                </MenuItem>
+              </>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
+              <MenuItem value="AUTHORIZED">
+                {t('pages.initiativeUserDetails.operationTypes.discountAuthorized')}
+              </MenuItem>
+            )}
+            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
+              <MenuItem value="CANCELLED">
+                {t('pages.initiativeUserDetails.operationTypes.discountCancelled')}
+              </MenuItem>
+            )}
           </Select>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
@@ -594,18 +583,21 @@ const InitiativeUserDetails = () => {
                       {t('pages.initiativeUserDetails.table.event')}
                     </TableCell>
                     <TableCell width="10%">
-                      {t('pages.initiativeUserDetails.table.totExpense')}
+                      {rewardType === InitiativeRewardTypeEnum.REFUND
+                        ? t('pages.initiativeUserDetails.table.totExpense')
+                        : t('pages.initiativeUserDetails.transactionDetail.import')}
                     </TableCell>
-                    <TableCell width="15%">
-                      {t('pages.initiativeUserDetails.table.toRefund')}
-                    </TableCell>
+                    {rewardType === InitiativeRewardTypeEnum.REFUND && (
+                      <TableCell width="15%">
+                        {t('pages.initiativeUserDetails.table.toRefund')}
+                      </TableCell>
+                    )}
                   </TableRow>
                 </TableHead>
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r) => (
                     <TableRow key={r.operationId}>
                       <TableCell sx={{ textAlign: 'left' }}>
-                        {/* {r.operationDate?.toLocaleString('fr-BE').slice(0, 16)} */}
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
@@ -629,11 +621,15 @@ const InitiativeUserDetails = () => {
                           </ButtonNaked>
                         )}
                       </TableCell>
-                      <TableCell sx={{ textAlign: 'left' }}>
-                        {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
-                          ? '-'
-                          : formatedCurrency(r.amount)}
-                      </TableCell>
+                      {rewardType === InitiativeRewardTypeEnum.REFUND && (
+                        <TableCell sx={{ textAlign: 'left' }}>
+                          {r.operationType === 'PAID_REFUND' ||
+                          r.operationType === 'REJECTED_REFUND'
+                            ? '-'
+                            : formatedCurrency(r.amount)}
+                        </TableCell>
+                      )}
+
                       <TableCell sx={{ textAlign: 'left' }}>
                         {r.operationType === 'PAID_REFUND' || r.operationType === 'REJECTED_REFUND'
                           ? '-'
@@ -643,21 +639,12 @@ const InitiativeUserDetails = () => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={rowsPerPage}
-                  rowsPerPageOptions={[rowsPerPage]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={rowsPerPage}
+              />
               <TransactionDetailModal
                 fiscalCode={cf}
                 operationId={selectedOperationId}
@@ -665,6 +652,7 @@ const InitiativeUserDetails = () => {
                 handleCloseModal={handleCloseModal}
                 initiativeId={id}
                 holderBank={holderBank}
+                rewardType={rewardType}
               />
               <InitiativeRefundsDetailsModal
                 openRefundsDetailModal={openRefundDetailModal}
@@ -680,6 +668,7 @@ const InitiativeUserDetails = () => {
                 buttonType={buttonType}
                 id={id}
                 cf={cf}
+                rewardType={rewardType}
               />
             </Box>
           </Box>

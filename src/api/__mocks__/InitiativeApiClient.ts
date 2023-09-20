@@ -9,7 +9,7 @@ import {
   mockedFamilyUnitComposition,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
-  mockedGetRankingFileDownload,
+  // mockedGetRankingFileDownload,
   mockedGetRewardFileDownload,
   mockedIbanInfo,
   mockedInitiativeDetail,
@@ -190,8 +190,8 @@ export const InitiativeApiMocked = {
   ): Promise<PageOnboardingRankingsDTO> =>
     new Promise((resolve) => resolve(mockedGetIniOnboardingRankingStatusPaged)),
 
-  getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
-    new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
+  // getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
+  //   new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
 
   notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
 
@@ -228,10 +228,16 @@ export const InitiativeApiMocked = {
     _fiscalCode: string
   ): Promise<OnboardingStatusDTO> => new Promise((resolve) => resolve(mockedBeneficaryStatus)),
 
-  suspendUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+  suspendUserRefund: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
     new Promise((resolve) => resolve()),
 
-  readmitUser: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+  readmitUserRefund: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  suspendUserDiscount: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
+    new Promise((resolve) => resolve()),
+
+  readmitUserDiscount: async (_initiativeId: string, _fiscalCode: string): Promise<void> =>
     new Promise((resolve) => resolve()),
 
   getFamilyComposition: async (

@@ -8,6 +8,7 @@ type Props = {
   openPublishInitiativeRankingModal: boolean;
   handleClosePublishInitiativeRankingModal: MouseEventHandler;
   initiativeId: string | undefined;
+  initiativeName: string | undefined;
   fileName: string | undefined;
   publishInitiativeRanking: any;
   downloadInitiativeRanking: any;
@@ -17,6 +18,7 @@ const PublishInitiativeRankingModal = ({
   openPublishInitiativeRankingModal,
   handleClosePublishInitiativeRankingModal,
   initiativeId,
+  initiativeName,
   fileName,
   publishInitiativeRanking,
   downloadInitiativeRanking,
@@ -50,7 +52,7 @@ const PublishInitiativeRankingModal = ({
         >
           <Typography variant="h6">{t('pages.initiativeRanking.publishModal.title')}</Typography>
           <Typography variant="body1" sx={{ my: 2 }}>
-            {t('pages.initiativeRanking.publishModal.subtitle')}
+            {t('pages.initiativeRanking.publishModal.subtitle', { initiativeName })}
           </Typography>
 
           <Alert

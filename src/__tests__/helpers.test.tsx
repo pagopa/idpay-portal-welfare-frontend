@@ -1,13 +1,22 @@
 import {
+  cleanDate,
+  copyTextToClipboard,
+  downloadURI,
+  fileFromReader,
   formatedCurrency,
   formatedDate,
+  formatedTimeLineCurrency,
   formatFileName,
   formatIban,
   formatStringToDate,
   getMaskedPan,
+  getTimeLineMaskedPan,
+  mappedChannel,
   numberWithCommas,
   peopleReached,
-  renderInitiativeStatus
+  renderInitiativeStatus,
+  getRefundStatusChip,
+  formatAddress,
 } from '../helpers';
 
 describe('switch initiative status', () => {
@@ -42,7 +51,7 @@ describe('switch initiative status', () => {
     expect(numberWithCommas('2')).toEqual('2');
   });
 
-  test('test numberWithCommas string type ', () => {
+  test('test peopleReached ', () => {
     expect(peopleReached('20', '2')).toBeDefined();
   });
 
@@ -66,9 +75,17 @@ describe('switch initiative status', () => {
   test('test formatFileName with undefined as param', () => {
     expect(formatIban(undefined)).toEqual('');
   });
- 
+
   test('test formatedCurrency with undefined as param', () => {
     expect(formatedCurrency(undefined)).toEqual('-');
+  });
+
+  test('test formatedCurrency with a number as param and cents param as true', () => {
+    expect(formatedCurrency(10, '-', true)).toContain('10');
+  });
+
+  test('test formatedCurrency with a number as param', () => {
+    expect(formatedCurrency(10)).toContain('10');
   });
 
   test('test formatedDate with Date object as param', () => {
@@ -97,5 +114,68 @@ describe('switch initiative status', () => {
 
   test('test getMaskedPan with undefined pan as param', () => {
     expect(getMaskedPan(undefined)).toEqual('****');
+  });
+
+  test('test downloadURI ', () => {
+    expect(downloadURI('testdomain.com', 'testfilename.csv'));
+  });
+
+  test('test mappedChannel with APP_IO input', () => {
+    expect(mappedChannel('APP_IO'));
+  });
+  test('test mappedChannel with ISSUER input', () => {
+    expect(mappedChannel('ISSUER'));
+  });
+  test('test mappedChannel with unexpected input', () => {
+    expect(mappedChannel('test')).toEqual('-');
+  });
+
+  test('test getTimeLineMaskedPan with undefined value', () => {
+    expect(getTimeLineMaskedPan('1234', undefined)).toEqual('****');
+  });
+  test('test getTimeLineMaskedPan with string numeric value', () => {
+    expect(getTimeLineMaskedPan('1234', '5678')).toEqual('**** 5678');
+  });
+
+  test('test getTimeLineMaskedPan with string char value', () => {
+    expect(getTimeLineMaskedPan('1234', 'abcd')).toEqual('abcd');
+  });
+
+  test('test formatedTimeLineCurrency with undefined value', () => {
+    expect(formatedTimeLineCurrency('1234', undefined)).toEqual('');
+  });
+
+  test('test formatedTimeLineCurrency with number value', () => {
+    expect(formatedTimeLineCurrency('1234', 12)).toContain('12');
+  });
+
+  test('test cleanDate with start mod', () => {
+    expect(cleanDate(new Date('2023-01-01'), 'start')).toEqual('2023-01-01T00:00:00Z');
+  });
+
+  test('test getRefundStatusChip with status EXPORTED', () => {
+    expect(getRefundStatusChip({ status: 'EXPORTED', percentageResulted: undefined }));
+  });
+
+  test('test getRefundStatusChip with status PARTIAL', () => {
+    expect(getRefundStatusChip({ status: 'PARTIAL', percentageResulted: '10' }));
+  });
+
+  test('test getRefundStatusChip with status PARTIAL and percentageResulted undefined', () => {
+    expect(getRefundStatusChip({ status: 'PARTIAL', percentageResulted: undefined }));
+  });
+
+  test('test getRefundStatusChip with status COMPLETE', () => {
+    expect(getRefundStatusChip({ status: 'COMPLETE', percentageResulted: undefined }));
+  });
+
+  test('test getRefundStatusChip with unexpected status ', () => {
+    expect(getRefundStatusChip({ status: 'TEST', percentageResulted: undefined }));
+  });
+
+  test('test formatAddress with strings params', () => {
+    expect(formatAddress('via test 1', 'milano', 'mi', '20100')).toEqual(
+      'via test 1, milano, mi, 20100'
+    );
   });
 });

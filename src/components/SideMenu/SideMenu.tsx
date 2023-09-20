@@ -45,6 +45,7 @@ export default function SideMenu() {
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
+
   const [pathname, setPathName] = useState(() => {
     /*
     For some reason, push on history will not notify this component.
@@ -65,6 +66,7 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_REFUNDS_DETAIL,
       ROUTES.INITIATIVE_USER_DETAILS,
       ROUTES.INITIATIVE_MERCHANT,
+      ROUTES.INITIATIVE_MERCHANT_DETAIL,
       ROUTES.INITIATIVE_MERCHANT_UPLOAD,
     ],
     exact: true,
@@ -115,7 +117,7 @@ export default function SideMenu() {
   };
 
   return (
-    <Box display="grid" mt={1}>
+    <Box display="grid" sx={{ backgroundColor: 'background.paper' }}>
       <Box gridColumn="auto">
         <List data-testid="list-test">
           <SidenavItem
@@ -213,6 +215,9 @@ export default function SideMenu() {
                         }
                         isSelected={
                           pathname === `${BASE_ROUTE}/esercenti-iniziativa/${item.initiativeId}` ||
+                          pathname.includes(
+                            `${BASE_ROUTE}/esercenti-iniziativa/dettagli-esercente/${item.initiativeId}`
+                          ) ||
                           pathname ===
                             `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
                         }

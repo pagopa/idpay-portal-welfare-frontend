@@ -11,7 +11,7 @@ import {
   getInitiativeDetail,
   getInitiativeOnboardingRankingStatusPaged,
   getOnboardingStatus,
-  getRankingFileDownload,
+  // getRankingFileDownload,
   getRewardFileDownload,
   getRewardNotificationImportsPaged,
   initiativeStatistics,
@@ -228,16 +228,15 @@ test('get initiative Onboarding ranking status paged', async () => {
   expect(InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged).toHaveBeenCalled();
 });
 
-test('get ranking file download', async () => {
-  await getRankingFileDownload(mockedInitiativeId, mockedFileName);
-  expect(InitiativeApiMocked.getRankingFileDownload).toHaveBeenCalled();
-});
+// test('get ranking file download', async () => {
+//   await getRankingFileDownload(mockedInitiativeId, mockedFileName);
+//   expect(InitiativeApiMocked.getRankingFileDownload).toHaveBeenCalled();
+// });
 
 test('notify citizen rankings', async () => {
   await notifyCitizenRankings(mockedInitiativeId);
   expect(InitiativeApiMocked.notifyCitizenRankings).toHaveBeenCalled();
 });
-// hey
 test('test trascodeRewardRule using RewardGroupDTO', () => {
   const value: InitiativeRewardAndTrxRulesDTORewardRule = {
     _type: 'rewardGroups',

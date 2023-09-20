@@ -1,11 +1,11 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
-// import { MerchantStatusEnum } from '../../../api/generated/merchants/MerchantOnboardingStatusDTO';
-import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpdateDTO';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
-import InitativeMerchant from '../initativeMerchant';
+import InitiativeMerchant from '../initiativeMerchant';
+import { MerchantListDTO } from '../../../api/generated/merchants/MerchantListDTO';
+import userEvent from '@testing-library/user-event';
 
 window.scrollTo = jest.fn();
 
@@ -37,11 +37,11 @@ afterEach(cleanup);
 
 describe('test suite for InitativeMerchant ', () => {
   test('render of compoment InitativeMerchant', async () => {
-    renderWithContext(<InitativeMerchant />);
+    renderWithContext(<InitiativeMerchant />);
   });
 
   test('test that location changes on click of back button', async () => {
-    const { history } = renderWithContext(<InitativeMerchant />);
+    const { history } = renderWithContext(<InitiativeMerchant />);
 
     const merchantBackBtn = screen.getByTestId('back-btn-test') as HTMLButtonElement;
 
@@ -53,7 +53,7 @@ describe('test suite for InitativeMerchant ', () => {
   });
 
   test('test that location changes on click of upload button', async () => {
-    const { history } = renderWithContext(<InitativeMerchant />);
+    const { history } = renderWithContext(<InitiativeMerchant />);
 
     const merchantUploadBtn = screen.getByTestId('upload-btn-test') as HTMLButtonElement;
 
@@ -65,7 +65,7 @@ describe('test suite for InitativeMerchant ', () => {
   });
 
   test('test filters of merchant list, submit button and reset button  ', async () => {
-    renderWithContext(<InitativeMerchant />);
+    renderWithContext(<InitiativeMerchant />);
 
     //TEXTFIELD TEST
 
@@ -92,7 +92,7 @@ describe('test suite for InitativeMerchant ', () => {
 
     // SUBMIT BUTTON TEST
 
-    const filterBtn = screen.getByTestId('apply-filters-test') as HTMLButtonElement;
+    const filterBtn = screen.getByTestId('apply-filters-button-test') as HTMLButtonElement;
     fireEvent.click(filterBtn);
 
     // RESET BUTTON TEST
@@ -109,13 +109,30 @@ describe('test suite for InitativeMerchant ', () => {
     await waitFor(() => expect(searcMerchant.value).toEqual(''));
   });
 
-  test('test addError of getMerchantsOnboardingList in case of error response', async () => {
-    merchantsApiMocked.getMerchantsOnboardingList = async (
+  test('test addError of getMerchantList in case of error response', async () => {
+    merchantsApiMocked.getMerchantList = async (
       _id: string,
       _page: number
-    ): Promise<MerchantUpdateDTO> =>
-      await Promise.reject('test reject getMerchantsOnboardingList addError');
+    ): Promise<MerchantListDTO> => await Promise.reject('test reject getMerchantList addError');
 
-    renderWithContext(<InitativeMerchant />);
+    renderWithContext(<InitiativeMerchant />);
+  });
+
+  test('Render component when user resets filters', async () => {
+    renderWithContext(<InitiativeMerchant />);
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId('reset-filters-button-test'));
+  });
+
+  test('Render component when user filters results', async () => {
+    renderWithContext(<InitiativeMerchant />);
+    const user = userEvent.setup();
+    const filterByUser = screen.getByLabelText(
+      'pages.initiativeMerchant.form.search'
+    ) as HTMLInputElement;
+
+    await user.type(filterByUser, 'test');
+
+    await user.click(screen.getByTestId('apply-filters-button-test'));
   });
 });

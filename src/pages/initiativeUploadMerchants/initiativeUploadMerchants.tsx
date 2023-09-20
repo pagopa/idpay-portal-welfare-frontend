@@ -1,23 +1,18 @@
-import {
-  Alert,
-  AlertTitle,
-  FormHelperText,
-  IconButton,
-  Link,
-  Paper,
-  Typography,
-} from '@mui/material';
+import { FormHelperText, Link, Paper } from '@mui/material';
 import { Box } from '@mui/system';
 import { TitleBox } from '@pagopa/selfcare-common-frontend';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
-import CloseIcon from '@mui/icons-material/Close';
 import InitUploadBox from '../../components/InitUploadBox/InitUploadBox';
 import LoadingFile from '../../components/LoadingFile/LoadingFile';
 import TitleBoxWithHelpLink from '../../components/TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import { initiativePagesBreadcrumbsContainerStyle } from '../../helpers';
+import {
+  initUploadBoxStyle,
+  initUploadHelperBoxStyle,
+  initiativePagesBreadcrumbsContainerStyle,
+} from '../../helpers';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -25,8 +20,9 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { uploadMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import AcceptedFile from '../../components/AcceptedFile/AcceptedFile';
+import RejectedFile from '../../components/RejectedFile/RejectedFile';
 
-const InitativeUploadMerchants = () => {
+const InitiativeUploadMerchants = () => {
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
@@ -113,6 +109,13 @@ const InitativeUploadMerchants = () => {
                     t('pages.initiativeMerchantUpload.uploadPaper.wrongEmail', { x: res.errorRow })
                   );
                   break;
+                case 'merchant.invalid.file.acquirer.wrong':
+                  setAlertDescription(
+                    t('pages.initiativeMerchantUpload.uploadPaper.wrongAcquirer', {
+                      x: res.errorRow,
+                    })
+                  );
+                  break;
                 default:
                   setAlertDescription(
                     t('pages.initiativeMerchantUpload.uploadPaper.errorDescription')
@@ -176,35 +179,14 @@ const InitativeUploadMerchants = () => {
         mt: 1,
       }}
     >
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          border: '1px dashed #0073E6',
-          borderRadius: '10px',
-          backgroundColor: 'rgba(0, 115, 230, 0.08)',
-          p: 3,
-        }}
-        {...getRootProps({ className: 'dropzone' })}
-      >
+      <Box sx={initUploadBoxStyle} {...getRootProps({ className: 'dropzone' })}>
         <input {...getInputProps()} data-testid="drop-input" />
         <InitUploadBox
           text={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaText')}
           link={t('pages.initiativeMerchantUpload.uploadPaper.dragAreaLink')}
         />
       </Box>
-      <Box
-        sx={{
-          gridColumn: 'span 12',
-          alignItems: 'center',
-          justifyItems: 'center',
-          width: '100%',
-          py: 1,
-          px: 3,
-        }}
-      >
+      <Box sx={initUploadHelperBoxStyle}>
         <FormHelperText sx={{ fontSize: '0.875rem' }}>
           {t('pages.initiativeMerchantUpload.uploadPaper.fileUploadHelpText')}&#160;
           <Link
@@ -255,25 +237,11 @@ const InitativeUploadMerchants = () => {
         />
 
         {fileRejected && (
-          <Alert
-            severity="error"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setFileRejected(false);
-                }}
-                data-testid="close-icon"
-              >
-                <CloseIcon color="primary" fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            <AlertTitle>{t(alertTitle)}</AlertTitle>
-            <Typography variant="body2">{t(alertDescription)}</Typography>
-          </Alert>
+          <RejectedFile
+            title={t(alertTitle)}
+            description={t(alertDescription)}
+            dismissFn={() => setFileRejected(false)}
+          />
         )}
 
         {fileIsLoading ? (
@@ -294,4 +262,4 @@ const InitativeUploadMerchants = () => {
   );
 };
 
-export default InitativeUploadMerchants;
+export default InitiativeUploadMerchants;

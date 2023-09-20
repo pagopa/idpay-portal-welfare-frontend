@@ -4,4 +4,5 @@ export interface InitiativeRankingToDisplay {
   ranking: number | undefined;
   rankingValue: string | undefined;
   criteriaConsensusTimeStamp: string | undefined;
+  familyId: string | undefined;
 }

@@ -34,6 +34,7 @@ import { ExportListDTO } from './generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from './generated/initiative/RefundDetailDTO';
 import { OnboardingStatusDTO } from './generated/initiative/OnboardingStatusDTO';
 import { FamilyUnitCompositionDTO } from './generated/initiative/FamilyUnitCompositionDTO';
+// import { ContentDTO } from './generated/initiative/ContentDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -305,10 +306,13 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  getRankingFileDownload: async (id: string, filename: string): Promise<SasToken> => {
-    const result = await apiClient.getRankingFileDownload({ initiativeId: id, filename });
-    return extractResponse(result, 201, onRedirectToLogin);
-  },
+  // getRankingFileDownload: async (id: string, filename: string): Promise<any> => {
+  //   const result = await apiClient.getRankingFileDownload({ initiativeId: id, filename });
+  //   console.log(result);
+
+  //   // eslint-disable-next-line no-underscore-dangle
+  //   return { content: result._tag };
+  // },
 
   notifyCitizenRankings: async (id: string): Promise<void> => {
     const result = await apiClient.notifyCitizenRankings({ initiativeId: id });
@@ -403,20 +407,36 @@ export const InitiativeApi = {
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  suspendUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
-    const result = await apiClient.suspendUser({
+  suspendUserRefund: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.suspendUserRefund({
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
-  readmitUser: async (initiativeId: string, fiscalCode: string): Promise<void> => {
-    const result = await apiClient.readmitUser({
+  readmitUserRefund: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.readmitUserRefund({
       initiativeId,
       'Fiscal-Code': fiscalCode,
     });
     return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  suspendUserDiscount: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.suspendUserDiscount({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
+  },
+
+  readmitUserDiscount: async (initiativeId: string, fiscalCode: string): Promise<void> => {
+    const result = await apiClient.readmitUserDiscount({
+      initiativeId,
+      'Fiscal-Code': fiscalCode,
+    });
+    return extractResponse(result, 204, onRedirectToLogin);
   },
 
   getFamilyComposition: async (

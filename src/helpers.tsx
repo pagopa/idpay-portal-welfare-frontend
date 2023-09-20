@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 import { Chip } from '@mui/material';
 import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import * as Yup from 'yup';
@@ -106,9 +107,19 @@ export const formatIban = (iban: string | undefined) => {
   return '';
 };
 
-export const formatedCurrency = (number: number | undefined, symbol: string = '-') => {
-  if (number) {
+export const formatedCurrency = (
+  number: number | undefined,
+  symbol: string = '-',
+  cents = false
+) => {
+  if (number && cents === false) {
     return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(number);
+  } else if (number && cents === true) {
+    const roundedNumberStr = number.toFixed(2);
+    const roundedNumber = parseFloat(roundedNumberStr) / 100;
+    return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(
+      roundedNumber
+    );
   }
   return symbol;
 };
@@ -119,7 +130,6 @@ export const formatedDate = (date: Date | undefined, symbol: string = '-') => {
   }
   return symbol;
 };
-
 
 export const formatStringToDate = (date: string | undefined) => {
   if (typeof date === 'string') {
@@ -136,6 +146,20 @@ export const formatStringToDate = (date: string | undefined) => {
     }
   }
   return '';
+};
+
+export const formatAddress = (
+  street: string | undefined,
+  municipality: string | undefined,
+  province: string | undefined,
+  zipCpde: string | undefined
+) => {
+  const s = street || '-';
+  const m = municipality || ' -';
+  const p = province || ' -';
+  const z = zipCpde || ' -';
+
+  return `${s}, ${m}, ${p}, ${z}`;
 };
 
 export const getMaskedPan = (pan: string | undefined) => {
@@ -282,4 +306,63 @@ export const initiativePagesTableContainerStyle = {
   height: '100%',
   gridTemplateColumns: 'repeat(12, 1fr)',
   alignItems: 'center',
+};
+
+export const copyTextToClipboard = (text: string | undefined) => {
+  if (typeof text === 'string') {
+    void navigator.clipboard.writeText(text);
+  }
+};
+
+export const fileFromReader = async (
+  reader: ReadableStreamDefaultReader<Uint8Array> | undefined
+): Promise<string> => {
+  const stream = new ReadableStream({
+    start(controller) {
+      return pump();
+      function pump(): Promise<any> | undefined {
+        return reader?.read().then(({ done, value }) => {
+          if (done) {
+            controller.close();
+            return;
+          }
+          controller.enqueue(value);
+          return pump();
+        });
+      }
+    },
+  });
+  const response = new Response(stream);
+  const blob = await response.blob();
+  return URL.createObjectURL(blob);
+};
+
+export const downloadURI = (uri: string, filename: string) => {
+  const link = document.createElement('a');
+  link.download = filename;
+  link.href = uri;
+  link.target = '_blank';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+export const initUploadBoxStyle = {
+  gridColumn: 'span 12',
+  alignItems: 'center',
+  justifyItems: 'center',
+  width: '100%',
+  border: '1px dashed #0073E6',
+  borderRadius: '10px',
+  backgroundColor: 'rgba(0, 115, 230, 0.08)',
+  p: 3,
+};
+
+export const initUploadHelperBoxStyle = {
+  gridColumn: 'span 12',
+  alignItems: 'center',
+  justifyItems: 'center',
+  width: '100%',
+  py: 1,
+  px: 3,
 };

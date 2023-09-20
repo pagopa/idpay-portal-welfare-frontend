@@ -2,11 +2,14 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 import {
   OnboardingStatusDTO,
   StatusEnum as OnboardingStatusEnum,
 } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
+import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedIbanInfo, mockedWallet } from '../../../services/__mocks__/initiativeService';
 import { renderWithContext } from '../../../utils/test-utils';
@@ -32,7 +35,6 @@ beforeAll(() => {
 afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
-
 
 afterEach(cleanup);
 
@@ -104,9 +106,9 @@ describe('test suite initiative user details', () => {
     });
 
     // test reset form btn
-    const resetFilterBtn = await screen.findByText(
+    const resetFilterBtn = (await screen.findByText(
       'pages.initiativeUsers.form.resetFiltersBtn'
-    ) as HTMLButtonElement;
+    )) as HTMLButtonElement;
     fireEvent.click(resetFilterBtn);
   });
 
@@ -131,8 +133,27 @@ describe('test suite initiative user details', () => {
 
     renderWithContext(<InitiativeUserDetails />);
   });
-  // try
+
+  test('test of getTimeLine with wrong data', async () => {
+    const mockedTimeLine = {
+      lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+      operationList: [],
+    };
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> => new Promise((resolve) => resolve(mockedTimeLine));
+
+    renderWithContext(<InitiativeUserDetails />);
+  });
+
   test('test of render TransactionDetailModal with different type of opeType', async () => {
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
     const operationTypes = [
       'ADD_IBAN',
       'ADD_INSTRUMENT',
@@ -145,6 +166,8 @@ describe('test suite initiative user details', () => {
       'REJECTED_REFUND',
       'REVERSAL',
       'TRANSACTION',
+      'SUSPENDED',
+      'READMITTED',
       undefined,
     ];
     const fullTimeline: any = [];
@@ -185,7 +208,7 @@ describe('test suite initiative user details', () => {
         })
       );
 
-    renderWithContext(<InitiativeUserDetails />);
+    renderWithContext(<InitiativeUserDetails />, store);
     const operationTypeButtons = (await screen.findAllByTestId(
       'operationTypeBtn'
     )) as HTMLButtonElement[];
@@ -196,6 +219,51 @@ describe('test suite initiative user details', () => {
     fireEvent.click(operationTypeButtons[4]);
     // click REJECTED_REFUND
     fireEvent.click(operationTypeButtons[8]);
+  });
+
+  test('initative with discount, transaction in status AUTHORIZED on click of timeline event ', async () => {
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.DISCOUNT));
+    InitiativeApiMocked.getTimeLine = async (
+      _cf: string,
+      _id: string,
+      _opeType?: string,
+      _dateFrom?: string,
+      _dateTo?: string,
+      _page?: number,
+      _size?: number
+    ): Promise<any> =>
+      new Promise((resolve) =>
+        resolve({
+          lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+          operationList: [
+            {
+              operationId: '1u1u1u1u1u1u1u',
+              operationType: 'TRANSACTION',
+              operationDate: 'aaaaa',
+              maskedPan: '1234123412341234',
+              amount: 345,
+              accrued: 10,
+              brand: 'brandName',
+              iban: '',
+              channel: 'App IO',
+              idTrxAcquirer: '349589304999',
+              idTrxIssuer: '0001923192038',
+              businessName: 'FakeBusinessName',
+              status: 'AUTHORIZED',
+            },
+          ],
+          pageNo: 0,
+          pageSize: 10,
+          totalElements: 11,
+          totalPages: 2,
+        })
+      );
+    renderWithContext(<InitiativeUserDetails />, store);
+    const operationTypeButtons = (await screen.findAllByTestId(
+      'operationTypeBtn'
+    )) as HTMLButtonElement[];
+
+    fireEvent.click(operationTypeButtons[0]);
   });
 
   test('test getIban ', () => {
@@ -210,7 +278,7 @@ describe('test suite initiative user details', () => {
     renderWithContext(<InitiativeUserDetails />);
   });
 
-  test('test SUSPEND user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.ONBOARDING_OK', async () => {
+  test('SUSPEND user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.ONBOARDING_OK', async () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus('id', 'fiscal');
     renderWithContext(<InitiativeUserDetails />);
     const suspendUserBtn = await screen.findByText('pages.initiativeUserDetails.suspendUser');
@@ -218,7 +286,7 @@ describe('test suite initiative user details', () => {
     fireEvent.click(suspendUserBtn);
   });
 
-  test('test READMIT user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.SUSPENDED', async () => {
+  test('READMIT user when  getBeneficiaryOnboardingStatus api call with status OnboardingStatusEnum.SUSPENDED', async () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (
       _initiativeId: string,
       _fiscalCode: string
@@ -226,6 +294,7 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           status: OnboardingStatusEnum.SUSPENDED,
+          statusDate: new Date(),
         })
       );
     renderWithContext(<InitiativeUserDetails />);

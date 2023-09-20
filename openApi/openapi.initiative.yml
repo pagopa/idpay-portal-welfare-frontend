@@ -139,12 +139,12 @@ paths:
                   operator: EQ
                   checked: false
                 - code: BIRTHDATE
-                  authority: AUTH1
+                  authority: AGID
                   field: Year
                   operator: EQ
                   checked: false
                 - code: RESIDENCE
-                  authority: AUTH2
+                  authority: AGID
                   field: City
                   operator: EQ
                   checked: false
@@ -448,6 +448,15 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TimelineDTO'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+              example:
+                code: 0
+                message: 'Parameter [size] must be less than or equal to 10'
         '401':
           description: Authentication failed
           content:
@@ -552,6 +561,122 @@ paths:
               example:
                 code: 0
                 message: string
+  /{initiativeId}/beneficiary/suspend:
+    put:
+      tags:
+        - beneficiary
+      summary: Suspend user to initiative discount type
+      operationId: suspendUserDiscount
+      parameters:
+        - name: initiativeId
+          in: path
+          description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: Fiscal-Code
+          in: header
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: OK
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+  /{initiativeId}/beneficiary/readmit:
+    put:
+      tags:
+        - beneficiary
+      summary: Readmit user to initiative discount type
+      operationId: readmitUserDiscount
+      parameters:
+        - name: initiativeId
+          in: path
+          description: initiativeId
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: Fiscal-Code
+          in: header
+          schema:
+            type: string
+          required: true
+      responses:
+        '204':
+          description: OK
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '404':
+          description: The requested ID was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '429':
+          description: Too many Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
+        '500':
+          description: Server ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorDTO'
   '/{initiativeId}/beneficiary/wallet':
     get:
       tags:
@@ -1720,8 +1845,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/OnboardingStatusDTO'
-              example:
-                status: ACCEPTED_TC
         '400':
           description: Bad Request
           content:
@@ -2156,8 +2279,8 @@ paths:
     put:
       tags:
         - initiative-reward
-      summary: Suspend user to initiative
-      operationId: suspendUser
+      summary: Suspend user to initiative refund type
+      operationId: suspendUserRefund
       parameters:
         - name: initiativeId
           in: path
@@ -2214,8 +2337,8 @@ paths:
     put:
       tags:
         - initiative-reward
-      summary: Readmit user to initiative
-      operationId: readmitUser
+      summary: Readmit user to initiative refund type
+      operationId: readmitUserRefund
       parameters:
         - name: initiativeId
           in: path
@@ -3430,6 +3553,8 @@ components:
     OnboardingRankingsDTO:
       type: object
       properties:
+        familyId:
+          type: string
         beneficiary:
           type: string
         criteriaConsensusTimestamp:
@@ -3793,13 +3918,8 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
-        - amount
         - accrued
-        - brand
-        - idTrxIssuer
-        - idTrxAcquirer
+        - status
       properties:
         operationId:
           type: string
@@ -3808,7 +3928,11 @@ components:
             - TRANSACTION
             - REVERSAL
           type: string
+        eventId:
+          type: string
         brandLogo:
+          type: string
+        brand:
           type: string
         maskedPan:
           type: string
@@ -3819,12 +3943,28 @@ components:
         operationDate:
           type: string
           format: date-time
-        brand:
+        circuitType:
           type: string
-          description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+          description: >-
+            00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB,
+            05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay,
+            09->Satispay, 10->PrivateCircuit
         idTrxIssuer:
           type: string
         idTrxAcquirer:
+          type: string
+        status:
+          type: string
+          enum:
+            - AUTHORIZED
+            - REWARDED
+            - CANCELLED
+        channel:
+          type: string
+          enum:
+            - RTD
+            - QRCODE
+        businessName:
           type: string
     InstrumentOperationDTO:
       type: object
@@ -3921,10 +4061,8 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
-        - amount
-        - circuitType
+        - accrued
+        - status
       properties:
         operationId:
           type: string
@@ -3932,6 +4070,8 @@ components:
           enum:
             - TRANSACTION
             - REVERSAL
+          type: string
+        eventId:
           type: string
         operationDate:
           type: string
@@ -3947,6 +4087,23 @@ components:
         circuitType:
           type: string
           description: '00-> Bancomat, 01->Visa, 02->Mastercard, 03->Amex, 04->JCB, 05->UnionPay, 06->Diners, 07->PostePay, 08->BancomatPay, 09->Satispay, 10->PrivateCircuit'
+        idTrxIssuer:
+          type: string
+        idTrxAcquirer:
+          type: string
+        status:
+          type: string
+          enum:
+            - AUTHORIZED
+            - REWARDED
+            - CANCELLED
+        channel:
+          type: string
+          enum:
+            - RTD
+            - QRCODE
+        businessName:
+          type: string
     SuspendOperationDTO:
       type: object
       required:
@@ -4027,6 +4184,7 @@ components:
       type: object
       required:
         - status
+        - statusDate
       properties:
         status:
           enum:
@@ -4042,7 +4200,15 @@ components:
             - UNSUBSCRIBED
             - SUSPENDED
           type: string
-          description: actual status of the citizen onboarding for an initiative
+          description: "ENG: Actual status of the citizen onboarding for an initiative - IT: Stato attuale del cittadino rispetto ad un'iniziativa"
+        statusDate:
+          type: string
+          format: date-time
+          description: 'ENG: Date on which the status changed to the current one - IT: Data in cui lo stato è cambiato allo stato attuale'
+        onboardingOkDate:
+          type: string
+          format: date-time
+          description: "ENG: Date on which the onboarding successfully went through - IT: Data in cui l'adesione è avvenuta con successo"
     ExportDetailDTO:
       type: object
       properties:

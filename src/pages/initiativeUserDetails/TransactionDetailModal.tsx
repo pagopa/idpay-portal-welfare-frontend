@@ -1,13 +1,22 @@
-import { Modal, Backdrop, Fade, Box, IconButton, Typography } from '@mui/material';
-import { MouseEventHandler, useEffect, useState } from 'react';
+/* eslint-disable sonarjs/cognitive-complexity */
+/* eslint-disable complexity */
 import CloseIcon from '@mui/icons-material/Close';
+import { Alert, Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import { useTranslation } from 'react-i18next';
-import { Chip } from '@mui/material';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import { formatedCurrency, formatIban, getMaskedPan, mappedChannel } from '../../helpers';
+import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { MouseEventHandler, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import {
+  copyTextToClipboard,
+  formatIban,
+  formatedCurrency,
+  getMaskedPan,
+  mappedChannel,
+} from '../../helpers';
 import { getTimelineDetail } from '../../services/intitativeService';
 
 type Props = {
@@ -17,6 +26,7 @@ type Props = {
   handleCloseModal: MouseEventHandler;
   initiativeId: string;
   holderBank: string | undefined;
+  rewardType: string | undefined;
 };
 
 const TransactionDetailModal = ({
@@ -26,8 +36,8 @@ const TransactionDetailModal = ({
   handleCloseModal,
   initiativeId,
   holderBank,
-}: // eslint-disable-next-line sonarjs/cognitive-complexity
-Props) => {
+  rewardType,
+}: Props) => {
   const { t } = useTranslation();
   const [transactionDetail, setTransactionDetail] = useState<OperationDTO>();
   const addError = useErrorDispatcher();
@@ -118,7 +128,11 @@ Props) => {
     return '';
   };
 
-  const operationTypeLabel = (opeType: string | undefined) => {
+  const operationTypeLabel = (
+    opeType: string | undefined,
+    rewardType: string | undefined,
+    transactionDetail: OperationDTO | undefined
+  ) => {
     switch (opeType) {
       case 'ADD_IBAN':
         return t('pages.initiativeUserDetails.operationTypes.addIban');
@@ -140,7 +154,20 @@ Props) => {
       case 'REVERSAL':
         return t('pages.initiativeUserDetails.operationTypes.reversal');
       case 'TRANSACTION':
-        return t('pages.initiativeUserDetails.operationTypes.transaction');
+        if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
+          if (
+            transactionDetail?.status === 'AUTHORIZED' ||
+            transactionDetail?.status === 'REWARDED'
+          ) {
+            return t('pages.initiativeUserDetails.operationTypes.discountAuthorized');
+          }
+          if (transactionDetail?.status === 'CANCELLED') {
+            return t('pages.initiativeUserDetails.operationTypes.discountCancelled');
+          }
+        } else if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+          return t('pages.initiativeUserDetails.operationTypes.transaction');
+        }
+        return '';
       default:
         return null;
     }
@@ -193,179 +220,311 @@ Props) => {
               </IconButton>
             </Box>
           </Box>
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(12, 1fr)',
-            }}
-          >
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="h6" component="h2">
-                {operationTypeLabel(transactionDetail?.operationType)}
-              </Typography>
-            </Box>
-            {transactionDetail?.operationType !== 'ADD_IBAN' &&
-            transactionDetail?.operationType !== 'ONBOARDING' &&
-            transactionDetail?.operationType !== 'PAID_REFUND' &&
-            transactionDetail?.operationType !== 'REJECTED_REFUND' ? (
-              <>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.paymentMethod')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {getMaskedPan(transactionDetail?.maskedPan)}
-                  </Typography>
-                </Box>
-              </>
-            ) : null}
-            {transactionDetail?.operationType === 'ADD_IBAN' ? (
-              <>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.iban')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="monospaced" fontWeight={400}>
-                    {formatIban(transactionDetail?.iban)}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.bank')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {holderBank ? holderBank : '-'}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.addedBy')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {mappedChannel(transactionDetail.channel)}
-                  </Typography>
-                </Box>
-              </>
-            ) : null}
-            {transactionDetail?.operationType === 'ADD_IBAN' ||
-            transactionDetail?.operationType === 'ONBOARDING' ||
-            transactionDetail?.operationType === 'PAID_REFUND' ||
-            transactionDetail?.operationType === 'REJECTED_REFUND' ? null : (
-              <>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.brand')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {typeof transactionDetail?.brand !== 'undefined'
-                      ? transactionDetail?.brand
-                      : '-'}
-                  </Typography>
-                </Box>
-              </>
-            )}
-            {transactionDetail?.operationType === 'TRANSACTION' ||
-            transactionDetail?.operationType === 'REVERSAL' ? (
-              <>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.totExpense')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.operationType === 'REVERSAL'
-                      ? `-${formatedCurrency(transactionDetail?.amount)}`
-                      : formatedCurrency(transactionDetail?.amount)}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.importToRefund')}
-                  </Typography>
-                </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail.operationType === 'REVERSAL'
-                      ? `${formatedCurrency(transactionDetail?.accrued)}`
-                      : formatedCurrency(transactionDetail?.accrued)}
-                  </Typography>
-                </Box>
-              </>
-            ) : null}
+          {rewardType === InitiativeRewardTypeEnum.REFUND && (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+              }}
+            >
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="h6" component="h2">
+                  {operationTypeLabel(
+                    transactionDetail?.operationType,
+                    rewardType,
+                    transactionDetail
+                  )}
+                </Typography>
+              </Box>
+              {transactionDetail?.operationType !== 'ADD_IBAN' &&
+              transactionDetail?.operationType !== 'ONBOARDING' &&
+              transactionDetail?.operationType !== 'PAID_REFUND' &&
+              transactionDetail?.operationType !== 'REJECTED_REFUND' ? (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.paymentMethod')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {getMaskedPan(transactionDetail?.maskedPan)}
+                    </Typography>
+                  </Box>
+                </>
+              ) : null}
+              {transactionDetail?.operationType === 'ADD_IBAN' ? (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.iban')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="monospaced" fontWeight={400}>
+                      {formatIban(transactionDetail?.iban)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.bank')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {holderBank ? holderBank : '-'}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.addedBy')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {mappedChannel(transactionDetail.channel)}
+                    </Typography>
+                  </Box>
+                </>
+              ) : null}
+              {transactionDetail?.operationType === 'ADD_IBAN' ||
+              transactionDetail?.operationType === 'ONBOARDING' ||
+              transactionDetail?.operationType === 'PAID_REFUND' ||
+              transactionDetail?.operationType === 'REJECTED_REFUND' ? null : (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.brand')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {typeof transactionDetail?.brand !== 'undefined'
+                        ? transactionDetail?.brand
+                        : '-'}
+                    </Typography>
+                  </Box>
+                </>
+              )}
+              {transactionDetail?.operationType === 'TRANSACTION' ||
+              transactionDetail?.operationType === 'REVERSAL' ? (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.totExpense')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {transactionDetail.operationType === 'REVERSAL'
+                        ? `-${formatedCurrency(transactionDetail?.amount)}`
+                        : formatedCurrency(transactionDetail?.amount)}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.importToRefund')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {transactionDetail.operationType === 'REVERSAL'
+                        ? `${formatedCurrency(transactionDetail?.accrued)}`
+                        : formatedCurrency(transactionDetail?.accrued)}
+                    </Typography>
+                  </Box>
+                </>
+              ) : null}
 
-            {transactionDetail?.operationType === 'PAID_REFUND' ||
-            transactionDetail?.operationType === 'REJECTED_REFUND' ? (
-              <>
+              {transactionDetail?.operationType === 'PAID_REFUND' ||
+              transactionDetail?.operationType === 'REJECTED_REFUND' ? (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.import')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography variant="body2" fontWeight={600}>
+                      {formatedCurrency(transactionDetail?.amount, '00,00 €')}
+                    </Typography>
+                  </Box>
+                </>
+              ) : null}
+
+              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                <Typography variant="body2" color="text.secondary" textAlign="left">
+                  {t('pages.initiativeUserDetails.transactionDetail.date')}
+                </Typography>
+              </Box>
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="body2" fontWeight={600}>
+                  {formatDate(transactionDetail?.operationDate)}
+                </Typography>
+              </Box>
+              {transactionDetail?.operationType === 'TRANSACTION' ||
+              transactionDetail?.operationType === 'REVERSAL' ? (
+                <>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.acquirerTransactionId')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography
+                      variant="body2"
+                      fontWeight={600}
+                      sx={{
+                        wordWrap: 'break-word',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {transactionDetail.idTrxAcquirer}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                    <Typography variant="body2" color="text.secondary" textAlign="left">
+                      {t('pages.initiativeUserDetails.transactionDetail.issuerTransactionId')}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ gridColumn: 'span 12' }}>
+                    <Typography
+                      variant="body2"
+                      fontWeight={600}
+                      sx={{
+                        wordWrap: 'break-word',
+                        whiteSpace: 'pre-wrap',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {transactionDetail.idTrxIssuer}
+                    </Typography>
+                  </Box>
+                </>
+              ) : (
+                transactionResult(transactionDetail?.operationType)
+              )}
+            </Box>
+          )}
+          {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(12, 1fr)',
+              }}
+            >
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="h6" component="h2">
+                  {operationTypeLabel(
+                    transactionDetail?.operationType,
+                    rewardType,
+                    transactionDetail
+                  )}
+                </Typography>
+              </Box>
+              {transactionDetail?.status === 'CANCELLED' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Alert severity="info">
+                    <Typography variant="body2">
+                      {t(
+                        'pages.initiativeUserDetails.transactionDetail.discountCancelledAlertText'
+                      )}
+                    </Typography>
+                  </Alert>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.import')}
+                    {t('pages.initiativeUserDetails.transactionDetail.merchant')}
                   </Typography>
                 </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
                 <Box sx={{ gridColumn: 'span 12' }}>
                   <Typography variant="body2" fontWeight={600}>
-                    {formatedCurrency(transactionDetail?.amount, '00,00 €')}
+                    {transactionDetail?.businessName}
                   </Typography>
                 </Box>
-              </>
-            ) : null}
-
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.date')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12' }}>
-              <Typography variant="body2" fontWeight={600}>
-                {formatDate(transactionDetail?.operationDate)}
-              </Typography>
-            </Box>
-            {transactionDetail?.operationType === 'TRANSACTION' ||
-            transactionDetail?.operationType === 'REVERSAL' ? (
-              <>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
                 <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
                   <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.acquirerTransactionId')}
+                    {t('pages.initiativeUserDetails.transactionDetail.expenseAmount')}
                   </Typography>
                 </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
                 <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.amount)}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.discountApplied')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12' }}>
+                  <Typography variant="body2" fontWeight={600}>
+                    {formatedCurrency(transactionDetail?.accrued)}
+                  </Typography>
+                </Box>
+              )}
+
+              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                <Typography variant="body2" color="text.secondary" textAlign="left">
+                  {t('pages.initiativeUserDetails.transactionDetail.date')}
+                </Typography>
+              </Box>
+              <Box sx={{ gridColumn: 'span 12' }}>
+                <Typography variant="body2" fontWeight={600}>
+                  {formatDate(transactionDetail?.operationDate)}
+                </Typography>
+              </Box>
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+                  <Typography variant="body2" color="text.secondary" textAlign="left">
+                    {t('pages.initiativeUserDetails.transactionDetail.transactionId')}
+                  </Typography>
+                </Box>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 10' }}>
                   <Typography
                     variant="body2"
                     fontWeight={600}
-                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
+                    sx={{
+                      width: '260px',
+                      textOverflow: 'ellipsis',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                    }}
                   >
-                    {transactionDetail.idTrxAcquirer}
+                    {transactionDetail?.eventId}
                   </Typography>
                 </Box>
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.issuerTransactionId')}
-                  </Typography>
+              )}
+              {transactionDetail?.operationType !== 'ONBOARDING' && (
+                <Box sx={{ gridColumn: 'span 2' }}>
+                  <ContentCopyIcon
+                    onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
+                    color="primary"
+                    sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
+                    data-testid="transaction-modal-copy"
+                  />
                 </Box>
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography
-                    variant="body2"
-                    fontWeight={600}
-                    sx={{ wordWrap: 'break-word', whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}
-                  >
-                    {transactionDetail.idTrxIssuer}
-                  </Typography>
-                </Box>
-              </>
-            ) : (
-              transactionResult(transactionDetail?.operationType)
-            )}
-          </Box>
+              )}
+
+              {transactionDetail?.operationType === 'ONBOARDING' &&
+                transactionResult(transactionDetail?.operationType)}
+            </Box>
+          )}
         </Box>
       </Fade>
     </Modal>

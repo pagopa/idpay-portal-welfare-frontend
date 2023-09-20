@@ -8,20 +8,15 @@ import {
   InputLabel,
   MenuItem,
   Select,
-  // SortDirection,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TablePagination,
   TableRow,
-  // TableSortLabel,
   TextField,
   Typography,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { itIT } from '@mui/material/locale';
 import SyncIcon from '@mui/icons-material/Sync';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -35,26 +30,30 @@ import { useEffect, useState, useMemo } from 'react';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import {
   getInitiativeOnboardingRankingStatusPaged,
-  getRankingFileDownload,
   notifyCitizenRankings,
 } from '../../services/intitativeService';
 import { InitiativeRankingToDisplay } from '../../model/InitiativeRanking';
 import {
+  downloadURI,
+  fileFromReader,
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
   initiativePagesTableContainerStyle,
   numberWithCommas,
 } from '../../helpers';
-import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { ENV } from '../../utils/env';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import TablePaginator from '../components/TablePaginator';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
 const InitiativeRanking = () => {
@@ -77,7 +76,7 @@ const InitiativeRanking = () => {
   const [totalEligibleOk, setTotalEligibleOk] = useState<number | undefined>(0);
   const [totalEligibleKo, setTotalEligibleKo] = useState<number | undefined>(0);
   const [totalOnboardingKo, setTotalOnboardingKo] = useState<number | undefined>(0);
-  const theme = createTheme(itIT);
+  const [totalElementsFromPartials, setTotalElementsFromPartials] = useState(0);
   const setLoading = useLoading('GET_INITIATIVE_RANKING');
   const addError = useErrorDispatcher();
 
@@ -131,21 +130,31 @@ const InitiativeRanking = () => {
         if (typeof res.rankingFilePath === 'string') {
           setFileName(res.rankingFilePath);
         }
+        // eslint-disable-next-line functional/no-let
+        let tefp = 0;
         if (typeof res.totalEligibleOk === 'number') {
           setTotalEligibleOk(res.totalEligibleOk);
+          tefp += res.totalEligibleOk;
         }
         if (typeof res.totalEligibleKo === 'number') {
           setTotalEligibleKo(res.totalEligibleKo);
+          tefp += res.totalEligibleKo;
         }
         if (typeof res.totalOnboardingKo === 'number') {
           setTotalOnboardingKo(res.totalOnboardingKo);
+          tefp += res.totalOnboardingKo;
         }
+        setTotalElementsFromPartials(tefp);
         if (Array.isArray(res.content) && res.content.length > 0) {
           const rowsData = res.content.map((r: OnboardingRankingsDTO) => ({
+            familyId: r.familyId,
             beneficiaryRankingStatus: r.beneficiaryRankingStatus,
             beneficiary: r.beneficiary,
             ranking: r.ranking,
-            rankingValue: r.rankingValue ? `${numberWithCommas(r.rankingValue / 100)} €` : '-',
+            rankingValue:
+              r.rankingValue && r.rankingValue > 0
+                ? `${numberWithCommas(r.rankingValue / 100)} €`
+                : '-',
             criteriaConsensusTimeStamp:
               typeof r.criteriaConsensusTimestamp === 'object'
                 ? r.criteriaConsensusTimestamp.toLocaleString('fr-BE')
@@ -199,51 +208,37 @@ const InitiativeRanking = () => {
     }
   };
 
-  const downloadURI = (uri: string) => {
-    const link = document.createElement('a');
-    // eslint-disable-next-line functional/immutable-data
-    link.download = 'download';
-    // eslint-disable-next-line functional/immutable-data
-    link.href = uri;
-    // eslint-disable-next-line functional/immutable-data
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const downloadInitiativeRanking = (
+  const downloadInitiativeRanking = async (
     initiativeId: string | undefined,
     filename: string | undefined
   ) => {
     if (typeof initiativeId === 'string' && typeof filename === 'string') {
-      getRankingFileDownload(initiativeId, filename)
-        .then((res: SasToken) => {
-          if (typeof res.sas === 'string') {
-            downloadURI(res.sas);
-          }
-        })
-        .catch((error) => {
-          addError({
-            id: 'DOWNLOAD_INITIATIVE_RANKING_CSV_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred downloading initiative ranking csv file',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+      const token = storageTokenOps.read();
+      const res = await fetch(
+        `${ENV.URL_API.INITIATIVE}/${initiativeId}/ranking/exports/${filename}`,
+        {
+          method: 'GET',
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (res.status === 200) {
+        const url = await fileFromReader(res.body?.getReader());
+        downloadURI(url, filename);
+      } else {
+        const error = new Error(res.statusText);
+        addError({
+          id: 'DOWNLOAD_INITIATIVE_RANKING_CSV_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred downloading initiative ranking csv file',
+          displayableTitle: t('errors.title'),
+          displayableDescription: t('errors.getDataDescription'),
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
         });
+      }
     }
-  };
-
-  const handleChangePage = (
-    _event: React.MouseEvent<HTMLButtonElement> | null,
-    newPage: number
-  ) => {
-    setPage(newPage);
   };
 
   const formik = useFormik({
@@ -428,6 +423,7 @@ const InitiativeRanking = () => {
                 openPublishInitiativeRankingModal={openPublishInitiativeRankingModal}
                 handleClosePublishInitiativeRankingModal={handleClosePublishInitiativeRankingModal}
                 initiativeId={id}
+                initiativeName={initiativeSel.initiativeName}
                 fileName={fileName}
                 publishInitiativeRanking={publishInitiativeRanking}
                 downloadInitiativeRanking={downloadInitiativeRanking}
@@ -495,7 +491,7 @@ const InitiativeRanking = () => {
             >
               <MenuItem value="DEFAULT" data-testid="filterStatusDefault-test">
                 {t('pages.initiativeRanking.beneficiaryStatus.total', {
-                  tot: totalElements,
+                  tot: totalElementsFromPartials,
                 })}
               </MenuItem>
               <MenuItem value="ELIGIBLE_OK" data-testid="filterStatusEligibleOK-test">
@@ -545,11 +541,18 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="25%">
-                      {t('pages.initiativeRanking.table.beneficiary')}
-                    </TableCell>
-                    <TableCell width="35%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                      <TableCell width="35%">
+                        {t('pages.initiativeRanking.table.familyId')}
+                      </TableCell>
+                    )}
                     <TableCell width="20%">
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+                        ? t('pages.initiativeRanking.table.beneficiary')
+                        : t('pages.initiativeRanking.table.familyBeneficiary')}
+                    </TableCell>
+                    <TableCell width="15%">{t('pages.initiativeRanking.table.ranking')}</TableCell>
+                    <TableCell width="10%">
                       {t('pages.initiativeRanking.table.rankingValue')}
                     </TableCell>
                     <TableCell width="20%">
@@ -560,8 +563,15 @@ const InitiativeRanking = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                        <TableCell>
+                          {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.familyId}
+                        </TableCell>
+                      )}
                       <TableCell>
-                        {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.beneficiary}
+                        {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF &&
+                          getBeneficiaryStatus(r.beneficiaryRankingStatus)}{' '}
+                        {r.beneficiary}
                       </TableCell>
                       <TableCell>{r.ranking}</TableCell>
                       <TableCell>{r.rankingValue}</TableCell>
@@ -570,21 +580,12 @@ const InitiativeRanking = () => {
                   ))}
                 </TableBody>
               </Table>
-              <ThemeProvider theme={theme}>
-                <TablePagination
-                  sx={{
-                    '.MuiTablePagination-displayedRows': {
-                      fontFamily: '"Titillium Web",sans-serif',
-                    },
-                  }}
-                  component="div"
-                  onPageChange={handleChangePage}
-                  page={page}
-                  count={totalElements}
-                  rowsPerPage={10}
-                  rowsPerPageOptions={[10]}
-                />
-              </ThemeProvider>
+              <TablePaginator
+                page={page}
+                setPage={setPage}
+                totalElements={totalElements}
+                rowsPerPage={10}
+              />
             </Box>
           </Box>
         </Box>
