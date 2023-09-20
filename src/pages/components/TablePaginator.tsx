@@ -18,6 +18,7 @@ const TablePaginator = ({ page, setPage, totalElements, rowsPerPage }: Props) =>
     newPage: number
   ) => {
     setPage(newPage);
+    window.scrollTo(0, 0);
   };
 
   return (
