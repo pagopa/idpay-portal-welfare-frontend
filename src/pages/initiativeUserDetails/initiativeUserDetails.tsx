@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable functional/no-let */
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import {
@@ -255,13 +256,17 @@ const InitiativeUserDetails = () => {
       case 'ADD_IBAN':
         return t('pages.initiativeUserDetails.operationTypes.addIban');
       case 'ADD_INSTRUMENT':
-        return `${t(
-          'pages.initiativeUserDetails.operationTypes.addInstrument'
-        )} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+        const addMessage = t('pages.initiativeUserDetails.operationTypes.addInstrument');
+        if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+          return `${addMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+        }
+        return addMessage;
       case 'DELETE_INSTRUMENT':
-        return `${t(
-          'pages.initiativeUserDetails.operationTypes.deleteInstrument'
-        )} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+        const deleteMessage = t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
+        if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+          return `${deleteMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+        }
+        return deleteMessage;
       case 'ONBOARDING':
         return t('pages.initiativeUserDetails.operationTypes.onboarding');
       case 'PAID_REFUND':
@@ -459,23 +464,23 @@ const InitiativeUserDetails = () => {
             <MenuItem value={'ONBOARDING'}>
               {t('pages.initiativeUserDetails.operationTypes.onboarding')}
             </MenuItem>
+            <MenuItem value={'ADD_INSTRUMENT'}>
+              {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
+            </MenuItem>
+            <MenuItem value={'DELETE_INSTRUMENT'}>
+              {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
+            </MenuItem>
+            <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
+              {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
+            </MenuItem>
+            <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
+              {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
+            </MenuItem>
 
             {rewardType === InitiativeRewardTypeEnum.REFUND && (
               <>
                 <MenuItem value={'ADD_IBAN'}>
                   {t('pages.initiativeUserDetails.operationTypes.addIban')}
-                </MenuItem>
-                <MenuItem value={'ADD_INSTRUMENT'}>
-                  {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
-                </MenuItem>
-                <MenuItem value={'DELETE_INSTRUMENT'}>
-                  {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
-                </MenuItem>
-                <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
-                  {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
-                </MenuItem>
-                <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
-                  {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
                 </MenuItem>
                 <MenuItem value={'REJECTED_REFUND'}>
                   {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
@@ -492,14 +497,14 @@ const InitiativeUserDetails = () => {
               </>
             )}
             {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
-              <MenuItem value="AUTHORIZED">
-                {t('pages.initiativeUserDetails.operationTypes.discountAuthorized')}
-              </MenuItem>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
-              <MenuItem value="CANCELLED">
-                {t('pages.initiativeUserDetails.operationTypes.discountCancelled')}
-              </MenuItem>
+              <>
+                <MenuItem value="AUTHORIZED">
+                  {t('pages.initiativeUserDetails.operationTypes.discountAuthorized')}
+                </MenuItem>
+                <MenuItem value="CANCELLED">
+                  {t('pages.initiativeUserDetails.operationTypes.discountCancelled')}
+                </MenuItem>
+              </>
             )}
           </Select>
         </FormControl>

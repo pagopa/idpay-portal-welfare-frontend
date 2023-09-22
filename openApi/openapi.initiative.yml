@@ -3812,9 +3812,7 @@ components:
       type: object
       required:
         - instrumentId
-        - status
-        - activationDate
-        - channel
+        - instrumentType
       properties:
         idWallet:
           type: string
@@ -3840,6 +3838,12 @@ components:
         activationDate:
           type: string
           format: date-time
+        instrumentType:
+          type: string
+          enum:
+            - CARD
+            - QRCODE
+            - IDPAYCODE
     OperationDTO:
       oneOf:
         - $ref: '#/components/schemas/TransactionDetailDTO'
@@ -3892,8 +3896,6 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
         - channel
       properties:
         operationId:
@@ -3914,6 +3916,11 @@ components:
           type: string
         channel:
           type: string
+        instrumentType:
+          type: string
+          enum:
+            - CARD
+            - IDPAYCODE
     TransactionDetailDTO:
       type: object
       required:
@@ -3974,9 +3981,8 @@ components:
         - operationId
         - operationType
         - operationDate
-        - brandLogo
-        - maskedPan
         - channel
+        - instrumentType
       properties:
         operationId:
           type: string
@@ -3994,6 +4000,11 @@ components:
           type: string
         channel:
           type: string
+        instrumentType:
+          type: string
+          enum:
+            - CARD
+            - IDPAYCODE
     IbanOperationDTO:
       type: object
       required:

@@ -31,7 +31,10 @@ import { PageOnboardingRankingsDTO } from '../../api/generated/initiative/PageOn
 import { StatusEnum } from '../../api/generated/initiative/RewardImportsDTO';
 import { WalletDTO } from '../../api/generated/initiative/WalletDTO';
 import { StatusEnum as WalletStatusEnum } from '../../api/generated/initiative/WalletDTO';
-import { StatusEnum as InstrumentStatusEnum } from '../../api/generated/initiative/InstrumentDTO';
+import {
+  StatusEnum as InstrumentStatusEnum,
+  InstrumentTypeEnum,
+} from '../../api/generated/initiative/InstrumentDTO';
 import { IbanDTO } from '../../api/generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../../api/generated/initiative/InstrumentListDTO';
 import { TimelineDTO } from '../../api/generated/initiative/TimelineDTO';
@@ -336,6 +339,7 @@ export const mockedWalletInstrument = {
         'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
       status: InstrumentStatusEnum.ACTIVE,
       activationDate: new Date('2023-01-04T16:38:43.590Z'),
+      instrumentType: InstrumentTypeEnum.CARD,
     },
     {
       idWallet: '678910',
@@ -346,6 +350,7 @@ export const mockedWalletInstrument = {
         'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
       status: InstrumentStatusEnum.ACTIVE,
       activationDate: new Date('2023-01-04T16:38:43.590Z'),
+      instrumentType: InstrumentTypeEnum.CARD,
     },
     {
       idWallet: '678910',
@@ -356,6 +361,7 @@ export const mockedWalletInstrument = {
         'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
       status: InstrumentStatusEnum.PENDING_DEACTIVATION_REQUEST,
       activationDate: new Date('2023-01-04T16:38:43.590Z'),
+      instrumentType: InstrumentTypeEnum.CARD,
     },
     {
       idWallet: '678910',
@@ -366,6 +372,7 @@ export const mockedWalletInstrument = {
         'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
       status: InstrumentStatusEnum.PENDING_ENROLLMENT_REQUEST,
       activationDate: new Date('2023-01-04T16:38:43.590Z'),
+      instrumentType: InstrumentTypeEnum.CARD,
     },
   ],
 };

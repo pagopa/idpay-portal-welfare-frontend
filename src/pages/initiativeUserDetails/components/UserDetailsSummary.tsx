@@ -1,21 +1,17 @@
-import { Alert, Badge, Box, Card, CardContent, Snackbar, Typography } from '@mui/material';
-import { ButtonNaked } from '@pagopa/mui-italia';
+import { Alert, Box, Card, CardContent, Snackbar, Typography } from '@mui/material';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-// import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
 import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
 import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
 import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
 import { useAppSelector } from '../../../redux/hooks';
-import {
-  initiativeRewardTypeSelector,
-  // stepTwoBeneficiaryTypeSelector,
-} from '../../../redux/slices/initiativeSlice';
+import { initiativeRewardTypeSelector } from '../../../redux/slices/initiativeSlice';
 import { getIban, getInstrumentList, getWalletDetail } from '../../../services/intitativeService';
-import PaymentMethodsModal from '../PaymentMethodsModal';
+import { StatusEnum as InstrumentStatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
+import InstrumentsList from './InstrumentsList';
 
 type Props = {
   id: string;
@@ -27,7 +23,6 @@ type Props = {
 
 const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Props) => {
   const { t } = useTranslation();
-  const [openPaymentMethodModal, setOpenPaymentMethodModal] = useState(false);
   const [amount, setAmount] = useState<number | undefined>(undefined);
   const [accrued, setAccrued] = useState<number | undefined>(undefined);
   const [refunded, setRefunded] = useState<number | undefined>(undefined);
@@ -40,7 +35,6 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
   const [openSnackBarOnBoardingStatus, setOpenSnackBarOnBoardingStatus] = useState(false);
   const addError = useErrorDispatcher();
   const initiativeRewardType = useAppSelector(initiativeRewardTypeSelector);
-  // const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
 
   useEffect(() => {
     if (
@@ -80,7 +74,6 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
 
   useEffect(() => {
     if (
-      initiativeRewardType === InitiativeRewardTypeEnum.REFUND &&
       typeof id === 'string' &&
       typeof cf === 'string' &&
       (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
@@ -90,7 +83,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
       getInstrumentList(id, cf)
         .then((res) => {
           const walletInst = res.instrumentList.filter(
-            (r: { status: string }) => r.status === 'ACTIVE'
+            (r: any) => r.status === InstrumentStatusEnum.ACTIVE
           );
           setPaymentMethodList([...walletInst]);
         })
@@ -142,16 +135,6 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
         });
     }
   }, [iban, initiativeRewardType]);
-
-  const handleOpenPaymentMethodModal = () => {
-    if (paymentMethodList.length > 0) {
-      setOpenPaymentMethodModal(true);
-    }
-  };
-
-  const handleClosePaymentMethodModal = () => {
-    setOpenPaymentMethodModal(false);
-  };
 
   const HandleOpenSnackBarOnBoardingStatus = () => {
     setOpenSnackBarOnBoardingStatus(true);
@@ -358,65 +341,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                 >
                   {formatedCurrency(refunded, '0,00 €')}
                 </Typography>
-
-                <Typography
-                  sx={{
-                    display: 'grid',
-                    gridColumn: 'span 6',
-                    mt: 1,
-                    justifyContent: 'left',
-                    ml: 1,
-                  }}
-                >
-                  {paymentMethodList.length > 0 ? (
-                    <ButtonNaked
-                      component="button"
-                      sx={{
-                        color: 'primary.main',
-                        fontWeight: 700,
-                        fontSize: '14px',
-                      }}
-                      startIcon={
-                        <Badge
-                          color="primary"
-                          badgeContent={paymentMethodList.length}
-                          sx={{ mr: 1 }}
-                        />
-                      }
-                      onClick={() => handleOpenPaymentMethodModal()}
-                    >
-                      {t('pages.initiativeUserDetails.paymentMethod')}
-                    </ButtonNaked>
-                  ) : (
-                    <>
-                      <ButtonNaked
-                        component="button"
-                        sx={{
-                          color: 'error.main',
-                          fontWeight: 700,
-                          fontSize: '14px',
-                        }}
-                        onClick={() => handleOpenPaymentMethodModal()}
-                        startIcon={
-                          <Badge
-                            color="error"
-                            badgeContent={`${paymentMethodList.length}`}
-                            sx={{ mr: 1, '& .MuiBadge-badge': { color: '#FFF' } }}
-                          />
-                        }
-                      >
-                        {t('pages.initiativeUserDetails.missingPaymentMethod')}
-                      </ButtonNaked>
-                    </>
-                  )}
-                </Typography>
-                {paymentMethodList.length > 0 && (
-                  <PaymentMethodsModal
-                    openPaymentMethodModal={openPaymentMethodModal}
-                    handleClosePaymentMethodModal={handleClosePaymentMethodModal}
-                    paymentMethodList={paymentMethodList}
-                  />
-                )}
+                <InstrumentsList paymentMethodList={paymentMethodList} />
               </Box>
               <Box sx={{ display: 'grid', gridColumn: 'span 6', rowGap: 1 }}>
                 <Typography
@@ -555,6 +480,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                 >
                   {formatedCurrency(accrued, '0,00 €')}
                 </Typography>
+                <InstrumentsList paymentMethodList={paymentMethodList} />
               </Box>
             </CardContent>
           </Card>
