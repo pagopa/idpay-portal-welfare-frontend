@@ -350,6 +350,72 @@ const InitiativeUserDetails = () => {
     }
   };
 
+  const getFilterOptionList = (rewardType: InitiativeRewardTypeEnum | undefined) => {
+    const optList = [
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.onboarding',
+        value: 'ONBOARDING',
+        mode: 'COMMON',
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.addIban',
+        value: 'ADD_IBAN',
+        mode: InitiativeRewardTypeEnum.REFUND,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.rejectedRefund',
+        value: 'REJECTED_REFUND',
+        mode: InitiativeRewardTypeEnum.REFUND,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.transaction',
+        value: 'TRANSACTION',
+        mode: InitiativeRewardTypeEnum.REFUND,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.paidRefund',
+        value: 'PAID_REFUND',
+        mode: InitiativeRewardTypeEnum.REFUND,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.reversal',
+        value: 'REVERSAL',
+        mode: InitiativeRewardTypeEnum.REFUND,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.discountAuthorized',
+        value: 'AUTHORIZED',
+        mode: InitiativeRewardTypeEnum.DISCOUNT,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.discountCancelled',
+        value: 'CANCELLED',
+        mode: InitiativeRewardTypeEnum.DISCOUNT,
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.addInstrument',
+        value: 'ADD_INSTRUMENT',
+        mode: 'COMMON',
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.deleteInstrument',
+        value: 'DELETE_INSTRUMENT',
+        mode: 'COMMON',
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.rejectedAddInstrument',
+        value: 'REJECTED_ADD_INSTRUMENT',
+        mode: 'COMMON',
+      },
+      {
+        label: 'pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument',
+        value: 'REJECTED_DELETE_INSTRUMENT',
+        mode: 'COMMON',
+      },
+    ];
+    return optList.filter((opt) => opt.mode === 'COMMON' || opt.mode === rewardType);
+  };
+
   return (
     <Box sx={{ width: '100%', p: 2 }}>
       <Box sx={initiativePagesBreadcrumbsContainerStyle}>
@@ -461,51 +527,11 @@ const InitiativeUserDetails = () => {
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterEvent}
           >
-            <MenuItem value={'ONBOARDING'}>
-              {t('pages.initiativeUserDetails.operationTypes.onboarding')}
-            </MenuItem>
-            <MenuItem value={'ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.addInstrument')}
-            </MenuItem>
-            <MenuItem value={'DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.deleteInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_ADD_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument')}
-            </MenuItem>
-            <MenuItem value={'REJECTED_DELETE_INSTRUMENT'}>
-              {t('pages.initiativeUserDetails.operationTypes.rejectedDeleteInstrument')}
-            </MenuItem>
-
-            {rewardType === InitiativeRewardTypeEnum.REFUND && (
-              <>
-                <MenuItem value={'ADD_IBAN'}>
-                  {t('pages.initiativeUserDetails.operationTypes.addIban')}
-                </MenuItem>
-                <MenuItem value={'REJECTED_REFUND'}>
-                  {t('pages.initiativeUserDetails.operationTypes.rejectedRefund')}
-                </MenuItem>
-                <MenuItem value={'TRANSACTION'}>
-                  {t('pages.initiativeUserDetails.operationTypes.transaction')}
-                </MenuItem>
-                <MenuItem value={'PAID_REFUND'}>
-                  {t('pages.initiativeUserDetails.operationTypes.paidRefund')}
-                </MenuItem>
-                <MenuItem value={'REVERSAL'}>
-                  {t('pages.initiativeUserDetails.operationTypes.reversal')}
-                </MenuItem>
-              </>
-            )}
-            {rewardType === InitiativeRewardTypeEnum.DISCOUNT && (
-              <>
-                <MenuItem value="AUTHORIZED">
-                  {t('pages.initiativeUserDetails.operationTypes.discountAuthorized')}
-                </MenuItem>
-                <MenuItem value="CANCELLED">
-                  {t('pages.initiativeUserDetails.operationTypes.discountCancelled')}
-                </MenuItem>
-              </>
-            )}
+            {getFilterOptionList(rewardType).map((opt, index) => (
+              <MenuItem key={index} value={opt.value}>
+                {t(opt.label)}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>

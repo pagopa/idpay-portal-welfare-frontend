@@ -4,17 +4,31 @@ import { OperationProps, formatDate, transactionResult } from '../../helpers';
 
 const InstrumentContent = ({ transactionDetail }: OperationProps) => {
   const { t } = useTranslation();
-  // TODO CHECK LABEL VALUE FOR instrumentType
+
+  const getInstrumentTypeLabel = (instrumentType: string | undefined) => {
+    if (typeof instrumentType === 'string') {
+      switch (instrumentType) {
+        case 'CARD':
+          return t('pages.initiativeUserDetails.transactionDetail.card');
+        case 'IDPAYCODE':
+          return t('pages.initiativeUserDetails.transactionDetail.idPayCode');
+        default:
+          return '-';
+      }
+    }
+    return '-';
+  };
+
   return (
     <>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
         <Typography variant="body2" color="text.secondary" textAlign="left">
-          TODO
+          {t('pages.initiativeUserDetails.transactionDetail.paymentMethod')}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {transactionDetail?.instrumentType}
+          {getInstrumentTypeLabel(transactionDetail?.instrumentType)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>

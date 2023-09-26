@@ -4,12 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import PaymentMethodsModal from '../PaymentMethodsModal';
 import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
+import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 
 interface Props {
   paymentMethodList: Array<InstrumentDTO>;
+  initiativeRewardType: InitiativeRewardTypeEnum;
 }
 
-const InstrumentsList = ({ paymentMethodList }: Props) => {
+const InstrumentsList = ({ paymentMethodList, initiativeRewardType }: Props) => {
   const { t } = useTranslation();
   const [openPaymentMethodModal, setOpenPaymentMethodModal] = useState(false);
 
@@ -34,49 +36,36 @@ const InstrumentsList = ({ paymentMethodList }: Props) => {
           ml: 1,
         }}
       >
-        {paymentMethodList.length > 0 ? (
-          <ButtonNaked
-            component="button"
-            sx={{
-              color: 'primary.main',
-              fontWeight: 700,
-              fontSize: '14px',
-            }}
-            startIcon={
-              <Badge color="primary" badgeContent={paymentMethodList.length} sx={{ mr: 1 }} />
-            }
-            onClick={() => handleOpenPaymentMethodModal()}
-          >
-            {t('pages.initiativeUserDetails.paymentMethod')}
-          </ButtonNaked>
-        ) : (
-          <>
-            <ButtonNaked
-              component="button"
+        <ButtonNaked
+          component="button"
+          sx={{
+            color: paymentMethodList.length > 0 ? 'primary.main' : 'error.main',
+            fontWeight: 700,
+            fontSize: '14px',
+          }}
+          startIcon={
+            <Badge
+              color={paymentMethodList.length > 0 ? 'primary' : 'error'}
+              badgeContent={`${paymentMethodList.length}`}
               sx={{
-                color: 'error.main',
-                fontWeight: 700,
-                fontSize: '14px',
+                mr: 1,
+                '& .MuiBadge-badge': { color: '#FFF' },
               }}
-              onClick={() => handleOpenPaymentMethodModal()}
-              startIcon={
-                <Badge
-                  color="error"
-                  badgeContent={`${paymentMethodList.length}`}
-                  sx={{ mr: 1, '& .MuiBadge-badge': { color: '#FFF' } }}
-                />
-              }
-            >
-              {t('pages.initiativeUserDetails.missingPaymentMethod')}
-            </ButtonNaked>
-          </>
-        )}
+            />
+          }
+          onClick={() => handleOpenPaymentMethodModal()}
+        >
+          {paymentMethodList.length > 0
+            ? t('pages.initiativeUserDetails.paymentMethod')
+            : t('pages.initiativeUserDetails.missingPaymentMethod')}
+        </ButtonNaked>
       </Typography>
       {paymentMethodList.length > 0 && (
         <PaymentMethodsModal
           openPaymentMethodModal={openPaymentMethodModal}
           handleClosePaymentMethodModal={handleClosePaymentMethodModal}
           paymentMethodList={paymentMethodList}
+          initiativeRewardType={initiativeRewardType}
         />
       )}
     </>

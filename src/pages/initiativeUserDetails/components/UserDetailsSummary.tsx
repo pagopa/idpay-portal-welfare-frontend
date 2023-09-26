@@ -341,7 +341,10 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                 >
                   {formatedCurrency(refunded, '0,00 €')}
                 </Typography>
-                <InstrumentsList paymentMethodList={paymentMethodList} />
+                <InstrumentsList
+                  paymentMethodList={paymentMethodList}
+                  initiativeRewardType={initiativeRewardType}
+                />
               </Box>
               <Box sx={{ display: 'grid', gridColumn: 'span 6', rowGap: 1 }}>
                 <Typography
@@ -480,7 +483,10 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                 >
                   {formatedCurrency(accrued, '0,00 €')}
                 </Typography>
-                <InstrumentsList paymentMethodList={paymentMethodList} />
+                <InstrumentsList
+                  paymentMethodList={paymentMethodList}
+                  initiativeRewardType={initiativeRewardType}
+                />
               </Box>
             </CardContent>
           </Card>
