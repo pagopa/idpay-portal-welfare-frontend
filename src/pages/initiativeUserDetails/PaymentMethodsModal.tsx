@@ -16,21 +16,62 @@ import { MouseEventHandler } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
-import { InstrumentDTO } from '../../api/generated/initiative/InstrumentDTO';
+import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
+import { InstrumentDTO, InstrumentTypeEnum } from '../../api/generated/initiative/InstrumentDTO';
 import { getMaskedPan } from '../../helpers';
+import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 
 type Props = {
   openPaymentMethodModal: boolean;
   handleClosePaymentMethodModal: MouseEventHandler;
   paymentMethodList: Array<InstrumentDTO>;
+  initiativeRewardType: InitiativeRewardTypeEnum;
 };
 
 const PaymentMethodsModal = ({
   openPaymentMethodModal,
   handleClosePaymentMethodModal,
   paymentMethodList,
+  initiativeRewardType,
 }: Props) => {
   const { t } = useTranslation();
+
+  const getPaymentMethodAvatar = (
+    brandLogo: string | undefined,
+    instrumentType: InstrumentTypeEnum,
+    rewardType: InitiativeRewardTypeEnum
+  ) => {
+    switch (rewardType) {
+      case InitiativeRewardTypeEnum.REFUND:
+        return brandLogo ? <img src={brandLogo} width="32px" /> : <CreditCardIcon />;
+      case InitiativeRewardTypeEnum.DISCOUNT:
+        if (instrumentType === InstrumentTypeEnum.IDPAYCODE) {
+          return <CreditCardIcon />;
+        } else {
+          return <PhoneIphoneIcon />;
+        }
+    }
+  };
+
+  const getPaymentMethodLabel = (
+    rewardType: InitiativeRewardTypeEnum,
+    instrumentType: InstrumentTypeEnum,
+    maskedPan: string | undefined
+  ) => {
+    switch (rewardType) {
+      case InitiativeRewardTypeEnum.REFUND:
+        return getMaskedPan(maskedPan);
+      case InitiativeRewardTypeEnum.DISCOUNT:
+        if (instrumentType === InstrumentTypeEnum.CARD) {
+          return getMaskedPan(maskedPan);
+        } else if (instrumentType === InstrumentTypeEnum.IDPAYCODE) {
+          return t('pages.initiativeUserDetails.transactionDetail.idPayCode');
+        } else if (instrumentType === InstrumentTypeEnum.QRCODE) {
+          return t('pages.initiativeUserDetails.appIo');
+        }
+        return '-';
+    }
+  };
 
   return (
     <Modal
@@ -94,10 +135,14 @@ const PaymentMethodsModal = ({
                 <React.Fragment key={i}>
                   <ListItem>
                     <ListItemAvatar>
-                      {p.brandLogo ? <img src={p.brandLogo} width="32px" /> : <CreditCardIcon />}
+                      {getPaymentMethodAvatar(p.brandLogo, p.instrumentType, initiativeRewardType)}
                     </ListItemAvatar>
                     <ListItemText
-                      primary={getMaskedPan(p.maskedPan)}
+                      primary={getPaymentMethodLabel(
+                        initiativeRewardType,
+                        p.instrumentType,
+                        p.maskedPan
+                      )}
                       secondary={p.activationDate
                         ?.toLocaleString('fr-BE')
                         .substring(0, p.activationDate?.toLocaleString('fr-BE').length - 3)}

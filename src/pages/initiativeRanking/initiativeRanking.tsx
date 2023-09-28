@@ -334,11 +334,11 @@ const InitiativeRanking = () => {
             <Box sx={{ display: 'grid', gridColumn: 'span 2', justifyContent: 'end' }}>
               <ButtonNaked
                 component="button"
-                onClick={() => downloadInitiativeRanking(id, fileName)}
                 sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
                 weight="default"
                 size="small"
                 startIcon={<FileDownloadIcon />}
+                disabled={true}
               >
                 {t('pages.initiativeRanking.publishModal.alertBtn')}
               </ButtonNaked>

@@ -1,23 +1,19 @@
 /* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable complexity */
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Backdrop, Box, Chip, Fade, IconButton, Modal, Typography } from '@mui/material';
+import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
-import {
-  copyTextToClipboard,
-  formatIban,
-  formatedCurrency,
-  getMaskedPan,
-  mappedChannel,
-} from '../../helpers';
+import { formatIban, formatedCurrency, getMaskedPan, mappedChannel } from '../../helpers';
 import { getTimelineDetail } from '../../services/intitativeService';
+import { formatDate, transactionResult } from './helpers';
+import OnboardingContent from './components/InitiativeWithDiscount/OnboardingContent';
+import TransactionContent from './components/InitiativeWithDiscount/TransactionContent';
+import InstrumentContent from './components/InitiativeWithDiscount/InstrumentContent';
 
 type Props = {
   fiscalCode: string;
@@ -68,65 +64,6 @@ const TransactionDetailModal = ({
         .finally(() => setLoading(false));
     }
   }, [operationId, openModal, initiativeId]);
-
-  const transactionResult = (opeType: string | undefined) => {
-    if (typeof opeType !== 'undefined') {
-      if (opeType?.toUpperCase().includes('REJECTED') || opeType?.toUpperCase().includes('KO')) {
-        return (
-          <>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.result')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
-              <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
-                label={i18n.t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
-                color="error"
-              />
-            </Box>
-          </>
-        );
-      } else {
-        return (
-          <>
-            <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-              <Typography variant="body2" color="text.secondary" textAlign="left">
-                {t('pages.initiativeUserDetails.transactionDetail.result')}
-              </Typography>
-            </Box>
-            <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
-              <Chip
-                sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
-                label={i18n.t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
-                color="success"
-              />
-            </Box>
-          </>
-        );
-      }
-    } else {
-      return;
-    }
-  };
-
-  const formatDate = (date: string | undefined) => {
-    if (typeof date === 'string') {
-      const newDate = new Date(date);
-      if (newDate) {
-        return newDate.toLocaleString('it-IT', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          timeZone: 'Europe/Rome',
-          hour: 'numeric',
-          minute: 'numeric',
-        });
-      }
-    }
-    return '';
-  };
 
   const operationTypeLabel = (
     opeType: string | undefined,
@@ -423,106 +360,19 @@ const TransactionDetailModal = ({
                   )}
                 </Typography>
               </Box>
-              {transactionDetail?.status === 'CANCELLED' && (
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Alert severity="info">
-                    <Typography variant="body2">
-                      {t(
-                        'pages.initiativeUserDetails.transactionDetail.discountCancelledAlertText'
-                      )}
-                    </Typography>
-                  </Alert>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.merchant')}
-                  </Typography>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {transactionDetail?.businessName}
-                  </Typography>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.expenseAmount')}
-                  </Typography>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {formatedCurrency(transactionDetail?.amount)}
-                  </Typography>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.discountApplied')}
-                  </Typography>
-                </Box>
-              )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12' }}>
-                  <Typography variant="body2" fontWeight={600}>
-                    {formatedCurrency(transactionDetail?.accrued)}
-                  </Typography>
-                </Box>
-              )}
 
-              <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                <Typography variant="body2" color="text.secondary" textAlign="left">
-                  {t('pages.initiativeUserDetails.transactionDetail.date')}
-                </Typography>
-              </Box>
-              <Box sx={{ gridColumn: 'span 12' }}>
-                <Typography variant="body2" fontWeight={600}>
-                  {formatDate(transactionDetail?.operationDate)}
-                </Typography>
-              </Box>
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
-                  <Typography variant="body2" color="text.secondary" textAlign="left">
-                    {t('pages.initiativeUserDetails.transactionDetail.transactionId')}
-                  </Typography>
-                </Box>
+              {transactionDetail?.operationType === 'ONBOARDING' && (
+                <OnboardingContent transactionDetail={transactionDetail} />
               )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 10' }}>
-                  <Typography
-                    variant="body2"
-                    fontWeight={600}
-                    sx={{
-                      width: '260px',
-                      textOverflow: 'ellipsis',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {transactionDetail?.eventId}
-                  </Typography>
-                </Box>
+              {transactionDetail?.operationType === 'TRANSACTION' && (
+                <TransactionContent transactionDetail={transactionDetail} />
               )}
-              {transactionDetail?.operationType !== 'ONBOARDING' && (
-                <Box sx={{ gridColumn: 'span 2' }}>
-                  <ContentCopyIcon
-                    onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
-                    color="primary"
-                    sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
-                    data-testid="transaction-modal-copy"
-                  />
-                </Box>
+              {(transactionDetail?.operationType === 'ADD_INSTRUMENT' ||
+                transactionDetail?.operationType === 'DELETE_INSTRUMENT' ||
+                transactionDetail?.operationType === 'REJECTED_ADD_INSTRUMENT' ||
+                transactionDetail?.operationType === 'REJECTED_DELETE_INSTRUMENT') && (
+                <InstrumentContent transactionDetail={transactionDetail} />
               )}
-
-              {transactionDetail?.operationType === 'ONBOARDING' &&
-                transactionResult(transactionDetail?.operationType)}
             </Box>
           )}
         </Box>

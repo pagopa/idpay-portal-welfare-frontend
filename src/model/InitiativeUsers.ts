@@ -11,6 +11,7 @@ export interface InitiativeUserToDisplay {
   beneficiary: string | undefined;
   updateStatusDate: string | undefined;
   beneficiaryState: BeneficiaryStateEnum | undefined;
+  familyId: string | undefined;
 }
 
 export interface InitiativeUsersResponse {
