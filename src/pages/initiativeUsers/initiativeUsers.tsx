@@ -45,6 +45,7 @@ import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 import TablePaginator from '../components/TablePaginator';
+import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -87,6 +88,7 @@ const InitiativeUsers = () => {
                   .substring(0, row.updateStatusDate.toLocaleString('fr-BE').length - 3)
               : '',
           beneficiaryState: row.beneficiaryState,
+          familyId: row.familyId,
         }));
         if (Array.isArray(rowsData)) {
           setRows(rowsData);
@@ -372,10 +374,17 @@ const InitiativeUsers = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width="50%">
-                      {t('pages.initiativeUsers.table.beneficiary')}
-                    </TableCell>
+                    {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                      <TableCell width="30%">
+                        {t('pages.initiativeRanking.table.familyId')}
+                      </TableCell>
+                    )}
                     <TableCell width="30%">
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+                        ? t('pages.initiativeUsers.table.beneficiary')
+                        : t('pages.initiativeRanking.table.familyBeneficiary')}
+                    </TableCell>
+                    <TableCell width="20%">
                       {t('pages.initiativeUsers.table.updateStatusDate')}
                     </TableCell>
                     <TableCell width="15%">
@@ -386,6 +395,9 @@ const InitiativeUsers = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r) => (
                     <TableRow key={r.id}>
+                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                        <TableCell>{r.familyId}</TableCell>
+                      )}
                       <TableCell>
                         <ButtonNaked
                           component="button"

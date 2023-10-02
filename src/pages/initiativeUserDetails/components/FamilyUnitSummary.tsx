@@ -65,7 +65,7 @@ const FamilyUnitSummary = ({ id, cf }: Props) => {
             </TableHead>
             <TableBody sx={{ backgroundColor: 'white' }}>
               {familyUnit?.usersList.map((r) => (
-                <TableRow key={r.familyId}>
+                <TableRow key={r.fiscalCode}>
                   <TableCell sx={{ textAlign: 'left' }}>{r.fiscalCode}</TableCell>
                   <TableCell sx={{ textAlign: 'left' }}></TableCell>
                   <TableCell sx={{ textAlign: 'left' }}></TableCell>
