@@ -529,6 +529,7 @@
       },
       "transactionDetail": {
         "acquirerTransactionId": "ID transazione Acquirer",
+        "authorizationMode": "Modalità di autorizzazione",
         "bank": "Banca",
         "brand": "Brand",
         "card": "Carta di credito o debito",
