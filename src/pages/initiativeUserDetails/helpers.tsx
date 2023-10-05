@@ -69,7 +69,7 @@ export const formatChannel = (channel: string | undefined) => {
   if (typeof channel === 'string') {
     switch (channel) {
       case 'IDPAYCODE':
-        return i18n.t('pages.initiativeUserDetails.transactionDetail.idPayCode');
+        return i18n.t('pages.initiativeUserDetails.transactionDetail.cie');
       case 'QRCODE':
       case 'BARCODE':
         return i18n.t('pages.initiativeUserDetails.appIo');

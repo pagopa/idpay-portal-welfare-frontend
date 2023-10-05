@@ -533,6 +533,7 @@
         "bank": "Banca",
         "brand": "Brand",
         "card": "Carta di credito o debito",
+        "cie": "CIE",
         "date": "Data",
         "discountApplied": "Buono sconto applicato",
         "discountCancelledAlertText": "Il buono sconto è stato annullato e l’importo è stato riaccreditato sul saldo disponibile.",
