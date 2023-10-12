@@ -331,7 +331,7 @@
           "invalidFileTypeDescription": "Il file deve essere in formato csv",
           "invalidRow": "C’è un errore alla riga {{rowNumber}}",
           "notEmptyDescription": "Il file è vuoto",
-          "overMaxUploadDescription": "La dimensione massima supportata è di 1 MB",
+          "overMaxUploadDescription": "La dimensione massima supportata è di 2 MB",
           "retry": "Carica di nuovo",
           "subtitle": "Aggiungi i Codici Fiscali dei destinatari dell’iniziativa. Diventeranno automaticamente assegnatari.",
           "subtitle3": "Vuoi escludere alcuni destinatari dall’iniziativa? Aggiungi i loro Codici Fiscali, così non potranno aderire. Puoi modificare questo file in ogni momento.",
