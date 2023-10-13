@@ -1,6 +1,4 @@
-import { Modal, Backdrop, Fade, Box, Typography, Button, Alert } from '@mui/material';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { ButtonNaked } from '@pagopa/mui-italia';
+import { Modal, Backdrop, Fade, Box, Typography, Button } from '@mui/material';
 import { MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -9,9 +7,7 @@ type Props = {
   handleClosePublishInitiativeRankingModal: MouseEventHandler;
   initiativeId: string | undefined;
   initiativeName: string | undefined;
-  fileName: string | undefined;
   publishInitiativeRanking: any;
-  downloadInitiativeRanking: any;
 };
 
 const PublishInitiativeRankingModal = ({
@@ -19,9 +15,7 @@ const PublishInitiativeRankingModal = ({
   handleClosePublishInitiativeRankingModal,
   initiativeId,
   initiativeName,
-  fileName,
   publishInitiativeRanking,
-  downloadInitiativeRanking,
 }: Props) => {
   const { t } = useTranslation();
   return (
@@ -55,37 +49,17 @@ const PublishInitiativeRankingModal = ({
             {t('pages.initiativeRanking.publishModal.subtitle', { initiativeName })}
           </Typography>
 
-          <Alert
-            severity="info"
-            sx={{ mb: 4 }}
-            action={
-              <ButtonNaked
-                component="button"
-                onClick={() => downloadInitiativeRanking(initiativeId, fileName)}
-                sx={{ color: 'primary.main', fontSize: '1rem', marginBottom: '3px' }}
-                weight="default"
-                size="small"
-                startIcon={<FileDownloadIcon />}
-                data-testid="download-btn-test"
-              >
-                {t('pages.initiativeRanking.publishModal.alertBtn')}
-              </ButtonNaked>
-            }
-          >
-            {t('pages.initiativeRanking.publishModal.alertTitle')}
-          </Alert>
-
           <Box
             sx={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(4, 1fr)',
+              gridTemplateColumns: 'repeat(6, 1fr)',
               gridTemplateRows: 'auto',
-              gridTemplateAreas: `". . cancelBtn exitBtn"`,
+              gridTemplateAreas: `". . . cancelBtn cancelBtn exitBtn"`,
             }}
           >
             <Button
               variant="outlined"
-              sx={{ gridArea: 'cancelBtn', justifySelf: 'end' }}
+              sx={{ gridArea: 'cancelBtn', justifySelf: 'start' }}
               onClick={handleClosePublishInitiativeRankingModal}
               data-testid="cancel-button-test"
             >

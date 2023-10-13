@@ -2,7 +2,7 @@ import { Alert, Box, Typography } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { useTranslation } from 'react-i18next';
 import { copyTextToClipboard, formatedCurrency } from '../../../../helpers';
-import { OperationProps, formatDate, transactionResult } from '../../helpers';
+import { OperationProps, formatChannel, formatDate, transactionResult } from '../../helpers';
 
 const TransactionContent = ({ transactionDetail }: OperationProps) => {
   const { t } = useTranslation();
@@ -46,6 +46,16 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
           {formatedCurrency(transactionDetail?.accrued)}
+        </Typography>
+      </Box>
+      <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
+        <Typography variant="body2" color="text.secondary" textAlign="left">
+          {t('pages.initiativeUserDetails.transactionDetail.authorizationMode')}
+        </Typography>
+      </Box>
+      <Box sx={{ gridColumn: 'span 12' }}>
+        <Typography variant="body2" fontWeight={600}>
+          {formatChannel(transactionDetail?.channel)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>

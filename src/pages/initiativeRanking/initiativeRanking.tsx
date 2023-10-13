@@ -424,9 +424,7 @@ const InitiativeRanking = () => {
                 handleClosePublishInitiativeRankingModal={handleClosePublishInitiativeRankingModal}
                 initiativeId={id}
                 initiativeName={initiativeSel.initiativeName}
-                fileName={fileName}
                 publishInitiativeRanking={publishInitiativeRanking}
-                downloadInitiativeRanking={downloadInitiativeRanking}
               />
             </>
           )}
@@ -573,8 +571,12 @@ const InitiativeRanking = () => {
                           getBeneficiaryStatus(r.beneficiaryRankingStatus)}{' '}
                         {r.beneficiary}
                       </TableCell>
-                      <TableCell>{r.ranking}</TableCell>
-                      <TableCell>{r.rankingValue}</TableCell>
+                      <TableCell>
+                        {r.beneficiaryRankingStatus !== 'ONBOARDING_KO' ? r.ranking : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {r.beneficiaryRankingStatus !== 'ONBOARDING_KO' ? r.rankingValue : '-'}
+                      </TableCell>
                       <TableCell>{r.criteriaConsensusTimeStamp}</TableCell>
                     </TableRow>
                   ))}
