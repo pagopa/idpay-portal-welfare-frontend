@@ -76,7 +76,7 @@ const instrumentsList = [
     channel: 'BARCODE',
     status: StatusEnum.ACTIVE,
     activationDate: new Date('2023-01-04T16:38:43.590Z'),
-    instrumentType: InstrumentTypeEnum.QRCODE,
+    instrumentType: InstrumentTypeEnum.APP_IO_PAYMENT,
   },
   {
     idWallet: '12345',
