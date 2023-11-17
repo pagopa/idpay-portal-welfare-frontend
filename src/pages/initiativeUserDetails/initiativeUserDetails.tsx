@@ -345,6 +345,19 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUserDetails.operationTypes.readmitted')}
           </Typography>
         );
+        case 'UNSUBSCRIBED':
+          return (
+            <Typography
+              sx={{
+                color: 'error.main',
+                fontWeight: 600,
+                fontSize: '1em',
+                textAlign: 'left',
+              }}
+            >
+              {t('pages.initiativeUserDetails.operationTypes.unsubscribed')}
+            </Typography>
+          );
       default:
         return null;
     }
@@ -632,7 +645,7 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' ? (
+                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' || r.operationType === 'UNSUBSCRIBED' ? (
                           renderNonClicableEvents(r.operationType)
                         ) : (
                           <ButtonNaked

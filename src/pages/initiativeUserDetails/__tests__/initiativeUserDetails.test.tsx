@@ -168,11 +168,12 @@ describe('test suite initiative user details', () => {
       'TRANSACTION',
       'SUSPENDED',
       'READMITTED',
+      'UNSUBSCRIBED',
       undefined,
     ];
     const fullTimeline: any = [];
     operationTypes.forEach((operation) => {
-      return fullTimeline.push({
+      fullTimeline.push({
         operationId: '1u1u1u1u1u1u1u',
         operationType: operation,
         operationDate: '2023-02-05T10:22:28.012Z',
