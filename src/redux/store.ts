@@ -3,14 +3,22 @@ import logger from 'redux-logger';
 import { appStateReducer } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
 import { userReducer } from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
 import { LOG_REDUX_ACTIONS } from '../utils/constants';
+import { partiesReducer } from './slices/partiesSlice';
+import { initiativeReducer } from './slices/initiativeSlice';
+import { initiativeSummaryReducer } from './slices/initiativeSummarySlice';
+import { permissionsReducer } from './slices/permissionsSlice';
 
 const additionalMiddlewares = [LOG_REDUX_ACTIONS ? logger : undefined];
 
 export const createStore = () =>
   configureStore({
     reducer: {
+      parties: partiesReducer,
       user: userReducer,
+      permissions: permissionsReducer,
       appState: appStateReducer,
+      initiative: initiativeReducer,
+      initiativeSummary: initiativeSummaryReducer,
     },
     middleware: (getDefaultMiddleware) =>
       additionalMiddlewares.reduce(
