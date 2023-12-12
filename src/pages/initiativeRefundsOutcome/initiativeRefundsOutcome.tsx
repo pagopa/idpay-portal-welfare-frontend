@@ -258,7 +258,16 @@ const InitiativeRefundsOutcome = () => {
           if (res.hasOwnProperty('data') && typeof res.data === 'string') {
             const blob = new Blob([res.data], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
-            downloadURI(url, data.filePath as string);
+            const extToReplace = '.zip';
+            // eslint-disable-next-line functional/no-let
+            let newFileName = data.filePath as string;
+            if (newFileName.endsWith(extToReplace)) {
+              newFileName = `${newFileName.substring(
+                0,
+                newFileName.length - extToReplace.length
+              )}_errors.csv`;
+            }
+            downloadURI(url, newFileName);
           }
         })
         .catch((error) => {

@@ -610,7 +610,7 @@ export const mockedNotificationReward = {
 };
 
 export const mockedInitiativeStatistics = {
-  accruedRewards: '10',
+  accruedRewards: 10,
 
   lastUpdatedDateTime: new Date(),
 

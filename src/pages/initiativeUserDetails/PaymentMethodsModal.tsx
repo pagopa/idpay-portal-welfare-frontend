@@ -66,7 +66,7 @@ const PaymentMethodsModal = ({
           return getMaskedPan(maskedPan);
         } else if (instrumentType === InstrumentTypeEnum.IDPAYCODE) {
           return t('pages.initiativeUserDetails.transactionDetail.idPayCode');
-        } else if (instrumentType === InstrumentTypeEnum.QRCODE) {
+        } else if (instrumentType === InstrumentTypeEnum.APP_IO_PAYMENT) {
           return t('pages.initiativeUserDetails.appIo');
         }
         return '-';

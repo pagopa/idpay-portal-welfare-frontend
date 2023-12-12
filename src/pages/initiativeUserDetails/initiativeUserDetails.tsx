@@ -345,6 +345,19 @@ const InitiativeUserDetails = () => {
             {t('pages.initiativeUserDetails.operationTypes.readmitted')}
           </Typography>
         );
+        case 'UNSUBSCRIBED':
+          return (
+            <Typography
+              sx={{
+                color: 'error.main',
+                fontWeight: 600,
+                fontSize: '1em',
+                textAlign: 'left',
+              }}
+            >
+              {t('pages.initiativeUserDetails.operationTypes.unsubscribed')}
+            </Typography>
+          );
       default:
         return null;
     }
@@ -540,8 +553,8 @@ const InitiativeUserDetails = () => {
               label={t('pages.initiativeUsers.form.from')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              renderInput={(props: any) => (
                 <TextField
                   {...props}
                   id="searchFrom"
@@ -562,8 +575,8 @@ const InitiativeUserDetails = () => {
               label={t('pages.initiativeUsers.form.to')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              renderInput={(props: any) => (
                 <TextField
                   {...props}
                   id="searchTo"
@@ -632,7 +645,7 @@ const InitiativeUserDetails = () => {
                         {formatStringToDate(r.operationDate)}
                       </TableCell>
                       <TableCell>
-                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' ? (
+                        {r.operationType === 'SUSPENDED' || r.operationType === 'READMITTED' || r.operationType === 'UNSUBSCRIBED' ? (
                           renderNonClicableEvents(r.operationType)
                         ) : (
                           <ButtonNaked

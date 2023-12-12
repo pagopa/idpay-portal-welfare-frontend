@@ -48,7 +48,7 @@ const InitiativeOverview = () => {
   const [statusFile, setStatusFile] = useState('');
   const [beneficiaryReached, setBeneficiaryReached] = useState<number | undefined>(undefined);
   const [publishModalOpen, setPublishModalOpen] = useState(false);
-  const [accruedRewards, setAccruedRewards] = useState('');
+  const [accruedRewards, setAccruedRewards] = useState(0);
   const [onboardedCitizenCount, setOnboardedCitizenCount] = useState(0);
   const [lastUpdatedDateTime, setLastUpdatedDateTime] = useState('');
 
@@ -117,7 +117,7 @@ const InitiativeOverview = () => {
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
-    setAccruedRewards('0');
+    setAccruedRewards(0);
     setOnboardedCitizenCount(0);
     setLastUpdatedDateTime('-');
     // eslint-disable-next-line no-prototype-builtins
@@ -128,7 +128,7 @@ const InitiativeOverview = () => {
         initiativeStatistics(id)
           .then((res) => {
             if (res) {
-              if (typeof res.accruedRewards === 'string') {
+              if (typeof res.accruedRewards === 'number') {
                 setAccruedRewards(res.accruedRewards);
               }
               if (typeof res.onboardedCitizenCount === 'number') {
@@ -144,7 +144,7 @@ const InitiativeOverview = () => {
               }
             } // TO CHECK FOR REMOVE
             else {
-              setAccruedRewards('0');
+              setAccruedRewards(0);
               setOnboardedCitizenCount(0);
               setLastUpdatedDateTime('-');
             }
