@@ -59,13 +59,11 @@ const AdmissionCriteria = ({
   const addError = useErrorDispatcher();
   const [openModal, setOpenModal] = useState(false);
   const [searchCriteria, setSearchCriteria] = useState('');
-  const [availableCriteria, setAvailableCriteria] = useState(Array<AvailableCriteria>);
-  const [criteriaToRender, setCriteriaToRender] = useState(Array<AvailableCriteria>);
+  const [availableCriteria, setAvailableCriteria] = useState<Array<AvailableCriteria>>([]);
+  const [criteriaToRender, setCriteriaToRender] = useState<Array<AvailableCriteria>>([]);
   const [criteriaToRenderNumber, setCriteriaToRenderNumber] = useState(0);
-  const [manualCriteriaToRender, setManualCriteriaToRender] = useState(Array<ManualCriteriaItem>);
-  const [criteriaToSubmit, setCriteriaToSubmit] = useState(
-    Array<{ code: string | undefined; dispatched: boolean }>
-  );
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState<Array<ManualCriteriaItem>>([]);
+  const [criteriaToSubmit, setCriteriaToSubmit] = useState<Array<{ code: string | undefined; dispatched: boolean }>>([]);
   const [showMandatoryIseeToast, setShowMandatoryIseeToast] = useState<boolean>(false);
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
