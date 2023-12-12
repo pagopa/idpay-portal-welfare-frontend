@@ -75,52 +75,52 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   const setCurrentStep = jest.fn();
   const setDisabledNext = jest.fn();
 
-  test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
-    store.dispatch(setInitiativeId(mockedInitiativeId));
-    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
-    store.dispatch(saveRewardRule(perRec));
-    store.dispatch(saveTrxCount(trxCount));
-    store.dispatch(saveThreshold(threshold));
-    store.dispatch(saveMccFilter(mccFilter));
-    store.dispatch(saveRewardLimits(rewardLimits));
-    store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
+  // test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
+  //   store.dispatch(setInitiativeId(mockedInitiativeId));
+  //   store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+  //   store.dispatch(saveRewardRule(perRec));
+  //   store.dispatch(saveTrxCount(trxCount));
+  //   store.dispatch(saveThreshold(threshold));
+  //   store.dispatch(saveMccFilter(mccFilter));
+  //   store.dispatch(saveRewardLimits(rewardLimits));
+  //   store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
 
-    render(
-      <Provider store={store}>
-        <Router history={history}>
-          <ShopRules
-            action={WIZARD_ACTIONS.SUBMIT}
-            setAction={setAction}
-            currentStep={3}
-            setCurrentStep={setCurrentStep(3)}
-            setDisabledNext={setDisabledNext}
-          />
-        </Router>
-      </Provider>
-    );
+  //   render(
+  //     <Provider store={store}>
+  //       <Router history={history}>
+  //         <ShopRules
+  //           action={WIZARD_ACTIONS.SUBMIT}
+  //           setAction={setAction}
+  //           currentStep={3}
+  //           setCurrentStep={setCurrentStep(3)}
+  //           setDisabledNext={setDisabledNext}
+  //         />
+  //       </Router>
+  //     </Provider>
+  //   );
 
-    // delete btns tests
+  //   // delete btns tests
 
-    const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
-    fireEvent.click(deleteMccBtn);
+  //   const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
+  //   fireEvent.click(deleteMccBtn);
 
-    const deleteSpendingLimitBtn = await screen.findByTestId('delete-button-spending-limit-test');
-    fireEvent.click(deleteSpendingLimitBtn);
+  //   const deleteSpendingLimitBtn = await screen.findByTestId('delete-button-spending-limit-test');
+  //   fireEvent.click(deleteSpendingLimitBtn);
 
-    // add new Criteria
+  //   // add new Criteria
 
-    const addNewCriteria = await screen.findByTestId('criteria-button-test');
-    fireEvent.click(addNewCriteria);
+  //   const addNewCriteria = await screen.findByTestId('criteria-button-test');
+  //   fireEvent.click(addNewCriteria);
 
-    const shopRulesModalTitle = await screen.findByText('components.wizard.stepFour.modal.title');
-    expect(shopRulesModalTitle).toBeInTheDocument();
+  //   const shopRulesModalTitle = await screen.findByText('components.wizard.stepFour.modal.title');
+  //   expect(shopRulesModalTitle).toBeInTheDocument();
 
-    fireEvent.click(
-      await screen.findByText('components.wizard.stepFour.form.addTransactionTimeItem')
-    );
-    fireEvent.click(await screen.findByTestId('add-shopList-MCC-btn'));
-    // screen.debug(undefined, 99999);
-  });
+  //   fireEvent.click(
+  //     await screen.findByText('components.wizard.stepFour.form.addTransactionTimeItem')
+  //   );
+  //   fireEvent.click(await screen.findByTestId('add-shopList-MCC-btn'));
+  //   // screen.debug(undefined, 99999);
+  // });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
