@@ -29,6 +29,7 @@ export interface GeneralInfo {
 
 export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
+  serviceId: string | undefined;
   serviceName: string | undefined;
   serviceArea: ServiceScopeEnum | string | undefined;
   logoFileName: string;
