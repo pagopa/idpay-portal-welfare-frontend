@@ -500,6 +500,7 @@
       "operationTypes": {
         "readmitted": "Riammissione",
         "suspended": "Sospensione",
+        "unsubscribed": "Disiscrizione dall'iniziativa",
         "addIban": "Aggiunta IBAN",
         "addInstrument": "Aggiunta metodo",
         "deleteInstrument": "Eliminazione metodo",

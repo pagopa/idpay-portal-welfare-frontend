@@ -279,8 +279,8 @@ const ActionMenu = ({ id, status }: ActionsMenuProps) => {
 const InitiativeList = () => {
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof Data>('initiativeName');
-  const [initiativeList, setInitiativeList] = useState(Array<Data>);
-  const [initiativeListFiltered, setInitiativeListFiltered] = useState(Array<Data>);
+  const [initiativeList, setInitiativeList] = useState<Array<Data>>([]);
+  const [initiativeListFiltered, setInitiativeListFiltered] = useState<Array<Data>>([]);
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();

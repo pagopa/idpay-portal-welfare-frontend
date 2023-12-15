@@ -55,7 +55,7 @@ const MCCItem = ({
 }: Props) => {
   const { t } = useTranslation();
   const [openModalMcc, setOpenModalMcc] = useState(false);
-  const [mccCodesList, setMccCodesList] = useState(Array<MccCodesModel>);
+  const [mccCodesList, setMccCodesList] = useState<Array<MccCodesModel>>([]);
   const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_MCC_LIST');
 
