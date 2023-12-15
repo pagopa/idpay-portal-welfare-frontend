@@ -134,6 +134,7 @@ export const useInitiative = () => {
 export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   const dataT = {
     initiativeOnIO: false,
+    serviceId: '',
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',
@@ -148,6 +149,10 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
   if (typeof data.serviceIO !== 'undefined') {
     // eslint-disable-next-line functional/immutable-data
     dataT.initiativeOnIO = data.serviceIO;
+  }
+  if(typeof data.serviceId !== 'undefined'){
+    // eslint-disable-next-line functional/immutable-data
+    dataT.serviceId = data.serviceId;
   }
   if (typeof data.serviceName !== 'undefined') {
     // eslint-disable-next-line functional/immutable-data

@@ -641,6 +641,14 @@ const InitiativeOverview = () => {
             <Typography variant="h6">{t('pages.initiativeOverview.info.title')}</Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 4' }}>
+            <Typography variant="body2">{t('pages.initiativeOverview.info.serviceId')}</Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 8' }}>
+            <Typography variant="body2" sx={{ fontWeight: 600 }}>
+              {initiativeSel.additionalInfo.serviceId !== '' ? initiativeSel.additionalInfo.serviceId : "-"}
+            </Typography>
+          </Box>
+          <Box sx={{ gridColumn: 'span 4' }}>
             <Typography variant="body2">{t('pages.initiativeOverview.info.idCode')}</Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 8' }}>
