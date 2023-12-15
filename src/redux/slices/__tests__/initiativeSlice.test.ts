@@ -65,6 +65,7 @@ describe('use Initiative slice', () => {
     updateDate: undefined,
     additionalInfo: {
       initiativeOnIO: true,
+      serviceId:'',
       serviceName: '',
       serviceArea: '',
       serviceDescription: '',
@@ -140,6 +141,7 @@ describe('use Initiative slice', () => {
   };
   const mockedAdditionalInfo: AdditionalInfo = {
     initiativeOnIO: undefined,
+    serviceId:undefined,
     serviceName: undefined,
     serviceArea: undefined,
     serviceDescription: undefined,

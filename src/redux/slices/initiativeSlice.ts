@@ -30,6 +30,7 @@ const initialState: Initiative = {
   updateDate: undefined,
   additionalInfo: {
     initiativeOnIO: true,
+    serviceId: '',
     serviceName: '',
     serviceArea: '',
     serviceDescription: '',

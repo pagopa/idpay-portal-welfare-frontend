@@ -780,6 +780,7 @@
       "info": {
         "creationData": "Creata il",
         "idCode": "Codice identificativo",
+        "serviceId":"Id servizio",
         "initiativeState": "Stato",
         "lastModify": "Ultima modifica",
         "otherInfo": {
