@@ -1129,31 +1129,31 @@ export const fetchInitiativeUsers = (page: number) => {
 export const mockedOrganizationsList = [
   {
     organizationId: '1',
-    organizationName: 'Comune di Milano',
+    organizationName: 'Comune di Test1',
   },
   {
     organizationId: '2',
-    organizationName: 'Comune di Roma',
+    organizationName: 'Comune di Test2',
   },
   {
     organizationId: '3',
-    organizationName: 'Comune di Genova',
+    organizationName: 'Comune di Test3',
   },
   {
     organizationId: '4',
-    organizationName: 'Comune di Firenze',
+    organizationName: 'Comune di Test4',
   },
   {
     organizationId: '5',
-    organizationName: 'Comune di Aosta',
+    organizationName: 'Comune di Test5',
   },
   {
     organizationId: '6',
-    organizationName: 'Comune di Venezia',
+    organizationName: 'Comune di Test6',
   },
   {
     organizationId: '7',
-    organizationName: 'Comune di Genoveffa',
+    organizationName: 'Comune di Test7',
   },
 ];
 
