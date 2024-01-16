@@ -6,7 +6,7 @@ export const fetchParties = (): Promise<Array<Party>> => {
   if (process.env.REACT_APP_API_MOCK_PARTIES === 'true') {
     return new Promise((resolve) => resolve(mockedParties));
   } else {
-    //TODO Implementation of call to selfcare to populate switch change entities
+    // TODO Implementation of call to selfcare to populate switch change entities
     return new Promise((resolve) => resolve([]));
     // return PortalApi.getInstitutions().then((institutionResources) =>
     //   institutionResources ? institutionResources.map(institutionResource2Party) : []
@@ -46,7 +46,7 @@ const retrieveParty = (
 };
 
 const retrieveParty_fetch = (_partyId: string): Promise<Party | null> => new Promise((resolve) => resolve(null));
-//TODO Implementation of call to selfcare to populate switch change entities
+  // TODO Implementation of call to selfcare to populate switch change entities
   // PortalApi.getInstitution(partyId).then((institutionResource) =>
   //   institutionResource ? institutionResource2Party(institutionResource) : null
   // );
