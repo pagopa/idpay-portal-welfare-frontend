@@ -26,7 +26,7 @@ describe('test suite for ChooseOrganization', () => {
 
     // select an organization from the filtered list
     const organizationFilteredListElement = (await screen.findByText(
-      'Comune di Milano'
+      'Comune di Test1'
     )) as HTMLSpanElement;
     fireEvent.click(organizationFilteredListElement);
 
@@ -66,7 +66,7 @@ describe('test suite for ChooseOrganization', () => {
 
     // select an organization from the filtered list
     const organizationFilteredListElement = (await screen.findByText(
-      'Comune di Milano'
+      'Comune di Test1'
     )) as HTMLSpanElement;
     fireEvent.click(organizationFilteredListElement);
 
