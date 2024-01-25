@@ -149,7 +149,7 @@ const ServiceConfig = ({
             if (type && type === 'web') {
               return Yup.string()
                 .required(t('validation.required'))
-                .test('url', t('validation.webValid'), (value) => validateUrl(value));
+                .test('url', t('validation.web'), (value) => validateUrl(value));
             }
             if (type && type === 'email') {
               return Yup.string()
