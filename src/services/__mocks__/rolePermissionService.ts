@@ -24,4 +24,9 @@ export const mockedPortalConsent = {
   versionId: '23456',
 };
 
+export const mockedVersionId = "234d31";
+
 export const getUserPermission = () => RolePermissionApiMocked.userPermission();
+export const getPortalConsent = () => RolePermissionApiMocked.getPortalConsent();
+export const savePortalConsent= () => RolePermissionApiMocked.savePortalConsent(mockedVersionId);
+

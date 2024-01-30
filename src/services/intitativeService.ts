@@ -49,7 +49,7 @@ import { FamilyUnitCompositionDTO } from '../api/generated/initiative/FamilyUnit
 //   mockedRankingStatus,
 //   mockedRefundRules,
 //   mockedTrxAndRewardRules,
-// } from './__mocks__/initiativeService';
+// } from './__mocks__/intitativeService';
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => InitiativeApi.getInitativeSummary().then((res) => res);
 
