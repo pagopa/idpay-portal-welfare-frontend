@@ -9,6 +9,10 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import MCCItem from '../MCCItem';
 import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
+import { mockedMccCodes } from '../../../../../services/__mocks__/mccCodesService';
+
+jest.mock('../../../../../services/intitativeService');
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});

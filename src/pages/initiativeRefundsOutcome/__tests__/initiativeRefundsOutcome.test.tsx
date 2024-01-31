@@ -6,9 +6,11 @@ import { StatusEnum } from '../../../api/generated/initiative/RewardImportsDTO';
 import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
 import { renderWithProviders } from '../../../utils/test-utils';
 import InitiativeRefundsOutcome from '../initiativeRefundsOutcome';
+
+jest.mock('../../../services/intitativeService');
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});

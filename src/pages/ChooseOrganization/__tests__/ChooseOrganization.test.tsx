@@ -4,6 +4,8 @@ import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient'
 import { renderWithContext } from '../../../utils/test-utils';
 import ChooseOrganization from '../ChooseOrganization';
 
+jest.mock('../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});

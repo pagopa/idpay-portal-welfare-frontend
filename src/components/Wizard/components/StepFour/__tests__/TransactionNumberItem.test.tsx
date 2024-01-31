@@ -8,6 +8,8 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TransactionNumberItem from '../TransactionNumberItem';
 import { shopRulesToSubmit, trxCount } from './ShopRules.test';
 
+jest.mock('../../../../../services/intitativeService');
+
 window.scrollTo = jest.fn();
 
 describe('<TransactionNumberItem />', (injectedStore?: ReturnType<typeof createStore>) => {

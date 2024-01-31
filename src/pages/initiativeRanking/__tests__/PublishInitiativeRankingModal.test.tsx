@@ -1,7 +1,7 @@
 import React from 'react';
 import PublishInitiativeRankingModal from '../PublishInitiativeRankingModal';
 import { screen, fireEvent, render } from '@testing-library/react';
-import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
 import { Provider } from 'react-redux';
 import { store } from '../../../redux/store';
 

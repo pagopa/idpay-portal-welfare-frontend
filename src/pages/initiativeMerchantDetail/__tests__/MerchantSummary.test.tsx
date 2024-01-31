@@ -9,6 +9,8 @@ import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
 import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
 
+jest.mock('../../../services/merchantsService');
+
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});

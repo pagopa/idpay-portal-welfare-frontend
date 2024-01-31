@@ -15,6 +15,10 @@ import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
 import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
 import InitiativeUsers from '../initiativeUsers';
+import { InitiativeApi } from '../../../api/InitiativeApiClient';
+import { mockedOnBoardingStatusResponse } from '../../../services/__mocks__/intitativeService';
+
+jest.mock('../../../services/intitativeService');
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

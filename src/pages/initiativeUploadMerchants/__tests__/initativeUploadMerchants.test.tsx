@@ -5,6 +5,9 @@ import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpda
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeUploadMerchants from '../initiativeUploadMerchants';
+import { merchantsApi } from '../../../api/merchantsApiClient';
+
+jest.mock('../../../services/merchantsService')
 
 const oldWindowLocation = global.window.location;
 
@@ -28,6 +31,7 @@ afterAll(() => {
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(merchantsApi, 'uploadMerchantList');
 });
 
 describe('test suite for InitativeUploadMerchants component', () => {

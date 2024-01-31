@@ -4,6 +4,8 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeMerchantDetail from '../initiativeMerchantDetail';
 
+jest.mock('../../../services/merchantsService');
+
 window.scrollTo = jest.fn();
 
 const oldWindowLocation = global.window.location;

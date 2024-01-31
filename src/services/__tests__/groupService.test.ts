@@ -1,15 +1,12 @@
 import { groupsApi } from '../../api/groupsApiClient';
-import { mockedFile, mockedInitiativeId } from '../__mocks__/groupService';
+import { mockedFile, mockedInitiativeId } from '../__mocks__/groupsService';
 import {
   getGroupOfBeneficiaryStatusAndDetail,
   uploadGroupOfBeneficiaryPut,
 } from '../groupsService';
 import { createStore } from '../../redux/store';
-// import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-// import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
-// import { groupsApiMocked } from '../../api/__mocks__/groupsApiClient';
 
-// jest.mock('../../api/groupsApiClient.ts');
+jest.mock('../../services/groupsService.ts');
 
 beforeEach(() => {
   jest.spyOn(groupsApi, 'getGroupOfBeneficiaryStatusAndDetails');
@@ -29,19 +26,4 @@ describe('Group Service', (injectedStore?: ReturnType<typeof createStore>) => {
     expect(groupsApi.uploadGroupOfBeneficiary).not.toBeCalledWith(mockedInitiativeId, mockedFile);
   });
 
-  // test('Test toast error', () => {
-  //   const actions = store.dispatch(
-  //     appStateActions.addError({
-  //       id: '',
-  //       error: new Error(),
-  //       techDescription: 'token expired or not valid',
-  //       toNotify: false,
-  //       blocking: false,
-  //       displayableTitle: i18n.t('session.expired.title'),
-  //       displayableDescription: i18n.t('session.expired.message'),
-  //     })
-  //   );
-  //   const expectedPayload = actions;
-  //   expect(actions).toEqual(expectedPayload);
-  // });
 });

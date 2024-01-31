@@ -1,10 +1,8 @@
 import { mockedBody } from '../__mocks__/emailNotificationService';
-// import { getInstitutionProductUserInfo, sendEmail } from '../__mocks__/emailNotificationService';
 import { getInstitutionProductUserInfo, sendEmail } from '../emailNotificationService';
-// import { EmailNotificationApiMocked } from '../../api/__mocks__/emeailNotificationApiClient';
 import { EmailNotificationApi } from '../../api/emailNotificationApiClient';
 
-jest.mock('../../api/emailNotificationApiClient.ts');
+jest.mock('../../services/emailNotificationService.ts');
 
 beforeEach(() => {
   jest.spyOn(EmailNotificationApi, 'getInstitutionProductUserInfo');
