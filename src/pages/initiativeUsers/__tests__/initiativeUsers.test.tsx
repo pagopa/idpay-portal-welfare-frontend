@@ -93,6 +93,7 @@ describe('<InitiativeUsers />', () => {
     additionalInfo: {
       initiativeOnIO: true,
       serviceName: 'prova313',
+      serviceId: 'prova123',
       serviceArea: ServiceScopeEnum.NATIONAL,
       serviceDescription: 'newStepOneTest',
       privacyPolicyUrl: 'http://test.it',
