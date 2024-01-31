@@ -9,9 +9,9 @@ import { mockedPartyProducts } from '../../services/__mocks__/productService';
 // };
 
 export default (WrappedComponent: React.ComponentType<any>) => (props: any) => {
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(partiesActions.setPartySelectedProducts(mockedPartyProducts));
-  }, []);
-  return <WrappedComponent {...props} />;
+const dispatch = useAppDispatch();
+useEffect(() => {
+dispatch(partiesActions.setPartySelectedProducts(mockedPartyProducts));
+}, []);
+return <WrappedComponent {...props} />;
 };

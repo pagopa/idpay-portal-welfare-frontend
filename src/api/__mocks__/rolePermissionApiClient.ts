@@ -7,4 +7,6 @@ export const RolePermissionApiMocked = {
     new Promise((resolve) => resolve(mockedPermission)),
   getPortalConsent: async (): Promise<PortalConsentDTO> =>
     new Promise((resolve) => resolve(mockedPortalConsent)),
+  savePortalConsent: async (_versionId: string | undefined) :  Promise<void> =>
+    new Promise ((resolve) => resolve()),
 };

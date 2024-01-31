@@ -2,7 +2,7 @@ import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
 import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
 // import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
 import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
-import { mockedFile } from '../../services/__mocks__/groupService';
+import { mockedFile } from '../../services/__mocks__/groupsService';
 import {
   mockedBeneficaryStatus,
   mockedExportsPagedResponse,
@@ -25,12 +25,12 @@ import {
   mockedRefundsDetailsSummary,
   mockedWallet,
   mockedWalletInstrument,
-} from '../../services/__mocks__/initiativeService';
-import { mockedMccCodes } from '../../services/__mocks__/mccCodesServices';
+} from '../../services/__mocks__/intitativeService';
+import { mockedMccCodes } from '../../services/__mocks__/mccCodesService';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
 import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
-import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
+
 import { CsvDTO } from '../generated/initiative/CsvDTO';
 import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAdditionalDTO';
 import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
@@ -44,7 +44,6 @@ import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardin
 import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
 import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
 import { SasToken } from '../generated/initiative/SasToken';
-import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 import { WalletDTO } from '../generated/initiative/WalletDTO';
 import { IbanDTO } from '../generated/initiative/IbanDTO';
 import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
@@ -55,6 +54,8 @@ import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
 import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
 import { OnboardingStatusDTO } from '../generated/initiative/OnboardingStatusDTO';
 import { FamilyUnitCompositionDTO } from '../generated/initiative/FamilyUnitCompositionDTO';
+import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
+import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -191,7 +192,7 @@ export const InitiativeApiMocked = {
     new Promise((resolve) => resolve(mockedGetIniOnboardingRankingStatusPaged)),
 
   // getRankingFileDownload: async (_id: string, _filename: string): Promise<SasToken> =>
-  //   new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
+    //   new Promise((resolve) => resolve(mockedGetRankingFileDownload)),
 
   notifyCitizenRankings: async (_id: string): Promise<void> => new Promise((resolve) => resolve()),
 
