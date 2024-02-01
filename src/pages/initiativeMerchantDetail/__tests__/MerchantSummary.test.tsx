@@ -8,12 +8,14 @@ import {
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
 import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
+import { merchantsApi } from '../../../api/merchantsApiClient';
 
 jest.mock('../../../services/merchantsService');
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(merchantsApi, 'getMerchantDetail');
 });
 
 describe('Test suite for InitiativeDiscountSummary component', () => {
@@ -77,5 +79,6 @@ describe('Test suite for InitiativeDiscountSummary component', () => {
         setMerchantStatistics={jest.fn()}
       />
     );
+
   });
 });
