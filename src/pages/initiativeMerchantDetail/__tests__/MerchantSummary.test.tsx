@@ -1,19 +1,22 @@
 import React from 'react';
-import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
-import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
-import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
+import { renderWithContext } from '../../../utils/test-utils';
+import MerchantSummary from '../MerchantSummary';
 import {
   mockedMerchantDetail,
   mockedMerchantStatistics,
 } from '../../../services/__mocks__/merchantsService';
-import { renderWithContext } from '../../../utils/test-utils';
-import MerchantSummary from '../MerchantSummary';
+import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
+import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
+import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
+import { merchantsApi } from '../../../api/merchantsApiClient';
 
 jest.mock('../../../services/merchantsService');
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
+  jest.spyOn(merchantsApi, 'getMerchantDetail');
+  jest.spyOn(merchantsApi, 'getMerchantInitiativeStatistics');
 });
 
 describe('Test suite for InitiativeDiscountSummary component', () => {
@@ -77,6 +80,7 @@ describe('Test suite for InitiativeDiscountSummary component', () => {
         setMerchantStatistics={jest.fn()}
       />
     );
-
+    expect(merchantsApi.getMerchantDetail).not.toBeCalled();
+    expect(merchantsApi.getMerchantInitiativeStatistics).not.toBeCalled();
   });
 });
