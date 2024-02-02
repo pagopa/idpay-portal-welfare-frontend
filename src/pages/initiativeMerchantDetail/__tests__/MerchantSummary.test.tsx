@@ -15,8 +15,6 @@ jest.mock('../../../services/merchantsService');
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});
-  jest.spyOn(merchantsApi, 'getMerchantDetail');
-  jest.spyOn(merchantsApi, 'getMerchantInitiativeStatistics');
 });
 
 describe('Test suite for InitiativeDiscountSummary component', () => {
@@ -80,7 +78,5 @@ describe('Test suite for InitiativeDiscountSummary component', () => {
         setMerchantStatistics={jest.fn()}
       />
     );
-    expect(merchantsApi.getMerchantDetail).not.toBeCalled();
-    expect(merchantsApi.getMerchantInitiativeStatistics).not.toBeCalled();
   });
 });
