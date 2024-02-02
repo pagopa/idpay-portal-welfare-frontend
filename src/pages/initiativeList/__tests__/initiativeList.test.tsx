@@ -9,6 +9,8 @@ import { Router } from 'react-router';
 import { createMemoryHistory } from 'history';
 import { ThemeProvider } from '@mui/system';
 
+jest.mock('../../../services/intitativeService');
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));

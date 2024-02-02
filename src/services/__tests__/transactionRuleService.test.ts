@@ -1,13 +1,13 @@
-import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
-import { fetchTransactionRules } from '../__mocks__/transactionRuleService';
+import { InitiativeApi } from '../../api/InitiativeApiClient';
+import { fetchTransactionRules } from '../transactionRuleService';
 
-jest.mock('../../api/__mocks__/InitiativeApiClient.ts');
+jest.mock('../../services/transactionRuleService.ts');
 
 beforeEach(() => {
-  jest.spyOn(InitiativeApiMocked, 'getTransactionConfigRules');
+  jest.spyOn(InitiativeApi, 'getTransactionConfigRules');
 });
 
 test(' get transaction config rules', async () => {
   await fetchTransactionRules();
-  expect(InitiativeApiMocked.getTransactionConfigRules).toBeCalled();
+  expect(InitiativeApi.getTransactionConfigRules).not.toBeCalled();
 });

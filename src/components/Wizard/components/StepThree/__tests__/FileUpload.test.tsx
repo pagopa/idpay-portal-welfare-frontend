@@ -8,10 +8,13 @@ import { store } from '../../../../../redux/store';
 import {
   mockedBeneficiaryStatusAndDetails,
   mockedUploadGroupOfBeneficiary,
-} from '../../../../../services/__mocks__/groupService';
+} from '../../../../../services/__mocks__/groupsService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithProviders } from '../../../../../utils/test-utils';
 import FileUpload from '../FileUpload';
+import { groupsApi } from '../../../../../api/groupsApiClient';
+
+jest.mock('../../../../../services/groupsService');
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

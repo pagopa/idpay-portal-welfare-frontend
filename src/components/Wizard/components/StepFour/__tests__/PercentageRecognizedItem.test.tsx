@@ -7,6 +7,8 @@ import { renderWithContext } from '../../../../../utils/test-utils';
 import PercentageRecognizedItem from '../PercentageRecognizedItem';
 import { perRec, shopRulesToSubmit } from './ShopRules.test';
 
+jest.mock('../../../../../services/intitativeService');
+
 window.scrollTo = jest.fn();
 
 describe('<PercentageRecognizedItem />', () => {

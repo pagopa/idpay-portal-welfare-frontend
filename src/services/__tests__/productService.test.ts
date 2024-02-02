@@ -2,6 +2,7 @@
 // import { PortalApi } from '../../api/PortalApiClient';
 // import { fetchProducts } from '../productService';
 // import { productResource2Product } from '../../model/Product';
+import { fetchProducts } from '../../services/productService';
 
 // jest.mock('../../api/PortalApiClient');
 
@@ -10,6 +11,12 @@ beforeEach(() => {
   // jest.spyOn(PortalApi, 'getProductRoles');
 });
 
+describe('fetchProducts Service', () => {
+  it('should return an empty array', async () => {
+    const result = await fetchProducts('examplePartyId');
+    expect(result).toEqual([]);
+  });
+});
 test('Test fetchProducts', async () => {
   // const products = await fetchProducts('1');
   // expect(products).toMatchObject(mockedProductResources.map(productResource2Product));

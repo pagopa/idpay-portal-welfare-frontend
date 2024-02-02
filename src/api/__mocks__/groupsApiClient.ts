@@ -1,7 +1,7 @@
 import {
   mockedBeneficiaryStatusAndDetails,
   mockedUploadGroupOfBeneficiary,
-} from '../../services/__mocks__/groupService';
+} from '../../services/__mocks__/groupsService';
 import { GroupUpdateDTO } from '../generated/groups/GroupUpdateDTO';
 import { StatusGroupDTO } from '../generated/groups/StatusGroupDTO';
 

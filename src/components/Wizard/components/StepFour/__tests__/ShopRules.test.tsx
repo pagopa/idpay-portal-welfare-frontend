@@ -21,10 +21,13 @@ import {
   setInitiativeRewardType,
 } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
-import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { mockedInitiativeId } from '../../../../../services/__mocks__/groupsService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import ShopRules from '../ShopRules';
+
+
+jest.mock('../../../../../services/intitativeService');
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});

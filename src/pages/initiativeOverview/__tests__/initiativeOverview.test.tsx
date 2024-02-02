@@ -12,8 +12,8 @@ import { setGeneralInfo, setInitiativeId, setStatus } from '../../../redux/slice
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
-import { mockedInitiativeStatistics } from '../../../services/__mocks__/initiativeService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
+import { mockedInitiativeStatistics } from '../../../services/__mocks__/intitativeService';
 import InitiativeOverview from '../initiativeOverview';
 
 export function mockLocationFunction() {
