@@ -114,7 +114,6 @@ const ServiceConfig = ({
   }, [JSON.stringify(additionalInfo)]);
 
   const validateUrl = (value: string | undefined): boolean => {
-    // NOSONAR
     const regex = new RegExp(/^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/);
     if (typeof value === 'string') {
       return regex.test(value);
@@ -123,7 +122,6 @@ const ServiceConfig = ({
   };
 
   const validatePhoneNumber = (value: string | undefined): boolean => {
-    // NOSONAR
     const regex = new RegExp(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/);
     if (typeof value === 'string') {
       return regex.test(value);

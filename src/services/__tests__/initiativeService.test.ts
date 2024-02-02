@@ -1,7 +1,7 @@
 import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
 import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
-import { mockedExportsPagedResponse, mockedOnBoardingStatusParam, mockedRankingStatus } from '../__mocks__/intitativeService';
+import { mockedExportsPagedResponse, mockedInitiativeDetail, mockedOnBoardingStatusParam, mockedRankingStatus } from '../__mocks__/intitativeService';
 
 import {
   createInitiativeServiceInfo,
@@ -51,6 +51,7 @@ import {
   mockedServiceInfoData,
   mockedTrxAndRewardRules,
 } from '../__mocks__/intitativeService';
+import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 
 jest.mock('../../services/intitativeService.ts');
 
@@ -102,6 +103,27 @@ test('create initiative', async () => {
   expect(result).toEqual({});
 });
 
+describe('createInitiativeServiceInfo', () => {
+  it('should create initiative successfully', async () => {
+  
+    const spyCreateInitiativeServiceInfo = jest.spyOn(InitiativeApiMocked, 'saveInitiativeServiceInfo');
+    spyCreateInitiativeServiceInfo.mockResolvedValue(mockedInitiativeDetail.additionalInfo);
+ 
+    const result = await createInitiativeServiceInfo(mockedInitiativeDetail.additionalInfo);
+ 
+    expect(result).toEqual(mockedInitiativeDetail.additionalInfo);
+  });
+});
+ 
+describe('updateInitiativeServiceInfo', () => {
+  it('should update initiative successfully', async () => {
+    const spyUpdateInitiativeServiceInfo = jest.spyOn(InitiativeApiMocked, 'updateInitiativeServiceInfo')
+    spyUpdateInitiativeServiceInfo.mockResolvedValue();
+ 
+    await expect(updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData)).resolves.toBeUndefined();
+  });
+});
+
 test('update initiative (service info)', async () => {
   await updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
   expect(InitiativeApi.updateInitiativeServiceInfo).not.toHaveBeenCalled();
@@ -123,9 +145,27 @@ test('update initiative (beneficiary rule)', async () => {
   expect(InitiativeApi.initiativeBeneficiaryRulePut).not.toHaveBeenCalled();
 });
 
+describe('initiativeBeneficiaryRulePut', () => {
+  it('should initiativeBeneficiaryRulePut successfully', async () => {
+    const spyinitiativeBeneficiaryRulePut = jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePut')
+    spyinitiativeBeneficiaryRulePut.mockResolvedValue();
+ 
+    await expect(putBeneficiaryRuleService(mockedInitiativeId, mockedServiceInfoData)).resolves.toBeUndefined();
+  });
+});
+
 test('update initiative draft (beneficiary rule)', async () => {
   await putBeneficiaryRuleDraftService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody);
   expect(InitiativeApi.initiativeBeneficiaryRulePutDraft).not.toHaveBeenCalled();
+});
+
+describe('initiativeBeneficiaryRulePutDraft', () => {
+  it('should initiativeBeneficiaryRulePutDraft successfully', async () => {
+    const spyInitiativeBeneficiaryRulePutDraft = jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePutDraft')
+    spyInitiativeBeneficiaryRulePutDraft.mockResolvedValue();
+ 
+    await expect(putBeneficiaryRuleDraftService(mockedInitiativeId, mockedServiceInfoData)).resolves.toBeUndefined();
+  });
 });
 
 test('update initiative (reward rules)', async () => {
