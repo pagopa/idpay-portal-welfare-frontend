@@ -19,7 +19,7 @@ let fetchPartyProductsSpy: jest.SpyInstance;
 beforeEach(() => {
   fetchPartyDetailsSpy = jest.spyOn(require('../../services/partyService'), 'fetchPartyDetails');
   fetchPartyProductsSpy = jest.spyOn(require('../../services/productService'), 'fetchProducts');
-
+  
   storageTokenOps.write(testToken); // party with partyId="onboarded"
 });
 

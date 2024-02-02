@@ -1,4 +1,4 @@
-import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/initiativeService';
+import { mockedInitiativeGeneralBody } from '../../../../../services/__mocks__/intitativeService';
 import {
   getMinDate,
   parseDate,

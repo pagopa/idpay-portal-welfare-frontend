@@ -11,6 +11,8 @@ import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { renderWithContext } from '../../../utils/test-utils';
 import UserDetailsSummary from '../components/UserDetailsSummary';
 
+jest.mock('../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});

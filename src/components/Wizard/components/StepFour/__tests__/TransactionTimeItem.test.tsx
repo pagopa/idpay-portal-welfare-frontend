@@ -6,6 +6,8 @@ import TransactionTimeItem from '../TransactionTimeItem';
 import { daysOfWeekIntervals, shopRulesToSubmit } from './ShopRules.test';
 import { renderWithContext } from '../../../../../utils/test-utils';
 
+jest.mock('../../../../../services/intitativeService');
+
 window.scrollTo = jest.fn();
 
 describe('<TransactionTimeItem />', () => {

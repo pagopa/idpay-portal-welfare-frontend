@@ -34,7 +34,8 @@ const DeleteInitiativeModal = ({
       typeof id === 'string' &&
       typeof status === 'string' &&
       status !== 'PUBLISHED' &&
-      status !== 'IN_REVISION'
+      status !== 'IN_REVISION' &&
+      status !== 'CLOSED'
     ) {
       setLoading(true);
       logicallyDeleteInitiative(id)

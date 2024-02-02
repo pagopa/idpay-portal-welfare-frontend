@@ -3,7 +3,8 @@
 // import { institutionResource2Party, Party } from '../../model/Party';
 // import { PortalApi } from '../../api/PortalApiClient';
 // import { mockedInstitutionResources } from '../../api/__mocks__/PortalApiClient';
-
+import { fetchPartyDetails } from '../../services/partyService';
+import { verifyFetchPartyDetailsMockExecution } from '../../services/__mocks__/partyService';
 // jest.mock('../../api/PortalApiClient');
 
 // let portalApiGetInstitutionSpy;
@@ -12,6 +13,25 @@
 beforeEach(() => {
   // portalApiGetInstitutionSpy = jest.spyOn(PortalApi, 'getInstitution');
   // portalApiGetInstitutionsSpy = jest.spyOn(PortalApi, 'getInstitutions');
+});
+
+describe('fetchPartyDetails', () => {
+  it('should fetch party details successfully', async () => {
+    const partyId = '2b48bf96-fd74-477e-a70a-286b410f020a';
+    const party = await fetchPartyDetails(partyId);
+
+    if (party !== null) {
+      verifyFetchPartyDetailsMockExecution(party);
+    } else {
+      expect(party).toBeNull();
+    }
+  });
+
+  it('should handle party not found', async () => {
+    const partyId = 'nonexistentpartyid';
+    const party = await fetchPartyDetails(partyId);
+    expect(party).toBeNull();
+  });
 });
 
 test('Test fetchParties', async () => {

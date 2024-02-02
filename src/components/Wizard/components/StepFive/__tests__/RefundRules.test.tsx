@@ -10,21 +10,22 @@ import { InitiativeRefundRuleDTO } from '../../../../../api/generated/initiative
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { saveRefundRule, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
-import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { mockedInitiativeId } from '../../../../../services/__mocks__/groupsService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import RefundRules from '../RefundRules';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterEach(cleanup);
-
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
+
+jest.mock('../../../../../services/intitativeService');
 
 window.scrollTo = jest.fn();
 

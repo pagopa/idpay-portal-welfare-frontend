@@ -5,8 +5,8 @@ import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient'
 import { ExportListDTO } from '../../../api/generated/initiative/ExportListDTO';
 import { SasToken } from '../../../api/generated/initiative/SasToken';
 import { BASE_ROUTE } from '../../../routes';
-import { mockedInitiativeId } from '../../../services/__mocks__/groupService';
-import { mockedGetRewardFileDownload } from '../../../services/__mocks__/initiativeService';
+import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
+import { mockedGetRewardFileDownload } from '../../../services/__mocks__/intitativeService';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 import userEvent from '@testing-library/user-event';

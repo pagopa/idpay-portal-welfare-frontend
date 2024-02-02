@@ -5,6 +5,8 @@ import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
 import { renderWithContext } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
 
+jest.mock('../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   jest.spyOn(console, 'error').mockImplementation(() => {});

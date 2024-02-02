@@ -18,7 +18,10 @@ import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 import { InitiativeStatisticsDTO } from '../../api/generated/initiative/InitiativeStatisticsDTO';
-import { InitiativeRewardAndTrxRulesDTO } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import {
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeRewardAndTrxRulesDTORewardRule,
+} from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { PageRewardExportsDTO } from '../../api/generated/initiative/PageRewardExportsDTO';
 import { SasToken } from '../../api/generated/initiative/SasToken';
 import { OnboardingDTO } from '../../api/generated/initiative/OnboardingDTO';
@@ -43,13 +46,24 @@ import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDT
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
-import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
+import {
+  OnboardingStatusDTO,
+  StatusEnum as OnboardingStatusEnum,
+} from '../../api/generated/initiative/OnboardingStatusDTO';
 import { FamilyUnitCompositionDTO } from '../../api/generated/initiative/FamilyUnitCompositionDTO';
-import { mockedFile } from './groupService';
+import { OrganizationListDTO } from '../../api/generated/initiative/OrganizationListDTO';
+import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
+import { decode } from '../../utils/io-utils';
+import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
+import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
+import { mockedFile } from './groupsService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
 ) => expect(initiativeSummary).toStrictEqual(mockedInitiativeSummary);
+
+export const getOrganizationsList = (): Promise<OrganizationListDTO> =>
+  InitiativeApiMocked.getOrganizationsList();
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApiMocked.getInitativeSummary();
@@ -93,7 +107,7 @@ export const putBeneficiaryRuleDraftService = (_id: string, _data: InitiativeBen
 export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
   InitiativeApiMocked.updateInitiativeRefundRulePut(mockedInitiativeId, mockedRefundRules);
 
-export const putRefundRuleDraftPut = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
+export const putRefundRuleDraft = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
   InitiativeApiMocked.updateInitiativeRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
 
 export const putTrxAndRewardRules = (_id: string, _data: InitiativeRewardAndTrxRulesDTO) =>
@@ -170,6 +184,9 @@ export const fetchInitiativeRefunds = (page: number) => {
   }
 };
 
+export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
+  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+
 export const getRewardNotificationImportsPaged = (
   _id: string,
   _page: number,
@@ -200,6 +217,20 @@ export const getInitiativeOnboardingRankingStatusPaged = (
     mockedRankingStatus.state
   );
 
+export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {
+  if (rewardRule) {
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    switch ((rewardRule as any)['_type']) {
+      case 'rewardGroups':
+        return decode(rewardRule, RewardGroupDTO);
+      case 'rewardValue':
+        return decode(rewardRule, RewardValueDTO);
+      default:
+        throw new Error(`Unknown type: ${rewardRule}`);
+    }
+  }
+  return rewardRule;
+};
 export const getExportSummary = (
   initaitveId: string,
   exportId: string
@@ -217,6 +248,35 @@ export const getExportRefundsListPaged = (
 export const getRefundDetail = (initiativeId: string, eventId: string): Promise<RefundDetailDTO> =>
   InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
 
+export const getBeneficiaryOnboardingStatus = (
+  _initiativeId: string,
+  _fiscalCode: string
+): Promise<OnboardingStatusDTO> =>
+  InitiativeApiMocked.getBeneficiaryOnboardingStatus(mockedInitiativeId, mockedFiscalCode);
+
+export const suspendUser = (
+  initiativeId: string,
+  fiscalCode: string,
+  rewardType: InitiativeRewardTypeEnum
+): Promise<void> => {
+  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+    return InitiativeApiMocked.suspendUserRefund(initiativeId, fiscalCode);
+  } else {
+    return InitiativeApiMocked.suspendUserDiscount(initiativeId, fiscalCode);
+  }
+};
+
+export const readmitUser = (
+  initiativeId: string,
+  fiscalCode: string,
+  rewardType: InitiativeRewardTypeEnum
+): Promise<void> => {
+  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+    return InitiativeApiMocked.readmitUserRefund(initiativeId, fiscalCode);
+  } else {
+    return InitiativeApiMocked.readmitUserDiscount(initiativeId, fiscalCode);
+  }
+};
 // export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
 //   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
 
