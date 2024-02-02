@@ -10,7 +10,7 @@ import { GeneralInfo } from '../../../../../model/Initiative';
 import { setGeneralInfo, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { BASE_ROUTE } from '../../../../../routes';
-import { mockedInitiativeId } from '../../../../../services/__mocks__/groupService';
+import { mockedInitiativeId } from '../../../../../services/__mocks__/groupsService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import Generalnfo from '../Generalnfo';
@@ -21,7 +21,6 @@ jest.mock('react-i18next', () => ({
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
-
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 const oldWindowLocation = global.window.location;

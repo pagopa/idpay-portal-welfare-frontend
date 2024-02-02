@@ -1,6 +1,6 @@
 import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
 import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { mockedServiceInfoData } from '../../../../../services/__mocks__/initiativeService';
+import { mockedServiceInfoData } from '../../../../../services/__mocks__/intitativeService';
 import { parseDataToSend } from '../helpers';
 const mockedDataToSendChannelsUndefined = {
   channels: [

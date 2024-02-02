@@ -9,10 +9,10 @@ import { mockedParties } from '../../services/__mocks__/partyService';
 // };
 
 export default (WrappedComponent: React.ComponentType<any>) => (props: any) => {
-  const dispatch = useAppDispatch();
-  const parties = useAppSelector(partiesSelectors.selectPartiesList);
-  useEffect(() => {
-    dispatch(partiesActions.setPartiesList(mockedParties));
-  }, []);
-  return parties ? <WrappedComponent parties={parties} {...props} /> : <></>;
+const dispatch = useAppDispatch();
+const parties = useAppSelector(partiesSelectors.selectPartiesList);
+useEffect(() => {
+dispatch(partiesActions.setPartiesList(mockedParties));
+}, []);
+return parties ? <WrappedComponent parties={parties} {...props} /> : <></>;
 };

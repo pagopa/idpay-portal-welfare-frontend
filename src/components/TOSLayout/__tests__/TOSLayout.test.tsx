@@ -4,6 +4,7 @@ import TOSLayout from '../TOSLayout';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(console, 'error').mockImplementation(() => {});
 });
 
 describe('test suite for TOSLayout', () => {

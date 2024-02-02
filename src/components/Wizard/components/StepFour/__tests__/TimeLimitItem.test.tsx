@@ -7,6 +7,8 @@ import TimeLimitItem from '../TimeLimitItem';
 import { rewardLimits, shopRulesToSubmit } from './ShopRules.test';
 import { renderWithContext } from '../../../../../utils/test-utils';
 
+jest.mock('../../../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});

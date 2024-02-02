@@ -5,6 +5,8 @@ import React from 'react';
 import ShopRulesModal from '../ShopRulesModal';
 import { renderWithProviders } from '../../../../../utils/test-utils';
 
+jest.mock('../../../../../services/intitativeService');
+
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

@@ -6,6 +6,8 @@ import { shopRulesToSubmit } from './ShopRules.test';
 import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 
+jest.mock('../../../../../services/intitativeService');
+
 window.scrollTo = jest.fn();
 
 describe('<RewardType />', () => {

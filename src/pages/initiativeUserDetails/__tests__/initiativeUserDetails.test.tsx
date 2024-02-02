@@ -1,5 +1,5 @@
-import React from 'react';
 import { cleanup, fireEvent, screen } from '@testing-library/react';
+import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
@@ -11,9 +11,11 @@ import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
-import { mockedIbanInfo, mockedWallet } from '../../../services/__mocks__/initiativeService';
+import { mockedIbanInfo, mockedWallet } from '../../../services/__mocks__/intitativeService';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeUserDetails from '../initiativeUserDetails';
+
+jest.mock('../../../services/intitativeService');
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});

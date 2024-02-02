@@ -19,8 +19,8 @@ export const mockedUploadGroupOfBeneficiary = {
   status: 'APPROVED',
 };
 
-export const getGroupOfBeneficiaryStatusAndDetails = (_id: string) =>
+export const getGroupOfBeneficiaryStatusAndDetail = (_id: string) =>
   groupsApiMocked.getGroupOfBeneficiaryStatusAndDetails(mockedInitiativeId);
 
-export const uploadGroupOfBeneficiary = (_id: string, _file: File) =>
+export const uploadGroupOfBeneficiaryPut = (_id: string, _file: File) =>
   groupsApiMocked.uploadGroupOfBeneficiary(mockedInitiativeId, mockedFile);

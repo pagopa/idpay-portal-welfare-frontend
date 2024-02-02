@@ -2,11 +2,11 @@ import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { PageOnboardingRankingsDTO } from '../../../api/generated/initiative/PageOnboardingRankingsDTO';
-import { SasToken } from '../../../api/generated/initiative/SasToken';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRanking from '../initiativeRanking';
-import userEvent from '@testing-library/user-event';
+
+jest.mock('../../../services/intitativeService');
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),

@@ -15,6 +15,12 @@ import AdmissionCriteria from '../AdmissionCriteria';
 import { IseeTypologyEnum, mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
 import { BeneficiaryTypeEnum } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { OrderDirectionEnum } from '../../../../../api/generated/initiative/AutomatedCriteriaDTO';
+import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
+import { mockedAdmissionCriteria } from '../../../../../services/__mocks__/admissionCriteriaService';
+
+jest.mock('../../../../../services/intitativeService');
+jest.mock('../../../../../services/admissionCriteriaService');
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -200,7 +206,7 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
         rankingStartDate: new Date('2022-09-01T00:00:00.000Z'),
         rankingEndDate: new Date('2022-09-30T00:00:00.000Z'),
         startDate: new Date('2022-10-01T00:00:00.000Z'),
-        endDate: new Date('2023-01-31T00:00:00.000Z'),
+        endDate: new Date('2025-06-31T00:00:00.000Z'),
         introductionTextIT: 'string',
         introductionTextEN: 'string',
         introductionTextFR: 'string',
@@ -213,19 +219,22 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     store.dispatch(
       saveAutomatedCriteria([
         {
-          authority: 'AUTH1',
-          code: 'BIRTHDATE',
-          field: 'year',
-          operator: 'GT',
-          value: '18',
-        },
-        {
-          authority: 'AUTH1',
-          code: 'BIRTHDATE',
-          field: 'year',
-          operator: 'EQ',
-          value: '18',
-        },
+          authority: "INPS",
+          code: "BIRTHDAY",
+          operator: "GT",
+          value: "1",
+          value2: "",
+          orderDirection: OrderDirectionEnum.ASC,
+          iseeTypes: [
+              "ORDINARIO",
+              "MINORENNE",
+              "UNIVERSITARIO",
+              "SOCIOSANITARIO",
+              "DOTTORATO",
+              "RESIDENZIALE",
+              "CORRENTE"
+          ]
+        }
       ])
     );
     store.dispatch(saveApiKeyClientId('api key'));

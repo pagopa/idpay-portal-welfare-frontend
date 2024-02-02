@@ -8,6 +8,8 @@ import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefunds from '../initiativeRefunds';
 
+jest.mock('../../../services/intitativeService');
+
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));

@@ -9,6 +9,8 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import SpendingLimitItem from '../SpendingLimitItem';
 import { shopRulesToSubmit, threshold } from './ShopRules.test';
 
+jest.mock('../../../../../services/intitativeService');
+
 window.scrollTo = jest.fn();
 describe('<SpendingLimitItem />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();

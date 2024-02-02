@@ -3,6 +3,8 @@ import { RolePermissionApiMocked } from '../../api/__mocks__/rolePermissionApiCl
 import { renderWithContext } from '../../utils/test-utils';
 import useTCAgreement from '../useTCAgreement';
 
+jest.mock('../../services/rolePermissionService');
+
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
