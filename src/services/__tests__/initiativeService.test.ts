@@ -1,7 +1,7 @@
 import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
 import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
-import { mockedOnBoardingStatusParam, mockedRankingStatus } from '../__mocks__/intitativeService';
+import { mockedExportsPagedResponse, mockedOnBoardingStatusParam, mockedRankingStatus } from '../__mocks__/intitativeService';
 
 import {
   createInitiativeServiceInfo,
@@ -97,13 +97,15 @@ test('test get initiative by id', async () => {
 });
 
 test('create initiative', async () => {
-  await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
+  const result = await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
   expect(InitiativeApi.saveInitiativeServiceInfo).not.toHaveBeenCalled();
+  expect(result).toEqual({});
 });
 
 test('update initiative (service info)', async () => {
   await updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
   expect(InitiativeApi.updateInitiativeServiceInfo).not.toHaveBeenCalled();
+  
 });
 
 test('update initiative (general info)', async () => {
@@ -184,7 +186,7 @@ test('test fetch admission criteria mocked Admission', async () => {
 });
 
 test('get Exports Paged', async () => {
-  await getExportsPaged(
+  const result = await getExportsPaged(
     mockedExportsPagedParam.id,
     mockedExportsPagedParam.page,
     mockedExportsPagedParam.notificationDateFrom,
@@ -192,6 +194,7 @@ test('get Exports Paged', async () => {
     mockedExportsPagedParam.status
   );
   expect(InitiativeApi.getExportsPaged).not.toHaveBeenCalled();
+  expect(result).toEqual(mockedExportsPagedResponse);
 });
 
 test('get reward file download', async () => {

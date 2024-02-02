@@ -19,7 +19,7 @@ jest.mock('react-i18next', () => ({
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
-});
+  });
 
 afterEach(cleanup);
 
@@ -40,6 +40,7 @@ describe('<ServiceConfig />', () => {
     const mockedAdditionalInfo: AdditionalInfo = {
       initiativeOnIO: true,
       serviceName: 'prova313',
+      serviceId: 'prova123',
       serviceArea: ServiceScopeEnum.NATIONAL,
       serviceDescription: 'newStepOneTest',
       privacyPolicyUrl: 'http://test.it',
@@ -89,7 +90,7 @@ describe('<ServiceConfig />', () => {
     fireEvent.change(indicatedChannel[0], { target: { value: 'input' } });
     expect(indicatedChannel[0].value).toBe('input');
 
-    //SWITCH TEST
+        //SWITCH TEST
 
     const initiativeOnIo = screen.getByTestId('initiative-on-io-test') as HTMLInputElement;
 
