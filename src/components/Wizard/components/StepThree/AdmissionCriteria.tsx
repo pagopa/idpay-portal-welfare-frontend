@@ -11,8 +11,8 @@ import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaSe
 import {
   beneficiaryRuleSelector,
   initiativeIdSelector,
-  saveApiKeyClientId,
-  saveApiKeyClientAssertion,
+  // saveApiKeyClientId,
+  // saveApiKeyClientAssertion,
   saveAutomatedCriteria,
   saveManualCriteria,
   stepTwoRankingEnabledSelector,
@@ -37,7 +37,7 @@ import {
 import DateOdBirthCriteriaItem from './DateOfBirthCriteriaItem';
 import ResidencyCriteriaItem from './ResidencyCriteriaItem';
 import ManualCriteria from './ManualCriteria';
-import APIKeyConnectionItem from './APIKeyConnectionItem';
+// import APIKeyConnectionItem from './APIKeyConnectionItem';
 
 type Props = {
   action: string;
@@ -71,13 +71,13 @@ const AdmissionCriteria = ({
   const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
-  const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
-    beneficiaryRule.apiKeyClientId
-  );
-  const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>(
-    beneficiaryRule.apiKeyClientAssertion
-  );
-  const [apiKeyClientDispatched, setApiKeyClientDispatched] = useState(false);
+  // const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
+  //   beneficiaryRule.apiKeyClientId
+  // );
+  // const [apiKeyClientAssertion, setApiKeyClientAssertion] = useState<string | undefined>(
+  //   beneficiaryRule.apiKeyClientAssertion
+  // );
+  // const [apiKeyClientDispatched, setApiKeyClientDispatched] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -299,17 +299,17 @@ const AdmissionCriteria = ({
     }
   };
 
-  const handleApyKeyClientIdChanged = (value: string | undefined) => {
-    setApiKeyClientId(value);
-  };
+  // const handleApyKeyClientIdChanged = (value: string | undefined) => {
+  //   setApiKeyClientId(value);
+  // };
 
-  const handleApyKeyClientAssertionChanged = (value: string | undefined) => {
-    setApiKeyClientAssertion(value);
-  };
+  // const handleApyKeyClientAssertionChanged = (value: string | undefined) => {
+  //   setApiKeyClientAssertion(value);
+  // };
 
-  const handleApiKeyClientDispathed = (value: boolean) => {
-    setApiKeyClientDispatched(value);
-  };
+  // const handleApiKeyClientDispathed = (value: boolean) => {
+  //   setApiKeyClientDispatched(value);
+  // };
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   useEffect(() => {
@@ -320,26 +320,29 @@ const AdmissionCriteria = ({
       criteriaToSubmit.forEach((c) => {
         toSubmit = toSubmit && c.dispatched;
       });
-      const automatedCriteriaChecked = criteriaToRender.map((c) => c.checked);
-      const almostOneCriteriaChecked =
-        automatedCriteriaChecked.length > 0
-          ? automatedCriteriaChecked.reduce((prev, curr) => prev || curr)
-          : false;
-      if (almostOneCriteriaChecked) {
-        toSubmit = toSubmit && apiKeyClientDispatched;
-      }
+      // const automatedCriteriaChecked = criteriaToRender.map((c) => c.checked);
+      // const almostOneCriteriaChecked =
+      //   automatedCriteriaChecked.length > 0
+      //     ? automatedCriteriaChecked.reduce((prev, curr) => prev || curr)
+      //     : false;
+      // if (almostOneCriteriaChecked) {
+      //   toSubmit = toSubmit && apiKeyClientDispatched;
+      // }
     } else {
       toSubmit = false;
       setDisabledNext(true);
     }
     if (toSubmit && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(
-        criteriaToRender,
-        manualCriteriaToRender,
-        rankingEnabled,
-        apiKeyClientId,
-        apiKeyClientAssertion
-      );
+      // const body = mapCriteriaToSend(
+      //   criteriaToRender,
+      //   manualCriteriaToRender,
+      //   rankingEnabled,
+      //   apiKeyClientId,
+      //   apiKeyClientAssertion
+      // );
+
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
+
       const automatedCriteriaCodes = body.automatedCriteria.map((c) => c.code);
       const iseeCriteriaPopulated = automatedCriteriaCodes.includes('ISEE');
 
@@ -347,8 +350,8 @@ const AdmissionCriteria = ({
         setLoading(true);
         putBeneficiaryRuleService(initiativeId, body)
           .then((_response) => {
-            dispatch(saveApiKeyClientId(body.apiKeyClientId));
-            dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
+            // dispatch(saveApiKeyClientId(body.apiKeyClientId));
+            // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
             dispatch(saveAutomatedCriteria(body.automatedCriteria));
             dispatch(saveManualCriteria(manualCriteriaToRender));
             setCurrentStep(currentStep + 1);
@@ -373,18 +376,20 @@ const AdmissionCriteria = ({
     }
 
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
-      const body = mapCriteriaToSend(
-        criteriaToRender,
-        manualCriteriaToRender,
-        rankingEnabled,
-        apiKeyClientId,
-        apiKeyClientAssertion
-      );
+      // const body = mapCriteriaToSend(
+      //   criteriaToRender,
+      //   manualCriteriaToRender,
+      //   rankingEnabled,
+      //   apiKeyClientId,
+      //   apiKeyClientAssertion
+      // );
+
+      const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
       putBeneficiaryRuleDraftService(initiativeId, body)
         .then((_response) => {
-          dispatch(saveApiKeyClientId(body.apiKeyClientId));
-          dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
+          // dispatch(saveApiKeyClientId(body.apiKeyClientId));
+          // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
           dispatch(saveAutomatedCriteria(body.automatedCriteria));
           dispatch(saveManualCriteria(manualCriteriaToRender));
           setOpenDraftSavedToast(true);
@@ -405,7 +410,8 @@ const AdmissionCriteria = ({
         .finally(() => setLoading(false));
     }
     setAction('');
-  }, [action, criteriaToSubmit, apiKeyClientDispatched]);
+    // }, [action, criteriaToSubmit, apiKeyClientDispatched]);
+  }, [action, criteriaToSubmit]);
 
   return (
     <>
@@ -559,7 +565,7 @@ const AdmissionCriteria = ({
           />
         )}
       </Paper>
-      {criteriaToRenderNumber > 0 && (
+      {/* {criteriaToRenderNumber > 0 && (
         <APIKeyConnectionItem
           action={action}
           apiKeyClientId={apiKeyClientId}
@@ -568,7 +574,7 @@ const AdmissionCriteria = ({
           handleApyKeyClientAssertionChanged={handleApyKeyClientAssertionChanged}
           handleApiKeyClientDispathed={handleApiKeyClientDispathed}
         />
-      )}
+      )} */}
     </>
   );
 };

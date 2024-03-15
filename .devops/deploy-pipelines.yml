@@ -209,7 +209,6 @@ stages:
             env:
               INLINE_RUNTIME_CHUNK: 'false'
               REACT_APP_ENV: '$(environment)'
-
               REACT_APP_URL_FE_PRE_LOGIN: '$(react_app_url_fe_pre_login)'
               REACT_APP_URL_FE_LOGIN: '$(react_app_url_fe_auth)/login'
               REACT_APP_URL_FE_LOGOUT: '$(react_app_url_fe_auth)/logout'
@@ -223,9 +222,7 @@ stages:
               REACT_APP_URL_API_MERCHANTS: '$(react_app_url_api_merchants)'
 
               REACT_APP_PAGOPA_HELP_EMAIL: '$(react_app_pagopa_help_email)'
-
               REACT_APP_URL_INSTITUTION_LOGO_PREFIX: '$(react_app_url_storage)/institutions/'
-
               REACT_APP_ANALYTICS_ENABLE: '$(react_app_analytics_enabled)'
               REACT_APP_ANALYTICS_MOCK: '$(react_app_analytics_mocked)'
               REACT_APP_MIXPANEL_TOKEN: '$(react_app_mixpanel_token)'
@@ -264,7 +261,6 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 az storage blob sync --container '$(blob_container_name)' --account-name $(storage_account) -s "$(Pipeline.Workspace)/Bundle" --destination '$(basePath)/'
-
           - task: AzureCLI@1
             displayName: 'Purge CDN endpoint'
             inputs:

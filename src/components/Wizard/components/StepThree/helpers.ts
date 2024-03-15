@@ -231,12 +231,18 @@ export const setInitialOrderDirection = (
   }
 };
 
+// export const mapCriteriaToSend = (
+//   automatedCriteria: Array<any>,
+//   manualCriteria: Array<any>,
+//   rankingEnabled: string | undefined,
+//   apiKeyClientId: string | undefined,
+//   apiKeyClientAssertion: string | undefined
+// ) => {
+
 export const mapCriteriaToSend = (
   automatedCriteria: Array<any>,
   manualCriteria: Array<any>,
-  rankingEnabled: string | undefined,
-  apiKeyClientId: string | undefined,
-  apiKeyClientAssertion: string | undefined
+  rankingEnabled: string | undefined
 ) => {
   const criteriaToSave: Array<AutomatedCriteriaItem> = [];
 
@@ -311,8 +317,8 @@ export const mapCriteriaToSend = (
   });
 
   return {
-    apiKeyClientId: criteriaToSave.length > 0 ? apiKeyClientId : undefined,
-    apiKeyClientAssertion: criteriaToSave.length > 0 ? apiKeyClientAssertion : undefined,
+    // apiKeyClientId: criteriaToSave.length > 0 ? apiKeyClientId : undefined,
+    // apiKeyClientAssertion: criteriaToSave.length > 0 ? apiKeyClientAssertion : undefined,
     automatedCriteria: [...criteriaToSave],
     selfDeclarationCriteria: [...manualCriteriaToSend],
   };
