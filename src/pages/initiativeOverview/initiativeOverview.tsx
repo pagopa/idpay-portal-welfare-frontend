@@ -28,7 +28,7 @@ import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativ
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
-import { formatedCurrency, numberWithCommas, renderInitiativeStatus } from '../../helpers';
+import { numberWithCommas, renderInitiativeStatus } from '../../helpers';
 import { Initiative } from '../../model/Initiative';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import StatusSnackBar from './components/StatusSnackBar';
@@ -131,8 +131,8 @@ const InitiativeOverview = () => {
         initiativeStatistics(id)
           .then((res) => {
             if (res) {
-              if (typeof res.accruedRewardsCents === 'number') {
-                setAccruedRewards(parseFloat(formatedCurrency(res.accruedRewardsCents)));
+              if (typeof res.accruedRewards === 'number') {
+                setAccruedRewards(res.accruedRewards);
               }
               if (typeof res.onboardedCitizenCount === 'number') {
                 setOnboardedCitizenCount(res.onboardedCitizenCount);
