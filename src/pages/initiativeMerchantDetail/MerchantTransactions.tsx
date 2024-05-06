@@ -102,6 +102,14 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
             color="info"
           />
         );
+      case TransactionStatusEnum.AUTHORIZATION_REQUESTED:
+        return (
+          <Chip
+            sx={{ fontSize: '14px' }}
+            label={t('pages.initiativeMerchantDetail.transactionStatusEnum.authorizationRequested')}
+            color="default"
+          />
+        );
       case TransactionStatusEnum.CREATED:
       case TransactionStatusEnum.IDENTIFIED:
         return (
@@ -152,8 +160,8 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
                       <TableCell>
                         {r.status === TransactionStatusEnum.AUTHORIZED ? r.fiscalCode : ''}
                       </TableCell>
-                      <TableCell>{formatedCurrency(r.effectiveAmount, '-', true)}</TableCell>
-                      <TableCell>{formatedCurrency(r.rewardAmount, '-', true)}</TableCell>
+                      <TableCell>{formatedCurrency(r.effectiveAmountCents, '-', true)}</TableCell>
+                      <TableCell>{formatedCurrency(r.rewardAmountCents, '-', true)}</TableCell>
                       <TableCell>{renderTransactionCreatedStatus(r.status)}</TableCell>
                     </TableRow>
                   ))}

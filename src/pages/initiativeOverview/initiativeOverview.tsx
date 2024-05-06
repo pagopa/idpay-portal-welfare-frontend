@@ -28,7 +28,7 @@ import ConfirmPublishInitiativeModal from '../components/ConfirmPublishInitiativ
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import { usePermissions } from '../../hooks/usePermissions';
-import { numberWithCommas, renderInitiativeStatus } from '../../helpers';
+import { formatedCurrency, numberWithCommas, renderInitiativeStatus } from '../../helpers';
 import { Initiative } from '../../model/Initiative';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import StatusSnackBar from './components/StatusSnackBar';
@@ -123,13 +123,16 @@ const InitiativeOverview = () => {
     // eslint-disable-next-line no-prototype-builtins
     if (match !== null && match.params.hasOwnProperty('id')) {
       const { id } = match.params as MatchParams;
-      if (initiativeSel.initiativeId === id && (initiativeSel.status === 'PUBLISHED' || initiativeSel.status === 'CLOSED')) {
+      if (
+        initiativeSel.initiativeId === id &&
+        (initiativeSel.status === 'PUBLISHED' || initiativeSel.status === 'CLOSED')
+      ) {
         setLoading(true);
         initiativeStatistics(id)
           .then((res) => {
             if (res) {
-              if (typeof res.accruedRewards === 'number') {
-                setAccruedRewards(res.accruedRewards);
+              if (typeof res.accruedRewardsCents === 'number') {
+                setAccruedRewards(parseFloat(formatedCurrency(res.accruedRewardsCents)));
               }
               if (typeof res.onboardedCitizenCount === 'number') {
                 setOnboardedCitizenCount(res.onboardedCitizenCount);
@@ -408,7 +411,7 @@ const InitiativeOverview = () => {
     initiative: Initiative,
     beneficiariesReached: number | undefined
   ) =>
-    (initiative.status === 'PUBLISHED'|| initiative.status === 'CLOSED') && (
+    (initiative.status === 'PUBLISHED' || initiative.status === 'CLOSED') && (
       <>
         <Box sx={{ gridColumn: 'span 12', display: 'inline-flex', mb: 1, mt: -1 }}>
           <Typography variant="body2" sx={{ color: '#5C6F82', fontSize: '0.875rem' }}>
@@ -490,7 +493,10 @@ const InitiativeOverview = () => {
         </Box>
       ) : null}
 
-      {userCanDeleteInitiative && status !== 'PUBLISHED' && status !== 'CLOSED' && status !== 'IN_REVISION' ? (
+      {userCanDeleteInitiative &&
+      status !== 'PUBLISHED' &&
+      status !== 'CLOSED' &&
+      status !== 'IN_REVISION' ? (
         <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
           <ButtonNaked
             size="small"
@@ -645,7 +651,9 @@ const InitiativeOverview = () => {
           </Box>
           <Box sx={{ gridColumn: 'span 8' }}>
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
-              {initiativeSel.additionalInfo.serviceId !== '' ? initiativeSel.additionalInfo.serviceId : "-"}
+              {initiativeSel.additionalInfo.serviceId !== ''
+                ? initiativeSel.additionalInfo.serviceId
+                : '-'}
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 4' }}>

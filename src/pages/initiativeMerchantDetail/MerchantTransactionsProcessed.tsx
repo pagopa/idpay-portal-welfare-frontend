@@ -150,8 +150,8 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
                     <TableRow key={i}>
                       <TableCell>{formatedDate(r.updateDate)}</TableCell>
                       <TableCell>{r.fiscalCode}</TableCell>
-                      <TableCell>{formatedCurrency(r.effectiveAmount, '-', true)}</TableCell>
-                      <TableCell>{formatedCurrency(r.rewardAmount, '-', true)}</TableCell>
+                      <TableCell>{formatedCurrency(r.effectiveAmountCents, '-', true)}</TableCell>
+                      <TableCell>{formatedCurrency(r.rewardAmountCents, '-', true)}</TableCell>
                       <TableCell>{renderTrasactionProcessedStatus(r.status)}</TableCell>
                     </TableRow>
                   ))}
