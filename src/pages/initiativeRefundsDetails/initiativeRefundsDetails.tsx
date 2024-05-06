@@ -309,14 +309,14 @@ const InitiativeRefundsDetails = () => {
               {t('pages.initiativeRefundsDetails.recap.totalOrders')}
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {formatedCurrency(detailsSummary?.totalAmount)}
+              {formatedCurrency(detailsSummary?.totalAmountCents, '-', true)}
             </Typography>
 
             <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
               {t('pages.initiativeRefundsDetails.recap.totalRefunds')}
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {formatedCurrency(detailsSummary?.totalRefundedAmount)}
+              {formatedCurrency(detailsSummary?.totalRefundedAmountCents, '-', true)}
             </Typography>
 
             <Typography variant="body2" sx={{ gridColumn: 'span 5' }}>
@@ -446,7 +446,7 @@ const InitiativeRefundsDetails = () => {
                       <TableCell>
                         <Typography variant="monospaced"> {formatIban(r.iban)}</Typography>
                       </TableCell>
-                      <TableCell>{formatedCurrency(r.amount)}</TableCell>
+                      <TableCell>{formatedCurrency(r.amountCents, '-', true)}</TableCell>
                       <TableCell>{getRefundStatus(r.status)}</TableCell>
                       <TableCell align="right">
                         <IconButton

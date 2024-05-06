@@ -35,7 +35,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {formatedCurrency(transactionDetail?.amount)}
+          {formatedCurrency(transactionDetail?.amountCents, '-', true)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -45,7 +45,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {formatedCurrency(transactionDetail?.accrued)}
+          {formatedCurrency(transactionDetail?.accruedCents, '-', true)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>

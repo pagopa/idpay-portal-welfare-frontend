@@ -467,6 +467,7 @@
       "transactionStatus": "Stato",
       "transactionStatusEnum": {
         "authorized": "Autorizzato",
+        "authorizationRequested": "Autorizzazione in corso",
         "cancelled": "Annullato",
         "identified": "Da autorizzare",
         "invalidated": "Invalidato",
@@ -780,7 +781,7 @@
       "info": {
         "creationData": "Creata il",
         "idCode": "Codice identificativo",
-        "serviceId":"Id servizio",
+        "serviceId": "Id servizio",
         "initiativeState": "Stato",
         "lastModify": "Ultima modifica",
         "otherInfo": {

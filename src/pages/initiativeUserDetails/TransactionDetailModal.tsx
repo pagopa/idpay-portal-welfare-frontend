@@ -254,8 +254,8 @@ const TransactionDetailModal = ({
                   <Box sx={{ gridColumn: 'span 12' }}>
                     <Typography variant="body2" fontWeight={600}>
                       {transactionDetail.operationType === 'REVERSAL'
-                        ? `-${formatedCurrency(transactionDetail?.amount)}`
-                        : formatedCurrency(transactionDetail?.amount)}
+                        ? `-${formatedCurrency(transactionDetail?.amountCents, '-', true)}`
+                        : formatedCurrency(transactionDetail?.amountCents, '-', true)}
                     </Typography>
                   </Box>
                   <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -266,8 +266,8 @@ const TransactionDetailModal = ({
                   <Box sx={{ gridColumn: 'span 12' }}>
                     <Typography variant="body2" fontWeight={600}>
                       {transactionDetail.operationType === 'REVERSAL'
-                        ? `${formatedCurrency(transactionDetail?.accrued)}`
-                        : formatedCurrency(transactionDetail?.accrued)}
+                        ? `${formatedCurrency(transactionDetail?.accruedCents, '-', true)}`
+                        : formatedCurrency(transactionDetail?.accruedCents, '-', true)}
                     </Typography>
                   </Box>
                 </>
@@ -283,7 +283,7 @@ const TransactionDetailModal = ({
                   </Box>
                   <Box sx={{ gridColumn: 'span 12' }}>
                     <Typography variant="body2" fontWeight={600}>
-                      {formatedCurrency(transactionDetail?.amount, '00,00 €')}
+                      {formatedCurrency(transactionDetail?.amountCents, '00,00 €', true)}
                     </Typography>
                   </Box>
                 </>

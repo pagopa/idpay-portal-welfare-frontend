@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: IDPAY Welfare Portal Merchant API
-  description: IDPAY Welfare Portal Merchant
+  title: IDPAY Welfare Organization Portal Merchant API
+  description: IDPAY Welfare Organization Portal Merchant API
   version: '1.0'
 servers:
   - url: https://api-io.dev.cstar.pagopa.it/idpay/merchant
@@ -11,7 +11,7 @@ paths:
       tags:
         - merchant-upload
       summary: Upload CSV file containing a list of merchants
-      description: "ENG: Upload CSV file containing a list of merchants <br> IT: Caricamento del file CSV conentente una lista di esercenti"
+      description: 'ENG: Upload CSV file containing a list of merchants <br> IT: Caricamento del file CSV conentente una lista di esercenti'
       operationId: uploadMerchantList
       parameters:
         - name: initiativeId
@@ -32,7 +32,7 @@ paths:
                   type: string
                   format: binary
       responses:
-        "200":
+        '200':
           description: Ok
           content:
             application/json:
@@ -72,7 +72,7 @@ paths:
       tags:
         - merchant-list
       summary: Returns the merchants list
-      description: "ENG: Returns the merchants list <br> IT: Lista degli esercenti"
+      description: 'ENG: Returns the merchants list <br> IT: Lista degli esercenti'
       operationId: getMerchantList
       parameters:
         - name: initiativeId
@@ -239,8 +239,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatisticsErrorDTO'
               example:
-                code: "STATISTICS_INVALID_REQUEST"
-                message: "Something went wrong handling request"
+                code: 'STATISTICS_INVALID_REQUEST'
+                message: 'Something went wrong handling request'
         '401':
           description: Authentication failed
         '404':
@@ -250,8 +250,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatisticsErrorDTO'
               example:
-                code: "STATISTICS_NOT_FOUND"
-                message: "Stats not found"
+                code: 'STATISTICS_NOT_FOUND'
+                message: 'Stats not found'
         '429':
           description: Too many Request
           content:
@@ -259,8 +259,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatisticsErrorDTO'
               example:
-                code: "STATISTICS_MANAGER_TOO_MANY_REQUESTS"
-                message: "Too many requests"
+                code: 'STATISTICS_MANAGER_TOO_MANY_REQUESTS'
+                message: 'Too many requests'
         '500':
           description: Server ERROR
           content:
@@ -268,14 +268,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/StatisticsErrorDTO'
               example:
-                code: "STATISTICS_MANAGER_GENERIC_ERROR"
-                message: "Application error"
+                code: 'STATISTICS_MANAGER_GENERIC_ERROR'
+                message: 'Application error'
   /{merchantId}/initiative/{initiativeId}/transactions:
     get:
       tags:
         - merchant-transactions
       summary: Returns the list of in progress transactions associated to a merchant
-      description: "ENG: Returns the list of in progress transactions associated to a merchant <br> IT: Ritorna la lista delle transazioni in corso associate ad un esercente"
+      description: 'ENG: Returns the list of in progress transactions associated to a merchant <br> IT: Ritorna la lista delle transazioni in corso associate ad un esercente'
       operationId: getMerchantTransactions
       parameters:
         - name: merchantId
@@ -328,8 +328,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionErrorDTO'
               example:
-                code: "PAYMENT_INVALID_REQUEST"
-                message: "Something went wrong handling the request"
+                code: 'PAYMENT_INVALID_REQUEST'
+                message: 'Something went wrong handling the request'
         '401':
           description: Autentication failed
         '429':
@@ -339,8 +339,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionErrorDTO'
               example:
-                code: "PAYMENT_TOO_MANY_REQUESTS"
-                message: "Too many requests"
+                code: 'PAYMENT_TOO_MANY_REQUESTS'
+                message: 'Too many requests'
         '500':
           description: Generic error
           content:
@@ -348,14 +348,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/TransactionErrorDTO'
               example:
-                code: "PAYMENT_GENERIC_ERROR"
-                message: "Application error"
+                code: 'PAYMENT_GENERIC_ERROR'
+                message: 'Application error'
   /{merchantId}/initiative/{initiativeId}/transactions/processed:
     get:
       tags:
         - merchant-transactions
       summary: Returns the list of processed transactions associated to a merchant
-      description: "ENG: Returns the list of processed transactions associated to a merchant <br> IT: Ritorna la lista delle transazioni processate associate ad un esercente"
+      description: 'ENG: Returns the list of processed transactions associated to a merchant <br> IT: Ritorna la lista delle transazioni processate associate ad un esercente'
       operationId: getMerchantTransactionsProcessed
       parameters:
         - name: merchantId
@@ -416,7 +416,7 @@ components:
       properties:
         status:
           type: string
-          description: "ENG: Upload file status <br>IT: Stato di caricamento del file"
+          description: 'ENG: Upload file status <br>IT: Stato di caricamento del file'
         errorRow:
           type: integer
           format: int32
@@ -438,19 +438,19 @@ components:
         pageNo:
           type: integer
           format: int32
-          description: "ENG: The number of the page <br> IT: Il numero della pagina"
+          description: 'ENG: The number of the page <br> IT: Il numero della pagina'
         pageSize:
           type: integer
           format: int32
-          description: "ENG: The element size for page <br> IT: Il numero di elementi per pagina"
+          description: 'ENG: The element size for page <br> IT: Il numero di elementi per pagina'
         totalElements:
           type: integer
           format: int32
-          description: "ENG: The total number of the elements <br> IT: Il numero totale degli elementi"
+          description: 'ENG: The total number of the elements <br> IT: Il numero totale degli elementi'
         totalPages:
           type: integer
           format: int32
-          description: "ENG: The total number of the pages <br> IT: Il numero totale delle pagine"
+          description: 'ENG: The total number of the pages <br> IT: Il numero totale delle pagine'
     MerchantDTO:
       type: object
       properties:
@@ -502,61 +502,66 @@ components:
       required:
         - trxCode
         - trxId
-        - effectiveAmount
+        - effectiveAmountCents
         - trxExpirationSeconds
         - status
       properties:
         trxCode:
           type: string
-          description: "ENG: Transaction code - IT: Il codice della transazione"
+          description: 'ENG: Transaction code - IT: Il codice della transazione'
         trxId:
           type: string
           description: "ENG: Transaction ID - IT: L'ID della transazione"
         fiscalCode:
           type: string
-          description: "ENG: Citizen fiscal code - IT: Codice fiscale del cittadino"
-        effectiveAmount:
-          type: number
-          description: "ENG: Transaction amount - IT: Quantitativo della transazione"
-        rewardAmount:
-          type: number
-          description: "ENG: Reward amount - IT: Premio generato"
+          description: 'ENG: Citizen fiscal code - IT: Codice fiscale del cittadino'
+        effectiveAmountCents:
+          type: integer
+          format: int64
+          description: 'ENG: Transaction amount - IT: Quantitativo della transazione'
+          example: 100
+        rewardAmountCents:
+          type: integer
+          format: int64
+          description: 'ENG: Reward amount - IT: Premio generato'
+          example: 100
         trxDate:
           type: string
           format: date-time
-          description: "ENG: The date of the transaction - IT: La data della transazione"
+          description: 'ENG: The date of the transaction - IT: La data della transazione'
         trxExpirationSeconds:
           type: number
-          description: "ENG: Expiration time of the transaction, in seconds - IT: Scadenza della transazione, in secondi"
+          description: 'ENG: Expiration time of the transaction, in seconds - IT: Scadenza della transazione, in secondi'
         updateDate:
           type: string
           format: date-time
-          description: "ENG: The date of the transaction update - IT: La data di aggiornamento della transazione"
+          description: 'ENG: The date of the transaction update - IT: La data di aggiornamento della transazione'
         status:
           type: string
           enum:
             - CREATED
             - IDENTIFIED
+            - AUTHORIZATION_REQUESTED
             - AUTHORIZED
             - REJECTED
-          description: "ENG: Status of the transaction - IT: Stato della transazione"
+          description: 'ENG: Status of the transaction - IT: Stato della transazione'
         splitPayment:
           type: boolean
-          description: "ENG: TRUE, if the authorized sum is less than the requested sum or FALSE, if the authorized sum is equal to the requested sum - IT: TRUE, se la somma autorizzata è inferiore alla somma richiesta o FALSE, se la somma autorizzata è uguale alla somma richiesta."
+          description: 'ENG: TRUE, if the authorized sum is less than the requested sum or FALSE, if the authorized sum is equal to the requested sum - IT: TRUE, se la somma autorizzata è inferiore alla somma richiesta o FALSE, se la somma autorizzata è uguale alla somma richiesta.'
         residualAmountCents:
           type: integer
           format: int64
-          description: "ENG: Remaining amount to be paid if the authorized sum is less than the requested sum - IT: Importo restante da pagare nel caso in cui la somma autorizzata sia inferiore alla somma richiesta."
+          description: 'ENG: Remaining amount to be paid if the authorized sum is less than the requested sum - IT: Importo restante da pagare nel caso in cui la somma autorizzata sia inferiore alla somma richiesta.'
         channel:
           type: string
-          description: "ENG: Channel from which the transaction takes place - IT: Canale da
-            cui avviene la transazione"
+          description: 'ENG: Channel from which the transaction takes place - IT: Canale da
+            cui avviene la transazione'
         qrcodePngUrl:
           type: string
           description: "ENG: Url to the QR code image - IT: Url all'immagine del QR code"
         qrcodeTxtUrl:
           type: string
-          description: "ENG: Url of the QR code link - IT: Url del QR code"
+          description: 'ENG: Url of the QR code link - IT: Url del QR code'
     MerchantTransactionsProcessedListDTO:
       type: object
       required:
@@ -573,24 +578,24 @@ components:
         pageNo:
           type: integer
           format: int32
-          description: "ENG: The number of the page - IT: Il numero della pagina"
+          description: 'ENG: The number of the page - IT: Il numero della pagina'
         pageSize:
           type: integer
           format: int32
-          description: "ENG: The element size for page - IT: Il numero di elementi per pagina"
+          description: 'ENG: The element size for page - IT: Il numero di elementi per pagina'
         totalElements:
           type: integer
           format: int32
-          description: "ENG: The total number of the elements - IT: Il numero totale degli elementi"
+          description: 'ENG: The total number of the elements - IT: Il numero totale degli elementi'
         totalPages:
           type: integer
           format: int32
-          description: "ENG: The total number of the pages - IT: Il numero totale delle pagine"
+          description: 'ENG: The total number of the pages - IT: Il numero totale delle pagine'
     MerchantTransactionProcessedDTO:
       type: object
       required:
         - trxId
-        - effectiveAmount
+        - effectiveAmountCents
         - status
       properties:
         trxId:
@@ -598,31 +603,35 @@ components:
           description: "ENG: Transaction ID - IT: L'ID della transazione"
         fiscalCode:
           type: string
-          description: "ENG: Citizen fiscal code - IT: Codice fiscale del cittadino"
-        effectiveAmount:
-          type: number
-          description: "ENG: Transaction amount - IT: Quantitativo della transazione"
-        rewardAmount:
-          type: number
-          description: "ENG: Reward amount - IT: Premio generato"
+          description: 'ENG: Citizen fiscal code - IT: Codice fiscale del cittadino'
+        effectiveAmountCents:
+          type: integer
+          format: int64
+          description: 'ENG: Transaction amount - IT: Quantitativo della transazione'
+          example: 100
+        rewardAmountCents:
+          type: integer
+          format: int64
+          description: 'ENG: Reward amount - IT: Premio generato'
+          example: 100
         trxDate:
           type: string
           format: date-time
-          description: "ENG: The date of the transaction - IT: La data della transazione"
+          description: 'ENG: The date of the transaction - IT: La data della transazione'
         updateDate:
           type: string
           format: date-time
-          description: "ENG: The date of the transaction update - IT: La data di aggiornamento della transazione"
+          description: 'ENG: The date of the transaction update - IT: La data di aggiornamento della transazione'
         status:
           type: string
           enum:
             - REWARDED
             - CANCELLED
-          description: "ENG: Status of the transaction - IT: Stato della transazione"
+          description: 'ENG: Status of the transaction - IT: Stato della transazione'
         channel:
           type: string
-          description: "ENG: Channel from which the transaction takes place - IT: Canale da
-              cui avviene la transazione"
+          description: 'ENG: Channel from which the transaction takes place - IT: Canale da
+            cui avviene la transazione'
     ErrorDTO:
       type: object
       properties:
@@ -633,12 +642,18 @@ components:
     MerchantStatisticsDTO:
       type: object
       properties:
-        amount:
-          type: number
-        accrued:
-          type: number
-        refunded:
-          type: number
+        amountCents:
+          type: integer
+          format: int64
+          example: 100
+        accruedCents:
+          type: integer
+          format: int64
+          example: 100
+        refundedCents:
+          type: integer
+          format: int64
+          example: 100
     MerchantDetailDTO:
       type: object
       properties:
@@ -656,13 +671,13 @@ components:
           description: "ENG: The address of the legal office <br> IT: L'indirizzo della sede legale"
         legalOfficeMunicipality:
           type: string
-          description: "ENG: The municipality of the legal office <br> IT: Il comune della sede legale"
+          description: 'ENG: The municipality of the legal office <br> IT: Il comune della sede legale'
         legalOfficeProvince:
           type: string
-          description: "ENG: The province of the legal office <br> IT: La provincia della sede legale"
+          description: 'ENG: The province of the legal office <br> IT: La provincia della sede legale'
         legalOfficeZipCode:
           type: string
-          description: "ENG: The zipcode of the legal office <br> IT: Il CAP della sede legale"
+          description: 'ENG: The zipcode of the legal office <br> IT: Il CAP della sede legale'
         certifiedEmail:
           type: string
           description: "ENG: The certified email address of the merchant <br> IT: L'indirizzo email PEC dell' esercente"
@@ -742,7 +757,7 @@ components:
              STATISTICS_GENERIC_ERROR: Errore generico"
         message:
           type: string
-          description: "ENG: Error message - IT: Messaggio di errore"
+          description: 'ENG: Error message - IT: Messaggio di errore'
     TransactionErrorDTO:
       type: object
       required:

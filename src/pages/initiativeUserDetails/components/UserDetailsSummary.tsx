@@ -46,9 +46,9 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
-          setAmount(res.amount);
-          setAccrued(res.accrued);
-          setRefunded(res.refunded);
+          setAmount(res.amountCents);
+          setAccrued(res.accruedCents);
+          setRefunded(res.refundedCents);
           if (typeof res.lastCounterUpdate === 'object') {
             setLastCounterUpdate(res.lastCounterUpdate);
           }
@@ -313,7 +313,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(amount, '0,00 €')}
+                  {formatedCurrency(amount, '0,00 €', true)}
                 </Typography>
                 <Typography
                   sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -326,7 +326,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(accrued, '0,00 €')}
+                  {formatedCurrency(accrued, '0,00 €', true)}
                 </Typography>
                 <Typography
                   sx={{ fontWeight: 400, display: 'grid', gridColumn: 'span 1' }}
@@ -339,7 +339,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(refunded, '0,00 €')}
+                  {formatedCurrency(refunded, '0,00 €', true)}
                 </Typography>
                 <InstrumentsList
                   paymentMethodList={paymentMethodList}
@@ -463,7 +463,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(amount, '0,00 €')}
+                  {formatedCurrency(amount, '0,00 €', true)}
                 </Typography>
 
                 <Typography
@@ -481,7 +481,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {formatedCurrency(accrued, '0,00 €')}
+                  {formatedCurrency(accrued, '0,00 €', true)}
                 </Typography>
                 <InstrumentsList
                   paymentMethodList={paymentMethodList}
