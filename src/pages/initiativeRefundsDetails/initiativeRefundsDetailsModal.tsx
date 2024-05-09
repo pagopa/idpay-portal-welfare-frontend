@@ -145,7 +145,7 @@ const InitiativeRefundsDetailsModal = ({
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant="body2" fontWeight={600}>
-              {formatedCurrency(refundEventDetails?.amount)}
+              {formatedCurrency(refundEventDetails?.amountCents, '-', true)}
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>

@@ -87,7 +87,7 @@ const MerchantSummary = ({
         </Box>
         <Box sx={{ gridColumn: 'span 9' }}>
           <Typography variant="body2" color="text.primary" sx={{ fontWeight: 600 }}>
-            {formatedCurrency(merchantStatistics?.amount, '0,00 €')}
+            {formatedCurrency(merchantStatistics?.amountCents, '0,00 €', true)}
           </Typography>
         </Box>
         <Box sx={{ gridColumn: 'span 3' }}>
@@ -97,7 +97,7 @@ const MerchantSummary = ({
         </Box>
         <Box sx={{ gridColumn: 'span 9' }}>
           <Typography variant="body2" color="text.primary" sx={{ fontWeight: 600 }}>
-            {formatedCurrency(merchantStatistics?.refunded, '0,00 €')}
+            {formatedCurrency(merchantStatistics?.refundedCents, '0,00 €', true)}
           </Typography>
         </Box>
       </Box>
