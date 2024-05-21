@@ -8,6 +8,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { TrxCount } from '../../../../model/Initiative';
+import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import {
   renderShopRuleIcon,
   handleShopRulesToSubmit,
@@ -28,6 +29,7 @@ type Props = {
   >;
   data: TrxCount | undefined;
   setData: Dispatch<SetStateAction<any>>;
+  rewardType: InitiativeRewardTypeEnum;
 };
 
 const TransactionNumberItem = ({
@@ -39,6 +41,7 @@ const TransactionNumberItem = ({
   setShopRulesToSubmit,
   data,
   setData,
+  rewardType,
 }: Props) => {
   const { t } = useTranslation();
 
@@ -138,7 +141,7 @@ const TransactionNumberItem = ({
             }}
             placeholder={t('components.wizard.stepFour.form.minTransactionNumber')}
             name="from"
-            value={formik.values.from}
+            value={rewardType === 'DISCOUNT' ? 1 : formik.values.from}
             onChange={(e) => {
               formik.handleChange(e);
               handleUpdateFromToFieldState(e.target.value, 'from', data, setData);
