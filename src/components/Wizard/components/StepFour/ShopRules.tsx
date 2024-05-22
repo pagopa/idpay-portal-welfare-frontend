@@ -65,7 +65,7 @@ interface Props {
 const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabledNext }: Props) => {
   const { t } = useTranslation();
   const [openModal, setOpenModal] = useState(false);
-  const [availableShopRules, setAvailableShopRules] = useState <Array<ShopRulesModel>>([]);
+  const [availableShopRules, setAvailableShopRules] = useState<Array<ShopRulesModel>>([]);
   const [shopRulesToSubmit, setShopRulesToSubmit] = useState<
     Array<{ code: string | undefined; dispatched: boolean }>
   >([
@@ -596,6 +596,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
               setShopRulesToSubmit={setShopRulesToSubmit}
               data={trxCountData}
               setData={setTrxCountData}
+              rewardType={rewardType}
             />
           );
         } else if (a.code === 'REWARDLIMIT' && a.checked === true) {
