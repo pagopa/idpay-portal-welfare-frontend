@@ -514,7 +514,6 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                       </Typography>
                     </div>
                   }
-                  disabled
                 />
               </FormControl>
             </RadioGroup>
