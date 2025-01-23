@@ -105,16 +105,13 @@ const AdmissionCriteria = ({
           });
         }
 
-        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+        if (beneficiaryType === BeneficiaryTypeEnum.NF) {
           responseT = responseT.map((r) => {
-            if (r.code !== 'ISEE') {
-              return { ...r };
-            } else {
+            if (r.code === 'ISEE') {
               return { ...r, checked: true };
             }
+            return { ...r };
           });
-
-          responseT = responseT.filter((r) => r.code === 'ISEE');
         }
 
         const responseData = mapResponse(responseT);

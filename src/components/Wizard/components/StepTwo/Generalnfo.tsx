@@ -506,10 +506,10 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                   control={<Radio />}
                   label={
                     <div>
-                      <Typography color="#A2ADB8">
+                      <Typography>
                         {t('components.wizard.stepTwo.form.familyUnitCompositionTitleAnpr')}
                       </Typography>
-                      <Typography color="#A2ADB8" variant="caption" display="block" gutterBottom>
+                      <Typography variant="caption" display="block" gutterBottom>
                         {t('components.wizard.stepTwo.form.familyUnitCompositionSubtitleAnpr')}
                       </Typography>
                     </div>

@@ -291,6 +291,7 @@
             "iseeSocioSanitario": "Socio sanitario",
             "iseeTypologyHelpText": "Seleziona in ordine di priorità",
             "iseeUniversitario": "Universitario",
+            "text": "Testo Libero",
             "typology": "Tipologia"
           },
           "iseeNotPopulatedOnRankingErrorDescription": "È obbligatorio per le iniziative che prevedono una graduatoria.",

@@ -64,11 +64,12 @@ const ManualCriteria = ({
         .shape({
           value: Yup.string().when(
             'manualCriteriaSelectName',
-            (_manualCriteriaSelectName, schema) => {
+            (manualCriteriaSelectName, schema) => {
               if (
-                manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
+                manualCriteriaSelectName === ManualCriteriaOptions.MULTI ||
+                manualCriteriaSelectName === ManualCriteriaOptions.TEXT
               ) {
-                return Yup.string().required(t('validation.required'));
+                return schema.required(t('validation.required'));
               }
               return schema;
             }
@@ -272,6 +273,9 @@ const ManualCriteria = ({
             <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
               {t('components.wizard.stepThree.chooseCriteria.form.multi')}
             </MenuItem>
+            <MenuItem value={ManualCriteriaOptions.TEXT} data-testid="text">
+              {t('components.wizard.stepThree.chooseCriteria.form.text')}
+            </MenuItem>
           </Select>
           <FormHelperText>
             {setErrorText(
@@ -431,6 +435,51 @@ const ManualCriteria = ({
                 {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
               </ButtonNaked>
             </Box>
+          </Box>
+        )}
+        {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.TEXT && (
+          <Box
+            sx={{
+              gridColumn: 'span 12',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(12, 1fr)',
+              gap: 2,
+              my: 2,
+            }}
+          >
+            <FormControl sx={{ gridColumn: 'span 10' }}>
+              <TextField
+                id="manualCriteriaTextValue"
+                name="manualCriteriaValues[0].value"
+                variant="outlined"
+                size="small"
+                value={manualCriteriaFormik.values.manualCriteriaValues[0]?.value || ''}
+                onBlur={(e) => manualCriteriaFormik.handleBlur(e)}
+                onChange={(e) => {
+                  manualCriteriaFormik.handleChange(e);
+                  handleOptionChanged(
+                    e.target.value,
+                    0,
+                    manualCriteriaFormik.values.manualCriteriaCode
+                  );
+                }}
+                error={
+                  manualCriteriaFormik.touched.manualCriteriaValues?.[0]?.value &&
+                  typeof manualCriteriaFormik.errors.manualCriteriaValues?.[0] !== 'string' &&
+                  Boolean(manualCriteriaFormik.errors.manualCriteriaValues?.[0]?.value)
+                }
+                helperText={
+                  manualCriteriaFormik.touched.manualCriteriaValues?.[0]?.value &&
+                  typeof manualCriteriaFormik.errors.manualCriteriaValues?.[0] !== 'string' &&
+                  manualCriteriaFormik.errors.manualCriteriaValues?.[0]?.value
+                }
+                inputProps={{ 'data-testid': 'manualCriteria-text-test' }}
+                multiline
+                rows={4}
+                sx={{ width: '100%' }}
+                disabled
+              />
+            </FormControl>
           </Box>
         )}
       </Box>

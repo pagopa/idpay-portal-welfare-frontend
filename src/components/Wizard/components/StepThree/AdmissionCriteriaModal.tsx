@@ -77,15 +77,12 @@ const AdmissionCriteriaModal = ({
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler,
     beneficiaryType: BeneficiaryTypeEnum | undefined
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     if (!searchKey.length) {
       return list.map((a) => {
         const displayType =
-          a.code === 'ISEE' &&
-          typeof beneficiaryType !== undefined &&
-          beneficiaryType === BeneficiaryTypeEnum.NF
-            ? 'none'
-            : 'flex';
+          a.code === 'ISEE' && beneficiaryType === BeneficiaryTypeEnum.NF ? 'none' : 'flex';
 
         return (
           <Box key={a.code} sx={{ display: displayType, my: 2 }}>
@@ -109,8 +106,10 @@ const AdmissionCriteriaModal = ({
       return list.map((a) => {
         const lowerCaseTitle = typeof a.fieldLabel === 'string' ? a.fieldLabel.toLowerCase() : '';
         if (lowerCaseTitle.includes(searchKey)) {
+          const displayType =
+            a.code === 'ISEE' && beneficiaryType === BeneficiaryTypeEnum.NF ? 'none' : 'flex';
           return (
-            <Box key={a.code} sx={{ display: 'flex', my: 2 }}>
+            <Box key={a.code} sx={{ display: displayType, my: 2 }}>
               <Box>
                 <Checkbox
                   onChange={(e) => handleCriteriaChange(e)}
