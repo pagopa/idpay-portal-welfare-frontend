@@ -680,7 +680,8 @@
             "iseeResidenziale": "Residenza",
             "iseeSocioSanitario": "Socio sanitario",
             "iseeUniversitario": "Universitario",
-            "typology": "Tipologie ISEE"
+            "typology": "Tipologie ISEE",
+            "text": "Testo libero"
           },
           "description": "Criteri di idoneità dei richiedenti o elenco dei destinatari.",
           "heading": "3",

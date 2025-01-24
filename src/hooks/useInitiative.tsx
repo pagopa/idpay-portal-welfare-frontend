@@ -150,7 +150,7 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
     // eslint-disable-next-line functional/immutable-data
     dataT.initiativeOnIO = data.serviceIO;
   }
-  if(typeof data.serviceId !== 'undefined'){
+  if (typeof data.serviceId !== 'undefined') {
     // eslint-disable-next-line functional/immutable-data
     dataT.serviceId = data.serviceId;
   }
@@ -312,7 +312,7 @@ export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriter
     const manualCriteriaFetched: Array<{
       _type?: string;
       description?: string;
-      value?: boolean | Array<string>;
+      value?: boolean | Array<string> | string;
       code?: string;
     }> = [...response.beneficiaryRule.selfDeclarationCriteria];
     manualCriteriaFetched.forEach((m) => {
@@ -339,6 +339,17 @@ export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriter
           _type: m._type,
           boolValue: true,
           multiValue: [...mValue],
+          description: m.description || '',
+          code: m.code || '',
+        });
+      } else if (typeof m.value === 'string') {
+        // eslint-disable-next-line functional/immutable-data
+        selfDeclarationCriteria.push({
+          // eslint-disable-next-line no-underscore-dangle
+          _type: m._type,
+          boolValue: true,
+          multiValue: [],
+          textValue: m.value,
           description: m.description || '',
           code: m.code || '',
         });
