@@ -84,9 +84,13 @@ const ManualCriteria = ({
       manualCriteriaName: data.description,
       // eslint-disable-next-line no-underscore-dangle
       manualCriteriaSelectName: data._type,
-      manualCriteriaValues: Array.isArray(data.multiValue)
-        ? [...data.multiValue]
-        : [{ value: '' }, { value: '' }],
+      manualCriteriaValues:
+        // eslint-disable-next-line no-underscore-dangle
+        data._type === ManualCriteriaOptions.TEXT
+          ? [{ value: '' }]
+          : Array.isArray(data.multiValue)
+          ? [...data.multiValue]
+          : [{ value: '' }, { value: '' }],
     },
     validateOnMount: true,
     enableReinitialize: true,
@@ -453,7 +457,6 @@ const ManualCriteria = ({
                 name="manualCriteriaValues[0].value"
                 variant="outlined"
                 size="small"
-                value={manualCriteriaFormik.values.manualCriteriaValues[0]?.value || ''}
                 onBlur={(e) => manualCriteriaFormik.handleBlur(e)}
                 onChange={(e) => {
                   manualCriteriaFormik.handleChange(e);
@@ -477,7 +480,7 @@ const ManualCriteria = ({
                 multiline
                 rows={4}
                 sx={{ width: '100%' }}
-                InputProps={{ readOnly: true }}
+                disabled
               />
             </FormControl>
           </Box>
