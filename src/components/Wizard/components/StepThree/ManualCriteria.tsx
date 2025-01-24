@@ -477,7 +477,7 @@ const ManualCriteria = ({
                 multiline
                 rows={4}
                 sx={{ width: '100%' }}
-                disabled
+                InputProps={{ readOnly: true }}
               />
             </FormControl>
           </Box>
