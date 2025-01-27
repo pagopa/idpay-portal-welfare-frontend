@@ -84,13 +84,9 @@ const ManualCriteria = ({
       manualCriteriaName: data.description,
       // eslint-disable-next-line no-underscore-dangle
       manualCriteriaSelectName: data._type,
-      manualCriteriaValues:
-        // eslint-disable-next-line no-underscore-dangle
-        data._type === ManualCriteriaOptions.TEXT
-          ? [{ value: '' }]
-          : Array.isArray(data.multiValue)
-          ? [...data.multiValue]
-          : [{ value: '' }, { value: '' }],
+      manualCriteriaValues: Array.isArray(data.multiValue)
+        ? [...data.multiValue]
+        : [{ value: '' }, { value: '' }],
     },
     validateOnMount: true,
     enableReinitialize: true,
@@ -439,50 +435,6 @@ const ManualCriteria = ({
                 {t('components.wizard.stepThree.chooseCriteria.form.addOption')}
               </ButtonNaked>
             </Box>
-          </Box>
-        )}
-        {manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.TEXT && (
-          <Box
-            sx={{
-              gridColumn: 'span 12',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(12, 1fr)',
-              gap: 2,
-              my: 2,
-            }}
-          >
-            <FormControl sx={{ gridColumn: 'span 10' }}>
-              <TextField
-                id="manualCriteriaTextValue"
-                name="manualCriteriaValues[0].value"
-                variant="outlined"
-                size="small"
-                onBlur={(e) => manualCriteriaFormik.handleBlur(e)}
-                onChange={(e) => {
-                  manualCriteriaFormik.handleChange(e);
-                  handleOptionChanged(
-                    e.target.value,
-                    0,
-                    manualCriteriaFormik.values.manualCriteriaCode
-                  );
-                }}
-                error={
-                  manualCriteriaFormik.touched.manualCriteriaValues?.[0]?.value &&
-                  typeof manualCriteriaFormik.errors.manualCriteriaValues?.[0] !== 'string' &&
-                  Boolean(manualCriteriaFormik.errors.manualCriteriaValues?.[0]?.value)
-                }
-                helperText={
-                  manualCriteriaFormik.touched.manualCriteriaValues?.[0]?.value &&
-                  typeof manualCriteriaFormik.errors.manualCriteriaValues?.[0] !== 'string' &&
-                  manualCriteriaFormik.errors.manualCriteriaValues?.[0]?.value
-                }
-                inputProps={{ 'data-testid': 'manualCriteria-text-test' }}
-                multiline
-                rows={4}
-                sx={{ width: '100%' }}
-                disabled
-              />
-            </FormControl>
           </Box>
         )}
       </Box>

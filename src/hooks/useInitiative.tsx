@@ -342,14 +342,15 @@ export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriter
           description: m.description || '',
           code: m.code || '',
         });
-      } else if (typeof m.value === 'string') {
+        // eslint-disable-next-line no-underscore-dangle
+      } else if (m._type === 'text') {
         // eslint-disable-next-line functional/immutable-data
         selfDeclarationCriteria.push({
           // eslint-disable-next-line no-underscore-dangle
           _type: m._type,
-          boolValue: true,
+          boolValue: undefined,
           multiValue: [],
-          textValue: m.value,
+          textValue: m.value || '',
           description: m.description || '',
           code: m.code || '',
         });
