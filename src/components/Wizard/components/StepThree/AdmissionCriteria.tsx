@@ -62,8 +62,12 @@ const AdmissionCriteria = ({
   const [availableCriteria, setAvailableCriteria] = useState<Array<AvailableCriteria>>([]);
   const [criteriaToRender, setCriteriaToRender] = useState<Array<AvailableCriteria>>([]);
   const [criteriaToRenderNumber, setCriteriaToRenderNumber] = useState(0);
-  const [manualCriteriaToRender, setManualCriteriaToRender] = useState<Array<ManualCriteriaItem>>([]);
-  const [criteriaToSubmit, setCriteriaToSubmit] = useState<Array<{ code: string | undefined; dispatched: boolean }>>([]);
+  const [manualCriteriaToRender, setManualCriteriaToRender] = useState<Array<ManualCriteriaItem>>(
+    []
+  );
+  const [criteriaToSubmit, setCriteriaToSubmit] = useState<
+    Array<{ code: string | undefined; dispatched: boolean }>
+  >([]);
   const [showMandatoryIseeToast, setShowMandatoryIseeToast] = useState<boolean>(false);
   const beneficiaryRule = useAppSelector(beneficiaryRuleSelector);
   const initiativeId = useAppSelector(initiativeIdSelector);
@@ -109,8 +113,6 @@ const AdmissionCriteria = ({
               return { ...r, checked: true };
             }
           });
-
-          responseT = responseT.filter((r) => r.code === 'ISEE');
         }
 
         const responseData = mapResponse(responseT);
@@ -440,24 +442,22 @@ const AdmissionCriteria = ({
             startIcon={<ListAltIcon />}
             onClick={handleOpenModal}
             data-testid="criteria-button-test"
-            disabled={beneficiaryType !== BeneficiaryTypeEnum.PF}
           >
             {t('components.wizard.stepThree.chooseCriteria.browse')}
           </Button>
 
-          {beneficiaryType === BeneficiaryTypeEnum.PF && (
-            <AdmissionCriteriaModal
-              openModal={openModal}
-              handleCloseModal={handleCloseModal}
-              handleCriteriaAdded={handleCriteriaAdded}
-              criteriaToRender={criteriaToRender}
-              setCriteriaToRender={setCriteriaToRender}
-              searchCriteria={searchCriteria}
-              setSearchCriteria={setSearchCriteria}
-              data-testid="modal-test"
-              beneficiaryType={beneficiaryType}
-            />
-          )}
+          <AdmissionCriteriaModal
+            openModal={openModal}
+            handleCloseModal={handleCloseModal}
+            handleCriteriaAdded={handleCriteriaAdded}
+            criteriaToRender={criteriaToRender}
+            setCriteriaToRender={setCriteriaToRender}
+            searchCriteria={searchCriteria}
+            setSearchCriteria={setSearchCriteria}
+            data-testid="modal-test"
+            beneficiaryType={beneficiaryType}
+          />
+
           <Button
             variant="text"
             sx={{ gridArea: 'addButton' }}

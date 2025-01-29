@@ -77,6 +77,7 @@ const AdmissionCriteriaModal = ({
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler,
     beneficiaryType: BeneficiaryTypeEnum | undefined
+    // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     if (!searchKey.length) {
       return list.map((a) => {

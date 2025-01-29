@@ -109,6 +109,12 @@ export const mockedInitiative: Initiative = {
         code: 'string',
         multiValue: [],
       },
+      {
+        _type: 'text',
+        description: 'string',
+        code: 'string',
+        textValue: '',
+      },
     ],
     automatedCriteria: [
       {
@@ -351,6 +357,12 @@ test('Test initiative2Initiative', () => {
           description: 'string',
           code: 'string',
           multiValue: [],
+        },
+        {
+          _type: 'text',
+          description: 'string',
+          code: 'string',
+          textValue: '',
         },
       ],
       automatedCriteria: [

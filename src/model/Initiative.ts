@@ -60,6 +60,7 @@ export interface ManualCriteriaItem {
   description: string;
   boolValue?: boolean;
   multiValue?: Array<{ value: string }>;
+  textValue?: string;
   code: string;
 }
 
