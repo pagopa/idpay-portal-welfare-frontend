@@ -65,10 +65,7 @@ const ManualCriteria = ({
           value: Yup.string().when(
             'manualCriteriaSelectName',
             (manualCriteriaSelectName, schema) => {
-              if (
-                manualCriteriaSelectName === ManualCriteriaOptions.MULTI ||
-                manualCriteriaSelectName === ManualCriteriaOptions.TEXT
-              ) {
+              if (manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
                 return schema.required(t('validation.required'));
               }
               return schema;
