@@ -160,6 +160,12 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
             value: ['value1', 'value2', 'value3'],
             code: 'string',
           },
+          {
+            _type: 'text',
+            description: 'string',
+            value: '',
+            code: 'string',
+          },
         ],
         automatedCriteria: [
           {
@@ -192,6 +198,12 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
             _type: 'multi',
             description: 'string',
             value: ['value1', 'value2', 'value3'],
+            code: 'string',
+          },
+          {
+            _type: 'text',
+            description: 'string',
+            value: '',
             code: 'string',
           },
         ],

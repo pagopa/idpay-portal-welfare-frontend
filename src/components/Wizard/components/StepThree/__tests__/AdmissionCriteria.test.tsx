@@ -95,6 +95,12 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
           code: 'string',
           multiValue: [],
         },
+        {
+          _type: 'text',
+          description: 'string',
+          code: 'string',
+          textValue: '',
+        },
       ])
     );
     render(
@@ -219,22 +225,22 @@ describe('<AdmissionCriteria />', (injectedStore?: ReturnType<typeof createStore
     store.dispatch(
       saveAutomatedCriteria([
         {
-          authority: "INPS",
-          code: "BIRTHDAY",
-          operator: "GT",
-          value: "1",
-          value2: "",
+          authority: 'INPS',
+          code: 'BIRTHDAY',
+          operator: 'GT',
+          value: '1',
+          value2: '',
           orderDirection: OrderDirectionEnum.ASC,
           iseeTypes: [
-              "ORDINARIO",
-              "MINORENNE",
-              "UNIVERSITARIO",
-              "SOCIOSANITARIO",
-              "DOTTORATO",
-              "RESIDENZIALE",
-              "CORRENTE"
-          ]
-        }
+            'ORDINARIO',
+            'MINORENNE',
+            'UNIVERSITARIO',
+            'SOCIOSANITARIO',
+            'DOTTORATO',
+            'RESIDENZIALE',
+            'CORRENTE',
+          ],
+        },
       ])
     );
     store.dispatch(saveApiKeyClientId('api key'));

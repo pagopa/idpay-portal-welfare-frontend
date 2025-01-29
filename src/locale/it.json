@@ -291,6 +291,7 @@
             "iseeSocioSanitario": "Socio sanitario",
             "iseeTypologyHelpText": "Seleziona in ordine di priorità",
             "iseeUniversitario": "Universitario",
+            "text": "Testo Libero",
             "typology": "Tipologia"
           },
           "iseeNotPopulatedOnRankingErrorDescription": "È obbligatorio per le iniziative che prevedono una graduatoria.",
@@ -679,7 +680,8 @@
             "iseeResidenziale": "Residenza",
             "iseeSocioSanitario": "Socio sanitario",
             "iseeUniversitario": "Universitario",
-            "typology": "Tipologie ISEE"
+            "typology": "Tipologie ISEE",
+            "text": "Testo libero"
           },
           "description": "Criteri di idoneità dei richiedenti o elenco dei destinatari.",
           "heading": "3",

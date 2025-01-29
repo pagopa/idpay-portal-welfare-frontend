@@ -269,6 +269,12 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
             code: 'string',
             multiValue: [],
           },
+          {
+            _type: 'multi',
+            description: 'string',
+            code: 'string',
+            multiValue: [],
+          },
         ],
         automatedCriteria: [
           {

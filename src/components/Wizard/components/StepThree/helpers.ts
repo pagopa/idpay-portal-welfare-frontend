@@ -279,7 +279,7 @@ export const mapCriteriaToSend = (
   const manualCriteriaToSend: Array<{
     _type: string;
     description: string;
-    value: Array<string> | boolean;
+    value: Array<string> | boolean | string;
     code: string;
   }> = [];
   manualCriteria.forEach((m) => {
@@ -309,6 +309,17 @@ export const mapCriteriaToSend = (
         _type: m._type,
         description: m.description,
         value: [...multiValue],
+        code: m.code,
+      };
+      // eslint-disable-next-line functional/immutable-data
+      manualCriteriaToSend.push({ ...criteria });
+      // eslint-disable-next-line no-underscore-dangle
+    } else if (m._type === 'text') {
+      const criteria = {
+        // eslint-disable-next-line no-underscore-dangle
+        _type: m._type,
+        description: m.description,
+        value: m.textValue,
         code: m.code,
       };
       // eslint-disable-next-line functional/immutable-data

@@ -272,6 +272,9 @@ const ManualCriteria = ({
             <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
               {t('components.wizard.stepThree.chooseCriteria.form.multi')}
             </MenuItem>
+            <MenuItem value={ManualCriteriaOptions.TEXT} data-testid="text">
+              {t('components.wizard.stepThree.chooseCriteria.form.text')}
+            </MenuItem>
           </Select>
           <FormHelperText>
             {setErrorText(
