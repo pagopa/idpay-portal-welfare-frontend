@@ -64,9 +64,11 @@ const ManualCriteria = ({
         .shape({
           value: Yup.string().when(
             'manualCriteriaSelectName',
-            (manualCriteriaSelectName, schema) => {
-              if (manualCriteriaSelectName === ManualCriteriaOptions.MULTI) {
-                return schema.required(t('validation.required'));
+            (_manualCriteriaSelectName, schema) => {
+              if (
+                manualCriteriaFormik.values.manualCriteriaSelectName === ManualCriteriaOptions.MULTI
+              ) {
+                return Yup.string().required(t('validation.required'));
               }
               return schema;
             }
