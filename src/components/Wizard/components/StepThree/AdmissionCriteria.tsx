@@ -17,6 +17,7 @@ import {
   saveManualCriteria,
   stepTwoRankingEnabledSelector,
   stepTwoBeneficiaryTypeSelector,
+  generalInfoSelector,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import { ManualCriteriaItem } from '../../../../model/Initiative';
@@ -26,7 +27,10 @@ import {
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -73,6 +77,7 @@ const AdmissionCriteria = ({
   const initiativeId = useAppSelector(initiativeIdSelector);
   const rankingEnabled = useAppSelector(stepTwoRankingEnabledSelector);
   const beneficiaryType = useAppSelector(stepTwoBeneficiaryTypeSelector);
+  const generalInfo = useAppSelector(generalInfoSelector);
   const setLoading = useLoading('GET_ADMISSION_CRITERIA');
   const [openDraftSavedToast, setOpenDraftSavedToast] = useState(false);
   // const [apiKeyClientId, setApiKeyClientId] = useState<string | undefined>(
@@ -95,7 +100,11 @@ const AdmissionCriteria = ({
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
 
-        if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
+        if (
+          typeof beneficiaryType !== undefined &&
+          beneficiaryType === BeneficiaryTypeEnum.NF &&
+          generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
+        ) {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
               return { ...r };
@@ -456,6 +465,7 @@ const AdmissionCriteria = ({
             setSearchCriteria={setSearchCriteria}
             data-testid="modal-test"
             beneficiaryType={beneficiaryType}
+            familyUnitComposition={generalInfo.familyUnitComposition}
           />
 
           <Button

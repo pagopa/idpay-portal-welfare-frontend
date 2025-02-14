@@ -23,7 +23,10 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 type Props = {
   openModal: boolean;
@@ -34,6 +37,7 @@ type Props = {
   searchCriteria: string;
   setSearchCriteria: Dispatch<SetStateAction<string>>;
   beneficiaryType: BeneficiaryTypeEnum | undefined;
+  familyUnitComposition: FamilyUnitCompositionEnum | undefined;
 };
 
 const AdmissionCriteriaModal = ({
@@ -45,6 +49,7 @@ const AdmissionCriteriaModal = ({
   searchCriteria,
   setSearchCriteria,
   beneficiaryType,
+  familyUnitComposition,
 }: Props) => {
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
@@ -84,6 +89,7 @@ const AdmissionCriteriaModal = ({
         const displayType =
           a.code === 'ISEE' &&
           typeof beneficiaryType !== undefined &&
+          familyUnitComposition === FamilyUnitCompositionEnum.INPS &&
           beneficiaryType === BeneficiaryTypeEnum.NF
             ? 'none'
             : 'flex';
