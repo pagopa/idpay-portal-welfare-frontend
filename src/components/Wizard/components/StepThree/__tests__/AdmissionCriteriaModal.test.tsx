@@ -3,7 +3,10 @@ import { findByTestId, fireEvent, screen } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
 import { renderWithContext } from '../../../../../utils/test-utils';
-import { BeneficiaryTypeEnum } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  BeneficiaryTypeEnum,
+  FamilyUnitCompositionEnum,
+} from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
 
 beforeEach(() => {
   jest.mock('@mui/material');
@@ -45,6 +48,7 @@ describe('<AdmissionCriteriaModal />', () => {
         searchCriteria={''}
         setSearchCriteria={jest.fn()}
         beneficiaryType={BeneficiaryTypeEnum.NF}
+        familyUnitComposition={FamilyUnitCompositionEnum.INPS}
       />
     );
 
@@ -83,6 +87,7 @@ describe('<AdmissionCriteriaModal />', () => {
         searchCriteria={'ISEE'}
         setSearchCriteria={jest.fn()}
         beneficiaryType={BeneficiaryTypeEnum.PF}
+        familyUnitComposition={FamilyUnitCompositionEnum.INPS}
       />
     );
   });
