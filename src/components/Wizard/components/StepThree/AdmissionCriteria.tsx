@@ -100,11 +100,7 @@ const AdmissionCriteria = ({
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
 
-        if (
-          typeof beneficiaryType !== undefined &&
-          beneficiaryType === BeneficiaryTypeEnum.NF &&
-          generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
-        ) {
+        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
               return { ...r };
@@ -114,7 +110,11 @@ const AdmissionCriteria = ({
           });
         }
 
-        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+        if (
+          typeof beneficiaryType !== undefined &&
+          beneficiaryType === BeneficiaryTypeEnum.NF &&
+          generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
+        ) {
           responseT = responseT.map((r) => {
             if (r.code !== 'ISEE') {
               return { ...r };
