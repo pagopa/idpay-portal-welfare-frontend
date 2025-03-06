@@ -61,6 +61,7 @@ export enum FilterOperator {
 export enum ManualCriteriaOptions {
   BOOLEAN = 'boolean',
   MULTI = 'multi',
+  TEXT = 'text',
 }
 
 export const PAGOPA_ADMIN_ROLE = 'pagopa_admin';

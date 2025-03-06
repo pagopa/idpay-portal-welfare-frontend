@@ -25,7 +25,7 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
   });
 
   const store = injectedStore ? injectedStore : createStore();
-  
+
   test('Should display ManualCriteria SUBMIT action', () => {
     const handleCriteriaRemoved = jest.fn();
     const setManualCriteriaToRender = jest.fn();
@@ -82,6 +82,10 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
 
     fireEvent.click(selectManualCriteria);
     fireEvent.change(selectManualCriteria, { target: { value: 'boolean' } });
+    expect(selectManualCriteria).toBeDefined();
+
+    fireEvent.click(selectManualCriteria);
+    fireEvent.change(selectManualCriteria, { target: { value: 'text' } });
     expect(selectManualCriteria).toBeDefined();
 
     fireEvent.click(manualCriteriaName);

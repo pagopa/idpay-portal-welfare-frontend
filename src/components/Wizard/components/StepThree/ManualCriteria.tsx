@@ -86,6 +86,7 @@ const ManualCriteria = ({
       manualCriteriaValues: Array.isArray(data.multiValue)
         ? [...data.multiValue]
         : [{ value: '' }, { value: '' }],
+      textValue: '',
     },
     validateOnMount: true,
     enableReinitialize: true,
@@ -103,6 +104,12 @@ const ManualCriteria = ({
         manualCriteriaSelectName: e.target.value,
         manualCriteriaValues: [{ value: '' }, { value: '' }],
       });
+    } else if (e.target.value === ManualCriteriaOptions.TEXT) {
+      setValues({
+        ...values,
+        manualCriteriaSelectName: e.target.value,
+        textValue: '',
+      });
     } else {
       setValues({ ...values, manualCriteriaSelectName: e.target.value });
     }
@@ -116,6 +123,7 @@ const ManualCriteria = ({
         const criteria = {
           ...m,
           [fieldKey]: value,
+          textValue: '',
         };
         // eslint-disable-next-line functional/immutable-data
         newManualCriteria.push({ ...criteria });
@@ -271,6 +279,9 @@ const ManualCriteria = ({
             </MenuItem>
             <MenuItem value={ManualCriteriaOptions.MULTI} data-testid="multi">
               {t('components.wizard.stepThree.chooseCriteria.form.multi')}
+            </MenuItem>
+            <MenuItem value={ManualCriteriaOptions.TEXT} data-testid="text">
+              {t('components.wizard.stepThree.chooseCriteria.form.text')}
             </MenuItem>
           </Select>
           <FormHelperText>

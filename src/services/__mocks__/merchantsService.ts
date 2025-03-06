@@ -126,8 +126,8 @@ export const mockedMerchantDetail = {
 };
 
 export const mockedMerchantStatistics = {
-  accrued: 100,
-  amount: 10,
+  accruedCents: 100,
+  amountCents: 10,
 };
 
 export const mockedMerchantTransactionList = {
@@ -136,7 +136,7 @@ export const mockedMerchantTransactionList = {
       trxCode: 'string',
       trxId: '123456789',
       fiscalCode: 'string',
-      effectiveAmount: 1000,
+      effectiveAmountCents: 1000,
       updateDate: startDate,
       status: TransactionStatusEnum.CREATED,
       trxDate: new Date(),
@@ -148,7 +148,7 @@ export const mockedMerchantTransactionList = {
       trxCode: 'string',
       trxId: 'asdfggfhjkl',
       fiscalCode: 'string',
-      effectiveAmount: 1303,
+      effectiveAmountCents: 1303,
       updateDate: startDate,
       status: TransactionStatusEnum.AUTHORIZED,
       trxDate: new Date(),
@@ -158,9 +158,21 @@ export const mockedMerchantTransactionList = {
     },
     {
       trxCode: 'string',
+      trxId: 'zxcvbnmzxmv',
+      fiscalCode: 'string',
+      effectiveAmountCents: 2372,
+      updateDate: startDate,
+      status: TransactionStatusEnum.AUTHORIZATION_REQUESTED,
+      trxDate: new Date(),
+      trxExpirationSeconds: 300,
+      qrcodePngUrl: 'example.com/image',
+      qrcodeTxtUrl: 'example.com/image',
+    },
+    {
+      trxCode: 'string',
       trxId: 'zxcvbnmzxcv',
       fiscalCode: 'string',
-      effectiveAmount: 2322,
+      effectiveAmountCents: 2322,
       updateDate: startDate,
       status: TransactionStatusEnum.IDENTIFIED,
       trxDate: new Date(),
@@ -172,7 +184,7 @@ export const mockedMerchantTransactionList = {
       trxCode: 'string',
       trxId: '12345asdfgf',
       fiscalCode: 'string',
-      effectiveAmount: 5000,
+      effectiveAmountCents: 5000,
       updateDate: startDate,
       status: TransactionStatusEnum.REJECTED,
       trxDate: new Date(),
@@ -193,7 +205,7 @@ export const mockedMerchantTransactionProcessedList = {
       trxCode: 'string',
       trxId: '12345asdfgf',
       fiscalCode: 'string',
-      effectiveAmount: 5000,
+      effectiveAmountCents: Number(5000),
       updateDate: startDate,
       status: TransactionProcessedStatusEnum.REWARDED,
       trxDate: new Date(),
@@ -205,7 +217,7 @@ export const mockedMerchantTransactionProcessedList = {
       trxCode: 'string',
       trxId: '12345asdfgf',
       fiscalCode: 'string',
-      effectiveAmount: 5000,
+      effectiveAmountCents: Number(5000),
       updateDate: startDate,
       status: TransactionProcessedStatusEnum.CANCELLED,
       trxDate: new Date(),

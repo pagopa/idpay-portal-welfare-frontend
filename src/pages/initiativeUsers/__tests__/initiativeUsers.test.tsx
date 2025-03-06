@@ -123,6 +123,12 @@ describe('<InitiativeUsers />', () => {
           code: 'string',
           multiValue: [],
         },
+        {
+          _type: 'multi',
+          description: 'string',
+          code: 'string',
+          multiValue: [],
+        },
       ],
       automatedCriteria: [
         {
