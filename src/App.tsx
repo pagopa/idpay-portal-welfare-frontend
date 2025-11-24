@@ -4,7 +4,7 @@ import {
   UnloadEventHandler,
   UserNotifyHandle,
 } from '@pagopa/selfcare-common-frontend';
-import { Redirect, Route, Switch, useLocation } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
 import routes from './routes';
@@ -23,12 +23,12 @@ import Assistance from './pages/assistance/assistance';
 import InitiativeRefundsOutcome from './pages/initiativeRefundsOutcome/initiativeRefundsOutcome';
 import InitiativeRanking from './pages/initiativeRanking/initiativeRanking';
 import InitiativeUserDetails from './pages/initiativeUserDetails/initiativeUserDetails';
-import TOSWall from './components/TOS/TOSWall';
-import TOSLayout from './components/TOSLayout/TOSLayout';
+// import TOSWall from './components/TOS/TOSWall';
+// import TOSLayout from './components/TOSLayout/TOSLayout';
 import TOS from './pages/tos/TOS';
 import PrivacyPolicy from './pages/privacyPolicy/PrivacyPolicy';
 import ChooseOrganization from './pages/ChooseOrganization/ChooseOrganization';
-import useTCAgreement from './hooks/useTCAgreement';
+// import useTCAgreement from './hooks/useTCAgreement';
 import InitiativeRefundsDetails from './pages/initiativeRefundsDetails/initiativeRefundsDetails';
 import InitiativeMerchant from './pages/initiativeMerchant/initiativeMerchant';
 import InitiativeUploadMerchants from './pages/initiativeUploadMerchants/initiativeUploadMerchants';
@@ -38,31 +38,33 @@ const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
     const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
-    const location = useLocation();
-    const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
-
-    if (
-      isTOSAccepted === false &&
-      location.pathname !== routes.PRIVACY_POLICY &&
-      location.pathname !== routes.TOS
-    ) {
-      return (
-        <TOSLayout>
-          <TOSWall
-            acceptTOS={acceptTOS}
-            privacyRoute={routes.PRIVACY_POLICY}
-            tosRoute={routes.TOS}
-            firstAcceptance={firstAcceptance}
-          />
-        </TOSLayout>
-      );
-    } else if (
-      typeof isTOSAccepted === 'undefined' &&
-      location.pathname !== routes.PRIVACY_POLICY &&
-      location.pathname !== routes.TOS
-    ) {
-      return <></>;
-    }
+    // const location = useLocation();
+    // const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
+    
+    // TODO implement tos 
+    
+    // if (
+    //   isTOSAccepted === false &&
+    //   location.pathname !== routes.PRIVACY_POLICY &&
+    //   location.pathname !== routes.TOS
+    // ) {
+    //   return (
+    //     <TOSLayout>
+    //       <TOSWall
+    //         acceptTOS={acceptTOS}
+    //         privacyRoute={routes.PRIVACY_POLICY}
+    //         tosRoute={routes.TOS}
+    //         firstAcceptance={firstAcceptance}
+    //       />
+    //     </TOSLayout>
+    //   );
+    // } else if (
+    //   typeof isTOSAccepted === 'undefined' &&
+    //   location.pathname !== routes.PRIVACY_POLICY &&
+    //   location.pathname !== routes.TOS
+    // ) {
+    //   return <></>;
+    // }
 
     return (
       <Layout>
