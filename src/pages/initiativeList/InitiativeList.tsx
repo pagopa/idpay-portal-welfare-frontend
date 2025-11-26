@@ -288,9 +288,9 @@ const InitiativeList = () => {
   const setLoading = useLoading('GET_INITIATIVE_LIST');
 
   const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
-  const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
-  const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
-  const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
+  // const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
+  // const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
+  // const userCanDeleteInitiative = usePermissions(USER_PERMISSIONS.DELETE_INITIATIVE);
 
   useEffect(() => {
     setLoading(true);
@@ -353,19 +353,20 @@ const InitiativeList = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const showActionMenu = (status: string) => {
-    if (status !== 'TO_CHECK') {
-      return true;
-    } else if (
-      userCanUpdateInitiative === false &&
-      userCanDeleteInitiative === false &&
-      userCanReviewInitiative === true
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  };
+  const showActionMenu = (_status: string) => 
+    // if (status !== 'TO_CHECK') {
+    //   return true;
+    // } else if (
+    //   userCanUpdateInitiative === false &&
+    //   userCanDeleteInitiative === false &&
+    //   userCanReviewInitiative === true
+    // ) {
+    //   return false;
+    // } else {
+    //   return true;
+    // }
+     false
+  ;
 
   return (
     <Box sx={{ width: '100%', px: 2 }}>
@@ -487,8 +488,11 @@ const InitiativeList = () => {
                               textAlign: 'left',
                             }}
                             onClick={() =>
+                              // history.replace(
+                              //   `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
+                              // )
                               history.replace(
-                                `${BASE_ROUTE}/panoramica-iniziativa/${row.initiativeId}`
+                                `${BASE_ROUTE}/rimborsi-iniziativa/${row.initiativeId}`
                               )
                             }
                             data-testid="initiative-btn-test"

@@ -1051,7 +1051,10 @@
     "pagopa_admin": "Amministratore Portale Bonus",
     "incaricato-ente-creditore": "Amministratore ente creditore",
     "referente-dei-pagamenti": "Amministratore dei pagamenti",
-    "referente-legale": "Rappresentante legale"
+    "referente-legale": "Rappresentante legale",
+    "operator1": "Amministratore",
+    "operator2": "Amministratore",
+    "operator3": "Amministratore"
   },
   "session": {
     "expired": {

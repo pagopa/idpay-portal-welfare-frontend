@@ -7,7 +7,7 @@ import { ButtonNaked } from "@pagopa/mui-italia";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
-import ROUTES, { BASE_ROUTE } from "../../routes";
+import ROUTES from "../../routes";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
@@ -175,7 +175,7 @@ const InitiativeRefundsMerchants = () => {
         <Box sx={{ width: '100%', pt: 2, px: 2 }}>
             <Box sx={initiativePagesBreadcrumbsContainerStyle}>
                 <BreadcrumbsBox
-                    backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+                    backUrl={ROUTES.HOME}
                     backLabel={t('breadcrumbs.back')}
                     items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeRefunds')]}
                 />
