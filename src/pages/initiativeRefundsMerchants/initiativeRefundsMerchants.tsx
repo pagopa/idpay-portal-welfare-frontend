@@ -1,0 +1,341 @@
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
+import { TitleBox } from "@pagopa/selfcare-common-frontend";
+import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from 'react-i18next';
+import { matchPath } from "react-router-dom";
+import { ButtonNaked } from "@pagopa/mui-italia";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
+import ROUTES, { BASE_ROUTE } from "../../routes";
+import BreadcrumbsBox from "../components/BreadcrumbsBox";
+import { initiativeSelector } from "../../redux/slices/initiativeSlice";
+import { useAppSelector } from "../../redux/hooks";
+import { useInitiative } from "../../hooks/useInitiative";
+
+export interface RefundItem {
+    id: string;
+    merchantId: string;
+    businessName: string;
+    month: string;
+    posType: "ONLINE" | "FISICO";
+    status: string;
+    partial: boolean;
+    name: string;
+    startDate: string;
+    endDate: string;
+    totalAmountCents: number;
+    approvedAmountCents: number;
+    initialAmountCents: number;
+    numberOfTransactions: number;
+    numberOfTransactionsSuspended: number;
+    numberOfTransactionsRejected: number;
+    numberOfTransactionsElaborated: number;
+    assigneeLevel: "L1" | "L2" | string;
+}
+
+export interface RefundsPage {
+    content: Array<RefundItem>;
+    pageNo: number;
+    pageSize: number;
+    totalElements: number;
+    totalPages: number;
+}
+
+const mockedRefunds: RefundsPage = {
+    content: [
+        {
+            id: "69258cb90d2d73a535e11a2b",
+            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
+            businessName: "Esercente di test IdPay",
+            month: "2025-11",
+            posType: "ONLINE",
+            status: "CREATED",
+            partial: false,
+            name: "novembre 2025",
+            startDate: "2025-11-01T00:00:00",
+            endDate: "2025-11-30T23:59:59",
+            totalAmountCents: 200000000,
+            approvedAmountCents: 500000000,
+            initialAmountCents: 0,
+            numberOfTransactions: 1,
+            numberOfTransactionsSuspended: 0,
+            numberOfTransactionsRejected: 0,
+            numberOfTransactionsElaborated: 0,
+            assigneeLevel: "L1",
+        },
+        {
+            id: "69258cb90d2d73a535e1132b",
+            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
+            businessName: "Esercente di test IdPay",
+            month: "2025-11",
+            posType: "ONLINE",
+            status: "CREATED",
+            partial: false,
+            name: "novembre 2025",
+            startDate: "2025-11-01T00:00:00",
+            endDate: "2025-11-30T23:59:59",
+            totalAmountCents: 10000,
+            approvedAmountCents: 0,
+            initialAmountCents: 0,
+            numberOfTransactions: 1000,
+            numberOfTransactionsSuspended: 0,
+            numberOfTransactionsRejected: 0,
+            numberOfTransactionsElaborated: 300,
+            assigneeLevel: "L1",
+        },
+        {
+            id: "69258cb90d2d73a531e11a2b",
+            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
+            businessName: "Esercente di test IdPay",
+            month: "2025-11",
+            posType: "ONLINE",
+            status: "CREATED",
+            partial: false,
+            name: "novembre 2025",
+            startDate: "2025-11-01T00:00:00",
+            endDate: "2025-11-30T23:59:59",
+            totalAmountCents: 10000,
+            approvedAmountCents: 0,
+            initialAmountCents: 0,
+            numberOfTransactions: 100,
+            numberOfTransactionsSuspended: 0,
+            numberOfTransactionsRejected: 0,
+            numberOfTransactionsElaborated: 14.9,
+            assigneeLevel: "L2",
+        },
+        {
+            id: "69258cb90d2d43a535e11a2b",
+            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
+            businessName: "Esercente di test IdPay",
+            month: "2025-11",
+            posType: "ONLINE",
+            status: "CREATED",
+            partial: false,
+            name: "novembre 2025",
+            startDate: "2025-11-01T00:00:00",
+            endDate: "2025-11-30T23:59:59",
+            totalAmountCents: 10000,
+            approvedAmountCents: 0,
+            initialAmountCents: 0,
+            numberOfTransactions: 432,
+            numberOfTransactionsSuspended: 0,
+            numberOfTransactionsRejected: 0,
+            numberOfTransactionsElaborated: 31,
+            assigneeLevel: "L3",
+        },
+    ],
+    pageNo: 0,
+    pageSize: 10,
+    totalElements: 4,
+    totalPages: 1,
+};
+
+const InitiativeRefundsMerchants = () => {
+    const { t } = useTranslation();
+    const initiativeSel = useAppSelector(initiativeSelector);
+    useInitiative();
+    interface MatchParams {
+        id: string;
+    }
+
+    const match = matchPath(location.pathname, {
+        path: [ROUTES.INITIATIVE_REFUNDS],
+        exact: true,
+        strict: false,
+    });
+    const { id } = (match?.params as MatchParams) || {};
+
+    const [assigneeFilter, setAssigneeFilter] = useState<string>("");
+    const [draftAssignee, setDraftAssignee] = useState<string>("");
+
+    const filteredContent: Array<RefundItem> = mockedRefunds.content.filter((r) => {
+        if (!assigneeFilter) { return true; };
+        return r.assigneeLevel === assigneeFilter;
+    });
+    const [page, setPage] = useState(0);
+    const pageSize = mockedRefunds.pageSize;
+    const total = mockedRefunds.totalElements;
+
+    const start = page * pageSize + 1;
+    const end = Math.min((page + 1) * pageSize, total);
+
+    const isFilterDisabled =
+        draftAssignee === "" || draftAssignee === assigneeFilter;
+
+    useMemo(() => {
+        setPage(0);
+    }, [id]);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [id, page]);
+
+    return (
+        <Box sx={{ width: '100%', pt: 2, px: 2 }}>
+            <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+                <BreadcrumbsBox
+                    backUrl={`${BASE_ROUTE}/panoramica-iniziativa/${id}`}
+                    backLabel={t('breadcrumbs.back')}
+                    items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeRefunds')]}
+                />
+
+                <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
+                    <TitleBox
+                        title={t('pages.initiativeRefunds.title')}
+                        subTitle={t('pages.initiativeRefunds.subtitle')}
+                        mbTitle={2}
+                        mtTitle={2}
+                        mbSubTitle={5}
+                        variantTitle="h4"
+                        variantSubTitle="body1"
+                    />
+                </Box>
+            </Box>
+            <Box sx={{ display: "flex", gap: 3, mt: 3, mb: 3, alignItems: "center" }}>
+
+                <FormControl size="medium" sx={{ minWidth: 150 }}>
+                    <InputLabel id="assignee-filter-label">{t("pages.initiativeMerchantsRefunds.table.assignee")}</InputLabel>
+                    <Select
+                        labelId="assignee-filter-label"
+                        value={draftAssignee}
+                        label={t("pages.initiativeMerchantsRefunds.table.assignee")}
+                        onChange={(e) => setDraftAssignee(e.target.value)}
+                    >
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <Button
+                    size="large"
+                    variant="outlined"
+                    color="primary"
+                    disabled={isFilterDisabled}
+                    onClick={() => setAssigneeFilter(draftAssignee)}
+                    sx={{
+                        paddingX: 3,
+                        fontWeight: 600,
+                        borderRadius: "4px",
+                        textTransform: "none"
+                    }}
+                >
+                    {t('pages.initiativeMerchantDetail.filterBtn')}
+                </Button>
+
+                <ButtonNaked
+                    size="large"
+                    color="primary"
+                    disabled={!assigneeFilter}
+                    onClick={() => {
+                        setAssigneeFilter("");
+                        setDraftAssignee("");
+                    }}
+                    sx={{
+                        paddingX: 2,
+                        fontWeight: 600,
+                        textTransform: "none",
+                        opacity: assigneeFilter ? 1 : 0.5
+                    }}
+                >
+                    {t('pages.initiativeMerchant.form.removeFiltersBtn')}
+                </ButtonNaked>
+            </Box>
+
+            <Table sx={{ mt: 2 }}>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.name')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.period')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.type')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.requestedRefund')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.approvedRefund')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.transactions')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.checksPercentage')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.assignee')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}></TableCell>
+                    </TableRow>
+                </TableHead>
+
+                <TableBody sx={{ backgroundColor: "#FFFFFF" }}>
+                    {filteredContent.map((row) => (
+                        <TableRow key={row.id} hover>
+                            <TableCell>
+                                <Tooltip title={row.businessName}>
+                                    <Box
+                                        sx={{
+                                            display: "-webkit-box",
+                                            WebkitLineClamp: 2,
+                                            WebkitBoxOrient: "vertical",
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            maxWidth: 300
+                                        }}
+                                    >
+                                        {row.businessName}
+                                    </Box>
+                                </Tooltip>
+                            </TableCell>
+
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>{row.posType === "ONLINE" ? "Online" : "Fisico"}</TableCell>
+                            <TableCell>{(row.totalAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
+                            <TableCell>{row.approvedAmountCents === 0 ? "-" : (row.approvedAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
+                            <TableCell>{row.numberOfTransactions}</TableCell>
+                            <TableCell>
+                                {row.numberOfTransactions > 0
+                                    ? `${((row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100).toFixed(1)}% / 100%`
+                                    : `0.0% / 100%`}
+                            </TableCell>
+                            <TableCell >{row.assigneeLevel}</TableCell>
+                            <TableCell sx={{ textAlign: "right", }}>
+                                <ButtonNaked onClick={() => { console.log(row); }}>
+                                    <ChevronRightIcon color="primary" />
+                                </ButtonNaked>
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+
+            <Box
+                sx={{
+                    mt: 3,
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    gap: 2,
+                    color: "#33485C",
+                    fontSize: "14px",
+                    fontWeight: 500,
+                }}
+            >
+                <Box>{`${start}–${end} di ${total}`}</Box>
+
+
+                <ChevronLeftIcon
+                    sx={{
+                        cursor: mockedRefunds.pageNo > 0 ? "pointer" : "default",
+                        opacity: mockedRefunds.pageNo > 0 ? 1 : 0.3,
+                        fontSize: 20,
+                    }}
+                />
+
+                <ChevronRightIcon
+                    sx={{
+                        cursor:
+                            mockedRefunds.pageNo < mockedRefunds.totalPages - 1
+                                ? "pointer"
+                                : "default",
+                        opacity:
+                            mockedRefunds.pageNo < mockedRefunds.totalPages - 1 ? 1 : 0.3,
+                        fontSize: 20,
+                    }}
+                />
+            </Box>
+        </Box>
+    );
+};
+
+export default InitiativeRefundsMerchants;
