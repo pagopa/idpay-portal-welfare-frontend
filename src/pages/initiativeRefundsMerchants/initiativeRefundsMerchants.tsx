@@ -194,13 +194,31 @@ const InitiativeRefundsMerchants = () => {
             </Box>
             <Box sx={{ display: "flex", gap: 3, mt: 3, mb: 3, alignItems: "center" }}>
 
-                <FormControl size="medium" sx={{ minWidth: 150 }}>
-                    <InputLabel id="assignee-filter-label">{t("pages.initiativeMerchantsRefunds.table.assignee")}</InputLabel>
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": {
+                            fontSize: 14,
+                            lineHeight: "normal"
+                        }
+                    }}
+                >
+                    <InputLabel id="assignee-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.assignee")}
+                    </InputLabel>
+
                     <Select
                         labelId="assignee-filter-label"
                         value={draftAssignee}
                         label={t("pages.initiativeMerchantsRefunds.table.assignee")}
                         onChange={(e) => setDraftAssignee(e.target.value)}
+                        sx={{
+                            height: 40,
+                            display: "flex",
+                            alignItems: "center"
+                        }}
                     >
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
@@ -209,12 +227,12 @@ const InitiativeRefundsMerchants = () => {
                 </FormControl>
 
                 <Button
-                    size="large"
                     variant="outlined"
                     color="primary"
                     disabled={isFilterDisabled}
                     onClick={() => setAssigneeFilter(draftAssignee)}
                     sx={{
+                        height: "40px",
                         paddingX: 3,
                         fontWeight: 600,
                         borderRadius: "4px",
@@ -225,7 +243,6 @@ const InitiativeRefundsMerchants = () => {
                 </Button>
 
                 <ButtonNaked
-                    size="large"
                     color="primary"
                     disabled={!assigneeFilter}
                     onClick={() => {
@@ -233,6 +250,7 @@ const InitiativeRefundsMerchants = () => {
                         setDraftAssignee("");
                     }}
                     sx={{
+                        height: "40px",
                         paddingX: 2,
                         fontWeight: 600,
                         textTransform: "none",
