@@ -20,6 +20,7 @@ import RuleIcon from '@mui/icons-material/Rule';
 import { useEffect, useState } from 'react';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useAppSelector } from '../../redux/hooks';
@@ -29,6 +30,8 @@ import {
 } from '../../redux/slices/initiativeSummarySlice';
 import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { getInitativeSummary } from '../../services/intitativeService';
+import { parseJwt } from '../../utils/jwt-utils';
+import { JWTUser } from '../../model/JwtUser';
 import SidenavItem from './SidenavItem';
 
 interface MatchParams {
@@ -72,6 +75,10 @@ export default function SideMenu() {
     exact: true,
     strict: false,
   });
+
+  const userRole = parseJwt(storageTokenOps.read()) as JWTUser;
+  const blockedRole = ['operator1', 'operator2', 'operator3'];
+  const showMenuItem = !blockedRole.includes(userRole.org_role);
 
   useEffect(() => {
     if (!initiativeSummaryList) {
@@ -152,24 +159,26 @@ export default function SideMenu() {
               </AccordionSummary>
               <AccordionDetails sx={{ p: 0 }}>
                 <List disablePadding>
-                  <SidenavItem
-                    title={t('sideMenu.initiativeOverview.title')}
-                    handleClick={() =>
-                      onExit(() => {
-                        history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);
-                      })
-                    }
-                    isSelected={
-                      pathname === `${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`
-                    }
-                    icon={DashboardIcon}
-                    level={2}
-                    data-testid="initiativeOveview-click-test"
-                  />
+                  {showMenuItem &&
+                    <SidenavItem
+                      title={t('sideMenu.initiativeOverview.title')}
+                      handleClick={() =>
+                        onExit(() => {
+                          history.replace(`${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`);
+                        })
+                      }
+                      isSelected={
+                        pathname === `${BASE_ROUTE}/panoramica-iniziativa/${item.initiativeId}`
+                      }
+                      icon={DashboardIcon}
+                      level={2}
+                      data-testid="initiativeOveview-click-test"
+                    />
+                  }
                   {item.hasOwnProperty('rankingEnabled') &&
-                  item.rankingEnabled &&
-                  item.hasOwnProperty('status') &&
-                  item.status === 'PUBLISHED' ? (
+                    item.rankingEnabled &&
+                    item.hasOwnProperty('status') &&
+                    item.status === 'PUBLISHED' ? (
                     <SidenavItem
                       title={t('sideMenu.initiativeRanking.title')}
                       handleClick={() =>
@@ -187,23 +196,27 @@ export default function SideMenu() {
                       data-testid="initiativeRanking-click-test"
                     />
                   ) : null}
-                  <SidenavItem
-                    title={t('sideMenu.initiativeUsers.title')}
-                    handleClick={() =>
-                      onExit(() => {
-                        history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
-                      })
-                    }
-                    isSelected={
-                      pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}` ||
-                      pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
-                    }
-                    icon={GroupIcon}
-                    level={2}
-                    data-testid="initiativeUsers-click-test"
-                  />
+                  {showMenuItem &&
+
+                    <SidenavItem
+                      title={t('sideMenu.initiativeUsers.title')}
+                      handleClick={() =>
+                        onExit(() => {
+                          history.replace(`${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}`);
+                        })
+                      }
+                      isSelected={
+                        pathname === `${BASE_ROUTE}/utenti-iniziativa/${item.initiativeId}` ||
+                        pathname.includes(`${BASE_ROUTE}/dettagli-utente/${item.initiativeId}`)
+                      }
+                      icon={GroupIcon}
+                      level={2}
+                      data-testid="initiativeUsers-click-test"
+                    />
+                  }
                   {item.hasOwnProperty('initiativeRewardType') &&
-                    item.initiativeRewardType === 'DISCOUNT' && (
+                    item.initiativeRewardType === 'DISCOUNT' &&
+                    showMenuItem && (
                       <SidenavItem
                         title={t('sideMenu.initiativeMerchant.title')}
                         handleClick={() =>
@@ -219,7 +232,7 @@ export default function SideMenu() {
                             `${BASE_ROUTE}/esercenti-iniziativa/dettagli-esercente/${item.initiativeId}`
                           ) ||
                           pathname ===
-                            `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
+                          `${BASE_ROUTE}/gestione-esercenti-iniziativa/${item.initiativeId}`
                         }
                         icon={GroupIcon}
                         level={2}
