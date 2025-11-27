@@ -994,7 +994,8 @@
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
         "transactions": "Transazioni",
-        "checksPercentage": "Controlli effettuati"
+        "checksPercentage": "Controlli effettuati",
+        "status": "Stato"
       }
     },
     "initiativeUsers": {
@@ -1144,5 +1145,12 @@
     "webValid": "Inserisci un indirizzo web",
     "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €"
+  },
+  "chip": {
+    "batch": {
+      "approved": "Approvato",
+      "evaluating": "Da Lavorare",
+      "sent": "In Lavorazione"
+    }
   }
 }
