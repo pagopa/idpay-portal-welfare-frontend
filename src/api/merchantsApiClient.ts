@@ -11,6 +11,7 @@ import { MerchantDetailDTO } from './generated/merchants/MerchantDetailDTO';
 import { MerchantStatisticsDTO } from './generated/merchants/MerchantStatisticsDTO';
 import { MerchantTransactionsProcessedListDTO } from './generated/merchants/MerchantTransactionsProcessedListDTO';
 import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTransactionsListDTO';
+import { RewardBatchListDTO } from './generated/merchants/RewardBatchListDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -111,6 +112,21 @@ export const merchantsApi = {
       size: 10,
       fiscalCode,
       status,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardBatches: async (
+    initiativeId: string,
+    page: number,
+    size: number,
+    assigneeLevel?: string
+  ): Promise<RewardBatchListDTO> => {
+    const result = await merchantsApiClient.getRewardBatches({
+      initiativeId,
+      page,
+      size,
+      assigneeLevel 
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

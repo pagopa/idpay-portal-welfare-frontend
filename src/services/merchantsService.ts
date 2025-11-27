@@ -6,6 +6,7 @@ import { MerchantTransactionsListDTO } from '../api/generated/merchants/Merchant
 import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants/MerchantTransactionsProcessedListDTO';
 
 import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
+import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
 import { merchantsApi } from '../api/merchantsApiClient';
 
 export const uploadMerchantList = async (id: string, file: File): Promise<MerchantUpdateDTO> => merchantsApi.uploadMerchantList(id, file);
@@ -40,12 +41,25 @@ export const getMerchantTransactionsProcessed = (
   page: number,
   fiscalCode?: string,
   status?: string
-): Promise<MerchantTransactionsProcessedListDTO> => 
-   merchantsApi.getMerchantTransactionsProcessed(
+): Promise<MerchantTransactionsProcessedListDTO> =>
+  merchantsApi.getMerchantTransactionsProcessed(
     merchantId,
     initiativeId,
     page,
     fiscalCode,
     status
+  );
+
+export const getRewardBatches = (
+  initiativeId: string,
+  page: number,
+  size: number,
+  assigneeLevel?: string,
+): Promise<RewardBatchListDTO> =>
+  merchantsApi.getRewardBatches(
+    initiativeId,
+    page,
+    size,
+    assigneeLevel
   );
 

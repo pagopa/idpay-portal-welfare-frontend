@@ -1,5 +1,6 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
-import { TitleBox } from "@pagopa/selfcare-common-frontend";
+import { LoadingOverlay, TitleBox } from "@pagopa/selfcare-common-frontend";
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from 'react-i18next';
 import { matchPath } from "react-router-dom";
@@ -12,6 +13,7 @@ import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
+import { getRewardBatches } from "../../services/merchantsService";
 
 export interface RefundItem {
     id: string;
@@ -42,95 +44,6 @@ export interface RefundsPage {
     totalPages: number;
 }
 
-const mockedRefunds: RefundsPage = {
-    content: [
-        {
-            id: "69258cb90d2d73a535e11a2b",
-            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
-            businessName: "Esercente di test IdPay",
-            month: "2025-11",
-            posType: "ONLINE",
-            status: "CREATED",
-            partial: false,
-            name: "novembre 2025",
-            startDate: "2025-11-01T00:00:00",
-            endDate: "2025-11-30T23:59:59",
-            totalAmountCents: 200000000,
-            approvedAmountCents: 500000000,
-            initialAmountCents: 0,
-            numberOfTransactions: 1,
-            numberOfTransactionsSuspended: 0,
-            numberOfTransactionsRejected: 0,
-            numberOfTransactionsElaborated: 0,
-            assigneeLevel: "L1",
-        },
-        {
-            id: "69258cb90d2d73a535e1132b",
-            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
-            businessName: "Esercente di test IdPay",
-            month: "2025-11",
-            posType: "ONLINE",
-            status: "CREATED",
-            partial: false,
-            name: "novembre 2025",
-            startDate: "2025-11-01T00:00:00",
-            endDate: "2025-11-30T23:59:59",
-            totalAmountCents: 10000,
-            approvedAmountCents: 0,
-            initialAmountCents: 0,
-            numberOfTransactions: 1000,
-            numberOfTransactionsSuspended: 0,
-            numberOfTransactionsRejected: 0,
-            numberOfTransactionsElaborated: 300,
-            assigneeLevel: "L1",
-        },
-        {
-            id: "69258cb90d2d73a531e11a2b",
-            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
-            businessName: "Esercente di test IdPay",
-            month: "2025-11",
-            posType: "ONLINE",
-            status: "CREATED",
-            partial: false,
-            name: "novembre 2025",
-            startDate: "2025-11-01T00:00:00",
-            endDate: "2025-11-30T23:59:59",
-            totalAmountCents: 10000,
-            approvedAmountCents: 0,
-            initialAmountCents: 0,
-            numberOfTransactions: 100,
-            numberOfTransactionsSuspended: 0,
-            numberOfTransactionsRejected: 0,
-            numberOfTransactionsElaborated: 14.9,
-            assigneeLevel: "L2",
-        },
-        {
-            id: "69258cb90d2d43a535e11a2b",
-            merchantId: "3a602b17-ac1c-3029-9e78-0a4bbb8693d4",
-            businessName: "Esercente di test IdPay",
-            month: "2025-11",
-            posType: "ONLINE",
-            status: "CREATED",
-            partial: false,
-            name: "novembre 2025",
-            startDate: "2025-11-01T00:00:00",
-            endDate: "2025-11-30T23:59:59",
-            totalAmountCents: 10000,
-            approvedAmountCents: 0,
-            initialAmountCents: 0,
-            numberOfTransactions: 432,
-            numberOfTransactionsSuspended: 0,
-            numberOfTransactionsRejected: 0,
-            numberOfTransactionsElaborated: 31,
-            assigneeLevel: "L3",
-        },
-    ],
-    pageNo: 0,
-    pageSize: 10,
-    totalElements: 4,
-    totalPages: 1,
-};
-
 const InitiativeRefundsMerchants = () => {
     const { t } = useTranslation();
     const initiativeSel = useAppSelector(initiativeSelector);
@@ -138,6 +51,7 @@ const InitiativeRefundsMerchants = () => {
     interface MatchParams {
         id: string;
     }
+    const addError = useErrorDispatcher();
 
     const match = matchPath(location.pathname, {
         path: [ROUTES.INITIATIVE_REFUNDS],
@@ -149,19 +63,16 @@ const InitiativeRefundsMerchants = () => {
     const [assigneeFilter, setAssigneeFilter] = useState<string>("");
     const [draftAssignee, setDraftAssignee] = useState<string>("");
 
-    const filteredContent: Array<RefundItem> = mockedRefunds.content.filter((r) => {
-        if (!assigneeFilter) { return true; };
-        return r.assigneeLevel === assigneeFilter;
-    });
     const [page, setPage] = useState(0);
-    const pageSize = mockedRefunds.pageSize;
-    const total = mockedRefunds.totalElements;
-
+    const [totalElements, setTotalElements] = useState(0);
+    const [pageSize] = useState(10);
     const start = page * pageSize + 1;
-    const end = Math.min((page + 1) * pageSize, total);
+    const end = Math.min((page + 1) * pageSize, totalElements);
 
     const isFilterDisabled =
         draftAssignee === "" || draftAssignee === assigneeFilter;
+    const [isLoading, setIsLoading] = useState(true);
+    const [rows, setRows] = useState<Array<RefundItem>>([]);
 
     useMemo(() => {
         setPage(0);
@@ -169,7 +80,66 @@ const InitiativeRefundsMerchants = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        if (typeof id === 'string') {
+            getTableData(id,);
+        }
     }, [id, page]);
+
+    const getTableData = (
+        initiativeId: string,
+    ) => {
+        setIsLoading(true);
+        getRewardBatches(initiativeId, page, 10)
+            .then((res) => {
+                if (typeof res.totalElements === 'number') {
+                    setTotalElements(res.totalElements);
+                }
+                if (Array.isArray(res.content) && res.content.length > 0) {
+                    const rowsData: Array<RefundItem> = res.content.map((r: any) => ({
+                        id: r.id,
+                        merchantId: r.merchantId,
+                        businessName: r.businessName,
+                        month: r.month,
+                        posType: r.posType,
+                        status: r.status,
+                        partial: r.partial,
+                        name: r.name,
+                        startDate: r.startDate,
+                        endDate: r.endDate,
+                        totalAmountCents: r.totalAmountCents,
+                        approvedAmountCents: r.approvedAmountCents,
+                        initialAmountCents: r.initialAmountCents,
+                        numberOfTransactions: r.numberOfTransactions,
+                        numberOfTransactionsSuspended: r.numberOfTransactionsSuspended,
+                        numberOfTransactionsRejected: r.numberOfTransactionsRejected,
+                        numberOfTransactionsElaborated: r.numberOfTransactionsElaborated,
+                        assigneeLevel: r.assigneeLevel,
+                    }));
+
+                    setRows(rowsData);
+                } else {
+                    setRows([]);
+                }
+            })
+            .catch((error) => {
+                addError({
+                    id: 'GET_BATCH_PAGED_ERROR',
+                    blocking: false,
+                    error,
+                    techDescription: 'An error occurred getting export paged data',
+                    displayableTitle: t('errors.title'),
+                    displayableDescription: t('errors.getDataDescription'),
+                    toNotify: true,
+                    component: 'Toast',
+                    showCloseIcon: true,
+                });
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
+    if (isLoading) { return (<LoadingOverlay />); }
 
     return (
         <Box sx={{ width: '100%', pt: 2, px: 2 }}>
@@ -277,7 +247,7 @@ const InitiativeRefundsMerchants = () => {
                 </TableHead>
 
                 <TableBody sx={{ backgroundColor: "#FFFFFF" }}>
-                    {filteredContent.map((row) => (
+                    {rows.map((row) => (
                         <TableRow key={row.id} hover>
                             <TableCell>
                                 <Tooltip title={row.businessName}>
@@ -298,8 +268,8 @@ const InitiativeRefundsMerchants = () => {
 
                             <TableCell>{row.name}</TableCell>
                             <TableCell>{row.posType === "ONLINE" ? "Online" : "Fisico"}</TableCell>
-                            <TableCell>{(row.totalAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
-                            <TableCell>{row.approvedAmountCents === 0 ? "-" : (row.approvedAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
+                            <TableCell>{!row.initialAmountCents ? "-" : (row.initialAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
+                            <TableCell>{!row.approvedAmountCents || row.approvedAmountCents === 0 ? "-" : (row.approvedAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
                             <TableCell>{row.numberOfTransactions}</TableCell>
                             <TableCell>
                                 {row.numberOfTransactions > 0
@@ -329,13 +299,13 @@ const InitiativeRefundsMerchants = () => {
                     fontWeight: 500,
                 }}
             >
-                <Box>{`${start}–${end} di ${total}`}</Box>
+                <Box>{`${start}–${end} di ${totalElements}`}</Box>
 
 
                 <ChevronLeftIcon
                     sx={{
-                        cursor: mockedRefunds.pageNo > 0 ? "pointer" : "default",
-                        opacity: mockedRefunds.pageNo > 0 ? 1 : 0.3,
+                        cursor: page > 0 ? "pointer" : "default",
+                        opacity: page > 0 ? 1 : 0.3,
                         fontSize: 20,
                     }}
                 />
@@ -343,11 +313,11 @@ const InitiativeRefundsMerchants = () => {
                 <ChevronRightIcon
                     sx={{
                         cursor:
-                            mockedRefunds.pageNo < mockedRefunds.totalPages - 1
+                            page < totalElements - 1
                                 ? "pointer"
                                 : "default",
                         opacity:
-                            mockedRefunds.pageNo < mockedRefunds.totalPages - 1 ? 1 : 0.3,
+                            page < totalElements - 1 ? 1 : 0.3,
                         fontSize: 20,
                     }}
                 />
