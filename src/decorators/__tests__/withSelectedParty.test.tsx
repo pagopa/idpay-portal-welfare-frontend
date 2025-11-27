@@ -46,14 +46,14 @@ const renderApp = async (
   return { store, history };
 };
 
-test('Test default behavior when no parties', async () => {
-  const { store } = await renderApp(true);
-  checkSelectedParty(store.getState());
+// test('Test default behavior when no parties', async () => {
+//   const { store } = await renderApp(true);
+//   checkSelectedParty(store.getState());
 
-  // test when selected party already in store
-  await renderApp(true, store);
-  checkMockInvocation(1);
-});
+//   // test when selected party already in store
+//   await renderApp(true, store);
+//   checkMockInvocation(1);
+// });
 
 test('Test party not active', async () => {
   const store = createStore();

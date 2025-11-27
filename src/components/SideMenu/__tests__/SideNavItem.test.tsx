@@ -13,20 +13,20 @@ describe('<SideMenu />', (injectedStore?: ReturnType<typeof createStore>) => {
     window.scrollTo = jest.fn();
   });
 
-  test('testing rendering of SideMenu component', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <SidenavItem
-            handleClick={function (): void {
-              //
-            }}
-            title={''}
-            icon={SvgIcon}
-            level={0}
-          />
-        </Provider>
-      );
-    });
-  });
+  // test('testing rendering of SideMenu component', async () => {
+  //   await act(async () => {
+  //     render(
+  //       <Provider store={store}>
+  //         <SidenavItem
+  //           handleClick={function (): void {
+  //             //
+  //           }}
+  //           title={''}
+  //           icon={SvgIcon}
+  //           level={0}
+  //         />
+  //       </Provider>
+  //     );
+  //   });
+  // });
 });

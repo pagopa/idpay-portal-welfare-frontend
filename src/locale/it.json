@@ -982,6 +982,22 @@
         "feedbackOk": "File caricato"
       }
     },
+    "initiativeMerchantsRefunds": {
+      "L1": "L1",
+      "L2": "L2",
+      "L3": "L3",
+      "table": {
+        "assignee": "Assegnato a",
+        "name": "Insegna",
+        "period": "Lotto",
+        "type": "Tipo",
+        "requestedRefund": "Rimborso richiesto",
+        "approvedRefund": "Rimborso approvato",
+        "transactions": "Transazioni",
+        "checksPercentage": "Controlli effettuati",
+        "status": "Stato"
+      }
+    },
     "initiativeUsers": {
       "form": {
         "all": "Tutti",
@@ -1036,7 +1052,10 @@
     "pagopa_admin": "Amministratore Portale Bonus",
     "incaricato-ente-creditore": "Amministratore ente creditore",
     "referente-dei-pagamenti": "Amministratore dei pagamenti",
-    "referente-legale": "Rappresentante legale"
+    "referente-legale": "Rappresentante legale",
+    "operator1": "Amministratore",
+    "operator2": "Amministratore",
+    "operator3": "Amministratore"
   },
   "session": {
     "expired": {
@@ -1126,5 +1145,12 @@
     "webValid": "Inserisci un indirizzo web",
     "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €"
+  },
+  "chip": {
+    "batch": {
+      "approved": "Approvato",
+      "evaluating": "Da Lavorare",
+      "sent": "In Lavorazione"
+    }
   }
 }
