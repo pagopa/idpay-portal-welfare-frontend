@@ -1,5 +1,5 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
-import { LoadingOverlay, TitleBox } from "@pagopa/selfcare-common-frontend";
+import { Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
+import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
+import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 
 export interface RefundItem {
     id: string;
@@ -33,7 +34,7 @@ export interface RefundItem {
     numberOfTransactionsSuspended: number;
     numberOfTransactionsRejected: number;
     numberOfTransactionsElaborated: number;
-    assigneeLevel: "L1" | "L2" | string;
+    assigneeLevel: "L1" | "L2" | "L3";
 }
 
 export interface RefundsPage {
@@ -65,13 +66,14 @@ const InitiativeRefundsMerchants = () => {
 
     const [page, setPage] = useState(0);
     const [totalElements, setTotalElements] = useState(0);
-    const [pageSize] = useState(10);
+    const [totalPages, setTotalPages] = useState(0);
+    const [pageSize, setPageSize] = useState(10);
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
     const isFilterDisabled =
         draftAssignee === "" || draftAssignee === assigneeFilter;
-    const [isLoading, setIsLoading] = useState(true);
+    const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
 
     useMemo(() => {
@@ -81,18 +83,26 @@ const InitiativeRefundsMerchants = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         if (typeof id === 'string') {
-            getTableData(id,);
+            getTableData(id);
         }
-    }, [id, page]);
+    }, [id, page, assigneeFilter]);
+
+    useEffect(() => {
+        setPage(0);
+        getTableData(id);
+    }, [pageSize]);
 
     const getTableData = (
         initiativeId: string,
     ) => {
-        setIsLoading(true);
-        getRewardBatches(initiativeId, page, 10)
+        setLoading(true);
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
+                }
+                if (typeof res.totalPages === 'number') {
+                    setTotalPages(res.totalPages);
                 }
                 if (Array.isArray(res.content) && res.content.length > 0) {
                     const rowsData: Array<RefundItem> = res.content.map((r: any) => ({
@@ -135,11 +145,46 @@ const InitiativeRefundsMerchants = () => {
                 });
             })
             .finally(() => {
-                setIsLoading(false);
+                setLoading(false);
             });
     };
 
-    if (isLoading) { return (<LoadingOverlay />); }
+    const handleFilterClick = () => {
+        setAssigneeFilter(draftAssignee);
+        setPage(0);
+    };
+ 
+    const handleRemoveFilters = () => {
+        setAssigneeFilter("");
+        setDraftAssignee("");
+        setPage(0);
+    };
+
+    const getStatusColor = (status: string) => {
+        switch (status) {
+            case "APPROVED":
+                return 'success';
+            case "EVALUATING":
+                return 'info';
+            case "SENT":
+                return 'warning';
+            default:
+                return 'default';
+        }
+    };
+
+    const getStatusLabel = (status: string) => {
+        switch (status) {
+            case "APPROVED":
+                return t('chip.batch.approved');
+            case "EVALUATING":
+                return t('chip.batch.evaluating');
+            case "SENT":
+                return t('chip.batch.sent');
+            default:
+                return '-';
+        }
+    };
 
     return (
         <Box sx={{ width: '100%', pt: 2, px: 2 }}>
@@ -200,7 +245,7 @@ const InitiativeRefundsMerchants = () => {
                     variant="outlined"
                     color="primary"
                     disabled={isFilterDisabled}
-                    onClick={() => setAssigneeFilter(draftAssignee)}
+                    onClick={handleFilterClick}
                     sx={{
                         height: "40px",
                         paddingX: 3,
@@ -215,10 +260,7 @@ const InitiativeRefundsMerchants = () => {
                 <ButtonNaked
                     color="primary"
                     disabled={!assigneeFilter}
-                    onClick={() => {
-                        setAssigneeFilter("");
-                        setDraftAssignee("");
-                    }}
+                    onClick={handleRemoveFilters}
                     sx={{
                         height: "40px",
                         paddingX: 2,
@@ -242,6 +284,7 @@ const InitiativeRefundsMerchants = () => {
                         <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.transactions')}</TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.checksPercentage')}</TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.assignee')}</TableCell>
+                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.status')}</TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}></TableCell>
                     </TableRow>
                 </TableHead>
@@ -277,10 +320,22 @@ const InitiativeRefundsMerchants = () => {
                                     : `0.0% / 100%`}
                             </TableCell>
                             <TableCell >{row.assigneeLevel}</TableCell>
+                            <TableCell >
+                                <Chip label={getStatusLabel(row.status)}
+                                    sx={{
+                                        fontSize: '14px',
+                                        '& .MuiChip-label': {
+                                            whiteSpace: "nowrap"
+                                        }
+                                    }}
+                                    color={getStatusColor(row.status)} />
+                            </TableCell>
                             <TableCell sx={{ textAlign: "right", }}>
-                                <ButtonNaked onClick={() => { console.log(row); }}>
-                                    <ChevronRightIcon color="primary" />
-                                </ButtonNaked>
+                                {row.status.toUpperCase() !== "SENT" && row.status.toUpperCase() !== "CREATED" &&
+                                    <ButtonNaked onClick={() => { console.log(row); }}>
+                                        <ChevronRightIcon color="primary" />
+                                    </ButtonNaked>
+                                }
                             </TableCell>
                         </TableRow>
                     ))}
@@ -293,16 +348,36 @@ const InitiativeRefundsMerchants = () => {
                     display: "flex",
                     justifyContent: "flex-end",
                     alignItems: "center",
-                    gap: 2,
+                    gap: 3,
                     color: "#33485C",
                     fontSize: "14px",
                     fontWeight: 500,
                 }}
             >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <span>Righe per pagina:</span>
+
+                    <FormControl size="small">
+                        <Select
+                            value={pageSize}
+                            onChange={(e) => setPageSize(Number(e.target.value))}
+                            sx={{
+                                height: 32,
+                                "& .MuiSelect-select": { paddingY: "3px" }
+                            }}
+                        >
+                            <MenuItem value={10}>10</MenuItem>
+                            <MenuItem value={20}>20</MenuItem>
+                            <MenuItem value={50}>50</MenuItem>
+                            <MenuItem value={100}>100</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
+
                 <Box>{`${start}–${end} di ${totalElements}`}</Box>
 
-
                 <ChevronLeftIcon
+                    onClick={() => page > 0 && setPage(page - 1)}
                     sx={{
                         cursor: page > 0 ? "pointer" : "default",
                         opacity: page > 0 ? 1 : 0.3,
@@ -311,13 +386,10 @@ const InitiativeRefundsMerchants = () => {
                 />
 
                 <ChevronRightIcon
+                    onClick={() => page < totalPages - 1 && setPage(page + 1)}
                     sx={{
-                        cursor:
-                            page < totalElements - 1
-                                ? "pointer"
-                                : "default",
-                        opacity:
-                            page < totalElements - 1 ? 1 : 0.3,
+                        cursor: page < totalPages - 1 ? "pointer" : "default",
+                        opacity: page < totalPages - 1 ? 1 : 0.3,
                         fontSize: 20,
                     }}
                 />
