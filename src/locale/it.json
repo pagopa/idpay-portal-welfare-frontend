@@ -987,7 +987,7 @@
       "L2": "L2",
       "L3": "L3",
       "table": {
-        "assignee": "Assegnato a",
+        "assignee": "In carico a",
         "name": "Insegna",
         "period": "Lotto",
         "type": "Tipo",
@@ -995,6 +995,16 @@
         "approvedRefund": "Rimborso approvato",
         "transactions": "Transazioni",
         "checksPercentage": "Controlli effettuati",
+        "status": "Stato"
+      },
+      "rowsPerPage": "Righe per pagina:"
+    },
+    "initiativeMerchantsTransactions": {
+      "table": {
+        "invoice": "Fattura",
+        "pos": "Punto vendita",
+        "dateTime": "Data e ora",
+        "requestedRefund": "Rimborso richiesto",
         "status": "Stato"
       }
     },

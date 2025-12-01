@@ -40,7 +40,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     status: string | undefined
   ) => {
     setLoading(true);
-    getMerchantTransactionsProcessed(merchantId, initiativeId, page, fiscalCode, status)
+    getMerchantTransactionsProcessed(merchantId, initiativeId, page, 10, status, fiscalCode)
       .then((response) => {
         setPageValue(response.pageNo);
         setRowsPerPageValue(response.pageSize);

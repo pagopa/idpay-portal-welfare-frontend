@@ -2,6 +2,7 @@ import { Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Table, Ta
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { matchPath } from "react-router-dom";
 import { ButtonNaked } from "@pagopa/mui-italia";
@@ -9,6 +10,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import ROUTES from "../../routes";
+import { setBatchTrx } from "../../hooks/useBatchTrx";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
@@ -75,6 +77,7 @@ const InitiativeRefundsMerchants = () => {
         draftAssignee === "" || draftAssignee === assigneeFilter;
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
+    const history = useHistory();
 
     useMemo(() => {
         setPage(0);
@@ -85,11 +88,10 @@ const InitiativeRefundsMerchants = () => {
         if (typeof id === 'string') {
             getTableData(id);
         }
-    }, [id, page, assigneeFilter]);
+    }, [id, page, assigneeFilter, pageSize]);
 
     useEffect(() => {
         setPage(0);
-        getTableData(id);
     }, [pageSize]);
 
     const getTableData = (
@@ -104,6 +106,7 @@ const InitiativeRefundsMerchants = () => {
                 if (typeof res.totalPages === 'number') {
                     setTotalPages(res.totalPages);
                 }
+
                 if (Array.isArray(res.content) && res.content.length > 0) {
                     const rowsData: Array<RefundItem> = res.content.map((r: any) => ({
                         id: r.id,
@@ -332,7 +335,12 @@ const InitiativeRefundsMerchants = () => {
                             </TableCell>
                             <TableCell sx={{ textAlign: "right", }}>
                                 {row.status.toUpperCase() !== "SENT" && row.status.toUpperCase() !== "CREATED" &&
-                                    <ButtonNaked onClick={() => { console.log(row); }}>
+                                    <ButtonNaked onClick={() => {
+                                        setBatchTrx(row);
+                                        history.replace(
+                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(":batchId", row.id).replace(":id", id)
+                                        );
+                                    }}>
                                         <ChevronRightIcon color="primary" />
                                     </ButtonNaked>
                                 }
@@ -355,7 +363,7 @@ const InitiativeRefundsMerchants = () => {
                 }}
             >
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <span>Righe per pagina:</span>
+                    <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
 
                     <FormControl size="small">
                         <Select
