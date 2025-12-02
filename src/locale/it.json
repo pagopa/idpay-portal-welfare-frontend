@@ -986,8 +986,9 @@
       "L1": "L1",
       "L2": "L2",
       "L3": "L3",
+      "emptyState": "Nessun risultato trovato",
       "table": {
-        "assignee": "Assegnato a",
+        "assignee": "In carico a",
         "name": "Insegna",
         "period": "Lotto",
         "type": "Tipo",
@@ -995,6 +996,16 @@
         "approvedRefund": "Rimborso approvato",
         "transactions": "Transazioni",
         "checksPercentage": "Controlli effettuati",
+        "status": "Stato"
+      },
+      "rowsPerPage": "Righe per pagina:"
+    },
+    "initiativeMerchantsTransactions": {
+      "table": {
+        "invoice": "Fattura",
+        "pos": "Punto vendita",
+        "dateTime": "Data e ora",
+        "requestedRefund": "Rimborso richiesto",
         "status": "Stato"
       }
     },
@@ -1149,8 +1160,9 @@
   "chip": {
     "batch": {
       "approved": "Approvato",
-      "evaluating": "Da Lavorare",
-      "sent": "In Lavorazione"
+      "evaluating": "Da lavorare",
+      "sent": "<in arrivo>",
+      "approving": "Da approvare"
     }
   }
 }
