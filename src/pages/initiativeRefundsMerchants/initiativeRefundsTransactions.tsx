@@ -92,7 +92,7 @@ const InitiativeRefundsTransactions = () => {
 
         setLoading(true);
 
-        const sort = dateSort === "" ? undefined : `trxChargeDate, ${dateSort}`;
+        const sort = dateSort === "" ? undefined : `trxChargeDate,${dateSort}`;
 
         getMerchantTransactionsProcessed(
             batch.merchantId,
@@ -134,13 +134,13 @@ const InitiativeRefundsTransactions = () => {
 
     const mapTransactionStatus = (status?: RewardBatchTrxStatusEnum) => {
         switch (status) {
-            case RewardBatchTrxStatusEnum.SUSPENDED:
+            case RewardBatchTrxStatusEnum.TO_CHECK:
                 return { label: "Da esaminare", color: "info" };
 
             case RewardBatchTrxStatusEnum.CONSULTABLE:
                 return { label: "Consultabile", color: "default" };
 
-            case RewardBatchTrxStatusEnum.TO_CHECK:
+            case RewardBatchTrxStatusEnum.SUSPENDED:
                 return { label: "Da controllare", color: "warning" };
 
             case RewardBatchTrxStatusEnum.APPROVED:
@@ -226,7 +226,7 @@ const InitiativeRefundsTransactions = () => {
                     }
                 }}>
                     <InputLabel>{t('pages.initiativeMerchantsTransactions.table.pos')}</InputLabel>
-                    <Select
+                    <Select disabled
                         value={draftPosFilter}
                         label={t('pages.initiativeMerchantsTransactions.table.pos')}
                         onChange={(e) => setDraftPosFilter(e.target.value)}
@@ -250,9 +250,9 @@ const InitiativeRefundsTransactions = () => {
                         onChange={(e) => setDraftStatusFilter(e.target.value)}
                         sx={{ height: 40 }}
                     >
-                        <MenuItem value={RewardBatchTrxStatusEnum.SUSPENDED}>Da esaminare</MenuItem>
+                        <MenuItem value={RewardBatchTrxStatusEnum.TO_CHECK}>Da esaminare</MenuItem>
                         <MenuItem value={RewardBatchTrxStatusEnum.CONSULTABLE}>Consultabile</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.TO_CHECK}>Da controllare</MenuItem>
+                        <MenuItem value={RewardBatchTrxStatusEnum.SUSPENDED}>Da controllare</MenuItem>
                         <MenuItem value={RewardBatchTrxStatusEnum.APPROVED}>Approvata</MenuItem>
                         <MenuItem value={RewardBatchTrxStatusEnum.REJECTED}>Esclusa</MenuItem>
                     </Select>
@@ -292,7 +292,7 @@ const InitiativeRefundsTransactions = () => {
             <Table sx={{ mt: 2 }}>
                 <TableHead>
                     <TableRow>
-                        <TableCell><Checkbox /></TableCell>
+                        <TableCell>{/* <Checkbox /> */}</TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.invoice')}</TableCell>
                         <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.pos')}</TableCell>
                         <TableCell sortDirection={dateSort === "" ? false : dateSort} >
