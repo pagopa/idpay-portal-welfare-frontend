@@ -986,6 +986,7 @@
       "L1": "L1",
       "L2": "L2",
       "L3": "L3",
+      "emptyState": "Nessun risultato trovato",
       "table": {
         "assignee": "In carico a",
         "name": "Insegna",
@@ -1159,8 +1160,9 @@
   "chip": {
     "batch": {
       "approved": "Approvato",
-      "evaluating": "Da Lavorare",
-      "sent": "In Lavorazione"
+      "evaluating": "Da lavorare",
+      "sent": "<in arrivo>",
+      "approving": "Da approvare"
     }
   }
 }

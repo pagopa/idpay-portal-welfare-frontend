@@ -1,11 +1,10 @@
-import { Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, matchPath } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { matchPath } from "react-router-dom";
-import { ButtonNaked } from "@pagopa/mui-italia";
+import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
@@ -46,6 +45,125 @@ export interface RefundsPage {
     totalElements: number;
     totalPages: number;
 }
+
+const getStatusColor = (status: string) => {
+    switch (status) {
+        case "APPROVED":
+            return "success";
+        case "EVALUATING":
+            return "info";
+        case "SENT":
+            return "default";
+        case "APPROVING":
+            return "warning";
+        default:
+            return "default";
+    }
+};
+
+const getStatusLabel = (status: string, t: any) => {
+    switch (status) {
+        case "APPROVED":
+            return t("chip.batch.approved");
+        case "EVALUATING":
+            return t("chip.batch.evaluating");
+        case "SENT":
+            return t("chip.batch.sent");
+        case "APPROVING":
+            return t("chip.batch.approving");
+        default:
+            return "-";
+    }
+};
+
+const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
+    posType === "ONLINE" ? "Online" : "Fisico";
+
+const formatAmount = (amountCents?: number) => {
+    if (!amountCents) {
+        return "-";
+    }
+    return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+};
+
+const getChecksPercentage = (row: RefundItem) => {
+    if (row.numberOfTransactions > 0) {
+        return `${(
+            (row.numberOfTransactionsElaborated / row.numberOfTransactions) *
+            100
+        ).toFixed(1)}% / 100%`;
+    }
+    return "0.0% / 100%";
+};
+
+const shouldHideAssignee = (status: string) => {
+    const s = status?.toUpperCase?.() ?? "";
+    return s === "SENT" || s === "APPROVED";
+};
+
+const isRowDisabled = (status: string) => {
+    const s = status?.toUpperCase?.() ?? "";
+    return s === "SENT" || s === "CREATED";
+};
+
+type RefundRowProps = {
+    row: RefundItem;
+    t: any;
+    onClick: () => void;
+};
+
+const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
+    const status = row.status?.toUpperCase?.() ?? "";
+    const isDisabled = isRowDisabled(status);
+    const checksPercentage = getChecksPercentage(row);
+    const requestedRefund = formatAmount(row.initialAmountCents);
+    const approvedRefund = formatAmount(row.approvedAmountCents);
+    const assignee = shouldHideAssignee(status) ? "-" : row.assigneeLevel;
+
+    const handleClick = () => {
+        if (!isDisabled) {
+            onClick();
+        }
+    };
+
+    return (
+        <TableRow hover>
+            <TableCell>
+                <Tooltip title={row.businessName}>
+                    <Box
+                        sx={{
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxWidth: 300
+                        }}
+                    >
+                        {row.businessName}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{getPosTypeLabel(row.posType)}</TableCell>
+            <TableCell>{requestedRefund}</TableCell>
+            <TableCell>{approvedRefund}</TableCell>
+            <TableCell>{checksPercentage}</TableCell>
+            <TableCell>{assignee}</TableCell>
+            <TableCell>
+                <Tag
+                    value={getStatusLabel(row.status, t)}
+                    color={getStatusColor(row.status) as Colors}
+                />
+            </TableCell>
+            <TableCell sx={{ textAlign: "right" }}>
+                <ButtonNaked disabled={isDisabled} onClick={handleClick}>
+                    <ChevronRightIcon color={isDisabled ? "disabled" : "primary"} />
+                </ButtonNaked>
+            </TableCell>
+        </TableRow>
+    );
+};
 
 const InitiativeRefundsMerchants = () => {
     const { t } = useTranslation();
@@ -163,32 +281,6 @@ const InitiativeRefundsMerchants = () => {
         setPage(0);
     };
 
-    const getStatusColor = (status: string) => {
-        switch (status) {
-            case "APPROVED":
-                return 'success';
-            case "EVALUATING":
-                return 'info';
-            case "SENT":
-                return 'warning';
-            default:
-                return 'default';
-        }
-    };
-
-    const getStatusLabel = (status: string) => {
-        switch (status) {
-            case "APPROVED":
-                return t('chip.batch.approved');
-            case "EVALUATING":
-                return t('chip.batch.evaluating');
-            case "SENT":
-                return t('chip.batch.sent');
-            default:
-                return '-';
-        }
-    };
-
     return (
         <Box sx={{ width: '100%', pt: 2, px: 2 }}>
             <Box sx={initiativePagesBreadcrumbsContainerStyle}>
@@ -276,132 +368,136 @@ const InitiativeRefundsMerchants = () => {
                 </ButtonNaked>
             </Box>
 
-            <Table sx={{ mt: 2 }}>
-                <TableHead>
-                    <TableRow>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.name')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.period')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.type')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.requestedRefund')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.approvedRefund')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.transactions')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.checksPercentage')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.assignee')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsRefunds.table.status')}</TableCell>
-                        <TableCell sx={{ whiteSpace: "nowrap" }}></TableCell>
-                    </TableRow>
-                </TableHead>
-
-                <TableBody sx={{ backgroundColor: "#FFFFFF" }}>
-                    {rows.map((row) => (
-                        <TableRow key={row.id} hover>
-                            <TableCell>
-                                <Tooltip title={row.businessName}>
-                                    <Box
-                                        sx={{
-                                            display: "-webkit-box",
-                                            WebkitLineClamp: 2,
-                                            WebkitBoxOrient: "vertical",
-                                            overflow: "hidden",
-                                            textOverflow: "ellipsis",
-                                            maxWidth: 300
-                                        }}
-                                    >
-                                        {row.businessName}
-                                    </Box>
-                                </Tooltip>
-                            </TableCell>
-
-                            <TableCell>{row.name}</TableCell>
-                            <TableCell>{row.posType === "ONLINE" ? "Online" : "Fisico"}</TableCell>
-                            <TableCell>{!row.initialAmountCents ? "-" : (row.initialAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
-                            <TableCell>{!row.approvedAmountCents || row.approvedAmountCents === 0 ? "-" : (row.approvedAmountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}</TableCell>
-                            <TableCell>{row.numberOfTransactions}</TableCell>
-                            <TableCell>
-                                {row.numberOfTransactions > 0
-                                    ? `${((row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100).toFixed(1)}% / 100%`
-                                    : `0.0% / 100%`}
-                            </TableCell>
-                            <TableCell >{row.assigneeLevel}</TableCell>
-                            <TableCell >
-                                <Chip label={getStatusLabel(row.status)}
-                                    sx={{
-                                        fontSize: '14px',
-                                        '& .MuiChip-label': {
-                                            whiteSpace: "nowrap"
-                                        }
-                                    }}
-                                    color={getStatusColor(row.status)} />
-                            </TableCell>
-                            <TableCell sx={{ textAlign: "right", }}>
-                                {row.status.toUpperCase() !== "SENT" && row.status.toUpperCase() !== "CREATED" &&
-                                    <ButtonNaked onClick={() => {
-                                        setBatchTrx(row);
-                                        history.replace(
-                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(":batchId", row.id).replace(":id", id)
-                                        );
-                                    }}>
-                                        <ChevronRightIcon color="primary" />
-                                    </ButtonNaked>
-                                }
+            {totalElements === 0 ? (
+                <Table sx={{ mt: 2, backgroundColor: '#FFFFFF' }}>
+                    <TableBody>
+                        <TableRow>
+                            <TableCell
+                                colSpan={10}
+                                sx={{
+                                    textAlign: 'center',
+                                    py: 4,
+                                    fontSize: 16,
+                                    fontWeight: 500,
+                                    color: '#5C6F82',
+                                    backgroundColor: '#FFFFFF'
+                                }}
+                            >
+                                {t('pages.initiativeMerchantsRefunds.emptyState')}
                             </TableCell>
                         </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+                    </TableBody>
+                </Table>
+            ) : (
+                <>
+                    <Table sx={{ mt: 2 }}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.name')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.period')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.type')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.approvedRefund')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.assignee')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.status')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: 'nowrap' }}></TableCell>
+                            </TableRow>
+                        </TableHead>
 
-            <Box
-                sx={{
-                    mt: 3,
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    alignItems: "center",
-                    gap: 3,
-                    color: "#33485C",
-                    fontSize: "14px",
-                    fontWeight: 500,
-                }}
-            >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
+                        <TableBody sx={{ backgroundColor: '#FFFFFF' }}>
+                            {rows.map((row) => (
+                                <RefundRow
+                                    key={row.id}
+                                    row={row}
+                                    t={t}
+                                    onClick={() => {
+                                        if (typeof id !== 'string') {
+                                            return;
+                                        }
+                                        setBatchTrx(row);
+                                        history.replace(
+                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
+                                                ':batchId',
+                                                row.id
+                                            ).replace(':id', id)
+                                        );
+                                    }}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
 
-                    <FormControl size="small">
-                        <Select
-                            value={pageSize}
-                            onChange={(e) => setPageSize(Number(e.target.value))}
+                    <Box
+                        sx={{
+                            mt: 3,
+                            display: 'flex',
+                            justifyContent: 'flex-end',
+                            alignItems: 'center',
+                            gap: 3,
+                            color: '#33485C',
+                            fontSize: '14px',
+                            fontWeight: 500
+                        }}
+                    >
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                            <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
+
+                            <FormControl size='small'>
+                                <Select
+                                    value={pageSize}
+                                    onChange={(e) => setPageSize(Number(e.target.value))}
+                                    sx={{
+                                        height: 32,
+                                        '& .MuiSelect-select': { paddingY: '3px' }
+                                    }}
+                                >
+                                    <MenuItem value={10}>10</MenuItem>
+                                    <MenuItem value={20}>20</MenuItem>
+                                    <MenuItem value={50}>50</MenuItem>
+                                    <MenuItem value={100}>100</MenuItem>
+                                </Select>
+                            </FormControl>
+                        </Box>
+
+                        <Box>{`${start}–${end} di ${totalElements}`}</Box>
+
+                        <ChevronLeftIcon
+                            onClick={() => page > 0 && setPage(page - 1)}
                             sx={{
-                                height: 32,
-                                "& .MuiSelect-select": { paddingY: "3px" }
+                                cursor: page > 0 ? 'pointer' : 'default',
+                                opacity: page > 0 ? 1 : 0.3,
+                                fontSize: 20
                             }}
-                        >
-                            <MenuItem value={10}>10</MenuItem>
-                            <MenuItem value={20}>20</MenuItem>
-                            <MenuItem value={50}>50</MenuItem>
-                            <MenuItem value={100}>100</MenuItem>
-                        </Select>
-                    </FormControl>
-                </Box>
+                        />
 
-                <Box>{`${start}–${end} di ${totalElements}`}</Box>
-
-                <ChevronLeftIcon
-                    onClick={() => page > 0 && setPage(page - 1)}
-                    sx={{
-                        cursor: page > 0 ? "pointer" : "default",
-                        opacity: page > 0 ? 1 : 0.3,
-                        fontSize: 20,
-                    }}
-                />
-
-                <ChevronRightIcon
-                    onClick={() => page < totalPages - 1 && setPage(page + 1)}
-                    sx={{
-                        cursor: page < totalPages - 1 ? "pointer" : "default",
-                        opacity: page < totalPages - 1 ? 1 : 0.3,
-                        fontSize: 20,
-                    }}
-                />
-            </Box>
+                        <ChevronRightIcon
+                            onClick={() => page < totalPages - 1 && setPage(page + 1)}
+                            sx={{
+                                cursor: page < totalPages - 1 ? 'pointer' : 'default',
+                                opacity: page < totalPages - 1 ? 1 : 0.3,
+                                fontSize: 20
+                            }}
+                        />
+                    </Box>
+                </>
+            )}
         </Box>
     );
 };
