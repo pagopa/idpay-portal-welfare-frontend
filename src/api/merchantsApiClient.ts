@@ -143,12 +143,11 @@ export const merchantsApi = {
   },
 
   getDownloadInvoice: async (
-    pointOfSaleId: string,
-    transactionId: string
-  ): Promise<DownloadInvoiceResponseDTO> => {
+pointOfSaleId: string, transactionId: string, xMerchantId: string  ): Promise<DownloadInvoiceResponseDTO> => {
     const result = await merchantsApiClient.downloadInvoiceFile({
       pointOfSaleId,
-      transactionId
+      transactionId,
+      'x-merchant-id': xMerchantId
     });
     return extractResponse(result, 200, onRedirectToLogin);
   }

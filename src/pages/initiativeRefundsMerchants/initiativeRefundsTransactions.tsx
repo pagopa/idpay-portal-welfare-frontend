@@ -298,29 +298,33 @@ const InitiativeRefundsTransactions = () => {
     // };
 
     const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any) => {
-        setLoading(true);
-        getDownloadInvoice(
-            pointOfSaleId,
-            transactionId
-        )
-            .then((res) => {
-                const invoiceUrl = (res && res.invoiceUrl);
-                window.open(invoiceUrl, '_blank');
-            })
-            .catch((error) => {
-                addError({
-                    id: "GET_DOWNLOAD_INVOICE",
-                    blocking: false,
-                    error,
-                    techDescription: "Error retrieving invoice",
-                    displayableTitle: t("errors.title"),
-                    displayableDescription: t("errors.getDataDescription"),
-                    toNotify: true,
-                    component: "Toast",
-                    showCloseIcon: true,
-                });
-            })
-            .finally(() => setLoading(false));
+        if (batch?.merchantId) {
+
+            setLoading(true);
+            getDownloadInvoice(
+                pointOfSaleId,
+                transactionId,
+                batch.merchantId
+            )
+                .then((res) => {
+                    const invoiceUrl = (res && res.invoiceUrl);
+                    window.open(invoiceUrl, '_blank');
+                })
+                .catch((error) => {
+                    addError({
+                        id: "GET_DOWNLOAD_INVOICE",
+                        blocking: false,
+                        error,
+                        techDescription: "Error retrieving invoice",
+                        displayableTitle: t("errors.title"),
+                        displayableDescription: t("errors.getDataDescription"),
+                        toNotify: true,
+                        component: "Toast",
+                        showCloseIcon: true,
+                    });
+                })
+                .finally(() => setLoading(false));
+        }
     };
 
     if (!batch && id) {
