@@ -231,7 +231,7 @@ const InitiativeRefundsTransactions = () => {
             statusLabel: uiStatus.label,
             statusColor: uiStatus.color,
 
-            invoiceFileName: (r as any).invoiceFileName, // TODO change type
+            invoiceFileName: r.invoiceData?.filename,
 
             pointOfSaleId: r.pointOfSaleId,
             transactionId: r.trxId,
