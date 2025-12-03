@@ -15,6 +15,7 @@ import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants
 import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 
 export interface TrxItem {
     raw: MerchantTransactionProcessedDTO;
@@ -30,6 +31,56 @@ export interface TrxItem {
     status?: RewardBatchTrxStatusEnum;
 }
 
+export interface RefundsDrawerData {
+    trxChargeDate: string;
+    productName?: string;
+    productGtin?: string;
+
+    fiscalCode?: string;
+    trxId: string;
+    trxCode?: string;
+
+    effectiveAmountCents?: number;
+    rewardAmountCents?: number;
+    authorizedAmountCents?: number;
+
+    invoiceDocNumber?: string;
+    invoiceFileName?: string;
+
+    rewardBatchTrxStatus?: string;
+    statusLabel?: string;
+    statusColor?: string;
+    pointOfSaleId?: string;
+    transactionId?: string;
+}
+
+const mapRefundsDrawerData = (
+    dto: MerchantTransactionProcessedDTO,
+    mappedRow: TrxItem
+): RefundsDrawerData => ({
+    trxChargeDate: (dto as any).trxChargeDate ?? "",
+    productName: (dto as any).additionalProperties?.productName,
+    productGtin: (dto as any).additionalProperties?.productGtin,
+
+    fiscalCode: dto.fiscalCode,
+    trxId: dto.trxId,
+    trxCode: (dto as any).trxCode,
+
+    effectiveAmountCents: dto.effectiveAmountCents,
+    rewardAmountCents: dto.rewardAmountCents,
+    authorizedAmountCents: (dto as any).authorizedAmountCents,
+
+    invoiceDocNumber: dto.invoiceData?.docNumber,
+    invoiceFileName: dto.invoiceData?.filename,
+    pointOfSaleId: dto.pointOfSaleId,
+    transactionId: dto.trxId,
+
+    rewardBatchTrxStatus: dto.rewardBatchTrxStatus,
+
+    statusLabel: mappedRow.statusLabel,
+    statusColor: mappedRow.statusColor,
+});
+
 const formatCurrency = (amountCents?: number) => {
     if (amountCents === undefined || amountCents === null) {
         return "-";
@@ -38,6 +89,20 @@ const formatCurrency = (amountCents?: number) => {
         style: "currency",
         currency: "EUR",
     });
+};
+
+const formatDate = (d?: string) => {
+    if (!d) { return "-"; };
+    const date = new Date(d);
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+
+    const hour = String(date.getHours()).padStart(2, "0");
+    const minute = String(date.getMinutes()).padStart(2, "0");
+
+    return `${day}/${month}/${year} ${hour}:${minute}`;
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity, complexity
@@ -82,6 +147,18 @@ const InitiativeRefundsTransactions = () => {
 
     type SortState = "" | "asc" | "desc";
     const [dateSort, setDateSort] = useState<SortState>("");
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
+
+    const handleOpenDrawer = (trx: TrxItem) => {
+        setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
+        setOpenDrawer(true);
+    };
+
+    const handleCloseDrawer = () => {
+        setOpenDrawer(false);
+        setSelectedTransaction(null);
+    };
 
     const checksPercentage = useMemo(() => {
         if (!batch || batch.numberOfTransactions === 0) {
@@ -220,13 +297,13 @@ const InitiativeRefundsTransactions = () => {
 
             id: r.trxId,
 
-            date: r.trxDate
-                ? new Date(r.trxDate).toLocaleString("it-IT")
+            date: (r as any).trxChargeDate
+                ? formatDate((r as any)?.trxChargeDate) // TODO change type
                 : "-",
 
             shop: r.franchiseName ?? r.pointOfSaleId ?? "-",
 
-            amountCents: r.effectiveAmountCents,
+            amountCents: r.rewardAmountCents ?? 0,
 
             statusLabel: uiStatus.label,
             statusColor: uiStatus.color,
@@ -628,8 +705,8 @@ const InitiativeRefundsTransactions = () => {
                                         </TableCell>
 
                                         <TableCell sx={{ textAlign: "right" }}>
-                                            <ButtonNaked onClick={() => console.log(row.raw)}>
-                                                <ChevronRightIcon color="primary" onClick={() => console.log(row.raw)} />
+                                            <ButtonNaked onClick={() => handleOpenDrawer(row)}>
+                                                <ChevronRightIcon color="primary" />
                                             </ButtonNaked>
                                         </TableCell>
                                     </TableRow>
@@ -692,6 +769,13 @@ const InitiativeRefundsTransactions = () => {
                     </Box>
                 </>
             )}
+            <RefundsTransactionsDrawer
+                open={openDrawer}
+                onClose={handleCloseDrawer}
+                data={selectedTransaction}
+                download={downloadInvoice}
+                formatDate={formatDate}
+            />
         </Box>
     );
 };
