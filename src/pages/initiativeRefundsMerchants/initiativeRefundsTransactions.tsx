@@ -87,10 +87,11 @@ const InitiativeRefundsTransactions = () => {
         if (!batch || batch.numberOfTransactions === 0) {
             return "0%";
         }
-        const percentage = (
-            (batch.numberOfTransactionsElaborated / batch.numberOfTransactions) * 100
-        ).toFixed(1);
-        return `${percentage}%`;
+
+        const percentage =
+            (batch.numberOfTransactionsElaborated / batch.numberOfTransactions) * 100;
+
+        return `${Math.floor(percentage)}%`;
     }, [batch]);
 
     const formattedPeriod = useMemo(() => {
