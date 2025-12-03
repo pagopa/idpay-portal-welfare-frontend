@@ -1,4 +1,5 @@
 // import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
+import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
 import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
 import { MerchantListDTO } from '../api/generated/merchants/MerchantListDTO';
 import { MerchantStatisticsDTO } from '../api/generated/merchants/MerchantStatisticsDTO';
@@ -75,3 +76,11 @@ export const getRewardBatches = (
     assigneeLevel
   );
 
+export const getDownloadInvoice = (
+  pointOfSaleId: string,
+  transactionId: string
+): Promise<DownloadInvoiceResponseDTO> =>
+  merchantsApi.getDownloadInvoice(
+    pointOfSaleId,
+    transactionId
+  );

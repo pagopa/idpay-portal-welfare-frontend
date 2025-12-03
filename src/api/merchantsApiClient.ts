@@ -13,6 +13,7 @@ import { MerchantTransactionsProcessedListDTO } from './generated/merchants/Merc
 import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTransactionsListDTO';
 import { RewardBatchListDTO } from './generated/merchants/RewardBatchListDTO';
 import { RewardBatchTrxStatusEnum } from './generated/merchants/RewardBatchTrxStatus';
+import { DownloadInvoiceResponseDTO } from './generated/merchants/DownloadInvoiceResponseDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -140,4 +141,15 @@ export const merchantsApi = {
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
+  getDownloadInvoice: async (
+    pointOfSaleId: string,
+    transactionId: string
+  ): Promise<DownloadInvoiceResponseDTO> => {
+    const result = await merchantsApiClient.downloadInvoiceFile({
+      pointOfSaleId,
+      transactionId
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  }
 };
