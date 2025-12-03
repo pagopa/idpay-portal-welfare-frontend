@@ -33,6 +33,7 @@ import InitiativeMerchant from './pages/initiativeMerchant/initiativeMerchant';
 import InitiativeUploadMerchants from './pages/initiativeUploadMerchants/initiativeUploadMerchants';
 import InitiativeMerchantDetail from './pages/initiativeMerchantDetail/initiativeMerchantDetail';
 import InitiativeRefundsMerchants from './pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
+import InitiativeRefundsTransactions from './pages/initiativeRefundsMerchants/initiativeRefundsTransactions';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -87,6 +88,9 @@ const SecuredRoutes = withLogin(
           <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
             {/* <InitiativeRefunds /> */}
             <InitiativeRefundsMerchants />
+          </Route>
+          <Route path={routes.INITIATIVE_REFUNDS_TRANSACTIONS} exact={true}>
+            <InitiativeRefundsTransactions />
           </Route>
           <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
             <InitiativeRefundsOutcome />

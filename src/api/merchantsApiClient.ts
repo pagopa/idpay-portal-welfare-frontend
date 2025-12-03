@@ -12,6 +12,8 @@ import { MerchantStatisticsDTO } from './generated/merchants/MerchantStatisticsD
 import { MerchantTransactionsProcessedListDTO } from './generated/merchants/MerchantTransactionsProcessedListDTO';
 import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTransactionsListDTO';
 import { RewardBatchListDTO } from './generated/merchants/RewardBatchListDTO';
+import { RewardBatchTrxStatusEnum } from './generated/merchants/RewardBatchTrxStatus';
+import { DownloadInvoiceResponseDTO } from './generated/merchants/DownloadInvoiceResponseDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -102,16 +104,25 @@ export const merchantsApi = {
     merchantId: string,
     initiativeId: string,
     page: number,
+    size: number,
+    sort?: string,
     fiscalCode?: string,
-    status?: string
+    status?: string,
+    rewardBatchId?: string,
+    rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
+    pointOfSaleId?: string
   ): Promise<MerchantTransactionsProcessedListDTO> => {
     const result = await merchantsApiClient.getMerchantTransactionsProcessed({
       merchantId,
       initiativeId,
       page,
-      size: 10,
+      size,
+      sort,
       fiscalCode,
       status,
+      rewardBatchId,
+      rewardBatchTrxStatus,
+      pointOfSaleId,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -126,8 +137,18 @@ export const merchantsApi = {
       initiativeId,
       page,
       size,
-      assigneeLevel 
+      assigneeLevel
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
+
+  getDownloadInvoice: async (
+pointOfSaleId: string, transactionId: string, xMerchantId: string  ): Promise<DownloadInvoiceResponseDTO> => {
+    const result = await merchantsApiClient.downloadInvoiceFile({
+      pointOfSaleId,
+      transactionId,
+      'x-merchant-id': xMerchantId
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  }
 };

@@ -1,4 +1,5 @@
 // import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
+import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
 import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
 import { MerchantListDTO } from '../api/generated/merchants/MerchantListDTO';
 import { MerchantStatisticsDTO } from '../api/generated/merchants/MerchantStatisticsDTO';
@@ -7,6 +8,7 @@ import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants
 
 import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
 import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
+import { RewardBatchTrxStatusEnum } from '../api/generated/merchants/RewardBatchTrxStatus';
 import { merchantsApi } from '../api/merchantsApiClient';
 
 export const uploadMerchantList = async (id: string, file: File): Promise<MerchantUpdateDTO> => merchantsApi.uploadMerchantList(id, file);
@@ -39,15 +41,26 @@ export const getMerchantTransactionsProcessed = (
   merchantId: string,
   initiativeId: string,
   page: number,
+  size: number,
+  sort?: string,
   fiscalCode?: string,
-  status?: string
+  status?: string,
+  rewardBatchId?: string,
+  rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
+  pointOfSaleId?: string
+
 ): Promise<MerchantTransactionsProcessedListDTO> =>
   merchantsApi.getMerchantTransactionsProcessed(
     merchantId,
     initiativeId,
     page,
+    size,
+    sort,
     fiscalCode,
-    status
+    status,
+    rewardBatchId,
+    rewardBatchTrxStatus,
+    pointOfSaleId,
   );
 
 export const getRewardBatches = (
@@ -63,3 +76,13 @@ export const getRewardBatches = (
     assigneeLevel
   );
 
+export const getDownloadInvoice = (
+  pointOfSaleId: string,
+  transactionId: string,
+  xMerchantId: string
+): Promise<DownloadInvoiceResponseDTO> =>
+  merchantsApi.getDownloadInvoice(
+    pointOfSaleId,
+    transactionId,
+    xMerchantId
+  );
