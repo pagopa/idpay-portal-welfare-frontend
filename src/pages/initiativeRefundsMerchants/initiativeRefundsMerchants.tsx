@@ -88,10 +88,8 @@ const formatAmount = (amountCents?: number) => {
 
 const getChecksPercentage = (row: RefundItem) => {
     if (row.numberOfTransactions > 0 && row.numberOfTransactionsElaborated > 0) {
-        return `${(
-            (row.numberOfTransactionsElaborated / row.numberOfTransactions) *
-            100
-        ).toFixed(1)}% / 100%`;
+        const percentage = (row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100;
+        return `${Math.floor(percentage)}% / 100%`;
     }
     return "0% / 100%";
 };
@@ -268,7 +266,7 @@ const InitiativeRefundsMerchants = () => {
         setAssigneeFilter(draftAssignee);
         setPage(0);
     };
- 
+
     const handleRemoveFilters = () => {
         setAssigneeFilter("");
         setDraftAssignee("");

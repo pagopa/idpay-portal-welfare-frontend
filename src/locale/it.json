@@ -1018,6 +1018,18 @@
         "dateTime": "Data e ora",
         "requestedRefund": "Rimborso richiesto",
         "status": "Stato"
+      },
+      "drawer": {
+        "trxDetail": "Dettaglio transazione",
+        "appliance": "Elettrodomestico",
+        "fiscalCode": "Codice Fiscale Beneficiario",
+        "idTrx": "ID transazione",
+        "trxCode": "Codice sconto",
+        "effectiveAmountCents": "Totale della spesa",
+        "rewardedAmountCents": "Sconto applicato",
+        "authorizedAmountCents": "Importo autorizzato",
+        "docNumber": "Numero fattura",
+        "invoice": "Fattura"
       }
     },
     "initiativeUsers": {

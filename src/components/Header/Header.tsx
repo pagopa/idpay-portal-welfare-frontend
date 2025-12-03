@@ -59,6 +59,7 @@ const Header = ({ withSecondHeader, onExit, loggedUser }: /* , parties */ Props)
 
   return (
     <CommonHeader
+      enableAssistanceButton={false}
       onExit={handleExit}
       withSecondHeader={withSecondHeader}
       selectedPartyId={selectedParty?.partyId}
