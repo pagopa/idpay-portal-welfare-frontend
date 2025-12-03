@@ -87,18 +87,13 @@ const formatAmount = (amountCents?: number) => {
 };
 
 const getChecksPercentage = (row: RefundItem) => {
-    if (row.numberOfTransactions > 0) {
+    if (row.numberOfTransactions > 0 && row.numberOfTransactionsElaborated > 0) {
         return `${(
             (row.numberOfTransactionsElaborated / row.numberOfTransactions) *
             100
         ).toFixed(1)}% / 100%`;
     }
-    return "0.0% / 100%";
-};
-
-const shouldHideAssignee = (status: string) => {
-    const s = status?.toUpperCase?.() ?? "";
-    return s === "SENT" || s === "APPROVED";
+    return "0% / 100%";
 };
 
 const isRowDisabled = (status: string) => {
@@ -118,7 +113,6 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
-    const assignee = shouldHideAssignee(status) ? "-" : row.assigneeLevel;
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -149,7 +143,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
             <TableCell>{requestedRefund}</TableCell>
             <TableCell>{approvedRefund}</TableCell>
             <TableCell>{checksPercentage}</TableCell>
-            <TableCell>{assignee}</TableCell>
+            <TableCell>{row.assigneeLevel}</TableCell>
             <TableCell>
                 <Tag
                     value={getStatusLabel(row.status, t)}

@@ -1001,6 +1001,17 @@
       "rowsPerPage": "Righe per pagina:"
     },
     "initiativeMerchantsTransactions": {
+      "batchDetail": {
+        "batchRef": "Lotto di riferimento",
+        "period": "Periodo di riferimento",
+        "requestedRefund": "Rimborso richiesto",
+        "approvedRefund": "Rimborso approvato",
+        "assignedTo": "In carico a",
+        "refundData": "DATI RIMBORSO",
+        "beneficiary": "Intestatario",
+        "iban": "IBAN",
+        "checksCompleted": "Controlli effettuati"
+      },
       "table": {
         "invoice": "Fattura",
         "pos": "Punto vendita",
