@@ -385,11 +385,6 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
-    // const handleTestButton = () => {
-    //     const selectedData = rows.filter(row => selectedRows.has(row.id)).map(row => row.raw);
-    //     console.log("Selected checkbox ", selectedData);
-    // };
-
     const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any) => {
         if (batch?.merchantId) {
 
