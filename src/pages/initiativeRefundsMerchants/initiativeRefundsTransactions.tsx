@@ -6,7 +6,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
-import { getBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
+import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
@@ -146,6 +146,12 @@ const InitiativeRefundsTransactions = () => {
         strict: false,
     });
     const { id } = (match?.params as MatchParams) || {};
+    const matchBatch = matchPath(location.pathname, {
+        path: ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS,
+        exact: true,
+    });
+
+    const batchId = (matchBatch?.params as any)?.batchId;
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const history = useHistory();
     const isFilterDisabled =
@@ -157,6 +163,22 @@ const InitiativeRefundsTransactions = () => {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
     const [approveModal, setApproveModal] = useState(false);
+    const [restored, setRestored] = useState(false);
+
+    useEffect(() => {
+        const restore = async () => {
+            const saved = getBatchTrx();
+
+            if (!saved && id && batchId) {
+                const ok = await rehydrateBatchTrx(id, batchId);
+                setRestored(true);
+                if (!ok) { history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id)); }
+            } else {
+                setRestored(true);
+            }
+        };
+        void restore();
+    }, [id, batchId]);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -448,420 +470,424 @@ const InitiativeRefundsTransactions = () => {
             });
     };
 
-    if (!batch && id) {
-        history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id));
-    }
+    if (!batch && !restored) { return null; }
 
-    if (!batch) {
+    if (!batch && restored) {
+        history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id));
         return null;
     }
 
-    return (
-        <Box sx={{ width: "100%", pt: 2, px: 2 }}>
-            <Box sx={initiativePagesBreadcrumbsContainerStyle}>
-                <BreadcrumbsBox
-                    backUrl={ROUTES.INITIATIVE_REFUNDS.replace(":id", id)}
-                    backLabel={t("breadcrumbs.back")}
-                    items={[t('breadcrumbs.initiativeRefunds'), batch.businessName]}
-                />
-            </Box>
+    if (batch) {
 
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3, mb: 3 }}>
-                <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                    {batch.businessName}
-                </Typography>
-                {selectedRows.size > 0 &&
-                    <Box sx={{ width: "50%" }}>
-                        <RefundActionButtons
-                            direction="row"
-                            status={lockedStatus as RewardBatchTrxStatusEnum}
-                            onApprove={() => setApproveModal(true)}
-                            onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
-                            onReject={() => setReasonModal({ open: true, type: "reject" })}
-                            size={selectedRows.size}
-                        />
+        return (
+            <Box sx={{ width: "100%", pt: 2, px: 2 }}>
+                <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+                    <BreadcrumbsBox
+                        backUrl={ROUTES.INITIATIVE_REFUNDS.replace(":id", id)}
+                        backLabel={t("breadcrumbs.back")}
+                        items={[t('breadcrumbs.initiativeRefunds'), batch.businessName]}
+                    />
+                </Box>
+
+                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3, mb: 3 }}>
+                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
+                        {batch.businessName}
+                    </Typography>
+                    {selectedRows.size > 0 &&
+                        <Box sx={{ width: "50%" }}>
+                            <RefundActionButtons
+                                direction="row"
+                                status={lockedStatus as RewardBatchTrxStatusEnum}
+                                onApprove={() => setApproveModal(true)}
+                                onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
+                                onReject={() => setReasonModal({ open: true, type: "reject" })}
+                                size={selectedRows.size}
+                            />
+                        </Box>
+                    }
+                </Box>
+
+                <Paper
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(12, 1fr)',
+                        width: '100%',
+                        mb: 3,
+                        p: 3,
+                        gap: 3
+                    }}
+                >
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridColumn: 'span 6',
+                            gridTemplateColumns: 'repeat(12, 1fr)',
+                            gap: 1.5,
+                        }}
+                    >
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.batchRef')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {batch.name || '-'}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.period')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {formattedPeriod}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.requestedRefund')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {formatCurrency(batch.initialAmountCents)}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.approvedRefund')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {formatCurrency(batch.approvedAmountCents)}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.assignedTo')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {batch.assigneeLevel || '-'}
+                        </Typography>
                     </Box>
-                }
-            </Box>
-
-            <Paper
-                sx={{
-                    display: 'grid',
-                    gridTemplateColumns: 'repeat(12, 1fr)',
-                    width: '100%',
-                    mb: 3,
-                    p: 3,
-                    gap: 3
-                }}
-            >
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridColumn: 'span 6',
-                        gridTemplateColumns: 'repeat(12, 1fr)',
-                        gap: 1.5,
-                    }}
-                >
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.batchRef')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {batch.name || '-'}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.period')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {formattedPeriod}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.requestedRefund')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {formatCurrency(batch.initialAmountCents)}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.approvedRefund')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {formatCurrency(batch.approvedAmountCents)}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.assignedTo')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {batch.assigneeLevel || '-'}
-                    </Typography>
-                </Box>
-
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridColumn: 'span 6',
-                        gridTemplateColumns: 'repeat(12, 1fr)',
-                        gap: 1.5,
-                    }}
-                >
-                    <Typography variant="subtitle2" sx={{ gridColumn: 'span 12', fontWeight: 600 }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.refundData')}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.beneficiary')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {batch.businessName || '-'}
-                    </Typography>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.iban')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600, wordBreak: 'break-all' }}>
-                        {iban || '-'}
-                    </Typography>
-
-                    <Box sx={{ gridColumn: 'span 12' }}></Box>
-
-                    <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                        {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
-                    </Typography>
-                    <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                        {checksPercentage}/100%
-                    </Typography>
-                </Box>
-            </Paper>
-
-            <Box sx={{ display: "flex", gap: 3, mb: 3, alignItems: "center" }}>
-                <FormControl size="small" sx={{
-                    minWidth: 150, "& .MuiInputLabel-root": {
-                        fontSize: 14,
-                        lineHeight: "normal"
-                    }
-                }}>
-                    <InputLabel>{t('pages.initiativeMerchantsTransactions.table.pos')}</InputLabel>
-                    <Select disabled
-                        value={draftPosFilter}
-                        label={t('pages.initiativeMerchantsTransactions.table.pos')}
-                        onChange={(e) => setDraftPosFilter(e.target.value)}
-                        sx={{ height: 40 }}
-                    >
-                        <MenuItem value="">Tutti</MenuItem>
-                        <MenuItem value={batch.businessName}>{batch.businessName}</MenuItem>
-                    </Select>
-                </FormControl>
-
-                <FormControl size="small" sx={{
-                    minWidth: 150, "& .MuiInputLabel-root": {
-                        fontSize: 14,
-                        lineHeight: "normal"
-                    }
-                }}>
-                    <InputLabel>{t('pages.initiativeMerchantsTransactions.table.status')}</InputLabel>
-                    <Select
-                        value={draftStatusFilter}
-                        label={t('pages.initiativeMerchantsTransactions.table.status')}
-                        onChange={(e) => setDraftStatusFilter(e.target.value)}
-                        sx={{}}
-                    >
-                        {Object.values(RewardBatchTrxStatusEnum).map((status) => {
-                            const mapped = mapTransactionStatus(status);
-                            return (
-                                <MenuItem key={status} value={status} sx={{ display: "flex", alignItems: "center" }}>
-                                    <Chip
-                                        label={mapped.label}
-                                        color={mapped.color as any}
-                                        size="small"
-                                        sx={{
-                                            cursor: "pointer",
-                                            fontSize: 14,
-                                            "& .MuiChip-label": { whiteSpace: "nowrap" },
-                                            backgroundColor: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
-                                            color: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
-                                        }}
-                                    />
-                                </MenuItem>
-                            );
-                        })}
-                    </Select>
-                </FormControl>
-                <Button
-                    variant="outlined"
-                    color="primary"
-                    disabled={isFilterDisabled}
-                    onClick={handleFilterClick}
-                    sx={{
-                        height: "40px",
-                        paddingX: 3,
-                        fontWeight: 600,
-                        borderRadius: "4px",
-                        textTransform: "none"
-                    }}
-                >
-                    {t('pages.initiativeMerchantDetail.filterBtn')}
-                </Button>
-
-                <ButtonNaked
-                    color="primary"
-                    disabled={!posFilter && !statusFilter}
-                    onClick={handleRemoveFilters}
-                    sx={{
-                        height: "40px",
-                        paddingX: 2,
-                        fontWeight: 600,
-                        textTransform: "none",
-                        opacity: posFilter || statusFilter ? 1 : 0.5
-                    }}
-                >
-                    {t('pages.initiativeMerchant.form.removeFiltersBtn')}
-                </ButtonNaked>
-            </Box>
-
-            {totalElements === 0 ? (
-                <Table sx={{ mt: 2, backgroundColor: "#FFFFFF" }}>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell
-                                colSpan={7}
-                                sx={{
-                                    textAlign: "center",
-                                    py: 4,
-                                    fontSize: 16,
-                                    fontWeight: 500,
-                                    color: "#5C6F82",
-                                    backgroundColor: "#FFFFFF",
-                                }}
-                            >
-                                {t("pages.initiativeMerchantsRefunds.emptyState")}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            ) : (
-                <>
-                    <Table sx={{ mt: 2 }}>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>
-                                    {lockedStatus && sameStatusRows.length > 0 && (
-                                        <Checkbox
-                                            checked={allSameStatusSelected}
-                                            onChange={handleHeaderCheckbox}
-                                        />
-                                    )}
-                                </TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                                    {t("pages.initiativeMerchantsTransactions.table.invoice")}
-                                </TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                                    {t("pages.initiativeMerchantsTransactions.table.pos")}
-                                </TableCell>
-                                <TableCell sortDirection={dateSort === "" ? false : dateSort}>
-                                    <TableSortLabel
-                                        active={dateSort !== ""}
-                                        direction={dateSort === "" ? "asc" : dateSort}
-                                        onClick={toggleDateSort}
-                                    >
-                                        {t("pages.initiativeMerchantsTransactions.table.dateTime")}
-                                    </TableSortLabel>
-                                </TableCell>
-
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
-                                <TableCell></TableCell>
-                            </TableRow>
-                        </TableHead>
-
-                        <TableBody sx={{ backgroundColor: "#FFFFFF" }}>
-                            {rows.map((row) => {
-                                const isDisabled = lockedStatus !== null && row.status !== lockedStatus;
-                                const isChecked = selectedRows.has(row.id);
-
-                                return (
-                                    <TableRow key={row.id} hover>
-                                        <TableCell>
-                                            <Checkbox
-                                                checked={isChecked}
-                                                disabled={isDisabled}
-                                                onChange={() => handleRowCheckbox(row.id, row.status)}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <ButtonNaked
-                                                color="primary"
-                                                onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId)}
-                                            >
-                                                {row.invoiceFileName}
-                                            </ButtonNaked>
-                                        </TableCell>
-
-                                        <TableCell>{row.shop}</TableCell>
-                                        <TableCell>{row.date}</TableCell>
-
-                                        <TableCell>
-                                            {(row.amountCents / 100).toLocaleString("it-IT", {
-                                                style: "currency",
-                                                currency: "EUR",
-                                            })}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <Chip
-                                                label={row.statusLabel}
-                                                color={row.statusColor as any}
-                                                sx={{
-                                                    fontSize: "14px",
-                                                    "& .MuiChip-label": { whiteSpace: "nowrap" },
-                                                    backgroundColor: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
-                                                    color: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
-                                                }}
-                                            />
-                                        </TableCell>
-
-                                        <TableCell sx={{ textAlign: "right" }}>
-                                            <ButtonNaked onClick={() => handleOpenDrawer(row)}>
-                                                <ChevronRightIcon color="primary" />
-                                            </ButtonNaked>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                        </TableBody>
-                    </Table>
 
                     <Box
                         sx={{
-                            mt: 3,
-                            display: "flex",
-                            justifyContent: "flex-end",
-                            alignItems: "center",
-                            gap: 3,
-                            color: "#33485C",
-                            fontSize: "14px",
-                            fontWeight: 500,
+                            display: 'grid',
+                            gridColumn: 'span 6',
+                            gridTemplateColumns: 'repeat(12, 1fr)',
+                            gap: 1.5,
                         }}
                     >
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                            <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
+                        <Typography variant="subtitle2" sx={{ gridColumn: 'span 12', fontWeight: 600 }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.refundData')}
+                        </Typography>
 
-                            <FormControl size="small">
-                                <Select
-                                    value={pageSize}
-                                    onChange={(e) => setPageSize(Number(e.target.value))}
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.beneficiary')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {batch.businessName || '-'}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.iban')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600, wordBreak: 'break-all' }}>
+                            {iban || '-'}
+                        </Typography>
+
+                        <Box sx={{ gridColumn: 'span 12' }}></Box>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {checksPercentage}/100%
+                        </Typography>
+                    </Box>
+                </Paper>
+
+                <Box sx={{ display: "flex", gap: 3, mb: 3, alignItems: "center" }}>
+                    <FormControl size="small" sx={{
+                        minWidth: 150, "& .MuiInputLabel-root": {
+                            fontSize: 14,
+                            lineHeight: "normal"
+                        }
+                    }}>
+                        <InputLabel>{t('pages.initiativeMerchantsTransactions.table.pos')}</InputLabel>
+                        <Select disabled
+                            value={draftPosFilter}
+                            label={t('pages.initiativeMerchantsTransactions.table.pos')}
+                            onChange={(e) => setDraftPosFilter(e.target.value)}
+                            sx={{ height: 40 }}
+                        >
+                            <MenuItem value="">Tutti</MenuItem>
+                            <MenuItem value={batch.businessName}>{batch.businessName}</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <FormControl size="small" sx={{
+                        minWidth: 150, "& .MuiInputLabel-root": {
+                            fontSize: 14,
+                            lineHeight: "normal"
+                        }
+                    }}>
+                        <InputLabel>{t('pages.initiativeMerchantsTransactions.table.status')}</InputLabel>
+                        <Select
+                            value={draftStatusFilter}
+                            label={t('pages.initiativeMerchantsTransactions.table.status')}
+                            onChange={(e) => setDraftStatusFilter(e.target.value)}
+                            sx={{}}
+                        >
+                            {Object.values(RewardBatchTrxStatusEnum).map((status) => {
+                                const mapped = mapTransactionStatus(status);
+                                return (
+                                    <MenuItem key={status} value={status} sx={{ display: "flex", alignItems: "center" }}>
+                                        <Chip
+                                            label={mapped.label}
+                                            color={mapped.color as any}
+                                            size="small"
+                                            sx={{
+                                                cursor: "pointer",
+                                                fontSize: 14,
+                                                "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                                backgroundColor: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                                color: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
+                                            }}
+                                        />
+                                    </MenuItem>
+                                );
+                            })}
+                        </Select>
+                    </FormControl>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        disabled={isFilterDisabled}
+                        onClick={handleFilterClick}
+                        sx={{
+                            height: "40px",
+                            paddingX: 3,
+                            fontWeight: 600,
+                            borderRadius: "4px",
+                            textTransform: "none"
+                        }}
+                    >
+                        {t('pages.initiativeMerchantDetail.filterBtn')}
+                    </Button>
+
+                    <ButtonNaked
+                        color="primary"
+                        disabled={!posFilter && !statusFilter}
+                        onClick={handleRemoveFilters}
+                        sx={{
+                            height: "40px",
+                            paddingX: 2,
+                            fontWeight: 600,
+                            textTransform: "none",
+                            opacity: posFilter || statusFilter ? 1 : 0.5
+                        }}
+                    >
+                        {t('pages.initiativeMerchant.form.removeFiltersBtn')}
+                    </ButtonNaked>
+                </Box>
+
+                {totalElements === 0 ? (
+                    <Table sx={{ mt: 2, backgroundColor: "#FFFFFF" }}>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell
+                                    colSpan={7}
                                     sx={{
-                                        height: 32,
-                                        "& .MuiSelect-select": { paddingY: "3px" },
+                                        textAlign: "center",
+                                        py: 4,
+                                        fontSize: 16,
+                                        fontWeight: 500,
+                                        color: "#5C6F82",
+                                        backgroundColor: "#FFFFFF",
                                     }}
                                 >
-                                    <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value={25}>25</MenuItem>
-                                    <MenuItem value={50}>50</MenuItem>
-                                    <MenuItem value={100}>100</MenuItem>
-                                </Select>
-                            </FormControl>
+                                    {t("pages.initiativeMerchantsRefunds.emptyState")}
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
+                ) : (
+                    <>
+                        <Table sx={{ mt: 2 }}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>
+                                        {lockedStatus && sameStatusRows.length > 0 && (
+                                            <Checkbox
+                                                checked={allSameStatusSelected}
+                                                onChange={handleHeaderCheckbox}
+                                            />
+                                        )}
+                                    </TableCell>
+                                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                        {t("pages.initiativeMerchantsTransactions.table.invoice")}
+                                    </TableCell>
+                                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                        {t("pages.initiativeMerchantsTransactions.table.pos")}
+                                    </TableCell>
+                                    <TableCell sortDirection={dateSort === "" ? false : dateSort}>
+                                        <TableSortLabel
+                                            active={dateSort !== ""}
+                                            direction={dateSort === "" ? "asc" : dateSort}
+                                            onClick={toggleDateSort}
+                                        >
+                                            {t("pages.initiativeMerchantsTransactions.table.dateTime")}
+                                        </TableSortLabel>
+                                    </TableCell>
+
+                                    <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
+                                    <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
+                                    <TableCell></TableCell>
+                                </TableRow>
+                            </TableHead>
+
+                            <TableBody sx={{ backgroundColor: "#FFFFFF" }}>
+                                {rows.map((row) => {
+                                    const isDisabled = lockedStatus !== null && row.status !== lockedStatus;
+                                    const isChecked = selectedRows.has(row.id);
+
+                                    return (
+                                        <TableRow key={row.id} hover>
+                                            <TableCell>
+                                                <Checkbox
+                                                    checked={isChecked}
+                                                    disabled={isDisabled}
+                                                    onChange={() => handleRowCheckbox(row.id, row.status)}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <ButtonNaked
+                                                    color="primary"
+                                                    onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId)}
+                                                >
+                                                    {row.invoiceFileName}
+                                                </ButtonNaked>
+                                            </TableCell>
+
+                                            <TableCell>{row.shop}</TableCell>
+                                            <TableCell>{row.date}</TableCell>
+
+                                            <TableCell>
+                                                {(row.amountCents / 100).toLocaleString("it-IT", {
+                                                    style: "currency",
+                                                    currency: "EUR",
+                                                })}
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Chip
+                                                    label={row.statusLabel}
+                                                    color={row.statusColor as any}
+                                                    sx={{
+                                                        fontSize: "14px",
+                                                        "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                                        backgroundColor: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                                        color: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
+                                                    }}
+                                                />
+                                            </TableCell>
+
+                                            <TableCell sx={{ textAlign: "right" }}>
+                                                <ButtonNaked onClick={() => handleOpenDrawer(row)}>
+                                                    <ChevronRightIcon color="primary" />
+                                                </ButtonNaked>
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+
+                        <Box
+                            sx={{
+                                mt: 3,
+                                display: "flex",
+                                justifyContent: "flex-end",
+                                alignItems: "center",
+                                gap: 3,
+                                color: "#33485C",
+                                fontSize: "14px",
+                                fontWeight: 500,
+                            }}
+                        >
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
+
+                                <FormControl size="small">
+                                    <Select
+                                        value={pageSize}
+                                        onChange={(e) => setPageSize(Number(e.target.value))}
+                                        sx={{
+                                            height: 32,
+                                            "& .MuiSelect-select": { paddingY: "3px" },
+                                        }}
+                                    >
+                                        <MenuItem value={10}>10</MenuItem>
+                                        <MenuItem value={25}>25</MenuItem>
+                                        <MenuItem value={50}>50</MenuItem>
+                                        <MenuItem value={100}>100</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+
+                            <Box>{`${start}–${end} di ${totalElements}`}</Box>
+
+                            <ChevronLeftIcon
+                                onClick={() => page > 0 && setPage(page - 1)}
+                                sx={{
+                                    cursor: page > 0 ? "pointer" : "default",
+                                    opacity: page > 0 ? 1 : 0.3,
+                                    fontSize: 20,
+                                }}
+                            />
+
+                            <ChevronRightIcon
+                                onClick={() => page < totalPages - 1 && setPage(page + 1)}
+                                sx={{
+                                    cursor: page < totalPages - 1 ? "pointer" : "default",
+                                    opacity: page < totalPages - 1 ? 1 : 0.3,
+                                    fontSize: 20,
+                                }}
+                            />
                         </Box>
+                    </>
+                )}
+                <RefundsTransactionsDrawer
+                    open={openDrawer}
+                    onClose={handleCloseDrawer}
+                    data={selectedTransaction}
+                    download={downloadInvoice}
+                    formatDate={formatDate}
+                    onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
+                    onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
+                    onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
+                />
+                <RefundReasonModal
+                    open={reasonModal.open}
+                    type={reasonModal.type as any}
+                    count={selectedRows.size}
+                    onClose={() => setReasonModal({ open: false, type: null })}
 
-                        <Box>{`${start}–${end} di ${totalElements}`}</Box>
+                    onConfirm={async (reason) => {
+                        if (!reasonModal.type) { return; };
 
-                        <ChevronLeftIcon
-                            onClick={() => page > 0 && setPage(page - 1)}
-                            sx={{
-                                cursor: page > 0 ? "pointer" : "default",
-                                opacity: page > 0 ? 1 : 0.3,
-                                fontSize: 20,
-                            }}
-                        />
+                        await handleRefundAction(reasonModal.type, [...selectedRows], reason)
+                            .finally(() => setReasonModal({ open: false, type: null }));
+                    }}
+                />
+                <ApproveConfirmModal
+                    open={approveModal}
+                    count={selectedRows.size}
+                    onClose={() => setApproveModal(false)}
+                    onConfirm={() => {
+                        void approve();
+                        setApproveModal(false);
+                    }}
+                />
 
-                        <ChevronRightIcon
-                            onClick={() => page < totalPages - 1 && setPage(page + 1)}
-                            sx={{
-                                cursor: page < totalPages - 1 ? "pointer" : "default",
-                                opacity: page < totalPages - 1 ? 1 : 0.3,
-                                fontSize: 20,
-                            }}
-                        />
-                    </Box>
-                </>
-            )}
-            <RefundsTransactionsDrawer
-                open={openDrawer}
-                onClose={handleCloseDrawer}
-                data={selectedTransaction}
-                download={downloadInvoice}
-                formatDate={formatDate}
-                onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
-                onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
-                onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
-            />
-            <RefundReasonModal
-                open={reasonModal.open}
-                type={reasonModal.type as any}
-                count={selectedRows.size}
-                onClose={() => setReasonModal({ open: false, type: null })}
+            </Box>
+        );
+    }
 
-                onConfirm={async (reason) => {
-                    if (!reasonModal.type) { return; };
-
-                    await handleRefundAction(reasonModal.type, [...selectedRows], reason)
-                        .finally(() => setReasonModal({ open: false, type: null }));
-                }}
-            />
-            <ApproveConfirmModal
-                open={approveModal}
-                count={selectedRows.size}
-                onClose={() => setApproveModal(false)}
-                onConfirm={() => {
-                    void approve();
-                    setApproveModal(false);
-                }}
-            />
-
-        </Box>
-    );
+    return null;
 };
 
 export default InitiativeRefundsTransactions;
