@@ -244,7 +244,11 @@ export default function SideMenu() {
                     title={t('sideMenu.initiativeRefunds.title')}
                     handleClick={() =>
                       onExit(() => {
-                        history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`);
+                        if (!pathname.includes(
+                          `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
+                        )) {
+                          history.replace(`${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`);
+                        }
                       })
                     }
                     isSelected={
@@ -252,6 +256,9 @@ export default function SideMenu() {
                       pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}` ||
                       pathname.includes(
                         `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`
+                      ) ||
+                      pathname.includes(
+                        `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
                       )
                     }
                     icon={EuroSymbolIcon}

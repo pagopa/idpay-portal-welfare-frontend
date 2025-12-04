@@ -6,16 +6,21 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
-import { getBatchTrx } from "../../hooks/useBatchTrx";
+import { getBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
-import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail } from "../../services/merchantsService";
+import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
+import { RefundActionButtons } from "./refundsActionButtons";
+import { RefundItem } from "./initiativeRefundsMerchants";
+import RefundReasonModal from "./refundsReasonModal";
+import ApproveConfirmModal from "./approveConfirmModal";
 
 export interface TrxItem {
     raw: MerchantTransactionProcessedDTO;
@@ -52,6 +57,7 @@ export interface RefundsDrawerData {
     statusColor?: string;
     pointOfSaleId?: string;
     transactionId?: string;
+    rewardBatchRejectionReason?: string;
 }
 
 const mapRefundsDrawerData = (
@@ -79,6 +85,7 @@ const mapRefundsDrawerData = (
 
     statusLabel: mappedRow.statusLabel,
     statusColor: mappedRow.statusColor,
+    rewardBatchRejectionReason: dto.rewardBatchRejectionReason,
 });
 
 const formatCurrency = (amountCents?: number) => {
@@ -109,7 +116,7 @@ const formatDate = (d?: string) => {
 const InitiativeRefundsTransactions = () => {
     const { t } = useTranslation();
     const batchData = getBatchTrx();
-    const batch = useMemo(() => batchData, [batchData?.id]);
+    const batch = useMemo(() => batchData, [batchData?.id, batchData?.approvedAmountCents, batchData?.numberOfTransactionsElaborated, batchData?.assigneeLevel, batchData?.totalAmountCents]);
 
     const [draftStatusFilter, setDraftStatusFilter] = useState<string | "">("");
     const [statusFilter, setStatusFilter] = useState<string | "">("");
@@ -149,6 +156,7 @@ const InitiativeRefundsTransactions = () => {
     const [dateSort, setDateSort] = useState<SortState>("");
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
+    const [approveModal, setApproveModal] = useState(false);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -159,6 +167,8 @@ const InitiativeRefundsTransactions = () => {
         setOpenDrawer(false);
         setSelectedTransaction(null);
     };
+
+    const closeAfter = (fn: Promise<any>) => fn.finally(() => handleCloseDrawer());
 
     const checksPercentage = useMemo(() => {
         if (!batch || batch.numberOfTransactions === 0) {
@@ -189,6 +199,11 @@ const InitiativeRefundsTransactions = () => {
         if (sameStatusRows.length === 0) { return false; }
         return sameStatusRows.every(row => selectedRows.has(row.id));
     }, [sameStatusRows, selectedRows]);
+
+    const [reasonModal, setReasonModal] = useState<{
+        open: boolean;
+        type: "reject" | "suspend" | null;
+    }>({ open: false, type: null });
 
     useMemo(() => {
         setPage(0);
@@ -252,17 +267,18 @@ const InitiativeRefundsTransactions = () => {
                 }
             })
             .catch((error) => {
-                addError({
-                    id: "GET_TRX_PAGED_ERROR",
-                    blocking: false,
-                    error,
-                    techDescription: "Error retrieving transactions",
-                    displayableTitle: t("errors.title"),
-                    displayableDescription: t("errors.getDataDescription"),
-                    toNotify: true,
-                    component: "Toast",
-                    showCloseIcon: true,
-                });
+                // addError({
+                //     id: "GET_TRX_PAGED_ERROR",
+                //     blocking: false,
+                //     error,
+                //     techDescription: "Error retrieving transactions",
+                //     displayableTitle: t("errors.title"),
+                //     displayableDescription: t("errors.getDataDescription"),
+                //     toNotify: true,
+                //     component: "Toast",
+                //     showCloseIcon: true,
+                // });
+                console.log(error);
             })
             .finally(() => setLoading(false));
     };
@@ -270,19 +286,19 @@ const InitiativeRefundsTransactions = () => {
     const mapTransactionStatus = (status?: RewardBatchTrxStatusEnum) => {
         switch (status) {
             case RewardBatchTrxStatusEnum.TO_CHECK:
-                return { label: "Da esaminare", color: "info" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.toCheck'), color: "indigo" };
 
             case RewardBatchTrxStatusEnum.CONSULTABLE:
-                return { label: "Consultabile", color: "default" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.consultable'), color: "default" };
 
             case RewardBatchTrxStatusEnum.SUSPENDED:
-                return { label: "Da controllare", color: "warning" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.suspended'), color: "warning" };
 
             case RewardBatchTrxStatusEnum.APPROVED:
-                return { label: "Approvata", color: "success" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.approved'), color: "info" };
 
             case RewardBatchTrxStatusEnum.REJECTED:
-                return { label: "Esclusa", color: "error" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.rejected'), color: "error" };
 
             default:
                 return { label: "-", color: "default" };
@@ -369,11 +385,6 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
-    // const handleTestButton = () => {
-    //     const selectedData = rows.filter(row => selectedRows.has(row.id)).map(row => row.raw);
-    //     console.log("Selected checkbox ", selectedData);
-    // };
-
     const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any) => {
         if (batch?.merchantId) {
 
@@ -404,6 +415,39 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
+    const approve = () => handleRefundAction("approve", [...selectedRows]);
+
+    const handleRefundAction = async (
+        type: "approve" | "suspend" | "reject",
+        trxIds: Array<string>,
+        reason?: string
+    ) => {
+        if (!batch?.id) { return; };
+
+        setLoading(true);
+        const payload: TransactionActionRequest = {
+            transactionIds: trxIds,
+            reason: type !== "approve" ? reason : undefined
+        };
+
+        const serviceMap = {
+            approve: approveTrx,
+            suspend: suspendTrx,
+            reject: rejectTrx
+        };
+
+        return serviceMap[type](id, batch.id, payload)
+            .then(res => {
+                setBatchTrx(res as RefundItem);
+                getTableData(id);
+            })
+            .catch(err => { setLoading(false); console.error(err); })
+            .finally(() => {
+                setSelectedRows(new Set());
+                setLockedStatus(null);
+            });
+    };
+
     if (!batch && id) {
         history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id));
     }
@@ -426,20 +470,18 @@ const InitiativeRefundsTransactions = () => {
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                     {batch.businessName}
                 </Typography>
-                {/* <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleTestButton}
-                    disabled={selectedRows.size === 0}
-                    sx={{
-                        height: "44px",
-                        paddingX: 3,
-                        fontWeight: 600,
-                        textTransform: "none"
-                    }}
-                >
-                    Test ({selectedRows.size})
-                </Button> */}
+                {selectedRows.size > 0 &&
+                    <Box sx={{ width: "50%" }}>
+                        <RefundActionButtons
+                            direction="row"
+                            status={lockedStatus as RewardBatchTrxStatusEnum}
+                            onApprove={() => setApproveModal(true)}
+                            onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
+                            onReject={() => setReasonModal({ open: true, type: "reject" })}
+                            size={selectedRows.size}
+                        />
+                    </Box>
+                }
             </Box>
 
             <Paper
@@ -563,13 +605,27 @@ const InitiativeRefundsTransactions = () => {
                         value={draftStatusFilter}
                         label={t('pages.initiativeMerchantsTransactions.table.status')}
                         onChange={(e) => setDraftStatusFilter(e.target.value)}
-                        sx={{ height: 40 }}
+                        sx={{}}
                     >
-                        <MenuItem value={RewardBatchTrxStatusEnum.TO_CHECK}>Da esaminare</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.CONSULTABLE}>Consultabile</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.SUSPENDED}>Da controllare</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.APPROVED}>Approvata</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.REJECTED}>Esclusa</MenuItem>
+                        {Object.values(RewardBatchTrxStatusEnum).map((status) => {
+                            const mapped = mapTransactionStatus(status);
+                            return (
+                                <MenuItem key={status} value={status} sx={{ display: "flex", alignItems: "center" }}>
+                                    <Chip
+                                        label={mapped.label}
+                                        color={mapped.color as any}
+                                        size="small"
+                                        sx={{
+                                            cursor: "pointer",
+                                            fontSize: 14,
+                                            "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                            backgroundColor: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                            color: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
+                                        }}
+                                    />
+                                </MenuItem>
+                            );
+                        })}
                     </Select>
                 </FormControl>
                 <Button
@@ -699,7 +755,9 @@ const InitiativeRefundsTransactions = () => {
                                                 color={row.statusColor as any}
                                                 sx={{
                                                     fontSize: "14px",
-                                                    "& .MuiChip-label": { whiteSpace: "nowrap" }
+                                                    "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                                    backgroundColor: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                                    color: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                                                 }}
                                             />
                                         </TableCell>
@@ -740,7 +798,7 @@ const InitiativeRefundsTransactions = () => {
                                     }}
                                 >
                                     <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value={20}>20</MenuItem>
+                                    <MenuItem value={25}>25</MenuItem>
                                     <MenuItem value={50}>50</MenuItem>
                                     <MenuItem value={100}>100</MenuItem>
                                 </Select>
@@ -775,7 +833,33 @@ const InitiativeRefundsTransactions = () => {
                 data={selectedTransaction}
                 download={downloadInvoice}
                 formatDate={formatDate}
+                onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
+                onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
+                onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
             />
+            <RefundReasonModal
+                open={reasonModal.open}
+                type={reasonModal.type as any}
+                count={selectedRows.size}
+                onClose={() => setReasonModal({ open: false, type: null })}
+
+                onConfirm={async (reason) => {
+                    if (!reasonModal.type) { return; };
+
+                    await handleRefundAction(reasonModal.type, [...selectedRows], reason)
+                        .finally(() => setReasonModal({ open: false, type: null }));
+                }}
+            />
+            <ApproveConfirmModal
+                open={approveModal}
+                count={selectedRows.size}
+                onClose={() => setApproveModal(false)}
+                onConfirm={() => {
+                    void approve();
+                    setApproveModal(false);
+                }}
+            />
+
         </Box>
     );
 };

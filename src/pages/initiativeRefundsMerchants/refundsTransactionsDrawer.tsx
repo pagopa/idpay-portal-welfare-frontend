@@ -1,9 +1,14 @@
 import { Drawer, Box, Typography, Chip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
+import { RefundActionButtons } from "./refundsActionButtons";
+import RefundReasonModal from "./refundsReasonModal";
+import ApproveConfirmModal from "./approveConfirmModal";
 
 interface Props {
     open: boolean;
@@ -11,6 +16,9 @@ interface Props {
     data: RefundsDrawerData | null;
     download: (pointOfSaleId: string | any, transactionId: string | any) => void;
     formatDate: (d?: string) => string;
+    onApprove: (trxId: string) => void;
+    onSuspend: (trxId: string, reason: string) => Promise<void> | void;
+    onReject: (trxId: string, reason: string) => Promise<void> | void;
 }
 
 const formatCurrency = (value?: number) => {
@@ -21,15 +29,31 @@ const formatCurrency = (value?: number) => {
     });
 };
 
-export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate }: Props) {
+export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject }: Props) {
     const { t } = useTranslation();
+
+    const [reasonModalOpen, setReasonModalOpen] = useState(false);
+    const [reasonModalType, setReasonModalType] = useState<"suspend" | "reject" | null>(null);
+    const [pendingTrxId, setPendingTrxId] = useState<string | null>(null);
+    const [approveModalOpen, setApproveModalOpen] = useState(false);
+
+    const openReasonModal = (type: "suspend" | "reject", trxId: string) => {
+        setPendingTrxId(trxId);
+        setReasonModalType(type);
+        setReasonModalOpen(true);
+    };
+
+    const closeReasonModal = () => {
+        setReasonModalOpen(false);
+        setPendingTrxId(null);
+    };
 
     return (
         <Drawer
             anchor="right"
             open={open}
             onClose={onClose}
-            ModalProps={{ keepMounted: true }}
+            ModalProps={{ keepMounted: true, disableScrollLock: true }}
             transitionDuration={300}
             PaperProps={{
                 sx: {
@@ -176,14 +200,81 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                     label={data?.statusLabel}
                     color={data?.statusColor as any}
                     sx={{
+                        mb: 3,
                         mt: 1,
                         fontWeight: 600,
                         fontSize: "14px",
-                        "& .MuiChip-label": { whiteSpace: "nowrap" }
+                        "& .MuiChip-label": { whiteSpace: "nowrap" },
+                        backgroundColor: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                        color: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                     }}
                 />
+                {data?.rewardBatchRejectionReason && data?.rewardBatchRejectionReason !== "-" &&
+                    data?.rewardBatchTrxStatus !== "APPROVED" && (
+                        <Box sx={{ mb: 3 }}>
+                            <Typography
+                                sx={{
+                                    fontSize: "14px",
+                                    fontWeight: 700,
+                                    color: "#17324D",
+                                    textTransform: "uppercase",
+                                    mb: 3,
+                                    letterSpacing: "0.5px"
+                                }}
+                            >
+                                {t(`pages.initiativeMerchantsTransactions.drawer.note`)}
+                            </Typography>
 
+                            <Typography
+                                sx={{
+                                    fontSize: "18px",
+                                    fontWeight: 600,
+                                    color: "#17324D",
+                                    lineHeight: "22px",
+                                    whiteSpace: "pre-line",
+                                    wordBreak: "break-word",
+                                    overflowWrap: "break-word",
+                                }}
+                            >
+                                {`<${data.rewardBatchRejectionReason}>`}
+                            </Typography>
+                        </Box>
+                    )}
+                <RefundActionButtons
+                    direction="column"
+                    status={data?.rewardBatchTrxStatus as RewardBatchTrxStatus}
+                    onApprove={() => data?.trxId && setApproveModalOpen(true)}
+                    onSuspend={() => data?.trxId && openReasonModal("suspend", data.trxId)}
+                    onReject={() => data?.trxId && openReasonModal("reject", data.trxId)}
+                />
             </Box>
+            <RefundReasonModal
+                open={reasonModalOpen}
+                type={reasonModalType ?? "reject"}
+                count={1}
+                onClose={closeReasonModal}
+                onConfirm={async (reason: string) => {
+                    if (!reasonModalType || !pendingTrxId) {
+                        closeReasonModal();
+                        return;
+                    }
+
+                    if (reasonModalType === "suspend") {
+                        await onSuspend(pendingTrxId, reason);
+                    } else {
+                        await onReject(pendingTrxId, reason);
+                    }
+
+                    closeReasonModal();
+                    onClose();
+                }}
+            />
+            <ApproveConfirmModal
+                open={approveModalOpen}
+                count={1}
+                onClose={() => setApproveModalOpen(false)}
+                onConfirm={() => data?.trxId && onApprove(data.trxId)}
+            />
         </Drawer>
     );
 }

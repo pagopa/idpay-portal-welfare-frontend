@@ -77,7 +77,7 @@ const getStatusLabel = (status: string, t: any) => {
 };
 
 const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
-    posType === "ONLINE" ? "Online" : "Fisico";
+    posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
 const formatAmount = (amountCents?: number) => {
     if (!amountCents) {
@@ -461,7 +461,7 @@ const InitiativeRefundsMerchants = () => {
                                     }}
                                 >
                                     <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value={20}>20</MenuItem>
+                                    <MenuItem value={25}>25</MenuItem>
                                     <MenuItem value={50}>50</MenuItem>
                                     <MenuItem value={100}>100</MenuItem>
                                 </Select>

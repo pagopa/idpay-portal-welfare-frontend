@@ -14,6 +14,8 @@ import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTrans
 import { RewardBatchListDTO } from './generated/merchants/RewardBatchListDTO';
 import { RewardBatchTrxStatusEnum } from './generated/merchants/RewardBatchTrxStatus';
 import { DownloadInvoiceResponseDTO } from './generated/merchants/DownloadInvoiceResponseDTO';
+import { TransactionActionRequest } from './generated/merchants/TransactionActionRequest';
+import { TransactionActionResponse } from './generated/merchants/TransactionActionResponse';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -143,12 +145,42 @@ export const merchantsApi = {
   },
 
   getDownloadInvoice: async (
-pointOfSaleId: string, transactionId: string, xMerchantId: string  ): Promise<DownloadInvoiceResponseDTO> => {
+    pointOfSaleId: string, transactionId: string, xMerchantId: string): Promise<DownloadInvoiceResponseDTO> => {
     const result = await merchantsApiClient.downloadInvoiceFile({
       pointOfSaleId,
       transactionId,
       'x-merchant-id': xMerchantId
     });
     return extractResponse(result, 200, onRedirectToLogin);
-  }
+  },
+
+  approveTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.approveTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  suspendTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.suspendTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  rejectTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.rejectTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
 };
