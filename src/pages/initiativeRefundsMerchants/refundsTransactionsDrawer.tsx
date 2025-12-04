@@ -204,10 +204,12 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                         mt: 1,
                         fontWeight: 600,
                         fontSize: "14px",
-                        "& .MuiChip-label": { whiteSpace: "nowrap" }
+                        "& .MuiChip-label": { whiteSpace: "nowrap" },
+                        backgroundColor: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                        color: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                     }}
                 />
-                {data?.rewardBatchRejectionReason &&
+                {data?.rewardBatchRejectionReason && data?.rewardBatchRejectionReason !== "-" &&
                     data?.rewardBatchTrxStatus !== "APPROVED" && (
                         <Box sx={{ mb: 3 }}>
                             <Typography

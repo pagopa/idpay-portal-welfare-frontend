@@ -1017,7 +1017,12 @@
         "pos": "Punto vendita",
         "dateTime": "Data e ora",
         "requestedRefund": "Rimborso richiesto",
-        "status": "Stato"
+        "status": "Stato",
+        "toCheck": "Da esaminare",
+        "consultable": "Consultabile",
+        "suspended": "Da controllare",
+        "approved": "Approvata",
+        "rejected": "Esclusa"
       },
       "drawer": {
         "trxDetail": "Dettaglio transazione",

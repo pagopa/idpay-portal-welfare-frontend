@@ -267,17 +267,18 @@ const InitiativeRefundsTransactions = () => {
                 }
             })
             .catch((error) => {
-                addError({
-                    id: "GET_TRX_PAGED_ERROR",
-                    blocking: false,
-                    error,
-                    techDescription: "Error retrieving transactions",
-                    displayableTitle: t("errors.title"),
-                    displayableDescription: t("errors.getDataDescription"),
-                    toNotify: true,
-                    component: "Toast",
-                    showCloseIcon: true,
-                });
+                // addError({
+                //     id: "GET_TRX_PAGED_ERROR",
+                //     blocking: false,
+                //     error,
+                //     techDescription: "Error retrieving transactions",
+                //     displayableTitle: t("errors.title"),
+                //     displayableDescription: t("errors.getDataDescription"),
+                //     toNotify: true,
+                //     component: "Toast",
+                //     showCloseIcon: true,
+                // });
+                console.log(error);
             })
             .finally(() => setLoading(false));
     };
@@ -285,19 +286,19 @@ const InitiativeRefundsTransactions = () => {
     const mapTransactionStatus = (status?: RewardBatchTrxStatusEnum) => {
         switch (status) {
             case RewardBatchTrxStatusEnum.TO_CHECK:
-                return { label: "Da esaminare", color: "info" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.toCheck'), color: "indigo" };
 
             case RewardBatchTrxStatusEnum.CONSULTABLE:
-                return { label: "Consultabile", color: "default" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.consultable'), color: "default" };
 
             case RewardBatchTrxStatusEnum.SUSPENDED:
-                return { label: "Da controllare", color: "warning" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.suspended'), color: "warning" };
 
             case RewardBatchTrxStatusEnum.APPROVED:
-                return { label: "Approvata", color: "success" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.approved'), color: "info" };
 
             case RewardBatchTrxStatusEnum.REJECTED:
-                return { label: "Esclusa", color: "error" };
+                return { label: t('pages.initiativeMerchantsTransactions.table.rejected'), color: "error" };
 
             default:
                 return { label: "-", color: "default" };
@@ -474,8 +475,8 @@ const InitiativeRefundsTransactions = () => {
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                     {batch.businessName}
                 </Typography>
-                <Box sx={{ width: "50%" }}>
-                    {selectedRows.size > 0 &&
+                {selectedRows.size > 0 &&
+                    <Box sx={{ width: "50%" }}>
                         <RefundActionButtons
                             direction="row"
                             status={lockedStatus as RewardBatchTrxStatusEnum}
@@ -484,8 +485,8 @@ const InitiativeRefundsTransactions = () => {
                             onReject={() => setReasonModal({ open: true, type: "reject" })}
                             size={selectedRows.size}
                         />
-                    }
-                </Box>
+                    </Box>
+                }
             </Box>
 
             <Paper
@@ -609,13 +610,27 @@ const InitiativeRefundsTransactions = () => {
                         value={draftStatusFilter}
                         label={t('pages.initiativeMerchantsTransactions.table.status')}
                         onChange={(e) => setDraftStatusFilter(e.target.value)}
-                        sx={{ height: 40 }}
+                        sx={{}}
                     >
-                        <MenuItem value={RewardBatchTrxStatusEnum.TO_CHECK}>Da esaminare</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.CONSULTABLE}>Consultabile</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.SUSPENDED}>Da controllare</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.APPROVED}>Approvata</MenuItem>
-                        <MenuItem value={RewardBatchTrxStatusEnum.REJECTED}>Esclusa</MenuItem>
+                        {Object.values(RewardBatchTrxStatusEnum).map((status) => {
+                            const mapped = mapTransactionStatus(status);
+                            return (
+                                <MenuItem key={status} value={status} sx={{ display: "flex", alignItems: "center" }}>
+                                    <Chip
+                                        label={mapped.label}
+                                        color={mapped.color as any}
+                                        size="small"
+                                        sx={{
+                                            cursor: "pointer",
+                                            fontSize: 14,
+                                            "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                            backgroundColor: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                            color: mapped.label === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
+                                        }}
+                                    />
+                                </MenuItem>
+                            );
+                        })}
                     </Select>
                 </FormControl>
                 <Button
@@ -745,7 +760,9 @@ const InitiativeRefundsTransactions = () => {
                                                 color={row.statusColor as any}
                                                 sx={{
                                                     fontSize: "14px",
-                                                    "& .MuiChip-label": { whiteSpace: "nowrap" }
+                                                    "& .MuiChip-label": { whiteSpace: "nowrap" },
+                                                    backgroundColor: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
+                                                    color: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                                                 }}
                                             />
                                         </TableCell>
@@ -786,7 +803,7 @@ const InitiativeRefundsTransactions = () => {
                                     }}
                                 >
                                     <MenuItem value={10}>10</MenuItem>
-                                    <MenuItem value={20}>20</MenuItem>
+                                    <MenuItem value={25}>25</MenuItem>
                                     <MenuItem value={50}>50</MenuItem>
                                     <MenuItem value={100}>100</MenuItem>
                                 </Select>
