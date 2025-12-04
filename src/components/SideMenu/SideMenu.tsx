@@ -252,6 +252,9 @@ export default function SideMenu() {
                       pathname === `${BASE_ROUTE}/esiti-rimborsi-iniziativa/${item.initiativeId}` ||
                       pathname.includes(
                         `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${item.initiativeId}`
+                      ) ||
+                      pathname.includes(
+                        `${BASE_ROUTE}/rimborsi-iniziativa/${item.initiativeId}`
                       )
                     }
                     icon={EuroSymbolIcon}

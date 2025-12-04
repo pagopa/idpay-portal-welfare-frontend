@@ -6,16 +6,21 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
-import { getBatchTrx } from "../../hooks/useBatchTrx";
+import { getBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
-import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail } from "../../services/merchantsService";
+import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
+import { RefundActionButtons } from "./refundsActionButtons";
+import { RefundItem } from "./initiativeRefundsMerchants";
+import RefundReasonModal from "./refundsReasonModal";
+import ApproveConfirmModal from "./approveConfirmModal";
 
 export interface TrxItem {
     raw: MerchantTransactionProcessedDTO;
@@ -52,6 +57,7 @@ export interface RefundsDrawerData {
     statusColor?: string;
     pointOfSaleId?: string;
     transactionId?: string;
+    rewardBatchRejectionReason?: string;
 }
 
 const mapRefundsDrawerData = (
@@ -79,6 +85,7 @@ const mapRefundsDrawerData = (
 
     statusLabel: mappedRow.statusLabel,
     statusColor: mappedRow.statusColor,
+    rewardBatchRejectionReason: dto.rewardBatchRejectionReason,
 });
 
 const formatCurrency = (amountCents?: number) => {
@@ -109,7 +116,7 @@ const formatDate = (d?: string) => {
 const InitiativeRefundsTransactions = () => {
     const { t } = useTranslation();
     const batchData = getBatchTrx();
-    const batch = useMemo(() => batchData, [batchData?.id]);
+    const batch = useMemo(() => batchData, [batchData?.id, batchData?.approvedAmountCents, batchData?.numberOfTransactionsElaborated, batchData?.assigneeLevel, batchData?.totalAmountCents]);
 
     const [draftStatusFilter, setDraftStatusFilter] = useState<string | "">("");
     const [statusFilter, setStatusFilter] = useState<string | "">("");
@@ -149,6 +156,7 @@ const InitiativeRefundsTransactions = () => {
     const [dateSort, setDateSort] = useState<SortState>("");
     const [openDrawer, setOpenDrawer] = useState(false);
     const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
+    const [approveModal, setApproveModal] = useState(false);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -159,6 +167,8 @@ const InitiativeRefundsTransactions = () => {
         setOpenDrawer(false);
         setSelectedTransaction(null);
     };
+
+    const closeAfter = (fn: Promise<any>) => fn.finally(() => handleCloseDrawer());
 
     const checksPercentage = useMemo(() => {
         if (!batch || batch.numberOfTransactions === 0) {
@@ -189,6 +199,11 @@ const InitiativeRefundsTransactions = () => {
         if (sameStatusRows.length === 0) { return false; }
         return sameStatusRows.every(row => selectedRows.has(row.id));
     }, [sameStatusRows, selectedRows]);
+
+    const [reasonModal, setReasonModal] = useState<{
+        open: boolean;
+        type: "reject" | "suspend" | null;
+    }>({ open: false, type: null });
 
     useMemo(() => {
         setPage(0);
@@ -404,6 +419,39 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
+    const approve = () => handleRefundAction("approve", [...selectedRows]);
+
+    const handleRefundAction = async (
+        type: "approve" | "suspend" | "reject",
+        trxIds: Array<string>,
+        reason?: string
+    ) => {
+        if (!batch?.id) { return; };
+
+        setLoading(true);
+        const payload: TransactionActionRequest = {
+            transactionIds: trxIds,
+            reason: type !== "approve" ? reason : undefined
+        };
+
+        const serviceMap = {
+            approve: approveTrx,
+            suspend: suspendTrx,
+            reject: rejectTrx
+        };
+
+        return serviceMap[type](id, batch.id, payload)
+            .then(res => {
+                setBatchTrx(res as RefundItem);
+                getTableData(id);
+            })
+            .catch(err => { setLoading(false); console.error(err); })
+            .finally(() => {
+                setSelectedRows(new Set());
+                setLockedStatus(null);
+            });
+    };
+
     if (!batch && id) {
         history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id));
     }
@@ -426,20 +474,18 @@ const InitiativeRefundsTransactions = () => {
                 <Typography variant="h5" sx={{ fontWeight: 600 }}>
                     {batch.businessName}
                 </Typography>
-                {/* <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleTestButton}
-                    disabled={selectedRows.size === 0}
-                    sx={{
-                        height: "44px",
-                        paddingX: 3,
-                        fontWeight: 600,
-                        textTransform: "none"
-                    }}
-                >
-                    Test ({selectedRows.size})
-                </Button> */}
+                <Box sx={{ width: "50%" }}>
+                    {selectedRows.size > 0 &&
+                        <RefundActionButtons
+                            direction="row"
+                            status={lockedStatus as RewardBatchTrxStatusEnum}
+                            onApprove={() => setApproveModal(true)}
+                            onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
+                            onReject={() => setReasonModal({ open: true, type: "reject" })}
+                            size={selectedRows.size}
+                        />
+                    }
+                </Box>
             </Box>
 
             <Paper
@@ -775,7 +821,33 @@ const InitiativeRefundsTransactions = () => {
                 data={selectedTransaction}
                 download={downloadInvoice}
                 formatDate={formatDate}
+                onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
+                onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
+                onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
             />
+            <RefundReasonModal
+                open={reasonModal.open}
+                type={reasonModal.type as any}
+                count={selectedRows.size}
+                onClose={() => setReasonModal({ open: false, type: null })}
+
+                onConfirm={async (reason) => {
+                    if (!reasonModal.type) { return; };
+
+                    await handleRefundAction(reasonModal.type, [...selectedRows], reason)
+                        .finally(() => setReasonModal({ open: false, type: null }));
+                }}
+            />
+            <ApproveConfirmModal
+                open={approveModal}
+                count={selectedRows.size}
+                onClose={() => setApproveModal(false)}
+                onConfirm={() => {
+                    void approve();
+                    setApproveModal(false);
+                }}
+            />
+
         </Box>
     );
 };

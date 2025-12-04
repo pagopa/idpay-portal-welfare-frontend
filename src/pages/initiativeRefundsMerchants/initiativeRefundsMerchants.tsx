@@ -77,7 +77,7 @@ const getStatusLabel = (status: string, t: any) => {
 };
 
 const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
-    posType === "ONLINE" ? "Online" : "Fisico";
+    posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
 const formatAmount = (amountCents?: number) => {
     if (!amountCents) {
