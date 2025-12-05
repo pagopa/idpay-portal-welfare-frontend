@@ -46,7 +46,7 @@ export interface RefundsPage {
     totalPages: number;
 }
 
-const getStatusColor = (status: string) => {
+export const getStatusColor = (status: string) => {
     switch (status) {
         case "APPROVED":
             return "success";
@@ -61,7 +61,7 @@ const getStatusColor = (status: string) => {
     }
 };
 
-const getStatusLabel = (status: string, t: any) => {
+export const getStatusLabel = (status: string, t: any) => {
     switch (status) {
         case "APPROVED":
             return t("chip.batch.approved");
@@ -76,7 +76,7 @@ const getStatusLabel = (status: string, t: any) => {
     }
 };
 
-const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
+export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
     posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
 const formatAmount = (amountCents?: number) => {
