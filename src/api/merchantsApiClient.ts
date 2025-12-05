@@ -16,6 +16,7 @@ import { RewardBatchTrxStatusEnum } from './generated/merchants/RewardBatchTrxSt
 import { DownloadInvoiceResponseDTO } from './generated/merchants/DownloadInvoiceResponseDTO';
 import { TransactionActionRequest } from './generated/merchants/TransactionActionRequest';
 import { TransactionActionResponse } from './generated/merchants/TransactionActionResponse';
+import { ListPointOfSaleDTO } from './generated/merchants/ListPointOfSaleDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -180,6 +181,15 @@ export const merchantsApi = {
       initiativeId,
       rewardBatchId,
       body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getPos: async (
+    merchantId: string,
+  ): Promise<ListPointOfSaleDTO> => {
+    const result = await merchantsApiClient.getPointOfSales({
+      merchantId,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

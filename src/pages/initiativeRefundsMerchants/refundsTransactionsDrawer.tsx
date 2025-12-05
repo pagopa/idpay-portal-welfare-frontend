@@ -1,7 +1,7 @@
 import { Drawer, Box, Typography, Chip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
@@ -14,7 +14,7 @@ interface Props {
     open: boolean;
     onClose: () => void;
     data: RefundsDrawerData | null;
-    download: (pointOfSaleId: string | any, transactionId: string | any) => void;
+    download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
     onSuspend: (trxId: string, reason: string) => Promise<void> | void;
@@ -48,12 +48,19 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         setPendingTrxId(null);
     };
 
+    useEffect(() => {
+        // eslint-disable-next-line functional/immutable-data
+        if (open) { document.body.style.overflow = "hidden"; }
+        // eslint-disable-next-line functional/immutable-data
+        else { document.body.style.overflow = "auto"; }
+    }, [open, onClose]);
+
     return (
         <Drawer
             anchor="right"
             open={open}
             onClose={onClose}
-            ModalProps={{ keepMounted: true, disableScrollLock: true }}
+            ModalProps={{ keepMounted: true }}
             transitionDuration={300}
             PaperProps={{
                 sx: {
@@ -174,7 +181,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
 
                     <ButtonNaked
                         color="primary"
-                        onClick={() => download(data?.pointOfSaleId, data?.transactionId)}
+                        onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
                     >
                         {/* {row.invoiceFileName}
                         <Typography
@@ -236,7 +243,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                     overflowWrap: "break-word",
                                 }}
                             >
-                                {`<${data.rewardBatchRejectionReason}>`}
+                                {data.rewardBatchRejectionReason}
                             </Typography>
                         </Box>
                     )}

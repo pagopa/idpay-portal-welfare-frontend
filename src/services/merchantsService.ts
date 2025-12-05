@@ -1,5 +1,6 @@
 // import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
 import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
+import { ListPointOfSaleDTO } from '../api/generated/merchants/ListPointOfSaleDTO';
 import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
 import { MerchantListDTO } from '../api/generated/merchants/MerchantListDTO';
 import { MerchantStatisticsDTO } from '../api/generated/merchants/MerchantStatisticsDTO';
@@ -120,4 +121,11 @@ export const rejectTrx = (
     initiativeId,
     rewardBatchId,
     trxs
+  );
+
+export const getPOS = (
+  merchantId: string,
+): Promise<ListPointOfSaleDTO> =>
+  merchantsApi.getPos(
+    merchantId,
   );
