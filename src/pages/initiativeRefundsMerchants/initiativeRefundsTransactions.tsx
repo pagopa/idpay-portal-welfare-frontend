@@ -422,7 +422,7 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
-    const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any) => {
+    const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => {
         if (batch?.merchantId) {
 
             setLoading(true);
@@ -436,7 +436,7 @@ const InitiativeRefundsTransactions = () => {
                     if (!invoiceUrl) {
                         throw new Error("Invoice URL not found");
                     }
-                    return openInvoiceInNewTab(invoiceUrl);
+                    return openInvoiceInNewTab(invoiceUrl, invoiceFileName);
                 })
                 .catch((error) => {
                     addError({
@@ -668,10 +668,37 @@ const InitiativeRefundsTransactions = () => {
                             value={draftPosFilter}
                             onChange={(e) => setDraftPosFilter(e.target.value)}
                             label={t('pages.initiativeMerchantsTransactions.table.pos')}
+                            renderValue={(selected) => {
+                                const selectedPos = posList.find(p => p.id === selected);
+                                const label = selectedPos?.franchiseName ?? selected;
+
+                                return (
+                                    <Tooltip
+                                        title={label}
+                                        disableHoverListener={!selected}
+                                    >
+                                        <Box sx={{
+                                            maxWidth: 130,
+                                            overflow: "hidden",
+                                            whiteSpace: "nowrap",
+                                            textOverflow: "ellipsis"
+                                        }}>
+                                            {label}
+                                        </Box>
+                                    </Tooltip>
+                                );
+                            }}
                         >
                             {posList.map(pos => (
                                 <MenuItem key={pos.id} value={pos.id}>
-                                    {pos.franchiseName ?? pos.id}
+                                    <Box sx={{
+                                        maxWidth: 200,
+                                        overflow: "hidden",
+                                        whiteSpace: "nowrap",
+                                        textOverflow: "ellipsis"
+                                    }}>
+                                        {pos.franchiseName ?? pos.id}
+                                    </Box>
                                 </MenuItem>
                             ))}
                         </Select>
@@ -742,7 +769,7 @@ const InitiativeRefundsTransactions = () => {
                     </ButtonNaked>
                 </Box>
 
-                {totalElements === 0 ? (
+                {totalElements === 0 || rows.length === 0 ? (
                     <Table sx={{ mt: 2, backgroundColor: "#FFFFFF" }}>
                         <TableBody>
                             <TableRow>
@@ -817,7 +844,7 @@ const InitiativeRefundsTransactions = () => {
                                                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
                                                         <ButtonNaked
                                                             color="primary"
-                                                            onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId)}
+                                                            onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId, row.invoiceFileName)}
                                                         >
                                                             {row.invoiceFileName}
                                                         </ButtonNaked>

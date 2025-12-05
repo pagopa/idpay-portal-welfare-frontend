@@ -14,7 +14,7 @@ interface Props {
     open: boolean;
     onClose: () => void;
     data: RefundsDrawerData | null;
-    download: (pointOfSaleId: string | any, transactionId: string | any) => void;
+    download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
     onSuspend: (trxId: string, reason: string) => Promise<void> | void;
@@ -181,7 +181,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
 
                     <ButtonNaked
                         color="primary"
-                        onClick={() => download(data?.pointOfSaleId, data?.transactionId)}
+                        onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
                     >
                         {/* {row.invoiceFileName}
                         <Typography
