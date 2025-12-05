@@ -53,7 +53,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         if (open) { document.body.style.overflow = "hidden"; }
         // eslint-disable-next-line functional/immutable-data
         else { document.body.style.overflow = "auto"; }
-    }, [open]);
+    }, [open, onClose]);
 
     return (
         <Drawer
