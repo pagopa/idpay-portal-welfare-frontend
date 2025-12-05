@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper } from "@mui/material";
-import { ButtonNaked } from "@pagopa/mui-italia";
+import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
@@ -16,9 +16,10 @@ import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
+import { openInvoiceInNewTab } from "../../utils/fileViewer-utils";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
-import { RefundItem } from "./initiativeRefundsMerchants";
+import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
 
@@ -417,8 +418,11 @@ const InitiativeRefundsTransactions = () => {
                 batch.merchantId
             )
                 .then((res) => {
-                    const invoiceUrl = (res && res.invoiceUrl);
-                    window.open(invoiceUrl, '_blank');
+                    const invoiceUrl = res?.invoiceUrl;
+                    if (!invoiceUrl) {
+                        throw new Error("Invoice URL not found");
+                    }
+                    return openInvoiceInNewTab(invoiceUrl);
                 })
                 .catch((error) => {
                     addError({
@@ -540,6 +544,12 @@ const InitiativeRefundsTransactions = () => {
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsRefunds.table.type')}                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            {getPosTypeLabel(batch.posType)}
+                        </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.requestedRefund')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
@@ -587,7 +597,7 @@ const InitiativeRefundsTransactions = () => {
                             {iban || '-'}
                         </Typography>
 
-                        <Box sx={{ gridColumn: 'span 12' }}></Box>
+                        {/* <Box sx={{ gridColumn: 'span 12' }}></Box> */}
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
@@ -595,6 +605,15 @@ const InitiativeRefundsTransactions = () => {
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
                             {checksPercentage}/100%
                         </Typography>
+
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsRefunds.table.status')}
+                        </Typography>
+                        <Tag
+                            value={getStatusLabel(batch.status, t)}
+                            color={getStatusColor(batch.status) as Colors}
+                            sx={{display: 'flex', alignItems: 'center'}}
+                        />
                     </Box>
                 </Paper>
 

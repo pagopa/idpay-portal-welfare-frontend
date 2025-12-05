@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { Footer } from '@pagopa/selfcare-common-frontend';
+// import { Footer } from '@pagopa/selfcare-common-frontend';
 import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import Header from '../Header/Header';
 import SideMenu from '../SideMenu/SideMenu';
 import ROUTES from '../../routes';
 import routes from '../../routes';
+import { Footer } from '../Footer/Footer';
 
 type Props = {
   children?: React.ReactNode;
@@ -133,7 +134,7 @@ const Layout = ({ children }: Props) => {
         </Box>
       )}
       <Box gridArea="footer">
-        <Footer onExit={onExit} loggedUser={true} />
+        <Footer />
       </Box>
     </Box>
   );
