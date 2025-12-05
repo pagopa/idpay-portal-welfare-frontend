@@ -678,7 +678,7 @@ const InitiativeRefundsTransactions = () => {
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
-                                            maxWidth: 130,
+                                            maxWidth: 250,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
