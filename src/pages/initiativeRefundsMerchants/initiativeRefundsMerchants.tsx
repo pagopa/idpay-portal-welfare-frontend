@@ -136,18 +136,62 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                     </Box>
                 </Tooltip>
             </TableCell>
-            <TableCell>{row.name}</TableCell>
-            <TableCell>{getPosTypeLabel(row.posType)}</TableCell>
-            <TableCell>{requestedRefund}</TableCell>
-            <TableCell>{approvedRefund}</TableCell>
-            <TableCell>{checksPercentage}</TableCell>
-            <TableCell>{row.assigneeLevel}</TableCell>
+
+            <TableCell>
+                <Tooltip title={row.name}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {row.name}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={getPosTypeLabel(row.posType)}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {getPosTypeLabel(row.posType)}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={requestedRefund}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {requestedRefund}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={approvedRefund}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {approvedRefund}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={checksPercentage}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {checksPercentage}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={row.assigneeLevel}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {row.assigneeLevel}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
             <TableCell>
                 <Tag
                     value={getStatusLabel(row.status, t)}
                     color={getStatusColor(row.status) as Colors}
                 />
             </TableCell>
+
             <TableCell sx={{ textAlign: "right" }}>
                 <ButtonNaked disabled={isDisabled} onClick={handleClick}>
                     <ChevronRightIcon color={isDisabled ? "disabled" : "primary"} />

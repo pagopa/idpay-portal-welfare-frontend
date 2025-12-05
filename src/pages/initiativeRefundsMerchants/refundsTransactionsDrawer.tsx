@@ -236,7 +236,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                     overflowWrap: "break-word",
                                 }}
                             >
-                                {`<${data.rewardBatchRejectionReason}>`}
+                                {data.rewardBatchRejectionReason}
                             </Typography>
                         </Box>
                     )}

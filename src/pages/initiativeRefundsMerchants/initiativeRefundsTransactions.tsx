@@ -17,6 +17,8 @@ import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/M
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
 import { openInvoiceInNewTab } from "../../utils/fileViewer-utils";
+import { useAppSelector } from "../../redux/hooks";
+import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
@@ -116,6 +118,7 @@ const formatDate = (d?: string) => {
 // eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 const InitiativeRefundsTransactions = () => {
     const { t } = useTranslation();
+    const initiativeSel = useAppSelector(initiativeSelector);
     const batchData = getBatchTrx();
     const batch = useMemo(() => batchData, [batchData?.id, batchData?.approvedAmountCents, batchData?.numberOfTransactionsElaborated, batchData?.assigneeLevel, batchData?.totalAmountCents]);
 
@@ -489,7 +492,7 @@ const InitiativeRefundsTransactions = () => {
                     <BreadcrumbsBox
                         backUrl={ROUTES.INITIATIVE_REFUNDS.replace(":id", id)}
                         backLabel={t("breadcrumbs.back")}
-                        items={[t('breadcrumbs.initiativeRefunds'), batch.businessName]}
+                        items={[initiativeSel.initiativeName, t('breadcrumbs.initiativeRefunds'), batch.businessName]}
                     />
                 </Box>
 
