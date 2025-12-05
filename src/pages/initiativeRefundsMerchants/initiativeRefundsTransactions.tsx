@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip } from "@mui/material";
 import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -15,10 +15,12 @@ import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants
 import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { getPOS } from "../../services/merchantsService";
 import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
 import { openInvoiceInNewTab } from "../../utils/fileViewer-utils";
 import { useAppSelector } from "../../redux/hooks";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
+import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
@@ -168,6 +170,7 @@ const InitiativeRefundsTransactions = () => {
     const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
     const [approveModal, setApproveModal] = useState(false);
     const [restored, setRestored] = useState(false);
+    const [posList, setPosList] = useState<Array<PointOfSaleDTO>>([]);
 
     useEffect(() => {
         const restore = async () => {
@@ -183,6 +186,14 @@ const InitiativeRefundsTransactions = () => {
         };
         void restore();
     }, [id, batchId]);
+
+    useEffect(() => {
+        if (!batch?.merchantId) { return; }
+
+        getPOS(batch.merchantId)
+            .then((res) => setPosList([...(res.content ?? [])]))
+            .catch(console.error);
+    }, [batch?.merchantId]);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -524,64 +535,78 @@ const InitiativeRefundsTransactions = () => {
                         gap: 3
                     }}
                 >
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            gridColumn: 'span 6',
-                            gridTemplateColumns: 'repeat(12, 1fr)',
-                            gap: 1.5,
-                        }}
-                    >
+                    <Box sx={{ display: 'grid', gridColumn: 'span 6', gridTemplateColumns: 'repeat(12,1fr)', gap: 1.5 }}>
+
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.batchRef')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {batch.name || '-'}
+                            <Tooltip title={batch.name || '-'}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {batch.name || '-'}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.period')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {formattedPeriod}
+                            <Tooltip title={formattedPeriod}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {formattedPeriod}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                            {t('pages.initiativeMerchantsRefunds.table.type')}                        </Typography>
+                            {t('pages.initiativeMerchantsRefunds.table.type')}
+                        </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {getPosTypeLabel(batch.posType)}
+                            <Tooltip title={getPosTypeLabel(batch.posType)}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {getPosTypeLabel(batch.posType)}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.requestedRefund')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {formatCurrency(batch.initialAmountCents)}
+                            <Tooltip title={formatCurrency(batch.initialAmountCents)}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {formatCurrency(batch.initialAmountCents)}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.approvedRefund')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {formatCurrency(batch.approvedAmountCents)}
+                            <Tooltip title={formatCurrency(batch.approvedAmountCents)}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {formatCurrency(batch.approvedAmountCents)}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.assignedTo')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {batch.assigneeLevel || '-'}
+                            <Tooltip title={batch.assigneeLevel || '-'}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {batch.assigneeLevel || '-'}
+                                </Box>
+                            </Tooltip>
                         </Typography>
                     </Box>
 
-                    <Box
-                        sx={{
-                            display: 'grid',
-                            gridColumn: 'span 6',
-                            gridTemplateColumns: 'repeat(12, 1fr)',
-                            gap: 1.5,
-                        }}
-                    >
+
+                    <Box sx={{ display: 'grid', gridColumn: 'span 6', gridTemplateColumns: 'repeat(12,1fr)', gap: 1.5 }}>
+
                         <Typography variant="subtitle2" sx={{ gridColumn: 'span 12', fontWeight: 600 }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.refundData')}
                         </Typography>
@@ -590,23 +615,33 @@ const InitiativeRefundsTransactions = () => {
                             {t('pages.initiativeMerchantsTransactions.batchDetail.beneficiary')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {batch.businessName || '-'}
+                            <Tooltip title={batch.businessName || '-'}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {batch.businessName || '-'}
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.iban')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600, wordBreak: 'break-all' }}>
-                            {iban || '-'}
+                            <Tooltip title={iban || '-'}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {iban || '-'}
+                                </Box>
+                            </Tooltip>
                         </Typography>
-
-                        {/* <Box sx={{ gridColumn: 'span 12' }}></Box> */}
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            {checksPercentage}/100%
+                            <Tooltip title={`${checksPercentage}/100%`}>
+                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                    {checksPercentage}/100%
+                                </Box>
+                            </Tooltip>
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
@@ -615,7 +650,7 @@ const InitiativeRefundsTransactions = () => {
                         <Tag
                             value={getStatusLabel(batch.status, t)}
                             color={getStatusColor(batch.status) as Colors}
-                            sx={{display: 'flex', alignItems: 'center'}}
+                            sx={{ display: 'flex', alignItems: 'center' }}
                         />
                     </Box>
                 </Paper>
@@ -628,14 +663,17 @@ const InitiativeRefundsTransactions = () => {
                         }
                     }}>
                         <InputLabel>{t('pages.initiativeMerchantsTransactions.table.pos')}</InputLabel>
-                        <Select disabled
+                        <Select
+                            disabled={posList.at(0) === undefined}
                             value={draftPosFilter}
-                            label={t('pages.initiativeMerchantsTransactions.table.pos')}
                             onChange={(e) => setDraftPosFilter(e.target.value)}
-                            sx={{ height: 40 }}
+                            label={t('pages.initiativeMerchantsTransactions.table.pos')}
                         >
-                            <MenuItem value="">Tutti</MenuItem>
-                            <MenuItem value={batch.businessName}>{batch.businessName}</MenuItem>
+                            {posList.map(pos => (
+                                <MenuItem key={pos.id} value={pos.id}>
+                                    {pos.franchiseName ?? pos.id}
+                                </MenuItem>
+                            ))}
                         </Select>
                     </FormControl>
 
@@ -650,7 +688,6 @@ const InitiativeRefundsTransactions = () => {
                             value={draftStatusFilter}
                             label={t('pages.initiativeMerchantsTransactions.table.status')}
                             onChange={(e) => setDraftStatusFilter(e.target.value)}
-                            sx={{}}
                         >
                             {Object.values(RewardBatchTrxStatusEnum).map((status) => {
                                 const mapped = mapTransactionStatus(status);
@@ -776,22 +813,42 @@ const InitiativeRefundsTransactions = () => {
                                             </TableCell>
 
                                             <TableCell>
-                                                <ButtonNaked
-                                                    color="primary"
-                                                    onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId)}
-                                                >
-                                                    {row.invoiceFileName}
-                                                </ButtonNaked>
+                                                <Tooltip title={row.invoiceFileName}>
+                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
+                                                        <ButtonNaked
+                                                            color="primary"
+                                                            onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId)}
+                                                        >
+                                                            {row.invoiceFileName}
+                                                        </ButtonNaked>
+                                                    </Box>
+                                                </Tooltip>
                                             </TableCell>
 
-                                            <TableCell>{row.shop}</TableCell>
-                                            <TableCell>{row.date}</TableCell>
+                                            <TableCell>
+                                                <Tooltip title={row.shop}>
+                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
+                                                        {row.shop}
+                                                    </Box>
+                                                </Tooltip>
+                                            </TableCell>
 
                                             <TableCell>
-                                                {(row.amountCents / 100).toLocaleString("it-IT", {
-                                                    style: "currency",
-                                                    currency: "EUR",
-                                                })}
+                                                <Tooltip title={row.date}>
+                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 150 }}>
+                                                        {row.date}
+                                                    </Box>
+                                                </Tooltip>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                <Tooltip
+                                                    title={(row.amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}
+                                                >
+                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 120 }}>
+                                                        {(row.amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" })}
+                                                    </Box>
+                                                </Tooltip>
                                             </TableCell>
 
                                             <TableCell>
@@ -812,6 +869,7 @@ const InitiativeRefundsTransactions = () => {
                                                     <ChevronRightIcon color="primary" />
                                                 </ButtonNaked>
                                             </TableCell>
+
                                         </TableRow>
                                     );
                                 })}

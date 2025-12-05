@@ -1,7 +1,7 @@
 import { Drawer, Box, Typography, Chip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
@@ -48,12 +48,19 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         setPendingTrxId(null);
     };
 
+    useEffect(() => {
+        // eslint-disable-next-line functional/immutable-data
+        if (open) { document.body.style.overflow = "hidden"; }
+        // eslint-disable-next-line functional/immutable-data
+        else { document.body.style.overflow = "auto"; }
+    }, [open]);
+
     return (
         <Drawer
             anchor="right"
             open={open}
             onClose={onClose}
-            ModalProps={{ keepMounted: true, disableScrollLock: true }}
+            ModalProps={{ keepMounted: true }}
             transitionDuration={300}
             PaperProps={{
                 sx: {
