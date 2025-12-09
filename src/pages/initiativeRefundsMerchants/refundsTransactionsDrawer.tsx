@@ -181,7 +181,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
 
                     <ButtonNaked
                         color="primary"
-                        onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
+                        onClick={() => {download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName); onClose();}}
                     >
                         {/* {row.invoiceFileName}
                         <Typography

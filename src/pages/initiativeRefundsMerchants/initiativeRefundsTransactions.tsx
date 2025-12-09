@@ -845,6 +845,13 @@ const InitiativeRefundsTransactions = () => {
                                                         <ButtonNaked
                                                             color="primary"
                                                             onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId, row.invoiceFileName)}
+                                                            sx={{
+                                                                maxWidth: 200,
+                                                                overflow: "hidden",
+                                                                textOverflow: "ellipsis",
+                                                                whiteSpace: "nowrap",
+                                                                display: "inline-block",
+                                                            }}
                                                         >
                                                             {row.invoiceFileName}
                                                         </ButtonNaked>
@@ -854,7 +861,7 @@ const InitiativeRefundsTransactions = () => {
 
                                             <TableCell>
                                                 <Tooltip title={row.shop}>
-                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
+                                                    <Box sx={{ display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200, whiteSpace: "nowrap", }}>
                                                         {row.shop}
                                                     </Box>
                                                 </Tooltip>
