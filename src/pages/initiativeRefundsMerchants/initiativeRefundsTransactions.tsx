@@ -389,7 +389,6 @@ const InitiativeRefundsTransactions = () => {
             if (prev === "asc") { return "desc"; }
             return "";
         });
-        setPage(0);
     };
 
     const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => {
