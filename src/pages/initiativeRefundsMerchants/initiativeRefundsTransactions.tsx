@@ -696,14 +696,16 @@ const InitiativeRefundsTransactions = () => {
                         >
                             {posList.map(pos => (
                                 <MenuItem key={pos.id} value={pos.id}>
-                                    <Box sx={{
-                                        maxWidth: 200,
-                                        overflow: "hidden",
-                                        whiteSpace: "nowrap",
-                                        textOverflow: "ellipsis"
-                                    }}>
-                                        {pos.franchiseName ?? pos.id}
-                                    </Box>
+                                    <Tooltip title={pos.franchiseName} placement="left" arrow>
+                                        <Box sx={{
+                                            maxWidth: 200,
+                                            overflow: "hidden",
+                                            whiteSpace: "nowrap",
+                                            textOverflow: "ellipsis"
+                                        }}>
+                                            {pos.franchiseName ?? pos.id}
+                                        </Box>
+                                    </Tooltip>
                                 </MenuItem>
                             ))}
                         </Select>
