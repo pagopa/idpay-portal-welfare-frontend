@@ -1043,7 +1043,7 @@
           "approveDescription": "Stai per approvare la richiesta di rimborso selezionata. La transazione passerà allo stato \"Approvata\".",
           "rejectTitle": "Escludi richiesta di rimborso",
           "suspendTitle": "Richiedi ulteriori controlli ai venditori",
-          "rejectDescription": "Stai per rifiutare la richiesta di rimborso selezionate. Per completare l’azione, compila la nota interna. La transazione passerà allo stato \"Esclusa\".",
+          "rejectDescription": "Stai per rifiutare la richiesta di rimborso selezionata. Per completare l’azione, compila la nota interna. La transazione passerà allo stato \"Esclusa\".",
           "suspendDescription": "Con questa azione segnali che la transazione necessita di ulteriori controlli. La transazione passerà allo stato \"Da controllare\".",
           "rejectSubDesc": "Perché stai escludendo la richiesta di rimborso?*",
           "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
