@@ -187,9 +187,11 @@ export const merchantsApi = {
 
   getPos: async (
     merchantId: string,
+    size: number | undefined
   ): Promise<ListPointOfSaleDTO> => {
     const result = await merchantsApiClient.getPointOfSales({
       merchantId,
+      size
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
