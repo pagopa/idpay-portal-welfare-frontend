@@ -9,16 +9,17 @@ interface Props {
 
 export default function ApproveConfirmModal({ open, onClose, onConfirm, count }: Props) {
     const { t } = useTranslation();
-
+    const isSingle = count === 1 ? "single" : "plural";
+    
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" disableScrollLock keepMounted>
             <DialogTitle sx={{ fontSize: 22, fontWeight: 700, mt: 2, mx: 2 }}>
-                {t('pages.initiativeMerchantsTransactions.modal.approveTitle')}
+                {t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.approveTitle`)}
             </DialogTitle>
 
             <DialogContent>
                 <Typography sx={{ color:"#17324D", m: 2 }}>
-                    {t('pages.initiativeMerchantsTransactions.modal.approveDescription')}
+                    {t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.approveDescription`)}
                 </Typography>
             </DialogContent>
 
