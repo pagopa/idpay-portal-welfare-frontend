@@ -190,7 +190,7 @@ const InitiativeRefundsTransactions = () => {
     useEffect(() => {
         if (!batch?.merchantId) { return; }
 
-        getPOS(batch.merchantId)
+        getPOS(batch.merchantId, 200)
             .then((res) => setPosList([...(res.content ?? [])]))
             .catch(console.error);
     }, [batch?.merchantId]);
@@ -389,7 +389,6 @@ const InitiativeRefundsTransactions = () => {
             if (prev === "asc") { return "desc"; }
             return "";
         });
-        setPage(0);
     };
 
     const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => {

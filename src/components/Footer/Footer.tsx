@@ -6,7 +6,7 @@ import ROUTES from '../../routes';
 const FOOTER_LINKS = {
     COMPANY: 'https://www.pagopa.it/it/',
     PERSONAL_DATA: 'https://privacyportal-de.onetrust.com/webform/77f17844-04c3-4969-a11d-462ee77acbe1/9ab6533d-be4a-482e-929a-0d8d2ab29df8',
-    A11Y: 'https://form.agid.gov.it/view/7aa810f2-bc15-40d1-b996-6eaa658439c3'
+    A11Y: 'https://form.agid.gov.it/view/87f46790-9798-11f0-b583-8b5f76942354'
 } as const;
 
 const openExternalLink = (url: string) => window.open(url, '_blank')?.focus();
