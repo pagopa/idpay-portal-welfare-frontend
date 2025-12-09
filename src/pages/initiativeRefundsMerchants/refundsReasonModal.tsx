@@ -30,12 +30,14 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
         }
         onConfirm(reason);
     };
+    
+    const isSingle = count === 1 ? "single" : "plural";
+ 
+    const title = t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.${type}Title`);
 
-    const title = t(`pages.initiativeMerchantsTransactions.modal.${type}Title`);
+    const description = t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.${type}Description`);
 
-    const description = t(`pages.initiativeMerchantsTransactions.modal.${type}Description`);
-
-    const subDesc = t(`pages.initiativeMerchantsTransactions.modal.${type}SubDesc`);
+    const subDesc = t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.${type}SubDesc`);
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" disableScrollLock keepMounted>

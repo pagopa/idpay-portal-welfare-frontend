@@ -4,7 +4,7 @@ import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
-import { useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
+import { Toast, useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
@@ -141,6 +141,9 @@ const InitiativeRefundsTransactions = () => {
     const [iban, setIban] = useState<string>('');
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
     const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
+    const [openToast, setOpenToast] = useState(false);
+    const [toastLabel, setToastLabel] = useState("");
+
     useInitiative();
     interface MatchParams {
         id: string;
@@ -479,6 +482,9 @@ const InitiativeRefundsTransactions = () => {
             .then(res => {
                 setBatchTrx(res as RefundItem);
                 getTableData(id);
+                setOpenToast(true);
+                const isSingle = trxIds.length === 1 ? "single" : "plural";
+                setToastLabel(t(`pages.initiativeMerchantsTransactions.toast.${isSingle}.${type}`));
             })
             .catch(err => { setLoading(false); console.error(err); })
             .finally(() => {
@@ -995,7 +1001,15 @@ const InitiativeRefundsTransactions = () => {
                         setApproveModal(false);
                     }}
                 />
-
+                {openToast && (
+                    <Toast
+                        message={toastLabel}
+                        open={openToast}
+                        title=""
+                        showToastCloseIcon={true}
+                        onCloseToast={() => setOpenToast(false)}
+                    />
+                )}
             </Box>
         );
     }
