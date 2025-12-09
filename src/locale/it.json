@@ -1038,18 +1038,42 @@
         "note": "Nota interna"
       },
       "modal": {
-        "approveTitle": "Approva le richieste di rimborso",
-        "approveDescription": "Stai per approvare le richieste di rimborso selezionate. La transazione passerà allo stato \"Approvata\".",
+        "single": {
+          "approveTitle": "Approva la richiesta di rimborso",
+          "approveDescription": "Stai per approvare la richiesta di rimborso selezionata. La transazione passerà allo stato \"Approvata\".",
+          "rejectTitle": "Escludi richiesta di rimborso",
+          "suspendTitle": "Richiedi ulteriori controlli ai venditori",
+          "rejectDescription": "Stai per rifiutare la richiesta di rimborso selezionata. Per completare l’azione, compila la nota interna. La transazione passerà allo stato \"Esclusa\".",
+          "suspendDescription": "Con questa azione segnali che la transazione necessita di ulteriori controlli. La transazione passerà allo stato \"Da controllare\".",
+          "rejectSubDesc": "Perché stai escludendo la richiesta di rimborso?*",
+          "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
+        },
+        "plural": {
+          "approveTitle": "Approva le richieste di rimborso",
+          "approveDescription": "Stai per approvare le richieste di rimborso selezionate. Le transazioni passeranno allo stato \"Approvata\".",
+          "rejectTitle": "Escludi richieste di rimborso",
+          "suspendTitle": "Richiedi ulteriori controlli ai venditori",
+          "rejectDescription": "Stai per rifiutare le richieste di rimborso selezionate. Per completare l’azione, compila la nota interna. Le transazioni passeranno allo stato \"Esclusa\".",
+          "suspendDescription": "Con questa azione segnali che le transazioni necessitano di ulteriori controlli. Le transazioni passeranno allo stato \"Da controllare\".",
+          "rejectSubDesc": "Perché stai escludendo le richieste di rimborso?*",
+          "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
+        },
         "cancel": "Annulla",
         "approve": "Approva",
-        "rejectTitle": "Escludi richieste di rimborso",
-        "suspendTitle": "Richiedi ulteriori controlli ai venditori",
-        "rejectDescription": "Stai per rifiutare le richieste di rimborso selezionate. Per completare l’azione, compila la nota interna. La transazione passerà allo stato \"Esclusa\".",
-        "suspendDescription": "Con questa azione segnali che le transazioni necessitano di ulteriori controlli. Le transazioni passeranno allo stato \"Da controllare\".",
-        "rejectSubDesc": "Perché stai escludendo le richieste di rimborso?*",
-        "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*",
         "reject": "Escludi",
         "suspend": "Da controllare"
+      },
+      "toast": {
+        "single": {
+          "approve": "La richiesta di rimborso è stata approvata.",
+          "suspend": "La transazione selezionata è ora da controllare.",
+          "reject": "La richiesta di rimborso è stata esclusa."
+        },
+        "plural": {
+          "approve": "Le richieste di rimborso sono state approvate.",
+          "suspend": "Le transazioni selezionate sono ora da controllare.",
+          "reject": "Le richieste di rimborso sono state escluse."
+        }
       }
     },
     "initiativeUsers": {
