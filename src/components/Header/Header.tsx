@@ -52,9 +52,15 @@ const Header = ({ withSecondHeader, onExit, loggedUser }: /* , parties */ Props)
     [products]
   );
 
+  const handleExit = (exitAction: () => void) => {
+    localStorage.clear();
+    exitAction();
+  };
+
   return (
     <CommonHeader
-      onExit={onExit}
+      enableAssistanceButton={false}
+      onExit={handleExit}
       withSecondHeader={withSecondHeader}
       selectedPartyId={selectedParty?.partyId}
       selectedProductId={welfareProduct.id}

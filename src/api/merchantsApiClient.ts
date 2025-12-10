@@ -11,6 +11,12 @@ import { MerchantDetailDTO } from './generated/merchants/MerchantDetailDTO';
 import { MerchantStatisticsDTO } from './generated/merchants/MerchantStatisticsDTO';
 import { MerchantTransactionsProcessedListDTO } from './generated/merchants/MerchantTransactionsProcessedListDTO';
 import { MerchantTransactionsListDTO } from './generated/merchants/MerchantTransactionsListDTO';
+import { RewardBatchListDTO } from './generated/merchants/RewardBatchListDTO';
+import { RewardBatchTrxStatusEnum } from './generated/merchants/RewardBatchTrxStatus';
+import { DownloadInvoiceResponseDTO } from './generated/merchants/DownloadInvoiceResponseDTO';
+import { TransactionActionRequest } from './generated/merchants/TransactionActionRequest';
+import { TransactionActionResponse } from './generated/merchants/TransactionActionResponse';
+import { ListPointOfSaleDTO } from './generated/merchants/ListPointOfSaleDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -101,16 +107,91 @@ export const merchantsApi = {
     merchantId: string,
     initiativeId: string,
     page: number,
+    size: number,
+    sort?: string,
     fiscalCode?: string,
-    status?: string
+    status?: string,
+    rewardBatchId?: string,
+    rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
+    pointOfSaleId?: string
   ): Promise<MerchantTransactionsProcessedListDTO> => {
     const result = await merchantsApiClient.getMerchantTransactionsProcessed({
       merchantId,
       initiativeId,
       page,
-      size: 10,
+      size,
+      sort,
       fiscalCode,
       status,
+      rewardBatchId,
+      rewardBatchTrxStatus,
+      pointOfSaleId,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getRewardBatches: async (
+    initiativeId: string,
+    page: number,
+    size: number,
+    assigneeLevel?: string
+  ): Promise<RewardBatchListDTO> => {
+    const result = await merchantsApiClient.getRewardBatches({
+      initiativeId,
+      page,
+      size,
+      assigneeLevel
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getDownloadInvoice: async (
+    pointOfSaleId: string, transactionId: string, xMerchantId: string): Promise<DownloadInvoiceResponseDTO> => {
+    const result = await merchantsApiClient.downloadInvoiceFile({
+      pointOfSaleId,
+      transactionId,
+      'x-merchant-id': xMerchantId
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  approveTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.approveTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  suspendTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.suspendTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  rejectTrx: async (
+    initiativeId: string, rewardBatchId: string, body: TransactionActionRequest): Promise<TransactionActionResponse> => {
+    const result = await merchantsApiClient.rejectTransactions({
+      initiativeId,
+      rewardBatchId,
+      body
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getPos: async (
+    merchantId: string,
+    size: number | undefined
+  ): Promise<ListPointOfSaleDTO> => {
+    const result = await merchantsApiClient.getPointOfSales({
+      merchantId,
+      size
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
