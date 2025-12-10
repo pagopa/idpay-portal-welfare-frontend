@@ -1228,7 +1228,7 @@
     "batch": {
       "approved": "Approvato",
       "evaluating": "Da lavorare",
-      "sent": "<in arrivo>",
+      "sent": "In arrivo",
       "approving": "Da approvare"
     }
   },
