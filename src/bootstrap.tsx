@@ -15,6 +15,7 @@ import { ENV } from './utils/env';
 import './consentAndAnalyticsConfiguration.ts';
 import './locale';
 import ROUTES from './routes';
+import { initializeOneTrustLinkFix } from './utils/onetrust-utils';
 
 // eslint-disable-next-line functional/immutable-data
 CONFIG.MOCKS.MOCK_USER = MOCK_USER;
@@ -29,6 +30,8 @@ CONFIG.TEST.JWT = testToken;
 
 // eslint-disable-next-line functional/immutable-data
 CONFIG.HEADER.LINK.PRODUCTURL = ROUTES.HOME;
+
+initializeOneTrustLinkFix('/portale-enti');
 
 ReactDOM.render(
   <React.StrictMode>
