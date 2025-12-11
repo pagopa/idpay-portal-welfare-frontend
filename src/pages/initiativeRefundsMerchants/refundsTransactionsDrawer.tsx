@@ -181,22 +181,9 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
 
                     <ButtonNaked
                         color="primary"
-                        onClick={() => {download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName); onClose();}}
+                        onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
                     >
-                        {/* {row.invoiceFileName}
-                        <Typography
-                            component="a"
-                            href="#"
-                            sx={{
-                                fontSize: 18,
-                                fontWeight: 600,
-                                color: "#0073E6",
-                                textDecoration: "none",
-                                "&:hover": { textDecoration: "underline" },
-                            }}
-                        > */}
                         {data?.invoiceFileName ?? "-"}
-                        {/* </Typography> */}
                     </ButtonNaked>
                 </Box>
 
