@@ -1,14 +1,9 @@
-import { Box, Grid, Link } from '@mui/material';
-import { useTranslation } from 'react-i18next';
-import routes from '../../routes';
-
+import { Box, Grid } from '@mui/material';
 interface Props {
   idSelector: string;
 }
 
-const OneTrustContentWrapper = ({ idSelector }: Props) => {
-  const { t } = useTranslation();
-  return (
+const OneTrustContentWrapper = ({ idSelector }: Props) => (
     <>
       <Grid sx={{ px: 3, py: 3 }}>
         <div id={idSelector} className="otnotice"></div>
@@ -18,13 +13,9 @@ const OneTrustContentWrapper = ({ idSelector }: Props) => {
           sx={{ display: 'grid', gridColumn: 'span 2', mt: 5, justifyContent: 'center' }}
         ></Grid>
         <Grid sx={{ display: 'grid', gridColumn: 'span 10', mt: 5, justifyContent: 'center' }}>
-          <Link underline="hover" href={routes.HOME}>
-            {t('tos.backHome')}
-          </Link>
         </Grid>
       </Box>
     </>
   );
-};
 
 export default OneTrustContentWrapper;
