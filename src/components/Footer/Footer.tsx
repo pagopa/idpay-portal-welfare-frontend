@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { FooterPostLogin, FooterLegal } from '@pagopa/mui-italia';
-import { useHistory } from 'react-router-dom';
 import ROUTES from '../../routes';
 
 const FOOTER_LINKS = {
@@ -14,7 +13,6 @@ const baseUrl = window.location.origin;
 
 export const Footer = () => {
     const { t } = useTranslation();
-    const history = useHistory();
 
     return (
         <>
@@ -30,29 +28,27 @@ export const Footer = () => {
                         ariaLabel: t('footer.privacy'),
                         linkType: 'external',
                         href: ROUTES.PRIVACY_POLICY,
-                        onClick: () => history.replace(ROUTES.PRIVACY_POLICY)
+                        onClick: () => openExternalLink(`${baseUrl}${ROUTES.PRIVACY_POLICY}`)
                     },
                     {
                         label: t('footer.personalData'),
                         ariaLabel: t('footer.personalData'),
                         linkType: 'external',
                         href: FOOTER_LINKS.PERSONAL_DATA,
-                        // eslint-disable-next-line functional/immutable-data
-                        onClick: () => {window.location.href = (FOOTER_LINKS.PERSONAL_DATA);}
+                        onClick: () => openExternalLink(FOOTER_LINKS.PERSONAL_DATA)
                     },
                     {
                         label: t('footer.termsAndConditions'),
                         ariaLabel: t('footer.termsAndConditions'),
                         href: `${baseUrl}/portale-enti${ROUTES.TOS}`,
                         linkType: 'external',
-                        onClick: () => history.replace(ROUTES.TOS)
+                        onClick: () => openExternalLink(`${baseUrl}${ROUTES.TOS}`)
                     },
                     {
                         label: t('footer.a11y'),
                         ariaLabel: t('footer.a11y'),
                         linkType: 'external',
-                        // eslint-disable-next-line functional/immutable-data
-                        onClick: () => {window.location.href = (FOOTER_LINKS.A11Y);}
+                        onClick: () => openExternalLink(FOOTER_LINKS.A11Y)
                     }
                 ]}
                 currentLangCode={'it'}
