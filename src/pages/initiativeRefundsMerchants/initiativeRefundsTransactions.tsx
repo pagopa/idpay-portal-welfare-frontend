@@ -132,6 +132,7 @@ const InitiativeRefundsTransactions = () => {
     const user = parseJwt(storageTokenOps.read()) as JWTUser;
     const role = user.org_role;
 
+    const disabled = useMemo(() => batch?.status !== "EVALUATING", [batch]);
     const [draftStatusFilter, setDraftStatusFilter] = useState<string | "">("");
     const [statusFilter, setStatusFilter] = useState<string | "">("");
     const [draftPosFilter, setDraftPosFilter] = useState<string>("");
@@ -902,6 +903,7 @@ const InitiativeRefundsTransactions = () => {
                                     <TableCell>
                                         {lockedStatus && sameStatusRows.length > 0 && (
                                             <Checkbox
+                                                disabled={disabled}
                                                 checked={allSameStatusSelected}
                                                 onChange={handleHeaderCheckbox}
                                             />
@@ -939,7 +941,7 @@ const InitiativeRefundsTransactions = () => {
                                             <TableCell>
                                                 <Checkbox
                                                     checked={isChecked}
-                                                    disabled={isDisabled}
+                                                    disabled={isDisabled || disabled}
                                                     onChange={() => handleRowCheckbox(row.id, row.status)}
                                                 />
                                             </TableCell>
@@ -1078,6 +1080,7 @@ const InitiativeRefundsTransactions = () => {
                     onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
                     onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
                     onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
+                    disabled={disabled}
                 />
                 <RefundReasonModal
                     open={reasonModal.open}

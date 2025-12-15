@@ -6,7 +6,7 @@ import {
     Button,
     Typography
 } from "@mui/material";
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 interface Props {
@@ -31,12 +31,12 @@ export const RoleConfirmModal = ({
 
     const { title, description } = getLabels();
 
-    useEffect(() => {
-        // eslint-disable-next-line functional/immutable-data
-        if (open) { document.body.style.overflow = "hidden"; }
-        // eslint-disable-next-line functional/immutable-data
-        else { document.body.style.overflow = "auto"; }
-    }, [open, onClose]);
+    // useEffect(() => {
+    //     // eslint-disable-next-line functional/immutable-data
+    //     if (open) { document.body.style.overflow = "hidden"; }
+    //     // eslint-disable-next-line functional/immutable-data
+    //     else { document.body.style.overflow = "auto"; }
+    // }, [open, onClose]);
 
     return (
         <Dialog

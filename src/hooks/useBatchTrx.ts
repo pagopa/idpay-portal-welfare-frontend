@@ -19,7 +19,7 @@ export const rehydrateBatchTrx = async (
   initiativeId: string,
   batchId: string,
   page: number = 0,
-  pageSize: number = 10
+  pageSize: number = 200
 ): Promise<boolean> => {
   try {
     const res = await getRewardBatches(initiativeId, page, pageSize);
