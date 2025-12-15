@@ -131,3 +131,21 @@ export const getPOS = (
     merchantId,
     size
   );
+
+export const validateBatch = (
+  initiativeId: string,
+  rewardBatchId: string,
+): Promise<void> =>
+  merchantsApi.validateBatch(
+    initiativeId,
+    rewardBatchId,
+  );
+
+export const approveBatch = (
+  initiativeId: string,
+  rewardBatchId: string,
+): Promise<void> =>
+  merchantsApi.approveBatch(
+    initiativeId,
+    rewardBatchId,
+  );
