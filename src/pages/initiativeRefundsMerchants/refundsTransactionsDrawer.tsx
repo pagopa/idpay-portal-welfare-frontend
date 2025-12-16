@@ -19,6 +19,7 @@ interface Props {
     onApprove: (trxId: string) => void;
     onSuspend: (trxId: string, reason: string) => Promise<void> | void;
     onReject: (trxId: string, reason: string) => Promise<void> | void;
+    disabled: boolean;
 }
 
 const formatCurrency = (value?: number) => {
@@ -29,7 +30,7 @@ const formatCurrency = (value?: number) => {
     });
 };
 
-export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject }: Props) {
+export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
 
     const [reasonModalOpen, setReasonModalOpen] = useState(false);
@@ -66,7 +67,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 sx: {
                     width: "30%",
                     bgcolor: "#FFFFFF",
-                    transform: open ? "translateX(0)" : "translateX(420px)",
+                    transform: open ? "translateX(0)" : "translateX(30%)",
                     transition: "transform 0.3s ease-out",
                 },
             }}
@@ -181,22 +182,9 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
 
                     <ButtonNaked
                         color="primary"
-                        onClick={() => {download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName); onClose();}}
+                        onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
                     >
-                        {/* {row.invoiceFileName}
-                        <Typography
-                            component="a"
-                            href="#"
-                            sx={{
-                                fontSize: 18,
-                                fontWeight: 600,
-                                color: "#0073E6",
-                                textDecoration: "none",
-                                "&:hover": { textDecoration: "underline" },
-                            }}
-                        > */}
                         {data?.invoiceFileName ?? "-"}
-                        {/* </Typography> */}
                     </ButtonNaked>
                 </Box>
 
@@ -247,13 +235,15 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                             </Typography>
                         </Box>
                     )}
-                <RefundActionButtons
-                    direction="column"
-                    status={data?.rewardBatchTrxStatus as RewardBatchTrxStatus}
-                    onApprove={() => data?.trxId && setApproveModalOpen(true)}
-                    onSuspend={() => data?.trxId && openReasonModal("suspend", data.trxId)}
-                    onReject={() => data?.trxId && openReasonModal("reject", data.trxId)}
-                />
+                {!disabled &&
+                    <RefundActionButtons
+                        direction="column"
+                        status={data?.rewardBatchTrxStatus as RewardBatchTrxStatus}
+                        onApprove={() => data?.trxId && setApproveModalOpen(true)}
+                        onSuspend={() => data?.trxId && openReasonModal("suspend", data.trxId)}
+                        onReject={() => data?.trxId && openReasonModal("reject", data.trxId)}
+                    />
+                }
             </Box>
             <RefundReasonModal
                 open={reasonModalOpen}

@@ -1,18 +1,21 @@
 import { useState, useEffect, useMemo } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert } from "@mui/material";
 import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
 import { Toast, useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
+import { storageTokenOps } from "@pagopa/selfcare-common-frontend/utils/storage";
+import { Download, Sync } from "@mui/icons-material";
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
+import { RewardBatchDTO } from "../../api/generated/merchants/RewardBatchDTO";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
-import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx } from "../../services/merchantsService";
+import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx, validateBatch, approveBatch } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { getPOS } from "../../services/merchantsService";
@@ -20,12 +23,17 @@ import { TransactionActionRequest } from "../../api/generated/merchants/Transact
 import { openInvoiceInNewTab } from "../../utils/fileViewer-utils";
 import { useAppSelector } from "../../redux/hooks";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
+import { parseJwt } from "../../utils/jwt-utils";
+import { JWTUser } from "../../model/JwtUser";
 import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
+import { RoleActionButton } from "./roleActionButton";
+import { RoleConfirmModal } from "./roleConfirmModal";
+import { RoleErrorModal } from "./roleErrorModal";
 
 export interface TrxItem {
     raw: MerchantTransactionProcessedDTO;
@@ -121,9 +129,12 @@ const formatDate = (d?: string) => {
 const InitiativeRefundsTransactions = () => {
     const { t } = useTranslation();
     const initiativeSel = useAppSelector(initiativeSelector);
-    const batchData = getBatchTrx();
-    const batch = useMemo(() => batchData, [batchData?.id, batchData?.approvedAmountCents, batchData?.numberOfTransactionsElaborated, batchData?.assigneeLevel, batchData?.totalAmountCents]);
+    const [batch, setBatch] = useState<RefundItem | null>(getBatchTrx());
 
+    const user = parseJwt(storageTokenOps.read()) as JWTUser;
+    const role = user.org_role;
+
+    const disabled = useMemo(() => batch?.status !== "EVALUATING", [batch]);
     const [draftStatusFilter, setDraftStatusFilter] = useState<string | "">("");
     const [statusFilter, setStatusFilter] = useState<string | "">("");
     const [draftPosFilter, setDraftPosFilter] = useState<string>("");
@@ -143,6 +154,7 @@ const InitiativeRefundsTransactions = () => {
     const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
     const [openToast, setOpenToast] = useState(false);
     const [toastLabel, setToastLabel] = useState("");
+    const [toastVisible, setToastVisible] = useState(false);
 
     useInitiative();
     interface MatchParams {
@@ -174,6 +186,8 @@ const InitiativeRefundsTransactions = () => {
     const [approveModal, setApproveModal] = useState(false);
     const [restored, setRestored] = useState(false);
     const [posList, setPosList] = useState<Array<PointOfSaleDTO>>([]);
+    const [batchModalOpen, setBatchModalOpen] = useState(false);
+    const [batchErrorOpen, setBatchErrorOpen] = useState(false);
 
     useEffect(() => {
         const restore = async () => {
@@ -181,6 +195,7 @@ const InitiativeRefundsTransactions = () => {
 
             if (!saved && id && batchId) {
                 const ok = await rehydrateBatchTrx(id, batchId);
+                setBatch(getBatchTrx());
                 setRestored(true);
                 if (!ok) { history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id)); }
             } else {
@@ -197,6 +212,14 @@ const InitiativeRefundsTransactions = () => {
             .then((res) => setPosList([...(res.content ?? [])]))
             .catch(console.error);
     }, [batch?.merchantId]);
+
+    useEffect(() => {
+        if (!openToast && toastVisible) {
+            const timer = setTimeout(() => setToastVisible(false), 400);
+            return () => clearTimeout(timer);
+        }
+        return () => { };
+    }, [openToast, toastVisible]);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -321,6 +344,98 @@ const InitiativeRefundsTransactions = () => {
                 console.log(error);
             })
             .finally(() => setLoading(false));
+    };
+
+    const handleBatchStatus = () => {
+        if (batch?.id) {
+
+            setLoading(true);
+            if (batch?.assigneeLevel !== "L3") {
+
+                validateBatch(
+                    id,
+                    batch.id
+                )
+                    .then((res) => {
+                        updateBatch(res);
+                    })
+                    .catch((error) => {
+                        if (error?.status === 400) {
+                            setBatchErrorOpen(true);
+                        } else {
+                            addError({
+                                id: "VALIDATE_BATCH",
+                                blocking: false,
+                                error,
+                                techDescription: "Error validating batch",
+                                displayableTitle: t("errors.title"),
+                                displayableDescription: t("errors.getDataDescription"),
+                                toNotify: true,
+                                component: "Toast",
+                                showCloseIcon: true,
+                            });
+                        }
+                    })
+                    .finally(() => { setLoading(false); setBatchModalOpen(false); });
+            } else {
+                approveBatch(
+                    id,
+                    batch.id
+                )
+                    .then((res) => {
+                        updateBatch(res);
+                    })
+                    .catch((error) => {
+                        if (error?.status === 400) {
+                            setBatchErrorOpen(true);
+                        } else {
+                            addError({
+                                id: "APPROVE_BATCH",
+                                blocking: false,
+                                error,
+                                techDescription: "Error approving batch",
+                                displayableTitle: t("errors.title"),
+                                displayableDescription: t("errors.getDataDescription"),
+                                toNotify: true,
+                                component: "Toast",
+                                showCloseIcon: true,
+                            });
+                        }
+                    })
+                    .finally(() => { setLoading(false); setBatchModalOpen(false); });
+            }
+        }
+    };
+
+    // eslint-disable-next-line complexity
+    const mapRewardBatchToRefundItem = (
+        dto: RewardBatchDTO
+        // eslint-disable-next-line sonarjs/cognitive-complexity
+    ): RefundItem => ({
+        id: dto.id,
+        merchantId: dto.merchantId ?? batch?.merchantId ?? "",
+        businessName: dto.businessName ?? batch?.businessName ?? "",
+        month: dto.month ?? batch?.month ?? "",
+        posType: dto.posType === "PHYSICAL" ? "FISICO" : "ONLINE",
+        status: dto.status ?? "",
+        partial: dto.partial ?? false,
+        name: dto.name,
+        startDate: dto.startDate?.toDateString() ?? "",
+        endDate: dto.endDate?.toDateString() ?? "",
+        totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
+        approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
+        initialAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
+        numberOfTransactions: dto.numberOfTransactions ?? batch?.numberOfTransactions ?? 0,
+        numberOfTransactionsSuspended: dto.numberOfTransactionsSuspended ?? batch?.numberOfTransactionsSuspended ?? 0,
+        numberOfTransactionsRejected: dto.numberOfTransactionsRejected ?? batch?.numberOfTransactionsRejected ?? 0,
+        numberOfTransactionsElaborated: dto.numberOfTransactionsElaborated ?? batch?.numberOfTransactionsElaborated ?? 0,
+        assigneeLevel: dto.assigneeLevel ?? "L1",
+    });
+
+    const updateBatch = (res: RewardBatchDTO) => {
+        const refundItem = mapRewardBatchToRefundItem(res);
+        setBatchTrx(refundItem);
+        setBatch(getBatchTrx());
     };
 
     const mapTransactionStatus = (status?: RewardBatchTrxStatusEnum) => {
@@ -481,10 +596,16 @@ const InitiativeRefundsTransactions = () => {
         return serviceMap[type](id, batch.id, payload)
             .then(res => {
                 setBatchTrx(res as RefundItem);
+                setBatch(getBatchTrx());
                 getTableData(id);
                 setOpenToast(true);
                 const isSingle = trxIds.length === 1 ? "single" : "plural";
                 setToastLabel(t(`pages.initiativeMerchantsTransactions.toast.${isSingle}.${type}`));
+                setToastVisible(true);
+
+                setTimeout(() => {
+                    setOpenToast(false);
+                }, 3000);
             })
             .catch(err => { setLoading(false); console.error(err); })
             .finally(() => {
@@ -513,22 +634,56 @@ const InitiativeRefundsTransactions = () => {
                 </Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3, mb: 3 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        {batch.businessName}
-                    </Typography>
-                    {selectedRows.size > 0 &&
-                        <Box sx={{ width: "50%" }}>
-                            <RefundActionButtons
-                                direction="row"
-                                status={lockedStatus as RewardBatchTrxStatusEnum}
-                                onApprove={() => setApproveModal(true)}
-                                onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
-                                onReject={() => setReasonModal({ open: true, type: "reject" })}
-                                size={selectedRows.size}
-                            />
+                    <Box
+                        sx={{
+                            flex: 1,
+                            width: 0,
+                            minWidth: 0,
+                        }}
+                    >
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 600,
+                                overflow: "hidden",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            {batch.businessName}
+                        </Typography>
+                    </Box>
+
+                    {batch.status === "EVALUATING" ?
+                        selectedRows.size > 0 ?
+                            <Box sx={{ width: "50%" }}>
+                                <RefundActionButtons
+                                    direction="row"
+                                    status={lockedStatus as RewardBatchTrxStatusEnum}
+                                    onApprove={() => setApproveModal(true)}
+                                    onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
+                                    onReject={() => setReasonModal({ open: true, type: "reject" })}
+                                    size={selectedRows.size}
+                                />
+                            </Box>
+                            :
+                            role.replace("operator", "L").toUpperCase() === batch.assigneeLevel.toUpperCase() ?
+                                <RoleActionButton onClick={() => setBatchModalOpen(true)} role={batch.assigneeLevel} /> :
+                                null
+                        :
+                        <Box sx={{ width: "15%", justifyContent: "flex-end", display: "flex" }}>
+                            <Button onClick={() => { }} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />}>
+                                {t('pages.initiativeMerchantsTransactions.csv.button')}
+                            </Button>
                         </Box>
                     }
                 </Box>
+
+                {batch?.status === "APPROVING" &&
+                    <Alert sx={{ mb: 3 }} variant="outlined" color="info" icon={<Sync sx={{ color: "#6BCFFB" }} />} >{t('pages.initiativeMerchantsTransactions.csv.alert')}</Alert>
+                }
 
                 <Paper
                     sx={{
@@ -804,6 +959,7 @@ const InitiativeRefundsTransactions = () => {
                                     <TableCell>
                                         {lockedStatus && sameStatusRows.length > 0 && (
                                             <Checkbox
+                                                disabled={disabled}
                                                 checked={allSameStatusSelected}
                                                 onChange={handleHeaderCheckbox}
                                             />
@@ -841,7 +997,7 @@ const InitiativeRefundsTransactions = () => {
                                             <TableCell>
                                                 <Checkbox
                                                     checked={isChecked}
-                                                    disabled={isDisabled}
+                                                    disabled={isDisabled || disabled}
                                                     onChange={() => handleRowCheckbox(row.id, row.status)}
                                                 />
                                             </TableCell>
@@ -980,6 +1136,7 @@ const InitiativeRefundsTransactions = () => {
                     onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
                     onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
                     onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
+                    disabled={disabled}
                 />
                 <RefundReasonModal
                     open={reasonModal.open}
@@ -1003,14 +1160,34 @@ const InitiativeRefundsTransactions = () => {
                         setApproveModal(false);
                     }}
                 />
-                {openToast && (
-                    <Toast
-                        message={toastLabel}
-                        open={openToast}
-                        title=""
-                        showToastCloseIcon={true}
-                        onCloseToast={() => setOpenToast(false)}
-                    />
+                <RoleConfirmModal
+                    open={batchModalOpen}
+                    role={batch.assigneeLevel}
+                    onClose={() => setBatchModalOpen(false)}
+                    onConfirm={handleBatchStatus}
+                />
+                <RoleErrorModal
+                    open={batchErrorOpen}
+                    onClose={() => setBatchErrorOpen(false)}
+                />
+                {toastVisible && (
+                    <Box sx={{
+                        transition: "opacity 0.4s ease",
+                        opacity: openToast ? 1 : 0
+                    }}>
+                        <Toast
+                            bottom="155px"
+                            right="40px"
+                            message={toastLabel}
+                            open={toastVisible}
+                            title=""
+                            showToastCloseIcon={true}
+                            onCloseToast={() => {
+                                setOpenToast(false);
+                                setTimeout(() => setToastVisible(false), 400);
+                            }}
+                        />
+                    </Box>
                 )}
             </Box>
         );

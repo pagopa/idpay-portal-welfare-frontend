@@ -1010,7 +1010,11 @@
         "refundData": "DATI RIMBORSO",
         "beneficiary": "Intestatario",
         "iban": "IBAN",
-        "checksCompleted": "Controlli effettuati"
+        "checksCompleted": "Controlli effettuati",
+        "validate": "Valida",
+        "check": "Verifica",
+        "approve": "Approva",
+        "batchLowerCase": "lotto"
       },
       "table": {
         "invoice": "Fattura",
@@ -1074,6 +1078,27 @@
           "suspend": "Le transazioni selezionate sono ora da controllare.",
           "reject": "Le richieste di rimborso sono state escluse."
         }
+      },
+      "batchModal": {
+        "errorTitle": "Controlla le transazioni mancanti",
+        "errorDescription": "Verifica tutte le transazioni prima di validare il lotto. Assicurati di controllare almeno il 15% delle transazioni presenti.",
+        "confirm": "Conferma",
+        "L1": {
+          "title": "Sei sicuro di aver completato i controlli?",
+          "description": "Hai verificato almeno il 15% delle transazioni. Confermando, l’incarico passerà al livello L2."
+        },
+        "L2": {
+          "title": "Sei sicuro di aver completato i controlli?",
+          "description": "Confermando, l’incarico passerà al livello L3."
+        },
+        "L3": {
+          "title": "Hai terminato i controlli?",
+          "description": "Le transazioni approvate saranno rimborsate, quelle escluse non riceveranno rimborso e quelle ancora da verificare passeranno al lotto successivo."
+        }
+      },
+      "csv": {
+        "button": "Esporta csv",
+        "alert": "Stiamo elaborando il lotto. Quando sarà pronto, potrai esportare il file .csv"
       }
     },
     "initiativeUsers": {

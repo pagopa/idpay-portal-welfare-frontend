@@ -147,7 +147,7 @@ export default function SideMenu() {
                 border: 'none',
                 '&:before': { backgroundColor: '#fff' },
                 minWidth: 300,
-                maxWidth: 316,
+                maxWidth: "100%",
               }}
               data-testid="accordion-click-test"
             >
