@@ -1095,6 +1095,10 @@
           "title": "Hai terminato i controlli?",
           "description": "Le transazioni approvate saranno rimborsate, quelle escluse non riceveranno rimborso e quelle ancora da verificare passeranno al lotto successivo."
         }
+      },
+      "csv": {
+        "button": "Esporta csv",
+        "alert": "Stiamo elaborando il lotto. Quando sarà pronto, potrai esportare il file .csv"
       }
     },
     "initiativeUsers": {

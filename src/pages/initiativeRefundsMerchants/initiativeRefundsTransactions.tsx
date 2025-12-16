@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert } from "@mui/material";
 import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -7,10 +7,12 @@ import { useTranslation } from "react-i18next";
 import { Toast, useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
 import { storageTokenOps } from "@pagopa/selfcare-common-frontend/utils/storage";
+import { Download, Sync } from "@mui/icons-material";
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
+import { RewardBatchDTO } from "../../api/generated/merchants/RewardBatchDTO";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx, validateBatch, approveBatch } from "../../services/merchantsService";
@@ -354,8 +356,8 @@ const InitiativeRefundsTransactions = () => {
                     id,
                     batch.id
                 )
-                    .then(async () => {
-                        await getUpdatedBatch();
+                    .then((res) => {
+                        updateBatch(res);
                     })
                     .catch((error) => {
                         if (error?.status === 400) {
@@ -380,8 +382,8 @@ const InitiativeRefundsTransactions = () => {
                     id,
                     batch.id
                 )
-                    .then(async () => {
-                        await getUpdatedBatch();
+                    .then((res) => {
+                        updateBatch(res);
                     })
                     .catch((error) => {
                         if (error?.status === 400) {
@@ -405,8 +407,34 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
-    const getUpdatedBatch = async () => {
-        await rehydrateBatchTrx(id, batchId);
+    // eslint-disable-next-line complexity
+    const mapRewardBatchToRefundItem = (
+        dto: RewardBatchDTO
+        // eslint-disable-next-line sonarjs/cognitive-complexity
+    ): RefundItem => ({
+        id: dto.id,
+        merchantId: dto.merchantId ?? batch?.merchantId ?? "",
+        businessName: dto.businessName ?? batch?.businessName ?? "",
+        month: dto.month ?? batch?.month ?? "",
+        posType: dto.posType === "PHYSICAL" ? "FISICO" : "ONLINE",
+        status: dto.status ?? "",
+        partial: dto.partial ?? false,
+        name: dto.name,
+        startDate: dto.startDate?.toDateString() ?? "",
+        endDate: dto.endDate?.toDateString() ?? "",
+        totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
+        approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
+        initialAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
+        numberOfTransactions: dto.numberOfTransactions ?? batch?.numberOfTransactions ?? 0,
+        numberOfTransactionsSuspended: dto.numberOfTransactionsSuspended ?? batch?.numberOfTransactionsSuspended ?? 0,
+        numberOfTransactionsRejected: dto.numberOfTransactionsRejected ?? batch?.numberOfTransactionsRejected ?? 0,
+        numberOfTransactionsElaborated: dto.numberOfTransactionsElaborated ?? batch?.numberOfTransactionsElaborated ?? 0,
+        assigneeLevel: dto.assigneeLevel ?? "L1",
+    });
+
+    const updateBatch = (res: RewardBatchDTO) => {
+        const refundItem = mapRewardBatchToRefundItem(res);
+        setBatchTrx(refundItem);
         setBatch(getBatchTrx());
     };
 
@@ -606,9 +634,28 @@ const InitiativeRefundsTransactions = () => {
                 </Box>
 
                 <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3, mb: 3 }}>
-                    <Typography variant="h5" sx={{ fontWeight: 600 }}>
-                        {batch.businessName}
-                    </Typography>
+                    <Box
+                        sx={{
+                            flex: 1,
+                            width: 0,
+                            minWidth: 0,
+                        }}
+                    >
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                fontWeight: 600,
+                                overflow: "hidden",
+                                display: "-webkit-box",
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: "vertical",
+                                wordBreak: "break-word",
+                            }}
+                        >
+                            {batch.businessName}
+                        </Typography>
+                    </Box>
+
                     {batch.status === "EVALUATING" ?
                         selectedRows.size > 0 ?
                             <Box sx={{ width: "50%" }}>
@@ -622,12 +669,21 @@ const InitiativeRefundsTransactions = () => {
                                 />
                             </Box>
                             :
-                            role !== "operator3" && batch.assigneeLevel === "L3" ?
-                                null :
-                                <RoleActionButton onClick={() => setBatchModalOpen(true)} role={batch.assigneeLevel} />
-                        : null
+                            role.replace("operator", "L").toUpperCase() === batch.assigneeLevel.toUpperCase() ?
+                                <RoleActionButton onClick={() => setBatchModalOpen(true)} role={batch.assigneeLevel} /> :
+                                null
+                        :
+                        <Box sx={{ width: "15%", justifyContent: "flex-end", display: "flex" }}>
+                            <Button onClick={() => { }} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />}>
+                                {t('pages.initiativeMerchantsTransactions.csv.button')}
+                            </Button>
+                        </Box>
                     }
                 </Box>
+
+                {batch?.status === "APPROVING" &&
+                    <Alert sx={{ mb: 3 }} variant="outlined" color="info" icon={<Sync sx={{ color: "#6BCFFB" }} />} >{t('pages.initiativeMerchantsTransactions.csv.alert')}</Alert>
+                }
 
                 <Paper
                     sx={{

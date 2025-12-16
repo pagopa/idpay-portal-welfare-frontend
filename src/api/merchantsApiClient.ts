@@ -18,6 +18,7 @@ import { TransactionActionRequest } from './generated/merchants/TransactionActio
 import { TransactionActionResponse } from './generated/merchants/TransactionActionResponse';
 import { ListPointOfSaleDTO } from './generated/merchants/ListPointOfSaleDTO';
 import { buildFetchApiLayer } from './buildFetchApiLayer';
+import { RewardBatchDTO } from './generated/merchants/RewardBatchDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -206,20 +207,20 @@ export const merchantsApi = {
   },
 
   validateBatch: async (
-    initiativeId: string, rewardBatchId: string): Promise<void> => {
+    initiativeId: string, rewardBatchId: string): Promise<RewardBatchDTO> => {
     const result = await merchantsApiClientFetchLayer.validateRewardBatch({
       initiativeId,
       rewardBatchId,
     });
-    return extractResponse(result, 204, onRedirectToLogin);
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 
   approveBatch: async (
-    initiativeId: string, rewardBatchId: string): Promise<void> => {
+    initiativeId: string, rewardBatchId: string): Promise<RewardBatchDTO> => {
     const result = await merchantsApiClientFetchLayer.approveRewardBatch({
       initiativeId,
       rewardBatchId,
     });
-    return extractResponse(result, 204, onRedirectToLogin);
+    return extractResponse(result, 200, onRedirectToLogin);
   },
 };
