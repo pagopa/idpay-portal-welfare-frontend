@@ -8,6 +8,7 @@ import { MerchantTransactionsListDTO } from '../api/generated/merchants/Merchant
 import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants/MerchantTransactionsProcessedListDTO';
 
 import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
+import { RewardBatchDTO } from '../api/generated/merchants/RewardBatchDTO';
 import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
 import { RewardBatchTrxStatusEnum } from '../api/generated/merchants/RewardBatchTrxStatus';
 import { TransactionActionRequest } from '../api/generated/merchants/TransactionActionRequest';
@@ -135,7 +136,7 @@ export const getPOS = (
 export const validateBatch = (
   initiativeId: string,
   rewardBatchId: string,
-): Promise<void> =>
+): Promise<RewardBatchDTO> =>
   merchantsApi.validateBatch(
     initiativeId,
     rewardBatchId,
@@ -144,7 +145,7 @@ export const validateBatch = (
 export const approveBatch = (
   initiativeId: string,
   rewardBatchId: string,
-): Promise<void> =>
+): Promise<RewardBatchDTO> =>
   merchantsApi.approveBatch(
     initiativeId,
     rewardBatchId,
