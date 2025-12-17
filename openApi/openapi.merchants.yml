@@ -664,6 +664,7 @@ paths:
               - CREATED
               - SENT
               - EVALUATING
+              - APPROVING
               - APPROVED
         - name: assigneeLevel
           in: query
@@ -759,12 +760,6 @@ paths:
             type: string
         - name: rewardBatchId
           in: path
-          required: true
-          schema:
-            type: string
-        - name: x-merchant-id
-          in: header
-          description: Merchant ID
           required: true
           schema:
             type: string
@@ -1732,21 +1727,6 @@ components:
           maxLength: 255
           pattern: .*
           example: "novembre 2025"
-        approvalDate:
-          type: string
-          format: date-time
-          description: "ENG: Start date of the batch  <br> IT: Data di inizio del periodo del "
-          example: "2025-11-01T00:00:00Z"
-        creationDate:
-          type: string
-          format: date-time
-          description: "ENG: Start date of the batch  <br> IT: Data di inizio del periodo del "
-          example: "2025-11-01T00:00:00Z"
-        updateDate:
-          type: string
-          format: date-time
-          description: "ENG: Start date of the batch  <br> IT: Data di inizio del periodo del "
-          example: "2025-11-01T00:00:00Z"
         startDate:
           type: string
           format: date-time
@@ -1799,6 +1779,21 @@ components:
           format: int64
           description: "ENG: Number of rejected transactions <br> IT: Numero di transazioni rigettate"
           example: 2
+        approvalDate:
+          type: string
+          format: date-time
+          description: "ENG: Start date of the batch  <br> IT: Data di inizio del periodo del "
+          example: "2025-11-01T00:00:00Z"
+        creationDate:
+          type: string
+          format: date-time
+          description: "ENG: Start date of the batch - IT: Data di inizio del periodo del "
+          example: "2025-11-01T00:00:00Z"
+        updateDate:
+          type: string
+          format: date-time
+          description: "ENG: Start date of the batch  <br> IT: Data di inizio del periodo del "
+          example: "2025-11-01T00:00:00Z"
     RewardBatchErrorDTO:
       type: object
       required:
