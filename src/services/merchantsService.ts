@@ -154,11 +154,9 @@ export const approveBatch = (
 
 export const getDownloadCsv = (
   initiativeId: string,
-  rewardBatchId: string,
-  xMerchantId: string
+  rewardBatchId: string
 ): Promise<DownloadRewardBatchResponseDTO> =>
   merchantsApi.getDownloadCsv(
     initiativeId,
-    rewardBatchId,
-    xMerchantId
+    rewardBatchId
   );

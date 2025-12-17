@@ -4,7 +4,7 @@ import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
-import { Toast, useErrorDispatcher, useLoading } from "@pagopa/selfcare-common-frontend";
+import { useLoading } from "@pagopa/selfcare-common-frontend";
 import { matchPath, useHistory } from "react-router-dom";
 import { storageTokenOps } from "@pagopa/selfcare-common-frontend/utils/storage";
 import { Download, Sync } from "@mui/icons-material";
@@ -26,6 +26,7 @@ import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { parseJwt } from "../../utils/jwt-utils";
 import { JWTUser } from "../../model/JwtUser";
 import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
+import { useAlert } from "../../hooks/useAlert";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
@@ -144,6 +145,7 @@ const InitiativeRefundsTransactions = () => {
     const [pageSize, setPageSize] = useState(10);
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
+    const { setAlert } = useAlert();
 
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
@@ -152,15 +154,12 @@ const InitiativeRefundsTransactions = () => {
     const [iban, setIban] = useState<string>('');
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
     const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
-    const [openToast, setOpenToast] = useState(false);
-    const [toastLabel, setToastLabel] = useState("");
-    const [toastVisible, setToastVisible] = useState(false);
 
     useInitiative();
     interface MatchParams {
         id: string;
     }
-    const addError = useErrorDispatcher();
+
     const match = matchPath(location.pathname, {
         path: [ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS],
         exact: true,
@@ -212,14 +211,6 @@ const InitiativeRefundsTransactions = () => {
             .then((res) => setPosList([...(res.content ?? [])]))
             .catch(console.error);
     }, [batch?.merchantId]);
-
-    useEffect(() => {
-        if (!openToast && toastVisible) {
-            const timer = setTimeout(() => setToastVisible(false), 400);
-            return () => clearTimeout(timer);
-        }
-        return () => { };
-    }, [openToast, toastVisible]);
 
     const handleOpenDrawer = (trx: TrxItem) => {
         setSelectedTransaction(mapRefundsDrawerData(trx.raw, trx));
@@ -330,17 +321,6 @@ const InitiativeRefundsTransactions = () => {
                 }
             })
             .catch((error) => {
-                // addError({
-                //     id: "GET_TRX_PAGED_ERROR",
-                //     blocking: false,
-                //     error,
-                //     techDescription: "Error retrieving transactions",
-                //     displayableTitle: t("errors.title"),
-                //     displayableDescription: t("errors.getDataDescription"),
-                //     toNotify: true,
-                //     component: "Toast",
-                //     showCloseIcon: true,
-                // });
                 console.log(error);
             })
             .finally(() => setLoading(false));
@@ -363,17 +343,7 @@ const InitiativeRefundsTransactions = () => {
                         if (error?.status === 400) {
                             setBatchErrorOpen(true);
                         } else {
-                            addError({
-                                id: "VALIDATE_BATCH",
-                                blocking: false,
-                                error,
-                                techDescription: "Error validating batch",
-                                displayableTitle: t("errors.title"),
-                                displayableDescription: t("errors.getDataDescription"),
-                                toNotify: true,
-                                component: "Toast",
-                                showCloseIcon: true,
-                            });
+                            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
                         }
                     })
                     .finally(() => { setLoading(false); setBatchModalOpen(false); });
@@ -385,21 +355,12 @@ const InitiativeRefundsTransactions = () => {
                     .then((res) => {
                         updateBatch(res);
                     })
+                    // eslint-disable-next-line sonarjs/no-identical-functions
                     .catch((error) => {
                         if (error?.status === 400) {
                             setBatchErrorOpen(true);
                         } else {
-                            addError({
-                                id: "APPROVE_BATCH",
-                                blocking: false,
-                                error,
-                                techDescription: "Error approving batch",
-                                displayableTitle: t("errors.title"),
-                                displayableDescription: t("errors.getDataDescription"),
-                                toNotify: true,
-                                component: "Toast",
-                                showCloseIcon: true,
-                            });
+                            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
                         }
                     })
                     .finally(() => { setLoading(false); setBatchModalOpen(false); });
@@ -555,18 +516,8 @@ const InitiativeRefundsTransactions = () => {
                     }
                     return openInvoiceInNewTab(invoiceUrl, invoiceFileName);
                 })
-                .catch((error) => {
-                    addError({
-                        id: "GET_DOWNLOAD_INVOICE",
-                        blocking: false,
-                        error,
-                        techDescription: "Error retrieving invoice",
-                        displayableTitle: t("errors.title"),
-                        displayableDescription: t("errors.getDataDescription"),
-                        toNotify: true,
-                        component: "Toast",
-                        showCloseIcon: true,
-                    });
+                .catch(() => {
+                    setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
                 })
                 .finally(() => setLoading(false));
         }
@@ -598,14 +549,8 @@ const InitiativeRefundsTransactions = () => {
                 setBatchTrx(res as RefundItem);
                 setBatch(getBatchTrx());
                 getTableData(id);
-                setOpenToast(true);
                 const isSingle = trxIds.length === 1 ? "single" : "plural";
-                setToastLabel(t(`pages.initiativeMerchantsTransactions.toast.${isSingle}.${type}`));
-                setToastVisible(true);
-
-                setTimeout(() => {
-                    setOpenToast(false);
-                }, 3000);
+                setAlert({ text: t(`pages.initiativeMerchantsTransactions.toast.${isSingle}.${type}`), isOpen: true, severity: 'success' });
             })
             .catch(err => { setLoading(false); console.error(err); })
             .finally(() => {
@@ -620,8 +565,7 @@ const InitiativeRefundsTransactions = () => {
             setLoading(true);
             getDownloadCsv(
                 id,
-                batch?.id,
-                batch.merchantId
+                batch?.id
             )
                 .then((res) => {
                     const csvUrl = res?.approvedBatchUrl;
@@ -631,18 +575,8 @@ const InitiativeRefundsTransactions = () => {
                     const fileName = getFileNameFromAzureUrl(csvUrl);
                     return downloadCsv(csvUrl, fileName);
                 })
-                .catch((error) => {
-                    addError({
-                        id: "GET_DOWNLOAD_CSV",
-                        blocking: false,
-                        error,
-                        techDescription: "Error retrieving csv",
-                        displayableTitle: t("errors.title"),
-                        displayableDescription: t("errors.getDataDescription"),
-                        toNotify: true,
-                        component: "Toast",
-                        showCloseIcon: true,
-                    });
+                .catch((_error) => {
+                    setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
                 })
                 .finally(() => setLoading(false));
         }
@@ -718,8 +652,8 @@ const InitiativeRefundsTransactions = () => {
                                 <RoleActionButton onClick={() => setBatchModalOpen(true)} role={batch.assigneeLevel} /> :
                                 null
                         :
-                        <Box sx={{ width: "15%", justifyContent: "flex-end", display: "flex" }}>
-                            <Button onClick={() => getCsv()} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />}>
+                        <Box sx={{ width: "25%", justifyContent: "flex-end", display: "flex" }}>
+                            <Button onClick={() => getCsv()} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />} sx={{whiteSpace: 'nowrap'}}>
                                 {t('pages.initiativeMerchantsTransactions.csv.button')}
                             </Button>
                         </Box>
@@ -1215,25 +1149,6 @@ const InitiativeRefundsTransactions = () => {
                     open={batchErrorOpen}
                     onClose={() => setBatchErrorOpen(false)}
                 />
-                {toastVisible && (
-                    <Box sx={{
-                        transition: "opacity 0.4s ease",
-                        opacity: openToast ? 1 : 0
-                    }}>
-                        <Toast
-                            bottom="155px"
-                            right="40px"
-                            message={toastLabel}
-                            open={toastVisible}
-                            title=""
-                            showToastCloseIcon={true}
-                            onCloseToast={() => {
-                                setOpenToast(false);
-                                setTimeout(() => setToastVisible(false), 400);
-                            }}
-                        />
-                    </Box>
-                )}
             </Box>
         );
     }

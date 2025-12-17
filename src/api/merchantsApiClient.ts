@@ -226,11 +226,10 @@ export const merchantsApi = {
   },
 
   getDownloadCsv: async (
-    initiativeId: string, rewardBatchId: string, xMerchantId: string): Promise<DownloadRewardBatchResponseDTO> => {
+    initiativeId: string, rewardBatchId: string): Promise<DownloadRewardBatchResponseDTO> => {
     const result = await merchantsApiClient.approveDownloadRewardBatch({
       initiativeId,
-      rewardBatchId,
-      'x-merchant-id': xMerchantId
+      rewardBatchId
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

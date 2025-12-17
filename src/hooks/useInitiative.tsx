@@ -3,8 +3,8 @@
 
 import { useLocation } from 'react-router-dom';
 import { matchPath } from 'react-router';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import { useTranslation } from 'react-i18next';
+// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import ROUTES from '../routes';
@@ -54,8 +54,8 @@ interface MatchParams {
 export const useInitiative = () => {
   const location = useLocation();
   const dispatch = useAppDispatch();
-  const addError = useErrorDispatcher();
-  const { t } = useTranslation();
+  // const addError = useErrorDispatcher();
+  // const { t } = useTranslation();
   const setLoading = useLoading('GET_INITIATIVE_DETAIL');
 
   const match = matchPath(location.pathname, {
@@ -114,18 +114,18 @@ export const useInitiative = () => {
           const refundRule = parseRefundRule(response.refundRule);
           dispatch(saveRefundRule(refundRule));
         })
-        .catch((error) => {
-          addError({
-            id: 'GET_INITIATIVE_DETAIL_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting initiative data',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+        .catch((_error) => {
+          // addError({
+          //   id: 'GET_INITIATIVE_DETAIL_ERROR',
+          //   blocking: false,
+          //   error,
+          //   techDescription: 'An error occurred getting initiative data',
+          //   displayableTitle: t('errors.title'),
+          //   displayableDescription: t('errors.getDataDescription'),
+          //   toNotify: true,
+          //   component: 'Toast',
+          //   showCloseIcon: true,
+          // });
         })
         .finally(() => setLoading(false));
     }

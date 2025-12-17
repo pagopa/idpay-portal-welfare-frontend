@@ -1,6 +1,5 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
@@ -16,6 +15,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
+import { useAlert } from "../../hooks/useAlert";
 
 export interface RefundItem {
     id: string;
@@ -208,7 +208,8 @@ const InitiativeRefundsMerchants = () => {
     interface MatchParams {
         id: string;
     }
-    const addError = useErrorDispatcher();
+
+    const { setAlert } = useAlert();
 
     const match = matchPath(location.pathname, {
         path: [ROUTES.INITIATIVE_REFUNDS],
@@ -288,18 +289,9 @@ const InitiativeRefundsMerchants = () => {
                     setRows([]);
                 }
             })
-            .catch((error) => {
-                addError({
-                    id: 'GET_BATCH_PAGED_ERROR',
-                    blocking: false,
-                    error,
-                    techDescription: 'An error occurred getting export paged data',
-                    displayableTitle: t('errors.title'),
-                    displayableDescription: t('errors.getDataDescription'),
-                    toNotify: true,
-                    component: 'Toast',
-                    showCloseIcon: true,
-                });
+            .catch(() => {
+                setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+
             })
             .finally(() => {
                 setLoading(false);
