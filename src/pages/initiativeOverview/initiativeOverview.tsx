@@ -13,7 +13,7 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { matchPath } from 'react-router';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -52,7 +52,7 @@ const InitiativeOverview = () => {
   const [onboardedCitizenCount, setOnboardedCitizenCount] = useState(0);
   const [lastUpdatedDateTime, setLastUpdatedDateTime] = useState('');
 
-  const addError = useErrorDispatcher();
+  // const addError = useErrorDispatcher();
   const setLoading = useLoading('PUBLISH_INITIATIVE');
 
   const userCanReviewInitiative = usePermissions(USER_PERMISSIONS.REVIEW_INITIATIVE);
@@ -154,18 +154,18 @@ const InitiativeOverview = () => {
           })
           .catch((error) => {
             if (Object.keys(error).length > 0) {
-              addError({
-                id: 'GET_GROUP_OF_BENEFICIARY_STATUS_AND_DETAIL_ERROR',
-                blocking: false,
-                error,
-                techDescription:
-                  'An error occurred getting groups of beneficiary status and detail',
-                displayableTitle: t('errors.title'),
-                displayableDescription: t('errors.getDataDescription'),
-                toNotify: true,
-                component: 'Toast',
-                showCloseIcon: true,
-              });
+              // addError({
+              //   id: 'GET_GROUP_OF_BENEFICIARY_STATUS_AND_DETAIL_ERROR',
+              //   blocking: false,
+              //   error,
+              //   techDescription:
+              //     'An error occurred getting groups of beneficiary status and detail',
+              //   displayableTitle: t('errors.title'),
+              //   displayableDescription: t('errors.getDataDescription'),
+              //   toNotify: true,
+              //   component: 'Toast',
+              //   showCloseIcon: true,
+              // });
             }
           })
           .finally(() => setLoading(false));
@@ -184,18 +184,18 @@ const InitiativeOverview = () => {
         .then((_res) => {
           history.replace(ROUTES.HOME);
         })
-        .catch((error) => {
+        .catch((_error) => {
           setPublishModalOpen(false);
-          addError({
-            id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred publishing initiative',
-            displayableDescription: t('errors.cantPublishInitiative'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+          // addError({
+          //   id: 'UPDATE_INITIATIVE_TO_PUBLISHED_STATUS_ERROR',
+          //   blocking: false,
+          //   error,
+          //   techDescription: 'An error occurred publishing initiative',
+          //   displayableDescription: t('errors.cantPublishInitiative'),
+          //   toNotify: true,
+          //   component: 'Toast',
+          //   showCloseIcon: true,
+          // });
         })
         .finally(() => setLoading(false));
     }

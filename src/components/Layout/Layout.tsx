@@ -11,6 +11,8 @@ import SideMenu from '../SideMenu/SideMenu';
 import ROUTES from '../../routes';
 import routes from '../../routes';
 import { Footer } from '../Footer/Footer';
+import AlertComponent from '../Alert/AlertComponent';
+import { useAlert } from '../../hooks/useAlert';
 
 type Props = {
   children?: React.ReactNode;
@@ -23,6 +25,7 @@ const Layout = ({ children }: Props) => {
   const [showAssistanceInfo, setShowAssistanceInfo] = useState(true);
   const sidebarRef = useRef<any>();
   const [sidebarHeight, setSidebarHeight] = useState(0);
+  const {alert, setAlert} = useAlert();
 
   const match = matchPath(location.pathname, {
     path: [
@@ -45,6 +48,7 @@ const Layout = ({ children }: Props) => {
 
   useEffect(() => {
     setShowAssistanceInfo(location.pathname !== ROUTES.ASSISTANCE);
+    setAlert(alert.isOpen ? { ...alert, isOpen: false} : alert);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -107,6 +111,7 @@ const Layout = ({ children }: Props) => {
             gridTemplateColumns="1fr"
           >
             {children}
+            <AlertComponent {...alert} />
           </Box>
         </Box>
       ) : (
@@ -130,6 +135,8 @@ const Layout = ({ children }: Props) => {
             justifySelf="center"
           >
             {children}
+            <AlertComponent { ...alert} contentStyle={{right: '20px', ...alert.contentStyle }} />
+
           </Box>
         </Box>
       )}

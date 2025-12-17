@@ -1254,7 +1254,8 @@
       "approved": "Approvato",
       "evaluating": "Da lavorare",
       "sent": "In arrivo",
-      "approving": "Da approvare"
+      "toApprove": "Da approvare",
+      "approving": "In approvazione"
     }
   },
   "footer": {

@@ -34,6 +34,7 @@ import InitiativeUploadMerchants from './pages/initiativeUploadMerchants/initiat
 import InitiativeMerchantDetail from './pages/initiativeMerchantDetail/initiativeMerchantDetail';
 import InitiativeRefundsMerchants from './pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
 import InitiativeRefundsTransactions from './pages/initiativeRefundsMerchants/initiativeRefundsTransactions';
+import { AlertProvider } from './contexts/AlertContext';
 
 const SecuredRoutes = withLogin(
   withSelectedPartyProducts(() => {
@@ -41,9 +42,9 @@ const SecuredRoutes = withLogin(
     const userCanUpdateInitiative = usePermissions(USER_PERMISSIONS.UPDATE_INITIATIVE);
     // const location = useLocation();
     // const { isTOSAccepted, acceptTOS, firstAcceptance } = useTCAgreement();
-    
+
     // TODO implement tos 
-    
+
     // if (
     //   isTOSAccepted === false &&
     //   location.pathname !== routes.PRIVACY_POLICY &&
@@ -68,71 +69,73 @@ const SecuredRoutes = withLogin(
     // }
 
     return (
-      <Layout>
-        <Switch>
-          <Route path={routes.NEW_INITIATIVE} exact={true}>
-            {userCanCreateInitiative ? <NewInitiative /> : <Redirect to={routes.HOME} />}
-          </Route>
-          <Route path={routes.INITIATIVE} exact={true}>
-            {userCanUpdateInitiative ? <NewInitiative /> : <Redirect to={routes.HOME} />}
-          </Route>
-          <Route path={routes.INITIATIVE_OVERVIEW} exact={true}>
-            <InitiativeOverview />
-          </Route>
-          <Route path={routes.INITIATIVE_RANKING} exact={true}>
-            <InitiativeRanking />
-          </Route>
-          <Route path={routes.INITIATIVE_USERS} exact={true}>
-            <InitiativeUsers />
-          </Route>
-          <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
-            {/* <InitiativeRefunds /> */}
-            <InitiativeRefundsMerchants />
-          </Route>
-          <Route path={routes.INITIATIVE_REFUNDS_TRANSACTIONS} exact={true}>
-            <InitiativeRefundsTransactions />
-          </Route>
-          <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
-            <InitiativeRefundsOutcome />
-          </Route>
-          <Route path={routes.INITIATIVE_REFUNDS_DETAIL} exact={true}>
-            <InitiativeRefundsDetails />
-          </Route>
-          <Route path={routes.INITIATIVE_DETAIL} exact={true}>
-            <InitiativeDetail />
-          </Route>
-          <Route path={routes.HOME} exact={true}>
-            <InitiativeList />
-          </Route>
-          <Route path={routes.ASSISTANCE} exact={true}>
-            <Assistance />
-          </Route>
-          <Route path={routes.INITIATIVE_USER_DETAILS} exact={true}>
-            <InitiativeUserDetails />
-          </Route>
-          <Route path={routes.INITIATIVE_MERCHANT} exact={true}>
-            <InitiativeMerchant />
-          </Route>
-          <Route path={routes.INITIATIVE_MERCHANT_DETAIL} exact={true}>
-            <InitiativeMerchantDetail />
-          </Route>
-          <Route path={routes.INITIATIVE_MERCHANT_UPLOAD} exact={true}>
-            <InitiativeUploadMerchants />
-          </Route>
-          <Route path={routes.TOS} exact={true}>
-            <TOS />
-          </Route>
-          <Route path={routes.PRIVACY_POLICY} exact={true}>
-            <PrivacyPolicy />
-          </Route>
-          <Route path={routes.CHOOSE_ORGANIZATION} exact={true}>
-            {!userCanCreateInitiative ? <ChooseOrganization /> : <Redirect to={routes.HOME} />}
-          </Route>
-          <Route path="*">
-            <Redirect to={routes.HOME} />
-          </Route>
-        </Switch>
-      </Layout>
+      <AlertProvider>
+        <Layout>
+          <Switch>
+            <Route path={routes.NEW_INITIATIVE} exact={true}>
+              {userCanCreateInitiative ? <NewInitiative /> : <Redirect to={routes.HOME} />}
+            </Route>
+            <Route path={routes.INITIATIVE} exact={true}>
+              {userCanUpdateInitiative ? <NewInitiative /> : <Redirect to={routes.HOME} />}
+            </Route>
+            <Route path={routes.INITIATIVE_OVERVIEW} exact={true}>
+              <InitiativeOverview />
+            </Route>
+            <Route path={routes.INITIATIVE_RANKING} exact={true}>
+              <InitiativeRanking />
+            </Route>
+            <Route path={routes.INITIATIVE_USERS} exact={true}>
+              <InitiativeUsers />
+            </Route>
+            <Route path={routes.INITIATIVE_REFUNDS} exact={true}>
+              {/* <InitiativeRefunds /> */}
+              <InitiativeRefundsMerchants />
+            </Route>
+            <Route path={routes.INITIATIVE_REFUNDS_TRANSACTIONS} exact={true}>
+              <InitiativeRefundsTransactions />
+            </Route>
+            <Route path={routes.INITIATIVE_REFUNDS_OUTCOME} exact={true}>
+              <InitiativeRefundsOutcome />
+            </Route>
+            <Route path={routes.INITIATIVE_REFUNDS_DETAIL} exact={true}>
+              <InitiativeRefundsDetails />
+            </Route>
+            <Route path={routes.INITIATIVE_DETAIL} exact={true}>
+              <InitiativeDetail />
+            </Route>
+            <Route path={routes.HOME} exact={true}>
+              <InitiativeList />
+            </Route>
+            <Route path={routes.ASSISTANCE} exact={true}>
+              <Assistance />
+            </Route>
+            <Route path={routes.INITIATIVE_USER_DETAILS} exact={true}>
+              <InitiativeUserDetails />
+            </Route>
+            <Route path={routes.INITIATIVE_MERCHANT} exact={true}>
+              <InitiativeMerchant />
+            </Route>
+            <Route path={routes.INITIATIVE_MERCHANT_DETAIL} exact={true}>
+              <InitiativeMerchantDetail />
+            </Route>
+            <Route path={routes.INITIATIVE_MERCHANT_UPLOAD} exact={true}>
+              <InitiativeUploadMerchants />
+            </Route>
+            <Route path={routes.TOS} exact={true}>
+              <TOS />
+            </Route>
+            <Route path={routes.PRIVACY_POLICY} exact={true}>
+              <PrivacyPolicy />
+            </Route>
+            <Route path={routes.CHOOSE_ORGANIZATION} exact={true}>
+              {!userCanCreateInitiative ? <ChooseOrganization /> : <Redirect to={routes.HOME} />}
+            </Route>
+            <Route path="*">
+              <Redirect to={routes.HOME} />
+            </Route>
+          </Switch>
+        </Layout>
+      </AlertProvider>
     );
   })
 );

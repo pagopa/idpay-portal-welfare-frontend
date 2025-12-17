@@ -1,6 +1,5 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
@@ -16,6 +15,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
+import { useAlert } from "../../hooks/useAlert";
 
 export interface RefundItem {
     id: string;
@@ -46,26 +46,32 @@ export interface RefundsPage {
     totalPages: number;
 }
 
-export const getStatusColor = (status: string) => {
+export const getStatusColor = (status: string, role: string) => {
     switch (status) {
         case "APPROVED":
             return "success";
         case "EVALUATING":
-            return "info";
+            if (role === 'L3') {
+                return "warning";
+            }
+            return "primary";
         case "SENT":
             return "default";
         case "APPROVING":
-            return "warning";
+            return "info";
         default:
             return "default";
     }
 };
 
-export const getStatusLabel = (status: string, t: any) => {
+export const getStatusLabel = (status: string, role: string, t: any) => {
     switch (status) {
         case "APPROVED":
             return t("chip.batch.approved");
         case "EVALUATING":
+            if (role === 'L3') {
+                return t("chip.batch.toApprove");
+            }
             return t("chip.batch.evaluating");
         case "SENT":
             return t("chip.batch.sent");
@@ -187,8 +193,8 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tag
-                    value={getStatusLabel(row.status, t)}
-                    color={getStatusColor(row.status) as Colors}
+                    value={getStatusLabel(row.status, row.assigneeLevel, t)}
+                    color={getStatusColor(row.status, row.assigneeLevel) as Colors}
                 />
             </TableCell>
 
@@ -208,7 +214,8 @@ const InitiativeRefundsMerchants = () => {
     interface MatchParams {
         id: string;
     }
-    const addError = useErrorDispatcher();
+
+    const { setAlert } = useAlert();
 
     const match = matchPath(location.pathname, {
         path: [ROUTES.INITIATIVE_REFUNDS],
@@ -288,18 +295,9 @@ const InitiativeRefundsMerchants = () => {
                     setRows([]);
                 }
             })
-            .catch((error) => {
-                addError({
-                    id: 'GET_BATCH_PAGED_ERROR',
-                    blocking: false,
-                    error,
-                    techDescription: 'An error occurred getting export paged data',
-                    displayableTitle: t('errors.title'),
-                    displayableDescription: t('errors.getDataDescription'),
-                    toNotify: true,
-                    component: 'Toast',
-                    showCloseIcon: true,
-                });
+            .catch(() => {
+                setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+
             })
             .finally(() => {
                 setLoading(false);
