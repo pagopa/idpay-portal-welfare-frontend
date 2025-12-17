@@ -46,26 +46,32 @@ export interface RefundsPage {
     totalPages: number;
 }
 
-export const getStatusColor = (status: string) => {
+export const getStatusColor = (status: string, role: string) => {
     switch (status) {
         case "APPROVED":
             return "success";
         case "EVALUATING":
-            return "info";
+            if (role === 'L3') {
+                return "warning";
+            }
+            return "primary";
         case "SENT":
             return "default";
         case "APPROVING":
-            return "warning";
+            return "info";
         default:
             return "default";
     }
 };
 
-export const getStatusLabel = (status: string, t: any) => {
+export const getStatusLabel = (status: string, role: string, t: any) => {
     switch (status) {
         case "APPROVED":
             return t("chip.batch.approved");
         case "EVALUATING":
+            if (role === 'L3') {
+                return t("chip.batch.toApprove");
+            }
             return t("chip.batch.evaluating");
         case "SENT":
             return t("chip.batch.sent");
@@ -187,8 +193,8 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tag
-                    value={getStatusLabel(row.status, t)}
-                    color={getStatusColor(row.status) as Colors}
+                    value={getStatusLabel(row.status, row.assigneeLevel, t)}
+                    color={getStatusColor(row.status, row.assigneeLevel) as Colors}
                 />
             </TableCell>
 

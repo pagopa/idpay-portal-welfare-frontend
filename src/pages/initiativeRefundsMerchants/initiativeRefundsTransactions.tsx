@@ -787,8 +787,8 @@ const InitiativeRefundsTransactions = () => {
                             {t('pages.initiativeMerchantsRefunds.table.status')}
                         </Typography>
                         <Tag
-                            value={getStatusLabel(batch.status, t)}
-                            color={getStatusColor(batch.status) as Colors}
+                            value={getStatusLabel(batch.status, batch.assigneeLevel,t)}
+                            color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
                             sx={{ display: 'flex', alignItems: 'center' }}
                         />
                     </Box>
