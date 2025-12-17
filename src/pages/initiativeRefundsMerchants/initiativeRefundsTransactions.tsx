@@ -15,12 +15,12 @@ import ROUTES from "../../routes";
 import { RewardBatchDTO } from "../../api/generated/merchants/RewardBatchDTO";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
-import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx, validateBatch, approveBatch } from "../../services/merchantsService";
+import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx, validateBatch, approveBatch, getDownloadCsv } from "../../services/merchantsService";
 import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
 import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { getPOS } from "../../services/merchantsService";
 import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
-import { openInvoiceInNewTab } from "../../utils/fileViewer-utils";
+import { downloadCsv, openInvoiceInNewTab } from "../../utils/fileViewer-utils";
 import { useAppSelector } from "../../redux/hooks";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { parseJwt } from "../../utils/jwt-utils";
@@ -614,6 +614,51 @@ const InitiativeRefundsTransactions = () => {
             });
     };
 
+    const getCsv = () => {
+        if (batch?.id) {
+
+            setLoading(true);
+            getDownloadCsv(
+                id,
+                batch?.id,
+                batch.merchantId
+            )
+                .then((res) => {
+                    const csvUrl = res?.approvedBatchUrl;
+                    if (!csvUrl) {
+                        throw new Error("Invoice URL not found");
+                    }
+                    const fileName = getFileNameFromAzureUrl(csvUrl);
+                    return downloadCsv(csvUrl, fileName);
+                })
+                .catch((error) => {
+                    addError({
+                        id: "GET_DOWNLOAD_CSV",
+                        blocking: false,
+                        error,
+                        techDescription: "Error retrieving csv",
+                        displayableTitle: t("errors.title"),
+                        displayableDescription: t("errors.getDataDescription"),
+                        toNotify: true,
+                        component: "Toast",
+                        showCloseIcon: true,
+                    });
+                })
+                .finally(() => setLoading(false));
+        }
+    };
+
+    const getFileNameFromAzureUrl = (url: string): string => {
+        try {
+            const { pathname } = new URL(url);
+            const rawFileName = pathname.substring(pathname.lastIndexOf("/") + 1);
+            return decodeURIComponent(rawFileName);
+        } catch {
+            console.log("catch");
+            return `${batch?.businessName}_${batch?.name}_${batch?.posType}`;
+        }
+    };
+
     if (!batch && !restored) { return null; }
 
     if (!batch && restored) {
@@ -674,7 +719,7 @@ const InitiativeRefundsTransactions = () => {
                                 null
                         :
                         <Box sx={{ width: "15%", justifyContent: "flex-end", display: "flex" }}>
-                            <Button onClick={() => { }} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />}>
+                            <Button onClick={() => getCsv()} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />}>
                                 {t('pages.initiativeMerchantsTransactions.csv.button')}
                             </Button>
                         </Box>

@@ -19,6 +19,7 @@ import { TransactionActionResponse } from './generated/merchants/TransactionActi
 import { ListPointOfSaleDTO } from './generated/merchants/ListPointOfSaleDTO';
 import { buildFetchApiLayer } from './buildFetchApiLayer';
 import { RewardBatchDTO } from './generated/merchants/RewardBatchDTO';
+import { DownloadRewardBatchResponseDTO } from './generated/merchants/DownloadRewardBatchResponseDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -220,6 +221,16 @@ export const merchantsApi = {
     const result = await merchantsApiClientFetchLayer.approveRewardBatch({
       initiativeId,
       rewardBatchId,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getDownloadCsv: async (
+    initiativeId: string, rewardBatchId: string, xMerchantId: string): Promise<DownloadRewardBatchResponseDTO> => {
+    const result = await merchantsApiClient.approveDownloadRewardBatch({
+      initiativeId,
+      rewardBatchId,
+      'x-merchant-id': xMerchantId
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

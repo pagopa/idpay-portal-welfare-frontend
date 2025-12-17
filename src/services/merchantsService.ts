@@ -1,5 +1,6 @@
 // import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
 import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
+import { DownloadRewardBatchResponseDTO } from '../api/generated/merchants/DownloadRewardBatchResponseDTO';
 import { ListPointOfSaleDTO } from '../api/generated/merchants/ListPointOfSaleDTO';
 import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
 import { MerchantListDTO } from '../api/generated/merchants/MerchantListDTO';
@@ -126,7 +127,7 @@ export const rejectTrx = (
 
 export const getPOS = (
   merchantId: string,
-    size: number | undefined
+  size: number | undefined
 ): Promise<ListPointOfSaleDTO> =>
   merchantsApi.getPos(
     merchantId,
@@ -149,4 +150,15 @@ export const approveBatch = (
   merchantsApi.approveBatch(
     initiativeId,
     rewardBatchId,
+  );
+
+export const getDownloadCsv = (
+  initiativeId: string,
+  rewardBatchId: string,
+  xMerchantId: string
+): Promise<DownloadRewardBatchResponseDTO> =>
+  merchantsApi.getDownloadCsv(
+    initiativeId,
+    rewardBatchId,
+    xMerchantId
   );
