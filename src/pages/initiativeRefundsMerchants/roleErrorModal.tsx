@@ -46,7 +46,7 @@ export const RoleErrorModal = ({
             <DialogContent>
                 <Typography
                     variant="body1"
-                    sx={{ color: "#17324D", fontSize: "16px", marginTop: "4px" }}
+                    sx={{ color: "#17324D", fontSize: "16px", marginTop: "4px", whiteSpace: "pre-line" }}
                 >
                     {description}
                 </Typography>
@@ -54,18 +54,14 @@ export const RoleErrorModal = ({
 
             <DialogActions sx={{ padding: "20px", gap: 2 }}>
                 <Button
-                    variant="outlined"
+                    variant="contained"
                     onClick={onClose}
                     sx={{
-                        borderColor: "#0073E6",
-                        color: "#0073E6",
                         fontWeight: 600,
-                        paddingX: "24px",
-                        textTransform: "none",
-                        "&:hover": { backgroundColor: "rgba(0,115,230,0.08)" }
+                        paddingX: "24px",                        
                     }}
                 >
-                    {t("pages.initiativeMerchantsTransactions.modal.cancel")}
+                    {t("pages.initiativeMerchantsTransactions.modal.close")}
                 </Button>
 
             </DialogActions>

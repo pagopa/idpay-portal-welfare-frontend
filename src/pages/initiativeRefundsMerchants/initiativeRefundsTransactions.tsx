@@ -340,11 +340,7 @@ const InitiativeRefundsTransactions = () => {
                         updateBatch(res);
                     })
                     .catch((error) => {
-                        if (error?.status === 400) {
-                            setBatchErrorOpen(true);
-                        } else {
-                            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-                        }
+                        handleCatch(error);
                     })
                     .finally(() => { setLoading(false); setBatchModalOpen(false); });
             } else {
@@ -355,16 +351,21 @@ const InitiativeRefundsTransactions = () => {
                     .then((res) => {
                         updateBatch(res);
                     })
-                    // eslint-disable-next-line sonarjs/no-identical-functions
                     .catch((error) => {
-                        if (error?.status === 400) {
-                            setBatchErrorOpen(true);
-                        } else {
-                            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-                        }
+                        handleCatch(error);
                     })
                     .finally(() => { setLoading(false); setBatchModalOpen(false); });
             }
+        }
+    };
+
+    const handleCatch = (error: any) => {
+        if (error?.status === 400 && error?.body?.code === "BATCH_NOT_ELABORATED_15_PERCENT") {
+            setBatchErrorOpen(true);
+        } else if (error?.status === 400 && error?.body?.code === "REWARD_BATCH_INVALID_REQUEST") {
+            setAlert({ title: t('errors.title'), text: t('errors.batchInvalidRequest'), isOpen: true, severity: 'error' });
+        } else {
+            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
         }
     };
 

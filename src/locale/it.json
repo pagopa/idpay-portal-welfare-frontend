@@ -360,7 +360,8 @@
     "getDataDescription": "Riprova",
     "getFileDataDescription": "Carica di nuovo il file",
     "invalidDataDescription": "Verifica che i dati inseriti siano corretti",
-    "title": "Si è verificato un errore"
+    "title": "Si è verificato un errore",
+    "batchInvalidRequest": "Approvare prima i lotti relativi ai mesi precedenti"
   },
   "helpStaticUrls": {
     "pages": {
@@ -1062,6 +1063,7 @@
           "rejectSubDesc": "Perché stai escludendo le richieste di rimborso?*",
           "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
         },
+        "close": "Chiudi",
         "cancel": "Annulla",
         "approve": "Approva",
         "reject": "Escludi",
@@ -1081,11 +1083,11 @@
       },
       "batchModal": {
         "errorTitle": "Controlla le transazioni mancanti",
-        "errorDescription": "Verifica tutte le transazioni prima di validare il lotto. Assicurati di controllare almeno il 15% delle transazioni presenti.",
+        "errorDescription": "Devi verificare almeno il 15% delle transazioni prima di validare il lotto.\nCompleta i controlli mancanti per procedere.",
         "confirm": "Conferma",
         "L1": {
-          "title": "Sei sicuro di aver completato i controlli?",
-          "description": "Hai verificato almeno il 15% delle transazioni. Confermando, l’incarico passerà al livello L2."
+          "title": "Hai completato i controlli?",
+          "description": "Confermando, l’incarico passerà al livello L2 se hai verificato almeno il 15% delle transazioni."
         },
         "L2": {
           "title": "Sei sicuro di aver completato i controlli?",
