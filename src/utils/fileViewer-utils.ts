@@ -43,10 +43,10 @@ export const openInvoiceInNewTab = async (
   setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
 };
 
-export const downloadCsv = (url: string, fileName?: string): void => {
+export const downloadCsv = (url: string, fileName: string): void => {
   const link = document.createElement("a");
   link.href = url;
-  link.download = fileName ?? "file.csv";
+  link.download = fileName;
   link.rel = "noopener";
   document.body.appendChild(link);
   link.click();

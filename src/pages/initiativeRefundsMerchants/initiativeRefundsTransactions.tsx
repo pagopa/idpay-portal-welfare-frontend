@@ -501,7 +501,7 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
-    const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => {
+    const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload: boolean = false) => {
         if (batch?.merchantId) {
 
             setLoading(true);
@@ -514,6 +514,9 @@ const InitiativeRefundsTransactions = () => {
                     const invoiceUrl = res?.invoiceUrl;
                     if (!invoiceUrl) {
                         throw new Error("Invoice URL not found");
+                    }
+                    if (isDownload) {
+                        return downloadCsv(invoiceUrl, invoiceFileName);
                     }
                     return openInvoiceInNewTab(invoiceUrl, invoiceFileName);
                 })
@@ -654,7 +657,7 @@ const InitiativeRefundsTransactions = () => {
                                 null
                         :
                         <Box sx={{ width: "25%", justifyContent: "flex-end", display: "flex" }}>
-                            <Button onClick={() => getCsv()} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />} sx={{whiteSpace: 'nowrap'}}>
+                            <Button onClick={() => getCsv()} variant="contained" disabled={batch.status === "APPROVING"} startIcon={<Download />} sx={{ whiteSpace: 'nowrap' }}>
                                 {t('pages.initiativeMerchantsTransactions.csv.button')}
                             </Button>
                         </Box>
@@ -788,7 +791,7 @@ const InitiativeRefundsTransactions = () => {
                             {t('pages.initiativeMerchantsRefunds.table.status')}
                         </Typography>
                         <Tag
-                            value={getStatusLabel(batch.status, batch.assigneeLevel,t)}
+                            value={getStatusLabel(batch.status, batch.assigneeLevel, t)}
                             color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
                             sx={{ display: 'flex', alignItems: 'center' }}
                         />
