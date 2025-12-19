@@ -18,7 +18,7 @@ import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
 import ListAltIcon from '@mui/icons-material/ListAlt';
 import RuleIcon from '@mui/icons-material/Rule';
 import { useEffect, useState } from 'react';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
 import { useAppDispatch } from '../../redux/hooks';
@@ -44,7 +44,7 @@ export default function SideMenu() {
   const history = useHistory();
   const onExit = useUnloadEventOnExit();
   const dispatch = useAppDispatch();
-  const addError = useErrorDispatcher();
+  // const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -88,18 +88,18 @@ export default function SideMenu() {
         .then((response: InitiativeSummaryArrayDTO) => {
           dispatch(setInitiativeSummaryList(response));
         })
-        .catch((error: any) => {
-          addError({
-            id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
-            blocking: false,
-            error,
-            techDescription: 'An error occurred getting initiative summary list',
-            displayableTitle: t('errors.title'),
-            displayableDescription: t('errors.getDataDescription'),
-            toNotify: true,
-            component: 'Toast',
-            showCloseIcon: true,
-          });
+        .catch((_error: any) => {
+          // addError({
+          //   id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
+          //   blocking: false,
+          //   error,
+          //   techDescription: 'An error occurred getting initiative summary list',
+          //   displayableTitle: t('errors.title'),
+          //   displayableDescription: t('errors.getDataDescription'),
+          //   toNotify: true,
+          //   component: 'Toast',
+          //   showCloseIcon: true,
+          // });
         })
         .finally(() => setLoading(false));
     }
@@ -147,7 +147,7 @@ export default function SideMenu() {
                 border: 'none',
                 '&:before': { backgroundColor: '#fff' },
                 minWidth: 300,
-                maxWidth: 316,
+                maxWidth: "100%",
               }}
               data-testid="accordion-click-test"
             >

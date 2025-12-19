@@ -360,7 +360,8 @@
     "getDataDescription": "Riprova",
     "getFileDataDescription": "Carica di nuovo il file",
     "invalidDataDescription": "Verifica che i dati inseriti siano corretti",
-    "title": "Si è verificato un errore"
+    "title": "Si è verificato un errore",
+    "batchInvalidRequest": "Approvare prima i lotti relativi ai mesi precedenti"
   },
   "helpStaticUrls": {
     "pages": {
@@ -1010,7 +1011,11 @@
         "refundData": "DATI RIMBORSO",
         "beneficiary": "Intestatario",
         "iban": "IBAN",
-        "checksCompleted": "Controlli effettuati"
+        "checksCompleted": "Controlli effettuati",
+        "validate": "Valida",
+        "check": "Verifica",
+        "approve": "Approva",
+        "batchLowerCase": "lotto"
       },
       "table": {
         "invoice": "Fattura",
@@ -1058,6 +1063,7 @@
           "rejectSubDesc": "Perché stai escludendo le richieste di rimborso?*",
           "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
         },
+        "close": "Chiudi",
         "cancel": "Annulla",
         "approve": "Approva",
         "reject": "Escludi",
@@ -1074,6 +1080,27 @@
           "suspend": "Le transazioni selezionate sono ora da controllare.",
           "reject": "Le richieste di rimborso sono state escluse."
         }
+      },
+      "batchModal": {
+        "errorTitle": "Controlla le transazioni mancanti",
+        "errorDescription": "Devi verificare almeno il 15% delle transazioni prima di validare il lotto.\nCompleta i controlli mancanti per procedere.",
+        "confirm": "Conferma",
+        "L1": {
+          "title": "Hai completato i controlli?",
+          "description": "Confermando, l’incarico passerà al livello L2 se hai verificato almeno il 15% delle transazioni."
+        },
+        "L2": {
+          "title": "Sei sicuro di aver completato i controlli?",
+          "description": "Confermando, l’incarico passerà al livello L3."
+        },
+        "L3": {
+          "title": "Hai terminato i controlli?",
+          "description": "Le transazioni approvate saranno rimborsate, quelle escluse non riceveranno rimborso e quelle ancora da verificare passeranno al lotto successivo."
+        }
+      },
+      "csv": {
+        "button": "Esporta csv",
+        "alert": "Stiamo elaborando il lotto. Quando sarà pronto, potrai esportare il file .csv"
       }
     },
     "initiativeUsers": {
@@ -1228,8 +1255,9 @@
     "batch": {
       "approved": "Approvato",
       "evaluating": "Da lavorare",
-      "sent": "<in arrivo>",
-      "approving": "Da approvare"
+      "sent": "In arrivo",
+      "toApprove": "Da approvare",
+      "approving": "In approvazione"
     }
   },
   "footer": {

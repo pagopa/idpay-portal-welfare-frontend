@@ -24,7 +24,7 @@ import { grey } from '@mui/material/colors';
 import SearchIcon from '@mui/icons-material/Search';
 import { useHistory } from 'react-router-dom';
 import MoreIcon from '@mui/icons-material/MoreVert';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+// import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { getInitativeSummary } from '../../services/intitativeService';
@@ -284,7 +284,7 @@ const InitiativeList = () => {
   const { t } = useTranslation();
   const history = useHistory();
   const dispatch = useAppDispatch();
-  const addError = useErrorDispatcher();
+  // const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_INITIATIVE_LIST');
 
   const userCanCreateInitiative = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
@@ -306,18 +306,18 @@ const InitiativeList = () => {
         setInitiativeList([...data]);
         setInitiativeListFiltered([...data]);
       })
-      .catch((error: any) => {
-        addError({
-          id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
-          blocking: false,
-          error,
-          techDescription: 'An error occurred getting initiative summary list',
-          displayableTitle: t('errors.title'),
-          displayableDescription: t('errors.getDataDescription'),
-          toNotify: true,
-          component: 'Toast',
-          showCloseIcon: true,
-        });
+      .catch((_error: any) => {
+        // addError({
+        //   id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
+        //   blocking: false,
+        //   error,
+        //   techDescription: 'An error occurred getting initiative summary list',
+        //   displayableTitle: t('errors.title'),
+        //   displayableDescription: t('errors.getDataDescription'),
+        //   toNotify: true,
+        //   component: 'Toast',
+        //   showCloseIcon: true,
+        // });
       })
       .finally(() => setLoading(false));
   }, []);

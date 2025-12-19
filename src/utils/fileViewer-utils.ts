@@ -1,3 +1,4 @@
+/* eslint-disable functional/immutable-data */
 export const openInvoiceInNewTab = async (
   invoiceUrl: string,
   fileName?: string
@@ -40,4 +41,14 @@ export const openInvoiceInNewTab = async (
   }
 
   setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+};
+
+export const downloadCsv = (url: string, fileName: string): void => {
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = fileName;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 };

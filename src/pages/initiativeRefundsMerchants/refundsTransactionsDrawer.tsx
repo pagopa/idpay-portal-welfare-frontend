@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import { Download } from "@mui/icons-material";
 import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
 import { RefundActionButtons } from "./refundsActionButtons";
@@ -14,11 +15,12 @@ interface Props {
     open: boolean;
     onClose: () => void;
     data: RefundsDrawerData | null;
-    download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => void;
+    download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
     onSuspend: (trxId: string, reason: string) => Promise<void> | void;
     onReject: (trxId: string, reason: string) => Promise<void> | void;
+    disabled: boolean;
 }
 
 const formatCurrency = (value?: number) => {
@@ -29,7 +31,7 @@ const formatCurrency = (value?: number) => {
     });
 };
 
-export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject }: Props) {
+export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
 
     const [reasonModalOpen, setReasonModalOpen] = useState(false);
@@ -66,7 +68,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 sx: {
                     width: "30%",
                     bgcolor: "#FFFFFF",
-                    transform: open ? "translateX(0)" : "translateX(420px)",
+                    transform: open ? "translateX(0)" : "translateX(30%)",
                     transition: "transform 0.3s ease-out",
                 },
             }}
@@ -170,34 +172,27 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                     {t('pages.initiativeMerchantsTransactions.drawer.invoice')}
                 </Typography>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-                    <DescriptionOutlinedIcon
-                        sx={{
-                            height: 24,
-                            color: "#0073E6",
-                            flexShrink: 0,
-                        }}
-                    />
-
-                    <ButtonNaked
-                        color="primary"
-                        onClick={() => {download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName); onClose();}}
-                    >
-                        {/* {row.invoiceFileName}
-                        <Typography
-                            component="a"
-                            href="#"
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: 'space-between', gap: 1, mb: 3 }}>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <DescriptionOutlinedIcon
                             sx={{
-                                fontSize: 18,
-                                fontWeight: 600,
+                                height: 24,
                                 color: "#0073E6",
-                                textDecoration: "none",
-                                "&:hover": { textDecoration: "underline" },
+                                flexShrink: 0,
                             }}
-                        > */}
-                        {data?.invoiceFileName ?? "-"}
-                        {/* </Typography> */}
-                    </ButtonNaked>
+                        />
+
+                        <ButtonNaked
+                            sx={{ fontSize: 18, ml: 1 }}
+                            color="primary"
+                            onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
+                        >
+                            {data?.invoiceFileName ?? "-"}
+                        </ButtonNaked>
+                    </Box>
+                    <Box sx={{ display: "flex", alignItems: "center" }} onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName, true)}>
+                        <Download sx={{ alignSelf: 'flex-end', color: "#0073E6", height: 24, cursor: 'pointer' }} />
+                    </Box>
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
@@ -247,13 +242,15 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                             </Typography>
                         </Box>
                     )}
-                <RefundActionButtons
-                    direction="column"
-                    status={data?.rewardBatchTrxStatus as RewardBatchTrxStatus}
-                    onApprove={() => data?.trxId && setApproveModalOpen(true)}
-                    onSuspend={() => data?.trxId && openReasonModal("suspend", data.trxId)}
-                    onReject={() => data?.trxId && openReasonModal("reject", data.trxId)}
-                />
+                {!disabled &&
+                    <RefundActionButtons
+                        direction="column"
+                        status={data?.rewardBatchTrxStatus as RewardBatchTrxStatus}
+                        onApprove={() => data?.trxId && setApproveModalOpen(true)}
+                        onSuspend={() => data?.trxId && openReasonModal("suspend", data.trxId)}
+                        onReject={() => data?.trxId && openReasonModal("reject", data.trxId)}
+                    />
+                }
             </Box>
             <RefundReasonModal
                 open={reasonModalOpen}
