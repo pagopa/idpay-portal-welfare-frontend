@@ -86,7 +86,7 @@ export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
     posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
 const formatAmount = (amountCents?: number) => {
-    if (!amountCents) {
+    if (amountCents === undefined || amountCents === null) {
         return "-";
     }
     return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
