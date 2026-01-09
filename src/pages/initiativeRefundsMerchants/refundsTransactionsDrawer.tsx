@@ -164,7 +164,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.docNumber')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
+                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3, wordBreak: "break-all" }}>
                     {data?.invoiceDocNumber ?? "-"}
                 </Typography>
 

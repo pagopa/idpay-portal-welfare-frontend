@@ -936,7 +936,11 @@ const InitiativeRefundsTransactions = () => {
                     </Table>
                 ) : (
                     <>
-                        <Table sx={{ mt: 2 }}>
+                        <Table sx={{
+                            mt: 2,
+                            width: '100%',
+                            tableLayout: 'fixed',
+                        }}>
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
@@ -948,10 +952,10 @@ const InitiativeRefundsTransactions = () => {
                                             />
                                         )}
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                    <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>
                                         {t("pages.initiativeMerchantsTransactions.table.invoice")}
                                     </TableCell>
-                                    <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                    <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>
                                         {t("pages.initiativeMerchantsTransactions.table.pos")}
                                     </TableCell>
                                     <TableCell sortDirection={dateSort === "" ? false : dateSort}>
@@ -964,9 +968,16 @@ const InitiativeRefundsTransactions = () => {
                                         </TableSortLabel>
                                     </TableCell>
 
-                                    <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
-                                    <TableCell sx={{ whiteSpace: "nowrap" }}>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
-                                    <TableCell></TableCell>
+                                    <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
+                                    <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
+                                    <TableCell sx={{
+                                        width: 55,
+                                        maxWidth: 55,
+                                        minWidth: 44,
+                                        p: 0,
+                                        pr: 1,
+                                        textAlign: 'right',
+                                    }}></TableCell>
                                 </TableRow>
                             </TableHead>
 
