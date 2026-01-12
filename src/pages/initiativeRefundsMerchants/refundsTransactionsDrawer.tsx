@@ -1,8 +1,9 @@
+/* eslint-disable complexity */
 import { Drawer, Box, Typography, Chip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { ButtonNaked } from "@pagopa/mui-italia";
+import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
 import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
@@ -31,6 +32,7 @@ const formatCurrency = (value?: number) => {
     });
 };
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
 
@@ -107,66 +109,93 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.table.dateTime')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {formatDate(data?.trxChargeDate ?? "")}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {formatDate(data?.trxChargeDate ?? "")}
+                    </Typography>
+                    <CopyToClipboardButton value={formatDate(data?.trxChargeDate ?? "")} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.appliance')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {data?.productName ?? "-"} <br />
-                    {data?.productGtin ?? "-"}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {data?.productName ?? "-"} <br />
+                        {data?.productGtin ?? "-"}
+                    </Typography>
+                    <CopyToClipboardButton value={`${data?.productName} ${data?.productGtin}`} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.fiscalCode')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {data?.fiscalCode ?? "-"}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {data?.fiscalCode ?? "-"}
+                    </Typography>
+                    <CopyToClipboardButton value={data?.fiscalCode ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.idTrx')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3, wordBreak: "break-all" }}>
-                    {data?.trxId}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {data?.trxId ?? "-"}
+                    </Typography>
+                    <CopyToClipboardButton value={data?.trxId ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.trxCode')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {data?.trxCode ?? "-"}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {data?.trxCode ?? "-"}
+                    </Typography>
+                    <CopyToClipboardButton value={data?.trxCode ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.effectiveAmountCents')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {formatCurrency(data?.effectiveAmountCents)}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {formatCurrency(data?.effectiveAmountCents)}
+                    </Typography>
+                    <CopyToClipboardButton value={formatCurrency(data?.effectiveAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.rewardedAmountCents')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {formatCurrency(data?.rewardAmountCents)}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {formatCurrency(data?.rewardAmountCents)}
+                    </Typography>
+                    <CopyToClipboardButton value={formatCurrency(data?.rewardAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.authorizedAmountCents')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3 }}>
-                    {formatCurrency(data?.authorizedAmountCents)}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {formatCurrency(data?.authorizedAmountCents)}
+                    </Typography>
+                    <CopyToClipboardButton value={formatCurrency(data?.authorizedAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.docNumber')}
                 </Typography>
-                <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", mb: 3, wordBreak: "break-all" }}>
-                    {data?.invoiceDocNumber ?? "-"}
-                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
+                        {data?.invoiceDocNumber ?? "-"}
+                    </Typography>
+                    <CopyToClipboardButton value={data?.invoiceDocNumber ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
 
                 <Typography sx={{ fontSize: 16, fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.invoice')}
@@ -183,14 +212,14 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                         />
 
                         <ButtonNaked
-                            sx={{ fontSize: 18, ml: 1 }}
+                            sx={{ fontSize: 18, ml: 1, wordBreak: "break-word", textAlign: "left" }}
                             color="primary"
                             onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
                         >
                             {data?.invoiceFileName ?? "-"}
                         </ButtonNaked>
                     </Box>
-                    <Box sx={{ display: "flex", alignItems: "center" }} onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName, true)}>
+                    <Box sx={{ display: "flex", alignItems: "center", p: 0.5 }} onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName, true)}>
                         <Download sx={{ alignSelf: 'flex-end', color: "#0073E6", height: 24, cursor: 'pointer' }} />
                     </Box>
                 </Box>
@@ -227,19 +256,23 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                 {t(`pages.initiativeMerchantsTransactions.drawer.note`)}
                             </Typography>
 
-                            <Typography
-                                sx={{
-                                    fontSize: "18px",
-                                    fontWeight: 600,
-                                    color: "#17324D",
-                                    lineHeight: "22px",
-                                    whiteSpace: "pre-line",
-                                    wordBreak: "break-word",
-                                    overflowWrap: "break-word",
-                                }}
-                            >
-                                {data.rewardBatchRejectionReason}
-                            </Typography>
+                            <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+                                <Typography
+                                    sx={{
+                                        fontSize: "18px",
+                                        fontWeight: 600,
+                                        color: "#17324D",
+                                        lineHeight: "22px",
+                                        whiteSpace: "pre-line",
+                                        wordBreak: "break-all",
+                                        overflowWrap: "break-word",
+                                        flex: 1
+                                    }}
+                                >
+                                    {data.rewardBatchRejectionReason}
+                                </Typography>
+                                <CopyToClipboardButton value={data.rewardBatchRejectionReason} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                            </Box>
                         </Box>
                     )}
                 {!disabled &&
