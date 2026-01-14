@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useEffect, useMemo, useState } from "react";
@@ -16,7 +17,7 @@ import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
-import { getMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
+import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
 
 export interface RefundItem {
     id: string;
@@ -226,16 +227,16 @@ const InitiativeRefundsMerchants = () => {
     const { id } = (match?.params as MatchParams) || {};
 
     const savedFilters = getMerchantsFilters();
-    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter);
-    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter);
+    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
     const [draftName, setDraftName] = useState<string>("");
     const [draftPeriod, setDraftPeriod] = useState<string>("");
     const [draftStatus, setDraftStatus] = useState<string>("");
 
-    const [page, setPage] = useState(savedFilters.page);
+    const [page, setPage] = useState(savedFilters.page ?? 0);
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [pageSize, setPageSize] = useState(savedFilters.pageSize);
+    const [pageSize, setPageSize] = useState(savedFilters.pageSize ?? 10);
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
@@ -246,7 +247,9 @@ const InitiativeRefundsMerchants = () => {
     const history = useHistory();
 
     useMemo(() => {
-        setPage(savedFilters.page);
+        if(!savedFilters.page){
+            setPage(0);
+        }
     }, [id]);
 
     useEffect(() => {
@@ -256,13 +259,27 @@ const InitiativeRefundsMerchants = () => {
         }
     }, [id, page, assigneeFilter, pageSize]);
 
+    // eslint-disable-next-line sonarjs/no-identical-functions
     useEffect(() => {
-        setPage(savedFilters.page);
+        if(!savedFilters.page){
+            setPage(0);
+        }
     }, [pageSize]);
 
     useEffect(() => {
-        setMerchantsFilters({ assigneeFilter, page, pageSize });
-    }, [assigneeFilter, page, pageSize]);
+        if(savedFilters.page !== null){
+            setPage(savedFilters.page);
+        }
+        if(savedFilters.assigneeFilter !== null){
+            setDraftAssignee(savedFilters.assigneeFilter);
+            setAssigneeFilter(savedFilters.assigneeFilter);
+        }
+        if(savedFilters.pageSize !== null){
+            setPageSize(savedFilters.pageSize);
+        }
+
+        resetMerchantsFilters();
+    }, [savedFilters]);
 
     const getTableData = (
         initiativeId: string,
@@ -588,6 +605,7 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
+                                        setMerchantsFilters({ assigneeFilter, page, pageSize });
                                         history.replace(
                                             ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
                                                 ':batchId',

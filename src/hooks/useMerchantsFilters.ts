@@ -1,18 +1,24 @@
 interface MerchantsFilters {
-    assigneeFilter: string;
-    page: number;
-    pageSize: number;
+    assigneeFilter: string | null;
+    page: number | null;
+    pageSize: number | null;
 }
 
-// eslint-disable-next-line functional/no-let
-let filters: MerchantsFilters = {
-    assigneeFilter: '',
-    page: 0,
-    pageSize: 10,
+const defaultMerchantsFilters: MerchantsFilters = {
+    assigneeFilter: null,
+    page: null,
+    pageSize: null,
 };
+
+// eslint-disable-next-line functional/no-let
+let filters: MerchantsFilters = { ...defaultMerchantsFilters };
 
 export const setMerchantsFilters = (newFilters: Partial<MerchantsFilters>) => {
     filters = { ...filters, ...newFilters };
+};
+
+export const resetMerchantsFilters = () => {
+    filters = { ...defaultMerchantsFilters };
 };
 
 export const getMerchantsFilters = (): MerchantsFilters => ({ ...filters });
