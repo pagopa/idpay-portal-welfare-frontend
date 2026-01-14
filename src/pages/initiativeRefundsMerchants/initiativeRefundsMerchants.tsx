@@ -16,6 +16,7 @@ import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
+import { getMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
 
 export interface RefundItem {
     id: string;
@@ -224,13 +225,14 @@ const InitiativeRefundsMerchants = () => {
     });
     const { id } = (match?.params as MatchParams) || {};
 
-    const [assigneeFilter, setAssigneeFilter] = useState<string>("");
-    const [draftAssignee, setDraftAssignee] = useState<string>("");
+    const savedFilters = getMerchantsFilters();
+    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter);
+    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter);
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(savedFilters.page);
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(savedFilters.pageSize);
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
@@ -241,7 +243,7 @@ const InitiativeRefundsMerchants = () => {
     const history = useHistory();
 
     useMemo(() => {
-        setPage(0);
+        setPage(savedFilters.page);
     }, [id]);
 
     useEffect(() => {
@@ -252,8 +254,12 @@ const InitiativeRefundsMerchants = () => {
     }, [id, page, assigneeFilter, pageSize]);
 
     useEffect(() => {
-        setPage(0);
+        setPage(savedFilters.page);
     }, [pageSize]);
+
+    useEffect(() => {
+        setMerchantsFilters({ assigneeFilter, page, pageSize });
+    }, [assigneeFilter, page, pageSize]);
 
     const getTableData = (
         initiativeId: string,
