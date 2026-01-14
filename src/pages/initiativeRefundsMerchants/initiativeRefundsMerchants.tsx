@@ -228,6 +228,9 @@ const InitiativeRefundsMerchants = () => {
     const savedFilters = getMerchantsFilters();
     const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter);
     const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter);
+    const [draftName, setDraftName] = useState<string>("");
+    const [draftPeriod, setDraftPeriod] = useState<string>("");
+    const [draftStatus, setDraftStatus] = useState<string>("");
 
     const [page, setPage] = useState(savedFilters.page);
     const [totalElements, setTotalElements] = useState(0);
@@ -318,6 +321,10 @@ const InitiativeRefundsMerchants = () => {
     const handleRemoveFilters = () => {
         setAssigneeFilter("");
         setDraftAssignee("");
+        setDraftName("");
+        setDraftPeriod("");
+        setDraftStatus("");
+
         setPage(0);
     };
 
@@ -373,6 +380,102 @@ const InitiativeRefundsMerchants = () => {
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="name-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.name")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="name-filter-label"
+                        value={draftName}
+                        label={t("pages.initiativeMerchantsRefunds.table.name")}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="">{"Tutti"}</MenuItem>
+                        <MenuItem value="A">A</MenuItem>
+                        <MenuItem value="B">B</MenuItem>
+                        <MenuItem value="C">C</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="period-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.period")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="period-filter-label"
+                        value={draftPeriod}
+                        label={t("pages.initiativeMerchantsRefunds.table.period")}
+                        onChange={(e) => setDraftPeriod(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="november">Novembre 2025</MenuItem>
+                        <MenuItem value="december">Dicemebre 2025</MenuItem>
+                        <MenuItem value="january">Gennaio 2026</MenuItem>
+                        <MenuItem value="february">Febbraio 2026</MenuItem>
+                        <MenuItem value="march">Marzo 2026</MenuItem>
+                        <MenuItem value="april">Aprile 2026</MenuItem>
+                        <MenuItem value="may">Maggio 2026</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="status-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.status")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="status-filter-label"
+                        value={draftStatus}
+                        label={t("pages.initiativeMerchantsRefunds.table.status")}
+                        onChange={(e) => setDraftStatus(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="APPROVED">
+                            <Tag value={t("chip.batch.approved")} color="success" />
+                        </MenuItem>
+
+                        <MenuItem value="EVALUATING">
+                            <Tag value={t("chip.batch.evaluating")} color="primary" />
+                        </MenuItem>
+
+                        <MenuItem value="TOAPPROVE">
+                            <Tag value={t("chip.batch.toApprove")} color="warning" />
+                        </MenuItem>
+
+                        <MenuItem value="APPROVING">
+                            <Tag value={t("chip.batch.approving")} color="info" />
+                        </MenuItem>
+
+                        <MenuItem value="SENT">
+                            <Tag value={t("chip.batch.sent")} color="default" />
+                        </MenuItem>
                     </Select>
                 </FormControl>
 
