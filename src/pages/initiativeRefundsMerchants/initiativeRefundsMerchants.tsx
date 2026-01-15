@@ -442,13 +442,13 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftPeriod(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="november">Novembre 2025</MenuItem>
-                        <MenuItem value="december">Dicemebre 2025</MenuItem>
-                        <MenuItem value="january">Gennaio 2026</MenuItem>
-                        <MenuItem value="february">Febbraio 2026</MenuItem>
-                        <MenuItem value="march">Marzo 2026</MenuItem>
-                        <MenuItem value="april">Aprile 2026</MenuItem>
-                        <MenuItem value="may">Maggio 2026</MenuItem>
+                        <MenuItem value="2025-11">{t("pages.initiativeMerchantsRefunds.perdiod.november")}</MenuItem>
+                        <MenuItem value="2025-12">{t("pages.initiativeMerchantsRefunds.perdiod.december")}</MenuItem>
+                        <MenuItem value="2026-01">{t("pages.initiativeMerchantsRefunds.perdiod.january")}</MenuItem>
+                        <MenuItem value="2026-02">{t("pages.initiativeMerchantsRefunds.perdiod.february")}</MenuItem>
+                        <MenuItem value="2026-03">{t("pages.initiativeMerchantsRefunds.perdiod.march")}</MenuItem>
+                        <MenuItem value="2026-04">{t("pages.initiativeMerchantsRefunds.perdiod.april")}</MenuItem>
+                        <MenuItem value="2026-05">{t("pages.initiativeMerchantsRefunds.perdiod.may")}</MenuItem>
                     </Select>
                 </FormControl>
 
