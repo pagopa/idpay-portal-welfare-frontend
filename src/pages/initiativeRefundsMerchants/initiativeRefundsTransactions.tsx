@@ -386,6 +386,7 @@ const InitiativeRefundsTransactions = () => {
         endDate: dto.endDate?.toDateString() ?? "",
         totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
+        suspendedAmountCents: dto.suspendedAmountCents ?? batch?.suspendedAmountCents ?? 0,
         initialAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         numberOfTransactions: dto.numberOfTransactions ?? batch?.numberOfTransactions ?? 0,
         numberOfTransactionsSuspended: dto.numberOfTransactionsSuspended ?? batch?.numberOfTransactionsSuspended ?? 0,

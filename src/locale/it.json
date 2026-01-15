@@ -1004,6 +1004,7 @@
         "type": "Tipo",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "transactions": "Transazioni",
         "checksPercentage": "Controlli effettuati",
         "status": "Stato"

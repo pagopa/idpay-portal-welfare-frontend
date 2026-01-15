@@ -33,6 +33,7 @@ export interface RefundItem {
     totalAmountCents: number;
     approvedAmountCents: number;
     initialAmountCents: number;
+    suspendedAmountCents: number;
     numberOfTransactions: number;
     numberOfTransactionsSuspended: number;
     numberOfTransactionsRejected: number;
@@ -119,6 +120,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
+    const suspendedRefund = formatAmount(row.suspendedAmountCents);
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -173,6 +175,14 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 <Tooltip title={approvedRefund}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {approvedRefund}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={suspendedRefund}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {suspendedRefund}
                     </Box>
                 </Tooltip>
             </TableCell>
@@ -309,6 +319,7 @@ const InitiativeRefundsMerchants = () => {
                         totalAmountCents: r.totalAmountCents,
                         approvedAmountCents: r.approvedAmountCents,
                         initialAmountCents: r.initialAmountCents,
+                        suspendedAmountCents: r.suspendedAmountCents,
                         numberOfTransactions: r.numberOfTransactions,
                         numberOfTransactionsSuspended: r.numberOfTransactionsSuspended,
                         numberOfTransactionsRejected: r.numberOfTransactionsRejected,
@@ -571,6 +582,9 @@ const InitiativeRefundsMerchants = () => {
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.approvedRefund')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.suspendedRefund')}
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
