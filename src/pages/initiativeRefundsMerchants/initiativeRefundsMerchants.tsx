@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useEffect, useMemo, useState } from "react";
@@ -16,6 +17,7 @@ import { useInitiative } from "../../hooks/useInitiative";
 import { getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
+import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
 
 export interface RefundItem {
     id: string;
@@ -224,13 +226,17 @@ const InitiativeRefundsMerchants = () => {
     });
     const { id } = (match?.params as MatchParams) || {};
 
-    const [assigneeFilter, setAssigneeFilter] = useState<string>("");
-    const [draftAssignee, setDraftAssignee] = useState<string>("");
+    const savedFilters = getMerchantsFilters();
+    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [draftName, setDraftName] = useState<string>("");
+    const [draftPeriod, setDraftPeriod] = useState<string>("");
+    const [draftStatus, setDraftStatus] = useState<string>("");
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(savedFilters.page ?? 0);
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(savedFilters.pageSize ?? 10);
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
@@ -241,7 +247,9 @@ const InitiativeRefundsMerchants = () => {
     const history = useHistory();
 
     useMemo(() => {
-        setPage(0);
+        if(!savedFilters.page){
+            setPage(0);
+        }
     }, [id]);
 
     useEffect(() => {
@@ -251,9 +259,27 @@ const InitiativeRefundsMerchants = () => {
         }
     }, [id, page, assigneeFilter, pageSize]);
 
+    // eslint-disable-next-line sonarjs/no-identical-functions
     useEffect(() => {
-        setPage(0);
+        if(!savedFilters.page){
+            setPage(0);
+        }
     }, [pageSize]);
+
+    useEffect(() => {
+        if(savedFilters.page !== null){
+            setPage(savedFilters.page);
+        }
+        if(savedFilters.assigneeFilter !== null){
+            setDraftAssignee(savedFilters.assigneeFilter);
+            setAssigneeFilter(savedFilters.assigneeFilter);
+        }
+        if(savedFilters.pageSize !== null){
+            setPageSize(savedFilters.pageSize);
+        }
+
+        resetMerchantsFilters();
+    }, [savedFilters]);
 
     const getTableData = (
         initiativeId: string,
@@ -312,6 +338,10 @@ const InitiativeRefundsMerchants = () => {
     const handleRemoveFilters = () => {
         setAssigneeFilter("");
         setDraftAssignee("");
+        setDraftName("");
+        setDraftPeriod("");
+        setDraftStatus("");
+
         setPage(0);
     };
 
@@ -367,6 +397,100 @@ const InitiativeRefundsMerchants = () => {
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
                         <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="name-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.name")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="name-filter-label"
+                        value={draftName}
+                        label={t("pages.initiativeMerchantsRefunds.table.name")}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="A">Esercente di test IdPay</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="period-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.period")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="period-filter-label"
+                        value={draftPeriod}
+                        label={t("pages.initiativeMerchantsRefunds.table.period")}
+                        onChange={(e) => setDraftPeriod(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="2025-11">{t("pages.initiativeMerchantsRefunds.perdiod.november")}</MenuItem>
+                        <MenuItem value="2025-12">{t("pages.initiativeMerchantsRefunds.perdiod.december")}</MenuItem>
+                        <MenuItem value="2026-01">{t("pages.initiativeMerchantsRefunds.perdiod.january")}</MenuItem>
+                        <MenuItem value="2026-02">{t("pages.initiativeMerchantsRefunds.perdiod.february")}</MenuItem>
+                        <MenuItem value="2026-03">{t("pages.initiativeMerchantsRefunds.perdiod.march")}</MenuItem>
+                        <MenuItem value="2026-04">{t("pages.initiativeMerchantsRefunds.perdiod.april")}</MenuItem>
+                        <MenuItem value="2026-05">{t("pages.initiativeMerchantsRefunds.perdiod.may")}</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="status-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.status")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="status-filter-label"
+                        value={draftStatus}
+                        label={t("pages.initiativeMerchantsRefunds.table.status")}
+                        onChange={(e) => setDraftStatus(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="SENT">
+                            <Tag value={t("chip.batch.sent")} color="default" />
+                        </MenuItem>
+
+                        <MenuItem value="EVALUATING">
+                            <Tag value={t("chip.batch.evaluating")} color="primary" />
+                        </MenuItem>
+
+                        <MenuItem value="TOAPPROVE">
+                            <Tag value={t("chip.batch.toApprove")} color="warning" />
+                        </MenuItem>
+
+                        <MenuItem value="APPROVING">
+                            <Tag value={t("chip.batch.approving")} color="info" />
+                        </MenuItem>
+
+                        <MenuItem value="APPROVED">
+                            <Tag value={t("chip.batch.approved")} color="success" />
+                        </MenuItem>
+
                     </Select>
                 </FormControl>
 
@@ -479,6 +603,7 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
+                                        setMerchantsFilters({ assigneeFilter, page, pageSize });
                                         history.replace(
                                             ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
                                                 ':batchId',
