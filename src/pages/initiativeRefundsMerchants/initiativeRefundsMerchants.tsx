@@ -419,10 +419,7 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftName(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="">{"Tutti"}</MenuItem>
-                        <MenuItem value="A">A</MenuItem>
-                        <MenuItem value="B">B</MenuItem>
-                        <MenuItem value="C">C</MenuItem>
+                        <MenuItem value="A">Esercente di test IdPay</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -474,8 +471,8 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftStatus(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="APPROVED">
-                            <Tag value={t("chip.batch.approved")} color="success" />
+                        <MenuItem value="SENT">
+                            <Tag value={t("chip.batch.sent")} color="default" />
                         </MenuItem>
 
                         <MenuItem value="EVALUATING">
@@ -490,9 +487,10 @@ const InitiativeRefundsMerchants = () => {
                             <Tag value={t("chip.batch.approving")} color="info" />
                         </MenuItem>
 
-                        <MenuItem value="SENT">
-                            <Tag value={t("chip.batch.sent")} color="default" />
+                        <MenuItem value="APPROVED">
+                            <Tag value={t("chip.batch.approved")} color="success" />
                         </MenuItem>
+
                     </Select>
                 </FormControl>
 
