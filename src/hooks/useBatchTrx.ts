@@ -42,6 +42,7 @@ export const rehydrateBatchTrx = async (
       endDate: match.endDate,
       totalAmountCents: match.totalAmountCents,
       approvedAmountCents: match.approvedAmountCents,
+      suspendedAmountCents: match.suspendedAmountCents,
       initialAmountCents: match.initialAmountCents,
       numberOfTransactions: match.numberOfTransactions,
       numberOfTransactionsSuspended: match.numberOfTransactionsSuspended,
