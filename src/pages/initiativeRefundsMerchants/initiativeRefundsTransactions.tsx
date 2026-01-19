@@ -29,7 +29,7 @@ import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import { useAlert } from "../../hooks/useAlert";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
-import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
+import { getStatusColor, getStatusLabel, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
 import { RoleActionButton } from "./roleActionButton";
@@ -379,6 +379,7 @@ const InitiativeRefundsTransactions = () => {
         businessName: dto.businessName ?? batch?.businessName ?? "",
         month: dto.month ?? batch?.month ?? "",
         posType: dto.posType === "PHYSICAL" ? "FISICO" : "ONLINE",
+        merchantSendDate: dto.merchantSendDate?.toDateString() ?? "",
         status: dto.status ?? "",
         partial: dto.partial ?? false,
         name: dto.name,
@@ -703,12 +704,12 @@ const InitiativeRefundsTransactions = () => {
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                            {t('pages.initiativeMerchantsRefunds.table.type')}
+                            {t('pages.initiativeMerchantsRefunds.table.requestRefundDate')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            <Tooltip title={getPosTypeLabel(batch.posType)}>
+                            <Tooltip title={refundRequestDate(batch.merchantSendDate)}>
                                 <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                                    {getPosTypeLabel(batch.posType)}
+                                    {refundRequestDate(batch.merchantSendDate)}
                                 </Box>
                             </Tooltip>
                         </Typography>
