@@ -1017,6 +1017,7 @@
         "period": "Periodo di riferimento",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "assignedTo": "In carico a",
         "refundData": "DATI RIMBORSO",
         "beneficiary": "Intestatario",
