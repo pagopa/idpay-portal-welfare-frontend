@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
 import {
     Box,
@@ -41,7 +42,8 @@ export interface RefundItem {
     merchantId: string;
     businessName: string;
     month: string;
-    posType: 'ONLINE' | 'FISICO';
+    posType: "ONLINE" | "FISICO";
+    merchantSendDate: string;
     status: string;
     partial: boolean;
     name: string;
@@ -55,7 +57,7 @@ export interface RefundItem {
     numberOfTransactionsSuspended: number;
     numberOfTransactionsRejected: number;
     numberOfTransactionsElaborated: number;
-    assigneeLevel: 'L1' | 'L2' | 'L3';
+    assigneeLevel: "L1" | "L2" | "L3";
 }
 
 export interface RefundsPage {
@@ -68,48 +70,55 @@ export interface RefundsPage {
 
 export const getStatusColor = (status: string, role: string) => {
     switch (status) {
-        case 'APPROVED':
-            return 'success';
-        case 'EVALUATING':
+        case "APPROVED":
+            return "success";
+        case "EVALUATING":
             if (role === 'L3') {
-                return 'warning';
+                return "warning";
             }
-            return 'primary';
-        case 'SENT':
-            return 'default';
-        case 'APPROVING':
-            return 'info';
+            return "primary";
+        case "SENT":
+            return "default";
+        case "APPROVING":
+            return "info";
         default:
-            return 'default';
+            return "default";
     }
 };
 
 export const getStatusLabel = (status: string, role: string, t: any) => {
     switch (status) {
-        case 'APPROVED':
-            return t('chip.batch.approved');
-        case 'EVALUATING':
+        case "APPROVED":
+            return t("chip.batch.approved");
+        case "EVALUATING":
             if (role === 'L3') {
-                return t('chip.batch.toApprove');
+                return t("chip.batch.toApprove");
             }
-            return t('chip.batch.evaluating');
-        case 'SENT':
-            return t('chip.batch.sent');
-        case 'APPROVING':
-            return t('chip.batch.approving');
+            return t("chip.batch.evaluating");
+        case "SENT":
+            return t("chip.batch.sent");
+        case "APPROVING":
+            return t("chip.batch.approving");
         default:
-            return '-';
+            return "-";
     }
 };
 
-export const getPosTypeLabel = (posType: 'ONLINE' | 'FISICO') =>
-    posType ? (posType === 'ONLINE' ? 'Online' : 'Fisico') : '-';
+export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
+    posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
 const formatAmount = (amountCents?: number) => {
     if (amountCents === undefined || amountCents === null) {
-        return '-';
+        return "-";
     }
-    return (amountCents / 100).toLocaleString('it-IT', { style: 'currency', currency: 'EUR' });
+    return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+};
+
+export const refundRequestDate = (date?: string) => {
+    if (!date) {
+        return "-";
+    }
+    return new Date(date).toLocaleDateString('it-IT');
 };
 
 const getChecksPercentage = (row: RefundItem) => {
@@ -117,12 +126,12 @@ const getChecksPercentage = (row: RefundItem) => {
         const percentage = (row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100;
         return `${Math.floor(percentage)}% / 100%`;
     }
-    return '0% / 100%';
+    return "0% / 100%";
 };
 
 const isRowDisabled = (status: string) => {
-    const s = status?.toUpperCase?.() ?? '';
-    return s === 'SENT' || s === 'CREATED';
+    const s = status?.toUpperCase?.() ?? "";
+    return s === "SENT" || s === "CREATED";
 };
 
 type RefundRowProps = {
@@ -132,12 +141,13 @@ type RefundRowProps = {
 };
 
 const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
-    const status = row.status?.toUpperCase?.() ?? '';
+    const status = row.status?.toUpperCase?.() ?? "";
     const isDisabled = isRowDisabled(status);
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
     const suspendedRefund = formatAmount(row.suspendedAmountCents);
+    const formatRefundDate = refundRequestDate(row.merchantSendDate);
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -173,16 +183,16 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
             </TableCell>
 
             <TableCell>
-                <Tooltip title={getPosTypeLabel(row.posType)}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                        {getPosTypeLabel(row.posType)}
+                <Tooltip title={formatRefundDate}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {formatRefundDate}
                     </Box>
                 </Tooltip>
             </TableCell>
 
             <TableCell>
                 <Tooltip title={requestedRefund}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {requestedRefund}
                     </Box>
                 </Tooltip>
@@ -190,7 +200,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tooltip title={approvedRefund}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {approvedRefund}
                     </Box>
                 </Tooltip>
@@ -206,7 +216,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tooltip title={checksPercentage}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {checksPercentage}
                     </Box>
                 </Tooltip>
@@ -214,7 +224,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tooltip title={row.assigneeLevel}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {row.assigneeLevel}
                     </Box>
                 </Tooltip>
@@ -227,9 +237,9 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 />
             </TableCell>
 
-            <TableCell sx={{ textAlign: 'right' }}>
+            <TableCell sx={{ textAlign: "right" }}>
                 <ButtonNaked disabled={isDisabled} onClick={handleClick}>
-                    <ChevronRightIcon color={isDisabled ? 'disabled' : 'primary'} />
+                    <ChevronRightIcon color={isDisabled ? "disabled" : "primary"} />
                 </ButtonNaked>
             </TableCell>
         </TableRow>
@@ -255,11 +265,14 @@ const InitiativeRefundsMerchants = () => {
     const { id } = (match?.params as MatchParams) || {};
 
     const savedFilters = getMerchantsFilters();
-    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? '');
-    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? '');
-    const [draftName, setDraftName] = useState<string>('');
-    const [draftPeriod, setDraftPeriod] = useState<string>('');
-    const [draftStatus, setDraftStatus] = useState<string>('');
+    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [nameFilter, setNameFilter] = useState<string>(savedFilters.nameFilter ?? "");
+    const [draftName, setDraftName] = useState<string>(savedFilters.nameFilter ?? "");
+    const [periodFilter, setPeriodFilter] = useState<string>(savedFilters.periodFilter ?? "");
+    const [draftPeriod, setDraftPeriod] = useState<string>(savedFilters.periodFilter ?? "");
+    const [statusFilter, setStatusFilter] = useState<string>(savedFilters.statusFilter ?? "");
+    const [draftStatus, setDraftStatus] = useState<string>(savedFilters.statusFilter ?? "");
 
     const [page, setPage] = useState(savedFilters.page ?? 0);
     const [totalElements, setTotalElements] = useState(0);
@@ -268,13 +281,21 @@ const InitiativeRefundsMerchants = () => {
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
-    const isFilterDisabled = draftAssignee === '' || draftAssignee === assigneeFilter;
+    const norm = (s: string) => (s ?? "").trim();
+
+    const isFilterDisabled = !(
+        norm(draftAssignee) !== norm(assigneeFilter) ||
+        norm(draftName) !== norm(nameFilter) ||
+        norm(draftPeriod) !== norm(periodFilter) ||
+        norm(draftStatus) !== norm(statusFilter)
+    );
+
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
     const history = useHistory();
 
     useMemo(() => {
-        if (!savedFilters.page) {
+        if(!savedFilters.page){
             setPage(0);
         }
     }, [id]);
@@ -284,7 +305,7 @@ const InitiativeRefundsMerchants = () => {
         if (typeof id === 'string') {
             getTableData(id);
         }
-    }, [id, page, assigneeFilter, pageSize]);
+    }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter]);
 
     // eslint-disable-next-line sonarjs/no-identical-functions
     useEffect(() => {
@@ -301,6 +322,18 @@ const InitiativeRefundsMerchants = () => {
             setDraftAssignee(savedFilters.assigneeFilter);
             setAssigneeFilter(savedFilters.assigneeFilter);
         }
+        if (savedFilters.nameFilter !== null) {
+            setDraftName(savedFilters.nameFilter);
+            setNameFilter(savedFilters.nameFilter);
+        }
+        if (savedFilters.periodFilter !== null) {
+            setDraftPeriod(savedFilters.periodFilter);
+            setPeriodFilter(savedFilters.periodFilter);
+        }
+        if (savedFilters.statusFilter !== null) {
+            setDraftStatus(savedFilters.statusFilter);
+            setStatusFilter(savedFilters.statusFilter);
+        }
         if (savedFilters.pageSize !== null) {
             setPageSize(savedFilters.pageSize);
         }
@@ -308,9 +341,11 @@ const InitiativeRefundsMerchants = () => {
         resetMerchantsFilters();
     }, [savedFilters]);
 
-    const getTableData = (initiativeId: string) => {
+    const getTableData = (
+        initiativeId: string,
+    ) => {
         setLoading(true);
-        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined)
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
@@ -326,6 +361,7 @@ const InitiativeRefundsMerchants = () => {
                         businessName: r.businessName,
                         month: r.month,
                         posType: r.posType,
+                        merchantSendDate: r.merchantSendDate,
                         status: r.status,
                         partial: r.partial,
                         name: r.name,
@@ -348,12 +384,8 @@ const InitiativeRefundsMerchants = () => {
                 }
             })
             .catch(() => {
-                setAlert({
-                    title: t('errors.title'),
-                    text: t('errors.getDataDescription'),
-                    isOpen: true,
-                    severity: 'error',
-                });
+                setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+
             })
             .finally(() => {
                 setLoading(false);
@@ -362,15 +394,21 @@ const InitiativeRefundsMerchants = () => {
 
     const handleFilterClick = () => {
         setAssigneeFilter(draftAssignee);
+        setNameFilter(draftName);
+        setPeriodFilter(draftPeriod);
+        setStatusFilter(draftStatus);
         setPage(0);
     };
 
     const handleRemoveFilters = () => {
-        setAssigneeFilter('');
-        setDraftAssignee('');
-        setDraftName('');
-        setDraftPeriod('');
-        setDraftStatus('');
+        setAssigneeFilter("");
+        setDraftAssignee("");
+        setNameFilter("");
+        setDraftName("");
+        setPeriodFilter("");
+        setDraftPeriod("");
+        setStatusFilter("");
+        setDraftStatus("");
 
         setPage(0);
     };
@@ -404,34 +442,28 @@ const InitiativeRefundsMerchants = () => {
                         minWidth: 150,
                         '& .MuiInputLabel-root': {
                             fontSize: 14,
-                            lineHeight: 'normal',
-                        },
+                            lineHeight: "normal"
+                        }
                     }}
                 >
                     <InputLabel id="assignee-filter-label">
-                        {t('pages.initiativeMerchantsRefunds.table.assignee')}
+                        {t("pages.initiativeMerchantsRefunds.table.assignee")}
                     </InputLabel>
 
                     <Select
                         labelId="assignee-filter-label"
                         value={draftAssignee}
-                        label={t('pages.initiativeMerchantsRefunds.table.assignee')}
+                        label={t("pages.initiativeMerchantsRefunds.table.assignee")}
                         onChange={(e) => setDraftAssignee(e.target.value)}
                         sx={{
                             height: 40,
-                            display: 'flex',
-                            alignItems: 'center',
+                            display: "flex",
+                            alignItems: "center"
                         }}
                     >
-                        <MenuItem value={t('pages.initiativeMerchantsRefunds.L1')}>
-                            {t('pages.initiativeMerchantsRefunds.L1')}
-                        </MenuItem>
-                        <MenuItem value={t('pages.initiativeMerchantsRefunds.L2')}>
-                            {t('pages.initiativeMerchantsRefunds.L2')}
-                        </MenuItem>
-                        <MenuItem value={t('pages.initiativeMerchantsRefunds.L3')}>
-                            {t('pages.initiativeMerchantsRefunds.L3')}
-                        </MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -440,21 +472,21 @@ const InitiativeRefundsMerchants = () => {
                     size="small"
                     sx={{
                         minWidth: 150,
-                        '& .MuiInputLabel-root': { fontSize: 14, lineHeight: 'normal' },
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
                     }}
                 >
                     <InputLabel id="name-filter-label">
-                        {t('pages.initiativeMerchantsRefunds.table.name')}
+                        {t("pages.initiativeMerchantsRefunds.table.name")}
                     </InputLabel>
 
                     <Select
                         labelId="name-filter-label"
                         value={draftName}
-                        label={t('pages.initiativeMerchantsRefunds.table.name')}
+                        label={t("pages.initiativeMerchantsRefunds.table.name")}
                         onChange={(e) => setDraftName(e.target.value)}
-                        sx={{ height: 40, display: 'flex', alignItems: 'center' }}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="A">Esercente di test IdPay</MenuItem>
+                        <MenuItem value="3a602b17-ac1c-3029-9e78-0a4bbb8693d4">Esercente di test IdPay</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -463,39 +495,27 @@ const InitiativeRefundsMerchants = () => {
                     size="small"
                     sx={{
                         minWidth: 150,
-                        '& .MuiInputLabel-root': { fontSize: 14, lineHeight: 'normal' },
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
                     }}
                 >
                     <InputLabel id="period-filter-label">
-                        {t('pages.initiativeMerchantsRefunds.table.period')}
+                        {t("pages.initiativeMerchantsRefunds.table.period")}
                     </InputLabel>
 
                     <Select
                         labelId="period-filter-label"
                         value={draftPeriod}
-                        label={t('pages.initiativeMerchantsRefunds.table.period')}
+                        label={t("pages.initiativeMerchantsRefunds.table.period")}
                         onChange={(e) => setDraftPeriod(e.target.value)}
-                        sx={{ height: 40, display: 'flex', alignItems: 'center' }}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="2025-11">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.november')}
-                        </MenuItem>
-                        <MenuItem value="2025-12">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.december')}
-                        </MenuItem>
-                        <MenuItem value="2026-01">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.january')}
-                        </MenuItem>
-                        <MenuItem value="2026-02">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.february')}
-                        </MenuItem>
-                        <MenuItem value="2026-03">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.march')}
-                        </MenuItem>
-                        <MenuItem value="2026-04">
-                            {t('pages.initiativeMerchantsRefunds.perdiod.april')}
-                        </MenuItem>
-                        <MenuItem value="2026-05">{t('pages.initiativeMerchantsRefunds.perdiod.may')}</MenuItem>
+                        <MenuItem value="2025-11">{t("pages.initiativeMerchantsRefunds.perdiod.november")}</MenuItem>
+                        <MenuItem value="2025-12">{t("pages.initiativeMerchantsRefunds.perdiod.december")}</MenuItem>
+                        <MenuItem value="2026-01">{t("pages.initiativeMerchantsRefunds.perdiod.january")}</MenuItem>
+                        <MenuItem value="2026-02">{t("pages.initiativeMerchantsRefunds.perdiod.february")}</MenuItem>
+                        <MenuItem value="2026-03">{t("pages.initiativeMerchantsRefunds.perdiod.march")}</MenuItem>
+                        <MenuItem value="2026-04">{t("pages.initiativeMerchantsRefunds.perdiod.april")}</MenuItem>
+                        <MenuItem value="2026-05">{t("pages.initiativeMerchantsRefunds.perdiod.may")}</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -504,38 +524,38 @@ const InitiativeRefundsMerchants = () => {
                     size="small"
                     sx={{
                         minWidth: 150,
-                        '& .MuiInputLabel-root': { fontSize: 14, lineHeight: 'normal' },
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
                     }}
                 >
                     <InputLabel id="status-filter-label">
-                        {t('pages.initiativeMerchantsRefunds.table.status')}
+                        {t("pages.initiativeMerchantsRefunds.table.status")}
                     </InputLabel>
 
                     <Select
                         labelId="status-filter-label"
                         value={draftStatus}
-                        label={t('pages.initiativeMerchantsRefunds.table.status')}
+                        label={t("pages.initiativeMerchantsRefunds.table.status")}
                         onChange={(e) => setDraftStatus(e.target.value)}
-                        sx={{ height: 40, display: 'flex', alignItems: 'center' }}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
                         <MenuItem value="SENT">
-                            <Tag value={t('chip.batch.sent')} color="default" />
+                            <Tag value={t("chip.batch.sent")} color="default" />
                         </MenuItem>
 
-                        <MenuItem value="EVALUATING">
-                            <Tag value={t('chip.batch.evaluating')} color="primary" />
+                        <MenuItem value="TO_WORK">
+                            <Tag value={t("chip.batch.evaluating")} color="primary" />
                         </MenuItem>
 
-                        <MenuItem value="TOAPPROVE">
-                            <Tag value={t('chip.batch.toApprove')} color="warning" />
+                        <MenuItem value="TO_APPROVE">
+                            <Tag value={t("chip.batch.toApprove")} color="warning" />
                         </MenuItem>
 
                         <MenuItem value="APPROVING">
-                            <Tag value={t('chip.batch.approving')} color="info" />
+                            <Tag value={t("chip.batch.approving")} color="info" />
                         </MenuItem>
 
                         <MenuItem value="APPROVED">
-                            <Tag value={t('chip.batch.approved')} color="success" />
+                            <Tag value={t("chip.batch.approved")} color="success" />
                         </MenuItem>
                     </Select>
                 </FormControl>
@@ -546,11 +566,11 @@ const InitiativeRefundsMerchants = () => {
                     disabled={isFilterDisabled}
                     onClick={handleFilterClick}
                     sx={{
-                        height: '40px',
+                        height: "40px",
                         paddingX: 3,
                         fontWeight: 600,
-                        borderRadius: '4px',
-                        textTransform: 'none',
+                        borderRadius: "4px",
+                        textTransform: "none"
                     }}
                 >
                     {t('pages.initiativeMerchantDetail.filterBtn')}
@@ -558,14 +578,14 @@ const InitiativeRefundsMerchants = () => {
 
                 <ButtonNaked
                     color="primary"
-                    disabled={!assigneeFilter}
+                    disabled={!assigneeFilter && !nameFilter && !periodFilter && !statusFilter}
                     onClick={handleRemoveFilters}
                     sx={{
-                        height: '40px',
+                        height: "40px",
                         paddingX: 2,
                         fontWeight: 600,
-                        textTransform: 'none',
-                        opacity: assigneeFilter ? 1 : 0.5,
+                        textTransform: "none",
+                        opacity: assigneeFilter || nameFilter || periodFilter || statusFilter ? 1 : 0.5
                     }}
                 >
                     {t('pages.initiativeMerchant.form.removeFiltersBtn')}
@@ -584,7 +604,7 @@ const InitiativeRefundsMerchants = () => {
                                     fontSize: 16,
                                     fontWeight: 500,
                                     color: '#5C6F82',
-                                    backgroundColor: '#FFFFFF',
+                                    backgroundColor: '#FFFFFF'
                                 }}
                             >
                                 {t('pages.initiativeMerchantsRefunds.emptyState')}
@@ -609,8 +629,8 @@ const InitiativeRefundsMerchants = () => {
                                 <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.period')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
-                                    {t('pages.initiativeMerchantsRefunds.table.type')}
+                                <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "none" } }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.requestRefundDate')}
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}
@@ -630,16 +650,14 @@ const InitiativeRefundsMerchants = () => {
                                 <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.status')}
                                 </TableCell>
-                                <TableCell
-                                    sx={{
-                                        width: 55,
-                                        maxWidth: 55,
-                                        minWidth: 44,
-                                        p: 0,
-                                        pr: 1,
-                                        textAlign: 'right',
-                                    }}
-                                ></TableCell>
+                                <TableCell sx={{
+                                    width: 55,
+                                    maxWidth: 55,
+                                    minWidth: 44,
+                                    p: 0,
+                                    pr: 1,
+                                    textAlign: 'right',
+                                }}></TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -654,7 +672,7 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
-                                        setMerchantsFilters({ assigneeFilter, page, pageSize });
+                                        setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize });
                                         history.replace(
                                             ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(':batchId', row.id).replace(
                                                 ':id',
@@ -676,13 +694,13 @@ const InitiativeRefundsMerchants = () => {
                             gap: 3,
                             color: '#33485C',
                             fontSize: '14px',
-                            fontWeight: 500,
+                            fontWeight: 500
                         }}
                     >
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                             <span>{t('pages.initiativeMerchantsRefunds.rowsPerPage')}</span>
 
-                            <FormControl size="small">
+                            <FormControl size='small'>
                                 <Select
                                     value={pageSize}
                                     onChange={(e) => setPageSize(Number(e.target.value))}
@@ -706,7 +724,7 @@ const InitiativeRefundsMerchants = () => {
                             sx={{
                                 cursor: page > 0 ? 'pointer' : 'default',
                                 opacity: page > 0 ? 1 : 0.3,
-                                fontSize: 20,
+                                fontSize: 20
                             }}
                         />
 
@@ -715,7 +733,7 @@ const InitiativeRefundsMerchants = () => {
                             sx={{
                                 cursor: page < totalPages - 1 ? 'pointer' : 'default',
                                 opacity: page < totalPages - 1 ? 1 : 0.3,
-                                fontSize: 20,
+                                fontSize: 20
                             }}
                         />
                     </Box>
