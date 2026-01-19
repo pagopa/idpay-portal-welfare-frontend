@@ -148,6 +148,7 @@ export const merchantsApi = {
     merchantId?: string,
     month?: string,
     status?: string,
+    sort?: string
   ): Promise<RewardBatchListDTO> => {
     const result = await merchantsApiClient.getRewardBatches({
       initiativeId,
@@ -156,7 +157,8 @@ export const merchantsApi = {
       assigneeLevel,
       merchantId,
       month,
-      status
+      status,
+      sort
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
