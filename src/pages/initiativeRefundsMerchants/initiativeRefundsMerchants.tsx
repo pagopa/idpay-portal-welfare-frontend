@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
@@ -229,9 +230,12 @@ const InitiativeRefundsMerchants = () => {
     const savedFilters = getMerchantsFilters();
     const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
     const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
-    const [draftName, setDraftName] = useState<string>("");
-    const [draftPeriod, setDraftPeriod] = useState<string>("");
-    const [draftStatus, setDraftStatus] = useState<string>("");
+    const [nameFilter, setNameFilter] = useState<string>(savedFilters.nameFilter ?? "");
+    const [draftName, setDraftName] = useState<string>(savedFilters.nameFilter ?? "");
+    const [periodFilter, setPeriodFilter] = useState<string>(savedFilters.periodFilter ?? "");
+    const [draftPeriod, setDraftPeriod] = useState<string>(savedFilters.periodFilter ?? "");
+    const [statusFilter, setStatusFilter] = useState<string>(savedFilters.statusFilter ?? "");
+    const [draftStatus, setDraftStatus] = useState<string>(savedFilters.statusFilter ?? "");
 
     const [page, setPage] = useState(savedFilters.page ?? 0);
     const [totalElements, setTotalElements] = useState(0);
@@ -240,14 +244,21 @@ const InitiativeRefundsMerchants = () => {
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
-    const isFilterDisabled =
-        draftAssignee === "" || draftAssignee === assigneeFilter;
+    const norm = (s: string) => (s ?? "").trim();
+
+    const isFilterDisabled = !(
+        norm(draftAssignee) !== norm(assigneeFilter) ||
+        norm(draftName) !== norm(nameFilter) ||
+        norm(draftPeriod) !== norm(periodFilter) ||
+        norm(draftStatus) !== norm(statusFilter)
+    );
+
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
     const history = useHistory();
 
     useMemo(() => {
-        if(!savedFilters.page){
+        if (!savedFilters.page) {
             setPage(0);
         }
     }, [id]);
@@ -257,24 +268,36 @@ const InitiativeRefundsMerchants = () => {
         if (typeof id === 'string') {
             getTableData(id);
         }
-    }, [id, page, assigneeFilter, pageSize]);
+    }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter]);
 
     // eslint-disable-next-line sonarjs/no-identical-functions
     useEffect(() => {
-        if(!savedFilters.page){
+        if (!savedFilters.page) {
             setPage(0);
         }
     }, [pageSize]);
 
     useEffect(() => {
-        if(savedFilters.page !== null){
+        if (savedFilters.page !== null) {
             setPage(savedFilters.page);
         }
-        if(savedFilters.assigneeFilter !== null){
+        if (savedFilters.assigneeFilter !== null) {
             setDraftAssignee(savedFilters.assigneeFilter);
             setAssigneeFilter(savedFilters.assigneeFilter);
         }
-        if(savedFilters.pageSize !== null){
+        if (savedFilters.nameFilter !== null) {
+            setDraftName(savedFilters.nameFilter);
+            setNameFilter(savedFilters.nameFilter);
+        }
+        if (savedFilters.periodFilter !== null) {
+            setDraftPeriod(savedFilters.periodFilter);
+            setPeriodFilter(savedFilters.periodFilter);
+        }
+        if (savedFilters.statusFilter !== null) {
+            setDraftStatus(savedFilters.statusFilter);
+            setStatusFilter(savedFilters.statusFilter);
+        }
+        if (savedFilters.pageSize !== null) {
             setPageSize(savedFilters.pageSize);
         }
 
@@ -285,7 +308,7 @@ const InitiativeRefundsMerchants = () => {
         initiativeId: string,
     ) => {
         setLoading(true);
-        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined)
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
@@ -332,14 +355,20 @@ const InitiativeRefundsMerchants = () => {
 
     const handleFilterClick = () => {
         setAssigneeFilter(draftAssignee);
+        setNameFilter(draftName);
+        setPeriodFilter(draftPeriod);
+        setStatusFilter(draftStatus);
         setPage(0);
     };
 
     const handleRemoveFilters = () => {
         setAssigneeFilter("");
         setDraftAssignee("");
+        setNameFilter("");
         setDraftName("");
+        setPeriodFilter("");
         setDraftPeriod("");
+        setStatusFilter("");
         setDraftStatus("");
 
         setPage(0);
@@ -419,7 +448,7 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftName(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="A">Esercente di test IdPay</MenuItem>
+                        <MenuItem value="3a602b17-ac1c-3029-9e78-0a4bbb8693d4">Esercente di test IdPay</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -475,11 +504,11 @@ const InitiativeRefundsMerchants = () => {
                             <Tag value={t("chip.batch.sent")} color="default" />
                         </MenuItem>
 
-                        <MenuItem value="EVALUATING">
+                        <MenuItem value="TO_WORK">
                             <Tag value={t("chip.batch.evaluating")} color="primary" />
                         </MenuItem>
 
-                        <MenuItem value="TOAPPROVE">
+                        <MenuItem value="TO_APPROVE">
                             <Tag value={t("chip.batch.toApprove")} color="warning" />
                         </MenuItem>
 
@@ -512,14 +541,14 @@ const InitiativeRefundsMerchants = () => {
 
                 <ButtonNaked
                     color="primary"
-                    disabled={!assigneeFilter}
+                    disabled={!assigneeFilter && !nameFilter && !periodFilter && !statusFilter}
                     onClick={handleRemoveFilters}
                     sx={{
                         height: "40px",
                         paddingX: 2,
                         fontWeight: 600,
                         textTransform: "none",
-                        opacity: assigneeFilter ? 1 : 0.5
+                        opacity: assigneeFilter || nameFilter || periodFilter || statusFilter ? 1 : 0.5
                     }}
                 >
                     {t('pages.initiativeMerchant.form.removeFiltersBtn')}
@@ -603,7 +632,7 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
-                                        setMerchantsFilters({ assigneeFilter, page, pageSize });
+                                        setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize });
                                         history.replace(
                                             ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
                                                 ':batchId',
