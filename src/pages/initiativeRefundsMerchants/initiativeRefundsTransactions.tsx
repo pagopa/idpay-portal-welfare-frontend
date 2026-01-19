@@ -817,7 +817,8 @@ const InitiativeRefundsTransactions = () => {
 
                                 return (
                                     <Tooltip
-                                        title={label}
+                                        title={selectedPos?.type === "ONLINE" ? `${label} - ${selectedPos?.website}` :
+                                                `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
@@ -826,7 +827,8 @@ const InitiativeRefundsTransactions = () => {
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
                                         }}>
-                                            {label}
+                                            {selectedPos?.type === "ONLINE" ? `${label} - ${selectedPos?.website}` :
+                                                `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
                                         </Box>
                                     </Tooltip>
                                 );
@@ -834,14 +836,16 @@ const InitiativeRefundsTransactions = () => {
                         >
                             {posList.map(pos => (
                                 <MenuItem key={pos.id} value={pos.id}>
-                                    <Tooltip title={pos.franchiseName} placement="left" arrow>
+                                    <Tooltip title={pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
+                                        `${pos.franchiseName} - ${pos.province} - ${pos.address}`} placement="left" arrow>
                                         <Box sx={{
-                                            maxWidth: 200,
+                                            maxWidth: 400,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
                                         }}>
-                                            {pos.franchiseName ?? pos.id}
+                                            {pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
+                                                `${pos.franchiseName} - ${pos.province} - ${pos.address}`}
                                         </Box>
                                     </Tooltip>
                                 </MenuItem>
