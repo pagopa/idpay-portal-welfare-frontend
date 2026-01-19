@@ -1002,6 +1002,7 @@
         "name": "Insegna",
         "period": "Lotto",
         "type": "Tipo",
+        "requestRefundDate": "Data richiesta rimborso",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
         "transactions": "Transazioni",

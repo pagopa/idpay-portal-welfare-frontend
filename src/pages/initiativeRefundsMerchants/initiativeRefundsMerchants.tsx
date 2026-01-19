@@ -26,6 +26,7 @@ export interface RefundItem {
     businessName: string;
     month: string;
     posType: "ONLINE" | "FISICO";
+    merchantSendDate: string;
     status: string;
     partial: boolean;
     name: string;
@@ -95,6 +96,13 @@ const formatAmount = (amountCents?: number) => {
     return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
 };
 
+export const refundRequestDate = (date?: string) => {
+    if (!date) {
+        return "-";
+    }
+    return new Date(date).toLocaleDateString('it-IT');
+};
+
 const getChecksPercentage = (row: RefundItem) => {
     if (row.numberOfTransactions > 0 && row.numberOfTransactionsElaborated > 0) {
         const percentage = (row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100;
@@ -120,6 +128,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
+    const formatRefundDate = refundRequestDate(row.merchantSendDate);
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -155,9 +164,9 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
             </TableCell>
 
             <TableCell>
-                <Tooltip title={getPosTypeLabel(row.posType)}>
+                <Tooltip title={formatRefundDate}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {getPosTypeLabel(row.posType)}
+                        {formatRefundDate}
                     </Box>
                 </Tooltip>
             </TableCell>
@@ -324,6 +333,7 @@ const InitiativeRefundsMerchants = () => {
                         businessName: r.businessName,
                         month: r.month,
                         posType: r.posType,
+                        merchantSendDate: r.merchantSendDate,
                         status: r.status,
                         partial: r.partial,
                         name: r.name,
@@ -593,7 +603,7 @@ const InitiativeRefundsMerchants = () => {
                                     {t('pages.initiativeMerchantsRefunds.table.period')}
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
-                                    {t('pages.initiativeMerchantsRefunds.table.type')}
+                                    {t('pages.initiativeMerchantsRefunds.table.requestRefundDate')}
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}

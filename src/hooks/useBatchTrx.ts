@@ -35,6 +35,7 @@ export const rehydrateBatchTrx = async (
       businessName: match.businessName,
       month: match.month,
       posType: match.posType,
+      merchantSendDate: match.merchantSendDate,
       status: match.status,
       partial: match.partial,
       name: match.name,
