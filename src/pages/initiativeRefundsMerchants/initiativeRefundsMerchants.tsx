@@ -15,7 +15,7 @@ import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
-import { getRewardBatches } from "../../services/merchantsService";
+import { getMerchantList, getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
 import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
@@ -273,6 +273,7 @@ const InitiativeRefundsMerchants = () => {
         norm(draftStatus) !== norm(statusFilter)
     );
 
+    const [businessNameList, setBusinessNameList] = useState([]);
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
     const history = useHistory();
@@ -286,6 +287,7 @@ const InitiativeRefundsMerchants = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         if (typeof id === 'string') {
+            getMerchantsList();
             getTableData(id);
         }
     }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter, dateSort]);
@@ -323,6 +325,17 @@ const InitiativeRefundsMerchants = () => {
 
         resetMerchantsFilters();
     }, [savedFilters]);
+
+    const getMerchantsList = () => {
+        getMerchantList(id, 1).then((res) => {
+            if((res.content as [])?.length > 0) {
+                setBusinessNameList(res.content as []);
+            }
+            console.log(businessNameList);
+        }).catch(() => {
+            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+        });
+    };
 
     const getTableData = (
         initiativeId: string,
@@ -369,7 +382,6 @@ const InitiativeRefundsMerchants = () => {
             })
             .catch(() => {
                 setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-
             })
             .finally(() => {
                 setLoading(false);
