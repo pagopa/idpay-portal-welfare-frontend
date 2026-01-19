@@ -1,6 +1,6 @@
 /* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
@@ -253,6 +253,17 @@ const InitiativeRefundsMerchants = () => {
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
+    type SortState = "" | "asc" | "desc";
+    const [dateSort, setDateSort] = useState<SortState>("");
+
+    const toggleDateSort = () => {
+        setDateSort(prev => {
+            if (prev === "") { return "asc"; }
+            if (prev === "asc") { return "desc"; }
+            return "";
+        });
+    };
+
     const norm = (s: string) => (s ?? "").trim();
 
     const isFilterDisabled = !(
@@ -277,7 +288,7 @@ const InitiativeRefundsMerchants = () => {
         if (typeof id === 'string') {
             getTableData(id);
         }
-    }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter]);
+    }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter, dateSort]);
 
     // eslint-disable-next-line sonarjs/no-identical-functions
     useEffect(() => {
@@ -316,8 +327,10 @@ const InitiativeRefundsMerchants = () => {
     const getTableData = (
         initiativeId: string,
     ) => {
+        const sort = dateSort === "" ? undefined : `merchantSendDate,${dateSort}`;
+
         setLoading(true);
-        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined)
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined, sort || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
@@ -602,8 +615,14 @@ const InitiativeRefundsMerchants = () => {
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.period')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
-                                    {t('pages.initiativeMerchantsRefunds.table.requestRefundDate')}
+                                <TableCell sortDirection={dateSort === "" ? false : dateSort}>
+                                    <TableSortLabel
+                                        active={dateSort !== ""}
+                                        direction={dateSort === "" ? "asc" : dateSort}
+                                        onClick={toggleDateSort}
+                                    >
+                                        {t("pages.initiativeMerchantsRefunds.table.requestRefundDate")}
+                                    </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}
