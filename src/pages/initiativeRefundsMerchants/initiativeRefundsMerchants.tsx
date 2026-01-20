@@ -5,20 +5,24 @@ import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
-import ROUTES from "../../routes";
-import { setBatchTrx } from "../../hooks/useBatchTrx";
-import BreadcrumbsBox from "../components/BreadcrumbsBox";
-import { initiativeSelector } from "../../redux/slices/initiativeSlice";
-import { useAppSelector } from "../../redux/hooks";
-import { useInitiative } from "../../hooks/useInitiative";
-import { getRewardBatches } from "../../services/merchantsService";
-import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
-import { useAlert } from "../../hooks/useAlert";
-import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
+import { ButtonNaked, Colors, Tag } from '@pagopa/mui-italia';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import { initiativePagesBreadcrumbsContainerStyle } from '../../helpers';
+import ROUTES from '../../routes';
+import { setBatchTrx } from '../../hooks/useBatchTrx';
+import BreadcrumbsBox from '../components/BreadcrumbsBox';
+import { initiativeSelector } from '../../redux/slices/initiativeSlice';
+import { useAppSelector } from '../../redux/hooks';
+import { useInitiative } from '../../hooks/useInitiative';
+import { getRewardBatches } from '../../services/merchantsService';
+import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from '../../utils/constants';
+import { useAlert } from '../../hooks/useAlert';
+import {
+    getMerchantsFilters,
+    resetMerchantsFilters,
+    setMerchantsFilters,
+} from '../../hooks/useMerchantsFilters';
 
 export interface RefundItem {
     id: string;
@@ -35,6 +39,7 @@ export interface RefundItem {
     totalAmountCents: number;
     approvedAmountCents: number;
     initialAmountCents: number;
+    suspendedAmountCents: number;
     numberOfTransactions: number;
     numberOfTransactionsSuspended: number;
     numberOfTransactionsRejected: number;
@@ -128,6 +133,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
+    const suspendedRefund = formatAmount(row.suspendedAmountCents);
     const formatRefundDate = refundRequestDate(row.merchantSendDate);
 
     const handleClick = () => {
@@ -157,7 +163,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tooltip title={row.name}>
-                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {row.name}
                     </Box>
                 </Tooltip>
@@ -183,6 +189,14 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 <Tooltip title={approvedRefund}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {approvedRefund}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={suspendedRefund}>
+                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {suspendedRefund}
                     </Box>
                 </Tooltip>
             </TableCell>
@@ -223,6 +237,7 @@ const InitiativeRefundsMerchants = () => {
     const { t } = useTranslation();
     const initiativeSel = useAppSelector(initiativeSelector);
     useInitiative();
+
     interface MatchParams {
         id: string;
     }
@@ -278,7 +293,7 @@ const InitiativeRefundsMerchants = () => {
     const history = useHistory();
 
     useMemo(() => {
-        if (!savedFilters.page) {
+        if(!savedFilters.page){
             setPage(0);
         }
     }, [id]);
@@ -355,6 +370,7 @@ const InitiativeRefundsMerchants = () => {
                         totalAmountCents: r.totalAmountCents,
                         approvedAmountCents: r.approvedAmountCents,
                         initialAmountCents: r.initialAmountCents,
+                        suspendedAmountCents: r.suspendedAmountCents,
                         numberOfTransactions: r.numberOfTransactions,
                         numberOfTransactionsSuspended: r.numberOfTransactionsSuspended,
                         numberOfTransactionsRejected: r.numberOfTransactionsRejected,
@@ -418,14 +434,13 @@ const InitiativeRefundsMerchants = () => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ display: "flex", gap: 3, mt: 3, mb: 3, alignItems: "center" }}>
-
+            <Box sx={{ display: 'flex', gap: 3, mt: 3, mb: 3, alignItems: 'center' }}>
                 <FormControl
                     variant="outlined"
                     size="small"
                     sx={{
                         minWidth: 150,
-                        "& .MuiInputLabel-root": {
+                        '& .MuiInputLabel-root': {
                             fontSize: 14,
                             lineHeight: "normal"
                         }
@@ -542,7 +557,6 @@ const InitiativeRefundsMerchants = () => {
                         <MenuItem value="APPROVED">
                             <Tag value={t("chip.batch.approved")} color="success" />
                         </MenuItem>
-
                     </Select>
                 </FormControl>
 
@@ -609,10 +623,10 @@ const InitiativeRefundsMerchants = () => {
                     >
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.name')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.period')}
                                 </TableCell>
                                 <TableCell sortDirection={dateSort === "" ? false : dateSort}>
@@ -624,19 +638,22 @@ const InitiativeRefundsMerchants = () => {
                                         {t("pages.initiativeMerchantsRefunds.table.requestRefundDate")}
                                     </TableSortLabel>
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.approvedRefund')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.suspendedRefund')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.assignee')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xl: "nowrap", lg: "none" } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.status')}
                                 </TableCell>
                                 <TableCell sx={{
@@ -663,10 +680,10 @@ const InitiativeRefundsMerchants = () => {
                                         setBatchTrx(row);
                                         setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize });
                                         history.replace(
-                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
-                                                ':batchId',
-                                                row.id
-                                            ).replace(':id', id)
+                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(':batchId', row.id).replace(
+                                                ':id',
+                                                id,
+                                            ),
                                         );
                                     }}
                                 />
@@ -695,7 +712,7 @@ const InitiativeRefundsMerchants = () => {
                                     onChange={(e) => setPageSize(Number(e.target.value))}
                                     sx={{
                                         height: 32,
-                                        '& .MuiSelect-select': { paddingY: '3px' }
+                                        '& .MuiSelect-select': { paddingY: '3px' },
                                     }}
                                 >
                                     <MenuItem value={10}>10</MenuItem>
