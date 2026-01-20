@@ -122,6 +122,14 @@ type RefundRowProps = {
     onClick: () => void;
 };
 
+export interface MerchantItem {
+    merchantId: string;
+    businessName: string;
+    fiscalCode: string;
+    merchantStatus: string;
+    updateStatusState: string;
+}
+
 const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const status = row.status?.toUpperCase?.() ?? "";
     const isDisabled = isRowDisabled(status);
@@ -254,7 +262,7 @@ const InitiativeRefundsMerchants = () => {
     const end = Math.min((page + 1) * pageSize, totalElements);
 
     type SortState = "" | "asc" | "desc";
-    const [dateSort, setDateSort] = useState<SortState>("");
+    const [dateSort, setDateSort] = useState<SortState>(savedFilters.dateSort ?? "");
 
     const toggleDateSort = () => {
         setDateSort(prev => {
@@ -273,7 +281,7 @@ const InitiativeRefundsMerchants = () => {
         norm(draftStatus) !== norm(statusFilter)
     );
 
-    const [businessNameList, setBusinessNameList] = useState([]);
+    const [businessNameList, setBusinessNameList] = useState<Array<MerchantItem>>([]);
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
     const history = useHistory();
@@ -322,16 +330,18 @@ const InitiativeRefundsMerchants = () => {
         if (savedFilters.pageSize !== null) {
             setPageSize(savedFilters.pageSize);
         }
+        if (savedFilters.dateSort !== "") {
+            setDateSort(savedFilters.dateSort);
+        }
 
         resetMerchantsFilters();
     }, [savedFilters]);
 
     const getMerchantsList = () => {
-        getMerchantList(id, 1).then((res) => {
-            if((res.content as [])?.length > 0) {
-                setBusinessNameList(res.content as []);
+        getMerchantList(id, 0).then((res) => {
+            if (res && res.content && res.content.length > 0) {
+                setBusinessNameList(res.content as Array<MerchantItem>);
             }
-            console.log(businessNameList);
         }).catch(() => {
             setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
         });
@@ -483,7 +493,20 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftName(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="3a602b17-ac1c-3029-9e78-0a4bbb8693d4">Esercente di test IdPay</MenuItem>
+                        {businessNameList.map(merchant => (
+                            <MenuItem key={merchant.merchantId} value={merchant.merchantId}>
+                                <Tooltip title={merchant.businessName} placement="left" arrow>
+                                    <Box sx={{
+                                        maxWidth: 400,
+                                        overflow: "hidden",
+                                        whiteSpace: "nowrap",
+                                        textOverflow: "ellipsis"
+                                    }}>
+                                        {merchant.businessName}
+                                    </Box>
+                                </Tooltip>
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
 
@@ -673,7 +696,7 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
-                                        setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize });
+                                        setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize, dateSort });
                                         history.replace(
                                             ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
                                                 ':batchId',
