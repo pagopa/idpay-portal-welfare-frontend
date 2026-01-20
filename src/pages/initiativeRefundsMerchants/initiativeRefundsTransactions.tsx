@@ -849,6 +849,14 @@ const InitiativeRefundsTransactions = () => {
                             value={draftPosFilter}
                             onChange={(e) => setDraftPosFilter(e.target.value)}
                             label={t('pages.initiativeMerchantsTransactions.table.pos')}
+                            MenuProps={{
+                                PaperProps: {
+                                    sx: {
+                                        maxHeight: 250,
+                                        overflowY: 'auto'
+                                    }
+                                }
+                            }}
                             renderValue={(selected) => {
                                 const selectedPos = posList.find(p => p.id === selected);
                                 const label = selectedPos?.franchiseName ?? selected;
