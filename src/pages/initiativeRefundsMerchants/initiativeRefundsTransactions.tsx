@@ -852,11 +852,12 @@ const InitiativeRefundsTransactions = () => {
                             MenuProps={{
                                 PaperProps: {
                                     sx: {
-                                        maxHeight: 250,
+                                        maxHeight: 300,
                                         overflowY: 'auto'
                                     }
                                 }
                             }}
+                            sx={{width: 300}}
                             renderValue={(selected) => {
                                 const selectedPos = posList.find(p => p.id === selected);
                                 const label = selectedPos?.franchiseName ?? selected;
@@ -868,7 +869,7 @@ const InitiativeRefundsTransactions = () => {
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
-                                            maxWidth: 250,
+                                            maxWidth: 300,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
@@ -885,7 +886,7 @@ const InitiativeRefundsTransactions = () => {
                                     <Tooltip title={pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
                                         `${pos.franchiseName} - ${pos.province} - ${pos.address}`} placement="left" arrow>
                                         <Box sx={{
-                                            maxWidth: 400,
+                                            maxWidth: 300,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"

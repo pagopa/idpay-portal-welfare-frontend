@@ -298,7 +298,7 @@ const InitiativeRefundsMerchants = () => {
     const history = useHistory();
 
     useMemo(() => {
-        if(!savedFilters.page){
+        if (!savedFilters.page) {
             setPage(0);
         }
     }, [id]);
@@ -453,37 +453,6 @@ const InitiativeRefundsMerchants = () => {
                 </Box>
             </Box>
             <Box sx={{ display: 'flex', gap: 3, mt: 3, mb: 3, alignItems: 'center' }}>
-                <FormControl
-                    variant="outlined"
-                    size="small"
-                    sx={{
-                        minWidth: 150,
-                        '& .MuiInputLabel-root': {
-                            fontSize: 14,
-                            lineHeight: "normal"
-                        }
-                    }}
-                >
-                    <InputLabel id="assignee-filter-label">
-                        {t("pages.initiativeMerchantsRefunds.table.assignee")}
-                    </InputLabel>
-
-                    <Select
-                        labelId="assignee-filter-label"
-                        value={draftAssignee}
-                        label={t("pages.initiativeMerchantsRefunds.table.assignee")}
-                        onChange={(e) => setDraftAssignee(e.target.value)}
-                        sx={{
-                            height: 40,
-                            display: "flex",
-                            alignItems: "center"
-                        }}
-                    >
-                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
-                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
-                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
-                    </Select>
-                </FormControl>
 
                 <FormControl
                     variant="outlined"
@@ -502,13 +471,13 @@ const InitiativeRefundsMerchants = () => {
                         value={draftName}
                         label={t("pages.initiativeMerchantsRefunds.table.name")}
                         onChange={(e) => setDraftName(e.target.value)}
-                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                        sx={{ height: 40, display: "flex", alignItems: "center", width: 300 }}
                     >
                         {businessNameList.map(merchant => (
                             <MenuItem key={merchant.merchantId} value={merchant.merchantId}>
                                 <Tooltip title={merchant.businessName} placement="left" arrow>
                                     <Box sx={{
-                                        maxWidth: 400,
+                                        maxWidth: 300,
                                         overflow: "hidden",
                                         whiteSpace: "nowrap",
                                         textOverflow: "ellipsis"
@@ -588,6 +557,38 @@ const InitiativeRefundsMerchants = () => {
                         <MenuItem value="APPROVED">
                             <Tag value={t("chip.batch.approved")} color="success" />
                         </MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        '& .MuiInputLabel-root': {
+                            fontSize: 14,
+                            lineHeight: "normal"
+                        }
+                    }}
+                >
+                    <InputLabel id="assignee-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.assignee")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="assignee-filter-label"
+                        value={draftAssignee}
+                        label={t("pages.initiativeMerchantsRefunds.table.assignee")}
+                        onChange={(e) => setDraftAssignee(e.target.value)}
+                        sx={{
+                            height: 40,
+                            display: "flex",
+                            alignItems: "center"
+                        }}
+                    >
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L1")}>{t("pages.initiativeMerchantsRefunds.L1")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L2")}>{t("pages.initiativeMerchantsRefunds.L2")}</MenuItem>
+                        <MenuItem value={t("pages.initiativeMerchantsRefunds.L3")}>{t("pages.initiativeMerchantsRefunds.L3")}</MenuItem>
                     </Select>
                 </FormControl>
 
