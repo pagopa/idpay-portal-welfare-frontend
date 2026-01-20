@@ -477,7 +477,7 @@ const InitiativeRefundsMerchants = () => {
                             <MenuItem key={merchant.merchantId} value={merchant.merchantId}>
                                 <Tooltip title={merchant.businessName} placement="left" arrow>
                                     <Box sx={{
-                                        maxWidth: 300,
+                                        maxWidth: 248,
                                         overflow: "hidden",
                                         whiteSpace: "nowrap",
                                         textOverflow: "ellipsis"

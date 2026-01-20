@@ -852,7 +852,7 @@ const InitiativeRefundsTransactions = () => {
                             MenuProps={{
                                 PaperProps: {
                                     sx: {
-                                        maxHeight: 300,
+                                        maxHeight: 210,
                                         overflowY: 'auto'
                                     }
                                 }
@@ -886,7 +886,7 @@ const InitiativeRefundsTransactions = () => {
                                     <Tooltip title={pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
                                         `${pos.franchiseName} - ${pos.province} - ${pos.address}`} placement="left" arrow>
                                         <Box sx={{
-                                            maxWidth: 300,
+                                            maxWidth: 248,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
