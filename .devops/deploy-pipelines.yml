@@ -252,6 +252,7 @@ stages:
     condition: or(eq(variables['environment'], 'DEV'), succeeded())
     jobs:
       - job: 'Deploy_to_${{ variables.environment }}'
+        timeoutInMinutes: 120
         steps:
           - checkout: none
 
