@@ -71,7 +71,7 @@ export const merchantsApi = {
       initiativeId: id,
       page,
       fiscalCode,
-      size: 10,
+      size: 200,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -144,13 +144,21 @@ export const merchantsApi = {
     initiativeId: string,
     page: number,
     size: number,
-    assigneeLevel?: string
+    assigneeLevel?: string,
+    merchantId?: string,
+    month?: string,
+    status?: string,
+    sort?: string
   ): Promise<RewardBatchListDTO> => {
     const result = await merchantsApiClient.getRewardBatches({
       initiativeId,
       page,
       size,
-      assigneeLevel
+      assigneeLevel,
+      merchantId,
+      month,
+      status,
+      sort
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },

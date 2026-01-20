@@ -29,7 +29,7 @@ import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import { useAlert } from "../../hooks/useAlert";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
-import { getPosTypeLabel, getStatusColor, getStatusLabel, RefundItem } from "./initiativeRefundsMerchants";
+import { getStatusColor, getStatusLabel, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
 import { RoleActionButton } from "./roleActionButton";
@@ -156,6 +156,7 @@ const InitiativeRefundsTransactions = () => {
     const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
 
     useInitiative();
+
     interface MatchParams {
         id: string;
     }
@@ -196,7 +197,9 @@ const InitiativeRefundsTransactions = () => {
                 const ok = await rehydrateBatchTrx(id, batchId);
                 setBatch(getBatchTrx());
                 setRestored(true);
-                if (!ok) { history.replace(ROUTES.INITIATIVE_REFUNDS.replace(":id", id)); }
+                if (!ok) {
+                    history.replace(ROUTES.INITIATIVE_REFUNDS.replace(':id', id));
+                }
             } else {
                 setRestored(true);
             }
@@ -274,7 +277,6 @@ const InitiativeRefundsTransactions = () => {
     useEffect(() => {
         if (!batch) { return; };
         getTableData(id);
-
     }, [batch, page, pageSize, posFilter, statusFilter, dateSort]);
 
     useEffect(() => {
@@ -328,7 +330,6 @@ const InitiativeRefundsTransactions = () => {
 
     const handleBatchStatus = () => {
         if (batch?.id) {
-
             setLoading(true);
             if (batch?.assigneeLevel !== "L3") {
 
@@ -342,7 +343,10 @@ const InitiativeRefundsTransactions = () => {
                     .catch((error) => {
                         handleCatch(error);
                     })
-                    .finally(() => { setLoading(false); setBatchModalOpen(false); });
+                    .finally(() => {
+                        setLoading(false);
+                        setBatchModalOpen(false);
+                    });
             } else {
                 approveBatch(
                     id,
@@ -379,6 +383,7 @@ const InitiativeRefundsTransactions = () => {
         businessName: dto.businessName ?? batch?.businessName ?? "",
         month: dto.month ?? batch?.month ?? "",
         posType: dto.posType === "PHYSICAL" ? "FISICO" : "ONLINE",
+        merchantSendDate: dto.merchantSendDate?.toDateString() ?? "",
         status: dto.status ?? "",
         partial: dto.partial ?? false,
         name: dto.name,
@@ -386,6 +391,7 @@ const InitiativeRefundsTransactions = () => {
         endDate: dto.endDate?.toDateString() ?? "",
         totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
+        suspendedAmountCents: dto.suspendedAmountCents ?? batch?.suspendedAmountCents ?? 0,
         initialAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         numberOfTransactions: dto.numberOfTransactions ?? batch?.numberOfTransactions ?? 0,
         numberOfTransactionsSuspended: dto.numberOfTransactionsSuspended ?? batch?.numberOfTransactionsSuspended ?? 0,
@@ -474,7 +480,7 @@ const InitiativeRefundsTransactions = () => {
     const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => {
         if (!rowStatus) { return; }
 
-        setSelectedRows(prev => {
+        setSelectedRows((prev) => {
             const newSet = new Set(prev);
             if (newSet.has(rowId)) {
                 newSet.delete(rowId);
@@ -503,7 +509,6 @@ const InitiativeRefundsTransactions = () => {
 
     const downloadInvoice = (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload: boolean = false) => {
         if (batch?.merchantId) {
-
             setLoading(true);
             getDownloadInvoice(
                 pointOfSaleId,
@@ -565,7 +570,6 @@ const InitiativeRefundsTransactions = () => {
 
     const getCsv = () => {
         if (batch?.id) {
-
             setLoading(true);
             getDownloadCsv(
                 id,
@@ -579,6 +583,7 @@ const InitiativeRefundsTransactions = () => {
                     const fileName = getFileNameFromAzureUrl(csvUrl);
                     return downloadCsv(csvUrl, fileName);
                 })
+                // eslint-disable-next-line sonarjs/no-identical-functions
                 .catch((_error) => {
                     setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
                 })
@@ -592,7 +597,6 @@ const InitiativeRefundsTransactions = () => {
             const rawFileName = pathname.substring(pathname.lastIndexOf("/") + 1);
             return decodeURIComponent(rawFileName);
         } catch {
-            console.log("catch");
             return `${batch?.businessName}_${batch?.name}_${batch?.posType}`;
         }
     };
@@ -616,7 +620,15 @@ const InitiativeRefundsTransactions = () => {
                     />
                 </Box>
 
-                <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: 3, mb: 3 }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        mt: 3,
+                        mb: 3,
+                    }}
+                >
                     <Box
                         sx={{
                             flex: 1,
@@ -685,7 +697,15 @@ const InitiativeRefundsTransactions = () => {
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
                             <Tooltip title={batch.name || '-'}>
-                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                <Box
+                                    sx={{
+                                        display: 'inline-block',
+                                        maxWidth: '100%',
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                        textOverflow: 'ellipsis',
+                                    }}
+                                >
                                     {batch.name || '-'}
                                 </Box>
                             </Tooltip>
@@ -703,12 +723,12 @@ const InitiativeRefundsTransactions = () => {
                         </Typography>
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                            {t('pages.initiativeMerchantsRefunds.table.type')}
+                            {t('pages.initiativeMerchantsRefunds.table.requestRefundDate')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            <Tooltip title={getPosTypeLabel(batch.posType)}>
+                            <Tooltip title={refundRequestDate(batch.merchantSendDate)}>
                                 <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                                    {getPosTypeLabel(batch.posType)}
+                                    {refundRequestDate(batch.merchantSendDate)}
                                 </Box>
                             </Tooltip>
                         </Typography>
@@ -731,6 +751,24 @@ const InitiativeRefundsTransactions = () => {
                             <Tooltip title={formatCurrency(batch.approvedAmountCents)}>
                                 <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
                                     {formatCurrency(batch.approvedAmountCents)}
+                                </Box>
+                            </Tooltip>
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                            {t('pages.initiativeMerchantsTransactions.batchDetail.suspendedRefund')}
+                        </Typography>
+                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                            <Tooltip title={formatCurrency(batch.suspendedAmountCents)}>
+                                <Box
+                                    sx={{
+                                        display: 'inline-block',
+                                        maxWidth: '100%',
+                                        overflow: 'hidden',
+                                        whiteSpace: 'nowrap',
+                                        textOverflow: 'ellipsis',
+                                    }}
+                                >
+                                    {formatCurrency(batch.suspendedAmountCents)}
                                 </Box>
                             </Tooltip>
                         </Typography>
@@ -817,7 +855,8 @@ const InitiativeRefundsTransactions = () => {
 
                                 return (
                                     <Tooltip
-                                        title={label}
+                                        title={selectedPos?.type === "ONLINE" ? `${label} - ${selectedPos?.website}` :
+                                                `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
@@ -826,7 +865,8 @@ const InitiativeRefundsTransactions = () => {
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
                                         }}>
-                                            {label}
+                                            {selectedPos?.type === "ONLINE" ? `${label} - ${selectedPos?.website}` :
+                                                `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
                                         </Box>
                                     </Tooltip>
                                 );
@@ -834,14 +874,16 @@ const InitiativeRefundsTransactions = () => {
                         >
                             {posList.map(pos => (
                                 <MenuItem key={pos.id} value={pos.id}>
-                                    <Tooltip title={pos.franchiseName} placement="left" arrow>
+                                    <Tooltip title={pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
+                                        `${pos.franchiseName} - ${pos.province} - ${pos.address}`} placement="left" arrow>
                                         <Box sx={{
-                                            maxWidth: 200,
+                                            maxWidth: 400,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
                                         }}>
-                                            {pos.franchiseName ?? pos.id}
+                                            {pos.type === "ONLINE" ? `${pos.franchiseName} - ${pos.website}` :
+                                                `${pos.franchiseName} - ${pos.province} - ${pos.address}`}
                                         </Box>
                                     </Tooltip>
                                 </MenuItem>
@@ -1060,7 +1102,6 @@ const InitiativeRefundsTransactions = () => {
                                                     <ChevronRightIcon color="primary" />
                                                 </ButtonNaked>
                                             </TableCell>
-
                                         </TableRow>
                                     );
                                 })}
@@ -1137,9 +1178,10 @@ const InitiativeRefundsTransactions = () => {
                     type={reasonModal.type as any}
                     count={selectedRows.size}
                     onClose={() => setReasonModal({ open: false, type: null })}
-
                     onConfirm={async (reason) => {
-                        if (!reasonModal.type) { return; };
+                        if (!reasonModal.type) {
+                            return;
+                        }
 
                         await handleRefundAction(reasonModal.type, [...selectedRows], reason)
                             .finally(() => setReasonModal({ open: false, type: null }));

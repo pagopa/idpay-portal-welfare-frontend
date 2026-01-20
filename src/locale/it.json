@@ -1002,8 +1002,10 @@
         "name": "Insegna",
         "period": "Lotto",
         "type": "Tipo",
+        "requestRefundDate": "Data richiesta rimborso",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "transactions": "Transazioni",
         "checksPercentage": "Controlli effettuati",
         "status": "Stato"
@@ -1016,6 +1018,7 @@
         "period": "Periodo di riferimento",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "assignedTo": "In carico a",
         "refundData": "DATI RIMBORSO",
         "beneficiary": "Intestatario",

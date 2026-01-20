@@ -73,12 +73,20 @@ export const getRewardBatches = (
   page: number,
   size: number,
   assigneeLevel?: string,
+  merchantId?: string,
+  month?: string,
+  status?: string,
+  sort?: string
 ): Promise<RewardBatchListDTO> =>
   merchantsApi.getRewardBatches(
     initiativeId,
     page,
     size,
-    assigneeLevel
+    assigneeLevel,
+    merchantId,
+    month,
+    status,
+    sort
   );
 
 export const getDownloadInvoice = (
