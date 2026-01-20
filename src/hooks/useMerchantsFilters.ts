@@ -5,6 +5,7 @@ interface MerchantsFilters {
     statusFilter: string | null;
     page: number | null;
     pageSize: number | null;
+    dateSort:  "" | "asc" | "desc";
 }
 
 const defaultMerchantsFilters: MerchantsFilters = {
@@ -14,6 +15,7 @@ const defaultMerchantsFilters: MerchantsFilters = {
     statusFilter: null,
     page: null,
     pageSize: null,
+    dateSort: ""
 };
 
 // eslint-disable-next-line functional/no-let

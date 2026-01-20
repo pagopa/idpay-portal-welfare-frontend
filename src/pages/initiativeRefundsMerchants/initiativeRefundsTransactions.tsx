@@ -597,7 +597,6 @@ const InitiativeRefundsTransactions = () => {
             const rawFileName = pathname.substring(pathname.lastIndexOf("/") + 1);
             return decodeURIComponent(rawFileName);
         } catch {
-            console.log("catch");
             return `${batch?.businessName}_${batch?.name}_${batch?.posType}`;
         }
     };
