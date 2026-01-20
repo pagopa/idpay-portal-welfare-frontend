@@ -267,6 +267,7 @@ stages:
                 az storage blob sync --container '$(blob_container_name)' --account-name $(storage_account) -s "$(Pipeline.Workspace)/Bundle" --destination '$(basePath)/'
           - task: AzureCLI@1
             displayName: 'Purge Azure Front Door CDN endpoint'
+            timeoutInMinutes: '90'
             inputs:
               azureSubscription: '$(AZURE_SUBSCRIPTION)'
               scriptLocation: inlineScript
