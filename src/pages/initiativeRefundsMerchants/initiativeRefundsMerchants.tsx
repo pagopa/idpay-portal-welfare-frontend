@@ -148,12 +148,12 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 <Tooltip title={row.businessName}>
                     <Box
                         sx={{
-                            display: '-webkit-box',
+                            display: "-webkit-box",
                             WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: 300,
+                            WebkitBoxOrient: "vertical",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxWidth: 300
                         }}
                     >
                         {row.businessName}
