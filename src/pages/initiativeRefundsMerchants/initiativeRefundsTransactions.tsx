@@ -102,8 +102,8 @@ const mapRefundsDrawerData = (
     rewardBatchRejectionReason: dto.rewardBatchRejectionReason,
 });
 
-const formatCurrency = (amountCents?: number) => {
-    if (amountCents === undefined || amountCents === null) {
+const formatCurrency = (amountCents?: number, isSuspended?: boolean) => {
+    if ((amountCents === undefined || amountCents === null) || (isSuspended && amountCents === 0)) {
         return "-";
     }
     return (amountCents / 100).toLocaleString("it-IT", {
@@ -758,7 +758,7 @@ const InitiativeRefundsTransactions = () => {
                             {t('pages.initiativeMerchantsTransactions.batchDetail.suspendedRefund')}
                         </Typography>
                         <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            <Tooltip title={formatCurrency(batch.suspendedAmountCents)}>
+                            <Tooltip title={formatCurrency(batch.suspendedAmountCents, true)}>
                                 <Box
                                     sx={{
                                         display: 'inline-block',
@@ -768,7 +768,7 @@ const InitiativeRefundsTransactions = () => {
                                         textOverflow: 'ellipsis',
                                     }}
                                 >
-                                    {formatCurrency(batch.suspendedAmountCents)}
+                                    {formatCurrency(batch.suspendedAmountCents, true)}
                                 </Box>
                             </Tooltip>
                         </Typography>
