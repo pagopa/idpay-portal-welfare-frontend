@@ -1760,6 +1760,10 @@ components:
           type: integer
           format: int64
           example: 100
+        suspendedAmountCents:
+          type: integer
+          format: int64
+          example: 100
         numberOfTransactions:
           type: integer
           format: int64
