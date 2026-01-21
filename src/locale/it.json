@@ -987,14 +987,25 @@
       "L1": "L1",
       "L2": "L2",
       "L3": "L3",
+      "perdiod": {
+        "november": "Novembre 2025",
+        "december": "Dicembre 2025",
+        "january": "Gennaio 2026",
+        "february": "Febbraio 2026",
+        "march": "Marzo 2026",
+        "april": "Aprile 2026",
+        "may": "Maggio 2026"
+      },
       "emptyState": "Nessun risultato trovato",
       "table": {
         "assignee": "In carico a",
         "name": "Insegna",
         "period": "Lotto",
         "type": "Tipo",
+        "requestRefundDate": "Data richiesta rimborso",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "transactions": "Transazioni",
         "checksPercentage": "Controlli effettuati",
         "status": "Stato"
@@ -1007,6 +1018,7 @@
         "period": "Periodo di riferimento",
         "requestedRefund": "Rimborso richiesto",
         "approvedRefund": "Rimborso approvato",
+        "suspendedRefund": "Rimborso sospeso",
         "assignedTo": "In carico a",
         "refundData": "DATI RIMBORSO",
         "beneficiary": "Intestatario",

@@ -1,4 +1,6 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Tooltip } from "@mui/material";
+/* eslint-disable complexity */
+/* eslint-disable sonarjs/cognitive-complexity */
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
@@ -13,9 +15,10 @@ import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
-import { getRewardBatches } from "../../services/merchantsService";
+import { getMerchantList, getRewardBatches } from "../../services/merchantsService";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
+import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
 
 export interface RefundItem {
     id: string;
@@ -23,6 +26,7 @@ export interface RefundItem {
     businessName: string;
     month: string;
     posType: "ONLINE" | "FISICO";
+    merchantSendDate: string;
     status: string;
     partial: boolean;
     name: string;
@@ -31,6 +35,7 @@ export interface RefundItem {
     totalAmountCents: number;
     approvedAmountCents: number;
     initialAmountCents: number;
+    suspendedAmountCents: number;
     numberOfTransactions: number;
     numberOfTransactionsSuspended: number;
     numberOfTransactionsRejected: number;
@@ -85,11 +90,18 @@ export const getStatusLabel = (status: string, role: string, t: any) => {
 export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
     posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
-const formatAmount = (amountCents?: number) => {
-    if (!amountCents) {
+const formatAmount = (amountCents?: number, isSuspended?: boolean) => {
+    if ((amountCents === undefined || amountCents === null) || (isSuspended && amountCents === 0)) {
         return "-";
     }
     return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
+};
+
+export const refundRequestDate = (date?: string) => {
+    if (!date) {
+        return "-";
+    }
+    return new Date(date).toLocaleDateString('it-IT');
 };
 
 const getChecksPercentage = (row: RefundItem) => {
@@ -111,12 +123,22 @@ type RefundRowProps = {
     onClick: () => void;
 };
 
+export interface MerchantItem {
+    merchantId: string;
+    businessName: string;
+    fiscalCode: string;
+    merchantStatus: string;
+    updateStatusState: string;
+}
+
 const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const status = row.status?.toUpperCase?.() ?? "";
     const isDisabled = isRowDisabled(status);
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
+    const suspendedRefund = formatAmount(row.suspendedAmountCents, true);
+    const formatRefundDate = refundRequestDate(row.merchantSendDate);
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -145,16 +167,16 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
             <TableCell>
                 <Tooltip title={row.name}>
-                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                         {row.name}
                     </Box>
                 </Tooltip>
             </TableCell>
 
             <TableCell>
-                <Tooltip title={getPosTypeLabel(row.posType)}>
+                <Tooltip title={formatRefundDate}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {getPosTypeLabel(row.posType)}
+                        {formatRefundDate}
                     </Box>
                 </Tooltip>
             </TableCell>
@@ -171,6 +193,14 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 <Tooltip title={approvedRefund}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {approvedRefund}
+                    </Box>
+                </Tooltip>
+            </TableCell>
+
+            <TableCell>
+                <Tooltip title={suspendedRefund}>
+                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                        {suspendedRefund}
                     </Box>
                 </Tooltip>
             </TableCell>
@@ -211,6 +241,7 @@ const InitiativeRefundsMerchants = () => {
     const { t } = useTranslation();
     const initiativeSel = useAppSelector(initiativeSelector);
     useInitiative();
+
     interface MatchParams {
         id: string;
     }
@@ -224,42 +255,116 @@ const InitiativeRefundsMerchants = () => {
     });
     const { id } = (match?.params as MatchParams) || {};
 
-    const [assigneeFilter, setAssigneeFilter] = useState<string>("");
-    const [draftAssignee, setDraftAssignee] = useState<string>("");
+    const savedFilters = getMerchantsFilters();
+    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [nameFilter, setNameFilter] = useState<string>(savedFilters.nameFilter ?? "");
+    const [draftName, setDraftName] = useState<string>(savedFilters.nameFilter ?? "");
+    const [periodFilter, setPeriodFilter] = useState<string>(savedFilters.periodFilter ?? "");
+    const [draftPeriod, setDraftPeriod] = useState<string>(savedFilters.periodFilter ?? "");
+    const [statusFilter, setStatusFilter] = useState<string>(savedFilters.statusFilter ?? "");
+    const [draftStatus, setDraftStatus] = useState<string>(savedFilters.statusFilter ?? "");
 
-    const [page, setPage] = useState(0);
+    const [page, setPage] = useState(savedFilters.page ?? 0);
     const [totalElements, setTotalElements] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
-    const [pageSize, setPageSize] = useState(10);
+    const [pageSize, setPageSize] = useState(savedFilters.pageSize ?? 10);
     const start = page * pageSize + 1;
     const end = Math.min((page + 1) * pageSize, totalElements);
 
-    const isFilterDisabled =
-        draftAssignee === "" || draftAssignee === assigneeFilter;
+    type SortState = "" | "asc" | "desc";
+    const [dateSort, setDateSort] = useState<SortState>(savedFilters.dateSort ?? "");
+
+    const toggleDateSort = () => {
+        setDateSort(prev => {
+            if (prev === "") { return "asc"; }
+            if (prev === "asc") { return "desc"; }
+            return "";
+        });
+    };
+
+    const norm = (s: string) => (s ?? "").trim();
+
+    const isFilterDisabled = !(
+        norm(draftAssignee) !== norm(assigneeFilter) ||
+        norm(draftName) !== norm(nameFilter) ||
+        norm(draftPeriod) !== norm(periodFilter) ||
+        norm(draftStatus) !== norm(statusFilter)
+    );
+
+    const [businessNameList, setBusinessNameList] = useState<Array<MerchantItem>>([]);
     const setLoading = useLoading(LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS);
     const [rows, setRows] = useState<Array<RefundItem>>([]);
     const history = useHistory();
 
     useMemo(() => {
-        setPage(0);
+        if (!savedFilters.page) {
+            setPage(0);
+        }
     }, [id]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
         if (typeof id === 'string') {
+            getMerchantsList();
             getTableData(id);
         }
-    }, [id, page, assigneeFilter, pageSize]);
+    }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter, dateSort]);
+
+    // eslint-disable-next-line sonarjs/no-identical-functions
+    useEffect(() => {
+        if (!savedFilters.page) {
+            setPage(0);
+        }
+    }, [pageSize]);
 
     useEffect(() => {
-        setPage(0);
-    }, [pageSize]);
+        if (savedFilters.page !== null) {
+            setPage(savedFilters.page);
+        }
+        if (savedFilters.assigneeFilter !== null) {
+            setDraftAssignee(savedFilters.assigneeFilter);
+            setAssigneeFilter(savedFilters.assigneeFilter);
+        }
+        if (savedFilters.nameFilter !== null) {
+            setDraftName(savedFilters.nameFilter);
+            setNameFilter(savedFilters.nameFilter);
+        }
+        if (savedFilters.periodFilter !== null) {
+            setDraftPeriod(savedFilters.periodFilter);
+            setPeriodFilter(savedFilters.periodFilter);
+        }
+        if (savedFilters.statusFilter !== null) {
+            setDraftStatus(savedFilters.statusFilter);
+            setStatusFilter(savedFilters.statusFilter);
+        }
+        if (savedFilters.pageSize !== null) {
+            setPageSize(savedFilters.pageSize);
+        }
+        if (savedFilters.dateSort !== "") {
+            setDateSort(savedFilters.dateSort);
+        }
+
+        resetMerchantsFilters();
+    }, [savedFilters]);
+
+    const getMerchantsList = () => {
+        getMerchantList(id, 0).then((res) => {
+            if (res && res.content && res.content.length > 0) {
+                setBusinessNameList(res.content as Array<MerchantItem>);
+            }
+        }).catch(() => {
+            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+        });
+    };
 
     const getTableData = (
         initiativeId: string,
     ) => {
+        const sort = dateSort === "" ? undefined : `merchantSendDate,${dateSort}`;
+
         setLoading(true);
-        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined)
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined, sort || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
@@ -275,6 +380,7 @@ const InitiativeRefundsMerchants = () => {
                         businessName: r.businessName,
                         month: r.month,
                         posType: r.posType,
+                        merchantSendDate: r.merchantSendDate,
                         status: r.status,
                         partial: r.partial,
                         name: r.name,
@@ -283,6 +389,7 @@ const InitiativeRefundsMerchants = () => {
                         totalAmountCents: r.totalAmountCents,
                         approvedAmountCents: r.approvedAmountCents,
                         initialAmountCents: r.initialAmountCents,
+                        suspendedAmountCents: r.suspendedAmountCents,
                         numberOfTransactions: r.numberOfTransactions,
                         numberOfTransactionsSuspended: r.numberOfTransactionsSuspended,
                         numberOfTransactionsRejected: r.numberOfTransactionsRejected,
@@ -297,7 +404,6 @@ const InitiativeRefundsMerchants = () => {
             })
             .catch(() => {
                 setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-
             })
             .finally(() => {
                 setLoading(false);
@@ -306,12 +412,22 @@ const InitiativeRefundsMerchants = () => {
 
     const handleFilterClick = () => {
         setAssigneeFilter(draftAssignee);
+        setNameFilter(draftName);
+        setPeriodFilter(draftPeriod);
+        setStatusFilter(draftStatus);
         setPage(0);
     };
 
     const handleRemoveFilters = () => {
         setAssigneeFilter("");
         setDraftAssignee("");
+        setNameFilter("");
+        setDraftName("");
+        setPeriodFilter("");
+        setDraftPeriod("");
+        setStatusFilter("");
+        setDraftStatus("");
+
         setPage(0);
     };
 
@@ -336,14 +452,120 @@ const InitiativeRefundsMerchants = () => {
                     />
                 </Box>
             </Box>
-            <Box sx={{ display: "flex", gap: 3, mt: 3, mb: 3, alignItems: "center" }}>
+            <Box sx={{ display: 'flex', gap: 3, mt: 3, mb: 3, alignItems: 'center' }}>
 
                 <FormControl
                     variant="outlined"
                     size="small"
                     sx={{
                         minWidth: 150,
-                        "& .MuiInputLabel-root": {
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="name-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.name")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="name-filter-label"
+                        value={draftName}
+                        label={t("pages.initiativeMerchantsRefunds.table.name")}
+                        onChange={(e) => setDraftName(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center", width: 300 }}
+                    >
+                        {businessNameList.map(merchant => (
+                            <MenuItem key={merchant.merchantId} value={merchant.merchantId}>
+                                <Tooltip title={merchant.businessName} placement="left" arrow>
+                                    <Box sx={{
+                                        maxWidth: 248,
+                                        overflow: "hidden",
+                                        whiteSpace: "nowrap",
+                                        textOverflow: "ellipsis"
+                                    }}>
+                                        {merchant.businessName}
+                                    </Box>
+                                </Tooltip>
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="period-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.period")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="period-filter-label"
+                        value={draftPeriod}
+                        label={t("pages.initiativeMerchantsRefunds.table.period")}
+                        onChange={(e) => setDraftPeriod(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="2025-11">{t("pages.initiativeMerchantsRefunds.perdiod.november")}</MenuItem>
+                        <MenuItem value="2025-12">{t("pages.initiativeMerchantsRefunds.perdiod.december")}</MenuItem>
+                        <MenuItem value="2026-01">{t("pages.initiativeMerchantsRefunds.perdiod.january")}</MenuItem>
+                        <MenuItem value="2026-02">{t("pages.initiativeMerchantsRefunds.perdiod.february")}</MenuItem>
+                        <MenuItem value="2026-03">{t("pages.initiativeMerchantsRefunds.perdiod.march")}</MenuItem>
+                        <MenuItem value="2026-04">{t("pages.initiativeMerchantsRefunds.perdiod.april")}</MenuItem>
+                        <MenuItem value="2026-05">{t("pages.initiativeMerchantsRefunds.perdiod.may")}</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        "& .MuiInputLabel-root": { fontSize: 14, lineHeight: "normal" },
+                    }}
+                >
+                    <InputLabel id="status-filter-label">
+                        {t("pages.initiativeMerchantsRefunds.table.status")}
+                    </InputLabel>
+
+                    <Select
+                        labelId="status-filter-label"
+                        value={draftStatus}
+                        label={t("pages.initiativeMerchantsRefunds.table.status")}
+                        onChange={(e) => setDraftStatus(e.target.value)}
+                        sx={{ height: 40, display: "flex", alignItems: "center" }}
+                    >
+                        <MenuItem value="SENT">
+                            <Tag value={t("chip.batch.sent")} color="default" />
+                        </MenuItem>
+
+                        <MenuItem value="TO_WORK">
+                            <Tag value={t("chip.batch.evaluating")} color="primary" />
+                        </MenuItem>
+
+                        <MenuItem value="TO_APPROVE">
+                            <Tag value={t("chip.batch.toApprove")} color="warning" />
+                        </MenuItem>
+
+                        <MenuItem value="APPROVING">
+                            <Tag value={t("chip.batch.approving")} color="info" />
+                        </MenuItem>
+
+                        <MenuItem value="APPROVED">
+                            <Tag value={t("chip.batch.approved")} color="success" />
+                        </MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                        minWidth: 150,
+                        '& .MuiInputLabel-root': {
                             fontSize: 14,
                             lineHeight: "normal"
                         }
@@ -388,14 +610,14 @@ const InitiativeRefundsMerchants = () => {
 
                 <ButtonNaked
                     color="primary"
-                    disabled={!assigneeFilter}
+                    disabled={!assigneeFilter && !nameFilter && !periodFilter && !statusFilter}
                     onClick={handleRemoveFilters}
                     sx={{
                         height: "40px",
                         paddingX: 2,
                         fontWeight: 600,
                         textTransform: "none",
-                        opacity: assigneeFilter ? 1 : 0.5
+                        opacity: assigneeFilter || nameFilter || periodFilter || statusFilter ? 1 : 0.5
                     }}
                 >
                     {t('pages.initiativeMerchant.form.removeFiltersBtn')}
@@ -424,34 +646,56 @@ const InitiativeRefundsMerchants = () => {
                 </Table>
             ) : (
                 <>
-                    <Table sx={{ mt: 2 }}>
+                    <Table
+                        sx={{
+                            mt: 2,
+                            width: '100%',
+                            tableLayout: 'fixed',
+                        }}
+                    >
                         <TableHead>
                             <TableRow>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.name')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.period')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
-                                    {t('pages.initiativeMerchantsRefunds.table.type')}
+                                <TableCell sortDirection={dateSort === "" ? false : dateSort}>
+                                    <TableSortLabel
+                                        active={dateSort !== ""}
+                                        direction={dateSort === "" ? "asc" : dateSort}
+                                        onClick={toggleDateSort}
+                                    >
+                                        {t("pages.initiativeMerchantsRefunds.table.requestRefundDate")}
+                                    </TableSortLabel>
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.requestedRefund')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.approvedRefund')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
+                                    {t('pages.initiativeMerchantsRefunds.table.suspendedRefund')}
+                                </TableCell>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.assignee')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.status')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: 'nowrap' }}></TableCell>
+                                <TableCell sx={{
+                                    width: 55,
+                                    maxWidth: 55,
+                                    minWidth: 44,
+                                    p: 0,
+                                    pr: 1,
+                                    textAlign: 'right',
+                                }}></TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -466,11 +710,12 @@ const InitiativeRefundsMerchants = () => {
                                             return;
                                         }
                                         setBatchTrx(row);
+                                        setMerchantsFilters({ assigneeFilter, nameFilter, periodFilter, statusFilter, page, pageSize, dateSort });
                                         history.replace(
-                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(
-                                                ':batchId',
-                                                row.id
-                                            ).replace(':id', id)
+                                            ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS.replace(':batchId', row.id).replace(
+                                                ':id',
+                                                id,
+                                            ),
                                         );
                                     }}
                                 />
@@ -499,7 +744,7 @@ const InitiativeRefundsMerchants = () => {
                                     onChange={(e) => setPageSize(Number(e.target.value))}
                                     sx={{
                                         height: 32,
-                                        '& .MuiSelect-select': { paddingY: '3px' }
+                                        '& .MuiSelect-select': { paddingY: '3px' },
                                     }}
                                 >
                                     <MenuItem value={10}>10</MenuItem>
