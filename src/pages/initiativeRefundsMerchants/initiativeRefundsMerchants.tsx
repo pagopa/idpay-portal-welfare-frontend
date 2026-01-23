@@ -90,8 +90,8 @@ export const getStatusLabel = (status: string, role: string, t: any) => {
 export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
     posType ? (posType === "ONLINE" ? "Online" : "Fisico") : '-';
 
-const formatAmount = (amountCents?: number, isSuspended?: boolean) => {
-    if ((amountCents === undefined || amountCents === null) || (isSuspended && amountCents === 0)) {
+const formatAmount = (amountCents?: number) => {
+    if ((amountCents === undefined || amountCents === null)) {
         return "-";
     }
     return (amountCents / 100).toLocaleString("it-IT", { style: "currency", currency: "EUR" });
@@ -137,7 +137,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const checksPercentage = getChecksPercentage(row);
     const requestedRefund = formatAmount(row.initialAmountCents);
     const approvedRefund = formatAmount(row.approvedAmountCents);
-    const suspendedRefund = formatAmount(row.suspendedAmountCents, true);
+    const suspendedRefund = formatAmount(row.suspendedAmountCents);
     const formatRefundDate = refundRequestDate(row.merchantSendDate);
 
     const handleClick = () => {
