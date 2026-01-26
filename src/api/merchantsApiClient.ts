@@ -71,7 +71,8 @@ export const merchantsApi = {
       initiativeId: id,
       page,
       fiscalCode,
-      size: 200,
+      size: 2500,
+      sort: "businessName,asc"
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
