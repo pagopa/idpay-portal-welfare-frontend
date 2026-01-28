@@ -42,6 +42,7 @@ export interface TrxItem {
     date: string;
     shop: string;
     amountCents: number;
+    checksError?: object;
     statusLabel: string;
     statusColor: string;
     invoiceFileName?: string;
@@ -62,7 +63,7 @@ export interface RefundsDrawerData {
     effectiveAmountCents?: number;
     rewardAmountCents?: number;
     authorizedAmountCents?: number;
-
+    checksError?: object;
     invoiceDocNumber?: string;
     invoiceFileName?: string;
 
@@ -96,7 +97,7 @@ const mapRefundsDrawerData = (
     transactionId: dto.trxId,
 
     rewardBatchTrxStatus: dto.rewardBatchTrxStatus,
-
+    checksError: mappedRow.checksError,
     statusLabel: mappedRow.statusLabel,
     statusColor: mappedRow.statusColor,
     rewardBatchRejectionReason: dto.rewardBatchRejectionReason,
@@ -391,7 +392,7 @@ const InitiativeRefundsTransactions = () => {
         endDate: dto.endDate?.toDateString() ?? "",
         totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
-        suspendedAmountCents: dto.suspendedAmountCents ?? batch?.suspendedAmountCents ?? 0,
+        suspendedAmountCents: (dto as any)?.suspendedAmountCents ?? batch?.suspendedAmountCents ?? 0,
         initialAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         numberOfTransactions: dto.numberOfTransactions ?? batch?.numberOfTransactions ?? 0,
         numberOfTransactionsSuspended: dto.numberOfTransactionsSuspended ?? batch?.numberOfTransactionsSuspended ?? 0,
@@ -443,10 +444,9 @@ const InitiativeRefundsTransactions = () => {
             shop: r.franchiseName ?? r.pointOfSaleId ?? "-",
 
             amountCents: r.rewardAmountCents ?? 0,
-
+            checksError: r.checksError,
             statusLabel: uiStatus.label,
             statusColor: uiStatus.color,
-
             invoiceFileName: r.invoiceData?.filename,
 
             pointOfSaleId: r.pointOfSaleId,
@@ -994,7 +994,7 @@ const InitiativeRefundsTransactions = () => {
                         }}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>
+                                    <TableCell width={"4.5%"}>
                                         {lockedStatus && sameStatusRows.length > 0 && (
                                             <Checkbox
                                                 disabled={disabled}
@@ -1054,7 +1054,7 @@ const InitiativeRefundsTransactions = () => {
                                                             color="primary"
                                                             onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId, row.invoiceFileName)}
                                                             sx={{
-                                                                maxWidth: 200,
+                                                                maxWidth: {lg: 200, md: 150, sm: 130, xs: 110},
                                                                 overflow: "hidden",
                                                                 textOverflow: "ellipsis",
                                                                 whiteSpace: "nowrap",

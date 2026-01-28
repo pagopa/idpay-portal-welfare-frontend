@@ -32,6 +32,26 @@ const formatCurrency = (value?: number) => {
     });
 };
 
+type ChecksErrorDTO = {
+    cfError?: boolean;
+    productEligibilityError?: boolean;
+    disposalRaeeError?: boolean;
+    priceError?: boolean;
+    bonusError?: boolean;
+    sellerReferenceError?: boolean;
+    accountingDocumentError?: boolean;
+};
+
+const CHECK_ERROR_LABELS: Record<keyof ChecksErrorDTO, string> = {
+    cfError: "Codice fiscale",
+    productEligibilityError: "Idoneità prodotto",
+    disposalRaeeError: "Smaltimento RAEE",
+    priceError: "Prezzo",
+    bonusError: "Bonus",
+    sellerReferenceError: "Riferimento venditore",
+    accountingDocumentError: "Documento contabile",
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
@@ -58,6 +78,14 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         // eslint-disable-next-line functional/immutable-data
         else { document.body.style.overflow = "auto"; }
     }, [open, onClose]);
+
+    const checksError = data?.checksError as ChecksErrorDTO | undefined;
+
+    const activeErrors: Array<string> = checksError
+        ? (Object.keys(checksError) as Array<keyof ChecksErrorDTO>)
+            .filter((k) => checksError[k] === true)
+            .map((k) => CHECK_ERROR_LABELS[k])
+        : [];
 
     return (
         <Drawer
@@ -240,6 +268,54 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                         color: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                     }}
                 />
+
+                {activeErrors.length > 0 && (
+                    <Box sx={{ mb: 3 }}>
+                        <Typography
+                            sx={{
+                                fontSize: "14px",
+                                fontWeight: 700,
+                                color: "#17324D",
+                                textTransform: "uppercase",
+                                mb: 1,
+                                letterSpacing: "0.5px",
+                            }}
+                        >
+                            {t(`pages.initiativeMerchantsTransactions.drawer.criticity`)}
+                        </Typography>
+
+                        <Box component="ul" sx={{ pl: 3, m: 0, listStyleType: "square", }}>
+                            {activeErrors.map((label) => (
+                                <Box
+                                    component="li"
+                                    key={label}
+                                    sx={{
+                                        fontSize: "16px",
+                                        color: "#17324D",
+                                        lineHeight: "21px",
+                                        mb: 1,
+                                    }}
+                                >
+                                    {label}
+                                </Box>
+                            ))}
+                        </Box>
+
+                        <ButtonNaked onClick={(e: any) => { e.preventDefault(); }}
+                            sx={{
+                                display: "inline-block",
+                                mt: 1,
+                                fontSize: "16px",
+                                fontWeight: 600,
+                                color: "#0066CC",
+                                textDecoration: "none",
+                                "&:hover": { textDecoration: "underline" },
+                            }}>
+                            {t(`pages.initiativeMerchantsTransactions.drawer.editChecks`)}
+                        </ButtonNaked>
+                    </Box>
+                )}
+
                 {data?.rewardBatchRejectionReason && data?.rewardBatchRejectionReason !== "-" &&
                     data?.rewardBatchTrxStatus !== "APPROVED" && (
                         <Box sx={{ mb: 3 }}>
