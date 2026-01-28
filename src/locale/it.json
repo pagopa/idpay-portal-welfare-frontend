@@ -1052,6 +1052,8 @@
         "authorizedAmountCents": "Importo autorizzato",
         "docNumber": "Numero fattura",
         "invoice": "Fattura",
+        "criticity": "CRITICITÀ",
+        "editChecks": "Modifica controlli",
         "note": "Nota interna"
       },
       "modal": {
