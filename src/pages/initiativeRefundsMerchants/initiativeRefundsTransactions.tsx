@@ -27,6 +27,7 @@ import { parseJwt } from "../../utils/jwt-utils";
 import { JWTUser } from "../../model/JwtUser";
 import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import { useAlert } from "../../hooks/useAlert";
+import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getStatusColor, getStatusLabel, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
@@ -537,14 +538,16 @@ const InitiativeRefundsTransactions = () => {
     const handleRefundAction = async (
         type: "approve" | "suspend" | "reject",
         trxIds: Array<string>,
-        reason?: string
+        reason?: string,
+        checksError?: ChecksErrorDTO
     ) => {
         if (!batch?.id) { return; };
 
         setLoading(true);
         const payload: TransactionActionRequest = {
             transactionIds: trxIds,
-            reason: type !== "approve" ? reason : undefined
+            reason: type !== "approve" ? reason : undefined,
+            checksError: type !== "approve" ? checksError : undefined
         };
 
         const serviceMap = {
@@ -1178,8 +1181,8 @@ const InitiativeRefundsTransactions = () => {
                     download={downloadInvoice}
                     formatDate={formatDate}
                     onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
-                    onSuspend={(id, reason) => closeAfter(handleRefundAction("suspend", [id], reason))}
-                    onReject={(id, reason) => closeAfter(handleRefundAction("reject", [id], reason))}
+                    onSuspend={(id, reason, checksError) => closeAfter(handleRefundAction("suspend", [id], reason, checksError))}
+                    onReject={(id, reason, checksError) => closeAfter(handleRefundAction("reject", [id], reason, checksError))}
                     disabled={disabled}
                 />
                 <RefundReasonModal
@@ -1187,12 +1190,12 @@ const InitiativeRefundsTransactions = () => {
                     type={reasonModal.type as any}
                     count={selectedRows.size}
                     onClose={() => setReasonModal({ open: false, type: null })}
-                    onConfirm={async (reason) => {
+                    onConfirm={async (reason, checksError) => {
                         if (!reasonModal.type) {
                             return;
                         }
 
-                        await handleRefundAction(reasonModal.type, [...selectedRows], reason)
+                        await handleRefundAction(reasonModal.type, [...selectedRows], reason, checksError)
                             .finally(() => setReasonModal({ open: false, type: null }));
                     }}
                 />

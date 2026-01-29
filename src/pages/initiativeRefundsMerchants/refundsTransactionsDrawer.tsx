@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
-import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
 import { RefundActionButtons } from "./refundsActionButtons";
 import RefundReasonModal from "./refundsReasonModal";
@@ -19,8 +19,8 @@ interface Props {
     download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
-    onSuspend: (trxId: string, reason: string) => Promise<void> | void;
-    onReject: (trxId: string, reason: string) => Promise<void> | void;
+    onSuspend: (trxId: string, reason: string, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onReject: (trxId: string, reason: string, checksError: ChecksErrorDTO) => Promise<void> | void;
     disabled: boolean;
 }
 
@@ -60,16 +60,19 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
     const [reasonModalType, setReasonModalType] = useState<"suspend" | "reject" | null>(null);
     const [pendingTrxId, setPendingTrxId] = useState<string | null>(null);
     const [approveModalOpen, setApproveModalOpen] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
-    const openReasonModal = (type: "suspend" | "reject", trxId: string) => {
+    const openReasonModal = (type: "suspend" | "reject", trxId: string, editMode?: boolean) => {
         setPendingTrxId(trxId);
         setReasonModalType(type);
         setReasonModalOpen(true);
+        setEditMode(editMode || false);
     };
 
     const closeReasonModal = () => {
         setReasonModalOpen(false);
         setPendingTrxId(null);
+        setEditMode(false);
     };
 
     useEffect(() => {
@@ -301,7 +304,12 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                             ))}
                         </Box>
 
-                        <ButtonNaked onClick={(e: any) => { e.preventDefault(); }}
+                        <ButtonNaked onClick={() => {
+                            if (data) {
+                                const type = data?.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED ? "suspend" : "reject";
+                                openReasonModal(type, data.trxId, true);
+                            }
+                         }}
                             sx={{
                                 display: "inline-block",
                                 mt: 1,
@@ -363,19 +371,21 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
             </Box>
             <RefundReasonModal
                 open={reasonModalOpen}
-                type={reasonModalType ?? "reject"}
+                type={reasonModalType ?? 'reject'}
+                editMode={editMode}
+                activeErrors={checksError}
                 count={1}
                 onClose={closeReasonModal}
-                onConfirm={async (reason: string) => {
+                onConfirm={async (reason: string, checksError: ChecksErrorDTO) => {
                     if (!reasonModalType || !pendingTrxId) {
                         closeReasonModal();
                         return;
                     }
 
                     if (reasonModalType === "suspend") {
-                        await onSuspend(pendingTrxId, reason);
+                        await onSuspend(pendingTrxId, reason, checksError);
                     } else {
-                        await onReject(pendingTrxId, reason);
+                        await onReject(pendingTrxId, reason, checksError);
                     }
 
                     closeReasonModal();
