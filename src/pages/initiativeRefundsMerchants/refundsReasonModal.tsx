@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography, Checkbox, FormControlLabel, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, Typography, Checkbox, FormControlLabel, Box, Alert } from "@mui/material";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
@@ -75,7 +75,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
     const checkboxDescription = t(`pages.initiativeMerchantsTransactions.modal.${isSingle}.${type}CheckboxDescription`);
 
     return (
-        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" disableScrollLock keepMounted>
+        <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm" disableScrollLock keepMounted transitionDuration={{ exit: 1 }}>
             <DialogTitle sx={{ fontSize: 22, fontWeight: 700, mt: 2 }}>
                 {title}
             </DialogTitle>
@@ -84,6 +84,9 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                 <Typography sx={{ mb: 2, color: "#17324D" }}>
                     {description}
                 </Typography>
+                {editMode && !isAnyCheckboxSelected && (
+                    <Alert sx={{ mb: 3 }} severity="error" variant="standard" >{t('pages.initiativeMerchantsTransactions.modal.alert')}</Alert>
+                )}
 
                 <Typography sx={{ fontWeight: 600, mb: 2, color: "#17324D" }}>
                     {checkboxDescription}

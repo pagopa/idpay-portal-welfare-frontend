@@ -1092,7 +1092,8 @@
         "approve": "Approva",
         "reject": "Escludi",
         "suspend": "Da controllare",
-        "update": "Aggiorna"
+        "update": "Aggiorna",
+        "alert": "Se tutti i controlli sono stati completati è necessario approvare o rifiutare la transazione per proseguire."
       },
       "toast": {
         "single": {

@@ -303,24 +303,25 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                 </Box>
                             ))}
                         </Box>
-
-                        <ButtonNaked onClick={() => {
-                            if (data) {
-                                const type = data?.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED ? "suspend" : "reject";
-                                openReasonModal(type, data.trxId, true);
-                            }
-                         }}
-                            sx={{
-                                display: "inline-block",
-                                mt: 1,
-                                fontSize: "16px",
-                                fontWeight: 600,
-                                color: "#0066CC",
-                                textDecoration: "none",
-                                "&:hover": { textDecoration: "underline" },
-                            }}>
-                            {t(`pages.initiativeMerchantsTransactions.drawer.editChecks`)}
-                        </ButtonNaked>
+                        {data && data?.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED && (
+                            <ButtonNaked onClick={() => {
+                                if (data) {
+                                    const type = data.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED ? "suspend" : "reject";
+                                    openReasonModal(type, data.trxId, true);
+                                }
+                            }}
+                                sx={{
+                                    display: "inline-block",
+                                    mt: 1,
+                                    fontSize: "16px",
+                                    fontWeight: 600,
+                                    color: "#0066CC",
+                                    textDecoration: "none",
+                                    "&:hover": { textDecoration: "underline" },
+                                }}>
+                                {t(`pages.initiativeMerchantsTransactions.drawer.editChecks`)}
+                            </ButtonNaked>
+                        )}
                     </Box>
                 )}
 
