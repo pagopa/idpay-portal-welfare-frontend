@@ -337,7 +337,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                         )}
                     </Box>
                 )}
-                {data?.rewardBatchRejectionReason && (
+                {data?.rewardBatchRejectionReason && data.rewardBatchRejectionReason.length > 0 && data.rewardBatchTrxStatus !== "APPROVED" && (
                     <Box sx={{ mb: 3 }}>
                         <Typography
                             sx={{
