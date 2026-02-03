@@ -8,7 +8,6 @@ import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
 import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
-import { formatDateTime } from "../../helpers";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
 import { RefundActionButtons } from "./refundsActionButtons";
 import RefundReasonModal from "./refundsReasonModal";
@@ -21,8 +20,8 @@ interface Props {
     download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
-    onSuspend: (trxId: string, reasons: Array<ReasonDTO>, checksError: ChecksErrorDTO) => Promise<void> | void;
-    onReject: (trxId: string, reasons: Array<ReasonDTO>, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onSuspend: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onReject: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
     disabled: boolean;
 }
 
@@ -65,18 +64,11 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
     const [pendingTrxId, setPendingTrxId] = useState<string | null>(null);
     const [approveModalOpen, setApproveModalOpen] = useState(false);
     const [editMode, setEditMode] = useState(false);
-    const [previousReasons, setPreviousReasons] = useState<Array<ReasonDTO>>([]);
 
     const openReasonModal = (type: "suspend" | "reject", trxId: string, editMode?: boolean) => {
         setPendingTrxId(trxId);
         setReasonModalType(type);
         setEditMode(editMode || false);
-
-        if (editMode && data?.rewardBatchRejectionReason && data.rewardBatchRejectionReason.length > 0) {
-            setPreviousReasons(data.rewardBatchRejectionReason);
-        } else {
-            setPreviousReasons([]);
-        }
 
         setReasonModalOpen(true);
     };
@@ -85,7 +77,6 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         setReasonModalOpen(false);
         setPendingTrxId(null);
         setEditMode(false);
-        setPreviousReasons([]);
     };
 
     useEffect(() => {
@@ -375,7 +366,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                                     mb: 0.5
                                                 }}
                                             >
-                                                {reasonObj.date ? formatDateTime(reasonObj.date) : '-'}
+                                                {reasonObj.date ? formatDate(reasonObj.date.toISOString()) : '-'}
                                             </Typography>
 
                                             <Typography
@@ -421,20 +412,16 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 activeErrors={checksError}
                 count={1}
                 onClose={closeReasonModal}
-                onConfirm={async (newReason: ReasonDTO, checksError: ChecksErrorDTO) => {
+                onConfirm={async (newReason: string, checksError: ChecksErrorDTO) => {
                     if (!reasonModalType || !pendingTrxId) {
                         closeReasonModal();
                         return;
                     }
 
-                    const allReasons = editMode
-                        ? [...previousReasons, newReason]
-                        : [newReason];
-
                     if (reasonModalType === "suspend") {
-                        await onSuspend(pendingTrxId, allReasons, checksError);
+                        await onSuspend(pendingTrxId, newReason, checksError);
                     } else {
-                        await onReject(pendingTrxId, allReasons, checksError);
+                        await onReject(pendingTrxId, newReason, checksError);
                     }
 
                     closeReasonModal();
