@@ -1035,6 +1035,10 @@
         "dateTime": "Data e ora",
         "requestedRefund": "Rimborso richiesto",
         "status": "Stato",
+        "search": "Cerca per",
+        "fiscalCode": "Codice Fiscale",
+        "trxCode": "Codice Sconto",
+        "insertTrxCode": "Inserisci Codice",
         "toCheck": "Da esaminare",
         "consultable": "Consultabile",
         "suspended": "Da controllare",
@@ -1062,18 +1066,28 @@
           "approveDescription": "Stai per approvare la richiesta di rimborso selezionata. La transazione passerà allo stato \"Approvata\".",
           "rejectTitle": "Escludi richiesta di rimborso",
           "suspendTitle": "Richiedi ulteriori controlli ai venditori",
-          "rejectDescription": "Stai per rifiutare la richiesta di rimborso selezionata. Per completare l’azione, compila la nota interna. La transazione passerà allo stato \"Esclusa\".",
-          "suspendDescription": "Con questa azione segnali che la transazione necessita di ulteriori controlli. La transazione passerà allo stato \"Da controllare\".",
+          "suspendEditTitle": "Modifica controlli",
+          "rejectEditTitle": "Modifica controlli",
+          "rejectDescription": "Stai per rifiutare la richiesta di rimborso selezionata. Per completare l’azione, compila la nota interna e indentifica le informazioni errate facendo riferimento alla griglia di valutazione che hai già compilato. La transazione passerà allo stato “Esclusa”.",
+          "suspendDescription": "Con questa azione segnali che la transazione necessita di ulteriori controlli. Per completare l’azione, compila la nota interna e indentifica le informazioni da controllare facendo riferimento alla griglia di valutazione che hai già compilato. La transazione passerà allo stato “Da controllare”.",
+          "suspendEditDescription": "Deseleziona i controlli completati e indica la relativa motivazione. I controlli che restano selezionati richiedono ulteriori verifiche.",
+          "rejectEditDescription": "Deseleziona i controlli completati e indica la relativa motivazione. I controlli che restano selezionati richiedono ulteriori verifiche.",
+          "suspendCheckboxDescription": "Quali informazioni hanno bisogno di ulteriori controlli?*",
+          "rejectCheckboxDescription": "Quali informazioni risultano errate?*",
           "rejectSubDesc": "Perché stai escludendo la richiesta di rimborso?*",
-          "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
+          "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*",
+          "suspendEditSubDesc": "Perché stai modificando i controlli?*",
+          "rejectEditSubDesc": "Perché stai modificando i controlli?*"
         },
         "plural": {
           "approveTitle": "Approva le richieste di rimborso",
           "approveDescription": "Stai per approvare le richieste di rimborso selezionate. Le transazioni passeranno allo stato \"Approvata\".",
           "rejectTitle": "Escludi richieste di rimborso",
           "suspendTitle": "Richiedi ulteriori controlli ai venditori",
-          "rejectDescription": "Stai per rifiutare le richieste di rimborso selezionate. Per completare l’azione, compila la nota interna. Le transazioni passeranno allo stato \"Esclusa\".",
-          "suspendDescription": "Con questa azione segnali che le transazioni necessitano di ulteriori controlli. Le transazioni passeranno allo stato \"Da controllare\".",
+          "rejectDescription": "Stai per rifiutare le richieste di rimborso selezionate. Per completare l’azione, compila la nota interna e indentifica le informazioni errate facendo riferimento alla griglia di valutazione che hai già compilato. Le transazioni passeranno allo stato “Esclusa”.",
+          "suspendDescription": "Con questa azione segnali che le transazioni necessitano di ulteriori controlli. Per completare l’azione, compila la nota interna e indentifica le informazioni da controllare facendo riferimento alla griglia di valutazione che hai già compilato. Le transazioni passeranno allo stato “Da controllare”.",
+          "suspendCheckboxDescription": "Quali informazioni hanno bisogno di ulteriori controlli?*",
+          "rejectCheckboxDescription": "Quali informazioni risultano errate?*",
           "rejectSubDesc": "Perché stai escludendo le richieste di rimborso?*",
           "suspendSubDesc": "Perché stai richiedendo ulteriori controlli?*"
         },
@@ -1081,7 +1095,9 @@
         "cancel": "Annulla",
         "approve": "Approva",
         "reject": "Escludi",
-        "suspend": "Da controllare"
+        "suspend": "Da controllare",
+        "update": "Aggiorna",
+        "alert": "Se tutti i controlli sono stati completati è necessario approvare o rifiutare la transazione per proseguire."
       },
       "toast": {
         "single": {
@@ -1115,6 +1131,16 @@
       "csv": {
         "button": "Esporta csv",
         "alert": "Stiamo elaborando il lotto. Quando sarà pronto, potrai esportare il file .csv"
+      },
+      "checksError": {
+        "cfError": "Codice fiscale",
+        "productEligibilityError": "Idoneità prodotto",
+        "disposalRaeeError": "Smaltimento RAEE",
+        "priceError": "Prezzo",
+        "bonusError": "Bonus",
+        "sellerReferenceError": "Riferimento venditore",
+        "accountingDocumentError": "Docum. contabile",
+        "genericError": "Altro"
       }
     },
     "initiativeUsers": {
@@ -1263,7 +1289,8 @@
     "web": "Indirizzo web non valido",
     "webValid": "Inserisci un indirizzo web",
     "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
-    "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €"
+    "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €",
+    "selectAtLeastOne": "Seleziona almeno una delle opzioni"
   },
   "chip": {
     "batch": {
