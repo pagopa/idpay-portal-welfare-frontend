@@ -552,7 +552,7 @@ const InitiativeRefundsTransactions = () => {
     const handleRefundAction = async (
         type: "approve" | "suspend" | "reject",
         trxIds: Array<string>,
-        reasons?: Array<ReasonDTO>,
+        reason?: string,
         checksError?: ChecksErrorDTO
     ) => {
         if (!batch?.id) { return; };
@@ -561,7 +561,7 @@ const InitiativeRefundsTransactions = () => {
         const payload: TransactionActionRequest = {
             transactionIds: trxIds,
             checksError: type !== "approve" ? checksError : undefined,
-            reasons: type !== "approve" ? reasons : undefined,
+            reason: type !== "approve" ? reason : undefined,
         };
 
         const serviceMap = {
@@ -1250,8 +1250,8 @@ const InitiativeRefundsTransactions = () => {
                     download={downloadInvoice}
                     formatDate={formatDate}
                     onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
-                    onSuspend={(id, reasons, checksError) => closeAfter(handleRefundAction("suspend", [id], reasons, checksError))}
-                    onReject={(id, reasons, checksError) => closeAfter(handleRefundAction("reject", [id], reasons, checksError))}
+                    onSuspend={(id, reason, checksError) => closeAfter(handleRefundAction("suspend", [id], reason, checksError))}
+                    onReject={(id, reason, checksError) => closeAfter(handleRefundAction("reject", [id], reason, checksError))}
                     disabled={disabled}
                 />
                 <RefundReasonModal
@@ -1264,7 +1264,7 @@ const InitiativeRefundsTransactions = () => {
                             return;
                         }
 
-                        await handleRefundAction(reasonModal.type, [...selectedRows], [reason], checksError)
+                        await handleRefundAction(reasonModal.type, [...selectedRows], reason, checksError)
                             .finally(() => setReasonModal({ open: false, type: null }));
                     }}
                 />

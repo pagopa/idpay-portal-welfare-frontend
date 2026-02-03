@@ -3,7 +3,6 @@ import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
-import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 
 interface Props {
     open: boolean;
@@ -12,7 +11,7 @@ interface Props {
     editMode?: boolean;
     activeErrors?: ChecksErrorDTO | undefined;
     count: number;
-    onConfirm: (reason: ReasonDTO, checksError: ChecksErrorDTO) => void;
+    onConfirm: (reason: string, checksError: ChecksErrorDTO) => void;
 }
 
 const defaultChecksError: ChecksErrorDTO = {
@@ -69,12 +68,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
             return;
         }
 
-        const reasons: ReasonDTO = {
-            date: new Date(),
-            reason: operatorReason
-        };
-
-        onConfirm(reasons, checksError);
+        onConfirm(operatorReason, checksError);
     };
 
     const isSingle = count === 1 ? "single" : "plural";
