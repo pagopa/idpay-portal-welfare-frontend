@@ -366,3 +366,23 @@ export const initUploadHelperBoxStyle = {
   py: 1,
   px: 3,
 };
+
+export const formatDateTime = (date: Date | string): string => {
+  // eslint-disable-next-line functional/no-let
+  let dateObj: Date;
+
+  if (typeof date === 'string') {
+    const dateString = date.endsWith('Z') ? date : date + 'Z';
+    dateObj = new Date(dateString);
+  } else {
+    dateObj = new Date(date.getTime() + (60 * 60 * 1000));
+  }
+
+  const day = String(dateObj.getDate()).padStart(2, "0");
+  const month = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const year = String(dateObj.getFullYear()).slice(-2);
+  const hour = String(dateObj.getHours()).padStart(2, "0");
+  const minute = String(dateObj.getMinutes()).padStart(2, "0");
+
+  return `${day}/${month}/${year}, ${hour}:${minute}`;
+};

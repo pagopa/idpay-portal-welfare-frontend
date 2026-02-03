@@ -1035,6 +1035,10 @@
         "dateTime": "Data e ora",
         "requestedRefund": "Rimborso richiesto",
         "status": "Stato",
+        "search": "Cerca per",
+        "fiscalCode": "Codice Fiscale",
+        "trxCode": "Codice Sconto",
+        "insertTrxCode": "Inserisci Codice",
         "toCheck": "Da esaminare",
         "consultable": "Consultabile",
         "suspended": "Da controllare",
@@ -1136,7 +1140,7 @@
         "bonusError": "Bonus",
         "sellerReferenceError": "Riferimento venditore",
         "accountingDocumentError": "Docum. contabile",
-        "otherError": "Altro"
+        "genericError": "Altro"
       }
     },
     "initiativeUsers": {

@@ -52,7 +52,8 @@ export const getMerchantTransactionsProcessed = (
   status?: string,
   rewardBatchId?: string,
   rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
-  pointOfSaleId?: string
+  pointOfSaleId?: string,
+  trxCode?: string
 
 ): Promise<MerchantTransactionsProcessedListDTO> =>
   merchantsApi.getMerchantTransactionsProcessed(
@@ -66,6 +67,7 @@ export const getMerchantTransactionsProcessed = (
     rewardBatchId,
     rewardBatchTrxStatus,
     pointOfSaleId,
+    trxCode
   );
 
 export const getRewardBatches = (

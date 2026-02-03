@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert, TextField } from "@mui/material";
 import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -28,6 +28,7 @@ import { JWTUser } from "../../model/JwtUser";
 import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import { useAlert } from "../../hooks/useAlert";
 import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
+import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getStatusColor, getStatusLabel, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
@@ -73,7 +74,7 @@ export interface RefundsDrawerData {
     statusColor?: string;
     pointOfSaleId?: string;
     transactionId?: string;
-    rewardBatchRejectionReason?: string;
+    rewardBatchRejectionReason?: Array<ReasonDTO>;
 }
 
 const mapRefundsDrawerData = (
@@ -101,7 +102,8 @@ const mapRefundsDrawerData = (
     checksError: mappedRow.checksError,
     statusLabel: mappedRow.statusLabel,
     statusColor: mappedRow.statusColor,
-    rewardBatchRejectionReason: dto.rewardBatchRejectionReason,
+    rewardBatchRejectionReason:
+        dto?.rewardBatchRejectionReason as RefundsDrawerData['rewardBatchRejectionReason']
 });
 
 const formatCurrency = (amountCents?: number) => {
@@ -114,7 +116,7 @@ const formatCurrency = (amountCents?: number) => {
     });
 };
 
-const formatDate = (d?: string) => {
+export const formatDate = (d?: string) => {
     if (!d) { return "-"; };
     const date = new Date(d);
 
@@ -142,6 +144,10 @@ const InitiativeRefundsTransactions = () => {
     const [statusFilter, setStatusFilter] = useState<string | "">("");
     const [draftPosFilter, setDraftPosFilter] = useState<string>("");
     const [posFilter, setPosFilter] = useState<string>("");
+    const [draftSearchType, setDraftSearchType] = useState<"fiscalCode" | "trxCode" | "">("");
+    const [searchType, setSearchType] = useState<"fiscalCode" | "trxCode" | "">("");
+    const [draftSearchValue, setDraftSearchValue] = useState<string>("");
+    const [searchValue, setSearchValue] = useState<string>("");
 
     const [page, setPage] = useState(0);
     const [pageSize, setPageSize] = useState(10);
@@ -179,7 +185,8 @@ const InitiativeRefundsTransactions = () => {
     const history = useHistory();
     const isFilterDisabled =
         (draftStatusFilter === "" || draftStatusFilter === statusFilter) &&
-        (draftPosFilter === "" || draftPosFilter === posFilter);
+        (draftPosFilter === "" || draftPosFilter === posFilter) &&
+        (draftSearchValue === "" || draftSearchValue === searchValue);
 
     type SortState = "" | "asc" | "desc";
     const [dateSort, setDateSort] = useState<SortState>("");
@@ -279,12 +286,12 @@ const InitiativeRefundsTransactions = () => {
     useEffect(() => {
         if (!batch) { return; };
         getTableData(id);
-    }, [batch, page, pageSize, posFilter, statusFilter, dateSort]);
+    }, [batch, page, pageSize, posFilter, statusFilter, dateSort, searchValue, searchType]);
 
     useEffect(() => {
         setSelectedRows(new Set());
         setLockedStatus(null);
-    }, [page, pageSize, posFilter, statusFilter, dateSort]);
+    }, [page, pageSize, posFilter, statusFilter, dateSort, searchValue, searchType]);
 
     const getTableData = (initiativeId: string) => {
         if (!batch?.merchantId) {
@@ -302,11 +309,12 @@ const InitiativeRefundsTransactions = () => {
                 page,
                 pageSize,
                 sort,
-                undefined, // fiscal code
-                undefined, // status
+                searchType === "fiscalCode" ? searchValue || undefined : undefined,
+                undefined,
                 batch.id,
                 statusFilter as RewardBatchTrxStatusEnum || undefined,
-                posFilter || undefined
+                posFilter || undefined,
+                searchType === "trxCode" ? searchValue || undefined : undefined
             ),
             getMerchantDetail(initiativeId, batch.merchantId)
         ])
@@ -459,6 +467,8 @@ const InitiativeRefundsTransactions = () => {
     const handleFilterClick = () => {
         setStatusFilter(draftStatusFilter);
         setPosFilter(draftPosFilter);
+        setSearchType(draftSearchType);
+        setSearchValue(draftSearchValue);
         setPage(0);
     };
 
@@ -467,6 +477,10 @@ const InitiativeRefundsTransactions = () => {
         setPosFilter("");
         setDraftPosFilter("");
         setDraftStatusFilter("");
+        setSearchType("");
+        setDraftSearchType("");
+        setSearchValue("");
+        setDraftSearchValue("");
         setPage(0);
     };
 
@@ -538,7 +552,7 @@ const InitiativeRefundsTransactions = () => {
     const handleRefundAction = async (
         type: "approve" | "suspend" | "reject",
         trxIds: Array<string>,
-        reason?: string,
+        reasons?: Array<ReasonDTO>,
         checksError?: ChecksErrorDTO
     ) => {
         if (!batch?.id) { return; };
@@ -546,8 +560,8 @@ const InitiativeRefundsTransactions = () => {
         setLoading(true);
         const payload: TransactionActionRequest = {
             transactionIds: trxIds,
-            reason: type !== "approve" ? reason : undefined,
-            checksError: type !== "approve" ? checksError : undefined
+            checksError: type !== "approve" ? checksError : undefined,
+            reasons: type !== "approve" ? reasons : undefined,
         };
 
         const serviceMap = {
@@ -601,6 +615,18 @@ const InitiativeRefundsTransactions = () => {
             return decodeURIComponent(rawFileName);
         } catch {
             return `${batch?.businessName}_${batch?.name}_${batch?.posType}`;
+        }
+    };
+
+    const handleSearchValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+
+        if (draftSearchType === "fiscalCode") {
+            const sanitized = value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase();
+            setDraftSearchValue(sanitized);
+        } else if (draftSearchType === "trxCode") {
+            const sanitized = value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 8).toUpperCase();
+            setDraftSearchValue(sanitized);
         }
     };
 
@@ -839,9 +865,12 @@ const InitiativeRefundsTransactions = () => {
                     </Box>
                 </Paper>
 
-                <Box sx={{ display: "flex", gap: 3, mb: 3, alignItems: "center" }}>
+                <Box sx={{ display: "flex", gap: 2, mb: 3, alignItems: "center", flexWrap: "nowrap" }}>
                     <FormControl size="small" sx={{
-                        minWidth: 150, "& .MuiInputLabel-root": {
+                        minWidth: 180,
+                        flex: "1 1 auto",
+                        maxWidth: 250,
+                        "& .MuiInputLabel-root": {
                             fontSize: 14,
                             lineHeight: "normal"
                         }
@@ -860,7 +889,6 @@ const InitiativeRefundsTransactions = () => {
                                     }
                                 }
                             }}
-                            sx={{width: 300}}
                             renderValue={(selected) => {
                                 const selectedPos = posList.find(p => p.id === selected);
                                 const label = selectedPos?.franchiseName ?? selected;
@@ -872,7 +900,6 @@ const InitiativeRefundsTransactions = () => {
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
-                                            maxWidth: 300,
                                             overflow: "hidden",
                                             whiteSpace: "nowrap",
                                             textOverflow: "ellipsis"
@@ -904,7 +931,9 @@ const InitiativeRefundsTransactions = () => {
                     </FormControl>
 
                     <FormControl size="small" sx={{
-                        minWidth: 150, "& .MuiInputLabel-root": {
+                        minWidth: 140,
+                        flex: "0 1 auto",
+                        "& .MuiInputLabel-root": {
                             fontSize: 14,
                             lineHeight: "normal"
                         }
@@ -936,6 +965,42 @@ const InitiativeRefundsTransactions = () => {
                             })}
                         </Select>
                     </FormControl>
+
+                    <FormControl size="small" sx={{
+                        minWidth: 140,
+                        flex: "0 1 auto",
+                        "& .MuiInputLabel-root": {
+                            fontSize: 14,
+                            lineHeight: "normal"
+                        }
+                    }}>
+                        <InputLabel>{t('pages.initiativeMerchantsTransactions.table.search')}</InputLabel>
+                        <Select
+                            value={draftSearchType}
+                            label={t('pages.initiativeMerchantsTransactions.table.search')}
+                            onChange={(e) => {
+                                setDraftSearchType(e.target.value as "fiscalCode" | "trxCode" | "");
+                                setDraftSearchValue("");
+                            }}
+                        >
+                            <MenuItem value="fiscalCode">{t('pages.initiativeMerchantsTransactions.table.fiscalCode')}</MenuItem>
+                            <MenuItem value="trxCode">{t('pages.initiativeMerchantsTransactions.table.trxCode')}</MenuItem>
+                        </Select>
+                    </FormControl>
+
+                    <TextField
+                        disabled={!draftSearchType}
+                        size="small"
+                        label={t('pages.initiativeMerchantsTransactions.table.insertTrxCode')}
+                        value={draftSearchValue}
+                        onChange={handleSearchValueChange}
+                        sx={{
+                            minWidth: 150,
+                            flex: "1 1 auto",
+                            maxWidth: 200
+                        }}
+                    />
+
                     <Button
                         variant="outlined"
                         color="primary"
@@ -946,7 +1011,9 @@ const InitiativeRefundsTransactions = () => {
                             paddingX: 3,
                             fontWeight: 600,
                             borderRadius: "4px",
-                            textTransform: "none"
+                            textTransform: "none",
+                            whiteSpace: "nowrap",
+                            flexShrink: 0
                         }}
                     >
                         {t('pages.initiativeMerchantDetail.filterBtn')}
@@ -954,14 +1021,16 @@ const InitiativeRefundsTransactions = () => {
 
                     <ButtonNaked
                         color="primary"
-                        disabled={!posFilter && !statusFilter}
+                        disabled={!posFilter && !statusFilter && !searchValue}
                         onClick={handleRemoveFilters}
                         sx={{
                             height: "40px",
                             paddingX: 2,
                             fontWeight: 600,
                             textTransform: "none",
-                            opacity: posFilter || statusFilter ? 1 : 0.5
+                            whiteSpace: "nowrap",
+                            flexShrink: 0,
+                            opacity: posFilter || statusFilter || searchValue ? 1 : 0.5
                         }}
                     >
                         {t('pages.initiativeMerchant.form.removeFiltersBtn')}
@@ -1181,8 +1250,8 @@ const InitiativeRefundsTransactions = () => {
                     download={downloadInvoice}
                     formatDate={formatDate}
                     onApprove={(id) => closeAfter(handleRefundAction("approve", [id]))}
-                    onSuspend={(id, reason, checksError) => closeAfter(handleRefundAction("suspend", [id], reason, checksError))}
-                    onReject={(id, reason, checksError) => closeAfter(handleRefundAction("reject", [id], reason, checksError))}
+                    onSuspend={(id, reasons, checksError) => closeAfter(handleRefundAction("suspend", [id], reasons, checksError))}
+                    onReject={(id, reasons, checksError) => closeAfter(handleRefundAction("reject", [id], reasons, checksError))}
                     disabled={disabled}
                 />
                 <RefundReasonModal
@@ -1195,7 +1264,7 @@ const InitiativeRefundsTransactions = () => {
                             return;
                         }
 
-                        await handleRefundAction(reasonModal.type, [...selectedRows], reason, checksError)
+                        await handleRefundAction(reasonModal.type, [...selectedRows], [reason], checksError)
                             .finally(() => setReasonModal({ open: false, type: null }));
                     }}
                 />

@@ -3,6 +3,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
+import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 
 interface Props {
     open: boolean;
@@ -11,7 +12,7 @@ interface Props {
     editMode?: boolean;
     activeErrors?: ChecksErrorDTO | undefined;
     count: number;
-    onConfirm: (reason: string, checksError: ChecksErrorDTO) => void;
+    onConfirm: (reason: ReasonDTO, checksError: ChecksErrorDTO) => void;
 }
 
 const defaultChecksError: ChecksErrorDTO = {
@@ -22,25 +23,29 @@ const defaultChecksError: ChecksErrorDTO = {
     bonusError: false,
     sellerReferenceError: false,
     accountingDocumentError: false,
+    genericError: false
 };
 
 export default function RefundReasonModal({ open, onClose, type, count, onConfirm, activeErrors, editMode }: Props) {
-    const [reason, setReason] = useState("");
+    const [operatorReason, setOperatorReason] = useState("");
     const [error, setError] = useState(false);
     const [checkboxErrorMessage, setCheckboxErrorMessage] = useState(false);
     const { t } = useTranslation();
-    const [checksError, setChecksError] = useState<ChecksErrorDTO>(false);
+    const [checksError, setChecksError] = useState<ChecksErrorDTO>(defaultChecksError);
 
     useEffect(() => {
-        if (open && editMode && activeErrors) {
-            setChecksError(activeErrors);
-        } else {
-            setReason("");
+        if (open) {
+            setOperatorReason("");
             setError(false);
             setCheckboxErrorMessage(false);
-            setChecksError(defaultChecksError);
+
+            if (editMode && activeErrors) {
+                setChecksError(activeErrors);
+            } else {
+                setChecksError(defaultChecksError);
+            }
         }
-    }, [open]);
+    }, [open, editMode, activeErrors]);
 
     const handleCheckboxChange = (field: keyof ChecksErrorDTO) => {
         setChecksError(prev => ({
@@ -55,7 +60,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
     const isAnyCheckboxSelected = Object.values(checksError).some(value => value === true);
 
     const handleSubmit = () => {
-        const hasError = !reason.trim();
+        const hasError = !operatorReason.trim();
         const hasCheckboxError = !isAnyCheckboxSelected;
 
         if (hasError || hasCheckboxError) {
@@ -64,7 +69,12 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
             return;
         }
 
-        onConfirm(reason, checksError);
+        const reasons: ReasonDTO = {
+            date: new Date(),
+            reason: operatorReason
+        };
+
+        onConfirm(reasons, checksError);
     };
 
     const isSingle = count === 1 ? "single" : "plural";
@@ -167,11 +177,11 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                         <FormControlLabel
                             control={
                                 <Checkbox
-                                    checked={checksError.priceError} // TODO
-                                    onChange={() => handleCheckboxChange("priceError")} // TODO
+                                    checked={checksError.genericError}
+                                    onChange={() => handleCheckboxChange("genericError")}
                                 />
                             }
-                            label={t("pages.initiativeMerchantsTransactions.checksError.otherError")}
+                            label={t("pages.initiativeMerchantsTransactions.checksError.genericError")}
                             sx={{ margin: 0 }}
                         />
                     </Box>
@@ -190,18 +200,18 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                     label={t(`pages.initiativeMerchantsTransactions.drawer.note`)}
                     multiline
                     fullWidth
-                    value={reason}
+                    value={operatorReason}
                     onChange={(e) => {
-                        setReason(e.target.value);
+                        setOperatorReason(e.target.value);
                         if (error) { setError(false); };
                     }}
-                    error={error && reason.trim().length === 0}
+                    error={error && operatorReason.trim().length === 0}
                     helperText={error ? t('validation.required') : ""}
                     inputProps={{ maxLength: 200 }}
                 />
 
                 <Typography sx={{ mt: 1, textAlign: "right", fontSize: 12, color: "#888" }}>
-                    {reason.length}/200
+                    {operatorReason.length}/200
                 </Typography>
             </DialogContent>
 
