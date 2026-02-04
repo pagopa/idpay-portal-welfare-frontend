@@ -6,7 +6,8 @@ import { useEffect, useState } from "react";
 import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
-import { RewardBatchTrxStatus } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
 import { RefundActionButtons } from "./refundsActionButtons";
 import RefundReasonModal from "./refundsReasonModal";
@@ -19,8 +20,8 @@ interface Props {
     download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
-    onSuspend: (trxId: string, reason: string) => Promise<void> | void;
-    onReject: (trxId: string, reason: string) => Promise<void> | void;
+    onSuspend: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onReject: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
     disabled: boolean;
 }
 
@@ -32,6 +33,28 @@ const formatCurrency = (value?: number) => {
     });
 };
 
+type ChecksErrorDTO = {
+    cfError?: boolean;
+    productEligibilityError?: boolean;
+    disposalRaeeError?: boolean;
+    priceError?: boolean;
+    bonusError?: boolean;
+    sellerReferenceError?: boolean;
+    accountingDocumentError?: boolean;
+    genericError?: boolean;
+};
+
+const CHECK_ERROR_LABELS: Record<keyof ChecksErrorDTO, string> = {
+    cfError: "Codice fiscale",
+    productEligibilityError: "Idoneità prodotto",
+    disposalRaeeError: "Smaltimento RAEE",
+    priceError: "Prezzo",
+    bonusError: "Bonus",
+    sellerReferenceError: "Riferimento venditore",
+    accountingDocumentError: "Documento contabile",
+    genericError: "Altro"
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
@@ -40,16 +63,20 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
     const [reasonModalType, setReasonModalType] = useState<"suspend" | "reject" | null>(null);
     const [pendingTrxId, setPendingTrxId] = useState<string | null>(null);
     const [approveModalOpen, setApproveModalOpen] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
-    const openReasonModal = (type: "suspend" | "reject", trxId: string) => {
+    const openReasonModal = (type: "suspend" | "reject", trxId: string, editMode?: boolean) => {
         setPendingTrxId(trxId);
         setReasonModalType(type);
+        setEditMode(editMode || false);
+
         setReasonModalOpen(true);
     };
 
     const closeReasonModal = () => {
         setReasonModalOpen(false);
         setPendingTrxId(null);
+        setEditMode(false);
     };
 
     useEffect(() => {
@@ -58,6 +85,14 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
         // eslint-disable-next-line functional/immutable-data
         else { document.body.style.overflow = "auto"; }
     }, [open, onClose]);
+
+    const checksError = data?.checksError as ChecksErrorDTO | undefined;
+
+    const activeErrors: Array<string> = checksError
+        ? (Object.keys(checksError) as Array<keyof ChecksErrorDTO>)
+            .filter((k) => checksError[k] === true)
+            .map((k) => CHECK_ERROR_LABELS[k])
+        : [];
 
     return (
         <Drawer
@@ -240,41 +275,126 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                         color: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
                     }}
                 />
-                {data?.rewardBatchRejectionReason && data?.rewardBatchRejectionReason !== "-" &&
-                    data?.rewardBatchTrxStatus !== "APPROVED" && (
-                        <Box sx={{ mb: 3 }}>
-                            <Typography
-                                sx={{
-                                    fontSize: "14px",
-                                    fontWeight: 700,
-                                    color: "#17324D",
-                                    textTransform: "uppercase",
-                                    mb: 3,
-                                    letterSpacing: "0.5px"
-                                }}
-                            >
-                                {t(`pages.initiativeMerchantsTransactions.drawer.note`)}
-                            </Typography>
 
-                            <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-                                <Typography
+                {activeErrors.length > 0 && (
+                    <Box sx={{ mb: 3 }}>
+                        <Typography
+                            sx={{
+                                fontSize: "14px",
+                                fontWeight: 700,
+                                color: "#17324D",
+                                textTransform: "uppercase",
+                                mb: 1,
+                                letterSpacing: "0.5px",
+                            }}
+                        >
+                            {t(`pages.initiativeMerchantsTransactions.drawer.criticity`)}
+                        </Typography>
+
+                        <Box component="ul" sx={{ pl: 3, m: 0, listStyleType: "square", }}>
+                            {activeErrors.map((label) => (
+                                <Box
+                                    component="li"
+                                    key={label}
                                     sx={{
-                                        fontSize: "18px",
-                                        fontWeight: 600,
+                                        fontSize: "16px",
                                         color: "#17324D",
-                                        lineHeight: "22px",
-                                        whiteSpace: "pre-line",
-                                        wordBreak: "break-all",
-                                        overflowWrap: "break-word",
-                                        flex: 1
+                                        lineHeight: "21px",
+                                        mb: 1,
                                     }}
                                 >
-                                    {data.rewardBatchRejectionReason}
-                                </Typography>
-                                <CopyToClipboardButton value={data.rewardBatchRejectionReason} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
-                            </Box>
+                                    {label}
+                                </Box>
+                            ))}
                         </Box>
-                    )}
+                        {data && data?.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED && (
+                            <ButtonNaked onClick={() => {
+                                if (data) {
+                                    const type = data.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED ? "suspend" : "reject";
+                                    openReasonModal(type, data.trxId, true);
+                                }
+                            }}
+                                sx={{
+                                    display: "inline-block",
+                                    mt: 1,
+                                    fontSize: "16px",
+                                    fontWeight: 600,
+                                    color: "#0066CC",
+                                    textDecoration: "none",
+                                    "&:hover": { textDecoration: "underline" },
+                                }}>
+                                {t(`pages.initiativeMerchantsTransactions.drawer.editChecks`)}
+                            </ButtonNaked>
+                        )}
+                    </Box>
+                )}
+                {data?.rewardBatchRejectionReason && data.rewardBatchRejectionReason.length > 0 && data.rewardBatchTrxStatus !== "APPROVED" && (
+                    <Box sx={{ mb: 3 }}>
+                        <Typography
+                            sx={{
+                                fontSize: "14px",
+                                fontWeight: 700,
+                                color: "#17324D",
+                                textTransform: "uppercase",
+                                mb: 3,
+                                letterSpacing: "0.5px"
+                            }}
+                        >
+                            {t("pages.initiativeMerchantsTransactions.drawer.note")}
+                        </Typography>
+
+                        {data.rewardBatchRejectionReason.map((reasonObj: ReasonDTO, i: number) => {
+                            if (
+                                typeof reasonObj.reason === "string" &&
+                                reasonObj.reason !== "-" &&
+                                data?.rewardBatchTrxStatus !== "APPROVED"
+                            ) {
+                                return (
+                                    <Box
+                                        key={i}
+                                        sx={{
+                                            display: "flex",
+                                            alignItems: "flex-start",
+                                            mb: 2
+                                        }}
+                                    >
+                                        <Box sx={{ flex: 1 }}>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "14px",
+                                                    color: "#6B7280",
+                                                    mb: 0.5
+                                                }}
+                                            >
+                                                {reasonObj.date ? formatDate(reasonObj.date.toISOString()) : '-'}
+                                            </Typography>
+
+                                            <Typography
+                                                sx={{
+                                                    fontSize: "18px",
+                                                    fontWeight: 600,
+                                                    color: "#17324D",
+                                                    lineHeight: "22px",
+                                                    whiteSpace: "pre-line",
+                                                    wordBreak: "break-word"
+                                                }}
+                                            >
+                                                {reasonObj.reason}
+                                            </Typography>
+                                        </Box>
+
+                                        <CopyToClipboardButton
+                                            value={reasonObj.reason}
+                                            sx={{ ml: 2, p: 1 }}
+                                        />
+                                    </Box>
+                                );
+                            }
+                            return null;
+                        })}
+                    </Box>
+                )}
+
                 {!disabled &&
                     <RefundActionButtons
                         direction="column"
@@ -287,19 +407,21 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
             </Box>
             <RefundReasonModal
                 open={reasonModalOpen}
-                type={reasonModalType ?? "reject"}
+                type={reasonModalType ?? 'reject'}
+                editMode={editMode}
+                activeErrors={checksError}
                 count={1}
                 onClose={closeReasonModal}
-                onConfirm={async (reason: string) => {
+                onConfirm={async (newReason: string, checksError: ChecksErrorDTO) => {
                     if (!reasonModalType || !pendingTrxId) {
                         closeReasonModal();
                         return;
                     }
 
                     if (reasonModalType === "suspend") {
-                        await onSuspend(pendingTrxId, reason);
+                        await onSuspend(pendingTrxId, newReason, checksError);
                     } else {
-                        await onReject(pendingTrxId, reason);
+                        await onReject(pendingTrxId, newReason, checksError);
                     }
 
                     closeReasonModal();

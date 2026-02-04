@@ -124,7 +124,8 @@ export const merchantsApi = {
     status?: string,
     rewardBatchId?: string,
     rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
-    pointOfSaleId?: string
+    pointOfSaleId?: string,
+    trxCode?: string
   ): Promise<MerchantTransactionsProcessedListDTO> => {
     const result = await merchantsApiClient.getMerchantTransactionsProcessed({
       merchantId,
@@ -137,6 +138,7 @@ export const merchantsApi = {
       rewardBatchId,
       rewardBatchTrxStatus,
       pointOfSaleId,
+      trxCode
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
