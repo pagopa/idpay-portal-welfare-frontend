@@ -481,6 +481,7 @@ const InitiativeRefundsTransactions = () => {
         setDraftSearchType("");
         setSearchValue("");
         setDraftSearchValue("");
+        setDraftSearchType("");
         setPage(0);
     };
 
@@ -1021,7 +1022,7 @@ const InitiativeRefundsTransactions = () => {
 
                     <ButtonNaked
                         color="primary"
-                        disabled={!posFilter && !statusFilter && !searchValue}
+                        disabled={!posFilter && !statusFilter && !searchValue && !searchType && !draftSearchType}
                         onClick={handleRemoveFilters}
                         sx={{
                             height: "40px",
@@ -1030,7 +1031,7 @@ const InitiativeRefundsTransactions = () => {
                             textTransform: "none",
                             whiteSpace: "nowrap",
                             flexShrink: 0,
-                            opacity: posFilter || statusFilter || searchValue ? 1 : 0.5
+                            opacity: posFilter || statusFilter || searchValue || searchType || draftSearchType ? 1 : 0.5
                         }}
                     >
                         {t('pages.initiativeMerchant.form.removeFiltersBtn')}
