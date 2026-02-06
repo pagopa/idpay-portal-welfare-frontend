@@ -8,6 +8,7 @@ type Props = {
   icon: SvgIconComponent;
   level: number;
   disabled?: boolean;
+  iconColor?: 'primary' | 'inherit';
 };
 
 export default function SidenavItem({
@@ -17,11 +18,15 @@ export default function SidenavItem({
   icon,
   level,
   disabled = false,
+  iconColor = 'inherit',
 }: Props) {
   return (
     <ListItemButton selected={isSelected} disabled={disabled} onClick={handleClick}>
       <ListItemIcon sx={{ ml: level }}>
-        <Icon component={icon} />
+        <Icon
+          component={icon}
+          color={iconColor}
+        />
       </ListItemIcon>
       <ListItemText
         primary={title}
