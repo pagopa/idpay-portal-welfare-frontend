@@ -1147,7 +1147,7 @@
     "initiativeExportReport": {
       "title": "Esporta report",
       "subtitle": "Esporta le transazioni del Bonus Elettrodomestici in base ai criteri selezionati.",
-      "ExportFiltersCard": {
+      "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
         "subtitle": "Imposta i criteri di ricerca per generare il report delle transazioni.",
         "merchant": "Venditore",

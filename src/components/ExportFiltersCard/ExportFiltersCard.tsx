@@ -12,11 +12,11 @@ const ExportFiltersCard = ({ onGenerateReport }: ExportFiltersCardProps) => {
     <Card sx={{ width: '100%' }}>
       <CardContent>
         <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          {t('pages.initiativeExportReport.ExportFiltersCard.title')}
+          {t('pages.initiativeExportReport.exportFiltersCard.title')}
         </Typography>
 
         <Typography variant="body2" sx={{ mb: 3 }}>
-          {t('pages.initiativeExportReport.ExportFiltersCard.subtitle')}
+          {t('pages.initiativeExportReport.exportFiltersCard.subtitle')}
         </Typography>
 
         <Box sx={{
@@ -25,7 +25,7 @@ const ExportFiltersCard = ({ onGenerateReport }: ExportFiltersCardProps) => {
           alignItems: 'flex-start',
         }}>
           <TextField
-            label={t('pages.initiativeExportReport.ExportFiltersCard.merchant')}
+            label={t('pages.initiativeExportReport.exportFiltersCard.merchant')}
             variant="outlined"
             sx={{ flex: '1 1 auto', maxWidth: '450px' }}
           />
@@ -55,7 +55,7 @@ const ExportFiltersCard = ({ onGenerateReport }: ExportFiltersCardProps) => {
             variant="contained"
             onClick={onGenerateReport}
           >
-            {t('pages.initiativeExportReport.ExportFiltersCard.buttonExport')}
+            {t('pages.initiativeExportReport.exportFiltersCard.buttonExport')}
           </Button>
         </Box>
       </CardContent>
