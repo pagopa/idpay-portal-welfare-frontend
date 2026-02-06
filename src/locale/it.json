@@ -8,6 +8,7 @@
     "initiativeMerchants": "Esercenti",
     "initiativeRanking": "Graduatoria",
     "initiativeRefunds": "Rimborsi",
+    "exportReport": "Esporta report",
     "initiativeRefundsDetails": "Dettaglio rimborso",
     "initiativeRefundsOutcome": "Esiti",
     "initiativeUserDetails": "Dettaglio nucleo familiare",
@@ -1143,6 +1144,20 @@
         "genericError": "Altro"
       }
     },
+    "initiativeExportReport": {
+      "title": "Esporta report",
+      "subtitle": "Esporta le transazioni del Bonus Elettrodomestici in base ai criteri selezionati.",
+      "ExportFiltersCard": {
+        "title": "Seleziona i parametri di esportazione",
+        "subtitle": "Imposta i criteri di ricerca per generare il report delle transazioni.",
+        "merchant": "Venditore",
+        "buttonExport": "Genera report"
+      },
+      "exportTable": {
+        "title": "I tuoi report",
+        "emptyState": "Non hai ancora generato report."
+      }
+    },
     "initiativeUsers": {
       "form": {
         "all": "Tutti",
@@ -1226,6 +1241,9 @@
     },
     "initiativeRefunds": {
       "title": "Rimborsi"
+    },
+    "exportReport": {
+      "title": "Esporta report"
     },
     "initiativeUsers": {
       "rankingTitle": "Graduatoria",
