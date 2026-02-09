@@ -21,6 +21,7 @@ import { useEffect, useState } from 'react';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { Download } from '@mui/icons-material';
 import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useAppSelector } from '../../redux/hooks';
@@ -66,6 +67,7 @@ export default function SideMenu() {
       ROUTES.INITIATIVE_USERS,
       ROUTES.INITIATIVE_REFUNDS,
       ROUTES.INITIATIVE_REFUNDS_TRANSACTIONS,
+      ROUTES.INITIATIVE_EXPORT_REPORT,
       ROUTES.INITIATIVE_REFUNDS_OUTCOME,
       ROUTES.INITIATIVE_REFUNDS_DETAIL,
       ROUTES.INITIATIVE_USER_DETAILS,
@@ -264,6 +266,24 @@ export default function SideMenu() {
                     icon={EuroSymbolIcon}
                     level={2}
                     data-testid="initiativeRefunds-click-test"
+                  />
+                  <SidenavItem
+                    title={t('sideMenu.exportReport.title')}
+                    handleClick={() =>
+                      onExit(() => {
+                        if (!pathname.includes(
+                          `${BASE_ROUTE}/esporta-report/${item.initiativeId}`
+                        )) {
+                          history.replace(`${BASE_ROUTE}/esporta-report/${item.initiativeId}`);
+                        }
+                      })
+                    }
+                    isSelected={
+                      pathname === `${BASE_ROUTE}/esporta-report/${item.initiativeId}`
+                    }
+                    icon={Download}
+                    level={2}
+                    data-testid="exportReport-click-test"
                   />
                 </List>
               </AccordionDetails>
