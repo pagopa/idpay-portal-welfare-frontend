@@ -1,17 +1,32 @@
-import { Box, Button, Card, CardContent, Typography, TextField, MenuItem, Autocomplete } from '@mui/material';
+import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { subDays, startOfDay, endOfDay } from 'date-fns';
+import { it } from 'date-fns/locale';
 import { MerchantItem } from '../../pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
+import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
+import DateRangePicker from '../DateRangePicker/DateRangePicker';
 
 interface ExportFiltersCardProps {
-  onGenerateReport?: () => void;
+  onGenerateReport?: (data: { startDate: Date; endDate: Date; businessName: string }) => void;
   businessList: Array<MerchantItem>;
 }
 
 const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCardProps) => {
   const { t } = useTranslation();
-  const [selectedMerchant, setSelectedMerchant] = useState<string>('');
-  const [searchFocused, setSearchFocused] = useState(false);
+
+  const [selectedMerchant, setSelectedMerchant] = useState('');
+  const [dateFrom, setDateFrom] = useState<Date | null>(null);
+  const [dateTo, setDateTo] = useState<Date | null>(null);
+
+  const [merchantError, setMerchantError] = useState<'required' | 'invalid' | null>(null);
+  const [dateFromError, setDateFromError] = useState(false);
+  const [dateToError, setDateToError] = useState(false);
+
+  const yesterday = endOfDay(subDays(new Date(), 1));
+  const minDateFrom = startOfDay(new Date(2025, 10, 1));
 
   const merchantNames = useMemo(() => {
     const names = businessList
@@ -21,110 +36,121 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
     return Array.from(new Set(names));
   }, [businessList]);
 
-  const normalizeString = (str: string): string => str.toLowerCase().replace(/\s+/g, '');
+  const resetAllFields = () => {
+    setSelectedMerchant('');
+    setDateFrom(null);
+    setDateTo(null);
+    setMerchantError(null);
+    setDateFromError(false);
+    setDateToError(false);
+  };
+
+  const handleGenerateReport = () => {
+    // eslint-disable-next-line functional/no-let
+    let hasErrors = false;
+
+    if (!selectedMerchant.trim()) {
+      setMerchantError('required');
+      hasErrors = true;
+    } else if (!merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
+      setMerchantError('invalid');
+      hasErrors = true;
+    } else {
+      setMerchantError(null);
+    }
+
+    if (!dateFrom) {
+      setDateFromError(true);
+      hasErrors = true;
+    }
+
+    if (!dateTo) {
+      setDateToError(true);
+      hasErrors = true;
+    }
+
+    if (hasErrors) { return; }
+
+    if (onGenerateReport && dateFrom && dateTo) {
+      onGenerateReport({
+        startDate: dateFrom,
+        endDate: dateTo,
+        businessName: selectedMerchant,
+      });
+      resetAllFields();
+    }
+  };
 
   return (
-    <Card sx={{ width: '100%' }}>
-      <CardContent>
-        <Typography variant="h6" component="h2" sx={{ mb: 2 }}>
-          {t('pages.initiativeExportReport.exportFiltersCard.title')}
-        </Typography>
+    <LocalizationProvider dateAdapter={AdapterDateFns} locale={it}>
+      <Card sx={{ width: '100%' }}>
+        <CardContent>
+          <Typography variant="h6" sx={{ mb: 2 }}>
+            {t('pages.initiativeExportReport.exportFiltersCard.title')}
+          </Typography>
 
-        <Typography variant="body2" sx={{ mb: 3 }}>
-          {t('pages.initiativeExportReport.exportFiltersCard.subtitle')}
-        </Typography>
+          <Typography variant="body2" sx={{ mb: 3 }}>
+            {t('pages.initiativeExportReport.exportFiltersCard.subtitle')}
+          </Typography>
 
-        <Box sx={{
-          display: 'flex',
-          gap: 2,
-          alignItems: 'flex-start',
-        }}>
-          <Box sx={{ flex: '1 1 auto', maxWidth: '450px' }}>
-            <Autocomplete
-              freeSolo
-              options={merchantNames}
-              filterOptions={(options, { inputValue }) => {
-                if (inputValue.length < 3) {
-                  return [];
-                }
-
-                const normalizedInput = normalizeString(inputValue);
-                return options.filter((option) =>
-                  normalizeString(option).includes(normalizedInput)
-                );
-              }}
-              inputValue={selectedMerchant}
-              onInputChange={(_, value) => {
+          <Box
+            sx={{
+              display: 'flex',
+              gap: 2,
+              alignItems: 'flex-start',
+              flexDirection: { xs: 'column', md: 'row' },
+              flexWrap: 'nowrap',
+            }}
+          >
+            <MerchantAutocomplete
+              merchantNames={merchantNames}
+              selectedMerchant={selectedMerchant}
+              merchantError={merchantError}
+              onMerchantChange={(value) => {
                 setSelectedMerchant(value);
-                // TODO onFiltersChange() notify father component
+                setMerchantError(null);
               }}
-              sx={{
-                '& .MuiInputBase-input': {
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                },
+              onBlurValidation={() => {
+                if (selectedMerchant.trim() && !merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
+                  setMerchantError('invalid');
+                } else {
+                  setMerchantError(null);
+                }
               }}
-              renderOption={(props, option) => (
-                <Box
-                  component="li"
-                  {...props}
-                  sx={{
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    maxWidth: '100%',
-                  }}
-                >
-                  {option}
-                </Box>
-              )}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label={t('pages.initiativeExportReport.exportFiltersCard.merchant')}
-                  variant="outlined"
-                  fullWidth
-                  onFocus={() => setSearchFocused(true)}
-                  onBlur={() => setSearchFocused(false)}
-                  InputLabelProps={{
-                    shrink: searchFocused || !!selectedMerchant,
-                  }}
-                />
-              )}
             />
+
+            <DateRangePicker
+              dateFrom={dateFrom}
+              dateTo={dateTo}
+              dateFromError={dateFromError}
+              dateToError={dateToError}
+              minDateFrom={minDateFrom}
+              yesterday={yesterday}
+              onDateFromChange={(newValue) => {
+                setDateFrom(newValue ? startOfDay(newValue) : null);
+                setDateFromError(false);
+                setDateTo(null);
+              }}
+              onDateToChange={(newValue) => {
+                setDateTo(newValue ? endOfDay(newValue) : null);
+                setDateToError(false);
+              }}
+            />
+            <Box sx={{ flex: 1 }} />
+            <Button
+              variant="contained"
+              sx={{
+                flexShrink: 0,
+                whiteSpace: 'nowrap',
+              }}
+              onClick={handleGenerateReport}
+            >
+              {t('pages.initiativeExportReport.exportFiltersCard.buttonExport')}
+            </Button>
           </Box>
-
-          <TextField
-            select
-            label={t('pages.initiativeUsers.form.from')}
-            variant="outlined"
-            sx={{ width: '100px' }}
-            defaultValue=""
-          >
-            <MenuItem value=""></MenuItem>
-          </TextField>
-
-          <TextField
-            select
-            label={t('pages.initiativeUsers.form.to')}
-            variant="outlined"
-            sx={{ width: '100px' }}
-            defaultValue=""
-          >
-            <MenuItem value=""></MenuItem>
-          </TextField>
-
-          <Box sx={{ flex: 1 }} />
-          <Button
-            variant="contained"
-            onClick={onGenerateReport}
-          >
-            {t('pages.initiativeExportReport.exportFiltersCard.buttonExport')}
-          </Button>
-        </Box>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </LocalizationProvider>
   );
 };
 
