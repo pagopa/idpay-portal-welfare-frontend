@@ -1155,7 +1155,15 @@
       },
       "exportTable": {
         "title": "I tuoi report",
-        "emptyState": "Non hai ancora generato report."
+        "emptyState": "Non hai ancora generato report.",
+        "columns": {
+          "fileName": "Nome file",
+          "requestDate": "Data richiesta",
+          "generationDate": "Data generazione",
+          "salesPoint": "Punto vendita",
+          "period": "Periodo",
+          "operator": "Operatore"
+        }
       }
     },
     "initiativeUsers": {

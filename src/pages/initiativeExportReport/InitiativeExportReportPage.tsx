@@ -1,4 +1,4 @@
-import { Box, Table, TableBody, TableCell, TableRow, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { TitleBox } from "@pagopa/selfcare-common-frontend";
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
@@ -13,6 +13,7 @@ import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersC
 import { getMerchantList } from "../../services/merchantsService";
 import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMerchants";
 import { useAlert } from "../../hooks/useAlert";
+import ReportTableCard from "../../components/ReportTable/ReportTableCard";
 
 
 const InitiativeExportReportPage = () => {
@@ -75,29 +76,7 @@ const InitiativeExportReportPage = () => {
                 />
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-                <Typography variant="h6" component="h6" fontWeight={'bold'} mt={1}>
-                    {t('pages.initiativeExportReport.exportTable.title')}
-                </Typography>
-
-                <Table sx={{ backgroundColor: '#FFFFFF' }}>
-                    <TableBody>
-                        <TableRow>
-                            <TableCell
-                                colSpan={10}
-                                sx={{
-                                    textAlign: 'center',
-                                    py: 4,
-                                    fontSize: 16,
-                                    fontWeight: 500,
-                                    color: '#5C6F82',
-                                    backgroundColor: '#FFFFFF'
-                                }}
-                            >
-                                {t('pages.initiativeExportReport.exportTable.emptyState')}
-                            </TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
+                <ReportTableCard />
             </Box>
         </Box>
     );
