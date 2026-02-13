@@ -15,71 +15,85 @@ import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMer
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
 
-
 const InitiativeExportReportPage = () => {
-    const { t } = useTranslation();
-    const initiativeSel = useAppSelector(initiativeSelector);
-    useInitiative();
-    const [businessNameList, setBusinessNameList] = useState<Array<MerchantItem>>([]);
-    interface MatchParams {
-        id: string;
-    }
+  const { t } = useTranslation();
+  const initiativeSel = useAppSelector(initiativeSelector);
+  useInitiative();
+  const [businessNameList, setBusinessNameList] = useState<Array<MerchantItem>>([]);
+  interface MatchParams {
+    id: string;
+  }
 
-    const { setAlert } = useAlert();
+  const { setAlert } = useAlert();
 
-    const match = matchPath(location.pathname, {
-        path: [ROUTES.INITIATIVE_EXPORT_REPORT],
-        exact: true,
-        strict: false,
+  const match = matchPath(location.pathname, {
+    path: [ROUTES.INITIATIVE_EXPORT_REPORT],
+    exact: true,
+    strict: false,
+  });
+  const { id } = (match?.params as MatchParams) || {};
+
+  useEffect(() => {
+    getMerchantsList();
+  }, []);
+
+  const getMerchantsList = () => {
+    getMerchantList(id, 0).then((res) => {
+      if (res && res.content && res.content.length > 0) {
+        setBusinessNameList(res.content as Array<MerchantItem>);
+      }
+    }).catch(() => {
+      setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
     });
-    const { id } = (match?.params as MatchParams) || {};
+  };
 
-    useEffect(() => {
-        getMerchantsList();
-    }, []);
+  const handleGenerateReport = (_data: { startDate: Date; endDate: Date; businessName: string }) => {
+    // const merchant = businessNameList.find(
+    //   (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
+    // );
 
-    const getMerchantsList = () => {
-        getMerchantList(id, 0).then((res) => {
-            if (res && res.content && res.content.length > 0) {
-                setBusinessNameList(res.content as Array<MerchantItem>);
-            }
-        }).catch(() => {
-            setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-        });
-    };
+    // generateReport(id, merchant?.merchantId ?? "", data.startDate, data.endDate).then((res) => {
+    //   if (res) {
+    //     // TODO get reportList
+    //     // TODO show alert
+    //   }
+    // }).catch(() => {
+    //   setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+    // });
+  };
 
-    return (
-        <Box sx={{ width: '100%', pt: 2, px: 2 }}>
-            <Box sx={initiativePagesBreadcrumbsContainerStyle}>
-                <BreadcrumbsBox
-                    backUrl={ROUTES.HOME}
-                    backLabel={t('breadcrumbs.back')}
-                    items={[initiativeSel.initiativeName, t('breadcrumbs.exportReport')]}
-                />
+  return (
+    <Box sx={{ width: '100%', pt: 2, px: 2 }}>
+      <Box sx={initiativePagesBreadcrumbsContainerStyle}>
+        <BreadcrumbsBox
+          backUrl={ROUTES.HOME}
+          backLabel={t('breadcrumbs.back')}
+          items={[initiativeSel.initiativeName, t('breadcrumbs.exportReport')]}
+        />
 
-                <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
-                    <TitleBox
-                        title={t('pages.initiativeExportReport.title')}
-                        subTitle={t('pages.initiativeExportReport.subtitle')}
-                        mbTitle={2}
-                        mtTitle={2}
-                        mbSubTitle={5}
-                        variantTitle="h4"
-                        variantSubTitle="body1"
-                    />
-                </Box>
-            </Box>
-            <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
-                <ExportFiltersCard
-                    onGenerateReport={() => console.log('button genera')}
-                    businessList={businessNameList}
-                />
-            </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-                <ReportTableCard />
-            </Box>
+        <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
+          <TitleBox
+            title={t('pages.initiativeExportReport.title')}
+            subTitle={t('pages.initiativeExportReport.subtitle')}
+            mbTitle={2}
+            mtTitle={2}
+            mbSubTitle={5}
+            variantTitle="h4"
+            variantSubTitle="body1"
+          />
         </Box>
-    );
+      </Box>
+      <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
+        <ExportFiltersCard
+          onGenerateReport={handleGenerateReport}
+          businessList={businessNameList}
+        />
+      </Box>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
+        <ReportTableCard />
+      </Box>
+    </Box>
+  );
 };
 
 export default InitiativeExportReportPage;
