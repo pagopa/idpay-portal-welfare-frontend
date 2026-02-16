@@ -1,6 +1,6 @@
 import { Alert, AlertColor, AlertTitle, Box, Grow, SxProps, Theme } from '@mui/material';
 import ErrorOutline from '@mui/icons-material/ErrorOutline';
-import { CheckCircleOutline } from '@mui/icons-material';
+import { CheckCircleOutline, Sync } from '@mui/icons-material';
 
 export type AlertComponentProps = {
     title?: string;
@@ -15,7 +15,7 @@ export type AlertComponentProps = {
 const severityMap = {
     error: { color: '#FE6666', icon: <ErrorOutline /> },
     warning: { color: undefined, icon: undefined },
-    info: { color: undefined, icon: undefined },
+    info: { color: '#6BCFFB', icon: <Sync /> }, // report processing state (INSERTED/IN_PROGRESS)
     success: { color: '#6CC66A', icon: <CheckCircleOutline /> }
 };
 
@@ -52,7 +52,7 @@ const AlertComponent = ({ title, text, isOpen, severity, containerStyle, content
                     },
                     ...contentStyle,
                 }}>
-                <AlertTitle>{title}</AlertTitle>
+                {title && <AlertTitle>{title}</AlertTitle>}
                 {text}
             </Alert>
         </Box>
