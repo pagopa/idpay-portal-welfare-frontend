@@ -28,7 +28,7 @@ export const AlertProvider = ({children}: {children: ReactNode}) => {
     if(error?.isOpen) {
       setTimeout(() => {
         onClose();
-      }, 3000);
+      }, 5000);
     };
   }, [error]);
 

@@ -142,6 +142,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
               sx={{
                 flexShrink: 0,
                 whiteSpace: 'nowrap',
+                mt: 0.5
               }}
               onClick={handleGenerateReport}
             >

@@ -9,6 +9,7 @@ import { MerchantTransactionsListDTO } from '../api/generated/merchants/Merchant
 import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants/MerchantTransactionsProcessedListDTO';
 
 import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
+import { ReportDTO, ReportTypeEnum } from '../api/generated/merchants/ReportDTO';
 import { RewardBatchDTO } from '../api/generated/merchants/RewardBatchDTO';
 import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
 import { RewardBatchTrxStatusEnum } from '../api/generated/merchants/RewardBatchTrxStatus';
@@ -169,4 +170,19 @@ export const getDownloadCsv = (
   merchantsApi.getDownloadCsv(
     initiativeId,
     rewardBatchId
+  );
+
+export const generateReport = (
+  initiativeId: string,
+  merchantId: string,
+  startPeriod: Date,
+  endPeriod: Date,
+  reportType: ReportTypeEnum
+): Promise<ReportDTO> =>
+  merchantsApi.generateReport(
+    initiativeId,
+    merchantId,
+    startPeriod,
+    endPeriod,
+    reportType
   );
