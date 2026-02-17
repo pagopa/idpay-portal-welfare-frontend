@@ -1,5 +1,6 @@
 // import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
 import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
+import { DownloadReportResponseDTO } from '../api/generated/merchants/DownloadReportResponseDTO';
 import { DownloadRewardBatchResponseDTO } from '../api/generated/merchants/DownloadRewardBatchResponseDTO';
 import { ListPointOfSaleDTO } from '../api/generated/merchants/ListPointOfSaleDTO';
 import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
@@ -10,6 +11,7 @@ import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants
 
 import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
 import { ReportDTO, ReportTypeEnum } from '../api/generated/merchants/ReportDTO';
+import { ReportListDTO } from '../api/generated/merchants/ReportListDTO';
 import { RewardBatchDTO } from '../api/generated/merchants/RewardBatchDTO';
 import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
 import { RewardBatchTrxStatusEnum } from '../api/generated/merchants/RewardBatchTrxStatus';
@@ -185,4 +187,24 @@ export const generateReport = (
     startPeriod,
     endPeriod,
     reportType
+  );
+
+export const getReportList = (
+  initiativeId: string,
+  page: number,
+  size: number,
+): Promise<ReportListDTO> =>
+  merchantsApi.getReportList(
+    initiativeId,
+    page,
+    size,
+  );
+
+export const getDownloadReport = (
+  initiativeId: string,
+  reportId: string
+): Promise<DownloadReportResponseDTO> =>
+  merchantsApi.getDownloadReport(
+    initiativeId,
+    reportId
   );

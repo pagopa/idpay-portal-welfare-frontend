@@ -52,6 +52,7 @@ const InitiativeExportReportPage = () => {
     strict: false,
   });
   const { id } = (match?.params as MatchParams) || {};
+  const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
     getMerchantsList();
@@ -77,7 +78,7 @@ const InitiativeExportReportPage = () => {
         if (res?.reportStatus) {
           const alertConfig = reportStatusAlertConfig[res.reportStatus];
           setAlert({ text: alertConfig.text, isOpen: true, severity: alertConfig.severity });
-          // TODO get reportList
+          setRefreshToken((x) => x + 1);
         }
       })
       .catch(() => {
@@ -114,7 +115,7 @@ const InitiativeExportReportPage = () => {
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-        <ReportTableCard />
+        <ReportTableCard initiativeId={id} refreshToken={refreshToken} />
       </Box>
     </Box>
   );
