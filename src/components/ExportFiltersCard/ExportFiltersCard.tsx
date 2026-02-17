@@ -26,7 +26,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
   const [dateToError, setDateToError] = useState(false);
 
   const yesterday = endOfDay(subDays(new Date(), 1));
-  const minDateFrom = startOfDay(new Date(2025, 10, 1));
+  const minDateFrom = startOfDay(new Date(2025, 10, 18));
 
   const merchantNames = useMemo(() => {
     const names = businessList
