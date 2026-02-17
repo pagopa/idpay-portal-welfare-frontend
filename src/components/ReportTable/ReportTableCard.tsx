@@ -311,14 +311,17 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
                     <Tooltip title={row.fileName}>
                       <Box
                         sx={{
-                          py: 0.5,
-                          display: "inline-flex",
+                          display: "-webkit-box",
+                          WebkitBoxOrient: "vertical",
+                          maxWidth: "100%",
+                          minWidth: 0,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          maxWidth: 260,
-                          color: "#0B3A82",
+                          wordBreak: "break-all",
+                          color: "#17324D",
                           fontWeight: 600,
+                          maxLines: 2,
+                          WebkitLineClamp: 2,
                         }}
                       >
                         {row.fileName}
