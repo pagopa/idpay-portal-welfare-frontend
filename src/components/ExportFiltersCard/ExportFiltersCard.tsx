@@ -3,7 +3,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { subDays, startOfDay, endOfDay } from 'date-fns';
+import { subDays, startOfDay, endOfDay, format } from 'date-fns';
 import { it } from 'date-fns/locale';
 import { MerchantItem } from '../../pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
 import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
@@ -26,7 +26,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
   const [dateToError, setDateToError] = useState(false);
 
   const yesterday = endOfDay(subDays(new Date(), 1));
-  const minDateFrom = startOfDay(new Date(2025, 10, 1));
+  const minDateFrom = startOfDay(new Date(2025, 10, 18));
 
   const merchantNames = useMemo(() => {
     const names = businessList
@@ -73,8 +73,8 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
 
     if (onGenerateReport && dateFrom && dateTo) {
       onGenerateReport({
-        startDate: dateFrom,
-        endDate: dateTo,
+        startDate: format(startOfDay(dateFrom), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
+        endDate: format(endOfDay(dateTo), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
         businessName: selectedMerchant,
       });
       resetAllFields();
@@ -142,6 +142,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
               sx={{
                 flexShrink: 0,
                 whiteSpace: 'nowrap',
+                mt: 0.5
               }}
               onClick={handleGenerateReport}
             >

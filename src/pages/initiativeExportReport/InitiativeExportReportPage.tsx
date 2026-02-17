@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { TitleBox } from "@pagopa/selfcare-common-frontend";
+import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
@@ -10,10 +10,12 @@ import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersCard";
-import { getMerchantList } from "../../services/merchantsService";
+import { generateReport, getMerchantList } from "../../services/merchantsService";
 import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMerchants";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
+import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
+import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
 
 const InitiativeExportReportPage = () => {
   const { t } = useTranslation();
@@ -23,7 +25,25 @@ const InitiativeExportReportPage = () => {
   interface MatchParams {
     id: string;
   }
-
+  const reportStatusAlertConfig = {
+    [ReportStatusEnum.GENERATED]: {
+      severity: 'success' as const,
+      text: t('pages.initiativeExportReport.reportAlertMessage.generated')
+    },
+    [ReportStatusEnum.FAILED]: {
+      severity: 'error' as const,
+      text: t('pages.initiativeExportReport.reportAlertMessage.failed')
+    },
+    [ReportStatusEnum.INSERTED]: {
+      severity: 'info' as const,
+      text: t('pages.initiativeExportReport.reportAlertMessage.processing')
+    },
+    [ReportStatusEnum.IN_PROGRESS]: {
+      severity: 'info' as const,
+      text: t('pages.initiativeExportReport.reportAlertMessage.processing')
+    }
+  } as const;
+  const setLoading = useLoading(LOADING_TASK_INITIATIVE_EXPORT_REPORT);
   const { setAlert } = useAlert();
 
   const match = matchPath(location.pathname, {
@@ -32,6 +52,7 @@ const InitiativeExportReportPage = () => {
     strict: false,
   });
   const { id } = (match?.params as MatchParams) || {};
+  const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
     getMerchantsList();
@@ -47,19 +68,23 @@ const InitiativeExportReportPage = () => {
     });
   };
 
-  const handleGenerateReport = (_data: { startDate: Date; endDate: Date; businessName: string }) => {
-    // const merchant = businessNameList.find(
-    //   (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
-    // );
-
-    // generateReport(id, merchant?.merchantId ?? "", data.startDate, data.endDate).then((res) => {
-    //   if (res) {
-    //     // TODO get reportList
-    //     // TODO show alert
-    //   }
-    // }).catch(() => {
-    //   setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
-    // });
+  const handleGenerateReport = (data: { startDate: Date; endDate: Date; businessName: string }) => {
+    const merchant = businessNameList.find(
+      (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
+    );
+    setLoading(true);
+    generateReport(id, merchant?.merchantId ?? "", data.startDate, data.endDate, ReportTypeEnum.MERCHANT_TRANSACTIONS)
+      .then((res) => {
+        if (res?.reportStatus) {
+          const alertConfig = reportStatusAlertConfig[res.reportStatus];
+          setAlert({ text: alertConfig.text, isOpen: true, severity: alertConfig.severity });
+          setRefreshToken((x) => x + 1);
+        }
+      })
+      .catch(() => {
+        setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+      })
+      .finally(() => setLoading(false));
   };
 
   return (
@@ -90,7 +115,7 @@ const InitiativeExportReportPage = () => {
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-        <ReportTableCard />
+        <ReportTableCard initiativeId={id} refreshToken={refreshToken} />
       </Box>
     </Box>
   );

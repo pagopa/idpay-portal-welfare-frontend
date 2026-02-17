@@ -1164,6 +1164,11 @@
           "period": "Periodo",
           "operator": "Operatore"
         }
+      },
+      "reportAlertMessage": {
+        "generated": "Il report è stato generato ed è pronto per il download.",
+        "failed": "Si è verificato un errore nella generazione del report. Riprova.",
+        "processing": "Stiamo elaborando il file. Una volta fatto, il report potrà essere scaricato in questa sezione."
       }
     },
     "initiativeUsers": {
