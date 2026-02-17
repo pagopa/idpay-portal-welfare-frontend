@@ -114,7 +114,7 @@ const InitiativeExportReportPage = () => {
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-        <ReportTableCard />
+        <ReportTableCard initiativeId={id} />
       </Box>
     </Box>
   );

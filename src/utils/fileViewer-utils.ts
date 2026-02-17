@@ -48,6 +48,7 @@ export const downloadCsv = (url: string, fileName: string): void => {
   link.href = url;
   link.download = fileName;
   link.rel = "noopener";
+  link.target = "_blank";
   document.body.appendChild(link);
   link.click();
   document.body.removeChild(link);

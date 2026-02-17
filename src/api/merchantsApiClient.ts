@@ -21,6 +21,8 @@ import { buildFetchApiLayer } from './buildFetchApiLayer';
 import { RewardBatchDTO } from './generated/merchants/RewardBatchDTO';
 import { DownloadRewardBatchResponseDTO } from './generated/merchants/DownloadRewardBatchResponseDTO';
 import { ReportDTO, ReportTypeEnum } from './generated/merchants/ReportDTO';
+import { ReportListDTO } from './generated/merchants/ReportListDTO';
+import { DownloadReportResponseDTO } from './generated/merchants/DownloadReportResponseDTO';
 
 const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
   const token = storageTokenOps.read();
@@ -258,5 +260,26 @@ export const merchantsApi = {
       }
     });
     return extractResponse(result, 200, onRedirectToLogin);
-  }
+  },
+
+  getReportList: async (
+    initiativeId: string,
+    page: number,
+    size: number, ): Promise<ReportListDTO> => {
+    const result = await merchantsApiClient.getMerchantTransactionsReports({
+      initiativeId,
+      page,
+      size,
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
+
+  getDownloadReport: async (
+    initiativeId: string, reportId: string): Promise<DownloadReportResponseDTO> => {
+    const result = await merchantsApiClient.downloadTransactionsReport({
+      initiativeId,
+      reportId
+    });
+    return extractResponse(result, 200, onRedirectToLogin);
+  },
 };
