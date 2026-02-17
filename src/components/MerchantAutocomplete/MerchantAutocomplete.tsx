@@ -105,7 +105,7 @@ const MerchantAutocomplete = ({
           },
         }}
         renderOption={(props, option) => (
-          <Tooltip title={option} arrow placement="left" enterDelay={200}>
+          <Tooltip title={option} arrow placement="left" enterDelay={200} key={option}>
             <Box
               component="li"
               {...props}

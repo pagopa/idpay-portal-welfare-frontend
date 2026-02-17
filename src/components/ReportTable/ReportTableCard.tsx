@@ -87,6 +87,7 @@ const DownloadCell = ({ disabled, onClick, status }: { disabled: boolean; onClic
 
 type ReportTableCardProps = {
   initiativeId: string;
+  refreshToken: number;
 };
 
 function formatDateTime(value?: string | null): string {
@@ -116,7 +117,7 @@ function formatPeriod(start?: string | null, end?: string | null): string {
     }`;
 }
 
-const ReportTableCard = ({ initiativeId }: ReportTableCardProps) => {
+const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) => {
   const { t } = useTranslation();
   const { setAlert } = useAlert();
 
@@ -179,15 +180,16 @@ const ReportTableCard = ({ initiativeId }: ReportTableCardProps) => {
     };
 
     fetchReports().then(() => {
-
     }).catch(() => {
+      setLoading(false);
+    }).finally(() => {
       setLoading(false);
     });
 
     return () => {
       cancelled = true;
     };
-  }, [initiativeId, page, pageSize, t]);
+  }, [initiativeId, page, pageSize, t, refreshToken]);
 
   const start = totalElements === 0 ? 0 : page * pageSize + 1;
   const end = Math.min((page + 1) * pageSize, totalElements);
