@@ -282,7 +282,7 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
                   {t("pages.initiativeExportReport.exportTable.columns.generationDate")}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "15%" }}>
-                  {t("pages.initiativeExportReport.exportTable.columns.salesPoint")}
+                  {t("pages.initiativeExportReport.exportFiltersCard.merchant")}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "20%" }}>
                   {t("pages.initiativeExportReport.exportTable.columns.period")}
