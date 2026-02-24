@@ -8,6 +8,7 @@
     "initiativeMerchants": "Esercenti",
     "initiativeRanking": "Graduatoria",
     "initiativeRefunds": "Rimborsi",
+    "exportReport": "Esporta report",
     "initiativeRefundsDetails": "Dettaglio rimborso",
     "initiativeRefundsOutcome": "Esiti",
     "initiativeUserDetails": "Dettaglio nucleo familiare",
@@ -1143,6 +1144,33 @@
         "genericError": "Altro"
       }
     },
+    "initiativeExportReport": {
+      "title": "Esporta report",
+      "subtitle": "Esporta le transazioni del Bonus Elettrodomestici in base ai criteri selezionati.",
+      "exportFiltersCard": {
+        "title": "Seleziona i parametri di esportazione",
+        "subtitle": "Imposta i criteri di ricerca per generare il report delle transazioni. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
+        "merchant": "Insegna",
+        "buttonExport": "Genera report"
+      },
+      "exportTable": {
+        "title": "I tuoi report",
+        "emptyState": "Non hai ancora generato report.",
+        "columns": {
+          "fileName": "Nome file",
+          "requestDate": "Data richiesta",
+          "generationDate": "Data generazione",
+          "salesPoint": "Punto vendita",
+          "period": "Periodo",
+          "operator": "Operatore"
+        }
+      },
+      "reportAlertMessage": {
+        "generated": "Il report è stato generato ed è pronto per il download.",
+        "failed": "Si è verificato un errore nella generazione del report. Riprova.",
+        "processing": "Stiamo elaborando il file. Una volta fatto, il report potrà essere scaricato in questa sezione."
+      }
+    },
     "initiativeUsers": {
       "form": {
         "all": "Tutti",
@@ -1227,6 +1255,9 @@
     "initiativeRefunds": {
       "title": "Rimborsi"
     },
+    "exportReport": {
+      "title": "Esporta report"
+    },
     "initiativeUsers": {
       "rankingTitle": "Graduatoria",
       "title": "Richiedenti"
@@ -1290,7 +1321,8 @@
     "webValid": "Inserisci un indirizzo web",
     "outFixedPremiumValue": "Il valore massimo non può essere maggiore del budget per persona",
     "trxCountMinCap": "Il valore minimo deve essere maggiore o uguale a {{x}} €",
-    "selectAtLeastOne": "Seleziona almeno una delle opzioni"
+    "selectAtLeastOne": "Seleziona almeno una delle opzioni",
+    "invalidSelection": "Insegna non presente in anagrafica"
   },
   "chip": {
     "batch": {
