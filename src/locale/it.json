@@ -1033,6 +1033,7 @@
       "table": {
         "invoice": "Fattura",
         "pos": "Punto vendita",
+        "address": "Indirizzo",
         "dateTime": "Data e ora",
         "requestedRefund": "Rimborso richiesto",
         "status": "Stato",
