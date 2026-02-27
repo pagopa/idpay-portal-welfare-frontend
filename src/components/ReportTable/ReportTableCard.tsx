@@ -25,7 +25,7 @@ import SyncIcon from "@mui/icons-material/Sync";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useLoading } from "@pagopa/selfcare-common-frontend";
 import { getDownloadReport, getReportList } from "../../services/merchantsService";
-import { ReportStatusEnum } from "../../api/generated/merchants/ReportDTO";
+import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
 import { downloadCsv } from "../../utils/fileViewer-utils";
 import { useAlert } from "../../hooks/useAlert";
@@ -142,7 +142,7 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
 
       try {
 
-        const res = await getReportList(initiativeId, page, pageSize);
+        const res = await getReportList(initiativeId, page, pageSize, ReportTypeEnum.MERCHANT_TRANSACTIONS); // TODO
 
         const nextTotalElements =
           typeof (res as any)?.totalElements === "number" ? (res as any).totalElements : 0;

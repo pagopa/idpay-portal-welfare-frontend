@@ -8,7 +8,8 @@
     "initiativeMerchants": "Esercenti",
     "initiativeRanking": "Graduatoria",
     "initiativeRefunds": "Rimborsi",
-    "exportReport": "Esporta report",
+    "exportReport": "Esporta transazioni",
+    "exportReportUsers": "Esporta dati utenti",
     "initiativeRefundsDetails": "Dettaglio rimborso",
     "initiativeRefundsOutcome": "Esiti",
     "initiativeUserDetails": "Dettaglio nucleo familiare",
@@ -1146,7 +1147,7 @@
       }
     },
     "initiativeExportReport": {
-      "title": "Esporta report",
+      "title": "Esporta transazioni",
       "subtitle": "Esporta le transazioni del Bonus Elettrodomestici in base ai criteri selezionati.",
       "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
@@ -1165,6 +1166,20 @@
           "period": "Periodo",
           "operator": "Operatore"
         }
+      },
+      "reportAlertMessage": {
+        "generated": "Il report è stato generato ed è pronto per il download.",
+        "failed": "Si è verificato un errore nella generazione del report. Riprova.",
+        "processing": "Stiamo elaborando il file. Una volta fatto, il report potrà essere scaricato in questa sezione."
+      }
+    },
+    "initiativeExportReportUsers": {
+      "title": "Esporta dati utenti",
+      "subtitle": "Esporta i dati dei cittadini che hanno utilizzato il Bonus Elettrodomestici in base ai criteri selezionati.",
+      "exportFiltersCard": {
+        "title": "Seleziona i parametri di esportazione",
+        "subtitle": "Imposta i criteri di ricerca per generare il report contenente i codici fiscali dei cittadini e l’importo del voucher utilizzato. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
+        "buttonExport": "Genera report"
       },
       "reportAlertMessage": {
         "generated": "Il report è stato generato ed è pronto per il download.",
@@ -1257,7 +1272,10 @@
       "title": "Rimborsi"
     },
     "exportReport": {
-      "title": "Esporta report"
+      "title": "Esporta transazioni"
+    },
+    "exportReportUsers": {
+      "title": "Esporta dati utenti"
     },
     "initiativeUsers": {
       "rankingTitle": "Graduatoria",

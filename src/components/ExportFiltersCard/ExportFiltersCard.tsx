@@ -12,9 +12,10 @@ import DateRangePicker from '../DateRangePicker/DateRangePicker';
 interface ExportFiltersCardProps {
   onGenerateReport?: (data: { startDate: Date; endDate: Date; businessName: string }) => void;
   businessList: Array<MerchantItem>;
+  isUsers?: boolean;
 }
 
-const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCardProps) => {
+const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }: ExportFiltersCardProps) => {
   const { t } = useTranslation();
 
   const [selectedMerchant, setSelectedMerchant] = useState('');
@@ -49,12 +50,16 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
     // eslint-disable-next-line functional/no-let
     let hasErrors = false;
 
-    if (!selectedMerchant.trim()) {
-      setMerchantError('required');
-      hasErrors = true;
-    } else if (!merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
-      setMerchantError('invalid');
-      hasErrors = true;
+    if (!isUsers) {
+      if (!selectedMerchant.trim()) {
+        setMerchantError('required');
+        hasErrors = true;
+      } else if (!merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
+        setMerchantError('invalid');
+        hasErrors = true;
+      } else {
+        setMerchantError(null);
+      }
     } else {
       setMerchantError(null);
     }
@@ -75,7 +80,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
       onGenerateReport({
         startDate: format(startOfDay(dateFrom), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
         endDate: format(endOfDay(dateTo), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
-        businessName: selectedMerchant,
+        businessName: isUsers ? "" : selectedMerchant,
       });
       resetAllFields();
     }
@@ -86,11 +91,11 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
       <Card sx={{ width: '100%' }}>
         <CardContent>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            {t('pages.initiativeExportReport.exportFiltersCard.title')}
+            {t(`pages.initiativeExportReport${isUsers ? 'Users' : ""}.exportFiltersCard.title`)}
           </Typography>
 
-          <Typography variant="body2" sx={{ mb: 3 }}>
-            {t('pages.initiativeExportReport.exportFiltersCard.subtitle')}
+          <Typography variant="body2" sx={{ mb: 3, maxWidth: "88%" }}>
+            {t(`pages.initiativeExportReport${isUsers ? 'Users' : ""}.exportFiltersCard.subtitle`)}
           </Typography>
 
           <Box
@@ -102,22 +107,24 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
               flexWrap: 'nowrap',
             }}
           >
-            <MerchantAutocomplete
-              merchantNames={merchantNames}
-              selectedMerchant={selectedMerchant}
-              merchantError={merchantError}
-              onMerchantChange={(value) => {
-                setSelectedMerchant(value);
-                setMerchantError(null);
-              }}
-              onBlurValidation={() => {
-                if (selectedMerchant.trim() && !merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
-                  setMerchantError('invalid');
-                } else {
+            {!isUsers &&
+              <MerchantAutocomplete
+                merchantNames={merchantNames}
+                selectedMerchant={selectedMerchant}
+                merchantError={merchantError}
+                onMerchantChange={(value) => {
+                  setSelectedMerchant(value);
                   setMerchantError(null);
-                }
-              }}
-            />
+                }}
+                onBlurValidation={() => {
+                  if (selectedMerchant.trim() && !merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
+                    setMerchantError('invalid');
+                  } else {
+                    setMerchantError(null);
+                  }
+                }}
+              />
+            }
 
             <DateRangePicker
               dateFrom={dateFrom}
@@ -135,6 +142,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList }: ExportFiltersCard
                 setDateTo(newValue ? endOfDay(newValue) : null);
                 setDateToError(false);
               }}
+              isUsers={isUsers}
             />
             <Box sx={{ flex: 1 }} />
             <Button
