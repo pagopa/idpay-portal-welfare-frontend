@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
 import { useTranslation } from 'react-i18next';
-// import { useState } from "react";
+import { useState } from "react";
 import { matchPath } from "react-router-dom";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import ROUTES from "../../routes";
@@ -12,7 +12,7 @@ import { useInitiative } from "../../hooks/useInitiative";
 import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersCard";
 import { generateReport } from "../../services/merchantsService";
 import { useAlert } from "../../hooks/useAlert";
-// import ReportTableCard from "../../components/ReportTable/ReportTableCard";
+import ReportTableCard from "../../components/ReportTable/ReportTableCard";
 import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT_USERS } from "../../utils/constants";
 
@@ -51,7 +51,7 @@ const InitiativeExportReportUsersPage = () => {
     strict: false,
   });
   const { id } = (match?.params as MatchParams) || {};
-  // const [refreshToken, setRefreshToken] = useState(0);
+  const [refreshToken, setRefreshToken] = useState(0);
 
   const handleGenerateReport = (data: { startDate: Date; endDate: Date }) => {
     setLoading(true);
@@ -60,7 +60,7 @@ const InitiativeExportReportUsersPage = () => {
         if (res?.reportStatus) {
           const alertConfig = reportStatusAlertConfig[res.reportStatus];
           setAlert({ text: alertConfig.text, isOpen: true, severity: alertConfig.severity });
-          // setRefreshToken((x) => x + 1);
+          setRefreshToken((x) => x + 1);
         }
       })
       .catch(() => {
@@ -98,7 +98,7 @@ const InitiativeExportReportUsersPage = () => {
         />
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-        {/* <ReportTableCard initiativeId={id} refreshToken={refreshToken} isUsers={true}/> */}
+        <ReportTableCard initiativeId={id} refreshToken={refreshToken} isUsers={true}/>
       </Box>
     </Box>
   );
