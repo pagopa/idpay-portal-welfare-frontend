@@ -14,6 +14,7 @@ interface DateRangePickerProps {
   yesterday: Date;
   onDateFromChange: (date: Date | null) => void;
   onDateToChange: (date: Date | null) => void;
+  isUsers?: boolean;
 }
 
 const DateRangePicker = ({
@@ -25,6 +26,7 @@ const DateRangePicker = ({
   yesterday,
   onDateFromChange,
   onDateToChange,
+  isUsers = false,
 }: DateRangePickerProps) => {
   const { t } = useTranslation();
   const [openFrom, setOpenFrom] = useState(false);
@@ -32,10 +34,12 @@ const DateRangePicker = ({
 
   const getMinDateTo = () => {
     if (dateFrom) { return startOfDay(dateFrom); }
+    if (isUsers) { return startOfDay(minDateFrom); }
     return startOfDay(subDays(yesterday, 90));
   };
 
   const getMaxDateTo = () => {
+    if (isUsers) { return yesterday; }
     if (!dateFrom) { return yesterday; }
     const maxAllowed = endOfDay(addDays(dateFrom, 90));
     return maxAllowed > yesterday ? yesterday : maxAllowed;

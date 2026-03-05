@@ -249,15 +249,15 @@ export const merchantsApi = {
   },
 
   generateReport: async (
-    initiativeId: string, merchantId: string, startPeriod: Date, endPeriod: Date, reportType: ReportTypeEnum): Promise<ReportDTO> => {
+    initiativeId: string, startPeriod: Date, endPeriod: Date, reportType: ReportTypeEnum, merchantId?: string,): Promise<ReportDTO> => {
     const result = await merchantsApiClient.generateReport({
       initiativeId,
-      merchantId,
       body: {
         endPeriod,
         startPeriod,
         reportType
-      }
+      },
+      merchantId,
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
@@ -265,18 +265,21 @@ export const merchantsApi = {
   getReportList: async (
     initiativeId: string,
     page: number,
-    size: number, ): Promise<ReportListDTO> => {
-    const result = await merchantsApiClient.getMerchantTransactionsReports({
+    size: number, 
+    reportType: ReportTypeEnum
+  ): Promise<ReportListDTO> => {
+    const result = await merchantsApiClient.getReports({
       initiativeId,
       page,
       size,
+      reportType
     });
     return extractResponse(result, 200, onRedirectToLogin);
   },
 
   getDownloadReport: async (
     initiativeId: string, reportId: string): Promise<DownloadReportResponseDTO> => {
-    const result = await merchantsApiClient.downloadTransactionsReport({
+    const result = await merchantsApiClient.downloadReport({
       initiativeId,
       reportId
     });

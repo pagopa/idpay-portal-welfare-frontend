@@ -176,28 +176,30 @@ export const getDownloadCsv = (
 
 export const generateReport = (
   initiativeId: string,
-  merchantId: string,
   startPeriod: Date,
   endPeriod: Date,
-  reportType: ReportTypeEnum
+  reportType: ReportTypeEnum,
+  merchantId?: string,
 ): Promise<ReportDTO> =>
   merchantsApi.generateReport(
     initiativeId,
-    merchantId,
     startPeriod,
     endPeriod,
-    reportType
+    reportType,
+    merchantId,
   );
 
 export const getReportList = (
   initiativeId: string,
   page: number,
   size: number,
+  reportType: ReportTypeEnum
 ): Promise<ReportListDTO> =>
   merchantsApi.getReportList(
     initiativeId,
     page,
     size,
+    reportType
   );
 
 export const getDownloadReport = (

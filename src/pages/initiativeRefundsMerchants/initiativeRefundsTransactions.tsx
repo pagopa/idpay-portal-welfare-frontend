@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, ReactNode } from "react";
 import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert, TextField } from "@mui/material";
 import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -631,6 +631,72 @@ const InitiativeRefundsTransactions = () => {
         }
     };
 
+    const renderAddress = (posId: string | undefined): ReactNode => {
+        if (!posId) { return "-"; }
+
+        const value = posList.find((e) => e.id === posId);
+
+        if (!value) { return "-"; }
+
+        if (value.type === "ONLINE") {
+            if (!value.website) { return "-"; }
+
+            const url = value.website.startsWith("http")
+                ? value.website
+                : `https://${value.website}`;
+
+            return (
+                <Tooltip title={value.website}>
+                    <Box style={{ display: "inline-block", maxWidth: 150 }}>
+                        <ButtonNaked
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            color="primary"
+                            sx={{
+                                textDecoration: "underline",
+                                fontWeight: 600,
+                                display: "inline-block",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                pt: 0.5,
+                                "&:hover": {
+                                    textDecoration: "underline",
+                                    backgroundColor: "transparent",
+                                },
+                            }}
+                        >
+                            {value.website}
+                        </ButtonNaked>
+                    </Box>
+                </Tooltip>
+            );
+        }
+
+        if (value.address && value.province) {
+            const text = `${value.address} ${value.province}`;
+
+            return (
+                <Tooltip title={text}>
+                    <Box
+                        sx={{
+                            display: "inline-block",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            maxWidth: 150,
+                            whiteSpace: "nowrap",
+                            pt: 0.5,
+                        }}
+                    >
+                        {text}
+                    </Box>
+                </Tooltip>
+            );
+        }
+
+        return "-";
+    };
+
     if (!batch && !restored) { return null; }
 
     if (!batch && restored) {
@@ -897,7 +963,7 @@ const InitiativeRefundsTransactions = () => {
                                 return (
                                     <Tooltip
                                         title={selectedPos?.type === "ONLINE" ? `${label} - ${selectedPos?.website}` :
-                                                `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
+                                            `${label} - ${selectedPos?.province} - ${selectedPos?.address}`}
                                         disableHoverListener={!selected}
                                     >
                                         <Box sx={{
@@ -1082,6 +1148,9 @@ const InitiativeRefundsTransactions = () => {
                                     <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>
                                         {t("pages.initiativeMerchantsTransactions.table.pos")}
                                     </TableCell>
+                                    <TableCell sx={{ whiteSpace: { lg: "nowrap", md: "none" } }}>
+                                        {t("pages.initiativeMerchantsTransactions.table.address")}
+                                    </TableCell>
                                     <TableCell sortDirection={dateSort === "" ? false : dateSort}>
                                         <TableSortLabel
                                             active={dateSort !== ""}
@@ -1122,16 +1191,17 @@ const InitiativeRefundsTransactions = () => {
 
                                             <TableCell>
                                                 <Tooltip title={row.invoiceFileName}>
-                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200 }}>
+                                                    <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 170 }}>
                                                         <ButtonNaked
                                                             color="primary"
                                                             onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId, row.invoiceFileName)}
                                                             sx={{
-                                                                maxWidth: {lg: 200, md: 150, sm: 130, xs: 110},
+                                                                maxWidth: { lg: 220, md: 150, sm: 130, xs: 110 },
                                                                 overflow: "hidden",
                                                                 textOverflow: "ellipsis",
                                                                 whiteSpace: "nowrap",
                                                                 display: "inline-block",
+                                                                wordBreak: "break-all",
                                                             }}
                                                         >
                                                             {row.invoiceFileName}
@@ -1142,10 +1212,14 @@ const InitiativeRefundsTransactions = () => {
 
                                             <TableCell>
                                                 <Tooltip title={row.shop}>
-                                                    <Box sx={{ display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 200, whiteSpace: "nowrap", }}>
+                                                    <Box sx={{pt: 0.5, display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 175, whiteSpace: "nowrap", }}>
                                                         {row.shop}
                                                     </Box>
                                                 </Tooltip>
+                                            </TableCell>
+
+                                            <TableCell>
+                                                {renderAddress(row.pointOfSaleId)}
                                             </TableCell>
 
                                             <TableCell>

@@ -25,7 +25,7 @@ import SyncIcon from "@mui/icons-material/Sync";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useLoading } from "@pagopa/selfcare-common-frontend";
 import { getDownloadReport, getReportList } from "../../services/merchantsService";
-import { ReportStatusEnum } from "../../api/generated/merchants/ReportDTO";
+import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
 import { downloadCsv } from "../../utils/fileViewer-utils";
 import { useAlert } from "../../hooks/useAlert";
@@ -88,6 +88,7 @@ const DownloadCell = ({ disabled, onClick, status }: { disabled: boolean; onClic
 type ReportTableCardProps = {
   initiativeId: string;
   refreshToken: number;
+  isUsers?: boolean;
 };
 
 function formatDateTime(value?: string | null): string {
@@ -117,7 +118,7 @@ function formatPeriod(start?: string | null, end?: string | null): string {
     }`;
 }
 
-const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) => {
+const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: ReportTableCardProps) => {
   const { t } = useTranslation();
   const { setAlert } = useAlert();
 
@@ -142,7 +143,7 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
 
       try {
 
-        const res = await getReportList(initiativeId, page, pageSize);
+        const res = await getReportList(initiativeId, page, pageSize, isUsers ? ReportTypeEnum.USER_DETAILS : ReportTypeEnum.MERCHANT_TRANSACTIONS);
 
         const nextTotalElements =
           typeof (res as any)?.totalElements === "number" ? (res as any).totalElements : 0;
@@ -266,13 +267,13 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
             sx={{
               mt: 1,
               width: "100%",
-              tableLayout: "fixed",
+              tableLayout: isUsers ? "auto" : "fixed",
             }}
           >
             <TableHead>
               <TableRow>
                 <TableCell sx={{ width: 34, maxWidth: 34, minWidth: 34, pl: 0 }} />
-                <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "20%" }}>
+                <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: isUsers ? "25%" : "20%" }}>
                   {t("pages.initiativeExportReport.exportTable.columns.fileName")}
                 </TableCell>
                 <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" } }}>
@@ -281,15 +282,19 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
                 <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" } }}>
                   {t("pages.initiativeExportReport.exportTable.columns.generationDate")}
                 </TableCell>
-                <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "15%" }}>
-                  {t("pages.initiativeExportReport.exportFiltersCard.merchant")}
-                </TableCell>
+                { !isUsers &&
+                  <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "15%" }}>
+                    {t("pages.initiativeExportReport.exportFiltersCard.merchant")}
+                  </TableCell>
+                }
                 <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "20%" }}>
                   {t("pages.initiativeExportReport.exportTable.columns.period")}
                 </TableCell>
-                <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "7%" }}>
-                  {t("pages.initiativeExportReport.exportTable.columns.operator")}
-                </TableCell>
+                { !isUsers &&
+                  <TableCell sx={{ whiteSpace: { xxl: "nowrap", lg: "normal" }, width: "7%" }}>
+                    {t("pages.initiativeExportReport.exportTable.columns.operator")}
+                  </TableCell>
+                }
                 <TableCell sx={{ width: "5%" }} />
               </TableRow>
             </TableHead>
@@ -337,27 +342,29 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
                     <Box sx={{ display: "inline-flex", color: "#5C6F82" }}>{row.generationDate}</Box>
                   </TableCell>
 
-                  <TableCell>
-                    <Tooltip title={row.salesPoint}>
-                      <Box
-                        sx={{
-                          display: "-webkit-box",
-                          WebkitBoxOrient: "vertical",
-                          maxWidth: "100%",
-                          minWidth: 0,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "pre-wrap",
-                          color: "#17324D",
-                          fontWeight: 600,
-                          maxLines: 2,
-                          WebkitLineClamp: 2,
-                        }}
-                      >
-                        {row.salesPoint}
-                      </Box>
-                    </Tooltip>
-                  </TableCell>
+                  { !isUsers &&
+                    <TableCell>
+                      <Tooltip title={row.salesPoint}>
+                        <Box
+                          sx={{
+                            display: "-webkit-box",
+                            WebkitBoxOrient: "vertical",
+                            maxWidth: "100%",
+                            minWidth: 0,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "pre-wrap",
+                            color: "#17324D",
+                            fontWeight: 600,
+                            maxLines: 2,
+                            WebkitLineClamp: 2,
+                          }}
+                        >
+                          {row.salesPoint}
+                        </Box>
+                      </Tooltip>
+                    </TableCell>
+                  }
 
                   <TableCell>
                     <Tooltip title={row.period}>
@@ -372,10 +379,12 @@ const ReportTableCard = ({ initiativeId, refreshToken }: ReportTableCardProps) =
                       </Box>
                     </Tooltip>
                   </TableCell>
-
-                  <TableCell>
-                    <Box sx={{ display: "inline-flex", color: "#17324D" }}>{row.operator}</Box>
-                  </TableCell>
+                  
+                  { !isUsers &&
+                    <TableCell>
+                      <Box sx={{ display: "inline-flex", color: "#17324D" }}>{row.operator}</Box>
+                    </TableCell>
+                  }
 
                   <TableCell sx={{ p: 0 }}>
                     {row.reportStatus !== ReportStatusEnum.FAILED &&

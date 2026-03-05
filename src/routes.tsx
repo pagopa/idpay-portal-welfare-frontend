@@ -14,6 +14,7 @@ const ROUTES = {
   INITIATIVE_REFUNDS: `${BASE_ROUTE}/rimborsi-iniziativa/:id`,
   INITIATIVE_REFUNDS_TRANSACTIONS: `${BASE_ROUTE}/rimborsi-iniziativa/:id/:batchId`,
   INITIATIVE_EXPORT_REPORT: `${BASE_ROUTE}/esporta-report/:id`,
+  INITIATIVE_EXPORT_REPORT_USERS: `${BASE_ROUTE}/esporta-report-dati-utenti/:id`,
   INITIATIVE_REFUNDS_OUTCOME: `${BASE_ROUTE}/esiti-rimborsi-iniziativa/:id`,
   INITIATIVE_REFUNDS_DETAIL: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/:id/:exportId/:filePath`,
   INITIATIVE_DETAIL: `${BASE_ROUTE}/dettagli-iniziativa/:id`,
