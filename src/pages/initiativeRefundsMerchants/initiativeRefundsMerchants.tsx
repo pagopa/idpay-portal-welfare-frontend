@@ -41,6 +41,7 @@ export interface RefundItem {
     numberOfTransactionsRejected: number;
     numberOfTransactionsElaborated: number;
     assigneeLevel: "L1" | "L2" | "L3";
+    reason?: string;
 }
 
 export interface RefundsPage {
@@ -61,11 +62,37 @@ export const getStatusColor = (status: string, role: string) => {
             }
             return "primary";
         case "SENT":
+        case "REFUNDED":
+        case "PENDING_REFUND":
+        case "NOT_REFUNDED":
             return "default";
         case "APPROVING":
             return "info";
         default:
             return "default";
+    }
+};
+
+export const getStatusStyle = (status: string) => {
+    const normalizedStatus = status?.toUpperCase?.() ?? "";
+    switch (normalizedStatus) {
+        case "REFUNDED":
+            return {
+                backgroundColor: "#DBF9FA",
+                color: "#17324D",
+            };
+        case "PENDING_REFUND":
+            return {
+                backgroundColor: "#E7ECFC",
+                color: "#17324D",
+            };
+        case "NOT_REFUNDED":
+            return {
+                backgroundColor: "#FFE0E0",
+                color: "#761F1F",
+            };
+        default:
+            return undefined;
     }
 };
 
@@ -80,6 +107,12 @@ export const getStatusLabel = (status: string, role: string, t: any) => {
             return t("chip.batch.evaluating");
         case "SENT":
             return t("chip.batch.sent");
+        case "REFUNDED":
+            return t("chip.batch.refunded");
+        case "PENDING_REFUND":
+            return t("chip.batch.pendingRefund");
+        case "NOT_REFUNDED":
+            return t("chip.batch.notRefunded");
         case "APPROVING":
             return t("chip.batch.approving");
         default:
@@ -113,8 +146,8 @@ const getChecksPercentage = (row: RefundItem) => {
 };
 
 const isRowDisabled = (status: string) => {
-    const s = status?.toUpperCase?.() ?? "";
-    return s === "SENT" || s === "CREATED";
+    const normalizedStatus = status?.toUpperCase?.() ?? "";
+    return normalizedStatus === "SENT" || normalizedStatus === "CREATED";
 };
 
 type RefundRowProps = {
@@ -225,6 +258,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 <Tag
                     value={getStatusLabel(row.status, row.assigneeLevel, t)}
                     color={getStatusColor(row.status, row.assigneeLevel) as Colors}
+                    sx={getStatusStyle(row.status)}
                 />
             </TableCell>
 
@@ -395,6 +429,7 @@ const InitiativeRefundsMerchants = () => {
                         numberOfTransactionsRejected: r.numberOfTransactionsRejected,
                         numberOfTransactionsElaborated: r.numberOfTransactionsElaborated,
                         assigneeLevel: r.assigneeLevel,
+                        reason: r.reason,
                     }));
 
                     setRows(rowsData);
@@ -540,6 +575,18 @@ const InitiativeRefundsMerchants = () => {
                     >
                         <MenuItem value="SENT">
                             <Tag value={t("chip.batch.sent")} color="default" />
+                        </MenuItem>
+
+                        <MenuItem value="REFUNDED">
+                            <Tag value={t("chip.batch.refunded")} color="default" sx={getStatusStyle("REFUNDED")} />
+                        </MenuItem>
+
+                        <MenuItem value="PENDING_REFUND">
+                            <Tag value={t("chip.batch.pendingRefund")} color="default" sx={getStatusStyle("PENDING_REFUND")} />
+                        </MenuItem>
+
+                        <MenuItem value="NOT_REFUNDED">
+                            <Tag value={t("chip.batch.notRefunded")} color="default" sx={getStatusStyle("NOT_REFUNDED")} />
                         </MenuItem>
 
                         <MenuItem value="TO_WORK">
