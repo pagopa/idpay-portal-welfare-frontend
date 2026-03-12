@@ -1026,6 +1026,7 @@
         "beneficiary": "Intestatario",
         "iban": "IBAN",
         "checksCompleted": "Controlli effettuati",
+        "refundErrorMessage": "Motivo mancato rimborso",
         "validate": "Valida",
         "check": "Verifica",
         "approve": "Approva",
@@ -1349,7 +1350,10 @@
       "evaluating": "Da lavorare",
       "sent": "In arrivo",
       "toApprove": "Da approvare",
-      "approving": "In approvazione"
+      "approving": "In approvazione",
+      "refunded": "Rimborsato",
+      "pendingRefund": "In rimborso",
+      "notRefunded": "Non rimborsato"
     }
   },
   "footer": {
