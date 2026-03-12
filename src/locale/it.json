@@ -1026,7 +1026,7 @@
         "beneficiary": "Intestatario",
         "iban": "IBAN",
         "checksCompleted": "Controlli effettuati",
-        "reason": "Motivazione",
+        "refundErrorMessage": "Motivo mancato rimborso",
         "validate": "Valida",
         "check": "Verifica",
         "approve": "Approva",
