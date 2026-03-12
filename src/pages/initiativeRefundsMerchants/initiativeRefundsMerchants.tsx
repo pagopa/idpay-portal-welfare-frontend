@@ -41,7 +41,7 @@ export interface RefundItem {
     numberOfTransactionsRejected: number;
     numberOfTransactionsElaborated: number;
     assigneeLevel: "L1" | "L2" | "L3";
-    reason?: string;
+    refundErrorMessage?: string;
 }
 
 export interface RefundsPage {
@@ -429,7 +429,7 @@ const InitiativeRefundsMerchants = () => {
                         numberOfTransactionsRejected: r.numberOfTransactionsRejected,
                         numberOfTransactionsElaborated: r.numberOfTransactionsElaborated,
                         assigneeLevel: r.assigneeLevel,
-                        reason: r.reason,
+                        refundErrorMessage: r.refundErrorMessage,
                     }));
 
                     setRows(rowsData);
