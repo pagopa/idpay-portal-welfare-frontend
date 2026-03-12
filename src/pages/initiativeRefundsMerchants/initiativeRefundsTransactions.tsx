@@ -31,7 +31,7 @@ import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
 import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
-import { getStatusColor, getStatusLabel, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
+import { getStatusColor, getStatusLabel, getStatusStyle, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
 import { RoleActionButton } from "./roleActionButton";
@@ -408,6 +408,7 @@ const InitiativeRefundsTransactions = () => {
         numberOfTransactionsRejected: dto.numberOfTransactionsRejected ?? batch?.numberOfTransactionsRejected ?? 0,
         numberOfTransactionsElaborated: dto.numberOfTransactionsElaborated ?? batch?.numberOfTransactionsElaborated ?? 0,
         assigneeLevel: dto.assigneeLevel ?? "L1",
+        refundErrorMessage: (dto as any).refundErrorMessage ?? batch?.refundErrorMessage,
     });
 
     const updateBatch = (res: RewardBatchDTO) => {
@@ -927,8 +928,21 @@ const InitiativeRefundsTransactions = () => {
                         <Tag
                             value={getStatusLabel(batch.status, batch.assigneeLevel, t)}
                             color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
-                            sx={{ display: 'flex', alignItems: 'center' }}
+                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', width: 'fit-content', ...getStatusStyle(batch.status) }}
                         />
+
+                        {batch.status === "NOT_REFUNDED" && <>
+                            <Typography variant="body2" sx={{ gridColumn: 'span 5', gridRow: '7', color: '#5C6F82' }}>
+                                {t('pages.initiativeMerchantsTransactions.batchDetail.refundErrorMessage')}
+                            </Typography>
+                            <Typography variant="body2" sx={{ gridColumn: 'span 7', gridRow: '7', fontWeight: 600 }}>
+                                <Tooltip title={batch.refundErrorMessage || '-'}>
+                                    <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                        {batch.refundErrorMessage || '-'}
+                                    </Box>
+                                </Tooltip>
+                            </Typography>
+                        </>}
                     </Box>
                 </Paper>
 
@@ -1212,7 +1226,7 @@ const InitiativeRefundsTransactions = () => {
 
                                             <TableCell>
                                                 <Tooltip title={row.shop}>
-                                                    <Box sx={{pt: 0.5, display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 175, whiteSpace: "nowrap", }}>
+                                                    <Box sx={{ pt: 0.5, display: "inline-block", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 175, whiteSpace: "nowrap", }}>
                                                         {row.shop}
                                                     </Box>
                                                 </Tooltip>
