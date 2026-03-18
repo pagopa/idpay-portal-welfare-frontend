@@ -63,7 +63,9 @@
     "clean:api-email-notification": "rimraf src/api/generated/email-notification",
     "generate:api-email-notification": "yarn run clean:api-email-notification && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.email-notification.yml > openApi/generated/email-notification-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/email-notification-swagger20.json && node ./openApi/scripts/api-email-notification_fixPreGen.js && gen-api-models --api-spec openApi/generated/email-notification-swagger20.json --out-dir src/api/generated/email-notification --no-strict --request-types --response-decoders --client && node openApi/scripts/api-email-notification_fixPostGen.js",
     "clean:api-merchants": "rimraf src/api/generated/merchants",
-    "generate:api-merchants": "yarn run clean:api-merchants && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.merchants.yml > openApi/generated/merchants-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/merchants-swagger20.json && node ./openApi/scripts/api-merchants_fixPreGen.js && gen-api-models --api-spec openApi/generated/merchants-swagger20.json --out-dir src/api/generated/merchants --no-strict --request-types --response-decoders --client && node openApi/scripts/api-merchants_fixPostGen.js"
+    "generate:api-merchants": "yarn run clean:api-merchants && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.merchants.yml > openApi/generated/merchants-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/merchants-swagger20.json && node ./openApi/scripts/api-merchants_fixPreGen.js && gen-api-models --api-spec openApi/generated/merchants-swagger20.json --out-dir src/api/generated/merchants --no-strict --request-types --response-decoders --client && node openApi/scripts/api-merchants_fixPostGen.js",
+    "clean:api-merchants-swagger": "rimraf src/api/generated/merchants-swagger",
+    "generate:api-merchants-swagger": "yarn run clean:api-merchants-swagger && swagger-typescript-api generate -p openApi/openapi.merchants.yml -o src/api/generated/merchants-swagger -n apiClient.ts --http-client fetch --extract-request-params --extract-response-body --extract-enums --single-http-client"
   },
   "eslintConfig": {
     "extends": [
@@ -103,7 +105,8 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "regex-replace": "^2.3.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "swagger-typescript-api": "^13.6.5"
   },
   "resolutions": {
     "static-eval": "^2.0.2",

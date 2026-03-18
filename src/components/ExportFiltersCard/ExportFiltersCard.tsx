@@ -10,7 +10,7 @@ import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
 import DateRangePicker from '../DateRangePicker/DateRangePicker';
 
 interface ExportFiltersCardProps {
-  onGenerateReport?: (data: { startDate: Date; endDate: Date; businessName: string }) => void;
+  onGenerateReport?: (data: { startDate: string; endDate: string; businessName: string }) => void;
   businessList: Array<MerchantItem>;
   isUsers?: boolean;
 }
@@ -78,8 +78,8 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
 
     if (onGenerateReport && dateFrom && dateTo) {
       onGenerateReport({
-        startDate: format(startOfDay(dateFrom), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
-        endDate: format(endOfDay(dateTo), "yyyy-MM-dd'T'HH:mm:ss.SSS") as unknown as Date,
+        startDate: format(startOfDay(dateFrom), "yyyy-MM-dd'T'HH:mm:ss.SSS"),
+        endDate: format(endOfDay(dateTo), "yyyy-MM-dd'T'HH:mm:ss.SSS"),
         businessName: isUsers ? "" : selectedMerchant,
       });
       resetAllFields();

@@ -15,11 +15,13 @@ export const clearBatchTrx = () => {
   batch = null;
 };
 
+// eslint-disable-next-line complexity
 export const rehydrateBatchTrx = async (
   initiativeId: string,
   batchId: string,
   page: number = 0,
   pageSize: number = 200
+// eslint-disable-next-line sonarjs/cognitive-complexity
 ): Promise<boolean> => {
   try {
     const res = await getRewardBatches(initiativeId, page, pageSize);
@@ -30,26 +32,26 @@ export const rehydrateBatchTrx = async (
     if (!match) {return false;}
 
     const restored: RefundItem = {
-      id: match.id,
-      merchantId: match.merchantId,
-      businessName: match.businessName,
-      month: match.month,
-      posType: match.posType,
-      merchantSendDate: match.merchantSendDate,
-      status: match.status,
-      partial: match.partial,
-      name: match.name,
-      startDate: match.startDate,
-      endDate: match.endDate,
-      totalAmountCents: match.totalAmountCents,
-      approvedAmountCents: match.approvedAmountCents,
-      suspendedAmountCents: match.suspendedAmountCents,
-      initialAmountCents: match.initialAmountCents,
-      numberOfTransactions: match.numberOfTransactions,
-      numberOfTransactionsSuspended: match.numberOfTransactionsSuspended,
-      numberOfTransactionsRejected: match.numberOfTransactionsRejected,
-      numberOfTransactionsElaborated: match.numberOfTransactionsElaborated,
-      assigneeLevel: match.assigneeLevel,
+      id: match.id || "",
+      merchantId: match.merchantId || "",
+      businessName: match.businessName || "",
+      month: match.month || "",
+      posType: match.posType === 'PHYSICAL' ? 'FISICO' : 'ONLINE',
+      merchantSendDate: match.merchantSendDate || "",
+      status: match.status || "",
+      partial: match.partial || false,
+      name: match.name || "",
+      startDate: match.startDate || "",
+      endDate: match.endDate || "",
+      totalAmountCents: (match as any).totalAmountCents,
+      approvedAmountCents: match.approvedAmountCents || 0,
+      suspendedAmountCents: (match as any).suspendedAmountCents || "",
+      initialAmountCents: match.initialAmountCents || 0,
+      numberOfTransactions: match.numberOfTransactions || 0,
+      numberOfTransactionsSuspended: match.numberOfTransactionsSuspended || 0,
+      numberOfTransactionsRejected: match.numberOfTransactionsRejected || 0,
+      numberOfTransactionsElaborated: match.numberOfTransactionsElaborated || 0,
+      assigneeLevel: match.assigneeLevel || "L1",
     };
 
     setBatchTrx(restored);

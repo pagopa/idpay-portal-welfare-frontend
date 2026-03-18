@@ -2,13 +2,12 @@ import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import { Box, Divider, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { MerchantDetailDTO } from '../../api/generated/merchants/MerchantDetailDTO';
-import { MerchantStatisticsDTO } from '../../api/generated/merchants/MerchantStatisticsDTO';
 import {
   getMerchantDetail,
   getMerchantInitiativeStatistics,
 } from '../../services/merchantsService';
 import { formatAddress, formatIban, formatedCurrency } from '../../helpers';
+import { MerchantDetailDTO, MerchantStatisticsDTO } from '../../api/generated/merchants-swagger/apiClient';
 import { merchantSummaryBoxStyle } from './helpers';
 
 type Props = {

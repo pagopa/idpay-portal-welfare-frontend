@@ -8,7 +8,7 @@ import {
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
 import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
-import { merchantsApi } from '../../../api/merchantsApiClient';
+import { merchantsApi } from '../../../api/mercahntsSwaggerApiClient';
 
 jest.mock('../../../services/merchantsService');
 

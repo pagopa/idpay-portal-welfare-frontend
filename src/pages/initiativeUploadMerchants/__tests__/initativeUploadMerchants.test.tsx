@@ -5,7 +5,7 @@ import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpda
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeUploadMerchants from '../initiativeUploadMerchants';
-import { merchantsApi } from '../../../api/merchantsApiClient';
+import { merchantsApi } from '../../../api/mercahntsSwaggerApiClient';
 
 jest.mock('../../../services/merchantsService')
 

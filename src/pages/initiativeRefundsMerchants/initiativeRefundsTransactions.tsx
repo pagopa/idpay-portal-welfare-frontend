@@ -12,23 +12,17 @@ import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatc
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
 import ROUTES from "../../routes";
-import { RewardBatchDTO } from "../../api/generated/merchants/RewardBatchDTO";
 import { useInitiative } from "../../hooks/useInitiative";
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { getDownloadInvoice, getMerchantTransactionsProcessed, getMerchantDetail, rejectTrx, suspendTrx, approveTrx, validateBatch, approveBatch, getDownloadCsv } from "../../services/merchantsService";
-import { MerchantTransactionProcessedDTO } from "../../api/generated/merchants/MerchantTransactionProcessedDTO";
-import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
 import { getPOS } from "../../services/merchantsService";
-import { TransactionActionRequest } from "../../api/generated/merchants/TransactionActionRequest";
 import { downloadCsv, openInvoiceInNewTab } from "../../utils/fileViewer-utils";
 import { useAppSelector } from "../../redux/hooks";
 import { initiativeSelector } from "../../redux/slices/initiativeSlice";
 import { parseJwt } from "../../utils/jwt-utils";
 import { JWTUser } from "../../model/JwtUser";
-import { PointOfSaleDTO } from "../../api/generated/merchants/PointOfSaleDTO";
 import { useAlert } from "../../hooks/useAlert";
-import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
-import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
+import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, ReasonDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest } from "../../api/generated/merchants-swagger/apiClient";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getStatusColor, getStatusLabel, getStatusStyle, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
@@ -50,7 +44,7 @@ export interface TrxItem {
     invoiceFileName?: string;
     pointOfSaleId?: string;
     transactionId?: string;
-    status?: RewardBatchTrxStatusEnum;
+    status?: RewardBatchTrxStatus;
 }
 
 export interface RefundsDrawerData {
@@ -161,7 +155,7 @@ const InitiativeRefundsTransactions = () => {
     const [rows, setRows] = useState<Array<TrxItem>>([]);
     const [iban, setIban] = useState<string>('');
     const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-    const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
+    const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatus | null>(null);
 
     useInitiative();
 
@@ -312,7 +306,7 @@ const InitiativeRefundsTransactions = () => {
                 searchType === "fiscalCode" ? searchValue || undefined : undefined,
                 undefined,
                 batch.id,
-                statusFilter as RewardBatchTrxStatusEnum || undefined,
+                statusFilter as RewardBatchTrxStatus || undefined,
                 posFilter || undefined,
                 searchType === "trxCode" ? searchValue || undefined : undefined
             ),
@@ -322,7 +316,7 @@ const InitiativeRefundsTransactions = () => {
                 setTotalElements(transactionsRes.totalElements);
                 setTotalPages(transactionsRes.totalPages);
 
-                const rowsData: Array<TrxItem> = transactionsRes.content.map((r) =>
+                const rowsData: Array<TrxItem> = transactionsRes.content.map((r: MerchantTransactionProcessedDTO) =>
                     mapTransactionDTO(r)
                 );
 
@@ -388,17 +382,17 @@ const InitiativeRefundsTransactions = () => {
         dto: RewardBatchDTO
         // eslint-disable-next-line sonarjs/cognitive-complexity
     ): RefundItem => ({
-        id: dto.id,
+        id: dto.id ?? "",
         merchantId: dto.merchantId ?? batch?.merchantId ?? "",
         businessName: dto.businessName ?? batch?.businessName ?? "",
         month: dto.month ?? batch?.month ?? "",
         posType: dto.posType === "PHYSICAL" ? "FISICO" : "ONLINE",
-        merchantSendDate: dto.merchantSendDate?.toDateString() ?? "",
+        merchantSendDate: dto.merchantSendDate ?? "",
         status: dto.status ?? "",
         partial: dto.partial ?? false,
-        name: dto.name,
-        startDate: dto.startDate?.toDateString() ?? "",
-        endDate: dto.endDate?.toDateString() ?? "",
+        name: dto.name ?? "",
+        startDate: dto.startDate ?? "",
+        endDate: dto.endDate ?? "",
         totalAmountCents: dto.initialAmountCents ?? batch?.initialAmountCents ?? 0,
         approvedAmountCents: dto.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
         suspendedAmountCents: (dto as any)?.suspendedAmountCents ?? batch?.suspendedAmountCents ?? 0,
@@ -417,21 +411,21 @@ const InitiativeRefundsTransactions = () => {
         setBatch(getBatchTrx());
     };
 
-    const mapTransactionStatus = (status?: RewardBatchTrxStatusEnum) => {
+    const mapTransactionStatus = (status?: RewardBatchTrxStatus) => {
         switch (status) {
-            case RewardBatchTrxStatusEnum.TO_CHECK:
+            case RewardBatchTrxStatus.TO_CHECK:
                 return { label: t('pages.initiativeMerchantsTransactions.table.toCheck'), color: "indigo" };
 
-            case RewardBatchTrxStatusEnum.CONSULTABLE:
+            case RewardBatchTrxStatus.CONSULTABLE:
                 return { label: t('pages.initiativeMerchantsTransactions.table.consultable'), color: "default" };
 
-            case RewardBatchTrxStatusEnum.SUSPENDED:
+            case RewardBatchTrxStatus.SUSPENDED:
                 return { label: t('pages.initiativeMerchantsTransactions.table.suspended'), color: "warning" };
 
-            case RewardBatchTrxStatusEnum.APPROVED:
+            case RewardBatchTrxStatus.APPROVED:
                 return { label: t('pages.initiativeMerchantsTransactions.table.approved'), color: "info" };
 
-            case RewardBatchTrxStatusEnum.REJECTED:
+            case RewardBatchTrxStatus.REJECTED:
                 return { label: t('pages.initiativeMerchantsTransactions.table.rejected'), color: "error" };
 
             default:
@@ -494,7 +488,7 @@ const InitiativeRefundsTransactions = () => {
         });
     };
 
-    const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => {
+    const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatus) => {
         if (!rowStatus) { return; }
 
         setSelectedRows((prev) => {
@@ -753,7 +747,7 @@ const InitiativeRefundsTransactions = () => {
                             <Box sx={{ width: "50%" }}>
                                 <RefundActionButtons
                                     direction="row"
-                                    status={lockedStatus as RewardBatchTrxStatusEnum}
+                                    status={lockedStatus as RewardBatchTrxStatus}
                                     onApprove={() => setApproveModal(true)}
                                     onSuspend={() => setReasonModal({ open: true, type: "suspend" })}
                                     onReject={() => setReasonModal({ open: true, type: "reject" })}
@@ -1025,7 +1019,7 @@ const InitiativeRefundsTransactions = () => {
                             label={t('pages.initiativeMerchantsTransactions.table.status')}
                             onChange={(e) => setDraftStatusFilter(e.target.value)}
                         >
-                            {Object.values(RewardBatchTrxStatusEnum).map((status) => {
+                            {Object.values(RewardBatchTrxStatus).map((status) => {
                                 const mapped = mapTransactionStatus(status);
                                 return (
                                     <MenuItem key={status} value={status} sx={{ display: "flex", alignItems: "center" }}>

@@ -1,5 +1,5 @@
 import { merchantsApiMocked } from '../../api/__mocks__/merchantsApiClient';
-import { merchantsApi } from '../../api/merchantsApiClient';
+import { merchantsApi } from '../../api/mercahntsSwaggerApiClient';
 import { createStore } from '../../redux/store';
 import {
     mockedInitiativeId,

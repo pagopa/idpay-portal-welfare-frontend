@@ -14,8 +14,8 @@ import { generateReport, getMerchantList } from "../../services/merchantsService
 import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMerchants";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
-import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
+import { ReportDTO, ReportDtoReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants-swagger/apiClient";
 
 const InitiativeExportReportPage = () => {
   const { t } = useTranslation();
@@ -26,19 +26,19 @@ const InitiativeExportReportPage = () => {
     id: string;
   }
   const reportStatusAlertConfig = {
-    [ReportStatusEnum.GENERATED]: {
+    [ReportDtoReportStatusEnum.GENERATED]: {
       severity: 'success' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.generated')
     },
-    [ReportStatusEnum.FAILED]: {
+    [ReportDtoReportStatusEnum.FAILED]: {
       severity: 'error' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.failed')
     },
-    [ReportStatusEnum.INSERTED]: {
+    [ReportDtoReportStatusEnum.INSERTED]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     },
-    [ReportStatusEnum.IN_PROGRESS]: {
+    [ReportDtoReportStatusEnum.IN_PROGRESS]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     }
@@ -68,13 +68,14 @@ const InitiativeExportReportPage = () => {
     });
   };
 
-  const handleGenerateReport = (data: { startDate: Date; endDate: Date; businessName: string }) => {
+  const handleGenerateReport = (data: { startDate: string; endDate: string; businessName: string }) => {
     const merchant = businessNameList.find(
       (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
     );
     setLoading(true);
     generateReport(id, data.startDate, data.endDate, ReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId ?? "",)
-      .then((res) => {
+      .then((res: ReportDTO) => {
+        console.log(id, data.startDate, data.endDate, ReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId);
         if (res?.reportStatus) {
           const alertConfig = reportStatusAlertConfig[res.reportStatus];
           setAlert({ text: alertConfig.text, isOpen: true, severity: alertConfig.severity });
@@ -82,6 +83,7 @@ const InitiativeExportReportPage = () => {
         }
       })
       .catch(() => {
+        console.log(id, data.startDate, data.endDate, ReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId);
         setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
       })
       .finally(() => setLoading(false));

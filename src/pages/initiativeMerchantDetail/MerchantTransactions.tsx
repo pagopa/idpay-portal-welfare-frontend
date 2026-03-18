@@ -5,13 +5,10 @@ import { useFormik } from 'formik';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import { getMerchantTransactions } from '../../services/merchantsService';
-import {
-  MerchantTransactionDTO,
-  StatusEnum as TransactionStatusEnum,
-} from '../../api/generated/merchants/MerchantTransactionDTO';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import TablePaginator from '../components/TablePaginator';
+import { MerchantTransactionDTO, MerchantTransactionDtoStatusEnum } from '../../api/generated/merchants-swagger/apiClient';
 import FiltersForm from './FiltersForm';
 import { containerStyle, filterByStatusOptionsListMT, resetForm, tableHeadData } from './helpers';
 import TableHeader from './TableHeader';
@@ -92,9 +89,9 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
     getTableData(merchantId as string, initiativeId as string, page, filterByUser, filterByStatus);
   }, [initiativeId, merchantId, page]);
 
-  const renderTransactionCreatedStatus = (status: TransactionStatusEnum) => {
+  const renderTransactionCreatedStatus = (status: MerchantTransactionDtoStatusEnum) => {
     switch (status) {
-      case TransactionStatusEnum.AUTHORIZED:
+      case MerchantTransactionDtoStatusEnum.AUTHORIZED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -102,7 +99,7 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
             color="info"
           />
         );
-      case TransactionStatusEnum.AUTHORIZATION_REQUESTED:
+      case MerchantTransactionDtoStatusEnum.AUTHORIZATION_REQUESTED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -110,8 +107,8 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
             color="default"
           />
         );
-      case TransactionStatusEnum.CREATED:
-      case TransactionStatusEnum.IDENTIFIED:
+      case MerchantTransactionDtoStatusEnum.CREATED:
+      case MerchantTransactionDtoStatusEnum.IDENTIFIED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -119,7 +116,7 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
             color="default"
           />
         );
-      case TransactionStatusEnum.REJECTED:
+      case MerchantTransactionDtoStatusEnum.REJECTED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -156,9 +153,9 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{formatedDate(r.updateDate)}</TableCell>
+                      <TableCell>{formatedDate(r.updateDate as any as Date)}</TableCell>
                       <TableCell>
-                        {r.status === TransactionStatusEnum.AUTHORIZED ? r.fiscalCode : ''}
+                        {r.status === MerchantTransactionDtoStatusEnum.AUTHORIZED ? r.fiscalCode : ''}
                       </TableCell>
                       <TableCell>{formatedCurrency(r.effectiveAmountCents, '-', true)}</TableCell>
                       <TableCell>{formatedCurrency(r.rewardAmountCents, '-', true)}</TableCell>

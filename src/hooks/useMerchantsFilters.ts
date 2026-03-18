@@ -1,5 +1,7 @@
+import { AssigneeLevelEnum } from "../api/generated/merchants-swagger/apiClient";
+
 interface MerchantsFilters {
-    assigneeFilter: string | null;
+    assigneeFilter: AssigneeLevelEnum | null;
     nameFilter: string | null;
     periodFilter: string | null;
     statusFilter: string | null;

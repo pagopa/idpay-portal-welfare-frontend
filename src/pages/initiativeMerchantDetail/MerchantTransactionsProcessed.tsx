@@ -4,14 +4,11 @@ import { useTranslation } from 'react-i18next';
 import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
-import {
-  MerchantTransactionProcessedDTO,
-  StatusEnum as TransactionProcessedStatusEnum,
-} from '../../api/generated/merchants/MerchantTransactionProcessedDTO';
 import { getMerchantTransactionsProcessed } from '../../services/merchantsService';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import TablePaginator from '../components/TablePaginator';
+import { MerchantTransactionProcessedDTO, MerchantTransactionProcessedDtoStatusEnum } from '../../api/generated/merchants-swagger/apiClient';
 import FiltersForm from './FiltersForm';
 import { containerStyle, filterByStatusOptionsListMTP, resetForm, tableHeadData } from './helpers';
 import TableHeader from './TableHeader';
@@ -99,9 +96,9 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     };
   }, [merchantId, initiativeId, pageValue]);
 
-  const renderTrasactionProcessedStatus = (status: TransactionProcessedStatusEnum) => {
+  const renderTrasactionProcessedStatus = (status: MerchantTransactionProcessedDtoStatusEnum) => {
     switch (status) {
-      case TransactionProcessedStatusEnum.REWARDED:
+      case MerchantTransactionProcessedDtoStatusEnum.REWARDED:
         return (
           // eslint-disable-next-line react/jsx-no-undef
           <Chip
@@ -110,7 +107,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
             color="success"
           />
         );
-      case TransactionProcessedStatusEnum.CANCELLED:
+      case MerchantTransactionProcessedDtoStatusEnum.CANCELLED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -148,7 +145,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rowsData.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{formatedDate(r.updateDate)}</TableCell>
+                      <TableCell>{formatedDate(r.updateDate as any as Date)}</TableCell>
                       <TableCell>{r.fiscalCode}</TableCell>
                       <TableCell>{formatedCurrency(r.effectiveAmountCents, '-', true)}</TableCell>
                       <TableCell>{formatedCurrency(r.rewardAmountCents, '-', true)}</TableCell>

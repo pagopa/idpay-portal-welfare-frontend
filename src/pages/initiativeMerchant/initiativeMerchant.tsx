@@ -19,7 +19,6 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { MerchantDTO } from '../../api/generated/merchants/MerchantDTO';
 import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
@@ -33,6 +32,7 @@ import { getMerchantList } from '../../services/merchantsService';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import TablePaginator from '../components/TablePaginator';
+import { MerchantDTO } from '../../api/generated/merchants-swagger/apiClient';
 
 const InitativeMerchant = () => {
   const { t } = useTranslation();

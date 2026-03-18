@@ -19,6 +19,7 @@ import { getMerchantList, getRewardBatches } from "../../services/merchantsServi
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from "../../utils/constants";
 import { useAlert } from "../../hooks/useAlert";
 import { getMerchantsFilters, resetMerchantsFilters, setMerchantsFilters } from "../../hooks/useMerchantsFilters";
+import { AssigneeLevelEnum } from "../../api/generated/merchants-swagger/apiClient";
 
 export interface RefundItem {
     id: string;
@@ -290,8 +291,8 @@ const InitiativeRefundsMerchants = () => {
     const { id } = (match?.params as MatchParams) || {};
 
     const savedFilters = getMerchantsFilters();
-    const [assigneeFilter, setAssigneeFilter] = useState<string>(savedFilters.assigneeFilter ?? "");
-    const [draftAssignee, setDraftAssignee] = useState<string>(savedFilters.assigneeFilter ?? "");
+    const [assigneeFilter, setAssigneeFilter] = useState<AssigneeLevelEnum | undefined>(savedFilters.assigneeFilter ?? undefined);
+    const [draftAssignee, setDraftAssignee] = useState<AssigneeLevelEnum | undefined>(savedFilters.assigneeFilter ?? undefined);
     const [nameFilter, setNameFilter] = useState<string>(savedFilters.nameFilter ?? "");
     const [draftName, setDraftName] = useState<string>(savedFilters.nameFilter ?? "");
     const [periodFilter, setPeriodFilter] = useState<string>(savedFilters.periodFilter ?? "");
@@ -320,7 +321,7 @@ const InitiativeRefundsMerchants = () => {
     const norm = (s: string) => (s ?? "").trim();
 
     const isFilterDisabled = !(
-        norm(draftAssignee) !== norm(assigneeFilter) ||
+        norm(draftAssignee ?? "") !== norm(assigneeFilter ?? "") ||
         norm(draftName) !== norm(nameFilter) ||
         norm(draftPeriod) !== norm(periodFilter) ||
         norm(draftStatus) !== norm(statusFilter)
@@ -398,7 +399,7 @@ const InitiativeRefundsMerchants = () => {
         const sort = dateSort === "" ? undefined : `merchantSendDate,${dateSort}`;
 
         setLoading(true);
-        getRewardBatches(initiativeId, page, pageSize, assigneeFilter || undefined, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined, sort || undefined)
+        getRewardBatches(initiativeId, page, pageSize, assigneeFilter, nameFilter || undefined, periodFilter || undefined, statusFilter || undefined, sort || undefined)
             .then((res) => {
                 if (typeof res.totalElements === 'number') {
                     setTotalElements(res.totalElements);
@@ -454,8 +455,8 @@ const InitiativeRefundsMerchants = () => {
     };
 
     const handleRemoveFilters = () => {
-        setAssigneeFilter("");
-        setDraftAssignee("");
+        setAssigneeFilter(undefined);
+        setDraftAssignee(undefined);
         setNameFilter("");
         setDraftName("");
         setPeriodFilter("");
@@ -626,7 +627,7 @@ const InitiativeRefundsMerchants = () => {
                         labelId="assignee-filter-label"
                         value={draftAssignee}
                         label={t("pages.initiativeMerchantsRefunds.table.assignee")}
-                        onChange={(e) => setDraftAssignee(e.target.value)}
+                        onChange={(e) => setDraftAssignee(e.target.value as AssigneeLevelEnum)}
                         sx={{
                             height: 40,
                             display: "flex",

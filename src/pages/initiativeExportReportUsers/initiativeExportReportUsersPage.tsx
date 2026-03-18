@@ -13,8 +13,8 @@ import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersC
 import { generateReport } from "../../services/merchantsService";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
-import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT_USERS } from "../../utils/constants";
+import { ReportDtoReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants-swagger/apiClient";
 
 const InitiativeExportReportUsersPage = () => {
   const { t } = useTranslation();
@@ -25,19 +25,19 @@ const InitiativeExportReportUsersPage = () => {
     id: string;
   }
   const reportStatusAlertConfig = {
-    [ReportStatusEnum.GENERATED]: {
+    [ReportDtoReportStatusEnum.GENERATED]: {
       severity: 'success' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.generated')
     },
-    [ReportStatusEnum.FAILED]: {
+    [ReportDtoReportStatusEnum.FAILED]: {
       severity: 'error' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.failed')
     },
-    [ReportStatusEnum.INSERTED]: {
+    [ReportDtoReportStatusEnum.INSERTED]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     },
-    [ReportStatusEnum.IN_PROGRESS]: {
+    [ReportDtoReportStatusEnum.IN_PROGRESS]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     }
@@ -53,7 +53,7 @@ const InitiativeExportReportUsersPage = () => {
   const { id } = (match?.params as MatchParams) || {};
   const [refreshToken, setRefreshToken] = useState(0);
 
-  const handleGenerateReport = (data: { startDate: Date; endDate: Date }) => {
+  const handleGenerateReport = (data: { startDate: string; endDate: string }) => {
     setLoading(true);
     generateReport(id, data.startDate, data.endDate, ReportTypeEnum.USER_DETAILS)
       .then((res) => {
