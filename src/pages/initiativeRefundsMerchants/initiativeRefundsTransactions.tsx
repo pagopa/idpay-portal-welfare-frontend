@@ -908,16 +908,20 @@ const InitiativeRefundsTransactions = () => {
                             </Tooltip>
                         </Typography>
 
-                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                            {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
-                        </Typography>
-                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            <Tooltip title={`${checksPercentage}`}>
-                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                                    {checksPercentage}
-                                </Box>
-                            </Tooltip>
-                        </Typography>
+                        {batch.status === "EVALUATING" &&
+                            <>
+                                <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                                    {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
+                                </Typography>
+                                <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                                    <Tooltip title={`${checksPercentage}`}>
+                                        <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                            {checksPercentage}
+                                        </Box>
+                                    </Tooltip>
+                                </Typography>
+                            </>
+                        }
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsRefunds.table.status')}
@@ -925,7 +929,7 @@ const InitiativeRefundsTransactions = () => {
                         <Tag
                             value={getStatusLabel(batch.status, batch.assigneeLevel, t)}
                             color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
-                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', width: 'fit-content', ...getStatusStyle(batch.status) }}
+                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', height: 'fit-content', width: 'fit-content', ...getStatusStyle(batch.status) }}
                         />
 
                         {batch.status === "NOT_REFUNDED" && <>
