@@ -231,14 +231,11 @@ const InitiativeRefundsTransactions = () => {
     const closeAfter = (fn: Promise<any>) => fn.finally(() => handleCloseDrawer());
 
     const checksPercentage = useMemo(() => {
-        if (!batch || batch.numberOfTransactions === 0) {
-            return "0%";
+        if (batch && batch.numberOfTransactions > 0 && batch.numberOfTransactionsElaborated > 0) {
+            const percentage = (batch.numberOfTransactionsElaborated / batch.numberOfTransactions) * 100;
+            return percentage > 100 ? "100% / 100%" : `${Math.floor(percentage)}% / 100%`;
         }
-
-        const percentage =
-            (batch.numberOfTransactionsElaborated / batch.numberOfTransactions) * 100;
-
-        return `${Math.floor(percentage)}%`;
+        return "0% / 100%";
     }, [batch]);
 
     const formattedPeriod = useMemo(() => {
@@ -905,16 +902,20 @@ const InitiativeRefundsTransactions = () => {
                             </Tooltip>
                         </Typography>
 
-                        <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
-                            {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
-                        </Typography>
-                        <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-                            <Tooltip title={`${checksPercentage}/100%`}>
-                                <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                                    {checksPercentage}/100%
-                                </Box>
-                            </Tooltip>
-                        </Typography>
+                        {batch.status === "EVALUATING" &&
+                            <>
+                                <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
+                                    {t('pages.initiativeMerchantsTransactions.batchDetail.checksCompleted')}
+                                </Typography>
+                                <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
+                                    <Tooltip title={`${checksPercentage}`}>
+                                        <Box sx={{ display: "inline-block", maxWidth: "100%", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
+                                            {checksPercentage}
+                                        </Box>
+                                    </Tooltip>
+                                </Typography>
+                            </>
+                        }
 
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsRefunds.table.status')}
@@ -922,7 +923,7 @@ const InitiativeRefundsTransactions = () => {
                         <Tag
                             value={getStatusLabel(batch.status, batch.assigneeLevel, t)}
                             color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
-                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', width: 'fit-content', ...getStatusStyle(batch.status) }}
+                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', height: 'fit-content', width: 'fit-content', ...getStatusStyle(batch.status) }}
                         />
 
                         {batch.status === "NOT_REFUNDED" && <>
