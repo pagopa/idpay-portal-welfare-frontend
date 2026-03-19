@@ -138,6 +138,12 @@ export const refundRequestDate = (date?: string) => {
 };
 
 const getChecksPercentage = (row: RefundItem) => {
+    if(row.status === "SENT"){
+        return "0% / 100%";
+    }
+    if(row.status !== "EVALUATING"){
+        return "100% / 100%";
+    }
     if (row.numberOfTransactions > 0 && row.numberOfTransactionsElaborated > 0) {
         const percentage = (row.numberOfTransactionsElaborated / row.numberOfTransactions) * 100;
         return percentage > 100 ? "100% / 100%" : `${Math.floor(percentage)}% / 100%`;
