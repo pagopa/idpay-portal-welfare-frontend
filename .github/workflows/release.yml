@@ -12,11 +12,14 @@ on:
       - ".**"
 
   pull_request:
-    types: [opened, synchronize, edited]
     branches:
       - main
       - develop
       - uat
+    types:
+      - opened
+      - synchronize
+      - edited
     paths-ignore:
       - "CODEOWNERS"
       - "**.md"
@@ -32,9 +35,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ------------------------------
-      # CHECKOUT REPOSITORY
-      # ------------------------------
       - name: Checkout
         uses: actions/checkout@v3
         with:
