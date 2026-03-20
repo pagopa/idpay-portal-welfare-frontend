@@ -1,15 +1,22 @@
-name: 'Coverage'
+name: Release
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-      - uat
       - develop
-    types:
-      - opened
-      - synchronize
-      - edited
+      - uat
+    paths-ignore:
+      - "CODEOWNERS"
+      - "**.md"
+      - ".**"
+
+  pull_request:
+    types: [opened, synchronize, edited]
+    branches:
+      - main
+      - develop
+      - uat
     paths-ignore:
       - "CODEOWNERS"
       - "**.md"
@@ -23,10 +30,19 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@dc12339a9823e6625f5410a45b24fcbc55a33ded #v6.0.2
-        with: 
+      # ------------------------------
+      # CHECKOUT REPOSITORY
+      # ------------------------------
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+
+      - name: Checkout repository (v6.0.2)
+        uses: actions/checkout@dc12339a9823e6625f5410a45b24fcbc55a33ded
+        with:
           fetch-depth: 0
 
       - name: Cache Yarn
@@ -40,16 +56,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - name: Install dependencies
+      - name: Install dependencies (secure & immutable)
         run: |
-          yarn install --ignore-scripts
-          YARN_ENABLE_SCRIPTS=false yarn install
+          export YARN_ENABLE_SCRIPTS=false
+          yarn install --ignore-scripts --immutable --check-cache
 
-      - name: Genera client API
+      - name: Generate client API
         run: yarn generate
 
+
       - name: Jest Coverage Report
-        uses: ArtiomTr/jest-coverage-report-action@82bc34a0347019ba8f6d2808cd96cec42ef9620e #v2.3.1
+        uses: ArtiomTr/jest-coverage-report-action@82bc34a0347019ba8f6d2808cd96cec42ef9620e
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: yarn test:coverage
@@ -58,7 +75,7 @@ jobs:
           package-manager: yarn
 
       - name: SonarQube Scan (PR Analysis)
-        uses: SonarSource/sonarqube-scan-action@e9a1c4e09a5eddb7db5d045b83807904bf8f67fc # v7.0.0
+        uses: SonarSource/sonarqube-scan-action@e9a1c4e09a5eddb7db5d045b83807904bf8f67fc
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
