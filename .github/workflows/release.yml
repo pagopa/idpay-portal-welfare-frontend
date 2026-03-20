@@ -38,7 +38,7 @@ jobs:
           fetch-depth: 0
           
       - name: Cache Yarn
-        uses: actions/cache@v4
+        uses: actions/cache@e34039626f957d3e3e50843d15c1b20547fc90e2 #v5.0.4
         with:
           path: |
             .yarn/cache
