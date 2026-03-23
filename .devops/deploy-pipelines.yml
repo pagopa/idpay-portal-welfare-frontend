@@ -203,11 +203,11 @@ stages:
       - job: 'make_build'
         steps:
           - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
+          - script: corepack enable
+            displayName: 'Enable corepack'
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
               nodeVersion: $(NODE_VERSION)
-          - script: corepack enable
-            displayName: 'Enable corepack'
           - bash: |
               yarn generate
               yarn build
