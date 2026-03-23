@@ -206,6 +206,8 @@ stages:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
               nodeVersion: $(NODE_VERSION)
+          - script: corepack enable
+            displayName: 'Enable corepack'
           - bash: |
               yarn generate
               yarn build
