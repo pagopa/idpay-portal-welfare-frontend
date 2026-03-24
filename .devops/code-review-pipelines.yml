@@ -49,8 +49,8 @@ stages:
           - template: templates/node-job-setup/template.yaml@pagopaCommons
             parameters:
               nodeVersion: $(NODE_VERSION)
-          # - script: yarn install --immutable
-          #   displayName: 'Install node modules'
+          - script: yarn install --immutable
+            displayName: 'Install node modules'
           - script: |
               yarn generate
               yarn build
