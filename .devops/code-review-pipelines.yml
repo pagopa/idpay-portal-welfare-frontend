@@ -44,14 +44,13 @@ stages:
     jobs:
       - job: make_build
         steps:
-          - task: UseNode@1
-            displayName: 'Set up Node.js'
-            inputs:
-              version: $(NODE_VERSION)
           - script: corepack enable
-            displayName: 'Enable Corepack'
-          - script: yarn install --immutable
-            displayName: 'Install node modules'
+            displayName: 'Enable corepack'
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            parameters:
+              nodeVersion: $(NODE_VERSION)
+          # - script: yarn install --immutable
+          #   displayName: 'Install node modules'
           - script: |
               yarn generate
               yarn build
@@ -107,14 +106,13 @@ stages:
     jobs:
       - job: sonarcloud_analysis
         steps:
-          - task: UseNode@1
-            displayName: 'Set up Node.js'
-            inputs:
-              version: $(NODE_VERSION)
           - script: corepack enable
-            displayName: 'Enable Corepack'
-          - script: yarn install --immutable
-            displayName: 'Install node modules'
+            displayName: 'Enable corepack'
+          - template: templates/node-job-setup/template.yaml@pagopaCommons
+            # parameters:
+            #   nodeVersion: $(NODE_VERSION)
+          # - script: yarn install --immutable
+          #   displayName: 'Install node modules'
           - script: git branch
             displayName: 'Branch identification'
 
