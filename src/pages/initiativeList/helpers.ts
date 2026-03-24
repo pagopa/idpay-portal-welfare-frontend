@@ -1,4 +1,4 @@
-import i18n from 'i18next';
+import { t } from '../../locale';
 
 export interface Data {
   initiativeId: string;
@@ -79,19 +79,19 @@ export const headCells: ReadonlyArray<HeadCell> = [
     id: 'initiativeName',
     numeric: false,
     disablePadding: false,
-    label: i18n.t('pages.initiativeList.tableColumns.initiativeName'),
+    label: t('pages.initiativeList.tableColumns.initiativeName'),
   },
   {
     id: 'initiativeId',
     numeric: false,
     disablePadding: true,
-    label: i18n.t('pages.initiativeList.tableColumns.initiativeId'),
+    label: t('pages.initiativeList.tableColumns.initiativeId'),
   },
   {
     id: 'status',
     numeric: false,
     disablePadding: false,
-    label: i18n.t('pages.initiativeList.tableColumns.initiativeStatus'),
+    label: t('pages.initiativeList.tableColumns.initiativeStatus'),
   },
   {
     id: 'id',

@@ -1,4 +1,19 @@
-import i18n, { configureI18n } from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import it from './it.json';
 
-configureI18n({ i18n, it });
+void i18n.use(initReactI18next).init({
+  resources: {
+    it: { translation: it },
+  },
+  lng: 'it',
+  fallbackLng: 'it',
+  interpolation: {
+    escapeValue: false,
+  },
+});
+
+export const t = (key: string, options?: Record<string, unknown>): string =>
+  (i18n as any).t(key, options);
+
+export default i18n;
