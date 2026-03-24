@@ -3,9 +3,9 @@ import ListAltIcon from '@mui/icons-material/ListAlt';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { fetchAdmissionCriteria } from '../../../../services/admissionCriteriaService';
 import {
@@ -100,7 +100,7 @@ const AdmissionCriteria = ({
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
 
-        if (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+        if (beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
               return { ...r };
@@ -111,7 +111,7 @@ const AdmissionCriteria = ({
         }
 
         if (
-          typeof beneficiaryType !== undefined &&
+          beneficiaryType !== undefined &&
           beneficiaryType === BeneficiaryTypeEnum.NF &&
           generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
         ) {
@@ -133,7 +133,7 @@ const AdmissionCriteria = ({
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
         if (
           automatedCriteria.length > 0 ||
-          (typeof beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF)
+          (beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF)
         ) {
           const updatedResponseData: Array<AvailableCriteria> =
             updateInitialAutomatedCriteriaOnSelector(
@@ -174,6 +174,7 @@ const AdmissionCriteria = ({
         });
       })
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -277,7 +278,7 @@ const AdmissionCriteria = ({
 
   // eslint-disable-next-line sonarjs/cognitive-complexity
   const handleManualCriteriaRemoved = (e: any) => {
-    if (typeof e.target.dataset.id !== undefined) {
+    if (e.target.dataset.id !== undefined) {
       const codeToRemove = e.target.dataset.id;
       const newManualCriteriaToRender: Array<ManualCriteriaItem> = [];
       manualCriteriaToRender.forEach((m) => {
@@ -295,7 +296,7 @@ const AdmissionCriteria = ({
 
       const newCriteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }> = [];
       criteriaToSubmit.forEach((c) => {
-        const intCode = typeof c.code !== undefined ? parseInt(c.code || '1', 10) : NaN;
+        const intCode = c.code !== undefined ? parseInt(c.code || '1', 10) : NaN;
         if (isNaN(intCode)) {
           // eslint-disable-next-line functional/immutable-data
           newCriteriaToSubmit.push({ ...c });
@@ -422,6 +423,7 @@ const AdmissionCriteria = ({
     }
     setAction('');
     // }, [action, criteriaToSubmit, apiKeyClientDispatched]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action, criteriaToSubmit]);
 
   return (

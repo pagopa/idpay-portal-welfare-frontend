@@ -22,14 +22,14 @@ import {
 import { itIT } from '@mui/material/locale';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
 import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
 import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
@@ -86,7 +86,7 @@ const InitiativeRefundsDetails = () => {
   const { id, exportId, filePath } = (match?.params as MatchParams) || {};
 
   useEffect(() => {
-    if (typeof id !== undefined && typeof exportId !== undefined) {
+    if (id !== undefined && exportId !== undefined) {
       setLoading(true);
       getExportSummary(id, exportId)
         .then((res: any) => {
@@ -109,12 +109,14 @@ const InitiativeRefundsDetails = () => {
           setLoading(false);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, exportId]);
 
   useEffect(() => {
-    if (typeof id !== undefined && typeof exportId !== undefined) {
+    if (id !== undefined && exportId !== undefined) {
       getTableData(id, exportId, page, cro, filterStatus);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, exportId, page]);
 
   const getTableData = (
@@ -135,7 +137,7 @@ const InitiativeRefundsDetails = () => {
           setPage(res.pageNo);
         }
 
-        if (typeof res != undefined && Array.isArray(res.content) && res.content.length > 0) {
+        if (res !== undefined && Array.isArray(res.content) && res.content.length > 0) {
           setRows(res.content);
         } else {
           setRows([]);
@@ -379,10 +381,13 @@ const InitiativeRefundsDetails = () => {
             }}
             name="filterStatus"
             label={t('pages.initiativeRefundsDetails.form.outcome')}
-            placeholder={t('pages.initiativeRefundsDetails.form.outcome')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeRefundsDetails.form.outcome')}
+            </MenuItem>
             <MenuItem value="EXPORTED" data-testid="filterStatusOnEvaluation-test">
               {t('pages.initiativeRefundsDetails.status.onEvaluation')}
             </MenuItem>
