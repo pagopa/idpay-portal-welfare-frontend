@@ -9,8 +9,8 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useHistory } from 'react-router-dom';
-import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/lib/hooks/useUnloadEventInterceptor';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useTranslation } from 'react-i18next';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -21,7 +21,7 @@ import RuleIcon from '@mui/icons-material/Rule';
 import { useEffect, useState } from 'react';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { PeopleAlt, Receipt } from '@mui/icons-material';
 import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
@@ -107,6 +107,7 @@ export default function SideMenu() {
         })
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -122,6 +123,7 @@ export default function SideMenu() {
           : false;
       setExpanded(firstItemExpanded);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match), initiativeSummaryList]);
 
   const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {

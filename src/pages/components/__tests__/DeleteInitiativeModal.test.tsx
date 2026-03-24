@@ -20,7 +20,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('@pagopa/selfcare-common-frontend', () => ({
-  ...jest.requireActual('@pagopa/selfcare-common-frontend/hooks/useLoading'),
+  ...jest.requireActual('@pagopa/selfcare-common-frontend/lib/hooks/useLoading'),
   useLoading: () => ({}),
 }));
 

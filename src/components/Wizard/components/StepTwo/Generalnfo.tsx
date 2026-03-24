@@ -31,11 +31,11 @@ import { Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   generalInfoSelector,
@@ -115,6 +115,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       }
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -353,6 +354,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     } else {
       setDisabledNext(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik]);
 
   const handleTabChange = (_event: SyntheticEvent, newValue: number) => {

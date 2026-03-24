@@ -2,8 +2,8 @@
 /* eslint-disable complexity */
 import CloseIcon from '@mui/icons-material/Close';
 import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
@@ -63,6 +63,7 @@ const TransactionDetailModal = ({
         )
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operationId, openModal, initiativeId]);
 
   const operationTypeLabel = (

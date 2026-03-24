@@ -19,8 +19,8 @@ import {
 import { Box } from '@mui/system';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
@@ -118,6 +118,7 @@ const InitiativeUserDetails = () => {
           });
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf]);
 
   const getTableData = (
@@ -310,6 +311,7 @@ const InitiativeUserDetails = () => {
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, page, statusOnb]);
 
   const handleSuspension = (buttonType: string) => {
@@ -536,10 +538,13 @@ const InitiativeUserDetails = () => {
             }}
             name="filterEvent"
             label={t('pages.initiativeUserDetails.filterEvent')}
-            placeholder={t('pages.initiativeUserDetails.filterEvent')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterEvent}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeUserDetails.filterEvent')}
+            </MenuItem>
             {getFilterOptionList(rewardType).map((opt, index) => (
               <MenuItem key={index} value={opt.value}>
                 {t(opt.label)}

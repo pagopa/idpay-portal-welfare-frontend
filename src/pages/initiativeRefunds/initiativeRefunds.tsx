@@ -20,13 +20,13 @@ import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { ArrowForwardIos } from '@mui/icons-material';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -186,6 +186,7 @@ const InitiativeRefunds = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -199,6 +200,7 @@ const InitiativeRefunds = () => {
         filterByStatus
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (
@@ -288,10 +290,13 @@ const InitiativeRefunds = () => {
             }}
             name="filterStatus"
             label={t('pages.initiativeRefunds.form.status')}
-            placeholder={t('pages.initiativeRefunds.form.status')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeRefunds.form.status')}
+            </MenuItem>
             <MenuItem value="EXPORTED" data-testid="filterStatusRegistered-test">
               {t('pages.initiativeRefunds.form.toLoad')}
             </MenuItem>

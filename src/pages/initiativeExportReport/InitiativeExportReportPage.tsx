@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
+import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
@@ -56,6 +56,7 @@ const InitiativeExportReportPage = () => {
 
   useEffect(() => {
     getMerchantsList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getMerchantsList = () => {

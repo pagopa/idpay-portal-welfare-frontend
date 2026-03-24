@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from 'react';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Box, Divider, Paper, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { MerchantDetailDTO } from '../../api/generated/merchants/MerchantDetailDTO';
@@ -62,6 +62,7 @@ const MerchantSummary = ({
         })
         .catch((error) => console.log(error));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeId, merchantId]);
 
   return (

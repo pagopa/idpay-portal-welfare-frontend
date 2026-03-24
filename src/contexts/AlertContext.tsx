@@ -30,8 +30,10 @@ export const AlertProvider = ({children}: {children: ReactNode}) => {
         onClose();
       }, 5000);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [error]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const value = useMemo(() => ({ alert: {...error, onClose}, setAlert}), [error]);
 
   return (

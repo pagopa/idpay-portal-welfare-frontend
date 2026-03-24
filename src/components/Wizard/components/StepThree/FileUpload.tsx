@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   getGroupOfBeneficiaryStatusAndDetail,
@@ -80,6 +80,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
         })
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -204,6 +205,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
 
   useEffect(() => {
     setDisabledNext(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -216,6 +218,7 @@ const FileUpload = ({ action, setAction, currentStep, setCurrentStep, setDisable
       return;
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const InitStatusPartial = (

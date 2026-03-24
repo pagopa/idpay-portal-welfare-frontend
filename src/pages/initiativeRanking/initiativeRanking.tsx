@@ -25,12 +25,12 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
+import TitleBox from '@pagopa/selfcare-common-frontend/lib/components/TitleBox';
 import { useEffect, useState, useMemo } from 'react';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -275,6 +275,7 @@ const InitiativeRanking = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -282,6 +283,7 @@ const InitiativeRanking = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByStatus);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   const getBeneficiaryStatus = (status: string | undefined) => {
@@ -480,7 +482,6 @@ const InitiativeRanking = () => {
               id="filterStatus"
               name="filterStatus"
               label={t('pages.initiativeUsers.form.status')}
-              placeholder={t('pages.initiativeUsers.form.status')}
               onChange={(e) => formik.handleChange(e)}
               value={formik.values.filterStatus}
               inputProps={{

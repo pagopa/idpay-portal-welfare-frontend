@@ -53,6 +53,7 @@ const TransactionTimeItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -146,6 +147,7 @@ const TransactionTimeItem = ({
 
   useEffect(() => {
     setData([...formik.values.transactionTime]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.transactionTime]);
 
   return (

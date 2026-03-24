@@ -12,6 +12,7 @@ export default (WrappedComponent: React.ComponentType<any>) => (props: any) => {
 const dispatch = useAppDispatch();
 useEffect(() => {
 dispatch(partiesActions.setPartySelected(mockedParties[0]));
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 return <WrappedComponent {...props} />;
 };

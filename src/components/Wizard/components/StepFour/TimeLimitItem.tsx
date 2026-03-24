@@ -53,6 +53,7 @@ const TimeLimitItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -113,6 +114,7 @@ const TimeLimitItem = ({
 
   useEffect(() => {
     setData([...formik.values.timeLimit]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.timeLimit]);
 
   return (
