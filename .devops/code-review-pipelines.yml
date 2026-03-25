@@ -113,7 +113,7 @@ stages:
               version: $(NODE_VERSION)
           - script: corepack enable
             displayName: 'Enable Corepack'
-          - script: yarn install --immutable --check-cach
+          - script: yarn install --immutable --check-cache
             displayName: 'Install node modules'
           - script: git branch
             displayName: 'Branch identification'
