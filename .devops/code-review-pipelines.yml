@@ -7,7 +7,7 @@
 #
 
 variables:
-  NODE_VERSION: '24.11.1'
+  NODE_VERSION: '22.22.1'
   YARN_CACHE_FOLDER: $(Pipeline.Workspace)/.yarn
   # Execute agents (jobs) on latest Ubuntu version.
   vmImageNameDefault: 'ubuntu-latest'
@@ -44,10 +44,14 @@ stages:
     jobs:
       - job: make_build
         steps:
-          - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
-          - template: templates/node-job-setup/template.yaml@pagopaCommons
-            parameters:
-              nodeVersion: $(NODE_VERSION)
+          - task: UseNode@1
+            displayName: 'Set up Node.js'
+            inputs:
+              version: $(NODE_VERSION)
+          - script: corepack enable
+            displayName: 'Enable Corepack'
+          - script: yarn install --immutable --check-cache
+            displayName: 'Install node modules'
           - script: |
               yarn generate
               yarn build
@@ -103,12 +107,14 @@ stages:
     jobs:
       - job: sonarcloud_analysis
         steps:
-          - template: templates/node-job-setup/template.yaml@pagopaCommons
-          - template: .devops/azure-templates/setup-yarn-cache.yml@selfcareCommon
-
-          #          - script:
-          #            displayName: 'Generate'
-
+          - task: UseNode@1
+            displayName: 'Set up Node.js'
+            inputs:
+              version: $(NODE_VERSION)
+          - script: corepack enable
+            displayName: 'Enable Corepack'
+          - script: yarn install --immutable --check-cache
+            displayName: 'Install node modules'
           - script: git branch
             displayName: 'Branch identification'
 

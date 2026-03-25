@@ -52,7 +52,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "clean": "npm-run-all clean:*",
+    "clean": "yarn clean:build && yarn clean:coverage && yarn clean:api-role-permission && yarn clean:api-initiative && yarn clean:api-groups && yarn clean:api-email-notification && yarn clean:api-merchants",
     "start": "craco start",
     "build": "craco build",
     "clean:build": "rimraf build",
@@ -63,17 +63,17 @@
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix .",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
-    "generate": "npm-run-all generate:*",
+    "generate": "yarn generate:api-role-permission && yarn generate:api-initiative && yarn generate:api-groups && yarn generate:api-email-notification && yarn generate:api-merchants",
     "clean:api-role-permission": "rimraf src/api/generated/role-permission && rimraf openApi/generated",
-    "generate:api-role-permission": "yarn run clean:api-role-permission && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.role-permission.yml > openApi/generated/role-permission-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/role-permission-swagger20.json && node ./openApi/scripts/api-role-permission_fixPreGen.js && gen-api-models --api-spec openApi/generated/role-permission-swagger20.json --out-dir src/api/generated/role-permission --no-strict --request-types --response-decoders --client && node openApi/scripts/api-role-permission_fixPostGen.js",
+    "generate:api-role-permission": "yarn run clean:api-role-permission && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.role-permission.yml > openApi/generated/role-permission-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/role-permission-swagger20.json && node ./openApi/scripts/api-role-permission_fixPreGen.js && gen-api-models --api-spec openApi/generated/role-permission-swagger20.json --out-dir src/api/generated/role-permission --no-strict --request-types --response-decoders --client && node openApi/scripts/api-role-permission_fixPostGen.js",
     "clean:api-initiative": "rimraf src/api/generated/initiative",
-    "generate:api-initiative": "yarn run clean:api-initiative && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.initiative.yml > openApi/generated/initiative-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/initiative-swagger20.json && node ./openApi/scripts/api-initiative_fixPreGen.js && gen-api-models --api-spec openApi/generated/initiative-swagger20.json --out-dir src/api/generated/initiative --no-strict --request-types --response-decoders --client && node openApi/scripts/api-initiative_fixPostGen.js",
+    "generate:api-initiative": "yarn run clean:api-initiative && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.initiative.yml > openApi/generated/initiative-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/initiative-swagger20.json && node ./openApi/scripts/api-initiative_fixPreGen.js && gen-api-models --api-spec openApi/generated/initiative-swagger20.json --out-dir src/api/generated/initiative --no-strict --request-types --response-decoders --client && node openApi/scripts/api-initiative_fixPostGen.js",
     "clean:api-groups": "rimraf src/api/generated/groups",
-    "generate:api-groups": "yarn run clean:api-groups && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.groups.yml > openApi/generated/groups-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/groups-swagger20.json && node ./openApi/scripts/api-groups_fixPreGen.js && gen-api-models --api-spec openApi/generated/groups-swagger20.json --out-dir src/api/generated/groups --no-strict --request-types --response-decoders --client && node openApi/scripts/api-groups_fixPostGen.js",
+    "generate:api-groups": "yarn run clean:api-groups && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.groups.yml > openApi/generated/groups-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/groups-swagger20.json && node ./openApi/scripts/api-groups_fixPreGen.js && gen-api-models --api-spec openApi/generated/groups-swagger20.json --out-dir src/api/generated/groups --no-strict --request-types --response-decoders --client && node openApi/scripts/api-groups_fixPostGen.js",
     "clean:api-email-notification": "rimraf src/api/generated/email-notification",
-    "generate:api-email-notification": "yarn run clean:api-email-notification && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.email-notification.yml > openApi/generated/email-notification-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/email-notification-swagger20.json && node ./openApi/scripts/api-email-notification_fixPreGen.js && gen-api-models --api-spec openApi/generated/email-notification-swagger20.json --out-dir src/api/generated/email-notification --no-strict --request-types --response-decoders --client && node openApi/scripts/api-email-notification_fixPostGen.js",
+    "generate:api-email-notification": "yarn run clean:api-email-notification && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.email-notification.yml > openApi/generated/email-notification-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/email-notification-swagger20.json && node ./openApi/scripts/api-email-notification_fixPreGen.js && gen-api-models --api-spec openApi/generated/email-notification-swagger20.json --out-dir src/api/generated/email-notification --no-strict --request-types --response-decoders --client && node openApi/scripts/api-email-notification_fixPostGen.js",
     "clean:api-merchants": "rimraf src/api/generated/merchants",
-    "generate:api-merchants": "yarn run clean:api-merchants && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.merchants.yml > openApi/generated/merchants-swagger20.json && node ./node_modules/@pagopa/selfcare-common-frontend/utils/fixSwagger20ArraySchemaDef.js openApi/generated/merchants-swagger20.json && node ./openApi/scripts/api-merchants_fixPreGen.js && gen-api-models --api-spec openApi/generated/merchants-swagger20.json --out-dir src/api/generated/merchants --no-strict --request-types --response-decoders --client && node openApi/scripts/api-merchants_fixPostGen.js"
+    "generate:api-merchants": "yarn run clean:api-merchants && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.merchants.yml > openApi/generated/merchants-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/merchants-swagger20.json && node ./openApi/scripts/api-merchants_fixPreGen.js && gen-api-models --api-spec openApi/generated/merchants-swagger20.json --out-dir src/api/generated/merchants --no-strict --request-types --response-decoders --client && node openApi/scripts/api-merchants_fixPostGen.js"
   },
   "browserslist": {
     "production": [
@@ -105,9 +105,7 @@
     "eslint-plugin-react-hooks": "^4.2.0",
     "js-yaml": "^4.1.1",
     "mkdirp": "^3.0.1",
-    "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "regex-replace": "^2.3.1",
     "rimraf": "^3.0.2"
   },
   "resolutions": {
@@ -142,5 +140,6 @@
       "^.+\\.(jpg|jpeg|png|gif|webp|avif|svg)$": "<rootDir>/__mocks__/file-mock.js",
       "react-markdown": "<rootDir>/node_modules/react-markdown/react-markdown.min.js"
     }
-  }
+  },
+  "packageManager": "yarn@4.13.0"
 }

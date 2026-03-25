@@ -965,7 +965,7 @@ const InitiativeRefundsTransactions = () => {
                     }}>
                         <InputLabel>{t('pages.initiativeMerchantsTransactions.table.pos')}</InputLabel>
                         <Select
-                            disabled={posList[0] === undefined}
+                            disabled={posList.length === 0 || posList[0] === undefined}
                             value={draftPosFilter}
                             onChange={(e) => setDraftPosFilter(e.target.value)}
                             label={t('pages.initiativeMerchantsTransactions.table.pos')}
