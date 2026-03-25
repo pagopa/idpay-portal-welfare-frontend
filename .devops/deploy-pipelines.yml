@@ -208,7 +208,7 @@ stages:
               version: $(NODE_VERSION)
           - script: corepack enable
             displayName: 'Enable Corepack'
-          - script: yarn install --immutable
+          - script: yarn install --immutable --check-cache --ignore-scripts
             displayName: 'Install node modules'
           - bash: |
               yarn generate
