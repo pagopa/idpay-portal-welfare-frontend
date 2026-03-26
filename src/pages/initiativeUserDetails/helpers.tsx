@@ -1,5 +1,5 @@
 import { Box, Chip, Typography } from '@mui/material';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { t } from '../../locale';
 import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 
 export interface OperationProps {
@@ -13,13 +13,13 @@ export const transactionResult = (opeType: string | undefined) => {
         <>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">
-              {i18n.t('pages.initiativeUserDetails.transactionDetail.result')}
+              {t('pages.initiativeUserDetails.transactionDetail.result')}
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
             <Chip
               sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
-              label={i18n.t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
+              label={t('pages.initiativeUserDetails.transactionDetail.negativeResult')}
               color="error"
             />
           </Box>
@@ -30,13 +30,13 @@ export const transactionResult = (opeType: string | undefined) => {
         <>
           <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
             <Typography variant="body2" color="text.secondary" textAlign="left">
-              {i18n.t('pages.initiativeUserDetails.transactionDetail.result')}
+              {t('pages.initiativeUserDetails.transactionDetail.result')}
             </Typography>
           </Box>
           <Box sx={{ gridColumn: 'span 12', mt: 2 }}>
             <Chip
               sx={{ fontSize: '14px', variant: 'body2', fontWeight: 600 }}
-              label={i18n.t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
+              label={t('pages.initiativeUserDetails.transactionDetail.positiveResult')}
               color="success"
             />
           </Box>
@@ -69,10 +69,10 @@ export const formatChannel = (channel: string | undefined) => {
   if (typeof channel === 'string') {
     switch (channel) {
       case 'IDPAYCODE':
-        return i18n.t('pages.initiativeUserDetails.transactionDetail.cie');
+        return t('pages.initiativeUserDetails.transactionDetail.cie');
       case 'QRCODE':
       case 'BARCODE':
-        return i18n.t('pages.initiativeUserDetails.appIo');
+        return t('pages.initiativeUserDetails.appIo');
       default:
         return '-';
     }

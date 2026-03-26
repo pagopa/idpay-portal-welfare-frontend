@@ -1,6 +1,6 @@
 import { FormHelperText, Link, Paper } from '@mui/material';
 import { Box } from '@mui/system';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';

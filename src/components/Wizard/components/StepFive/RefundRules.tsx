@@ -20,10 +20,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useHistory } from 'react-router-dom';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
@@ -97,6 +97,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       }
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -208,6 +209,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     } else {
       setDisableNext(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(formik.values)]);
 
   const handleResetField = (value: string) => {

@@ -11,9 +11,9 @@ import { useTranslation } from 'react-i18next';
 import { SyntheticEvent, useEffect, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useHistory } from 'react-router-dom';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import TitleBox from '@pagopa/selfcare-common-frontend/lib/components/TitleBox';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useInitiative } from '../../hooks/useInitiative';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import { useAppSelector } from '../../redux/hooks';
@@ -132,6 +132,7 @@ const InitiativeDetail = () => {
         })
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeDetail.generalInfo.beneficiaryKnown, initiativeDetail.initiativeId]);
 
   const accordionSx = {

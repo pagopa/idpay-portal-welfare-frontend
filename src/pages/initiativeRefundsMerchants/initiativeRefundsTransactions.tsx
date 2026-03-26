@@ -1,12 +1,12 @@
 import { useState, useEffect, useMemo, ReactNode } from "react";
 import { Box, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, Checkbox, Button, Chip, TableSortLabel, Typography, Paper, Tooltip, Alert, TextField } from "@mui/material";
-import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
+import { ButtonNaked } from "@pagopa/mui-italia";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTranslation } from "react-i18next";
-import { useLoading } from "@pagopa/selfcare-common-frontend";
+import { useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { matchPath, useHistory } from "react-router-dom";
-import { storageTokenOps } from "@pagopa/selfcare-common-frontend/utils/storage";
+import { storageTokenOps } from "@pagopa/selfcare-common-frontend/lib/utils/storage";
 import { Download, Sync } from "@mui/icons-material";
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from "../../hooks/useBatchTrx";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
@@ -31,7 +31,7 @@ import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
 import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
-import { getStatusColor, getStatusLabel, getStatusStyle, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
+import { RefundItem, buildStatusChipSx, getStatusColor, getStatusLabel, refundRequestDate } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
 import ApproveConfirmModal from "./approveConfirmModal";
 import { RoleActionButton } from "./roleActionButton";
@@ -214,6 +214,7 @@ const InitiativeRefundsTransactions = () => {
             }
         };
         void restore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, batchId]);
 
     useEffect(() => {
@@ -270,6 +271,7 @@ const InitiativeRefundsTransactions = () => {
 
     useMemo(() => {
         setPage(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     useEffect(() => {
@@ -283,6 +285,7 @@ const InitiativeRefundsTransactions = () => {
     useEffect(() => {
         if (!batch) { return; };
         getTableData(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [batch, page, pageSize, posFilter, statusFilter, dateSort, searchValue, searchType]);
 
     useEffect(() => {
@@ -926,11 +929,14 @@ const InitiativeRefundsTransactions = () => {
                         <Typography variant="body2" sx={{ gridColumn: 'span 5', color: '#5C6F82' }}>
                             {t('pages.initiativeMerchantsRefunds.table.status')}
                         </Typography>
-                        <Tag
-                            value={getStatusLabel(batch.status, batch.assigneeLevel, t)}
-                            color={getStatusColor(batch.status, batch.assigneeLevel) as Colors}
-                            sx={{ gridColumn: 'span 7', display: 'inline-flex', alignItems: 'center', height: 'fit-content', width: 'fit-content', ...getStatusStyle(batch.status) }}
-                        />
+                        <Box sx={{ gridColumn: 'span 7' }}>
+                            <Chip
+                                label={getStatusLabel(batch.status, batch.assigneeLevel, t)}
+                                color={getStatusColor(batch.status, batch.assigneeLevel)}
+                                size="small"
+                                sx={buildStatusChipSx(batch.status)}
+                            />
+                        </Box>
 
                         {batch.status === "NOT_REFUNDED" && <>
                             <Typography variant="body2" sx={{ gridColumn: 'span 5', gridRow: '7', color: '#5C6F82' }}>

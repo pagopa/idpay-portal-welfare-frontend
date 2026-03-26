@@ -3,7 +3,7 @@ import {
   LoadingOverlay,
   UnloadEventHandler,
   UserNotifyHandle,
-} from '@pagopa/selfcare-common-frontend';
+} from '@pagopa/selfcare-common-frontend/lib';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';

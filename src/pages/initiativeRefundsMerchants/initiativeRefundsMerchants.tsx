@@ -1,11 +1,11 @@
 /* eslint-disable complexity */
 /* eslint-disable sonarjs/cognitive-complexity */
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from "@mui/material";
-import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
+import { Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableHead, TableRow, TableSortLabel, Tooltip } from "@mui/material";
+import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend/lib";
 import { useEffect, useMemo, useState } from "react";
 import { useHistory, matchPath } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
-import { ButtonNaked, Colors, Tag } from "@pagopa/mui-italia";
+import { ButtonNaked } from "@pagopa/mui-italia";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
@@ -52,26 +52,100 @@ export interface RefundsPage {
     totalPages: number;
 }
 
-export const getStatusColor = (status: string, role: string) => {
-    switch (status) {
-        case "APPROVED":
-            return "success";
-        case "EVALUATING":
-            if (role === 'L3') {
-                return "warning";
-            }
-            return "primary";
-        case "SENT":
-        case "REFUNDED":
-        case "PENDING_REFUND":
-        case "NOT_REFUNDED":
-            return "default";
-        case "APPROVING":
-            return "info";
-        default:
-            return "default";
-    }
+type StatusChipColor = "default" | "primary" | "warning" | "info" | "success";
+type RefundStatus =
+    | "APPROVED"
+    | "EVALUATING"
+    | "SENT"
+    | "REFUNDED"
+    | "PENDING_REFUND"
+    | "NOT_REFUNDED"
+    | "APPROVING"
+    | "TO_WORK"
+    | "TO_APPROVE";
+
+type StatusChipConfig = {
+    labelKey: string;
+    color: StatusChipColor;
+    styleStatus?: string;
 };
+
+const chipRectSx = {
+    borderRadius: "4px",
+    height: "24px",
+    fontWeight: 600,
+    "& .MuiChip-label": {
+        px: 1,
+    },
+};
+
+const STATUS_CHIP_CONFIG: Record<Exclude<RefundStatus, "EVALUATING">, StatusChipConfig> = {
+    APPROVED: {
+        labelKey: "chip.batch.approved",
+        color: "success",
+    },
+    SENT: {
+        labelKey: "chip.batch.sent",
+        color: "default",
+    },
+    REFUNDED: {
+        labelKey: "chip.batch.refunded",
+        color: "default",
+        styleStatus: "REFUNDED",
+    },
+    PENDING_REFUND: {
+        labelKey: "chip.batch.pendingRefund",
+        color: "default",
+        styleStatus: "PENDING_REFUND",
+    },
+    NOT_REFUNDED: {
+        labelKey: "chip.batch.notRefunded",
+        color: "default",
+        styleStatus: "NOT_REFUNDED",
+    },
+    APPROVING: {
+        labelKey: "chip.batch.approving",
+        color: "info",
+    },
+    TO_WORK: {
+        labelKey: "chip.batch.evaluating",
+        color: "primary",
+    },
+    TO_APPROVE: {
+        labelKey: "chip.batch.toApprove",
+        color: "warning",
+    },
+};
+
+const getStatusChipConfig = (status: string, role?: string): StatusChipConfig | undefined => {
+    const normalizedStatus = status?.toUpperCase?.() as RefundStatus;
+    if (normalizedStatus === "EVALUATING") {
+        return role === "L3"
+            ? {
+                  labelKey: "chip.batch.toApprove",
+                  color: "warning",
+              }
+            : {
+                  labelKey: "chip.batch.evaluating",
+                  color: "primary",
+              };
+    }
+    return STATUS_CHIP_CONFIG[normalizedStatus];
+};
+
+export const buildStatusChipSx = (status: string) => {
+    const statusStyle = getStatusStyle(status);
+    if (!statusStyle) {
+        return chipRectSx;
+    }
+    return {
+        ...chipRectSx,
+        "&&": statusStyle,
+    };
+};
+
+export const getStatusColor = (status: string, role: string): StatusChipColor =>
+    getStatusChipConfig(status, role)?.color ?? "default";
 
 export const getStatusStyle = (status: string) => {
     const normalizedStatus = status?.toUpperCase?.() ?? "";
@@ -97,27 +171,24 @@ export const getStatusStyle = (status: string) => {
 };
 
 export const getStatusLabel = (status: string, role: string, t: any) => {
-    switch (status) {
-        case "APPROVED":
-            return t("chip.batch.approved");
-        case "EVALUATING":
-            if (role === 'L3') {
-                return t("chip.batch.toApprove");
-            }
-            return t("chip.batch.evaluating");
-        case "SENT":
-            return t("chip.batch.sent");
-        case "REFUNDED":
-            return t("chip.batch.refunded");
-        case "PENDING_REFUND":
-            return t("chip.batch.pendingRefund");
-        case "NOT_REFUNDED":
-            return t("chip.batch.notRefunded");
-        case "APPROVING":
-            return t("chip.batch.approving");
-        default:
-            return "-";
+    const config = getStatusChipConfig(status, role);
+    return config ? t(config.labelKey) : "-";
+};
+
+const getStatusChipData = (status: string, role: string | undefined, t: any) => {
+    const config = getStatusChipConfig(status, role);
+    if (!config) {
+        return {
+            label: "-",
+            color: "default" as StatusChipColor,
+            sx: chipRectSx,
+        };
     }
+    return {
+        label: t(config.labelKey),
+        color: config.color,
+        sx: buildStatusChipSx(config.styleStatus ?? status),
+    };
 };
 
 export const getPosTypeLabel = (posType: "ONLINE" | "FISICO") =>
@@ -178,6 +249,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
     const approvedRefund = formatAmount(row.approvedAmountCents);
     const suspendedRefund = formatAmount(row.suspendedAmountCents);
     const formatRefundDate = refundRequestDate(row.merchantSendDate);
+    const statusChipData = getStatusChipData(row.status, row.assigneeLevel, t);
 
     const handleClick = () => {
         if (!isDisabled) {
@@ -261,10 +333,11 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
             </TableCell>
 
             <TableCell>
-                <Tag
-                    value={getStatusLabel(row.status, row.assigneeLevel, t)}
-                    color={getStatusColor(row.status, row.assigneeLevel) as Colors}
-                    sx={getStatusStyle(row.status)}
+                <Chip
+                    label={statusChipData.label}
+                    color={statusChipData.color}
+                    size="small"
+                    sx={statusChipData.sx}
                 />
             </TableCell>
 
@@ -341,6 +414,7 @@ const InitiativeRefundsMerchants = () => {
         if (!savedFilters.page) {
             setPage(0);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     useEffect(() => {
@@ -349,6 +423,7 @@ const InitiativeRefundsMerchants = () => {
             getMerchantsList();
             getTableData(id);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id, page, assigneeFilter, pageSize, nameFilter, periodFilter, statusFilter, dateSort]);
 
     // eslint-disable-next-line sonarjs/no-identical-functions
@@ -356,6 +431,7 @@ const InitiativeRefundsMerchants = () => {
         if (!savedFilters.page) {
             setPage(0);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageSize]);
 
     useEffect(() => {
@@ -472,6 +548,17 @@ const InitiativeRefundsMerchants = () => {
         setPage(0);
     };
 
+    const filterStatusOptions: Array<{ value: RefundStatus; role?: string }> = [
+        { value: "SENT" },
+        { value: "REFUNDED" },
+        { value: "PENDING_REFUND" },
+        { value: "NOT_REFUNDED" },
+        { value: "TO_WORK" },
+        { value: "TO_APPROVE", role: "L3" },
+        { value: "APPROVING" },
+        { value: "APPROVED" },
+    ];
+
     return (
         <Box sx={{ width: '100%', pt: 2, px: 2 }}>
             <Box sx={initiativePagesBreadcrumbsContainerStyle}>
@@ -579,37 +666,19 @@ const InitiativeRefundsMerchants = () => {
                         onChange={(e) => setDraftStatus(e.target.value)}
                         sx={{ height: 40, display: "flex", alignItems: "center" }}
                     >
-                        <MenuItem value="SENT">
-                            <Tag value={t("chip.batch.sent")} color="default" />
-                        </MenuItem>
-
-                        <MenuItem value="REFUNDED">
-                            <Tag value={t("chip.batch.refunded")} color="default" sx={getStatusStyle("REFUNDED")} />
-                        </MenuItem>
-
-                        <MenuItem value="PENDING_REFUND">
-                            <Tag value={t("chip.batch.pendingRefund")} color="default" sx={getStatusStyle("PENDING_REFUND")} />
-                        </MenuItem>
-
-                        <MenuItem value="NOT_REFUNDED">
-                            <Tag value={t("chip.batch.notRefunded")} color="default" sx={getStatusStyle("NOT_REFUNDED")} />
-                        </MenuItem>
-
-                        <MenuItem value="TO_WORK">
-                            <Tag value={t("chip.batch.evaluating")} color="primary" />
-                        </MenuItem>
-
-                        <MenuItem value="TO_APPROVE">
-                            <Tag value={t("chip.batch.toApprove")} color="warning" />
-                        </MenuItem>
-
-                        <MenuItem value="APPROVING">
-                            <Tag value={t("chip.batch.approving")} color="info" />
-                        </MenuItem>
-
-                        <MenuItem value="APPROVED">
-                            <Tag value={t("chip.batch.approved")} color="success" />
-                        </MenuItem>
+                        {filterStatusOptions.map((option) => {
+                            const chipData = getStatusChipData(option.value, option.role, t);
+                            return (
+                                <MenuItem key={option.value} value={option.value}>
+                                    <Chip
+                                        label={chipData.label}
+                                        color={chipData.color}
+                                        size="small"
+                                        sx={chipData.sx}
+                                    />
+                                </MenuItem>
+                            );
+                        })}
                     </Select>
                 </FormControl>
 

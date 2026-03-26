@@ -44,7 +44,6 @@ const FiltersForm = ({ formik, resetForm, filterByStatusOptionsList }: Props) =>
           }}
           name="filterStatus"
           label={t('pages.initiativeMerchantDetail.transactionStatus')}
-          placeholder={t('pages.initiativeMerchantDetail.transactionStatus')}
           onChange={(e) => formik.handleChange(e)}
           value={formik.values.filterStatus}
         >

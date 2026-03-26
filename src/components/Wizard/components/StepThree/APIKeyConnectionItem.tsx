@@ -52,6 +52,7 @@ const APIKeyConnectionItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   return (
