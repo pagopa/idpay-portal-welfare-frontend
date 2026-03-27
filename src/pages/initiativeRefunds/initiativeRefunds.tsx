@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDatePicker } from '@mui/lab';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
@@ -241,10 +241,10 @@ const InitiativeRefunds = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeRefunds.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              slots={(props: any) => (
                 <TextField
                   {...props}
                   id="searchFrom"
@@ -263,10 +263,10 @@ const InitiativeRefunds = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeRefunds.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              slotProps={(props: any) => (
                 <TextField
                   {...props}
                   id="searchTo"

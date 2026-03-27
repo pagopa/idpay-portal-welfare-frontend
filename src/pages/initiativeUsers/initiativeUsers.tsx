@@ -21,8 +21,8 @@ import { useTranslation } from 'react-i18next';
 import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDatePicker } from '@mui/lab';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
@@ -257,10 +257,10 @@ const InitiativeUsers = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              renderInput={(props: any) => (
                 <TextField
                   {...props}
                   id="searchFrom"
@@ -279,10 +279,10 @@ const InitiativeUsers = () => {
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
             <DesktopDatePicker
               label={t('pages.initiativeUsers.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              renderInput={(props: any) => (
                 <TextField
                   {...props}
                   id="searchTo"
