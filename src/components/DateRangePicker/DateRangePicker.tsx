@@ -60,9 +60,9 @@ const DateRangePicker = ({
         onChange={onDateFromChange}
         minDate={minDateFrom}
         maxDate={yesterday}
-        inputFormat="dd/MM/yyyy"
+        format="dd/MM/yyyy"
         views={['year', 'month', 'day']}
-        defaultCalendarMonth={dateFrom ?? yesterday}
+        referenceDate={dateFrom ?? yesterday}
         open={openFrom}
         onOpen={() => setOpenFrom(true)}
         onClose={() => setOpenFrom(false)}
@@ -117,9 +117,9 @@ const DateRangePicker = ({
         onChange={onDateToChange}
         minDate={getMinDateTo()}
         maxDate={getMaxDateTo()}
-        inputFormat="dd/MM/yyyy"
+        format="dd/MM/yyyy"
         views={['year', 'month', 'day']}
-        defaultCalendarMonth={dateFrom ? startOfDay(dateFrom) : yesterday}
+        referenceDate={dateFrom ? startOfDay(dateFrom) : yesterday}
         open={openTo}
         onOpen={() => setOpenTo(true)}
         onClose={() => setOpenTo(false)}

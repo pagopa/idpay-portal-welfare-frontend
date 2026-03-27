@@ -21,8 +21,8 @@ import {
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDatePicker } from '@mui/lab';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -764,7 +764,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               label={t('components.wizard.stepTwo.form.rankingStartDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingStartDate}
-              onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
+              onChange={(value: any) => formik.setFieldValue('rankingStartDate', value)}
               minDate={new Date()}
               renderInput={(params: TextFieldProps) => (
                 <TextField
@@ -785,7 +785,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               label={t('components.wizard.stepTwo.form.rankingEndDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
-              onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
+              onChange={(value: any) => formik.setFieldValue('rankingEndDate', value)}
               minDate={getMinDate(formik.values.rankingStartDate, 1)}
               renderInput={(params: TextFieldProps) => (
                 <TextField
@@ -823,7 +823,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               label={t('components.wizard.stepTwo.form.startDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.startDate}
-              onChange={(value) => formik.setFieldValue('startDate', value)}
+              onChange={(value: any) => formik.setFieldValue('startDate', value)}
               minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
               renderInput={(params: TextFieldProps) => (
                 <TextField
@@ -846,7 +846,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               label={t('components.wizard.stepTwo.form.endDate')}
               inputFormat="dd/MM/yyyy"
               value={formik.values.endDate}
-              onChange={(value) => formik.setFieldValue('endDate', value)}
+              onChange={(value: any) => formik.setFieldValue('endDate', value)}
               minDate={getMinDate(formik.values.startDate, 1)}
               renderInput={(params: TextFieldProps) => (
                 <TextField

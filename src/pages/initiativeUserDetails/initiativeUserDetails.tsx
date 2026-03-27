@@ -17,7 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';

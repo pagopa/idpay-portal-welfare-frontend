@@ -74,8 +74,13 @@ const chipRectSx = {
     borderRadius: "4px",
     height: "24px",
     fontWeight: 600,
+    width: "max-content",
+    minWidth: "max-content",
+    display: "inline-flex",
+    flexShrink: 0,
     "& .MuiChip-label": {
         px: 1,
+        whiteSpace: "nowrap"
     },
 };
 
@@ -324,7 +329,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
                 </Tooltip>
             </TableCell>
 
-            <TableCell>
+            <TableCell sx={{pr: 0}}>
                 <Tooltip title={row.assigneeLevel}>
                     <Box sx={{ display: "inline-flex", overflow: "hidden", textOverflow: "ellipsis" }}>
                         {row.assigneeLevel}
@@ -804,7 +809,7 @@ const InitiativeRefundsMerchants = () => {
                                 <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
                                     {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
+                                <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' }, width: 85, maxWidth: 85, minWidth: 65 }}>
                                     {t('pages.initiativeMerchantsRefunds.table.assignee')}
                                 </TableCell>
                                 <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>

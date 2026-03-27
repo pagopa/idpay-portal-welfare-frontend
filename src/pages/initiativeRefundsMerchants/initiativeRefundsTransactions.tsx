@@ -322,7 +322,7 @@ const InitiativeRefundsTransactions = () => {
                 setTotalElements(transactionsRes.totalElements);
                 setTotalPages(transactionsRes.totalPages);
 
-                const rowsData: Array<TrxItem> = transactionsRes.content.map((r) =>
+                const rowsData: Array<TrxItem> = transactionsRes.content.map((r: any) =>
                     mapTransactionDTO(r)
                 );
 
