@@ -1,6 +1,8 @@
-import { TextField, InputAdornment, Box } from '@mui/material';
+import { Box, TextField, InputAdornment } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from 'react';
+import { useState, forwardRef } from 'react';
+import type { CSSProperties, InputHTMLAttributes, MouseEvent } from 'react';
+import type { TextFieldProps } from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import { addDays, startOfDay, endOfDay, subDays } from 'date-fns';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -16,6 +18,68 @@ interface DateRangePickerProps {
   onDateToChange: (date: Date | null) => void;
   isUsers?: boolean;
 }
+
+const fieldSx = {
+  width: { xs: '100%', md: '200px' },
+  minWidth: 180,
+  cursor: 'pointer',
+  '& .MuiInputBase-root': { cursor: 'pointer' },
+  '& .MuiInputBase-input, & input': {
+    cursor: 'pointer',
+    caretColor: 'transparent',
+    userSelect: 'none',
+  },
+} as const;
+
+type ReadOnlyTextFieldProps = TextFieldProps & {
+  hasValue?: boolean;
+};
+
+const ReadOnlyTextField = forwardRef<HTMLDivElement, ReadOnlyTextFieldProps>(({ hasValue = false, ...params }, ref) => {
+  const rawInputProps = (params.inputProps ?? {}) as InputHTMLAttributes<HTMLInputElement> & {
+    style?: CSSProperties;
+    value?: string;
+  };
+
+  const htmlInputStyle: CSSProperties = {
+    ...rawInputProps.style,
+    cursor: 'pointer',
+    caretColor: 'transparent',
+    userSelect: 'none',
+  };
+
+  const htmlInputProps: InputHTMLAttributes<HTMLInputElement> & { style: CSSProperties; value?: string } = {
+    ...rawInputProps,
+    readOnly: true,
+    placeholder: '',
+    onMouseDown: (event: MouseEvent<HTMLInputElement>) => {
+      rawInputProps.onMouseDown?.(event);
+      event.preventDefault();
+    },
+    style: htmlInputStyle,
+  };
+
+  if (!hasValue) {
+    htmlInputProps.value = '';
+  }
+
+  return (
+    <TextField
+      {...params}
+      ref={ref}
+      InputProps={{
+        ...params.InputProps,
+        readOnly: true,
+        endAdornment: (
+          <InputAdornment position="end">
+            <ArrowDropDownIcon />
+          </InputAdornment>
+        ),
+      }}
+      inputProps={htmlInputProps}
+    />
+  );
+});
 
 const DateRangePicker = ({
   dateFrom,
@@ -45,6 +109,27 @@ const DateRangePicker = ({
     return maxAllowed > yesterday ? yesterday : maxAllowed;
   };
 
+  const makeSlotProps = (hasError: boolean, hasValue: boolean, onClickOpen: () => void) => ({
+    field: {
+      readOnly: true,
+    },
+    textField: {
+      hasValue,
+      required: true,
+      error: hasError,
+      helperText: hasError ? t('validation.required') : '',
+      onClick: onClickOpen,
+      sx: fieldSx,
+    },
+  });
+
+  const commonPickerProps = {
+    format: 'dd/MM/yyyy',
+    views: ['year', 'month', 'day'] as const,
+    enableAccessibleFieldDOMStructure: false,
+    slots: { textField: ReadOnlyTextField, openPickerIcon: ArrowDropDownIcon },
+  };
+
   return (
     <Box
       sx={{
@@ -60,8 +145,7 @@ const DateRangePicker = ({
         onChange={onDateFromChange}
         minDate={minDateFrom}
         maxDate={yesterday}
-        format="dd/MM/yyyy"
-        views={['year', 'month', 'day']}
+        {...commonPickerProps}
         referenceDate={dateFrom ?? yesterday}
         open={openFrom}
         onOpen={() => setOpenFrom(true)}
@@ -70,45 +154,7 @@ const DateRangePicker = ({
           setOpenFrom(false);
           setOpenTo(true);
         }}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            required
-            sx={{
-              width: { xs: '100%', md: '200px' },
-              minWidth: 180,
-              cursor: 'pointer',
-              '& .MuiInputBase-root': {
-                cursor: 'pointer',
-              },
-            }}
-            error={dateFromError}
-            helperText={dateFromError ? t('validation.required') : ''}
-            onClick={() => setOpenFrom(true)}
-            InputProps={{
-              ...params.InputProps,
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <ArrowDropDownIcon />
-                </InputAdornment>
-              ),
-            }}
-            inputProps={{
-              ...params.inputProps,
-              readOnly: true,
-              placeholder: '',
-              style: {
-                ...(params.inputProps as any)?.style,
-                pointerEvents: 'none',
-                caretColor: 'transparent',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-              },
-            }}
-          />
-        )}
+        slotProps={makeSlotProps(dateFromError, Boolean(dateFrom), () => setOpenFrom(true))}
       />
 
       <DatePicker
@@ -117,52 +163,13 @@ const DateRangePicker = ({
         onChange={onDateToChange}
         minDate={getMinDateTo()}
         maxDate={getMaxDateTo()}
-        format="dd/MM/yyyy"
-        views={['year', 'month', 'day']}
+        {...commonPickerProps}
         referenceDate={dateFrom ? startOfDay(dateFrom) : yesterday}
         open={openTo}
         onOpen={() => setOpenTo(true)}
         onClose={() => setOpenTo(false)}
         onAccept={() => setOpenTo(false)}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            required
-            sx={{
-              width: { xs: '100%', md: '200px' },
-              minWidth: 180,
-              cursor: 'pointer',
-              '& .MuiInputBase-root': {
-                cursor: 'pointer',
-              },
-            }}
-            error={dateToError}
-            helperText={dateToError ? t('validation.required') : ''}
-            onClick={() => setOpenTo(true)}
-            InputProps={{
-              ...params.InputProps,
-              readOnly: true,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <ArrowDropDownIcon />
-                </InputAdornment>
-              ),
-            }}
-            inputProps={{
-              ...params.inputProps,
-              readOnly: true,
-              placeholder: '',
-              style: {
-                ...(params.inputProps as any)?.style,
-                pointerEvents: 'none',
-                caretColor: 'transparent',
-                textOverflow: 'ellipsis',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-              },
-            }}
-          />
-        )}
+        slotProps={makeSlotProps(dateToError, Boolean(dateTo), () => setOpenTo(true))}
       />
     </Box>
   );
