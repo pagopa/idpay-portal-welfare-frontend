@@ -6,6 +6,8 @@ const filePath = path.resolve(
   '../../src/api/generated/role-permission/requestTypes.ts'
 );
 
+const tmpPath = `${filePath}.tmp`;
+
 if (!fs.existsSync(filePath)) {
   console.error(`File non trovato: ${filePath}`);
   process.exit(1);
@@ -23,9 +25,10 @@ try {
 
   const updated = content.replace(pattern, replacement);
 
-  fs.writeFileSync(filePath, updated, 'utf8');
+  fs.writeFileSync(tmpPath, updated, 'utf8');
+  fs.renameSync(tmpPath, filePath);
 
 } catch (err) {
-  console.error('Errore durante la generazione del file:', error);
+  console.error('Errore durante la generazione del file:', err);
   process.exit(1);
 }

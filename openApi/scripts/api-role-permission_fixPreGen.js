@@ -6,6 +6,8 @@ const filePath = path.resolve(
   '../generated/role-permission-swagger20.json'
 );
 
+const tmpPath = `${filePath}.tmp`;
+
 if (!fs.existsSync(filePath)) {
   console.error(`File non trovato: ${filePath}`);
   process.exit(1);
@@ -51,9 +53,10 @@ try {
   deepFix(json);
 
   if (changed) {
-    fs.writeFileSync(filePath, JSON.stringify(json, null, 2), 'utf8');
+    fs.writeFileSync(tmpPath, JSON.stringify(json, null, 2), 'utf8');
+    fs.renameSync(tmpPath, filePath);
   }
 } catch (err) {
-  console.error('Errore durante la generazione del file:', error);
+  console.error('Errore durante la generazione del file:', err);
   process.exit(1);
 }
