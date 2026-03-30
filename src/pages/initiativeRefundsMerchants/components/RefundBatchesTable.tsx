@@ -103,7 +103,7 @@ const RefundBatchesTable = ({
             <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
               {t('pages.initiativeMerchantsRefunds.table.checksPercentage')}
             </TableCell>
-            <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' }, width: 85, maxWidth: 85, minWidth: 65 }}>
+            <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' }}}>
               {t('pages.initiativeMerchantsRefunds.table.assignee')}
             </TableCell>
             <TableCell sx={{ whiteSpace: { xxl: 'nowrap', lg: 'none' } }}>
