@@ -2,7 +2,7 @@ import {
   Avatar,
   Box,
   Button,
-  GridLegacy as Grid,
+  Grid,
   IconButton,
   InputAdornment,
   List,

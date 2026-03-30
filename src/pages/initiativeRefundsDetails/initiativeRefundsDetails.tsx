@@ -56,6 +56,11 @@ import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
 import { getRefundStatus } from './helpers';
 
 const InitiativeRefundsDetails = () => {
+  type RefundsDetailsFormValues = {
+    searchCRO: string;
+    filterStatus: string;
+  };
+
   const { t } = useTranslation();
   useInitiative();
   const initiativeSel = useAppSelector(initiativeSelector);
@@ -202,14 +207,14 @@ const InitiativeRefundsDetails = () => {
     setOpenRefundsDetailModal(false);
   };
 
-  const formik = useFormik({
+  const formik = useFormik<RefundsDetailsFormValues>({
     initialValues: {
       searchCRO: '',
       filterStatus: '',
     },
     validateOnChange: true,
     enableReinitialize: true,
-    onSubmit: (values) => {
+    onSubmit: (values: RefundsDetailsFormValues) => {
       if (typeof id === 'string') {
         const searchCRO = values.searchCRO.length > 0 ? values.searchCRO : undefined;
         setCRO(searchCRO);

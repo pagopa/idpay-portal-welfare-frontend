@@ -2,7 +2,6 @@ import { Box, TextField, InputAdornment } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState, forwardRef } from 'react';
 import type { CSSProperties, InputHTMLAttributes, MouseEvent } from 'react';
-import type { TextFieldProps } from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import { addDays, startOfDay, endOfDay, subDays } from 'date-fns';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -31,55 +30,66 @@ const fieldSx = {
   },
 } as const;
 
-type ReadOnlyTextFieldProps = TextFieldProps & {
+type ReadOnlyTextFieldProps = {
   hasValue?: boolean;
+  [key: string]: unknown;
 };
 
-const ReadOnlyTextField = forwardRef<HTMLDivElement, ReadOnlyTextFieldProps>(({ hasValue = false, ...params }, ref) => {
-  const rawInputProps = (params.inputProps ?? {}) as InputHTMLAttributes<HTMLInputElement> & {
-    style?: CSSProperties;
-    value?: string;
-  };
+const ReadOnlyTextField = forwardRef<HTMLDivElement, ReadOnlyTextFieldProps>(
+  ({ hasValue = false, ...params }, ref) => {
+    const textFieldParams = params as {
+      inputProps?: InputHTMLAttributes<HTMLInputElement> & {
+        style?: CSSProperties;
+        value?: string;
+      };
+      InputProps?: Record<string, unknown>;
+    };
 
-  const htmlInputStyle: CSSProperties = {
-    ...rawInputProps.style,
-    cursor: 'pointer',
-    caretColor: 'transparent',
-    userSelect: 'none',
-  };
+    const rawInputProps = textFieldParams.inputProps ?? {};
 
-  const htmlInputProps: InputHTMLAttributes<HTMLInputElement> & { style: CSSProperties; value?: string } = {
-    ...rawInputProps,
-    readOnly: true,
-    placeholder: '',
-    onMouseDown: (event: MouseEvent<HTMLInputElement>) => {
-      rawInputProps.onMouseDown?.(event);
-      event.preventDefault();
-    },
-    style: htmlInputStyle,
-  };
+    const htmlInputStyle: CSSProperties = {
+      ...rawInputProps.style,
+      cursor: 'pointer',
+      caretColor: 'transparent',
+      userSelect: 'none',
+    };
 
-  if (!hasValue) {
-    htmlInputProps.value = '';
+    const htmlInputProps: InputHTMLAttributes<HTMLInputElement> & {
+      style: CSSProperties;
+      value?: string;
+    } = {
+      ...rawInputProps,
+      readOnly: true,
+      placeholder: '',
+      onMouseDown: (event: MouseEvent<HTMLInputElement>) => {
+        rawInputProps.onMouseDown?.(event);
+        event.preventDefault();
+      },
+      style: htmlInputStyle,
+    };
+
+    if (!hasValue) {
+      htmlInputProps.value = '';
+    }
+
+    return (
+      <TextField
+        {...(params as object)}
+        ref={ref}
+        InputProps={{
+          ...(textFieldParams.InputProps ?? {}),
+          readOnly: true,
+          endAdornment: (
+            <InputAdornment position="end">
+              <ArrowDropDownIcon />
+            </InputAdornment>
+          ),
+        }}
+        inputProps={htmlInputProps}
+      />
+    );
   }
-
-  return (
-    <TextField
-      {...params}
-      ref={ref}
-      InputProps={{
-        ...params.InputProps,
-        readOnly: true,
-        endAdornment: (
-          <InputAdornment position="end">
-            <ArrowDropDownIcon />
-          </InputAdornment>
-        ),
-      }}
-      inputProps={htmlInputProps}
-    />
-  );
-});
+);
 
 const DateRangePicker = ({
   dateFrom,
@@ -127,7 +137,10 @@ const DateRangePicker = ({
     format: 'dd/MM/yyyy',
     views: ['year', 'month', 'day'] as const,
     enableAccessibleFieldDOMStructure: false,
-    slots: { textField: ReadOnlyTextField, openPickerIcon: ArrowDropDownIcon },
+    slots: {
+      textField: ReadOnlyTextField as never,
+      openPickerIcon: ArrowDropDownIcon,
+    },
   };
 
   return (

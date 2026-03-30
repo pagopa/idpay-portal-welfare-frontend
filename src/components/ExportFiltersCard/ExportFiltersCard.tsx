@@ -1,11 +1,11 @@
 import { Box, Button, Card, CardContent, Typography } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { subDays, startOfDay, endOfDay, format } from 'date-fns';
 import it from 'date-fns/locale/it';
-import { MerchantItem } from '../../pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
+import { MerchantItem } from '../../pages/initiativeRefundsMerchants/model/types';
 import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
 import DateRangePicker from '../DateRangePicker/DateRangePicker';
 

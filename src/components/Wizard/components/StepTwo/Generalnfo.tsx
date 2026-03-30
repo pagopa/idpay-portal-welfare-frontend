@@ -16,13 +16,12 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  TextFieldProps,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { DesktopDatePicker } from '@mui/lab';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -760,47 +759,42 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormLabel>
 
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.rankingStartDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.rankingStartDate}
               onChange={(value: any) => formik.setFieldValue('rankingStartDate', value)}
               minDate={new Date()}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="rankingStartDate"
-                  data-testid="ranking-start-date-test"
-                  name="rankingStartDate"
-                  type="date"
-                  sx={{ gridArea: 'rankingStartDate' }}
-                  error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
-                  helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'rankingStartDate',
+                  name: 'rankingStartDate',
+                  sx: { gridArea: 'rankingStartDate' },
+                  error:
+                    formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate),
+                  helperText: formik.touched.rankingStartDate && formik.errors.rankingStartDate,
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.rankingEndDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
               onChange={(value: any) => formik.setFieldValue('rankingEndDate', value)}
               minDate={getMinDate(formik.values.rankingStartDate, 1)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="rankingEndDate"
-                  data-testid="ranking-end-date-test"
-                  name="rankingEndDate"
-                  type="date"
-                  sx={{ gridArea: 'rankingEndDate' }}
-                  error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
-                  helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'rankingEndDate',
+                  name: 'rankingEndDate',
+                  sx: { gridArea: 'rankingEndDate' },
+                  error: formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate),
+                  helperText: formik.touched.rankingEndDate && formik.errors.rankingEndDate,
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
@@ -819,51 +813,45 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {t('components.wizard.stepTwo.form.timeRangeTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.startDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.startDate}
               onChange={(value: any) => formik.setFieldValue('startDate', value)}
               minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="startDate"
-                  data-testid="start-date-test"
-                  name="startDate"
-                  type="date"
-                  sx={{ gridArea: 'startDate' }}
-                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                  helperText={formik.touched.startDate && formik.errors.startDate}
-                  required
-                  InputLabelProps={{ required: false }}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'startDate',
+                  name: 'startDate',
+                  sx: { gridArea: 'startDate' },
+                  error: formik.touched.startDate && Boolean(formik.errors.startDate),
+                  helperText: formik.touched.startDate && formik.errors.startDate,
+                  required: true,
+                  InputLabelProps: { required: false },
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.endDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.endDate}
               onChange={(value: any) => formik.setFieldValue('endDate', value)}
               minDate={getMinDate(formik.values.startDate, 1)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="endDate"
-                  data-testid="end-date-test"
-                  name="endDate"
-                  type="date"
-                  sx={{ gridArea: 'endDate' }}
-                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-                  helperText={formik.touched.endDate && formik.errors.endDate}
-                  required
-                  InputLabelProps={{ required: false }}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'endDate',
+                  name: 'endDate',
+                  sx: { gridArea: 'endDate' },
+                  error: formik.touched.endDate && Boolean(formik.errors.endDate),
+                  helperText: formik.touched.endDate && formik.errors.endDate,
+                  required: true,
+                  InputLabelProps: { required: false },
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>

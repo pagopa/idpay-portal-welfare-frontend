@@ -34,6 +34,7 @@ import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/Initia
 import { getInitativeSummary } from '../../services/intitativeService';
 import { parseJwt } from '../../utils/jwt-utils';
 import { JWTUser } from '../../model/JwtUser';
+import { useAlert } from '../../hooks/useAlert';
 import SidenavItem from './SidenavItem';
 
 interface MatchParams {
@@ -46,6 +47,7 @@ export default function SideMenu() {
   const history = useHistory();
   const onExit = useUnloadEventOnExit();
   const dispatch = useAppDispatch();
+  const { setAlert } = useAlert();
   // const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
@@ -93,17 +95,12 @@ export default function SideMenu() {
           dispatch(setInitiativeSummaryList(response));
         })
         .catch((_error: any) => {
-          // addError({
-          //   id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
-          //   blocking: false,
-          //   error,
-          //   techDescription: 'An error occurred getting initiative summary list',
-          //   displayableTitle: t('errors.title'),
-          //   displayableDescription: t('errors.getDataDescription'),
-          //   toNotify: true,
-          //   component: 'Toast',
-          //   showCloseIcon: true,
-          // });
+          setAlert({
+            title: t('errors.title'),
+            text: t('errors.getDataDescription'),
+            isOpen: true,
+            severity: 'error',
+          });
         })
         .finally(() => setLoading(false));
     }
