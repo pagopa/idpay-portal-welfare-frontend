@@ -45,7 +45,8 @@ const RefundBatchesFiltersBar = ({
     <FormControl
       variant="outlined"
       size="small"
-      sx={{ minWidth: 150, '& .MuiInputLabel-root': { fontSize: 14, lineHeight: 'normal' } }}
+      sx={{ minWidth: 150, width: 300,
+      flexShrink: 0, '& .MuiInputLabel-root': { fontSize: 14, lineHeight: 'normal' } }}
     >
       <InputLabel id="name-filter-label">{t('pages.initiativeMerchantsRefunds.table.name')}</InputLabel>
       <Select
@@ -53,7 +54,7 @@ const RefundBatchesFiltersBar = ({
         value={draftName}
         label={t('pages.initiativeMerchantsRefunds.table.name')}
         onChange={(event) => setDraftName(event.target.value)}
-        sx={{ height: 40, display: 'flex', alignItems: 'center', width: 300 }}
+        sx={{ height: 40, display: 'flex', alignItems: 'center', width: "100%"}}
       >
         {businessNameList.map((merchant) => (
           <MenuItem key={merchant.merchantId} value={merchant.merchantId}>
