@@ -28,7 +28,9 @@ export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
 export const verifyFetchAdmissionCriteriasMockExecution = (
   admissionCriteria: Array<AdmissionCriteriaModel>
 ) => {
-  expect(admissionCriteria).toStrictEqual(mockedAdmissionCriteria);
+  if (JSON.stringify(admissionCriteria) !== JSON.stringify(mockedAdmissionCriteria)) {
+    throw new Error('admissionCriteria mock verification failed');
+  }
 };
 
 export const fetchAdmissionCriteria = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>

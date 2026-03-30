@@ -1,4 +1,4 @@
-import { Box, GridLegacy as Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 interface Props {
   idSelector: string;
 }

@@ -13,7 +13,6 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useEffect, useState, useMemo } from 'react';
@@ -21,8 +20,8 @@ import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
-import { DesktopDatePicker } from '@mui/lab';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV2';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
@@ -239,45 +238,39 @@ const InitiativeRefunds = () => {
       <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeRefunds.form.from')}
               format="dd/MM/yyyy"
               value={formik.values.searchFrom}
               onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
-              slots={(props: any) => (
-                <TextField
-                  {...props}
-                  id="searchFrom"
-                  data-testid="searchFrom-test"
-                  name="searchFrom"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'searchFrom',
+                  name: 'searchFrom',
+                  size: 'small',
+                  error: formik.touched.searchFrom && Boolean(formik.errors.searchFrom),
+                  helperText: formik.touched.searchFrom && formik.errors.searchFrom,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeRefunds.form.to')}
               format="dd/MM/yyyy"
               value={formik.values.searchTo}
               onChange={(value: any) => formik.setFieldValue('searchTo', value)}
-              slotProps={(props: any) => (
-                <TextField
-                  {...props}
-                  id="searchTo"
-                  data-testid="searchTo-test"
-                  name="searchTo"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                  helperText={formik.touched.searchTo && formik.errors.searchTo}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'searchTo',
+                  name: 'searchTo',
+                  size: 'small',
+                  error: formik.touched.searchTo && Boolean(formik.errors.searchTo),
+                  helperText: formik.touched.searchTo && formik.errors.searchTo,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>

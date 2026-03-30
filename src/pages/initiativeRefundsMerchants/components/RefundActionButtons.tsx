@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useTranslation } from "react-i18next";
-import { RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
+import { RewardBatchTrxStatusEnum } from "../../../api/generated/merchants/RewardBatchTrxStatus";
 
 interface Props {
     direction: "row" | "column";

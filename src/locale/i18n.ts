@@ -2,7 +2,9 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import it from './it.json';
 
-void i18n.use(initReactI18next).init({
+const i18nInstance = initReactI18next ? i18n.use(initReactI18next) : i18n;
+
+void i18nInstance.init({
   resources: {
     it: { translation: it },
   },
