@@ -6,6 +6,8 @@ const filePath = path.resolve(
   '../../src/api/generated/email-notification/requestTypes.ts'
 );
 
+const tmpPath = `${filePath}.tmp`;
+
 try {
   const content = fs.readFileSync(filePath, 'utf8');
 
@@ -15,7 +17,8 @@ try {
   );
 
   if (content !== updatedContent) {
-    fs.writeFileSync(filePath, updatedContent, 'utf8');
+    fs.writeFileSync(tmpPath, updatedContent, 'utf8');
+    fs.renameSync(tmpPath, filePath);
   }
 } catch (error) {
   console.error('Errore durante la generazione del file:', error);

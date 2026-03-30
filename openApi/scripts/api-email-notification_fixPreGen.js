@@ -6,6 +6,8 @@ const filePath = path.resolve(
   '../generated/email-notification-swagger20.json'
 );
 
+const tmpPath = `${filePath}.tmp`;
+
 if (!fs.existsSync(filePath)) {
   console.error(`File non trovato: ${filePath}`);
   process.exit(1);
@@ -39,10 +41,11 @@ try {
   });
 
   if (changed) {
-    fs.writeFileSync(filePath, content, 'utf8');
+    fs.writeFileSync(tmpPath, content, 'utf8');
+    fs.renameSync(tmpPath, filePath);
   }
 
 } catch (err) {
-  console.error('Errore durante la generazione del file:', error);
+  console.error('Errore durante la generazione del file:', err);
   process.exit(1);
 }
