@@ -525,7 +525,7 @@ export const useRefundTransactionsPage = () => {
     if (draftSearchType === 'fiscalCode') {
       setDraftSearchValue(value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 16));
     } else if (draftSearchType === 'trxCode') {
-      setDraftSearchValue(value.replace(/[^0-9]/g, '').slice(0, 15));
+      setDraftSearchValue(value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 8));
     }
   };
 
