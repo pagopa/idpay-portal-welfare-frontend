@@ -17,6 +17,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
+import { PointOfSaleDTO } from '../../../api/generated/merchants/PointOfSaleDTO';
 import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
 import { PAGE_SIZE_OPTIONS } from '../model/constants';
 import { formatCurrencyFromCents } from '../model/formatters';
@@ -36,7 +37,7 @@ type Props = {
   selectedRows: Set<string>;
   handleRowCheckbox: (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => void;
   downloadInvoice: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => void;
-  renderAddress: (pointOfSaleId: string | undefined) => ReactNode;
+  posList: Array<PointOfSaleDTO>;
   handleOpenDrawer: (row: TrxItem) => void;
   pageSize: number;
   setPageSize: (value: number) => void;
@@ -61,7 +62,7 @@ const RefundTransactionsTable = ({
   selectedRows,
   handleRowCheckbox,
   downloadInvoice,
-  renderAddress,
+  posList,
   handleOpenDrawer,
   pageSize,
   setPageSize,
@@ -71,6 +72,78 @@ const RefundTransactionsTable = ({
   setPage,
   totalPages,
 }: Props) => {
+  const renderAddress = (posId: string | undefined): ReactNode => {
+    if (!posId) {
+      return "-";
+    }
+
+    const value = posList.find((e) => e.id === posId);
+
+    if (!value) {
+      return "-";
+    }
+
+    if (value.type === "ONLINE") {
+      if (!value.website) {
+        return "-";
+      }
+
+      const url = value.website.startsWith("http")
+        ? value.website
+        : `https://${value.website}`;
+
+      return (
+        <Tooltip title={value.website}>
+          <Box style={{ display: "inline-block", maxWidth: 150 }}>
+            <ButtonNaked
+              href={url}
+              target="_blank"
+              rel="noopener noreferrer"
+              color="primary"
+              sx={{
+                textDecoration: "underline",
+                fontWeight: 600,
+                display: "inline-block",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                pt: 0.5,
+                "&:hover": {
+                  textDecoration: "underline",
+                  backgroundColor: "transparent",
+                },
+              }}
+            >
+              {value.website}
+            </ButtonNaked>
+          </Box>
+        </Tooltip>
+      );
+    }
+
+    if (value.address && value.province) {
+      const text = `${value.address} ${value.province}`;
+
+      return (
+        <Tooltip title={text}>
+          <Box
+            sx={{
+              display: "inline-block",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              maxWidth: 150,
+              whiteSpace: "nowrap",
+              pt: 0.5,
+            }}
+          >
+            {text}
+          </Box>
+        </Tooltip>
+      );
+    }
+
+    return "-";
+  };
+
   if (totalElements === 0 || rows.length === 0) {
     return (
       <Table sx={{ mt: 2, backgroundColor: '#FFFFFF' }}>

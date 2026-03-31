@@ -120,7 +120,7 @@ export const buildRefundTransactionsBindings = (
     selectedRows: viewModel.selectedRows,
     handleRowCheckbox: viewModel.handleRowCheckbox,
     downloadInvoice: viewModel.downloadInvoice,
-    renderAddress: viewModel.renderAddress,
+    posList: viewModel.posList,
     handleOpenDrawer: viewModel.handleOpenDrawer,
     pageSize: viewModel.pageSize,
     setPageSize: viewModel.setPageSize,

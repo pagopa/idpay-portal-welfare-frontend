@@ -1,6 +1,6 @@
 import { useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import { ChecksErrorDTO } from '../../../api/generated/merchants/ChecksErrorDTO';
@@ -536,20 +536,6 @@ export const useRefundTransactionsPage = () => {
     }
   };
 
-  const renderAddress = (pointOfSaleId: string | undefined): ReactNode => {
-    const pointOfSale = posList.find((posItem) => posItem.id === pointOfSaleId);
-    if (!pointOfSale) {
-      return '-';
-    }
-    const addressParts = [
-      pointOfSale.address,
-      pointOfSale.city,
-      pointOfSale.province,
-      pointOfSale.zipCode,
-    ].filter(Boolean);
-    return addressParts.join(', ') || '-';
-  };
-
   const handleFilterClick = () => {
     setStatusFilter(draftStatusFilter);
     setPosFilter(draftPosFilter);
@@ -620,7 +606,6 @@ export const useRefundTransactionsPage = () => {
     batchErrorOpen,
     setBatchErrorOpen,
     mapTransactionStatus,
-    renderAddress,
     handleOpenDrawer,
     handleCloseDrawer,
     closeAfter,
