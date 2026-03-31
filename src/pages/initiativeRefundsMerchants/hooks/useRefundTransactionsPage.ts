@@ -311,18 +311,25 @@ export const useRefundTransactionsPage = () => {
     });
   };
 
+  const safeDate = (value?: Date | string) => {
+    if (!value) {
+      return '';
+    }
+    return typeof value === 'string' ? value : value.toDateString();
+  };
+
   const mapRewardBatchToRefund = (rewardBatch: RewardBatchDTO): RefundItem => ({
     id: rewardBatch.id,
     merchantId: rewardBatch.merchantId ?? batch?.merchantId ?? '',
     businessName: rewardBatch.businessName ?? batch?.businessName ?? '',
     month: rewardBatch.month ?? batch?.month ?? '',
     posType: rewardBatch.posType === 'PHYSICAL' ? 'FISICO' : 'ONLINE',
-    merchantSendDate: rewardBatch.merchantSendDate?.toDateString() ?? '',
+    merchantSendDate: safeDate(rewardBatch.merchantSendDate),
     status: rewardBatch.status ?? '',
     partial: rewardBatch.partial ?? false,
-    name: rewardBatch.name,
-    startDate: rewardBatch.startDate?.toDateString() ?? '',
-    endDate: rewardBatch.endDate?.toDateString() ?? '',
+    name: rewardBatch.name ?? '',
+    startDate: safeDate(rewardBatch.startDate) || '',
+    endDate: safeDate(rewardBatch.endDate) || '',
     totalAmountCents: rewardBatch.initialAmountCents ?? batch?.initialAmountCents ?? 0,
     approvedAmountCents: rewardBatch.approvedAmountCents ?? batch?.approvedAmountCents ?? 0,
     suspendedAmountCents:
