@@ -16,6 +16,10 @@ jest.mock('../../../services/intitativeService');
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(global, 'fetch' as any).mockResolvedValue({
+    status: 500,
+    statusText: 'ERR',
+  } as Response);
 });
 
 const oldWindowLocation = global.window.location;
@@ -34,7 +38,10 @@ afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
-afterEach(() => cleanup());
+afterEach(() => {
+  cleanup();
+  jest.restoreAllMocks();
+});
 
 describe('test suite for refund details', () => {
   test('test render of component InitiativeRefundsDetails ', async () => {
@@ -181,16 +188,10 @@ describe('test suite for refund details', () => {
       },
     });
 
-    const fetchSpy = jest.spyOn(global, 'fetch' as any).mockResolvedValue({
-      status: 500,
-      statusText: 'ERR',
-    } as Response);
-
     renderWithContext(<InitiativeRefundsDetails />);
     fireEvent.click(screen.getByTestId('download-btn-test'));
 
-    await waitFor(() => expect(fetchSpy).toHaveBeenCalled());
-    fetchSpy.mockRestore();
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
   });
 
   test('open refund details modal from table row', async () => {
