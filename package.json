@@ -53,7 +53,7 @@
     "lint-autofix": "eslint . -c .eslintrc.js --ext .ts,.tsx --fix .",
     "lint": "eslint . -c .eslintrc.js --ext .ts,.tsx --cache",
     "prettify": "prettier --write \"./**/*.{ts,tsx}\"",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.typecheck.json --noEmit",
     "generate": "yarn generate:api-role-permission && yarn generate:api-initiative && yarn generate:api-groups && yarn generate:api-email-notification && yarn generate:api-merchants",
     "clean:api-role-permission": "rimraf src/api/generated/role-permission && rimraf openApi/generated",
     "generate:api-role-permission": "yarn run clean:api-role-permission && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.role-permission.yml > openApi/generated/role-permission-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/role-permission-swagger20.json && node ./openApi/scripts/api-role-permission_fixPreGen.js && gen-api-models --api-spec openApi/generated/role-permission-swagger20.json --out-dir src/api/generated/role-permission --no-strict --request-types --response-decoders --client && node openApi/scripts/api-role-permission_fixPostGen.js",
@@ -81,6 +81,7 @@
   "devDependencies": {
     "@craco/craco": "7.1.0",
     "@pagopa/openapi-codegen-ts": "10.1.0",
+    "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.0.0",
