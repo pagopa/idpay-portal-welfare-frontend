@@ -467,6 +467,35 @@ describe('useRefundTransactionsPage', () => {
     });
   });
 
+  test('logs and recovers when fetching transactions fails', async () => {
+    const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => undefined);
+    mockGetMerchantTransactionsProcessed.mockRejectedValueOnce(new Error('transactions fail'));
+
+    render(<HookWrapper />);
+
+    await waitFor(() => {
+      expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalledWith(
+        'merchant-1',
+        'initiative-1',
+        0,
+        10,
+        undefined,
+        undefined,
+        undefined,
+        'batch-1',
+        undefined,
+        undefined,
+        undefined
+      );
+    });
+
+    await waitFor(() => {
+      expect(consoleLogSpy).toHaveBeenCalledWith(expect.any(Error));
+    });
+
+    consoleLogSpy.mockRestore();
+  });
+
   test('downloads csv and invoice, and handles generic download errors', async () => {
     render(<HookWrapper />);
     await waitFor(() => expect(hookResult.rows).toHaveLength(1));

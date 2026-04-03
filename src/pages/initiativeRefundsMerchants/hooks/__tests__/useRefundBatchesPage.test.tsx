@@ -121,6 +121,34 @@ describe('useRefundBatchesPage', () => {
     expect(mockResetMerchantsFilters).toHaveBeenCalled();
   });
 
+  test('clears rows when the batches response is empty and skips empty merchant list updates', async () => {
+    mockGetMerchantList.mockResolvedValueOnce({ content: [] });
+    mockGetRewardBatches.mockResolvedValueOnce({
+      totalElements: 0,
+      totalPages: 0,
+      content: [],
+    });
+
+    render(<HookWrapper />);
+
+    await waitFor(() => {
+      expect(mockGetMerchantList).toHaveBeenCalledWith('initiative-1', 0);
+      expect(mockGetRewardBatches).toHaveBeenCalledWith(
+        'initiative-1',
+        0,
+        10,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined
+      );
+    });
+
+    expect(hookResult.rows).toHaveLength(0);
+    expect(hookResult.businessNameList).toHaveLength(0);
+  });
+
   test('applies draft filters and requests filtered data', async () => {
     render(<HookWrapper />);
 

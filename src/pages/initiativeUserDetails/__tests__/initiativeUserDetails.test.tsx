@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
@@ -580,5 +580,34 @@ describe('test suite initiative user details', () => {
     fireEvent.click(screen.getByText('pages.initiativeUsers.form.resetFiltersBtn'));
 
     expect(getTimeLineSpy).not.toHaveBeenCalled();
+  });
+
+  test('loads the timeline for unsubscribed beneficiaries without showing suspension actions', async () => {
+    mockedLocation.pathname = `${BASE_ROUTE}/dettagli-utente/2333333/55fiscal`;
+
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.UNSUBSCRIBED,
+        statusDate: new Date(),
+      });
+
+    const getTimeLineSpy = jest.fn(async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+      })
+    );
+    InitiativeApiMocked.getTimeLine = getTimeLineSpy;
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    expect(await screen.findByText('pages.initiativeUserDetails.noData')).toBeInTheDocument();
+    await waitFor(() => expect(getTimeLineSpy).toHaveBeenCalled());
+    expect(screen.queryByTestId('suspended')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('readmit')).not.toBeInTheDocument();
   });
 });

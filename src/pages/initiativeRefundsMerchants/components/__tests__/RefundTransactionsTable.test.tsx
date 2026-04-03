@@ -128,4 +128,38 @@ describe('<RefundTransactionsTable />', () => {
     const checkboxes = screen.getAllByRole('checkbox');
     expect(checkboxes[0]).toBeDisabled();
   });
+
+  test('keeps already qualified URLs untouched and blocks pagination at the boundaries', () => {
+    const props = {
+      ...getBaseProps(),
+      totalElements: 1,
+      rows: [getRow({ pointOfSaleId: 'secure-pos' })],
+      posList: [
+        {
+          id: 'secure-pos',
+          type: TypeEnum.ONLINE,
+          website: 'https://secure.example.com',
+        },
+      ],
+      page: 0,
+      totalPages: 1,
+      lockedStatus: RewardBatchTrxStatusEnum.TO_CHECK,
+      sameStatusRowsLength: 1,
+      disabled: true,
+      allSameStatusSelected: false,
+    };
+    const { container } = render(<RefundTransactionsTable {...props} />);
+
+    expect(screen.getByText('https://secure.example.com')).toBeInTheDocument();
+    const urlNode = screen.getByText('https://secure.example.com');
+    expect(urlNode.closest('a')).not.toBeNull();
+    expect(urlNode.closest('a')?.getAttribute('href')).toBe('https://secure.example.com');
+
+    const checkbox = container.querySelector('thead input[type="checkbox"]') as HTMLInputElement;
+    expect(checkbox).toBeDisabled();
+
+    fireEvent.click(container.querySelectorAll('[data-testid="ChevronLeftIcon"]')[0] as Element);
+    fireEvent.click(container.querySelectorAll('[data-testid="ChevronRightIcon"]')[1] as Element);
+    expect(props.setPage).not.toHaveBeenCalled();
+  });
 });

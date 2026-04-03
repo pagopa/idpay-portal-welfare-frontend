@@ -124,4 +124,23 @@ describe('<RefundTransactionsFiltersBar />', () => {
     expect(props.setDraftSearchType).toHaveBeenCalledWith('trxCode');
     expect(props.setDraftSearchValue).toHaveBeenCalledWith('');
   });
+
+  test('disables POS selection when no POS are available and clears applied filters', () => {
+    const props = {
+      ...getBaseProps(),
+      posList: [],
+      hasAppliedFilters: true,
+      draftSearchType: 'trxCode' as const,
+    };
+    render(<RefundTransactionsFiltersBar {...props} />);
+
+    expect(screen.getAllByRole('combobox')[0]).toHaveAttribute('aria-disabled', 'true');
+
+    const removeBtn = screen.getByRole('button', {
+      name: 'pages.initiativeMerchant.form.removeFiltersBtn',
+    });
+    expect(removeBtn).toBeEnabled();
+    fireEvent.click(removeBtn);
+    expect(props.handleRemoveFilters).toHaveBeenCalled();
+  });
 });

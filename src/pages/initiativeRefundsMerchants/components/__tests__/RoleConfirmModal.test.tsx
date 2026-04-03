@@ -45,4 +45,22 @@ describe('<RoleConfirmModal />', () => {
       screen.getByText('pages.initiativeMerchantsTransactions.batchModal.L3.description')
     ).toBeInTheDocument();
   });
+
+  test('keeps the dialog content hidden when closed', () => {
+    render(
+      <RoleConfirmModal
+        open={false}
+        role="L2"
+        onClose={jest.fn()}
+        onConfirm={jest.fn()}
+      />
+    );
+
+    const title = screen.queryByText('pages.initiativeMerchantsTransactions.batchModal.L2.title');
+    if (title) {
+      expect(title).not.toBeVisible();
+    } else {
+      expect(title).toBeNull();
+    }
+  });
 });

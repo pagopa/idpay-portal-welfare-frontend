@@ -53,4 +53,41 @@ describe('<RefundRow />', () => {
     fireEvent.click(button);
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  test('renders a fallback status chip and still allows the row click when status is missing', () => {
+    const onClick = jest.fn();
+    render(
+      <RefundRow
+        row={{
+          ...getBaseRow(),
+          status: undefined,
+        } as any}
+        t={t}
+        onClick={onClick}
+      />
+    );
+
+    expect(screen.getByText('-')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button'));
+    expect(onClick).toHaveBeenCalled();
+  });
+
+  test('keeps the chevron disabled for CREATED rows too', () => {
+    const onClick = jest.fn();
+    render(
+      <RefundRow
+        row={{
+          ...getBaseRow(),
+          status: 'CREATED',
+        } as any}
+        t={t}
+        onClick={onClick}
+      />
+    );
+
+    const button = screen.getByRole('button');
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
 });

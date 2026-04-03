@@ -118,8 +118,19 @@ describe('viewModel bindings', () => {
     const result = buildRefundBatchesBindings(vm as any, t);
 
     expect(result.filtersBarProps.t).toBe(t);
+    expect(result.filtersBarProps.draftName).toBe(vm.draftName);
+    expect(result.filtersBarProps.draftPeriod).toBe(vm.draftPeriod);
+    expect(result.filtersBarProps.draftStatus).toBe(vm.draftStatus);
+    expect(result.filtersBarProps.draftAssignee).toBe(vm.draftAssignee);
+    expect(result.filtersBarProps.businessNameList).toBe(vm.businessNameList);
     expect(result.filtersBarProps.hasAppliedFilters).toBe(false);
     expect(result.filtersBarProps.applyFilters).toBe(vm.applyFilters);
+    expect(result.tableProps.rows).toBe(vm.rows);
+    expect(result.tableProps.totalElements).toBe(vm.totalElements);
+    expect(result.tableProps.pageSize).toBe(vm.pageSize);
+    expect(result.tableProps.start).toBe(vm.start);
+    expect(result.tableProps.end).toBe(vm.end);
+    expect(result.tableProps.page).toBe(vm.page);
     expect(result.tableProps.openBatchDetails).toBe(vm.openBatchDetails);
     expect(result.tableProps.totalPages).toBe(1);
   });
@@ -137,9 +148,21 @@ describe('viewModel bindings', () => {
 
     expect(result.breadcrumbsProps.initiativeName).toBe('initiative-name');
     expect(result.breadcrumbsProps.initiativeId).toBe('initiative-id');
+    expect(result.breadcrumbsProps.businessName).toBe('Biz');
+    expect(result.headerProps.role).toBe('operator_l2');
     expect(result.headerProps.selectedRowsSize).toBe(1);
+    expect(result.headerProps.lockedStatus).toBe(null);
+    expect(result.summaryProps.formattedPeriod).toBe('period');
+    expect(result.summaryProps.iban).toBe('IT00');
+    expect(result.summaryProps.checksPercentage).toBe('10% / 100%');
+    expect(result.filtersBarProps.posList).toBe(vm.posList);
     expect(result.filtersBarProps.hasAppliedFilters).toBe(false);
+    expect(result.tableProps.rows).toBe(vm.rows);
     expect(result.tableProps.sameStatusRowsLength).toBe(0);
+    expect(result.tableProps.disabled).toBe(false);
+    expect(result.overlaysProps.openDrawer).toBe(false);
+    expect(result.overlaysProps.approveModal).toBe(false);
+    expect(result.overlaysProps.batchModalOpen).toBe(false);
     expect(result.overlaysProps.batchAssigneeLevel).toBe('L2');
   });
 

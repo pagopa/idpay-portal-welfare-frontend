@@ -2,26 +2,28 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import RefundTransactionsOverlays from '../RefundTransactionsOverlays';
 
 jest.mock('../RefundsTransactionsDrawer', () => (props: any) => (
-  <div>
-    <button data-testid="drawer-approve" onClick={() => props.onApprove('trx-1')}>
-      drawer-approve
-    </button>
-    <button
-      data-testid="drawer-suspend"
-      onClick={() => props.onSuspend('trx-1', 'reason-suspend', { genericError: true })}
-    >
-      drawer-suspend
-    </button>
-    <button
-      data-testid="drawer-reject"
-      onClick={() => props.onReject('trx-1', 'reason-reject', { genericError: true })}
-    >
-      drawer-reject
-    </button>
-    <button data-testid="drawer-close" onClick={props.onClose}>
-      drawer-close
-    </button>
-  </div>
+  props.open ? (
+    <div>
+      <button data-testid="drawer-approve" onClick={() => props.onApprove('trx-1')}>
+        drawer-approve
+      </button>
+      <button
+        data-testid="drawer-suspend"
+        onClick={() => props.onSuspend('trx-1', 'reason-suspend', { genericError: true })}
+      >
+        drawer-suspend
+      </button>
+      <button
+        data-testid="drawer-reject"
+        onClick={() => props.onReject('trx-1', 'reason-reject', { genericError: true })}
+      >
+        drawer-reject
+      </button>
+      <button data-testid="drawer-close" onClick={props.onClose}>
+        drawer-close
+      </button>
+    </div>
+  ) : null
 ));
 
 jest.mock('../RefundReasonModal', () => (props: any) =>
@@ -172,5 +174,24 @@ describe('<RefundTransactionsOverlays />', () => {
 
     fireEvent.click(screen.getByTestId('role-error-close'));
     expect(props.setBatchErrorOpen).toHaveBeenCalledWith(false);
+  });
+
+  test('keeps all overlays hidden when every open flag is false', () => {
+    render(
+      <RefundTransactionsOverlays
+        {...getBaseProps()}
+        openDrawer={false}
+        reasonModal={{ open: false, type: null }}
+        approveModal={false}
+        batchModalOpen={false}
+        batchErrorOpen={false}
+      />
+    );
+
+    expect(screen.queryByTestId('drawer-approve')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('reason-confirm')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('approve-confirm')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('role-confirm-confirm')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('role-error-close')).not.toBeInTheDocument();
   });
 });

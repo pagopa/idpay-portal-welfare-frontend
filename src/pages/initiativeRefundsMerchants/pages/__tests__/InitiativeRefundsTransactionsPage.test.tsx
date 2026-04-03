@@ -12,33 +12,50 @@ jest.mock('../../hooks/useRefundTransactionsPage', () => ({
   useRefundTransactionsPage: () => mockedUseRefundTransactionsPage(),
 }));
 
-jest.mock('../../model/constants', () => ({
-  PAGE_SIZE_OPTIONS: [10, 25],
-  TRANSACTION_SEARCH_TYPE_OPTIONS: [{ value: 'fiscalCode', labelKey: 'fiscalCode' }],
-  TRANSACTION_STATUS_FILTER_OPTIONS: ['TO_CHECK'],
-}));
-
-jest.mock('../../components/RefundsTransactionsDrawer', () => ({
+jest.mock('../../components/RefundTransactionsBreadcrumbs', () => ({
   __esModule: true,
-  default: () => <div>drawer</div>,
+  default: ({ initiativeName, businessName }: any) => (
+    <div data-testid="breadcrumbs">{`${initiativeName}|${businessName}`}</div>
+  ),
 }));
 
-jest.mock('../../components/RefundReasonModal', () => ({
+jest.mock('../../components/RefundTransactionsHeader', () => ({
   __esModule: true,
-  default: () => <div>reason-modal</div>,
+  default: ({ role, selectedRowsSize, onOpenApproveModal }: any) => (
+    <button data-testid="header" onClick={onOpenApproveModal}>
+      {`${role}|${selectedRowsSize}`}
+    </button>
+  ),
 }));
 
-jest.mock('../../components/ApproveConfirmModal', () => ({
+jest.mock('../../components/RefundBatchSummary', () => ({
   __esModule: true,
-  default: () => <div>approve-modal</div>,
+  default: ({ checksPercentage, formattedPeriod }: any) => (
+    <div data-testid="summary">{`${checksPercentage}|${formattedPeriod}`}</div>
+  ),
 }));
 
-jest.mock('../../components/RoleConfirmModal', () => ({
-  RoleConfirmModal: () => <div>role-confirm</div>,
+jest.mock('../../components/RefundTransactionsFiltersBar', () => ({
+  __esModule: true,
+  default: ({ hasAppliedFilters }: any) => (
+    <div data-testid="filters">{hasAppliedFilters ? 'filters-on' : 'filters-off'}</div>
+  ),
 }));
 
-jest.mock('../../components/RoleErrorModal', () => ({
-  RoleErrorModal: () => <div>role-error</div>,
+jest.mock('../../components/RefundTransactionsTable', () => ({
+  __esModule: true,
+  default: ({ totalElements, selectedRows, handleHeaderCheckbox }: any) => (
+    <button data-testid="table" onClick={handleHeaderCheckbox}>
+      {`${totalElements}|${selectedRows.size}`}
+    </button>
+  ),
+}));
+
+jest.mock('../../components/RefundTransactionsOverlays', () => ({
+  __esModule: true,
+  default: ({ approveModal, batchModalOpen, batchErrorOpen }: any) => (
+    <div data-testid="overlays">{`${approveModal}|${batchModalOpen}|${batchErrorOpen}`}</div>
+  ),
 }));
 
 const createVm = () => ({
@@ -62,6 +79,7 @@ const createVm = () => ({
   lockedStatus: null,
   setApproveModal: jest.fn(),
   setReasonModal: jest.fn(),
+  setBatchModalOpen: jest.fn(),
   getCsv: jest.fn(),
   ibAN: '',
   formattedPeriod: 'period',
@@ -117,7 +135,6 @@ const createVm = () => ({
   approveModal: false,
   approve: jest.fn(() => Promise.resolve()),
   batchModalOpen: false,
-  setBatchModalOpen: jest.fn(),
   handleBatchStatus: jest.fn(),
   batchErrorOpen: false,
   setBatchErrorOpen: jest.fn(),
@@ -155,29 +172,29 @@ describe('InitiativeRefundsTransactionsPage', () => {
     mockedUseRefundTransactionsPage.mockReturnValue(refundTransactionsPageMock);
     render(<InitiativeRefundsTransactionsPage />);
 
-    expect(screen.getAllByText('Business Name').length).toBeGreaterThan(0);
-    expect(screen.getByText('pages.initiativeMerchantsRefunds.emptyState')).toBeInTheDocument();
+    expect(screen.getByTestId('breadcrumbs')).toHaveTextContent('initiative-x|Business Name');
+    expect(screen.getByTestId('header')).toHaveTextContent('operator_l1|0');
+    expect(screen.getByTestId('summary')).toHaveTextContent('10% / 100%|period');
+    expect(screen.getByTestId('filters')).toHaveTextContent('filters-off');
+    expect(screen.getByTestId('table')).toHaveTextContent('0|0');
+    expect(screen.getByTestId('overlays')).toHaveTextContent('false|false|false');
+
+    fireEvent.click(screen.getByTestId('header'));
+    expect(refundTransactionsPageMock.setApproveModal).toHaveBeenCalledWith(true);
   });
 
-  test('handles csv action for non evaluating status', () => {
+  test('computes applied filters and handles an empty initiative name', () => {
     const refundTransactionsPageMock = createVm();
+    mockedInitiativeName = undefined;
     mockedUseRefundTransactionsPage.mockReturnValue({
       ...refundTransactionsPageMock,
-      batch: { ...refundTransactionsPageMock.batch, status: 'REFUNDED' },
+      draftSearchType: 'trxCode',
+      posFilter: 'pos-1',
     });
 
     render(<InitiativeRefundsTransactionsPage />);
-    fireEvent.click(screen.getByRole('button', { name: 'pages.initiativeMerchantsTransactions.csv.button' }));
-    expect(refundTransactionsPageMock.getCsv).toHaveBeenCalled();
-  });
 
-  test('falls back to an empty initiative name when selector returns undefined', () => {
-    mockedInitiativeName = undefined;
-    const refundTransactionsPageMock = createVm();
-    mockedUseRefundTransactionsPage.mockReturnValue(refundTransactionsPageMock);
-
-    render(<InitiativeRefundsTransactionsPage />);
-
-    expect(screen.getAllByText('Business Name').length).toBeGreaterThan(0);
+    expect(screen.getByTestId('breadcrumbs')).toHaveTextContent('|Business Name');
+    expect(screen.getByTestId('filters')).toHaveTextContent('filters-on');
   });
 });

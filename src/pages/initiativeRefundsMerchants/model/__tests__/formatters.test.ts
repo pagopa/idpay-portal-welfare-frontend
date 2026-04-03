@@ -20,4 +20,8 @@ describe('refund merchants formatters', () => {
     expect(getFileNameFromAzureUrl(url)).toBe('my file.csv');
     expect(getFileNameFromAzureUrl('%')).toBe('');
   });
+
+  test('getFileNameFromAzureUrl returns an empty string when no filename matches', () => {
+    expect(getFileNameFromAzureUrl('https://example.blob.core.windows.net/path/file.csv')).toBe('');
+  });
 });

@@ -1,7 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import InitiativeRefundsMerchantsPage from '../InitiativeRefundsMerchantsPage';
 
 const mockedUseRefundBatchesPage = jest.fn();
+const mockedUseInitiative = jest.fn();
 let mockedInitiativeName: string | undefined = 'initiative-x';
 
 jest.mock('../../../../redux/hooks', () => ({
@@ -9,22 +10,29 @@ jest.mock('../../../../redux/hooks', () => ({
 }));
 
 jest.mock('../../../../hooks/useInitiative', () => ({
-  useInitiative: jest.fn(),
+  useInitiative: () => mockedUseInitiative(),
 }));
 
 jest.mock('../../hooks/useRefundBatchesPage', () => ({
   useRefundBatchesPage: (...args: Array<unknown>) => mockedUseRefundBatchesPage(...args),
 }));
 
-jest.mock('../../components/RefundRow', () => ({
+jest.mock('../../components/RefundBatchesPageHeader', () => ({
   __esModule: true,
-  default: ({ row, onClick }: any) => (
-    <tr>
-      <td>{row.businessName}</td>
-      <td>
-        <button onClick={onClick}>open-row</button>
-      </td>
-    </tr>
+  default: ({ initiativeName }: any) => <div data-testid="header">{initiativeName}</div>,
+}));
+
+jest.mock('../../components/RefundBatchesFiltersBar', () => ({
+  __esModule: true,
+  default: ({ hasAppliedFilters }: any) => (
+    <div data-testid="filters">{hasAppliedFilters ? 'filters-on' : 'filters-off'}</div>
+  ),
+}));
+
+jest.mock('../../components/RefundBatchesTable', () => ({
+  __esModule: true,
+  default: ({ totalElements, pageSize }: any) => (
+    <div data-testid="table">{`${totalElements}-${pageSize}`}</div>
   ),
 }));
 
@@ -65,31 +73,29 @@ describe('InitiativeRefundsMerchantsPage', () => {
     jest.clearAllMocks();
   });
 
-  test('renders empty state', () => {
+  test('renders the page bindings with the selected initiative name', () => {
     mockedUseRefundBatchesPage.mockReturnValue(baseVm);
     render(<InitiativeRefundsMerchantsPage />);
-    expect(screen.getByText('pages.initiativeMerchantsRefunds.emptyState')).toBeInTheDocument();
-  });
 
-  test('renders rows and triggers row/open actions', () => {
-    mockedUseRefundBatchesPage.mockReturnValue({
-      ...baseVm,
-      totalElements: 1,
-      rows: [{ id: 'r1', businessName: 'Biz', name: 'n' }],
-    });
-
-    render(<InitiativeRefundsMerchantsPage />);
-    fireEvent.click(screen.getByText('open-row'));
-
-    expect(baseVm.openBatchDetails).toHaveBeenCalled();
+    expect(mockedUseInitiative).toHaveBeenCalled();
+    expect(screen.getByTestId('header')).toHaveTextContent('initiative-x');
+    expect(screen.getByTestId('filters')).toHaveTextContent('filters-off');
+    expect(screen.getByTestId('table')).toHaveTextContent('0-10');
   });
 
   test('falls back to an empty initiative name when selector returns undefined', () => {
     mockedInitiativeName = undefined;
-    mockedUseRefundBatchesPage.mockReturnValue(baseVm);
+    mockedUseRefundBatchesPage.mockReturnValue({
+      ...baseVm,
+      statusFilter: 'APPROVED',
+      totalElements: 25,
+      pageSize: 25,
+    });
 
     render(<InitiativeRefundsMerchantsPage />);
 
-    expect(screen.getByText('pages.initiativeMerchantsRefunds.emptyState')).toBeInTheDocument();
+    expect(screen.getByTestId('header').textContent).toBe('');
+    expect(screen.getByTestId('filters')).toHaveTextContent('filters-on');
+    expect(screen.getByTestId('table')).toHaveTextContent('25-25');
   });
 });

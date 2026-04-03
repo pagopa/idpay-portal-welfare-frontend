@@ -38,10 +38,32 @@ const baseRow: RefundItem = {
 };
 
 describe('refund merchants status utils', () => {
+  test('resolves evaluating chips by role', () => {
+    expect(getStatusLabel('EVALUATING', 'L1', t)).toBe('chip.batch.evaluating');
+    expect(getStatusColor('EVALUATING', 'L1')).toBe('primary');
+    expect(getStatusChipData('EVALUATING', 'L1', t)).toEqual({
+      label: 'chip.batch.evaluating',
+      color: 'primary',
+      sx: expect.any(Object),
+    });
+
+    expect(getStatusLabel('EVALUATING', 'L3', t)).toBe('chip.batch.toApprove');
+    expect(getStatusColor('EVALUATING', 'L3')).toBe('warning');
+    expect(getStatusChipData('EVALUATING', 'L3', t)).toEqual({
+      label: 'chip.batch.toApprove',
+      color: 'warning',
+      sx: expect.any(Object),
+    });
+  });
+
   test('maps chip data and labels', () => {
     expect(getStatusLabel('APPROVED', 'L1', t)).toBe('chip.batch.approved');
     expect(getStatusColor('APPROVED', 'L1')).toBe('success');
-    expect(getStatusChipData('EVALUATING', 'L3', t).label).toBe('chip.batch.toApprove');
+    expect(getStatusChipData('APPROVED', 'L1', t)).toEqual({
+      label: 'chip.batch.approved',
+      color: 'success',
+      sx: expect.any(Object),
+    });
   });
 
   test('covers fallback chip data and style variants', () => {
@@ -131,6 +153,7 @@ describe('refund merchants status utils', () => {
     expect(getPosTypeLabel('ONLINE')).toBe('Online');
     expect(getPosTypeLabel('FISICO')).toBe('Fisico');
     expect(getPosTypeLabel('' as any)).toBe('-');
+    expect(formatAmount(12345).replace(/\s+/gu, ' ')).toBe('123,45 \u20ac');
     expect(refundRequestDate('2026-03-01')).toContain('2026');
     expect(refundRequestDate()).toBe('-');
     expect(formatAmount(undefined)).toBe('-');
@@ -138,6 +161,7 @@ describe('refund merchants status utils', () => {
 
   test('calculates checks percentage and disabled states', () => {
     expect(getChecksPercentage(baseRow)).toBe('50% / 100%');
+    expect(getChecksPercentage({ ...baseRow, numberOfTransactionsElaborated: 0 })).toBe('0% / 100%');
     expect(getChecksPercentage({ ...baseRow, status: 'SENT' })).toBe('0% / 100%');
     expect(getChecksPercentage({ ...baseRow, status: 'APPROVED' })).toBe('100% / 100%');
     expect(

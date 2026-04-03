@@ -312,4 +312,29 @@ describe('<RefundsTransactionsDrawer />', () => {
     expect(screen.getAllByText('Valid reason').length).toBeGreaterThan(0);
     expect(screen.queryByText('123')).not.toBeInTheDocument();
   });
+
+  test('formats zero-valued amounts instead of falling back to hyphens', () => {
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={
+          {
+            ...baseData,
+            effectiveAmountCents: 0,
+            rewardAmountCents: 0,
+            authorizedAmountCents: 0,
+          } as any
+        }
+        download={mockDownload}
+        formatDate={() => '10/03/2026'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+      />
+    );
+
+    expect(screen.getAllByText((content) => content.includes('0,00')).length).toBeGreaterThan(0);
+  });
 });
