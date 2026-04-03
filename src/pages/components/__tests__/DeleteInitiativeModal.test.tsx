@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
-import { cleanup, fireEvent, render, waitFor, screen } from '@testing-library/react';
-import React from 'react';
-import { Provider } from 'react-redux';
-import { setInitiative } from '../../../redux/slices/initiativeSlice';
-import { createStore } from '../../../redux/store';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import DeleteInitiativeModal from '../DeleteInitiativeModal';
-import { mockedInitiative } from '../../../model/__tests__/Initiative.test';
-import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
+import ROUTES from '../../../routes';
+
+const mockReplace = jest.fn();
+const mockAddError = jest.fn();
+const mockSetLoading = jest.fn();
+const mockLogicallyDeleteInitiative = jest.fn();
+const mockUsePermissions = jest.fn();
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -15,79 +16,133 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('react-router-dom', () => ({
   useHistory: () => ({
-    replace: jest.fn(),
+    replace: mockReplace,
   }),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend', () => ({
-  ...jest.requireActual('@pagopa/selfcare-common-frontend/lib/hooks/useLoading'),
-  useLoading: () => ({}),
+jest.mock('@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher', () => ({
+  __esModule: true,
+  default: () => mockAddError,
 }));
 
-afterEach(cleanup);
+jest.mock('@pagopa/selfcare-common-frontend/lib/hooks/useLoading', () => ({
+  __esModule: true,
+  default: () => mockSetLoading,
+}));
 
-describe('<DeleteInitiativeModal />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+jest.mock('../../../hooks/usePermissions', () => ({
+  usePermissions: (...args: Array<any>) => mockUsePermissions(...args),
+}));
+
+jest.mock('../../../services/intitativeService', () => ({
+  logicallyDeleteInitiative: (...args: Array<any>) => mockLogicallyDeleteInitiative(...args),
+}));
+
+afterEach(() => {
+  cleanup();
+  jest.clearAllMocks();
+});
+
+describe('<DeleteInitiativeModal />', () => {
   const handleCloseInitiativeDeleteModal = jest.fn();
 
-  it('renders without crashing', () => {
-    // eslint-disable-next-line functional/immutable-data
-    window.scrollTo = jest.fn();
-  });
-
-  it('the modal should be in the document', async () => {
-    const { queryByTestId } = render(
-      <Provider store={store}>
-        <DeleteInitiativeModal
-          initiativeId={undefined}
-          initiativeStatus={undefined}
-          openInitiativeDeleteModal={true}
-          handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
-        />
-      </Provider>
-    );
-
-    const modal = document.querySelector('[data-testid="delete-modal-test"]') as HTMLElement;
-    expect(modal).toBeInTheDocument();
-
-    const fade = document.querySelector('[data-testid="fade-test"]') as HTMLElement;
-    expect(fade).toBeInTheDocument();
-
-    await waitFor(async () => {
-      const deletelBtn = queryByTestId('delete-button-test') as HTMLButtonElement;
-      fireEvent.click(deletelBtn);
-    });
-
-    await waitFor(async () => {
-      const cancelBtn = queryByTestId('cancel-button-test') as HTMLButtonElement;
-      fireEvent.click(cancelBtn);
-    });
-
-    fireEvent.keyDown(modal, {
-      key: 'Escape',
-      code: 'Escape',
-      keyCode: 27,
-      charCode: 27,
-    });
-  });
-
-  test('should display the ConfirmPublishInitiativeModal component', async () => {
-    store.dispatch(setInitiative(mockedInitiative));
-    store.dispatch(
-      setPermissionsList([
-        { name: 'deleteInitiative', description: 'description', mode: 'enabled' },
-      ])
-    );
+  const renderComponent = (initiativeStatus: string | undefined, initiativeId: string | undefined) =>
     render(
-      <Provider store={store}>
-        <DeleteInitiativeModal
-          initiativeId={store.getState().initiative.initiativeId}
-          initiativeStatus={store.getState().initiative.status}
-          openInitiativeDeleteModal={true}
-          handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
-        />
-      </Provider>
+      <DeleteInitiativeModal
+        initiativeId={initiativeId}
+        initiativeStatus={initiativeStatus}
+        openInitiativeDeleteModal={true}
+        handleCloseInitiativeDeleteModal={handleCloseInitiativeDeleteModal}
+      />
     );
-    fireEvent.click(screen.getByText('pages.initiativeOverview.modal.delete'));
+
+  it('renders the modal and closes from the cancel button', async () => {
+    mockUsePermissions.mockReturnValue(true);
+
+    renderComponent('DRAFT', 'initiative-id');
+
+    expect(screen.getByTestId('delete-modal-test')).toBeInTheDocument();
+    expect(screen.getByTestId('fade-test')).toBeInTheDocument();
+
+    fireEvent.click(await screen.findByTestId('cancel-button-test'));
+
+    expect(handleCloseInitiativeDeleteModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('deletes the initiative when the user can delete it and the status is eligible', async () => {
+    mockUsePermissions.mockReturnValue(true);
+    mockLogicallyDeleteInitiative.mockResolvedValueOnce(undefined);
+
+    renderComponent('DRAFT', 'initiative-id');
+
+    fireEvent.click(await screen.findByTestId('delete-button-test'));
+
+    await waitFor(() => {
+      expect(mockLogicallyDeleteInitiative).toHaveBeenCalledWith('initiative-id');
+    });
+    await waitFor(() => {
+      expect(mockReplace).toHaveBeenCalledWith(ROUTES.INITIATIVE_LIST);
+    });
+
+    expect(mockSetLoading).toHaveBeenNthCalledWith(1, true);
+    expect(mockSetLoading).toHaveBeenNthCalledWith(2, false);
+    expect(handleCloseInitiativeDeleteModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports an error when delete fails', async () => {
+    mockUsePermissions.mockReturnValue(true);
+    const error = new Error('delete failed');
+    mockLogicallyDeleteInitiative.mockRejectedValueOnce(error);
+
+    renderComponent('DRAFT', 'initiative-id');
+
+    fireEvent.click(await screen.findByTestId('delete-button-test'));
+
+    await waitFor(() => {
+      expect(mockAddError).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 'DELETE_INITIATIVE_ERROR',
+          blocking: false,
+          error,
+          techDescription: 'An error occurred deleting initiative',
+          displayableTitle: 'errors.title',
+          displayableDescription: 'errors.cantDeleteInitiative',
+          toNotify: true,
+          component: 'Toast',
+          showCloseIcon: true,
+        })
+      );
+    });
+
+    expect(mockSetLoading).toHaveBeenNthCalledWith(1, true);
+    expect(mockSetLoading).toHaveBeenNthCalledWith(2, false);
+    expect(mockReplace).not.toHaveBeenCalled();
+  });
+
+  it.each(['PUBLISHED', 'IN_REVISION', 'CLOSED'])(
+    'does not delete initiatives with status %s',
+    async (initiativeStatus) => {
+      mockUsePermissions.mockReturnValue(true);
+
+      renderComponent(initiativeStatus, 'initiative-id');
+
+      fireEvent.click(await screen.findByTestId('delete-button-test'));
+
+      expect(mockLogicallyDeleteInitiative).not.toHaveBeenCalled();
+      expect(mockSetLoading).not.toHaveBeenCalled();
+      expect(mockReplace).not.toHaveBeenCalled();
+    }
+  );
+
+  it('does not delete initiatives when the user lacks permission', async () => {
+    mockUsePermissions.mockReturnValue(false);
+
+    renderComponent('DRAFT', 'initiative-id');
+
+    fireEvent.click(await screen.findByTestId('delete-button-test'));
+
+    expect(mockLogicallyDeleteInitiative).not.toHaveBeenCalled();
+    expect(mockSetLoading).not.toHaveBeenCalled();
+    expect(mockReplace).not.toHaveBeenCalled();
   });
 });

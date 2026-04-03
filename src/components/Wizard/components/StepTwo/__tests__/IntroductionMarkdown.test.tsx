@@ -1,5 +1,9 @@
-import React from 'react';
-import { render, screen, act, fireEvent, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
 import IntroductionMarkdown from '../IntroductionMarkdown';
@@ -10,50 +14,72 @@ jest.mock('react-i18next', () => ({
 }));
 describe('<IntroductionMarkdown />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
-  const setValue = jest.fn();
-  const useStateMock: any = (value: 'string') => [value, setValue];
-  jest.spyOn(React, 'useState').mockImplementation(useStateMock);
-  expect(useStateMock).toBeDefined();
 
   test('should render correctly the IntroductionMarkdown component', async () => {
-    await act(async () => {
-      const { baseElement } = render(
-        <Provider store={store}>
-          <IntroductionMarkdown
-            textToRender={[
-              { label: 'IT', formikValue: 'formikValue' },
-              { label: 'EN', formikValue: 'formikValue' },
-              { label: 'FR', formikValue: 'formikValue' },
-              { label: 'DE', formikValue: 'formikValue' },
-              { label: 'SL', formikValue: 'formikValue' },
-            ]}
-            serviceName="serviceName"
-            selectedParty="selectedParty"
-            logoUrl="http//test/logo.png"
-          />
-        </Provider>
-      );
-      const showMarkdownBtn = screen.getByText(
-        /components.wizard.stepTwo.form.preview/i
-      ) as HTMLButtonElement;
-      fireEvent.click(showMarkdownBtn);
-      setValue(true);
-      expect(showMarkdownBtn).toBeDefined();
+    render(
+      <Provider store={store}>
+        <IntroductionMarkdown
+          textToRender={[
+            { label: 'IT', formikValue: 'formikValue' },
+            { label: 'EN', formikValue: 'formikValue' },
+            { label: 'FR', formikValue: 'formikValue' },
+            { label: 'DE', formikValue: 'formikValue' },
+            { label: 'SL', formikValue: 'formikValue' },
+          ]}
+          serviceName="serviceName"
+          selectedParty="selectedParty"
+          logoUrl="http//test/logo.png"
+        />
+      </Provider>
+    );
+    const showMarkdownBtn = (await screen.findByText(
+      /components.wizard.stepTwo.form.preview/i
+    )) as HTMLButtonElement;
+    fireEvent.click(showMarkdownBtn);
+    expect(
+      await screen.findByText(/components.wizard.stepTwo.previewModal.title/i)
+    ).toBeInTheDocument();
+    const modal = screen.getByRole('presentation');
+
+    const englishTab = screen.getByRole('tab', { name: 'EN' });
+    fireEvent.click(englishTab);
+    expect(englishTab).toHaveAttribute('aria-selected', 'true');
+
+    const closeButton = screen.getByRole('button', {
+      name: 'components.wizard.stepTwo.previewModal.closeBtn',
     });
+    fireEvent.click(closeButton);
+    await waitForElementToBeRemoved(modal);
   });
 
-  test('should render correctly the IntroductionMarkdown component with one or less textToRender', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <IntroductionMarkdown
-            textToRender={[]}
-            serviceName={undefined}
-            selectedParty={undefined}
-            logoUrl={''}
-          />
-        </Provider>
-      );
+  test('should render correctly the IntroductionMarkdown component with one text and close on escape', async () => {
+    render(
+      <Provider store={store}>
+        <IntroductionMarkdown
+          textToRender={[{ label: 'IT', formikValue: 'single markdown content' }]}
+          serviceName={undefined}
+          selectedParty={undefined}
+          logoUrl={''}
+        />
+      </Provider>
+    );
+
+    fireEvent.click(screen.getByText(/components.wizard.stepTwo.form.preview/i));
+    expect(await screen.findByText(/components.wizard.stepTwo.previewModal.title/i)).toBeInTheDocument();
+    const modal = screen.getByRole('presentation');
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+
+    const closeButton = screen.getByRole('button', {
+      name: 'components.wizard.stepTwo.previewModal.closeBtn',
     });
+    closeButton.focus();
+    fireEvent.keyDown(closeButton, {
+      key: 'Escape',
+      code: 'Escape',
+      keyCode: 27,
+      charCode: 27,
+      bubbles: true,
+    });
+    await waitForElementToBeRemoved(modal);
   });
 });
