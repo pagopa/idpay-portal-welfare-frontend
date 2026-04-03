@@ -58,6 +58,16 @@ describe('RefundActionButtons', () => {
       clickOrder: ['suspend', 'approve'] as const,
     },
     {
+      title: 'REJECTED in column mode',
+      status: RewardBatchTrxStatusEnum.REJECTED,
+      direction: 'column' as const,
+      buttons: [
+        'pages.initiativeMerchantsTransactions.modal.approve',
+        'pages.initiativeMerchantsTransactions.modal.suspend',
+      ],
+      clickOrder: ['approve', 'suspend'] as const,
+    },
+    {
       title: 'SUSPENDED in column mode',
       status: RewardBatchTrxStatusEnum.SUSPENDED,
       direction: 'column' as const,
@@ -68,6 +78,16 @@ describe('RefundActionButtons', () => {
       clickOrder: ['approve', 'reject'] as const,
     },
     {
+      title: 'SUSPENDED in row mode',
+      status: RewardBatchTrxStatusEnum.SUSPENDED,
+      direction: 'row' as const,
+      buttons: [
+        'pages.initiativeMerchantsTransactions.modal.reject',
+        'pages.initiativeMerchantsTransactions.modal.approve',
+      ],
+      clickOrder: ['reject', 'approve'] as const,
+    },
+    {
       title: 'APPROVED in row mode',
       status: RewardBatchTrxStatusEnum.APPROVED,
       direction: 'row' as const,
@@ -76,6 +96,16 @@ describe('RefundActionButtons', () => {
         'pages.initiativeMerchantsTransactions.modal.suspend',
       ],
       clickOrder: ['reject', 'suspend'] as const,
+    },
+    {
+      title: 'APPROVED in column mode',
+      status: RewardBatchTrxStatusEnum.APPROVED,
+      direction: 'column' as const,
+      buttons: [
+        'pages.initiativeMerchantsTransactions.modal.suspend',
+        'pages.initiativeMerchantsTransactions.modal.reject',
+      ],
+      clickOrder: ['suspend', 'reject'] as const,
     },
   ])('$title', ({ status, direction, buttons, clickOrder }) => {
     const clickedActions = clickOrder as ReadonlyArray<RefundAction>;

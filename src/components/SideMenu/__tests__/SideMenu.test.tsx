@@ -395,6 +395,60 @@ describe('<SideMenu />', () => {
     expect(renderedHistory.location.pathname).toBe(currentPath);
   });
 
+  test('does not navigate again when clicking the active export report users item', async () => {
+    const store = createStore();
+    store.dispatch(setInitiativeSummaryList(mockedSummary));
+    const activeItem = mockedSummary.find((item) => item.initiativeName === 'Keyboard');
+    expect(activeItem).toBeDefined();
+
+    const currentPath = `${BASE_ROUTE}/esporta-report-dati-utenti/${activeItem!.initiativeId}`;
+    const history = createMemoryHistory({ initialEntries: [currentPath] });
+    mockedLocation.pathname = currentPath;
+
+    const { history: renderedHistory } = renderWithContext(<SideMenu />, store, history);
+    const replaceSpy = jest.spyOn(renderedHistory, 'replace');
+
+    const firstHeader = screen.getByRole('button', { name: activeItem!.initiativeName });
+
+    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'true'));
+
+    const firstAccordion = firstHeader.closest('.MuiAccordion-root') as HTMLElement;
+
+    fireEvent.click(
+      within(firstAccordion).getByRole('button', {
+        name: 'sideMenu.exportReportUsers.title',
+      })
+    );
+
+    expect(replaceSpy).not.toHaveBeenCalled();
+    expect(renderedHistory.location.pathname).toBe(currentPath);
+  });
+
+  test('marks the initiative users item selected on user details routes', async () => {
+    const store = createStore();
+    store.dispatch(setInitiativeSummaryList(mockedSummary));
+    const activeItem = mockedSummary.find((item) => item.initiativeName === 'Skin care');
+
+    expect(activeItem).toBeDefined();
+
+    const currentPath = `${BASE_ROUTE}/dettagli-utente/${activeItem!.initiativeId}/CFTEST`;
+    const history = createMemoryHistory({ initialEntries: [currentPath] });
+    mockedLocation.pathname = currentPath;
+
+    renderWithContext(<SideMenu />, store, history);
+
+    const header = screen.getByRole('button', { name: activeItem!.initiativeName });
+
+    await waitFor(() => expect(header).toHaveAttribute('aria-expanded', 'true'));
+
+    const accordion = header.closest('.MuiAccordion-root') as HTMLElement;
+    expect(
+      within(accordion).getByRole('button', {
+        name: 'sideMenu.initiativeUsers.title',
+      })
+    ).toHaveClass('Mui-selected');
+  });
+
   test('hides restricted items for blocked roles', async () => {
     const store = createStore();
     store.dispatch(setInitiativeSummaryList(mockedSummary));

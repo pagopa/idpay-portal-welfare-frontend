@@ -109,6 +109,33 @@ describe('DateRangePicker', () => {
     expect(toPickerProps?.maxDate).toEqual(yesterday);
   });
 
+  test('prefers dateFrom over the users minimum and still caps the maximum at yesterday', () => {
+    const yesterday = new Date('2026-03-20T23:59:59.999Z');
+    const minDateFrom = new Date('2025-11-18T00:00:00.000Z');
+    const dateFrom = new Date('2026-03-15T00:00:00.000Z');
+
+    render(
+      <DateRangePicker
+        dateFrom={dateFrom}
+        dateTo={null}
+        dateFromError={false}
+        dateToError={false}
+        minDateFrom={minDateFrom}
+        yesterday={yesterday}
+        onDateFromChange={jest.fn()}
+        onDateToChange={jest.fn()}
+        isUsers
+      />
+    );
+
+    const toPickerProps = mockDatePicker.mock.calls
+      .map(([callProps]) => callProps)
+      .find((callProps) => callProps.label === 'pages.initiativeUsers.form.to');
+
+    expect(toPickerProps?.minDate).toEqual(startOfDay(dateFrom));
+    expect(toPickerProps?.maxDate).toEqual(yesterday);
+  });
+
   test('caps the "to" picker max date when dateFrom would exceed the allowed range', () => {
     const yesterday = new Date('2026-03-20T23:59:59.999Z');
     const minDateFrom = new Date('2025-11-18T00:00:00.000Z');

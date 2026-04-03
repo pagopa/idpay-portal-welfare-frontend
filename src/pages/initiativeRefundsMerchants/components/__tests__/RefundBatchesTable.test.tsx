@@ -95,4 +95,27 @@ describe('<RefundBatchesTable />', () => {
     fireEvent.click(container.querySelector('[data-testid="ChevronRightIcon"]') as Element);
     expect(props.setPage).toHaveBeenCalledWith(2);
   });
+
+  test('keeps pagination at the boundaries and reflects descending sort state', () => {
+    const props = {
+      ...getBaseProps(),
+      totalElements: 1,
+      rows: [getRow()],
+      dateSort: 'desc' as const,
+      page: 0,
+      totalPages: 1,
+    };
+    const { container } = render(<RefundBatchesTable {...props} />);
+
+    expect(
+      screen.getByRole('columnheader', {
+        name: 'pages.initiativeMerchantsRefunds.table.requestRefundDate',
+      })
+    ).toHaveAttribute('aria-sort', 'descending');
+
+    fireEvent.click(container.querySelector('[data-testid="ChevronLeftIcon"]') as Element);
+    fireEvent.click(container.querySelector('[data-testid="ChevronRightIcon"]') as Element);
+
+    expect(props.setPage).not.toHaveBeenCalled();
+  });
 });

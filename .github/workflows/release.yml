@@ -91,5 +91,5 @@ jobs:
             -Dsonar.test.inclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx
             -Dsonar.exclusions=**/__tests__/**,**/__mocks__/**,**/locale/**,**/api/**,**/api/generated/**,**/*bootstrap.ts,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx,openApi/scripts/**,.github/**
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*,src/setupTests.ts
             -Dsonar.qualitygate.wait=true

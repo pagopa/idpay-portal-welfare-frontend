@@ -199,4 +199,77 @@ describe('RefundReasonModal', () => {
       expect.objectContaining({ cfError: true })
     );
   });
+
+  test('resets operator reason and checkboxes when the modal is reopened', () => {
+    const onConfirm = jest.fn();
+    const { rerender } = render(
+      <RefundReasonModal
+        open={true}
+        onClose={jest.fn()}
+        type="reject"
+        count={2}
+        editMode={true}
+        activeErrors={{
+          cfError: true,
+          productEligibilityError: false,
+          disposalRaeeError: false,
+          priceError: false,
+          bonusError: false,
+          sellerReferenceError: false,
+          accountingDocumentError: false,
+          genericError: false,
+        }}
+        onConfirm={onConfirm}
+      />
+    );
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'previous reason' } });
+    fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i }));
+
+    rerender(
+      <RefundReasonModal
+        open={false}
+        onClose={jest.fn()}
+        type="reject"
+        count={2}
+        editMode={true}
+        activeErrors={{
+          cfError: true,
+          productEligibilityError: false,
+          disposalRaeeError: false,
+          priceError: false,
+          bonusError: false,
+          sellerReferenceError: false,
+          accountingDocumentError: false,
+          genericError: false,
+        }}
+        onConfirm={onConfirm}
+      />
+    );
+
+    rerender(
+      <RefundReasonModal
+        open={true}
+        onClose={jest.fn()}
+        type="reject"
+        count={2}
+        editMode={true}
+        activeErrors={{
+          cfError: false,
+          productEligibilityError: false,
+          disposalRaeeError: false,
+          priceError: false,
+          bonusError: false,
+          sellerReferenceError: false,
+          accountingDocumentError: false,
+          genericError: true,
+        }}
+        onConfirm={onConfirm}
+      />
+    );
+
+    expect(screen.getByRole('textbox')).toHaveValue('');
+    expect(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i })).not.toBeChecked();
+    expect(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i })).toBeChecked();
+  });
 });

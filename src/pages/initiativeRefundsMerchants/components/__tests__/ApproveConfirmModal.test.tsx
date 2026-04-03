@@ -36,4 +36,15 @@ describe('ApproveConfirmModal', () => {
       screen.getByRole('button', { name: 'pages.initiativeMerchantsTransactions.modal.approve (3)' })
     ).toBeInTheDocument();
   });
+
+  test('keeps the dialog content hidden when closed', () => {
+    render(<ApproveConfirmModal open={false} onClose={jest.fn()} onConfirm={jest.fn()} count={1} />);
+
+    const title = screen.queryByText('pages.initiativeMerchantsTransactions.modal.single.approveTitle');
+    if (title) {
+      expect(title).not.toBeVisible();
+    } else {
+      expect(title).toBeNull();
+    }
+  });
 });

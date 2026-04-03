@@ -201,6 +201,18 @@ describe('MerchantAutocomplete', () => {
     expect(tooltip).toHaveAttribute('data-open', 'false');
   });
 
+  test('keeps the tooltip closed while the input is focused', () => {
+    renderComponent({ initialMerchant: 'Esercente 1' });
+
+    const input = screen.getByRole('combobox');
+    const tooltip = input.closest('[data-testid="tooltip-wrapper"]') as HTMLElement;
+
+    fireEvent.focus(input);
+    fireEvent.mouseEnter(tooltip);
+
+    expect(tooltip).toHaveAttribute('data-open', 'false');
+  });
+
   test('calls onMerchantChange on typing, selection and onBlurValidation on blur', async () => {
     jest.useFakeTimers();
     const onMerchantChange = jest.fn();
