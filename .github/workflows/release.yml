@@ -86,6 +86,10 @@ jobs:
             -Dsonar.pullrequest.provider=github
             -Dsonar.pullrequest.github.repository=${{ github.repository }}
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx
+            -Dsonar.exclusions=**/__tests__/**,**/__mocks__/**,**/locale/**,**/api/**,**/api/generated/**,**/*bootstrap.ts,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx,openApi/scripts/**,.github/**
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*
             -Dsonar.qualitygate.wait=true
