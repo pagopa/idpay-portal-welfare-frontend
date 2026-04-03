@@ -26,6 +26,9 @@ permissions:
   pull-requests: write
   checks: write
 
+env:
+  NODE_VERSION: '22.22.1'
+
 jobs:
   release:
     name: Release & Analysis
@@ -36,6 +39,11 @@ jobs:
         uses: actions/checkout@dc12339a9823e6625f5410a45b24fcbc55a33ded # v6.0.2
         with:
           fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
           
       - name: Cache Yarn
         uses: actions/cache@e34039626f957d3e3e50843d15c1b20547fc90e2 #v5.0.4
@@ -43,10 +51,9 @@ jobs:
           path: |
             .yarn/cache
             .yarn/install-state.gz
-            node_modules
-          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
+          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
-            ${{ runner.os }}-yarn-
+            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn-
             
       - name: Install dependencies
         run: |
