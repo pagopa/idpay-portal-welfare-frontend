@@ -104,24 +104,27 @@ const MerchantAutocomplete = ({
             whiteSpace: searchFocused ? 'normal' : 'nowrap',
           },
         }}
-        renderOption={(props, option) => (
-          <Tooltip title={option} arrow placement="left" enterDelay={200} key={option}>
-            <Box
-              component="li"
-              {...props}
-              sx={{
-                display: 'block !important',
-                width: '100%',
-                minWidth: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {option}
-            </Box>
-          </Tooltip>
-        )}
+        renderOption={(props, option) => {
+          const { key, ...optionProps } = props;
+          return (
+            <Tooltip key={key} title={option} arrow placement="left" enterDelay={200}>
+              <Box
+                component="li"
+                {...optionProps}
+                sx={{
+                  display: 'block !important',
+                  width: '100%',
+                  minWidth: 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {option}
+              </Box>
+            </Tooltip>
+          );
+        }}
         renderInput={(params) => (
           <Tooltip
             title={selectedMerchant}

@@ -17,14 +17,14 @@ import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import ErrorIcon from '@mui/icons-material/Error';
 import { matchPath } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { useDropzone } from 'react-dropzone';
 import { useEffect, useState } from 'react';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -237,6 +237,7 @@ const InitiativeRefundsOutcome = () => {
     if (typeof id === 'string') {
       getTableData(id, page);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   useEffect(() => {
@@ -245,6 +246,7 @@ const InitiativeRefundsOutcome = () => {
       setPage(0);
       getTableData(id, 0);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileAccepted]);
 
   const handleDownloadFile = (data: {

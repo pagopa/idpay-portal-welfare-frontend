@@ -6,12 +6,12 @@ import { useEffect, useState } from "react";
 import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
-import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../api/generated/merchants/RewardBatchTrxStatus";
-import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
-import { RefundsDrawerData } from "./initiativeRefundsTransactions";
-import { RefundActionButtons } from "./refundsActionButtons";
-import RefundReasonModal from "./refundsReasonModal";
-import ApproveConfirmModal from "./approveConfirmModal";
+import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../../api/generated/merchants/RewardBatchTrxStatus";
+import { ReasonDTO } from "../../../api/generated/merchants/ReasonDTO";
+import { RefundsDrawerData } from "../model/types";
+import { RefundActionButtons } from "./RefundActionButtons";
+import RefundReasonModal from "./RefundReasonModal";
+import ApproveConfirmModal from "./ApproveConfirmModal";
 
 interface Props {
     open: boolean;

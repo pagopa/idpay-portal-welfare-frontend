@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation } from 'react-i18next';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { getFamilyComposition } from '../../../services/intitativeService';
@@ -34,6 +34,7 @@ const FamilyUnitSummary = ({ id, cf }: Props) => {
           showCloseIcon: true,
         });
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf]);
 
   return (

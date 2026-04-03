@@ -1,7 +1,7 @@
-import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/utils/api-utils';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/redux/slices/appStateSlice';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
+import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
+import { t } from '../locale';
 import { ENV } from '../utils/env';
 import { store } from '../redux/store';
 import { createClient, WithDefaultsT } from './generated/merchants/client';
@@ -54,8 +54,8 @@ const onRedirectToLogin = () =>
       techDescription: 'token expired or not valid',
       toNotify: false,
       blocking: false,
-      displayableTitle: i18n.t('session.expired.title'),
-      displayableDescription: i18n.t('session.expired.message'),
+      displayableTitle: t('session.expired.title'),
+      displayableDescription: t('session.expired.message'),
     })
   );
 

@@ -2,8 +2,8 @@ import { Box, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useFormik } from 'formik';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { getMerchantTransactions } from '../../services/merchantsService';
 import {
   MerchantTransactionDTO,
@@ -85,11 +85,13 @@ const MerchantTransactions = ({ initiativeId, merchantId }: Props) => {
     setPage(0);
     setFilterByUser(undefined);
     setFilterByStatus(undefined);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeId, merchantId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
     getTableData(merchantId as string, initiativeId as string, page, filterByUser, filterByStatus);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeId, merchantId, page]);
 
   const renderTransactionCreatedStatus = (status: TransactionStatusEnum) => {

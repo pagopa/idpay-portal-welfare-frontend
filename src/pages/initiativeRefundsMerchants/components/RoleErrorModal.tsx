@@ -37,10 +37,8 @@ export const RoleErrorModal = ({
                 sx: { padding: "8px 4px" }
             }}
         >
-            <DialogTitle>
-                <Typography variant="h5" sx={{ fontWeight: 700, color: "#17324D" }}>
-                    {title}
-                </Typography>
+            <DialogTitle sx={{ fontWeight: 700, color: "#17324D", fontSize: "1.5rem" }}>
+                {title}
             </DialogTitle>
 
             <DialogContent>

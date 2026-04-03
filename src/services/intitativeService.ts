@@ -91,8 +91,8 @@ export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDT
 /** It will accept a {@link InitiativeRewardAndTrxRulesDTORewardRule} and it will transcode it into {@link RewardGroupDTO} or {@link RewardValueDTO} */
 export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {
   if (rewardRule) {
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    switch ((rewardRule as any)['_type']) {
+    const rewardRuleType = Reflect.get(rewardRule as object, '_type');
+    switch (rewardRuleType) {
       case 'rewardGroups':
         return decode(rewardRule, RewardGroupDTO);
       case 'rewardValue':

@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
+import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { useTranslation } from 'react-i18next';
 import { useState } from "react";
 import { matchPath } from "react-router-dom";

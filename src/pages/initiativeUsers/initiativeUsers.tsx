@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-let */
 import { useEffect, useState, useMemo } from 'react';
 import { matchPath } from 'react-router';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import {
   Box,
   Button,
@@ -18,14 +18,14 @@ import {
   TextField,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -205,6 +205,7 @@ const InitiativeUsers = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -212,6 +213,7 @@ const InitiativeUsers = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (
@@ -253,45 +255,39 @@ const InitiativeUsers = () => {
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchFrom"
-                  data-testid="searchFrom-test"
-                  name="searchFrom"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchFrom',
+                  name: 'searchFrom',
+                  size: 'small',
+                  error: formik.touched.searchFrom && Boolean(formik.errors.searchFrom),
+                  helperText: formik.touched.searchFrom && formik.errors.searchFrom,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchTo"
-                  data-testid="searchTo-test"
-                  name="searchTo"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                  helperText={formik.touched.searchTo && formik.errors.searchTo}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchTo',
+                  name: 'searchTo',
+                  size: 'small',
+                  error: formik.touched.searchTo && Boolean(formik.errors.searchTo),
+                  helperText: formik.touched.searchTo && formik.errors.searchTo,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
@@ -304,10 +300,13 @@ const InitiativeUsers = () => {
             }}
             name="filterStatus"
             label={t('pages.initiativeUsers.form.status')}
-            placeholder={t('pages.initiativeUsers.form.status')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeUsers.form.status')}
+            </MenuItem>
             <MenuItem
               value={BeneficiaryStateEnum.ON_EVALUATION}
               data-testid="filterStatusOnEvaluation-test"

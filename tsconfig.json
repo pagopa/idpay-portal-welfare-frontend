@@ -13,7 +13,7 @@
     "noImplicitAny": true,
     "noUnusedLocals": true,
     "noImplicitReturns": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
@@ -22,10 +22,20 @@
     "preserveConstEnums": true,
     "allowJs": false,
     "noUnusedParameters": true,
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/jest-dom"
+    ],
     "strictFunctionTypes": true,
     "isolatedModules": true,
     "noFallthroughCasesInSwitch": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "@pagopa/selfcare-common-frontend": [
+        "./node_modules/@pagopa/selfcare-common-frontend/lib/index.js"
+      ]
+    }
   },
   "include": [
     "src/**/*"
@@ -34,7 +44,7 @@
     "__mocks__",
     "dist",
     "node_modules",
-    "**/__tests__/*",
+    "src/setupTests.ts",
     "Dangerfile.ts"
   ]
 }

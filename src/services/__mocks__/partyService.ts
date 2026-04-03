@@ -225,7 +225,9 @@ export const mockedParties: Array<Party> = [
 ];
 
 export const verifyFetchPartiesMockExecution = (parties: Array<Party>) => {
-  expect(parties).toStrictEqual(mockedParties);
+  if (JSON.stringify(parties) !== JSON.stringify(mockedParties)) {
+    throw new Error('parties mock verification failed');
+  }
 };
 
 export const fetchParties = () => new Promise((resolve) => resolve(mockedParties));
@@ -236,7 +238,9 @@ export const verifyFetchPartyDetailsMockExecution = (party: Party) => {
   //     (p) => p.partyId === party.partyId && p.roles[0].roleKey === party.roles[0].roleKey
   //   )[0]
   // );
-  expect(party).toBeDefined();
+  if (!party) {
+    throw new Error('party details mock verification failed');
+  }
 };
 
 export const fetchPartyDetails = (

@@ -1,9 +1,8 @@
-import { fireEvent, render, act, waitFor, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
-import { DateOfBirthOptions, FilterOperator, WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import ResidencyCriteriaItem from '../ResidencyCriteriaItem';
 import React from 'react';
 
@@ -44,45 +43,43 @@ describe('<ResidencyCriteriaItem />', (injectedStore?: ReturnType<typeof createS
     const handleFieldValueChanged = jest.fn();
     const handleCriteriaRemoved = jest.fn();
     const setCriteriaToSubmit = jest.fn();
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <ResidencyCriteriaItem
-            action={WIZARD_ACTIONS.SUBMIT}
-            formData={data}
-            handleCriteriaRemoved={handleCriteriaRemoved}
-            handleFieldValueChanged={handleFieldValueChanged}
-            criteriaToSubmit={[
-              { code: 'code', dispatched: true },
-              { code: 'code', dispatched: true },
-            ]}
-            setCriteriaToSubmit={setCriteriaToSubmit}
-          />
-        </Provider>
-      );
-      const residencyValue = screen.getByTestId('residencyValue') as HTMLInputElement;
-      const selectResidencyValue = screen.getByTestId('residency-select-test') as HTMLSelectElement;
-      const selectResidencyRelation = screen.getByTestId(
-        'residency-relation-test'
-      ) as HTMLSelectElement;
-      const deleteButton = screen.getByTestId('delete-button-test') as HTMLButtonElement;
+    render(
+      <Provider store={store}>
+        <ResidencyCriteriaItem
+          action={WIZARD_ACTIONS.SUBMIT}
+          formData={data}
+          handleCriteriaRemoved={handleCriteriaRemoved}
+          handleFieldValueChanged={handleFieldValueChanged}
+          criteriaToSubmit={[
+            { code: 'code', dispatched: true },
+            { code: 'code', dispatched: true },
+          ]}
+          setCriteriaToSubmit={setCriteriaToSubmit}
+        />
+      </Provider>
+    );
+    const residencyValue = (await screen.findByTestId('residencyValue')) as HTMLInputElement;
+    const selectResidencyValue = screen.getByTestId('residency-select-test') as HTMLSelectElement;
+    const selectResidencyRelation = screen.getByTestId(
+      'residency-relation-test'
+    ) as HTMLSelectElement;
+    const deleteButton = screen.getByTestId('delete-button-test') as HTMLButtonElement;
 
-      fireEvent.change(residencyValue, { target: { value: '100' } });
-      fireEvent.blur(residencyValue);
-      expect(residencyValue).toBeInTheDocument();
-      expect(handleFieldValueChanged.mock.calls.length).toBe(1);
+    fireEvent.change(residencyValue, { target: { value: '100' } });
+    fireEvent.blur(residencyValue);
+    expect(residencyValue).toBeInTheDocument();
+    expect(handleFieldValueChanged.mock.calls.length).toBe(1);
 
-      fireEvent.click(selectResidencyValue);
-      fireEvent.change(selectResidencyValue, { target: { value: 'postal_code' } });
-      expect(selectResidencyValue).toBeInTheDocument();
+    fireEvent.click(selectResidencyValue);
+    fireEvent.change(selectResidencyValue, { target: { value: 'postal_code' } });
+    expect(selectResidencyValue).toBeInTheDocument();
 
-      fireEvent.click(selectResidencyRelation);
-      fireEvent.change(selectResidencyRelation, { target: { value: 'EQ' } });
-      expect(selectResidencyValue).toBeInTheDocument();
+    fireEvent.click(selectResidencyRelation);
+    fireEvent.change(selectResidencyRelation, { target: { value: 'EQ' } });
+    expect(selectResidencyValue).toBeInTheDocument();
 
-      fireEvent.click(deleteButton);
-      expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
-    });
+    fireEvent.click(deleteButton);
+    expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
   });
 
   it('Test on ResidencyCriteriaItem', async () => {
