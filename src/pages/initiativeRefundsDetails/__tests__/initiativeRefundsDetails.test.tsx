@@ -11,6 +11,8 @@ import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 import userEvent from '@testing-library/user-event';
 
+jest.mock('../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
