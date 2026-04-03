@@ -26,9 +26,6 @@ permissions:
   pull-requests: write
   checks: write
 
-env:
-  NODE_VERSION: '22.22.1'
-
 jobs:
   release:
     name: Release & Analysis
@@ -39,11 +36,6 @@ jobs:
         uses: actions/checkout@dc12339a9823e6625f5410a45b24fcbc55a33ded # v6.0.2
         with:
           fetch-depth: 0
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
           
       - name: Cache Yarn
         uses: actions/cache@e34039626f957d3e3e50843d15c1b20547fc90e2 #v5.0.4
@@ -51,9 +43,10 @@ jobs:
           path: |
             .yarn/cache
             .yarn/install-state.gz
-          key: ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
+            node_modules
+          key: ${{ runner.os }}-yarn-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ env.NODE_VERSION }}-yarn-
+            ${{ runner.os }}-yarn-
             
       - name: Install dependencies
         run: |
@@ -68,7 +61,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: yarn test:coverage
-          threshold: 80
+          threshold: 90
           annotations: none
           package-manager: yarn
 
@@ -86,7 +79,6 @@ jobs:
             -Dsonar.pullrequest.provider=github
             -Dsonar.pullrequest.github.repository=${{ github.repository }}
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.sources=src
-            -Dsonar.tests=src
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*
             -Dsonar.qualitygate.wait=true
