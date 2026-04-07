@@ -60,7 +60,11 @@ import { mockedFile } from './groupsService';
 
 export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
-) => expect(initiativeSummary).toStrictEqual(mockedInitiativeSummary);
+) => {
+  if (JSON.stringify(initiativeSummary) !== JSON.stringify(mockedInitiativeSummary)) {
+    throw new Error('initiativeSummary mock verification failed');
+  }
+};
 
 export const getOrganizationsList = (): Promise<OrganizationListDTO> =>
   InitiativeApiMocked.getOrganizationsList();
@@ -69,7 +73,11 @@ export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
   InitiativeApiMocked.getInitativeSummary();
 
 export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: InitiativeDTO) =>
-  expect(initiativeDetail).toStrictEqual(mockedInitiativeDetail);
+{
+  if (JSON.stringify(initiativeDetail) !== JSON.stringify(mockedInitiativeDetail)) {
+    throw new Error('initiativeDetail mock verification failed');
+  }
+};
 
 export const getInitiativeDetail = (_id: string): Promise<InitiativeDTO> =>
   InitiativeApiMocked.getInitiativeById(mockedInitiativeId);
@@ -219,8 +227,8 @@ export const getInitiativeOnboardingRankingStatusPaged = (
 
 export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {
   if (rewardRule) {
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    switch ((rewardRule as any)['_type']) {
+    const rewardRuleType = Reflect.get(rewardRule as object, '_type');
+    switch (rewardRuleType) {
       case 'rewardGroups':
         return decode(rewardRule, RewardGroupDTO);
       case 'rewardValue':

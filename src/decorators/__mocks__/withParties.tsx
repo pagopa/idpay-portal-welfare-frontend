@@ -13,6 +13,7 @@ const dispatch = useAppDispatch();
 const parties = useAppSelector(partiesSelectors.selectPartiesList);
 useEffect(() => {
 dispatch(partiesActions.setPartiesList(mockedParties));
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 return parties ? <WrappedComponent parties={parties} {...props} /> : <></>;
 };

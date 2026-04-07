@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
 import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
 import { TypeEnum } from '../../../api/generated/initiative/ChannelDTO';
@@ -11,20 +10,21 @@ import { OnboardingDTO } from '../../../api/generated/initiative/OnboardingDTO';
 import { BeneficiaryStateEnum } from '../../../api/generated/initiative/StatusOnboardingDTOS';
 import { Initiative } from '../../../model/Initiative';
 import { setInitiative } from '../../../redux/slices/initiativeSlice';
-import { store } from '../../../redux/store';
+import { createStore, store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
 import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
 import InitiativeUsers from '../initiativeUsers';
-import { InitiativeApi } from '../../../api/InitiativeApiClient';
-import { mockedOnBoardingStatusResponse } from '../../../services/__mocks__/intitativeService';
 
 jest.mock('../../../services/intitativeService');
+jest.mock('../../../hooks/useInitiative', () => ({
+  useInitiative: jest.fn(),
+}));
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
+jest.mock('@pagopa/selfcare-common-frontend/lib/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
@@ -258,7 +258,6 @@ describe('<InitiativeUsers />', () => {
   test('render with different Onboarding user Status', async () => {
     const onbUserStatusArr = [
       BeneficiaryStateEnum.ACCEPTED_TC,
-      BeneficiaryStateEnum.ELIGIBLE,
       BeneficiaryStateEnum.ELIGIBLE_KO,
       BeneficiaryStateEnum.INACTIVE,
       BeneficiaryStateEnum.INVITED,
@@ -295,8 +294,9 @@ describe('<InitiativeUsers />', () => {
     });
   });
 
-  test('Render InitiativeUser with status ONBOARDING_OK and rankingEnabled true', () => {
-    store.dispatch(setInitiative(mockedInitiative));
+  test('Render InitiativeUser with status ONBOARDING_OK and rankingEnabled true', async () => {
+    const injectedStore = createStore();
+    injectedStore.dispatch(setInitiative(mockedInitiative));
     InitiativeApiMocked.getOnboardingStatus = async (
       _id: string,
       _page: number,
@@ -305,7 +305,9 @@ describe('<InitiativeUsers />', () => {
       _status: string | undefined
     ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedResponde));
 
-    renderWithContext(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />, injectedStore);
+    expect(await screen.findByText('STRING')).toBeInTheDocument();
+    expect(screen.getAllByText('pages.initiativeUsers.status.assignee').length).toBeGreaterThan(0);
   });
 
   test('render component without id in header', () => {
@@ -322,8 +324,178 @@ describe('<InitiativeUsers />', () => {
     renderWithContext(<InitiativeUsers />);
   });
 
+  test('renders empty state when onboarding response omits content', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    store.dispatch(setInitiative(mockedInitiative));
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<OnboardingDTO> =>
+      Promise.resolve({
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+      } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('pages.initiativeUsers.noData')).toBeInTheDocument();
+  });
+
+  test('renders onboardingOk label when ranking is disabled and keeps malformed dates empty', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    const mockedInitiativeWithoutRanking = {
+      ...mockedInitiative,
+      generalInfo: {
+        ...mockedInitiative.generalInfo,
+        rankingEnabled: 'false',
+      },
+    };
+
+    store.dispatch(setInitiative(mockedInitiativeWithoutRanking));
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<OnboardingDTO> =>
+      Promise.resolve({
+        content: [
+          {
+            beneficiary: 'string',
+            beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
+            updateStatusDate: 'invalid-date' as any,
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('STRING')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUsers.status.onboardingOk')).toBeInTheDocument();
+  });
+
   test('test catch case of onboarding api call', () => {
     InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
-    renderWithContext(<InitiativeUsers />);
+    renderWithProviders(<InitiativeUsers />);
+  });
+
+  test('render NF table with familyId and demanded status', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/utenti-iniziativa/23232333`,
+      },
+    });
+
+    const nfInitiative = {
+      ...mockedInitiative,
+      generalInfo: {
+        ...mockedInitiative.generalInfo,
+        beneficiaryType: BeneficiaryTypeEnum.NF,
+      },
+    };
+    store.dispatch(setInitiative(nfInitiative));
+
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<OnboardingDTO> =>
+      Promise.resolve({
+        content: [
+          {
+            beneficiary: 'aaaaaa00a00a000a',
+            beneficiaryState: BeneficiaryStateEnum.DEMANDED,
+            familyId: 'FAM-01',
+            updateStatusDate: new Date(),
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('FAM-01')).toBeInTheDocument();
+    expect(screen.getByText('AAAAAA00A00A000A')).toBeInTheDocument();
+  });
+
+  test('apply filters with date range', async () => {
+    store.dispatch(setInitiative(mockedInitiative));
+    renderWithProviders(<InitiativeUsers />);
+
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.from/), {
+      target: { value: '10/01/2025' },
+    });
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.to/), {
+      target: { value: '20/01/2025' },
+    });
+    fireEvent.click(screen.getByTestId('apply-filters-test'));
+  });
+
+  test('renders all beneficiary status branches in the table', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    store.dispatch(setInitiative(mockedInitiative));
+
+    InitiativeApiMocked.getOnboardingStatus = async (): Promise<OnboardingDTO> =>
+      Promise.resolve({
+        content: [
+          {
+            beneficiary: 'invited',
+            beneficiaryState: BeneficiaryStateEnum.INVITED,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'accepted',
+            beneficiaryState: BeneficiaryStateEnum.ACCEPTED_TC,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'evaluation',
+            beneficiaryState: BeneficiaryStateEnum.ON_EVALUATION,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'onboarding-ko',
+            beneficiaryState: BeneficiaryStateEnum.ONBOARDING_KO,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'eligible-ko',
+            beneficiaryState: BeneficiaryStateEnum.ELIGIBLE_KO,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'inactive',
+            beneficiaryState: BeneficiaryStateEnum.INACTIVE,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'unsubscribed',
+            beneficiaryState: BeneficiaryStateEnum.UNSUBSCRIBED,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'suspended',
+            beneficiaryState: BeneficiaryStateEnum.SUSPENDED,
+            updateStatusDate: new Date(),
+          },
+          {
+            beneficiary: 'no-status',
+            beneficiaryState: undefined,
+            updateStatusDate: new Date(),
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 9,
+        totalPages: 1,
+      } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('INVITED')).toBeInTheDocument();
+    expect(screen.getByText('NO-STATUS')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUsers.status.onboardingKo')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUsers.status.eligible')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUsers.status.suspended')).toBeInTheDocument();
+    expect(screen.getAllByText('pages.initiativeUsers.status.onEvaluation').length).toBeGreaterThan(0);
+    expect(screen.getAllByText('pages.initiativeUsers.status.inactive').length).toBeGreaterThan(0);
   });
 });

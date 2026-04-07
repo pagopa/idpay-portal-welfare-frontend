@@ -1,6 +1,6 @@
 import { render, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps, storageUserOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 // import { User } from '@pagopa/selfcare-common-frontend/model/User';
 import { createStore } from '../../redux/store';
 import withLogin from '../withLogin';

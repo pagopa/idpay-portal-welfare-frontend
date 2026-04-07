@@ -1,4 +1,4 @@
-import { buildFetchApi } from '@pagopa/selfcare-common-frontend/utils/api-utils';
+import { buildFetchApi } from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
 import { ENV } from '../utils/env';
 
 export const buildFetchApiLayer = () => {

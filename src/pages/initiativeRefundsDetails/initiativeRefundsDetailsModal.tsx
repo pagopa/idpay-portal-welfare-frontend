@@ -1,7 +1,7 @@
 import CloseIcon from '@mui/icons-material/Close';
 import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
@@ -58,6 +58,7 @@ const InitiativeRefundsDetailsModal = ({
           setLoading(false);
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeId, refundEventId, openRefundsDetailModal]);
 
   const renderRefundType = (refundType: string | undefined) => {

@@ -23,7 +23,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DownloadIcon from "@mui/icons-material/Download";
 import SyncIcon from "@mui/icons-material/Sync";
 import ErrorIcon from "@mui/icons-material/Error";
-import { useLoading } from "@pagopa/selfcare-common-frontend";
+import { useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { getDownloadReport, getReportList } from "../../services/merchantsService";
 import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
@@ -190,6 +190,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
     return () => {
       cancelled = true;
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initiativeId, page, pageSize, t, refreshToken]);
 
   const start = totalElements === 0 ? 0 : page * pageSize + 1;

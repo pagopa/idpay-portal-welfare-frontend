@@ -11,6 +11,7 @@ export const useOneTrustNotice = (
     }).finally(() => {
       setContentLoaded(true);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // eslint-disable-next-line sonarjs/cognitive-complexity

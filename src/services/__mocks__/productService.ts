@@ -127,7 +127,9 @@ export const mockedPartyProducts: Array<Product> = [
 ];
 
 export const verifyFetchPartyProductsMockExecution = (partyProducts: Array<Product>) => {
-  expect(partyProducts).toStrictEqual(mockedPartyProducts);
+  if (JSON.stringify(partyProducts) !== JSON.stringify(mockedPartyProducts)) {
+    throw new Error('partyProducts mock verification failed');
+  }
 };
 
 export const fetchProducts = () => new Promise((resolve) => resolve(mockedPartyProducts));

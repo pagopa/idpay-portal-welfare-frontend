@@ -2,7 +2,7 @@ import { Box } from '@mui/system';
 import { useDropzone } from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import { FormHelperText } from '@mui/material';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import LoadingFile from '../../../LoadingFile/LoadingFile';
@@ -49,6 +49,7 @@ const UploadServiceIcon = ({
     if (fileUplodedKo) {
       resetStatus();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fileUplodedKo]);
 
   const { getRootProps, getInputProps } = useDropzone({

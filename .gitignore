@@ -27,6 +27,7 @@ generated
 build
 local
 dist
+.yarn
 
 # Local python packages
 .python_packages/

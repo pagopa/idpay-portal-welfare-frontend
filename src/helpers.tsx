@@ -1,8 +1,8 @@
 /* eslint-disable functional/immutable-data */
 import { Chip } from '@mui/material';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
 import * as Yup from 'yup';
 import { parse } from 'date-fns';
+import { t } from './locale';
 
 export const renderInitiativeStatus = (status: string | undefined) => {
   switch (status) {
@@ -10,14 +10,14 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.draft')}
+          label={t('pages.initiativeList.status.draft')}
           color="default"
         />
       );
     case 'IN_REVISION':
       return (
         <Chip
-          label={i18n.t('pages.initiativeList.status.inRevision')}
+          label={t('pages.initiativeList.status.inRevision')}
           sx={{ fontSize: '14px' }}
           color="warning"
         />
@@ -26,7 +26,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.toCheck')}
+          label={t('pages.initiativeList.status.toCheck')}
           color="error"
         />
       );
@@ -34,7 +34,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.approved')}
+          label={t('pages.initiativeList.status.approved')}
           color="success"
         />
       );
@@ -42,7 +42,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.published')}
+          label={t('pages.initiativeList.status.published')}
           color="indigo"
         />
       );
@@ -50,7 +50,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.closed')}
+          label={t('pages.initiativeList.status.closed')}
           color="default"
         />
       );
@@ -58,7 +58,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeList.status.suspended')}
+          label={t('pages.initiativeList.status.suspended')}
           color="error"
         />
       );
@@ -177,9 +177,9 @@ export const getMaskedPan = (pan: string | undefined) => {
 export const mappedChannel = (channel: string | undefined) => {
   switch (channel) {
     case 'APP_IO':
-      return i18n.t('pages.initiativeUserDetails.appIo');
+      return t('pages.initiativeUserDetails.appIo');
     case 'ISSUER':
-      return i18n.t('pages.initiativeUserDetails.issuer');
+      return t('pages.initiativeUserDetails.issuer');
     default:
       return '-';
   }
@@ -213,7 +213,7 @@ export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
       }
       return parse(originalValue, 'dd/MM/yyyy', new Date());
     })
-    .typeError(i18n.t('validation.invalidDate')),
+    .typeError(t('validation.invalidDate')),
   searchTo: Yup.date()
     .nullable()
     // eslint-disable-next-line sonarjs/no-identical-functions
@@ -223,16 +223,16 @@ export const initiativeUsersAndRefundsValidationSchema = Yup.object().shape({
       }
       return parse(originalValue, 'dd/MM/yyyy', new Date());
     })
-    .typeError(i18n.t('validation.invalidDate'))
+    .typeError(t('validation.invalidDate'))
     .when('searchFrom', (searchFrom, _schema) => {
       const timestamp = Date.parse(searchFrom);
       if (isNaN(timestamp) === false) {
         return Yup.date()
           .nullable()
-          .min(searchFrom, i18n.t('validation.outDateTo'))
-          .typeError(i18n.t('validation.invalidDate'));
+          .min(searchFrom, t('validation.outDateTo'))
+          .typeError(t('validation.invalidDate'));
       } else {
-        return Yup.date().nullable().typeError(i18n.t('validation.invalidDate'));
+        return Yup.date().nullable().typeError(t('validation.invalidDate'));
       }
     }),
 });
@@ -253,7 +253,7 @@ export const getRefundStatusChip = (status: {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefunds.status.exported')}
+          label={t('pages.initiativeRefunds.status.exported')}
           color="default"
         />
       );
@@ -263,10 +263,10 @@ export const getRefundStatusChip = (status: {
           sx={{ fontSize: '14px' }}
           label={
             status.percentageResulted
-              ? i18n.t('pages.initiativeRefunds.status.partial', {
+              ? t('pages.initiativeRefunds.status.partial', {
                   percentage: status?.percentageResulted || '',
                 })
-              : i18n.t('pages.initiativeRefunds.status.partialNoPerc')
+              : t('pages.initiativeRefunds.status.partialNoPerc')
           }
           color="warning"
         />
@@ -275,7 +275,7 @@ export const getRefundStatusChip = (status: {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefunds.status.complete')}
+          label={t('pages.initiativeRefunds.status.complete')}
           color="success"
         />
       );

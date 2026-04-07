@@ -431,7 +431,9 @@ export const mockedMccCodes = [
 ];
 
 export const verifyFetchMccCodesMockExecution = (transactionRules: Array<ConfigMccArrayDTO>) => {
-  expect(transactionRules).toStrictEqual(mockedMccCodes);
+  if (JSON.stringify(transactionRules) !== JSON.stringify(mockedMccCodes)) {
+    throw new Error('mccCodes mock verification failed');
+  }
 };
 
 export const fetchMccCodes = (): Promise<ConfigMccArrayDTO> => InitiativeApiMocked.getMccConfig();

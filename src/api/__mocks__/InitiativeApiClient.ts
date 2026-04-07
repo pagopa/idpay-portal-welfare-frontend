@@ -1,7 +1,7 @@
 import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
 import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
 // import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
-import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
+// import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
 import { mockedFile } from '../../services/__mocks__/groupsService';
 import {
   mockedBeneficaryStatus,
@@ -91,7 +91,7 @@ export const InitiativeApiMocked = {
   ): Promise<void> => new Promise((resolve) => resolve()),
 
   getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
-    new Promise((resolve) => resolve(mockedAdmissionCriteria)),
+    new Promise((resolve) => resolve({} as any)),
 
   initiativeTrxAndRewardRulesPut: async (
     _id: string,

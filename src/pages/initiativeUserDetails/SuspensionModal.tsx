@@ -1,6 +1,6 @@
 import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
