@@ -81,6 +81,7 @@ jobs:
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**,**/__mocks__/**,**/bootstrap.ts,openApi/scripts/**,.github/**,**/locale/**,**/api/**,**/api/generated/**,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx
+            -Dsonar.exclusions=**/__mocks__/**,**/locale/**,**/api/**,**/api/generated/**,**/*bootstrap.ts,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx,openApi/scripts/**,.github/**
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*,src/setupTests.ts
             "-X"
             "-Dsonar.qualitygate.wait=false"
