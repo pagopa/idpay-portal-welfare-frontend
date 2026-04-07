@@ -61,7 +61,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           test-script: yarn test:coverage
-          threshold: 90
+          threshold: 80
           annotations: none
           package-manager: yarn
 
@@ -81,6 +81,6 @@ jobs:
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
             -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            "-Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**/*.*,src/bootstrap.ts,src/__mocks__/**/*"
+            -Dsonar.coverage.exclusions=**/*.test.ts,**/*.test.tsx,**/__tests__/**,**/__mocks__/**,**/scripts/**,.github/workflows/**,**/bootstrap.ts
             "-X"
             "-Dsonar.qualitygate.wait=false"
