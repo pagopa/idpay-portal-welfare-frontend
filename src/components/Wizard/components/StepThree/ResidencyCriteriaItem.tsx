@@ -44,6 +44,7 @@ const ResidencyCriteriaItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const residencyValidationSchema = Yup.object().shape({

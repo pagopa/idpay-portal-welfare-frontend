@@ -15,8 +15,8 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { useFormik } from 'formik';
 import { useState, useEffect, Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { fetchMccCodes } from '../../../../services/mccCodesService';
 import { MccCodesModel } from '../../../../model/MccCodes';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
@@ -90,6 +90,7 @@ const MCCItem = ({
         });
       })
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -98,6 +99,7 @@ const MCCItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -177,6 +179,7 @@ const MCCItem = ({
 
   useEffect(() => {
     handleUpdateValuesFieldState(formik.values.values);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik.values.values]);
 
   return (

@@ -1,5 +1,5 @@
 import { Alert, Box, Card, CardContent, Snackbar, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
@@ -70,6 +70,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
         );
     }
     HandleOpenSnackBarOnBoardingStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, statusOnb]);
 
   useEffect(() => {
@@ -101,6 +102,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
           })
         );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, statusOnb, initiativeRewardType]);
 
   useEffect(() => {
@@ -134,6 +136,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
           });
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iban, initiativeRewardType]);
 
   const HandleOpenSnackBarOnBoardingStatus = () => {

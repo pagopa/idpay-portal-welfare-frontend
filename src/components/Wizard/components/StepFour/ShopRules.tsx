@@ -5,9 +5,9 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import AddIcon from '@mui/icons-material/Add';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { fetchTransactionRules } from '../../../../services/transactionRuleService';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
@@ -206,6 +206,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         });
       })
       .finally(() => setLoading(false));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleCloseModal = () => setOpenModal(false);
@@ -436,6 +437,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
         .finally(() => setLoading(false));
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action, JSON.stringify(shopRulesToSubmit)]);
 
   useEffect(() => {
@@ -482,6 +484,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
       });
     }
     setDisabledNext(!almostOnePopulated);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     rewardRuleData,
     mccFilterData,

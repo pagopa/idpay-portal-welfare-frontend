@@ -1,4 +1,4 @@
-import { RefundItem } from "../pages/initiativeRefundsMerchants/initiativeRefundsMerchants";
+import { RefundItem } from "../pages/initiativeRefundsMerchants/model/types";
 import { getRewardBatches } from "../services/merchantsService";
 
 // eslint-disable-next-line functional/no-let

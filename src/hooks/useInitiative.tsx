@@ -6,7 +6,7 @@ import { matchPath } from 'react-router';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 // import { useTranslation } from 'react-i18next';
 import { useEffect } from 'react';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import ROUTES from '../routes';
 import { getInitiativeDetail } from '../services/intitativeService';
 import { useAppDispatch } from '../redux/hooks';
@@ -131,6 +131,7 @@ export const useInitiative = () => {
         })
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
 };
 
@@ -149,47 +150,47 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
     assistanceChannels: [{ type: 'web', contact: '' }],
   };
 
-  if (typeof data.serviceIO !== 'undefined') {
+  if (data.serviceIO !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.initiativeOnIO = data.serviceIO;
   }
-  if (typeof data.serviceId !== 'undefined') {
+  if (data.serviceId !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.serviceId = data.serviceId;
   }
-  if (typeof data.serviceName !== 'undefined') {
+  if (data.serviceName !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.serviceName = data.serviceName;
   }
-  if (typeof data.serviceScope !== 'undefined') {
+  if (data.serviceScope !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.serviceArea = data.serviceScope;
   }
-  if (typeof data.description !== 'undefined') {
+  if (data.description !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.serviceDescription = data.description;
   }
-  if (typeof data.privacyLink !== 'undefined') {
+  if (data.privacyLink !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.privacyPolicyUrl = data.privacyLink;
   }
-  if (typeof data.tcLink !== 'undefined') {
+  if (data.tcLink !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.termsAndConditions = data.tcLink;
   }
-  if (typeof data.channels !== 'undefined') {
+  if (data.channels !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.assistanceChannels = [...data.channels];
   }
-  if (typeof data.logoFileName !== 'undefined') {
+  if (data.logoFileName !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.logoFileName = data.logoFileName;
   }
-  if (typeof data.logoURL !== 'undefined') {
+  if (data.logoURL !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.logoURL = data.logoURL;
   }
-  if (typeof data.logoUploadDate !== 'undefined') {
+  if (data.logoUploadDate !== undefined) {
     // eslint-disable-next-line functional/immutable-data
     dataT.logoUploadDate = data.logoUploadDate.toLocaleString('fr-BE');
   }
@@ -218,72 +219,72 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
   };
 
   if (data && Object.keys(data).length !== 0) {
-    if (typeof data.beneficiaryType !== undefined) {
+    if (data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryType =
         data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.NF;
     }
 
-    if (typeof data.familyUnitComposition !== undefined) {
+    if (data.familyUnitComposition !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.familyUnitComposition = data.familyUnitComposition;
     }
 
-    if (typeof data.beneficiaryKnown !== undefined) {
+    if (data.beneficiaryKnown !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryKnown = data.beneficiaryKnown === true ? 'true' : 'false';
     }
-    if (typeof data.rankingEnabled !== undefined) {
+    if (data.rankingEnabled !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEnabled = data.rankingEnabled === true ? 'true' : 'false';
     }
-    if (typeof data.budget !== undefined) {
+    if (data.budget !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.budget = data.budget.toString();
     }
-    if (typeof data.beneficiaryBudget !== undefined) {
+    if (data.beneficiaryBudget !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryBudget = data.beneficiaryBudget.toString();
     }
-    if (typeof data.startDate !== undefined) {
+    if (data.startDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.startDate = data.startDate;
     }
-    if (typeof data.endDate !== undefined) {
+    if (data.endDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.endDate = data.endDate;
     }
-    if (typeof data.rankingStartDate !== undefined) {
+    if (data.rankingStartDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingStartDate = data.rankingStartDate;
     }
-    if (typeof data.rankingEndDate !== undefined) {
+    if (data.rankingEndDate !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.rankingEndDate = data.rankingEndDate;
     }
 
     if (data.descriptionMap) {
-      if (data.descriptionMap.it && typeof data.descriptionMap.it !== undefined) {
+      if (data.descriptionMap.it && data.descriptionMap.it !== undefined) {
         // eslint-disable-next-line functional/immutable-data
         dataT.introductionTextIT = data.descriptionMap.it;
       }
 
-      if (data.descriptionMap.en && typeof data.descriptionMap.en !== undefined) {
+      if (data.descriptionMap.en && data.descriptionMap.en !== undefined) {
         // eslint-disable-next-line functional/immutable-data
         dataT.introductionTextEN = data.descriptionMap.en;
       }
 
-      if (data.descriptionMap.fr && typeof data.descriptionMap.fr !== undefined) {
+      if (data.descriptionMap.fr && data.descriptionMap.fr !== undefined) {
         // eslint-disable-next-line functional/immutable-data
         dataT.introductionTextFR = data.descriptionMap.fr;
       }
 
-      if (data.descriptionMap.de && typeof data.descriptionMap.de !== undefined) {
+      if (data.descriptionMap.de && data.descriptionMap.de !== undefined) {
         // eslint-disable-next-line functional/immutable-data
         dataT.introductionTextDE = data.descriptionMap.de;
       }
 
-      if (data.descriptionMap.sl && typeof data.descriptionMap.sl !== undefined) {
+      if (data.descriptionMap.sl && data.descriptionMap.sl !== undefined) {
         // eslint-disable-next-line functional/immutable-data
         dataT.introductionTextSL = data.descriptionMap.sl;
       }
@@ -366,7 +367,7 @@ export const parseManualCriteria = (response: InitiativeDTO): Array<ManualCriter
 export const parseRewardRule = (response: InitiativeDTO, dispatch: AppDispatch): void => {
   if (
     response.rewardRule &&
-    typeof response.rewardRule !== undefined &&
+    response.rewardRule !== undefined &&
     // eslint-disable-next-line no-underscore-dangle
     response.rewardRule._type === 'rewardValue' &&
     // eslint-disable-next-line no-prototype-builtins
@@ -397,7 +398,7 @@ export const parseThreshold = (response: InitiativeDTO, dispatch: AppDispatch): 
   if (
     response.trxRule &&
     response.trxRule.threshold &&
-    typeof response.trxRule.threshold !== undefined
+    response.trxRule.threshold !== undefined
   ) {
     if (
       response.trxRule.threshold.hasOwnProperty('from') &&
@@ -430,7 +431,7 @@ export const parseMccFilter = (response: InitiativeDTO, dispatch: AppDispatch): 
   if (
     response.trxRule &&
     response.trxRule.mccFilter &&
-    typeof response.trxRule.mccFilter !== undefined
+    response.trxRule.mccFilter !== undefined
   ) {
     dispatch(saveMccFilter(response.trxRule.mccFilter));
   }
@@ -440,7 +441,7 @@ export const parseTrxCount = (response: InitiativeDTO, dispatch: AppDispatch): v
   if (
     response.trxRule &&
     response.trxRule.trxCount &&
-    typeof response.trxRule.trxCount !== undefined
+    response.trxRule.trxCount !== undefined
   ) {
     if (
       response.trxRule.trxCount.hasOwnProperty('from') &&
@@ -473,7 +474,7 @@ export const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch
   if (
     response.trxRule &&
     response.trxRule.rewardLimits &&
-    typeof response.trxRule.rewardLimits !== undefined
+    response.trxRule.rewardLimits !== undefined
   ) {
     const rewardLimits: Array<RewardLimit> = [];
     if (response.trxRule.rewardLimits.length > 0) {
@@ -494,7 +495,7 @@ export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppD
   if (
     response.trxRule &&
     response.trxRule.daysOfWeek &&
-    typeof response.trxRule.daysOfWeek !== undefined
+    response.trxRule.daysOfWeek !== undefined
   ) {
     const daysOfWeek = [...response.trxRule.daysOfWeek];
     // const daysOfWeekIntervals = [...parseDaysOfWeekIntervals(daysOfWeek)];
@@ -511,9 +512,9 @@ export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppD
       }> = [];
       if (
         d.daysOfWeek &&
-        typeof d.daysOfWeek !== undefined &&
+        d.daysOfWeek !== undefined &&
         d.intervals &&
-        typeof d.intervals !== undefined
+        d.intervals !== undefined
       ) {
         d.daysOfWeek.forEach((dd) => {
           // eslint-disable-next-line functional/immutable-data
@@ -556,7 +557,7 @@ export const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined)
   };
 
   if (
-    typeof refundRule !== undefined &&
+    refundRule !== undefined &&
     refundRule?.accumulatedAmount &&
     Object.keys(refundRule?.accumulatedAmount).length !== 0
   ) {
@@ -570,19 +571,19 @@ export const parseRefundRule = (refundRule: InitiativeRefundRuleDTO | undefined)
   }
 
   if (
-    typeof refundRule !== undefined &&
+    refundRule !== undefined &&
     refundRule?.timeParameter &&
     Object.keys(refundRule?.timeParameter).length !== 0
   ) {
     // eslint-disable-next-line functional/immutable-data
     dataT.timeParameter =
-      typeof refundRule.timeParameter.timeType !== undefined
+      refundRule.timeParameter.timeType !== undefined
         ? (refundRule.timeParameter.timeType as string)
         : '';
   }
 
   if (
-    typeof refundRule !== undefined &&
+    refundRule !== undefined &&
     refundRule?.additionalInfo &&
     Object.keys(refundRule?.additionalInfo).length !== 0
   ) {

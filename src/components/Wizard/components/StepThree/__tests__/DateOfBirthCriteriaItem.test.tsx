@@ -1,9 +1,8 @@
-import { fireEvent, render, act, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../../redux/store';
-import { DateOfBirthOptions, FilterOperator, WIZARD_ACTIONS } from '../../../../../utils/constants';
-import Wizard from '../../../Wizard';
+import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import DateOdBirthCriteriaItem from '../DateOfBirthCriteriaItem';
 import React from 'react';
 
@@ -39,92 +38,129 @@ describe('<DateOfBirthCriteriaItem />', (injectedStore?: ReturnType<typeof creat
     checked: false,
   };
 
+  const validDateOfBirthData = {
+    ...data,
+    code: 'date-of-birth-code',
+    field: 'year',
+    fieldLabel: 'Date of birth',
+    operator: 'EQ',
+    value: '18',
+    value2: '',
+  };
+
+  const betweenDateOfBirthData = {
+    ...data,
+    code: 'date-of-birth-between',
+    field: 'age',
+    fieldLabel: 'Date of birth',
+    operator: 'BTW_CLOSED',
+    value: '18',
+    value2: '17',
+  };
+
   const store = injectedStore ? injectedStore : createStore();
-  test('Should display the DateOfBirth item and must have a correct validation', async () => {
-    await act(async () => {
-      const handleFieldValueChanged = jest.fn();
-      const handleCriteriaRemoved = jest.fn();
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <DateOdBirthCriteriaItem
-            action={WIZARD_ACTIONS.SUBMIT}
-            formData={data}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={handleCriteriaRemoved}
-            handleFieldValueChanged={handleFieldValueChanged}
-            criteriaToSubmit={[
-              { code: 'string', dispatched: true },
-              { code: 'string', dispatched: true },
-            ]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-          />
-        </Provider>
-      );
-      const deleteBtn = getByTestId('delete-button-test') as HTMLButtonElement;
-      const birthDateStart = getByTestId('dateOfBirth-start-value') as HTMLInputElement;
-      const birthDateEnd = getByTestId('dateOfBirth-end-value') as HTMLInputElement;
-      const selectDateOfBirth = getByTestId('dateOfBirth-select-test') as HTMLSelectElement;
-      const selectRelationDateOfBirth = getByTestId(
-        'dateOfBirth-relation-test'
-      ) as HTMLSelectElement;
+  test('Should display the DateOfBirth item and submit valid data', async () => {
+    const handleFieldValueChanged = jest.fn();
+    const handleCriteriaRemoved = jest.fn();
+    const setCriteriaToSubmit = jest.fn();
+    render(
+      <Provider store={store}>
+        <DateOdBirthCriteriaItem
+          action={WIZARD_ACTIONS.SUBMIT}
+          formData={validDateOfBirthData}
+          // eslint-disable-next-line react/jsx-no-bind
+          handleCriteriaRemoved={handleCriteriaRemoved}
+          handleFieldValueChanged={handleFieldValueChanged}
+          criteriaToSubmit={[
+            { code: 'string', dispatched: true },
+            { code: 'string', dispatched: true },
+          ]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCriteriaToSubmit={setCriteriaToSubmit}
+        />
+      </Provider>
+    );
 
-      fireEvent.click(deleteBtn);
-      expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
+    const deleteBtn = (await screen.findByTestId('delete-button-test')) as HTMLButtonElement;
+    const birthDateStart = screen.getByTestId('dateOfBirth-start-value') as HTMLInputElement;
+    const birthDateEnd = screen.getByTestId('dateOfBirth-end-value') as HTMLInputElement;
+    const selectDateOfBirth = screen.getByTestId('dateOfBirth-select-test') as HTMLSelectElement;
+    const selectRelationDateOfBirth = screen.getByTestId(
+      'dateOfBirth-relation-test'
+    ) as HTMLSelectElement;
 
-      //select date of birth
-      fireEvent.click(selectDateOfBirth);
-      fireEvent.change(selectDateOfBirth, { target: { value: 'year' } });
-      expect(selectDateOfBirth).toBeDefined();
+    fireEvent.click(deleteBtn);
+    expect(handleCriteriaRemoved.mock.calls.length).toBe(1);
 
-      //select relation birth date
-      fireEvent.click(selectRelationDateOfBirth);
-      fireEvent.change(selectRelationDateOfBirth, { target: { value: 'EQ' } });
-      fireEvent.blur(selectRelationDateOfBirth);
-      expect(selectRelationDateOfBirth).toBeDefined();
+    //select date of birth
+    fireEvent.click(selectDateOfBirth);
+    fireEvent.change(selectDateOfBirth, { target: { value: 'year' } });
+    expect(selectDateOfBirth).toBeDefined();
 
-      //birth Date start
-      fireEvent.change(birthDateStart, { target: { value: 'birthDateStart' } });
-      fireEvent.blur(birthDateStart);
-      expect(birthDateStart).toBeInTheDocument();
-      //birth Date end
-      fireEvent.click(birthDateEnd);
-      expect(birthDateEnd.value).toBe('');
-      fireEvent.change(birthDateEnd, { target: { value: 'birthDateEnd' } });
-      expect(birthDateEnd.value).toBe('birthDateEnd');
-      fireEvent.blur(birthDateEnd);
+    //select relation birth date
+    fireEvent.click(selectRelationDateOfBirth);
+    fireEvent.change(selectRelationDateOfBirth, { target: { value: 'EQ' } });
+    fireEvent.blur(selectRelationDateOfBirth);
+    expect(selectRelationDateOfBirth).toBeDefined();
+
+    //birth Date start
+    fireEvent.change(birthDateStart, { target: { value: 'birthDateStart' } });
+    fireEvent.blur(birthDateStart);
+    expect(birthDateStart).toBeInTheDocument();
+    //birth Date end
+    fireEvent.click(birthDateEnd);
+    expect(birthDateEnd.value).toBe('');
+    fireEvent.change(birthDateEnd, { target: { value: 'birthDateEnd' } });
+    expect(birthDateEnd.value).toBe('birthDateEnd');
+    fireEvent.blur(birthDateEnd);
+
+    await waitFor(() => {
+      expect(setCriteriaToSubmit).toHaveBeenCalledTimes(1);
     });
   });
 
-  it('test on handleSubmit', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <DateOdBirthCriteriaItem
-            action={WIZARD_ACTIONS.DRAFT}
-            formData={data}
-            // eslint-disable-next-line react/jsx-no-bind
-            handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
-            handleFieldValueChanged={undefined}
-            criteriaToSubmit={[]}
-            // eslint-disable-next-line react/jsx-no-bind
-            setCriteriaToSubmit={function (
-              _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
-            ): void {
-              //
-            }}
-          />
-        </Provider>
-      );
+  it('covers the between-date validation branch and field change handlers', async () => {
+    render(
+      <Provider store={store}>
+        <DateOdBirthCriteriaItem
+          action={WIZARD_ACTIONS.DRAFT}
+          formData={betweenDateOfBirthData}
+          // eslint-disable-next-line react/jsx-no-bind
+          handleCriteriaRemoved={(_event: React.MouseEvent<Element, MouseEvent>) => {}}
+          handleFieldValueChanged={jest.fn()}
+          criteriaToSubmit={[]}
+          // eslint-disable-next-line react/jsx-no-bind
+          setCriteriaToSubmit={function (
+            _value: SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
+          ): void {
+            //
+          }}
+        />
+      </Provider>
+    );
+
+    const selectRelationDateOfBirth = screen.getByTestId(
+      'dateOfBirth-relation-test'
+    ) as HTMLSelectElement;
+    const birthDateStart = screen.getByTestId('dateOfBirth-start-value') as HTMLInputElement;
+    const birthDateEnd = screen.getByTestId('dateOfBirth-end-value') as HTMLInputElement;
+
+    fireEvent.change(selectRelationDateOfBirth, { target: { value: 'BTW_CLOSED' } });
+    fireEvent.blur(selectRelationDateOfBirth);
+
+    fireEvent.change(birthDateStart, { target: { value: '18' } });
+    fireEvent.blur(birthDateStart);
+
+    fireEvent.change(birthDateEnd, { target: { value: '17' } });
+    fireEvent.blur(birthDateEnd);
+
+    await waitFor(() => {
+      expect(birthDateEnd).toBeInTheDocument();
     });
   });
 
   it('Test on DateOfBirthCriteriaItem', async () => {
-    const { queryByTestId } = render(
+    render(
       <DateOdBirthCriteriaItem
         action={WIZARD_ACTIONS.BACK}
         formData={data}

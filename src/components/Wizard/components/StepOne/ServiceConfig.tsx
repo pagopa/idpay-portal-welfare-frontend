@@ -23,8 +23,8 @@ import { useFormik } from 'formik';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import * as Yup from 'yup';
 import { CallMade } from '@mui/icons-material';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
@@ -103,6 +103,7 @@ const ServiceConfig = ({
       formik.handleSubmit();
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   useEffect(() => {
@@ -111,6 +112,7 @@ const ServiceConfig = ({
       setUploadDate(additionalInfo.logoUploadDate);
       setFileUploadedOk(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(additionalInfo)]);
 
   const validateUrl = (value: string | undefined): boolean => {
@@ -196,6 +198,7 @@ const ServiceConfig = ({
     } else {
       setDisabledNext(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik]);
 
   const waitUpload = () => setCurrentStep(currentStep + 1);
@@ -433,13 +436,16 @@ const ServiceConfig = ({
               name="serviceArea"
               aria-labelledby="serviceArea"
               label={t('components.wizard.stepOne.form.serviceArea')}
-              placeholder={t('components.wizard.stepOne.form.serviceArea')}
+              displayEmpty
               onChange={async (e) => {
                 await formik.setFieldValue('serviceArea', e.target.value);
               }}
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
             >
+              <MenuItem value="" disabled>
+                {t('components.wizard.stepOne.form.serviceArea')}
+              </MenuItem>
               <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>

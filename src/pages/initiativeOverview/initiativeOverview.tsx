@@ -8,13 +8,13 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import ArticleIcon from '@mui/icons-material/Article';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { matchPath } from 'react-router';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
@@ -109,9 +109,12 @@ const InitiativeOverview = () => {
         handleCloseSnackBar();
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(match),
     initiativeSel.initiativeId,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(initiativeSel.generalInfo),
   ]);
 
@@ -171,6 +174,7 @@ const InitiativeOverview = () => {
           .finally(() => setLoading(false));
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match), initiativeSel.initiativeId, initiativeSel.status]);
 
   useEffect(() => {

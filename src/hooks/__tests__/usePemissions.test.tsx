@@ -1,58 +1,82 @@
-import * as React from 'react';
-import { USER_PERMISSIONS } from '../../utils/constants';
-import { usePermissions } from '../usePermissions';
 import { render } from '@testing-library/react';
-import { createStore } from '../../redux/store';
-import { Provider } from 'react-redux';
-import { permissionsSelector } from '../../redux/slices/permissionsSlice';
-import { useAppSelector } from '../../redux/hooks';
-import * as redux from 'react-redux';
+import { useSelector } from 'react-redux';
+import { usePermissions } from '../usePermissions';
+import { USER_PERMISSIONS } from '../../utils/constants';
 
-
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+}));
 
 let tempHook: boolean;
-let tempSelector: any;
-function HookWrapper(): null {
-  tempHook = usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE);
-  tempSelector = useAppSelector(permissionsSelector);
+function HookWrapper({ action }: { action: USER_PERMISSIONS }): null {
+  tempHook = usePermissions(action);
   return null;
 }
 
-describe('usePermissions', (injectedStore?: ReturnType<typeof createStore>) => {
-  let spyOnUseSelector: jest.SpyInstance<unknown, [selector: (state: unknown) => unknown, equalityFn?: ((left: unknown, right: unknown) => boolean) | undefined]>;
-  let spyOnUseDispatch;
-  let mockDispatch: jest.Mock<any, any>;
+describe('usePermissions', () => {
+  const mockUseSelector = useSelector as jest.Mock;
 
   beforeEach(() => {
-    // Mock useSelector hook
-    spyOnUseSelector = jest.spyOn(redux, 'useSelector');
-    spyOnUseSelector.mockReturnValue([{ id: 1, text: 'Old Item' }]);
-
-    // Mock useDispatch hook
-    spyOnUseDispatch = jest.spyOn(redux, 'useDispatch');
-    // Mock dispatch function returned from useDispatch
-    mockDispatch = jest.fn();
-    spyOnUseDispatch.mockReturnValue(mockDispatch);
+    mockUseSelector.mockReset();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
-  //const {result} = renderHook(() => usePermissions(USER_PERMISSIONS.CREATE_INITIATIVE))
- // permissionsSelector.mockReturnValue(false);
-  const store = injectedStore ? injectedStore : createStore();
-  
 
-  test('use permisions enum', () => {
-    render(
-      <Provider store={store}>
-        <HookWrapper />
-      </Provider>
-    );
+  test('returns false when permissions selector does not provide an array', () => {
+    mockUseSelector.mockReturnValueOnce(undefined);
 
-    
+    render(<HookWrapper action={USER_PERMISSIONS.CREATE_INITIATIVE} />);
+
     expect(tempHook).toBe(false);
-    expect(tempHook).toBeFalsy();
-   
+  });
+
+  test('returns true when the matching permission is enabled', () => {
+    mockUseSelector.mockReturnValueOnce([
+      {
+        name: USER_PERMISSIONS.CREATE_INITIATIVE,
+        description: 'Create initiative',
+        mode: 'enabled',
+      },
+    ]);
+
+    render(<HookWrapper action={USER_PERMISSIONS.CREATE_INITIATIVE} />);
+
+    expect(tempHook).toBe(true);
+  });
+
+  test('returns false when the permission is missing from the list', () => {
+    mockUseSelector.mockReturnValueOnce([
+      {
+        name: USER_PERMISSIONS.UPDATE_INITIATIVE,
+        description: 'Update initiative',
+        mode: 'enabled',
+      },
+    ]);
+
+    render(<HookWrapper action={USER_PERMISSIONS.CREATE_INITIATIVE} />);
+
+    expect(tempHook).toBe(false);
+  });
+
+  test('returns false when the matching permission is disabled or missing', () => {
+    mockUseSelector.mockReturnValueOnce([
+      {
+        name: USER_PERMISSIONS.CREATE_INITIATIVE,
+        description: 'Create initiative',
+        mode: 'disabled',
+      },
+      {
+        name: USER_PERMISSIONS.UPDATE_INITIATIVE,
+        description: 'Update initiative',
+        mode: 'enabled',
+      },
+    ]);
+
+    render(<HookWrapper action={USER_PERMISSIONS.CREATE_INITIATIVE} />);
+
+    expect(tempHook).toBe(false);
   });
 });
