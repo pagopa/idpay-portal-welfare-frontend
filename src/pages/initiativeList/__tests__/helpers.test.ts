@@ -1,50 +1,68 @@
-import { descendingComparator, getComparator, Order, stableSort } from '../helpers';
+import { descendingComparator, getComparator, stableSort } from '../helpers';
 
-describe('helper.ts of initiativeList', () => {
-  const orderByC: any = 'creationDate';
-  const orderByU: any = 'updateDate';
-  const orderByInitiativeId: any = 'initiativeId';
+type Row = {
+  creationDate: string;
+  updateDate: string;
+  initiativeId: string;
+};
 
-  const orderAsc: Order = 'asc';
-  const orderDesc: Order = 'desc';
-
-  const mockedCompA = {
+describe('initiativeList helpers', () => {
+  const rowA: Row = {
     creationDate: '08/11/2022',
-    initiativeId: '2',
+    updateDate: '10/11/2022',
+    initiativeId: 'initiative_1',
   };
-  const mockedCompB = {
+  const rowB: Row = {
     creationDate: '07/11/2022',
-    initiativeId: '1',
+    updateDate: '09/11/2022',
+    initiativeId: 'initiative_2',
   };
-  const mockedCompC = {
+  const rowC: Row = {
     creationDate: '09/11/2022',
-    initiativeId: '3',
+    updateDate: '11/11/2022',
+    initiativeId: 'initiative_3',
   };
 
-  const arr: any = ['1', '2'];
-  const comp: any = {
-    a: 1,
-    b: 0,
-  };
-
-  //   const mockedParam = (a: string | number, b: string | number) =>
-  //     descendingComparator(a, b, orderByC);
-
-  test('descendingComparator', () => {
-    expect(descendingComparator(mockedCompA, mockedCompA, orderByC)).toBe(0);
-    expect(descendingComparator(mockedCompA, mockedCompC, orderByC)).toBe(1);
-    expect(descendingComparator(mockedCompA, mockedCompB, orderByC)).toBe(-1);
-    expect(descendingComparator(mockedCompA, mockedCompA, orderByInitiativeId)).toBe(0);
-    expect(descendingComparator(mockedCompA, mockedCompB, orderByInitiativeId)).toBe(-1);
-    expect(descendingComparator(mockedCompA, mockedCompC, orderByInitiativeId)).toBe(1);
+  test('descendingComparator handles creationDate branch', () => {
+    expect(descendingComparator(rowA, rowA, 'creationDate')).toBe(0);
+    expect(descendingComparator(rowA, rowC, 'creationDate')).toBe(1);
+    expect(descendingComparator(rowA, rowB, 'creationDate')).toBe(-1);
   });
 
-  test('getComparator', () => {
-    // expect(getComparator(orderAsc, orderByU)).toReturn(mockedParam);
-    // expect(getComparator(orderDesc, orderByU)).toReturn;
+  test('descendingComparator handles updateDate branch', () => {
+    expect(descendingComparator(rowA, rowA, 'updateDate')).toBe(0);
+    expect(descendingComparator(rowA, rowC, 'updateDate')).toBe(1);
+    expect(descendingComparator(rowA, rowB, 'updateDate')).toBe(-1);
   });
 
-  test('stableSortw', () => {
-    expect(stableSort(arr, getComparator(comp.a, comp.b))).toEqual(['1', '2']);
+  test('descendingComparator handles non-date branch case-insensitively', () => {
+    expect(descendingComparator(rowA, rowA, 'initiativeId')).toBe(0);
+    expect(descendingComparator(rowA, rowB, 'initiativeId')).toBe(1);
+    expect(descendingComparator(rowB, rowA, 'initiativeId')).toBe(-1);
+    expect(descendingComparator(rowA, rowC, 'initiativeId')).toBe(1);
+  });
+
+  test('getComparator returns different behavior for desc and asc', () => {
+    const descComparator = getComparator('desc', 'creationDate');
+    const ascComparator = getComparator('asc', 'creationDate');
+
+    expect(descComparator(rowA, rowB)).toBe(-1);
+    expect(ascComparator(rowA, rowB)).toBe(1);
+  });
+
+  test('stableSort keeps stable order when comparator returns 0', () => {
+    const input = [{ id: 'first' }, { id: 'second' }, { id: 'third' }];
+    const sorted = stableSort(input, () => 0);
+
+    expect(sorted).toEqual(input);
+  });
+
+  test('stableSort sorts values using the provided comparator', () => {
+    const input = [rowA, rowB, rowC];
+    const sortedAsc = stableSort(input, getComparator('asc', 'creationDate'));
+    const sortedDesc = stableSort(input, getComparator('desc', 'creationDate'));
+
+    expect(sortedAsc.map((r) => r.creationDate)).toEqual(['07/11/2022', '08/11/2022', '09/11/2022']);
+    expect(sortedDesc.map((r) => r.creationDate)).toEqual(['09/11/2022', '08/11/2022', '07/11/2022']);
   });
 });

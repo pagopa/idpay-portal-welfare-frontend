@@ -54,7 +54,7 @@ const AdmissionCriteriaModal = ({
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
 
-  const elementRef = useCallback((node) => {
+  const elementRef = useCallback((node: { getBoundingClientRect: () => { (): any; new(): any; height: number; }; } | null) => {
     if (node !== null) {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       const h = (node.getBoundingClientRect().height + 150).toString() + 'px';
@@ -88,7 +88,7 @@ const AdmissionCriteriaModal = ({
       return list.map((a) => {
         const displayType =
           a.code === 'ISEE' &&
-          typeof beneficiaryType !== undefined &&
+          beneficiaryType !== undefined &&
           familyUnitComposition === FamilyUnitCompositionEnum.INPS &&
           beneficiaryType === BeneficiaryTypeEnum.NF
             ? 'none'

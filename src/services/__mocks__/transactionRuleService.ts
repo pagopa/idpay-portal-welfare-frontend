@@ -63,7 +63,9 @@ export const mockedTransactionRules = [
 export const verifyFetchShopRulesMockExecution = (
 transactionRules: Array<ConfigTrxRuleArrayDTO>
 ) => {
-expect(transactionRules).toStrictEqual(mockedTransactionRules);
+  if (JSON.stringify(transactionRules) !== JSON.stringify(mockedTransactionRules)) {
+    throw new Error('transactionRules mock verification failed');
+  }
 };
 
 export const fetchTransactionRules = (): Promise<ConfigTrxRuleArrayDTO> =>

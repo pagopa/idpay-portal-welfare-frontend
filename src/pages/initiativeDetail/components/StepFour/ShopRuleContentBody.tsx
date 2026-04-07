@@ -116,7 +116,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
         )}
 
       {initiativeDetail.trxRule.mccFilter &&
-        typeof initiativeDetail.trxRule.mccFilter !== undefined &&
+        initiativeDetail.trxRule.mccFilter !== undefined &&
         Array.isArray(initiativeDetail.trxRule.mccFilter.values) &&
         initiativeDetail.trxRule.mccFilter.values.length > 0 && (
           <Fragment>
@@ -143,7 +143,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
           </Typography>
         </Fragment>
       ) : typeof initiativeDetail.trxRule.trxCount?.from === 'number' &&
-        typeof initiativeDetail.trxRule.trxCount?.to === 'undefined' ? (
+        initiativeDetail.trxRule.trxCount?.to === undefined ? (
         <Fragment>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
             {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
@@ -152,7 +152,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
             {initiativeDetail.trxRule.trxCount?.from}
           </Typography>
         </Fragment>
-      ) : typeof initiativeDetail.trxRule.trxCount?.from === 'undefined' &&
+      ) : initiativeDetail.trxRule.trxCount?.from === undefined &&
         typeof initiativeDetail.trxRule.trxCount?.to === 'number' ? (
         <Fragment>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>

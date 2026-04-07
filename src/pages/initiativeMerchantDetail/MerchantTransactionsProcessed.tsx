@@ -1,8 +1,8 @@
 import { Box, Chip, Table, TableBody, TableCell, TableRow } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
 import {
   MerchantTransactionProcessedDTO,
@@ -87,6 +87,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     setPageValue(0);
     setFilterDataByUser(undefined);
     setFilterDataByStatus(undefined);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [merchantId, initiativeId]);
 
   useEffect(() => {
@@ -97,6 +98,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     return () => {
       setRowsData([]);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [merchantId, initiativeId, pageValue]);
 
   const renderTrasactionProcessedStatus = (status: TransactionProcessedStatusEnum) => {
@@ -118,6 +120,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
             color="error"
           />
         );
+      default: return "INVOICED";
     }
   };
 

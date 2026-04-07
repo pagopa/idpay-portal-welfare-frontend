@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
-import { User } from '@pagopa/selfcare-common-frontend/model/User';
+import { User } from '@pagopa/selfcare-common-frontend/lib/model/User';
 import {
 userActions,
 userSelectors,
-} from '@pagopa/selfcare-common-frontend/redux/slices/userSlice';
+} from '@pagopa/selfcare-common-frontend/lib/redux/slices/userSlice';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../redux/hooks';
 // import { RootState } from '../../redux/store';
@@ -25,6 +25,7 @@ const dispatch = useAppDispatch();
 const loggedUser = useSelector(userSelectors.selectLoggedUser);
 useEffect(() => {
 dispatch(userActions.setLoggedUser(mockedUser));
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 return loggedUser ? <WrappedComponent /> : <></>;
 };

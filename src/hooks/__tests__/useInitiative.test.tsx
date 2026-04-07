@@ -1,7 +1,5 @@
 import { render, waitFor } from '@testing-library/react';
-import React from 'react';
-import * as redux from 'react-redux';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 import { createStore } from '../../redux/store';
 import {
   parseAdditionalInfo,
@@ -26,13 +24,17 @@ import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedA
 import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
 import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 
-jest.mock('react-router-dom', () => Function());
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({
     pathname: 'localhost:3000/portale-enti',
   }),
+}));
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useSelector: jest.fn(),
+  useDispatch: jest.fn(),
 }));
 
 jest.mock('react-i18next', () => ({
@@ -50,30 +52,18 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
   const store = injectedStore ? injectedStore : createStore();
   // const RenderSuspend = jest.genMockFromModule(useInitiative)
 
-  let spyOnUseSelector: jest.SpyInstance<
-    unknown,
-    [
-      selector: (state: unknown) => unknown,
-      equalityFn?: ((left: unknown, right: unknown) => boolean) | undefined
-    ]
-  >;
-  let spyOnUseDispatch;
+  const mockedUseSelector = useSelector as unknown as jest.Mock;
+  const mockedUseDispatch = useDispatch as unknown as jest.Mock;
   let mockDispatch: jest.Mock<any, any>;
 
   beforeEach(() => {
-    // Mock useSelector hook
-    spyOnUseSelector = jest.spyOn(redux, 'useSelector');
-    spyOnUseSelector.mockReturnValue([{ id: 1, text: 'Old Item' }]);
-
-    // Mock useDispatch hook
-    spyOnUseDispatch = jest.spyOn(redux, 'useDispatch');
-    // Mock dispatch function returned from useDispatch
+    mockedUseSelector.mockReturnValue([{ id: 1, text: 'Old Item' }]);
     mockDispatch = jest.fn();
-    spyOnUseDispatch.mockReturnValue(mockDispatch);
+    mockedUseDispatch.mockReturnValue(mockDispatch);
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   test('render hook use initiative', async () => {

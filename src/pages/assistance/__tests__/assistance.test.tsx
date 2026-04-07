@@ -1,5 +1,4 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { Provider } from 'react-redux';
 import Assistance from '../assistance';
 import { createStore } from '../../../redux/store';
@@ -15,8 +14,9 @@ jest.mock('react-router-dom', () => ({
   }),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend', () => ({
-  useLoading: jest.fn(),
+jest.mock('@pagopa/selfcare-common-frontend/lib/hooks/useLoading', () => ({
+  __esModule: true,
+  default: () => jest.fn(),
 }));
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -59,8 +59,5 @@ describe('<Assistance />', (injectedStore?: ReturnType<typeof createStore>) => {
  
     fireEvent.click(exitBtn);
     expect(exitBtn).toBeInTheDocument();
-
-    // fireEvent.click(thankYou);
-    // expect(thankYou).toBeInTheDocument();
   });
 });

@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 import { grey } from '@mui/material/colors';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { t } from '../../../../locale';
 import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
@@ -48,7 +48,7 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
   // eslint-disable-next-line sonarjs/cognitive-complexity
   response.map((r) => {
     // eslint-disable-next-line no-prototype-builtins
-    if (r.hasOwnProperty('code') && typeof r.code !== undefined) {
+    if (r.hasOwnProperty('code') && r.code !== undefined) {
       switch (r.code) {
         case 'ISEE':
           return {
@@ -57,10 +57,8 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: 'ISEE',
-            fieldLabel: i18n.t('components.wizard.stepThree.chooseCriteria.modal.isee.fieldLabel'),
-            authorityLabel: i18n.t(
-              'components.wizard.stepThree.chooseCriteria.modal.isee.authorityLabel'
-            ),
+            fieldLabel: t('components.wizard.stepThree.chooseCriteria.modal.isee.fieldLabel'),
+            authorityLabel: t('components.wizard.stepThree.chooseCriteria.modal.isee.authorityLabel'),
             value: '',
             value2: '',
           };
@@ -71,12 +69,9 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: i18n.t(
-              'components.wizard.stepThree.chooseCriteria.modal.birthDate.fieldLabel'
-            ),
-            authorityLabel: i18n.t(
-              'components.wizard.stepThree.chooseCriteria.modal.birthDate.authorityLabel'
-            ),
+            fieldLabel: t('components.wizard.stepThree.chooseCriteria.modal.birthDate.fieldLabel'),
+            authorityLabel:
+              t('components.wizard.stepThree.chooseCriteria.modal.birthDate.authorityLabel'),
             value: '',
             value2: '',
           };
@@ -87,12 +82,9 @@ export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<Avai
             code: r.code,
             operator: r.operator || 'EQ',
             field: r.field?.toLowerCase() || '',
-            fieldLabel: i18n.t(
-              'components.wizard.stepThree.chooseCriteria.modal.residency.fieldLabel'
-            ),
-            authorityLabel: i18n.t(
-              'components.wizard.stepThree.chooseCriteria.modal.residency.authorityLabel'
-            ),
+            fieldLabel: t('components.wizard.stepThree.chooseCriteria.modal.residency.fieldLabel'),
+            authorityLabel:
+              t('components.wizard.stepThree.chooseCriteria.modal.residency.authorityLabel'),
             value: '',
             value2: '',
           };
@@ -132,33 +124,33 @@ const mapIseeTypes = (
       case IseeTypologyEnum.Dottorato:
         return {
           value: IseeTypologyEnum.Dottorato,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeDottorato'),
         };
       case IseeTypologyEnum.Minorenne:
         return {
           value: IseeTypologyEnum.Minorenne,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeMinorenne'),
         };
       case IseeTypologyEnum.Ordinario:
         return {
           value: IseeTypologyEnum.Ordinario,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeOrdinario'),
         };
       case IseeTypologyEnum.Residenziale:
         return {
           value: IseeTypologyEnum.Residenziale,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeResidenziale'),
         };
       case IseeTypologyEnum.SocioSanitario:
         return {
           value: IseeTypologyEnum.SocioSanitario,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeSocioSanitario'),
         };
       case IseeTypologyEnum.Universitario:
       default:
         return {
           value: IseeTypologyEnum.Universitario,
-          label: i18n.t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
+          label: t('components.wizard.stepThree.chooseCriteria.form.iseeUniversitario'),
         };
     }
   });
@@ -356,3 +348,4 @@ export enum IseeTypologyEnum {
   Dottorato = 'DOTTORATO',
   Residenziale = 'RESIDENZIALE',
 }
+

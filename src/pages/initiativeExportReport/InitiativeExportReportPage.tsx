@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
+import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
@@ -11,7 +11,7 @@ import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersCard";
 import { generateReport, getMerchantList } from "../../services/merchantsService";
-import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMerchants";
+import { MerchantItem } from "../initiativeRefundsMerchants/model/types";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
 import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
@@ -56,6 +56,7 @@ const InitiativeExportReportPage = () => {
 
   useEffect(() => {
     getMerchantsList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getMerchantsList = () => {

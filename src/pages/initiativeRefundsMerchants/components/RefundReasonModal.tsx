@@ -2,7 +2,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, T
 import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ChecksErrorDTO } from "../../api/generated/merchants/ChecksErrorDTO";
+import { ChecksErrorDTO } from "../../../api/generated/merchants/ChecksErrorDTO";
 
 interface Props {
     open: boolean;

@@ -78,6 +78,7 @@ const IseeCriteriaItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const iseeValidationSchema = Yup.object().shape({
@@ -133,6 +134,7 @@ const IseeCriteriaItem = ({
         setRankingOrderLabel(t('components.wizard.stepThree.chooseCriteria.form.rankingOrderDesc'));
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iseeFormik.values.orderDirection, rankingEnabled]);
 
   const autocompleteOptionsList = [
@@ -217,7 +219,7 @@ const IseeCriteriaItem = ({
         </Box>
       )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        {typeof beneficiaryType !== undefined && beneficiaryType !== BeneficiaryTypeEnum.NF && (
+        {beneficiaryType !== undefined && beneficiaryType !== BeneficiaryTypeEnum.NF && (
           <IconButton
             data-id={formData.code}
             onClick={(event: any) => handleCriteriaRemoved(event)}

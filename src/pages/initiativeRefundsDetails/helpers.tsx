@@ -1,5 +1,5 @@
 import { Chip } from '@mui/material';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
+import { t } from '../../locale';
 
 export const getRefundStatus = (status: string | undefined) => {
   switch (status) {
@@ -7,7 +7,7 @@ export const getRefundStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefundsDetails.status.done')}
+          label={t('pages.initiativeRefundsDetails.status.done')}
           color="success"
         />
       );
@@ -16,7 +16,7 @@ export const getRefundStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefundsDetails.status.failed')}
+          label={t('pages.initiativeRefundsDetails.status.failed')}
           color="error"
         />
       );
@@ -24,7 +24,7 @@ export const getRefundStatus = (status: string | undefined) => {
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={i18n.t('pages.initiativeRefundsDetails.status.onEvaluation')}
+          label={t('pages.initiativeRefundsDetails.status.onEvaluation')}
           color="default"
         />
       );
