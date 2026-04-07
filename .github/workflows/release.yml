@@ -79,10 +79,11 @@ jobs:
             -Dsonar.pullrequest.provider=github
             -Dsonar.pullrequest.github.repository=${{ github.repository }}
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.typescript.lcov.reportPaths=coverage/lcov.info
-            -Dsonar.exclusions=**/__mocks__/**,**/locale/**,**/api/**,**/api/generated/**,**/*bootstrap.ts,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx,openApi/scripts/**,.github/**
-            -Dsonar.test.exclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.test.inclusions=**/__tests__/**,**/*.test.ts,**/*.test.tsx
+            -Dsonar.exclusions=**/__tests__/**,**/__mocks__/**,**/locale/**,**/api/**,**/api/generated/**,**/*bootstrap.ts,**/*consentAndAnalyticsConfiguration.ts,**/*craco.config.js,**/*index.tsx,**/*reportWebVitals.ts,**/*routes.tsx,openApi/scripts/**,.github/**
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
             -Dsonar.coverage.exclusions=src/setupTests.ts
-            "-X"
-            "-Dsonar.qualitygate.wait=false"
+            -Dsonar.qualitygate.wait=false
+            -X
