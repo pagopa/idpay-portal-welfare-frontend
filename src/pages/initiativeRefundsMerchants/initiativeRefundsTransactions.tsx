@@ -33,7 +33,7 @@ import RefundsTransactionsDrawer from "./refundsTransactionsDrawer";
 import { RefundActionButtons } from "./refundsActionButtons";
 import { getStatusColor, getStatusLabel, getStatusStyle, RefundItem, refundRequestDate } from "./initiativeRefundsMerchants";
 import RefundReasonModal from "./refundsReasonModal";
-import ApproveConfirmModal from "./approveConfirmModal";
+import ApproveConfirmModal from "./components/ApproveConfirmModal";
 import { RoleActionButton } from "./roleActionButton";
 import { RoleConfirmModal } from "./roleConfirmModal";
 import { RoleErrorModal } from "./roleErrorModal";

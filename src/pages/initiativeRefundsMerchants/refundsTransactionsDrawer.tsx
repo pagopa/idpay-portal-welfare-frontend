@@ -11,7 +11,7 @@ import { ReasonDTO } from "../../api/generated/merchants/ReasonDTO";
 import { RefundsDrawerData } from "./initiativeRefundsTransactions";
 import { RefundActionButtons } from "./refundsActionButtons";
 import RefundReasonModal from "./refundsReasonModal";
-import ApproveConfirmModal from "./approveConfirmModal";
+import ApproveConfirmModal from "./components/ApproveConfirmModal";
 
 interface Props {
     open: boolean;
