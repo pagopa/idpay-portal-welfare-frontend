@@ -1,6 +1,6 @@
 ﻿import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 import { useRefundTransactionsPage } from '../useRefundTransactionsPage';
 
 const mockReplace = jest.fn();

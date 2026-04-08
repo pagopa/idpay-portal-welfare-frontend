@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import RefundTransactionsHeader from '../RefundTransactionsHeader';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 
 jest.mock('../RefundActionButtons', () => ({
   RefundActionButtons: (props: any) => (

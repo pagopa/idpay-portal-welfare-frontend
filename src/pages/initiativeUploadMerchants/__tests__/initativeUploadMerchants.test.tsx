@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
-import { MerchantUpdateDTO } from '../../../api/generated/merchants/MerchantUpdateDTO';
+import { MerchantUpdateDTO } from '../../../api/generated/merchants/apiClient';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeUploadMerchants from '../initiativeUploadMerchants';

@@ -6,7 +6,7 @@ import {
   TRANSACTION_SEARCH_TYPE_OPTIONS,
   TRANSACTION_STATUS_FILTER_OPTIONS,
 } from '../constants';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 
 describe('merchant refund constants', () => {
   test('exposes the expected refund filters and pagination options', () => {

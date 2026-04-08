@@ -32,4 +32,13 @@ module.exports = {
       return webpackConfig;
     },
   },
+  jest: {
+    configure: (jestConfig) => ({
+      ...jestConfig,
+      moduleNameMapper: {
+        ...jestConfig.moduleNameMapper,
+        '^axios$': require.resolve('axios/dist/node/axios.cjs'),
+      },
+    }),
+  },
 };

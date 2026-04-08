@@ -1,9 +1,8 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithContext } from '../../../utils/test-utils';
 import MerchantTransactions from '../MerchantTransactions';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
-import { MerchantTransactionsListDTO } from '../../../api/generated/merchants/MerchantTransactionsListDTO';
+import { MerchantTransactionsListDTO } from '../../../api/generated/merchants/apiClient';
 import userEvent from '@testing-library/user-event';
 
 beforeEach(() => {
