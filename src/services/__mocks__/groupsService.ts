@@ -8,12 +8,12 @@ export const mockedBeneficiaryStatusAndDetails = {
   beneficiariesReached: 0,
   errorMessage: 'errorMessage',
   fileName: 'fileName',
-  fileUploadingDateTime: new Date('2018-10-13T00:00:00.000Z'),
+  fileUploadingDateTime: new Date('2018-10-13T00:00:00.000Z').toDateString(),
   status: 'APPROVED',
 };
 
 export const mockedUploadGroupOfBeneficiary = {
-  elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  elabTimeStamp: new Date('2018-10-13T00:00:00.000Z').toDateString(),
   errorKey: 'errorKey',
   errorRow: 0,
   status: 'APPROVED',

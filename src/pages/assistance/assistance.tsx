@@ -10,8 +10,8 @@ import { useHistory } from 'react-router-dom';
 import ROUTES from '../../routes';
 import { getInstitutionProductUserInfo, sendEmail } from '../../services/emailNotificationService';
 import { ENV } from '../../utils/env';
-import { EmailMessageDTO } from '../../api/generated/email-notification/EmailMessageDTO';
 import ExitModal from '../../components/ExitModal/ExitModal';
+import { EmailMessageDTO } from '../../api/generated/email-notification/apiClient';
 
 const Assistance = () => {
   const { t } = useTranslation();

@@ -1,27 +1,31 @@
+import { AxiosError } from 'axios';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
-import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
 import { t } from '../locale';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { createClient, WithDefaultsT } from './generated/role-permission/client';
-import { UserPermissionDTO } from './generated/role-permission/UserPermissionDTO';
-import { PortalConsentDTO } from './generated/role-permission/PortalConsentDTO';
+import {
+  Api,
+  HttpClient,
+  PortalConsentDTO,
+  UserPermissionDTO,
+} from './generated/role-permission/apiClient';
 
-const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
-  const token = storageTokenOps.read();
-  return wrappedOperation({
-    ...params,
-    Bearer: `Bearer ${token}`,
-  });
-};
-
-const rolePermissionClient = createClient({
-  baseUrl: ENV.URL_API.ROLE_PERMISSION,
-  basePath: '',
-  fetchApi: buildFetchApi(ENV.API_TIMEOUT_MS.ROLE_PERMISSION),
-  withDefaults: withBearerAndPartyId,
+const rolePermissionSwaggerHttpClient = new HttpClient<{ token: string }>({
+  baseURL: ENV.URL_API.ROLE_PERMISSION,
+  securityWorker: (securityData) => ({
+    headers: {
+      Authorization: `Bearer ${securityData?.token ?? ''}`,
+    },
+  }),
 });
+
+const api = new Api(rolePermissionSwaggerHttpClient);
+
+const isUnauthorizedError = (error: unknown): boolean => {
+  const axiosError = error as AxiosError | undefined;
+  return axiosError?.response?.status === 401;
+};
 
 const onRedirectToLogin = () =>
   store.dispatch(
@@ -36,19 +40,40 @@ const onRedirectToLogin = () =>
     })
   );
 
-export const RolePermissionApi = {
-  userPermission: async (): Promise<UserPermissionDTO> => {
-    const result = await rolePermissionClient.userPermission({});
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
+const withAuth = () =>
+  rolePermissionSwaggerHttpClient.setSecurityData({
+    token: storageTokenOps.read(),
+  });
 
-  getPortalConsent: async (): Promise<PortalConsentDTO> => {
-    const result = await rolePermissionClient.getPortalConsent({});
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
+const execute = async <T>(operation: () => Promise<{ data: T }>): Promise<T> => {
+  withAuth();
+  try {
+    const response = await operation();
+    return response.data;
+  } catch (error) {
+    if (isUnauthorizedError(error)) {
+      onRedirectToLogin();
+    }
+    throw error;
+  }
+};
+
+export const RolePermissionApi = {
+  userPermission: async (): Promise<UserPermissionDTO> =>
+    execute(() => api.permissions.userPermission()),
+
+  getPortalConsent: async (): Promise<PortalConsentDTO> =>
+    execute(() => api.consent.getPortalConsent()),
 
   savePortalConsent: async (versionId: string | undefined): Promise<void> => {
-    const result = await rolePermissionClient.savePortalConsent({ body: { versionId } });
-    return extractResponse(result, 200, onRedirectToLogin);
+    withAuth();
+    try {
+      await api.consent.savePortalConsent({ versionId });
+    } catch (error) {
+      if (isUnauthorizedError(error)) {
+        onRedirectToLogin();
+      }
+      throw error;
+    }
   },
 };

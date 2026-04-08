@@ -1,27 +1,31 @@
+import { AxiosError } from 'axios';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
-import { buildFetchApi, extractResponse } from '@pagopa/selfcare-common-frontend/lib/utils/api-utils';
 import { t } from '../locale';
 import { store } from '../redux/store';
 import { ENV } from '../utils/env';
-import { createClient, WithDefaultsT } from './generated/groups/client';
-import { StatusGroupDTO } from './generated/groups/StatusGroupDTO';
-import { GroupUpdateDTO } from './generated/groups/GroupUpdateDTO';
+import {
+  Api,
+  HttpClient,
+  GroupUpdateDTO,
+  StatusGroupDTO,
+} from './generated/groups/apiClient';
 
-const withBearerAndPartyId: WithDefaultsT<'Bearer'> = (wrappedOperation) => (params: any) => {
-  const token = storageTokenOps.read();
-  return wrappedOperation({
-    ...params,
-    Bearer: `Bearer ${token}`,
-  });
-};
-
-const groupsApiClient = createClient({
-  baseUrl: ENV.URL_API.GROUPS,
-  basePath: '',
-  fetchApi: buildFetchApi(ENV.API_TIMEOUT_MS.GROUPS),
-  withDefaults: withBearerAndPartyId,
+const groupsSwaggerHttpClient = new HttpClient<{ token: string }>({
+  baseURL: ENV.URL_API.GROUPS,
+  securityWorker: (securityData) => ({
+    headers: {
+      Authorization: `Bearer ${securityData?.token ?? ''}`,
+    },
+  }),
 });
+
+const api = new Api(groupsSwaggerHttpClient);
+
+const isUnauthorizedError = (error: unknown): boolean => {
+  const axiosError = error as AxiosError | undefined;
+  return axiosError?.response?.status === 401;
+};
 
 const onRedirectToLogin = () =>
   store.dispatch(
@@ -36,19 +40,39 @@ const onRedirectToLogin = () =>
     })
   );
 
-export const groupsApi = {
-  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<StatusGroupDTO> => {
-    const result = await groupsApiClient.getGroupOfBeneficiaryStatusAndDetails({
-      initiativeId: id,
-    });
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
+const withAuth = () =>
+  groupsSwaggerHttpClient.setSecurityData({
+    token: storageTokenOps.read(),
+  });
 
-  uploadGroupOfBeneficiary: async (id: string, file: File): Promise<GroupUpdateDTO> => {
-    const result = await groupsApiClient.uploadGroupOfBeneficiary({
-      initiativeId: id,
-      file,
-    });
-    return extractResponse(result, 200, onRedirectToLogin);
-  },
+const execute = async <T>(operation: () => Promise<{ data: T }>): Promise<T> => {
+  withAuth();
+  try {
+    const response = await operation();
+    return response.data;
+  } catch (error) {
+    if (isUnauthorizedError(error)) {
+      onRedirectToLogin();
+    }
+    throw error;
+  }
+};
+
+export const groupsApi = {
+  getGroupOfBeneficiaryStatusAndDetails: async (id: string): Promise<StatusGroupDTO> =>
+    execute(() =>
+      api.initiative.getGroupOfBeneficiaryStatusAndDetails({
+        initiativeId: id,
+      })
+    ),
+
+  uploadGroupOfBeneficiary: async (id: string, file: File): Promise<GroupUpdateDTO> =>
+    execute(() =>
+      api.initiative.uploadGroupOfBeneficiary(
+        {
+          initiativeId: id,
+        },
+        { file }
+      )
+    ),
 };
