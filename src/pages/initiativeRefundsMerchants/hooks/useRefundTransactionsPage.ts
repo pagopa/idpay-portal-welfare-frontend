@@ -3,12 +3,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/stor
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
-import { ChecksErrorDTO } from '../../../api/generated/merchants/ChecksErrorDTO';
-import { MerchantTransactionProcessedDTO } from '../../../api/generated/merchants/MerchantTransactionProcessedDTO';
-import { PointOfSaleDTO } from '../../../api/generated/merchants/PointOfSaleDTO';
-import { RewardBatchDTO } from '../../../api/generated/merchants/RewardBatchDTO';
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
-import { TransactionActionRequest } from '../../../api/generated/merchants/TransactionActionRequest';
+import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest } from '../../../api/generated/merchants/apiClient';
 import { useAlert } from '../../../hooks/useAlert';
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useInitiative } from '../../../hooks/useInitiative';
@@ -96,7 +91,7 @@ export const useRefundTransactionsPage = () => {
   const [rows, setRows] = useState<Array<TrxItem>>([]);
   const [iban, setIban] = useState<string>('');
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set());
-  const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatusEnum | null>(null);
+  const [lockedStatus, setLockedStatus] = useState<RewardBatchTrxStatus | null>(null);
   const [dateSort, setDateSort] = useState<SortDirection>('');
   const [openDrawer, setOpenDrawer] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState<RefundsDrawerData | null>(null);
@@ -212,17 +207,17 @@ export const useRefundTransactionsPage = () => {
     setLockedStatus(null);
   }, [page, pageSize, posFilter, statusFilter, dateSort, searchValue, searchType]);
 
-  const mapTransactionStatus = useCallback((status?: RewardBatchTrxStatusEnum) => {
+  const mapTransactionStatus = useCallback((status?: RewardBatchTrxStatus) => {
     switch (status) {
-      case RewardBatchTrxStatusEnum.TO_CHECK:
+      case RewardBatchTrxStatus.TO_CHECK:
         return { label: t('pages.initiativeMerchantsTransactions.table.toCheck'), color: 'indigo' };
-      case RewardBatchTrxStatusEnum.CONSULTABLE:
+      case RewardBatchTrxStatus.CONSULTABLE:
         return { label: t('pages.initiativeMerchantsTransactions.table.consultable'), color: 'default' };
-      case RewardBatchTrxStatusEnum.SUSPENDED:
+      case RewardBatchTrxStatus.SUSPENDED:
         return { label: t('pages.initiativeMerchantsTransactions.table.suspended'), color: 'warning' };
-      case RewardBatchTrxStatusEnum.APPROVED:
+      case RewardBatchTrxStatus.APPROVED:
         return { label: t('pages.initiativeMerchantsTransactions.table.approved'), color: 'info' };
-      case RewardBatchTrxStatusEnum.REJECTED:
+      case RewardBatchTrxStatus.REJECTED:
         return { label: t('pages.initiativeMerchantsTransactions.table.rejected'), color: 'error' };
       default:
         return { label: '-', color: 'default' };
@@ -265,7 +260,7 @@ export const useRefundTransactionsPage = () => {
         searchType === 'fiscalCode' ? searchValue || undefined : undefined,
         undefined,
         batch.id,
-        (statusFilter as RewardBatchTrxStatusEnum) || undefined,
+        (statusFilter as RewardBatchTrxStatus) || undefined,
         posFilter || undefined,
         searchType === 'trxCode' ? searchValue || undefined : undefined
       ),
@@ -319,7 +314,7 @@ export const useRefundTransactionsPage = () => {
   };
 
   const mapRewardBatchToRefund = (rewardBatch: RewardBatchDTO): RefundItem => ({
-    id: rewardBatch.id,
+    id: rewardBatch.id ?? "",
     merchantId: rewardBatch.merchantId ?? batch?.merchantId ?? '',
     businessName: rewardBatch.businessName ?? batch?.businessName ?? '',
     month: rewardBatch.month ?? batch?.month ?? '',
@@ -406,7 +401,7 @@ export const useRefundTransactionsPage = () => {
     });
   };
 
-  const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => {
+  const handleRowCheckbox = (rowId: string, rowStatus?: RewardBatchTrxStatus) => {
     if (!rowStatus) {
       return;
     }

@@ -1,7 +1,6 @@
-import { ChecksErrorDTO } from '../../../api/generated/merchants/ChecksErrorDTO';
 
+import { ChecksErrorDTO } from '../../../api/generated/merchants/apiClient';
 import { RefundsDrawerData } from '../model/types';
-
 import ApproveConfirmModal from './ApproveConfirmModal';
 import RefundReasonModal from './RefundReasonModal';
 import RefundsTransactionsDrawer from './RefundsTransactionsDrawer';

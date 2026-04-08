@@ -1,4 +1,4 @@
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus } from '../../../api/generated/merchants/apiClient';
 import { RefundStatus } from './types';
 
 export const MERCHANT_REFUND_PERIOD_OPTIONS = [
@@ -25,11 +25,11 @@ export const BATCH_STATUS_FILTER_OPTIONS: Array<{ value: RefundStatus; role?: st
 ];
 
 export const TRANSACTION_STATUS_FILTER_OPTIONS = [
-  RewardBatchTrxStatusEnum.TO_CHECK,
-  RewardBatchTrxStatusEnum.CONSULTABLE,
-  RewardBatchTrxStatusEnum.SUSPENDED,
-  RewardBatchTrxStatusEnum.APPROVED,
-  RewardBatchTrxStatusEnum.REJECTED,
+  RewardBatchTrxStatus.TO_CHECK,
+  RewardBatchTrxStatus.CONSULTABLE,
+  RewardBatchTrxStatus.SUSPENDED,
+  RewardBatchTrxStatus.APPROVED,
+  RewardBatchTrxStatus.REJECTED,
 ] as const;
 
 export const TRANSACTION_SEARCH_TYPE_OPTIONS = [

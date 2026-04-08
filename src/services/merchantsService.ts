@@ -1,23 +1,5 @@
-// import { merchantsApiMocked } from '../api/__mocks__/merchantsApiClient';
-import { DownloadInvoiceResponseDTO } from '../api/generated/merchants/DownloadInvoiceResponseDTO';
-import { DownloadReportResponseDTO } from '../api/generated/merchants/DownloadReportResponseDTO';
-import { DownloadRewardBatchResponseDTO } from '../api/generated/merchants/DownloadRewardBatchResponseDTO';
-import { ListPointOfSaleDTO } from '../api/generated/merchants/ListPointOfSaleDTO';
-import { MerchantDetailDTO } from '../api/generated/merchants/MerchantDetailDTO';
-import { MerchantListDTO } from '../api/generated/merchants/MerchantListDTO';
-import { MerchantStatisticsDTO } from '../api/generated/merchants/MerchantStatisticsDTO';
-import { MerchantTransactionsListDTO } from '../api/generated/merchants/MerchantTransactionsListDTO';
-import { MerchantTransactionsProcessedListDTO } from '../api/generated/merchants/MerchantTransactionsProcessedListDTO';
-
-import { MerchantUpdateDTO } from '../api/generated/merchants/MerchantUpdateDTO';
-import { ReportDTO, ReportTypeEnum } from '../api/generated/merchants/ReportDTO';
-import { ReportListDTO } from '../api/generated/merchants/ReportListDTO';
-import { RewardBatchDTO } from '../api/generated/merchants/RewardBatchDTO';
-import { RewardBatchListDTO } from '../api/generated/merchants/RewardBatchListDTO';
-import { RewardBatchTrxStatusEnum } from '../api/generated/merchants/RewardBatchTrxStatus';
-import { TransactionActionRequest } from '../api/generated/merchants/TransactionActionRequest';
-import { TransactionActionResponse } from '../api/generated/merchants/TransactionActionResponse';
-import { merchantsApi } from '../api/merchantsApiClient';
+import { DownloadInvoiceResponseDTO, DownloadReportResponseDTO, DownloadRewardBatchResponseDTO, ListPointOfSaleDTO, MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO, ReportDTO, ReportListDTO, RewardBatchDTO, RewardBatchListDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionActionResponse, AssigneeLevelEnum, ReportTypeEnum, RewardBatchStatus, ReportRequestReportTypeEnum } from "../api/generated/merchants/apiClient";
+import { merchantsApi } from "../api/merchantsApiClient";
 
 export const uploadMerchantList = async (id: string, file: File): Promise<MerchantUpdateDTO> => merchantsApi.uploadMerchantList(id, file);
 
@@ -54,7 +36,7 @@ export const getMerchantTransactionsProcessed = (
   fiscalCode?: string,
   status?: string,
   rewardBatchId?: string,
-  rewardBatchTrxStatus?: RewardBatchTrxStatusEnum,
+  rewardBatchTrxStatus?: RewardBatchTrxStatus,
   pointOfSaleId?: string,
   trxCode?: string
 
@@ -77,10 +59,10 @@ export const getRewardBatches = (
   initiativeId: string,
   page: number,
   size: number,
-  assigneeLevel?: string,
+  assigneeLevel?: AssigneeLevelEnum,
   merchantId?: string,
   month?: string,
-  status?: string,
+  status?: RewardBatchStatus,
   sort?: string
 ): Promise<RewardBatchListDTO> =>
   merchantsApi.getRewardBatches(
@@ -176,9 +158,9 @@ export const getDownloadCsv = (
 
 export const generateReport = (
   initiativeId: string,
-  startPeriod: Date,
-  endPeriod: Date,
-  reportType: ReportTypeEnum,
+  startPeriod: string,
+  endPeriod: string,
+  reportType: ReportRequestReportTypeEnum,
   merchantId?: string,
 ): Promise<ReportDTO> =>
   merchantsApi.generateReport(

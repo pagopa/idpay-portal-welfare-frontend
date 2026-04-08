@@ -3,6 +3,7 @@ import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { useTranslation } from 'react-i18next';
 import { useState } from "react";
 import { matchPath } from "react-router-dom";
+import { ReportDtoReportStatusEnum, ReportRequestReportTypeEnum } from "../../api/generated/merchants/apiClient";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import ROUTES from "../../routes";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
@@ -13,7 +14,6 @@ import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersC
 import { generateReport } from "../../services/merchantsService";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
-import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT_USERS } from "../../utils/constants";
 
 const InitiativeExportReportUsersPage = () => {
@@ -25,19 +25,19 @@ const InitiativeExportReportUsersPage = () => {
     id: string;
   }
   const reportStatusAlertConfig = {
-    [ReportStatusEnum.GENERATED]: {
+    [ReportDtoReportStatusEnum.GENERATED]: {
       severity: 'success' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.generated')
     },
-    [ReportStatusEnum.FAILED]: {
+    [ReportDtoReportStatusEnum.FAILED]: {
       severity: 'error' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.failed')
     },
-    [ReportStatusEnum.INSERTED]: {
+    [ReportDtoReportStatusEnum.INSERTED]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     },
-    [ReportStatusEnum.IN_PROGRESS]: {
+    [ReportDtoReportStatusEnum.IN_PROGRESS]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     }
@@ -55,7 +55,7 @@ const InitiativeExportReportUsersPage = () => {
 
   const handleGenerateReport = (data: { startDate: Date; endDate: Date }) => {
     setLoading(true);
-    generateReport(id, data.startDate, data.endDate, ReportTypeEnum.USER_DETAILS)
+    generateReport(id, data.startDate.toString(), data.endDate.toString(), ReportRequestReportTypeEnum.USER_DETAILS )
       .then((res) => {
         if (res?.reportStatus) {
           const alertConfig = reportStatusAlertConfig[res.reportStatus];

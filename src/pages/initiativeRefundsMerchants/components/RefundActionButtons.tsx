@@ -2,11 +2,11 @@ import { Box, Button } from "@mui/material";
 import { ButtonNaked } from "@pagopa/mui-italia";
 import FlagIcon from "@mui/icons-material/Flag";
 import { useTranslation } from "react-i18next";
-import { RewardBatchTrxStatusEnum } from "../../../api/generated/merchants/RewardBatchTrxStatus";
+import { RewardBatchTrxStatus } from "../../../api/generated/merchants/apiClient";
 
 interface Props {
     direction: "row" | "column";
-    status?: RewardBatchTrxStatusEnum;
+    status?: RewardBatchTrxStatus;
     onApprove: () => void;
     onSuspend: () => void;
     onReject: () => void;
@@ -26,27 +26,27 @@ export const RefundActionButtons = ({
     // eslint-disable-next-line sonarjs/cognitive-complexity
     const getButtons = () => {
         switch (status) {
-            case RewardBatchTrxStatusEnum.TO_CHECK:
-            case RewardBatchTrxStatusEnum.CONSULTABLE:
+            case RewardBatchTrxStatus.TO_CHECK:
+            case RewardBatchTrxStatus.CONSULTABLE:
                 return [
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" } : { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "error" },
                     { label: t(`pages.initiativeMerchantsTransactions.modal.suspend`), click: onSuspend, type: "flag" },
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "naked" } : { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" }
                 ];
 
-            case RewardBatchTrxStatusEnum.REJECTED:
+            case RewardBatchTrxStatus.REJECTED:
                 return [
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" } : { label: t(`pages.initiativeMerchantsTransactions.modal.suspend`), click: onSuspend, type: "flag" },
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.suspend`), click: onSuspend, type: "flag" } : { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" }
                 ];
 
-            case RewardBatchTrxStatusEnum.SUSPENDED:
+            case RewardBatchTrxStatus.SUSPENDED:
                 return [
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" } : { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "error" },
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "naked" } : { label: t(`pages.initiativeMerchantsTransactions.modal.approve`), click: onApprove, type: "primary" }
                 ];
 
-            case RewardBatchTrxStatusEnum.APPROVED:
+            case RewardBatchTrxStatus.APPROVED:
                 return [
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.suspend`), click: onSuspend, type: "flag" } : { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "error" },
                     direction === "column" ? { label: t(`pages.initiativeMerchantsTransactions.modal.reject`), click: onReject, type: "naked" } : { label: t(`pages.initiativeMerchantsTransactions.modal.suspend`), click: onSuspend, type: "flag" }
