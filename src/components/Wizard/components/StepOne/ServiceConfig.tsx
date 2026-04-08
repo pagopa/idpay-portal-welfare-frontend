@@ -116,19 +116,68 @@ const ServiceConfig = ({
   }, [JSON.stringify(additionalInfo)]);
 
   const validateUrl = (value: string | undefined): boolean => {
-    const regex = new RegExp(/^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/);
-    if (typeof value === 'string') {
-      return regex.test(value);
+    if (typeof value !== 'string') {
+      return false;
     }
-    return false;
+
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+      return false;
+    }
+
+    try {
+      const parsedUrl = new URL(trimmedValue);
+      return parsedUrl.protocol === 'https:' && parsedUrl.hostname.length > 0;
+    } catch {
+      return false;
+    }
   };
 
   const validatePhoneNumber = (value: string | undefined): boolean => {
-    const regex = new RegExp(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/);
-    if (typeof value === 'string') {
-      return regex.test(value);
+    if (typeof value !== 'string') {
+      return false;
     }
-    return false;
+
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+      return false;
+    }
+
+    let index = 0;
+    let prefixDigits = 0;
+
+    while (index < trimmedValue.length && trimmedValue[index] >= '0' && trimmedValue[index] <= '9') {
+      prefixDigits += 1;
+      index += 1;
+    }
+
+    if (prefixDigits < 2 || prefixDigits > 4) {
+      return false;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === '-') {
+      index += 1;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === '/') {
+      index += 1;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === ' ') {
+      index += 1;
+    }
+
+    let localDigits = 0;
+    while (index < trimmedValue.length && trimmedValue[index] >= '0' && trimmedValue[index] <= '9') {
+      localDigits += 1;
+      index += 1;
+    }
+
+    if (localDigits < 1 || localDigits > 10) {
+      return false;
+    }
+
+    return index === trimmedValue.length;
   };
 
   const validationSchema = Yup.object().shape({
