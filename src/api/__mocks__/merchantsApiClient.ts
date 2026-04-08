@@ -6,13 +6,7 @@ import {
   mockedMerchantUdatedStatus,
   mockedMerchantsOnboardingList,
 } from '../../services/__mocks__/merchantsService';
-import { MerchantDetailDTO } from '../generated/merchants/MerchantDetailDTO';
-import { MerchantListDTO } from '../generated/merchants/MerchantListDTO';
-import { MerchantStatisticsDTO } from '../generated/merchants/MerchantStatisticsDTO';
-import { MerchantTransactionsListDTO } from '../generated/merchants/MerchantTransactionsListDTO';
-import { MerchantTransactionsProcessedListDTO } from '../generated/merchants/MerchantTransactionsProcessedListDTO';
-
-import { MerchantUpdateDTO } from '../generated/merchants/MerchantUpdateDTO';
+import { MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO } from '../generated/merchants/apiClient';
 
 export const merchantsApiMocked = {
   uploadMerchantList: async (_id: string, _file: File): Promise<MerchantUpdateDTO> =>
