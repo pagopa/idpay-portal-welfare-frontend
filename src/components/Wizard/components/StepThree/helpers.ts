@@ -1,11 +1,10 @@
 import { Dispatch, SetStateAction } from 'react';
 import { grey } from '@mui/material/colors';
 import { t } from '../../../../locale';
-import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
-import { ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
 import { AutomatedCriteriaItem } from '../../../../model/Initiative';
 import { FilterOperator } from '../../../../utils/constants';
+import { AutomatedCriteriaDtoOrderDirectionEnum, ConfigBeneficiaryRuleArrayDTO } from '../../../../api/generated/initiative/apiClient';
 
 export const handleCriteriaToSubmit = (
   criteriaToSubmit: Array<{ code: string | undefined; dispatched: boolean }>,
@@ -46,7 +45,7 @@ export const setFormControlDisplayProp = (inputType: string) =>
 
 export const mapResponse = (response: ConfigBeneficiaryRuleArrayDTO): Array<AvailableCriteria> =>
   // eslint-disable-next-line sonarjs/cognitive-complexity
-  response.map((r) => {
+  response.map((r: any) => {
     // eslint-disable-next-line no-prototype-builtins
     if (r.hasOwnProperty('code') && r.code !== undefined) {
       switch (r.code) {
@@ -210,13 +209,13 @@ export const updateInitialAutomatedCriteriaOnSelector = (
 
 export const setInitialOrderDirection = (
   rankingEnabled: string | undefined,
-  orderDirection: OrderDirectionEnum | undefined
+  orderDirection: AutomatedCriteriaDtoOrderDirectionEnum | undefined
 ) => {
   if (typeof rankingEnabled === 'string' && rankingEnabled === 'true') {
     if (typeof orderDirection === 'string') {
       return orderDirection;
     } else {
-      return OrderDirectionEnum.ASC;
+      return AutomatedCriteriaDtoOrderDirectionEnum.ASC;
     }
   } else {
     return undefined;

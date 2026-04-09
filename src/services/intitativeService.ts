@@ -1,80 +1,92 @@
-import { ConfigBeneficiaryRuleArrayDTO } from '../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
-import { CsvDTO } from '../api/generated/initiative/CsvDTO';
-import { ExportListDTO } from '../api/generated/initiative/ExportListDTO';
-import { ExportSummaryDTO } from '../api/generated/initiative/ExportSummaryDTO';
-import { IbanDTO } from '../api/generated/initiative/IbanDTO';
-import { InitiativeAdditionalDTO } from '../api/generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeBeneficiaryRuleDTO } from '../api/generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeDTO, InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
-import { InitiativeGeneralDTO } from '../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
 import {
+  InitiativeSummaryArrayDTO,
+  InitiativeDTO,
+  InitiativeAdditionalDTO,
+  InitiativeGeneralDTO,
+  InitiativeBeneficiaryRuleDTO,
+  ConfigBeneficiaryRuleArrayDTO,
+  InitiativeStatisticsDTO,
   InitiativeRewardAndTrxRulesDTO,
-  InitiativeRewardAndTrxRulesDTORewardRule,
-} from '../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { InitiativeStatisticsDTO } from '../api/generated/initiative/InitiativeStatisticsDTO';
-import { InitiativeSummaryArrayDTO } from '../api/generated/initiative/InitiativeSummaryArrayDTO';
-import { InstrumentListDTO } from '../api/generated/initiative/InstrumentListDTO';
-import { LogoDTO } from '../api/generated/initiative/LogoDTO';
-import { OnboardingDTO } from '../api/generated/initiative/OnboardingDTO';
-import { OnboardingStatusDTO } from '../api/generated/initiative/OnboardingStatusDTO';
-import { OperationDTO } from '../api/generated/initiative/OperationDTO';
-import { OrganizationListDTO } from '../api/generated/initiative/OrganizationListDTO';
-import { PageOnboardingRankingsDTO } from '../api/generated/initiative/PageOnboardingRankingsDTO';
-import { PageRewardExportsDTO } from '../api/generated/initiative/PageRewardExportsDTO';
-import { PageRewardImportsDTO } from '../api/generated/initiative/PageRewardImportsDTO';
-import { RefundDetailDTO } from '../api/generated/initiative/RefundDetailDTO';
-import { RewardGroupDTO } from '../api/generated/initiative/RewardGroupDTO';
-import { RewardValueDTO } from '../api/generated/initiative/RewardValueDTO';
-import { SasToken } from '../api/generated/initiative/SasToken';
-import { TimelineDTO } from '../api/generated/initiative/TimelineDTO';
-import { WalletDTO } from '../api/generated/initiative/WalletDTO';
+  InitiativeRefundRuleDTO,
+  PageRewardExportsDTO,
+  SasToken,
+  OnboardingDTO,
+  PageRewardImportsDTO,
+  LogoDTO,
+  CsvDTO,
+  PageOnboardingRankingsDTO,
+  OrganizationListDTO,
+  GetWalletDetailData as WalletDTO,
+  GetInstrumentListData as InstrumentListDTO,
+  GetIbanData as IbanDTO,
+  GetTimelineData as TimelineDTO,
+  GetTimelineDetailData as OperationDTO,
+  ExportSummaryDTO,
+  ExportListDTO,
+  RefundDetailDTO,
+  GetBeneficiaryOnboardingStatusData as OnboardingStatusDTO,
+  GetFamilyCompositionData as FamilyUnitCompositionDTO,
+  RewardGroupsDTO,
+  RewardValueDTO,
+} from '../api/generated/initiative/apiClient';
 import { InitiativeApi } from '../api/InitiativeApiClient';
-// import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
-import { decode } from '../utils/io-utils';
-import { FamilyUnitCompositionDTO } from '../api/generated/initiative/FamilyUnitCompositionDTO';
-// import { ContentDTO } from '../api/generated/initiative/ContentDTO';
-// import { mockedFile } from './__mocks__/groupService';
-// import {
-//   mockedExportsPagedParam,
-//   // mockedFileName,
-//   mockedFilePath,
-//   mockedFiscalCode,
-//   mockedIban,
-//   // mockedFiscalCode,
-//   mockedInitiativeBeneficiaryRuleBody,
-//   mockedInitiativeGeneralBody,
-//   mockedInitiativeId,
-//   mockedOnBoardingStatusParam,
-//   mockedRankingStatus,
-//   mockedRefundRules,
-//   mockedTrxAndRewardRules,
-// } from './__mocks__/intitativeService';
 
-export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> => InitiativeApi.getInitativeSummary().then((res) => res);
+export enum InitiativeRewardTypeEnum {
+  REFUND = 'REFUND',
+  DISCOUNT = 'DISCOUNT',
+}
 
-export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> => InitiativeApi.getInitiativeById(id).then((res) => res);
+/**
+ * Accepts a reward rule and decodes it into RewardGroupsDTO or RewardValueDTO.
+ * Using unknown here is safer because the old generated union type name no longer exists.
+ */
+export const trascodeRewardRule = (
+  rewardRule: unknown
+): RewardGroupsDTO | RewardValueDTO | undefined => {
+  if (!rewardRule || typeof rewardRule !== 'object') {
+    return undefined;
+  }
+
+  const rewardRuleType = Reflect.get(rewardRule, '_type');
+
+  switch (rewardRuleType) {
+    case 'rewardGroups':
+      return rewardRule as RewardGroupsDTO;
+
+    case 'rewardValue':
+      return rewardRule as RewardValueDTO;
+
+    default:
+      throw new Error(`Unknown type: ${String(rewardRuleType)}`);
+  }
+};
+
+export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
+  InitiativeApi.getInitativeSummary();
+
+export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>
+  InitiativeApi.getInitiativeById(id);
 
 export const createInitiativeServiceInfo = (
   data: InitiativeAdditionalDTO
-): Promise<InitiativeDTO | void | undefined> => InitiativeApi.saveInitiativeServiceInfo(data).then((res) => res);
+): Promise<InitiativeDTO> => InitiativeApi.saveInitiativeServiceInfo(data);
 
 export const updateInitiativeServiceInfo = (
   id: string,
   data: InitiativeAdditionalDTO
-): Promise<void> => InitiativeApi.updateInitiativeServiceInfo(id, data).then((res) => res);
-  
+): Promise<void> => InitiativeApi.updateInitiativeServiceInfo(id, data);
 
 export const updateInitiativeGeneralInfo = (
   id: string,
   data: InitiativeGeneralDTO
-): Promise<void> => InitiativeApi.updateInitiativeGeneralInfo(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.updateInitiativeGeneralInfo(id, data);
+
 export const updateInitiativeGeneralInfoDraft = (
   id: string,
   data: InitiativeGeneralDTO
-): Promise<void> => InitiativeApi.updateInitiativeGeneralInfoDraft(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.updateInitiativeGeneralInfoDraft(id, data);
 
-export const putBeneficiaryRuleService = async (
+export const putBeneficiaryRuleService = (
   id: string,
   data: InitiativeBeneficiaryRuleDTO
 ): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePut(id, data);
@@ -82,49 +94,45 @@ export const putBeneficiaryRuleService = async (
 export const putBeneficiaryRuleDraftService = (
   id: string,
   data: InitiativeBeneficiaryRuleDTO
-): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.initiativeBeneficiaryRulePutDraft(id, data);
 
-export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> => InitiativeApi.getEligibilityCriteriaForSidebar().then((res) => res);
+export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
+  InitiativeApi.getEligibilityCriteriaForSidebar();
 
-export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> => InitiativeApi.initiativeStatistics(id).then((res) => res);
-
-/** It will accept a {@link InitiativeRewardAndTrxRulesDTORewardRule} and it will transcode it into {@link RewardGroupDTO} or {@link RewardValueDTO} */
-export const trascodeRewardRule = (rewardRule: InitiativeRewardAndTrxRulesDTORewardRule) => {
-  if (rewardRule) {
-    const rewardRuleType = Reflect.get(rewardRule as object, '_type');
-    switch (rewardRuleType) {
-      case 'rewardGroups':
-        return decode(rewardRule, RewardGroupDTO);
-      case 'rewardValue':
-        return decode(rewardRule, RewardValueDTO);
-      default:
-        throw new Error(`Unknown type: ${rewardRule}`);
-    }
-  }
-  return rewardRule;
-};
+export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> =>
+  InitiativeApi.initiativeStatistics(id);
 
 export const putTrxAndRewardRules = (
   id: string,
   data: InitiativeRewardAndTrxRulesDTO
-): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPut(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPut(id, data);
 
 export const putTrxAndRewardRulesDraft = (
   id: string,
   data: InitiativeRewardAndTrxRulesDTO
-): Promise<void> =>InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data).then((res) => res);
+): Promise<void> => InitiativeApi.initiativeTrxAndRewardRulesPutDraft(id, data);
 
-export const putRefundRule = (id: string, data: InitiativeRefundRuleDTO): Promise<void> => InitiativeApi.updateInitiativeRefundRulePut(id, data).then((res) => res);
+export const putRefundRule = (
+  id: string,
+  data: InitiativeRefundRuleDTO
+): Promise<void> => InitiativeApi.updateInitiativeRefundRulePut(id, data);
 
-export const putRefundRuleDraft = (id: string, data: InitiativeRefundRuleDTO): Promise<void> => InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data).then((res) => res);
+export const putRefundRuleDraft = (
+  id: string,
+  data: InitiativeRefundRuleDTO
+): Promise<void> => InitiativeApi.updateInitiativeRefundRuleDraftPut(id, data);
 
-export const updateInitiativeApprovedStatus = (id: string): Promise<void> => InitiativeApi.updateInitiativeApprovedStatus(id).then((res) => res);
+export const updateInitiativeApprovedStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativeApprovedStatus(id);
 
-export const updateInitiativeToCheckStatus = (id: string): Promise<void> => InitiativeApi.updateInitiativeToCheckStatus(id).then((res) => res);
+export const updateInitiativeToCheckStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativeToCheckStatus(id);
 
-export const updateInitiativePublishedStatus = (id: string): Promise<void> => InitiativeApi.updateInitiativePublishedStatus(id).then((res) => res);
+export const updateInitiativePublishedStatus = (id: string): Promise<void> =>
+  InitiativeApi.updateInitiativePublishedStatus(id);
 
-export const logicallyDeleteInitiative = (id: string): Promise<void> =>InitiativeApi.logicallyDeleteInitiative(id).then((res) => res);
+export const logicallyDeleteInitiative = (id: string): Promise<void> =>
+  InitiativeApi.logicallyDeleteInitiative(id);
 
 export const getExportsPaged = (
   id: string,
@@ -133,16 +141,20 @@ export const getExportsPaged = (
   notificationDateTo?: string,
   status?: string,
   sort?: string
-): Promise<PageRewardExportsDTO> => InitiativeApi.getExportsPaged(
+): Promise<PageRewardExportsDTO> =>
+  InitiativeApi.getExportsPaged(
     id,
     page,
     notificationDateFrom,
     notificationDateTo,
     status,
     sort
-  ).then((res) => res);
+  );
 
-export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> => InitiativeApi.getRewardFileDownload(id, filePath).then((res) => res);
+export const getRewardFileDownload = (
+  id: string,
+  filePath: string
+): Promise<SasToken> => InitiativeApi.getRewardFileDownload(id, filePath);
 
 export const getOnboardingStatus = (
   id: string,
@@ -151,45 +163,57 @@ export const getOnboardingStatus = (
   dateFrom?: string,
   dateTo?: string,
   state?: string
-): Promise<OnboardingDTO> => InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state).then((res) => res);
+): Promise<OnboardingDTO> =>
+  InitiativeApi.getOnboardingStatus(id, page, beneficiary, dateFrom, dateTo, state);
 
-
-export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> => InitiativeApi.putDispFileUpload(id, filename, file).then((res) => res);
+export const putDispFileUpload = (
+  id: string,
+  filename: string,
+  file: File
+): Promise<void> => InitiativeApi.putDispFileUpload(id, filename, file);
 
 export const getRewardNotificationImportsPaged = (
   id: string,
   page: number,
   sort: string
-): Promise<PageRewardImportsDTO> => InitiativeApi.getRewardNotificationImportsPaged(id, page, sort).then((res) => res);
+): Promise<PageRewardImportsDTO> =>
+  InitiativeApi.getRewardNotificationImportsPaged(id, page, sort);
 
-export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>  InitiativeApi.uploadAndUpdateLogo(id, file).then((res) => res);
+export const uploadAndUpdateLogo = (
+  id: string,
+  file: File
+): Promise<LogoDTO> => InitiativeApi.uploadAndUpdateLogo(id, file);
 
-export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> => InitiativeApi.getDispFileErrors(id, name).then((res) => res);
+export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
+  InitiativeApi.getDispFileErrors(id, name);
 
 export const getInitiativeOnboardingRankingStatusPaged = (
   id: string,
   page: number,
-  beneficiary?: string | undefined,
-  state?: string | undefined
-): Promise<PageOnboardingRankingsDTO> => InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state).then((res) => res);
+  beneficiary?: string,
+  state?: string
+): Promise<PageOnboardingRankingsDTO> =>
+  InitiativeApi.getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state);
 
-// export const getRankingFileDownload = (id: string, filename: string): Promise<any> => {
-//   // if (process.env.REACT_APP_API_MOCK_INITIATIVE === 'true') {
-//   //   return InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
-//   // }
-//   const res = InitiativeApi.getRankingFileDownload(id, filename).then((res) => res);
-//   console.log(res);
-//   return res;
-// };
+export const notifyCitizenRankings = (id: string): Promise<void> =>
+  InitiativeApi.notifyCitizenRankings(id);
 
-export const notifyCitizenRankings = (id: string): Promise<void> => InitiativeApi.notifyCitizenRankings(id).then((res) => res);
+export const getOrganizationsList = (): Promise<OrganizationListDTO> =>
+  InitiativeApi.getOrganizationsList();
 
-export const getOrganizationsList = (): Promise<OrganizationListDTO> => InitiativeApi.getOrganizationsList().then((res) => res);
+export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> =>
+  InitiativeApi.getWalletDetail(id, cf);
 
-export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> => InitiativeApi.getWalletDetail(id, cf).then((res) => res);
+export const getInstrumentList = (
+  id: string,
+  cf: string
+): Promise<InstrumentListDTO> => InitiativeApi.getInstrumentList(id, cf);
 
-export const getInstrumentList = (id: string, cf: string): Promise<InstrumentListDTO> =>InitiativeApi.getInstrumentList(id, cf).then((res) => res);
-export const getIban = (id: string, cf: string, iban: string): Promise<IbanDTO> => InitiativeApi.getIban(id, cf, iban).then((res) => res);
+export const getIban = (
+  id: string,
+  cf: string,
+  iban: string
+): Promise<IbanDTO> => InitiativeApi.getIban(id, cf, iban);
 
 export const getTimeLine = (
   cf: string,
@@ -198,13 +222,14 @@ export const getTimeLine = (
   dateFrom?: string,
   dateTo?: string,
   page?: number
-): Promise<TimelineDTO> => InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page).then((res) => res);
+): Promise<TimelineDTO> =>
+  InitiativeApi.getTimeLine(cf, id, opeType, dateFrom, dateTo, page);
 
 export const getTimelineDetail = (
   cf: string,
   id: string,
-  opeType: string
-): Promise<OperationDTO> => InitiativeApi.getTimelineDetail(cf, id, opeType);
+  opeId: string
+): Promise<OperationDTO> => InitiativeApi.getTimelineDetail(cf, id, opeId);
 
 export const getExportSummary = (
   initiativeId: string,
@@ -217,7 +242,8 @@ export const getExportRefundsListPaged = (
   page: number,
   cro?: string,
   status?: string
-): Promise<ExportListDTO> => InitiativeApi.getExportRefundsListPaged(initiativeId, exportId, page, cro, status);
+): Promise<ExportListDTO> =>
+  InitiativeApi.getExportRefundsListPaged(initiativeId, exportId, page, cro, status);
 
 export const getRefundDetail = (
   initiativeId: string,
@@ -227,18 +253,19 @@ export const getRefundDetail = (
 export const getBeneficiaryOnboardingStatus = (
   initiativeId: string,
   fiscalCode: string
-): Promise<OnboardingStatusDTO> => InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
+): Promise<OnboardingStatusDTO> =>
+  InitiativeApi.getBeneficiaryOnboardingStatus(initiativeId, fiscalCode);
 
 export const suspendUser = (
   initiativeId: string,
   fiscalCode: string,
   rewardType: InitiativeRewardTypeEnum
 ): Promise<void> => {
-    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-      return InitiativeApi.suspendUserRefund(initiativeId, fiscalCode);
-    } else {
-      return InitiativeApi.suspendUserDiscount(initiativeId, fiscalCode);
-    }
+  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+    return InitiativeApi.suspendUserRefund(initiativeId, fiscalCode);
+  }
+
+  return InitiativeApi.suspendUserDiscount(initiativeId, fiscalCode);
 };
 
 export const readmitUser = (
@@ -246,14 +273,15 @@ export const readmitUser = (
   fiscalCode: string,
   rewardType: InitiativeRewardTypeEnum
 ): Promise<void> => {
-    if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-      return InitiativeApi.readmitUserRefund(initiativeId, fiscalCode);
-    } else {
-      return InitiativeApi.readmitUserDiscount(initiativeId, fiscalCode);
-    }
+  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+    return InitiativeApi.readmitUserRefund(initiativeId, fiscalCode);
+  }
+
+  return InitiativeApi.readmitUserDiscount(initiativeId, fiscalCode);
 };
 
 export const getFamilyComposition = (
   initiativeId: string,
   fiscalCode: string
-): Promise<FamilyUnitCompositionDTO> => InitiativeApi.getFamilyComposition(initiativeId, fiscalCode);
+): Promise<FamilyUnitCompositionDTO> =>
+  InitiativeApi.getFamilyComposition(initiativeId, fiscalCode);

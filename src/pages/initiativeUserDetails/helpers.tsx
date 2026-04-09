@@ -1,6 +1,6 @@
 import { Box, Chip, Typography } from '@mui/material';
 import { t } from '../../locale';
-import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+import { OperationDTO } from '../../api/generated/initiative/apiClient';
 
 export interface OperationProps {
   transactionDetail: OperationDTO;

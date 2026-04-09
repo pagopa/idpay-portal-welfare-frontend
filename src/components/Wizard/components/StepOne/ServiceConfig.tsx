@@ -31,6 +31,7 @@ import {
   updateInitiativeServiceInfo,
   uploadAndUpdateLogo,
 } from '../../../../services/intitativeService';
+import { InitiativeAdditionalDtoServiceScopeEnum } from '../../../../api/generated/initiative/apiClient';
 import {
   initiativeIdSelector,
   additionalInfoSelector,
@@ -39,7 +40,6 @@ import {
   setInitiativeLogo,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
-import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
@@ -495,10 +495,10 @@ const ServiceConfig = ({
               <MenuItem value="" disabled>
                 {t('components.wizard.stepOne.form.serviceArea')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
+              <MenuItem value={InitiativeAdditionalDtoServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
+              <MenuItem value={InitiativeAdditionalDtoServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
                 {t('components.wizard.stepOne.form.serviceScopeNational')}
               </MenuItem>
             </Select>

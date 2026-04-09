@@ -1,17 +1,10 @@
-import { OrderDirectionEnum } from '../api/generated/initiative/AutomatedCriteriaDTO';
-import { ServiceScopeEnum } from '../api/generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeRewardTypeEnum } from '../api/generated/initiative/InitiativeDTO';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../api/generated/initiative/InitiativeRewardRuleDTO';
-import { MccFilterDTO } from '../api/generated/initiative/MccFilterDTO';
+import { AutomatedCriteriaDtoOrderDirectionEnum, FamilyUnitCompositionDTO, InitiativeAdditionalDtoServiceScopeEnum, InitiativeGeneralDtoBeneficiaryTypeEnum, MccFilterDTO } from '../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../services/intitativeService';
 import { FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
-  beneficiaryType: BeneficiaryTypeEnum;
-  familyUnitComposition?: FamilyUnitCompositionEnum | undefined;
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum;
+  familyUnitComposition?: FamilyUnitCompositionDTO | undefined;
   beneficiaryKnown: string | undefined;
   rankingEnabled: string | undefined;
   budget: string;
@@ -31,7 +24,7 @@ export interface AdditionalInfo {
   initiativeOnIO: boolean | undefined;
   serviceId: string | undefined;
   serviceName: string | undefined;
-  serviceArea: ServiceScopeEnum | string | undefined;
+  serviceArea: InitiativeAdditionalDtoServiceScopeEnum | string | undefined;
   logoFileName: string;
   logoURL: string;
   logoUploadDate: string;
@@ -71,7 +64,7 @@ export interface AutomatedCriteriaItem {
   operator?: FilterOperator | string | undefined;
   value?: string | undefined;
   value2?: string | undefined;
-  orderDirection?: OrderDirectionEnum | undefined;
+  orderDirection?: AutomatedCriteriaDtoOrderDirectionEnum | undefined;
   iseeTypes?: Array<string>;
 }
 
@@ -108,7 +101,7 @@ export interface DaysOfWeekInterval {
 export interface RewardRule {
   _type: string;
   rewardValue: number | undefined;
-  rewardValueType: RewardValueTypeEnum;
+  rewardValueType: InitiativeRewardTypeEnum;
 }
 
 export interface RefundRule {

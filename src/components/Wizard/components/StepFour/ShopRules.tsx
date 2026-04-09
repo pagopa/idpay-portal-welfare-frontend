@@ -30,12 +30,12 @@ import {
 } from '../../../../redux/slices/initiativeSlice';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
+  InitiativeRewardTypeEnum,
   putTrxAndRewardRules,
   putTrxAndRewardRulesDraft,
 } from '../../../../services/intitativeService';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import ShopRulesModal from './ShopRulesModal';
 import PercentageRecognizedItem from './PercentageRecognizedItem';
 import {
@@ -325,14 +325,14 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     const shopRulesCodes = shopRulesToSubmit.map((s) => s.code);
     const trxCountPresent = shopRulesCodes.includes('THRESHOLD');
     const rewardValueTypeIsAbsolute =
-      rewardRuleData.rewardValueType === RewardValueTypeEnum.ABSOLUTE;
+      rewardRuleData.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE as any;
     const trxCountIsOk = trxCountPresent && rewardValueTypeIsAbsolute;
 
     if (submit && typeof initiativeId === 'string') {
       if (trxCountIsOk || !rewardValueTypeIsAbsolute) {
         const body = {
           ...mapDataToSend(
-            rewardType,
+            rewardType as any,
             rewardRuleData,
             mccFilterData,
             rewardLimitsData,
@@ -387,7 +387,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
     if (action === WIZARD_ACTIONS.DRAFT && typeof initiativeId === 'string') {
       const body = {
         ...mapDataToSend(
-          rewardType,
+          rewardType as any,
           rewardRuleData,
           mccFilterData,
           rewardLimitsData,
@@ -552,7 +552,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
           action={action}
           shopRulesToSubmit={shopRulesToSubmit}
           setShopRulesToSubmit={setShopRulesToSubmit}
-          data={rewardRuleData}
+          data={rewardRuleData as any}
           setData={setRewardRuleData}
         />
       </Box>
@@ -584,7 +584,7 @@ const ShopRules = ({ action, setAction, currentStep, setCurrentStep, setDisabled
               shopRulesToSubmit={shopRulesToSubmit}
               setShopRulesToSubmit={setShopRulesToSubmit}
               data={mccFilterData}
-              setData={setMccFilterData}
+              setData={setMccFilterData as any}
             />
           );
         } else if (a.code === 'TRXCOUNT' && a.checked === true) {

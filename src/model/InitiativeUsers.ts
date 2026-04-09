@@ -1,4 +1,4 @@
-import { BeneficiaryStateEnum } from '../api/generated/initiative/StatusOnboardingDTOS';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum } from "../api/generated/initiative/apiClient";
 
 export interface InitiativeUser {
   beneficiary: string;
@@ -10,7 +10,7 @@ export interface InitiativeUserToDisplay {
   id: number | undefined;
   beneficiary: string | undefined;
   updateStatusDate: string | undefined;
-  beneficiaryState: BeneficiaryStateEnum | undefined;
+  beneficiaryState: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined;
   familyId: string | undefined;
 }
 

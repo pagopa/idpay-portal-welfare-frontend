@@ -58,7 +58,7 @@
     "clean:api-role-permission": "rimraf src/api/generated/role-permission",
     "generate:api-role-permission": "yarn run clean:api-role-permission && swagger-typescript-api generate -p openApi/openapi.role-permission.yml -o src/api/generated/role-permission -n apiClient.ts --http-client axios --extract-enums --extract-request-params --extract-response-body --single-http-client",
     "clean:api-initiative": "rimraf src/api/generated/initiative",
-    "generate:api-initiative": "yarn run clean:api-initiative && mkdirp openApi/generated && api-spec-converter --from=openapi_3 --to=swagger_2 openApi/openapi.initiative.yml > openApi/generated/initiative-swagger20.json && node ./openApi/scripts/fixSwagger20ArraySchemaDef.js openApi/generated/initiative-swagger20.json && node ./openApi/scripts/api-initiative_fixPreGen.js && gen-api-models --api-spec openApi/generated/initiative-swagger20.json --out-dir src/api/generated/initiative --no-strict --request-types --response-decoders --client && node openApi/scripts/api-initiative_fixPostGen.js",
+    "generate:api-initiative": "yarn run clean:api-initiative && swagger-typescript-api generate -p openApi/openapi.initiative.yml -o src/api/generated/initiative -n apiClient.ts --http-client axios --extract-enums --extract-request-params --extract-response-body --single-http-client",
     "clean:api-groups": "rimraf src/api/generated/groups",
     "generate:api-groups": "yarn run clean:api-groups && swagger-typescript-api generate -p openApi/openapi.groups.yml -o src/api/generated/groups -n apiClient.ts --http-client axios --extract-enums --extract-request-params --extract-response-body --single-http-client",
     "clean:api-email-notification": "rimraf src/api/generated/email-notification",
@@ -80,7 +80,6 @@
   },
   "devDependencies": {
     "@craco/craco": "7.1.0",
-    "@pagopa/openapi-codegen-ts": "10.1.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.0.0",
     "@testing-library/react": "^14.0.0",

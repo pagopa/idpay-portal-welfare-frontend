@@ -30,9 +30,6 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
-import { ExportDetailDTO } from '../../api/generated/initiative/ExportDetailDTO';
-import { ExportListDTO } from '../../api/generated/initiative/ExportListDTO';
-import { ExportSummaryDTO } from '../../api/generated/initiative/ExportSummaryDTO';
 
 import {
   downloadURI,
@@ -50,6 +47,7 @@ import ROUTES, { BASE_ROUTE } from '../../routes';
 import { getExportRefundsListPaged, getExportSummary } from '../../services/intitativeService';
 import { getRefundStatusChip } from '../../helpers';
 import EmptyList from '../components/EmptyList';
+import { ExportSummaryDTO, ExportDetailDTO, ExportListDTO } from '../../api/generated/initiative/apiClient';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { ENV } from '../../utils/env';
 import InitiativeRefundsDetailsModal from './initiativeRefundsDetailsModal';
@@ -304,11 +302,7 @@ const InitiativeRefundsDetails = () => {
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
               {detailsSummary?.createDate
-                ? detailsSummary.createDate.toLocaleString('fr-BE', {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                  })
+                ? detailsSummary.createDate.toString()
                 : '-'}
             </Typography>
 

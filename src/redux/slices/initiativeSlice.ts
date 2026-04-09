@@ -14,12 +14,8 @@ import {
   RewardRule,
   RefundRule,
 } from '../../model/Initiative';
-
-import { MccFilterDTO } from '../../api/generated/initiative/MccFilterDTO';
-import { LogoDTO } from '../../api/generated/initiative/LogoDTO';
-import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, LogoDTO, MccFilterDTO } from '../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../../services/intitativeService';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -42,7 +38,7 @@ const initialState: Initiative = {
     assistanceChannels: [{ type: 'web', contact: '' }],
   },
   generalInfo: {
-    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
     familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
     rankingEnabled: 'false',
@@ -70,7 +66,7 @@ const initialState: Initiative = {
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
-    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    rewardValueType: InitiativeRewardTypeEnum.DISCOUNT,
   },
   trxRule: {
     mccFilter: {
@@ -225,7 +221,7 @@ export const initiativeSlice = createSlice({
       action: PayloadAction<{
         _type: string;
         rewardValue: number | undefined;
-        rewardValueType: RewardValueTypeEnum;
+        rewardValueType: InitiativeRewardTypeEnum;
       }>
     ) => ({
       ...state,
@@ -337,7 +333,7 @@ export const stepTwoBeneficiaryKnownSelector = (state: RootState): string | unde
   state.initiative.generalInfo.beneficiaryKnown;
 export const stepTwoRankingEnabledSelector = (state: RootState): string | undefined =>
   state.initiative.generalInfo.rankingEnabled;
-export const stepTwoBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum | undefined =>
+export const stepTwoBeneficiaryTypeSelector = (state: RootState): InitiativeGeneralDtoBeneficiaryTypeEnum | undefined =>
   state.initiative.generalInfo.beneficiaryType;
 export const beneficiaryRuleSelector = (
   state: RootState
@@ -369,5 +365,5 @@ export const initiativeRefundRulesSelector = (state: RootState): RefundRule =>
   state.initiative.refundRule;
 export const initiativeStatusSelector = (state: RootState): string | undefined =>
   state.initiative.status;
-export const initiativeBeneficiaryTypeSelector = (state: RootState): BeneficiaryTypeEnum =>
+export const initiativeBeneficiaryTypeSelector = (state: RootState): InitiativeGeneralDtoBeneficiaryTypeEnum =>
   state.initiative.generalInfo.beneficiaryType;

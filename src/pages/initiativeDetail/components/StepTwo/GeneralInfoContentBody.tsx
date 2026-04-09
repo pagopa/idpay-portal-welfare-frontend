@@ -1,10 +1,7 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Initiative } from '../../../../model/Initiative';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -28,19 +25,19 @@ const GeneralInfoContentBody = ({ initiativeDetail }: Props) => {
         {t('pages.initiativeDetail.accordion.step2.content.beneficiaryType')}
       </Typography>
       <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-        {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+        {initiativeDetail.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
           ? t('pages.initiativeDetail.accordion.step2.content.person')
           : t('pages.initiativeDetail.accordion.step2.content.family')}
       </Typography>
 
-      {initiativeDetail.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF &&
+      {initiativeDetail.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF &&
         initiativeDetail.generalInfo.familyUnitComposition && (
           <>
             <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
               {t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleGroup')}
             </Typography>
             <Typography variant="body2" sx={{ gridColumn: 'span 7', fontWeight: 600 }}>
-              {initiativeDetail.generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
+              {initiativeDetail.generalInfo.familyUnitComposition === InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS as any
                 ? t('pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleIsee')
                 : t(
                     'pages.initiativeDetail.accordion.step2.content.familyUnitCompositionTitleAnpr'

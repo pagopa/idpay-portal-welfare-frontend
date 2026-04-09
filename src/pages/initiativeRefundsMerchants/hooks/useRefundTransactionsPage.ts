@@ -348,9 +348,9 @@ export const useRefundTransactionsPage = () => {
   };
 
   const handleApiError = (error: any) => {
-    if (error?.status === 400 && error?.body?.code === 'BATCH_NOT_ELABORATED_15_PERCENT') {
+    if (error?.status === 400 && error?.response?.data?.code === 'BATCH_NOT_ELABORATED_15_PERCENT') {
       setBatchErrorOpen(true);
-    } else if (error?.status === 400 && error?.body?.code === 'REWARD_BATCH_INVALID_REQUEST') {
+    } else if (error?.status === 400 && error?.response?.data?.code === 'REWARD_BATCH_INVALID_REQUEST') {
       setAlert({
         title: t('errors.title'),
         text: t('errors.batchInvalidRequest'),

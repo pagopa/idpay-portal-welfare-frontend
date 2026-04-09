@@ -41,11 +41,8 @@ import {
   RefundRule,
   RewardLimit,
 } from '../model/Initiative';
-import { FrequencyEnum } from '../api/generated/initiative/RewardLimitsDTO';
-import { InitiativeRefundRuleDTO } from '../api/generated/initiative/InitiativeRefundRuleDTO';
-import { InitiativeDTO } from '../api/generated/initiative/InitiativeDTO';
+import { InitiativeDTO, InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeRefundRuleDTO, RewardLimitsDtoFrequencyEnum } from '../api/generated/initiative/apiClient';
 import { AppDispatch } from '../redux/store';
-import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
 
 interface MatchParams {
   id: string;
@@ -92,8 +89,8 @@ export const useInitiative = () => {
           dispatch(setOrganizationId(response.organizationId));
           dispatch(setStatus(response.status));
           dispatch(setInitiativeName(response.initiativeName));
-          dispatch(setInitiativeCreationDate(response.creationDate));
-          dispatch(setInitiativeUpdateDate(response.updateDate));
+          dispatch(setInitiativeCreationDate(response.creationDate as any));
+          dispatch(setInitiativeUpdateDate(response.updateDate as any));
           const additionalInfo = parseAdditionalInfo(response.additionalInfo);
           dispatch(setAdditionalInfo(additionalInfo));
           const generalInfo = parseGeneralInfo(response.general);
@@ -105,7 +102,7 @@ export const useInitiative = () => {
           const selfDeclarationCriteria = [...parseManualCriteria(response)];
           dispatch(saveManualCriteria(selfDeclarationCriteria));
           if (response.initiativeRewardType) {
-            dispatch(setInitiativeRewardType(response.initiativeRewardType));
+            dispatch(setInitiativeRewardType(response.initiativeRewardType as any));
           }
           parseRewardRule(response, dispatch);
           parseThreshold(response, dispatch);
@@ -201,7 +198,7 @@ export const parseAdditionalInfo = (data: any): AdditionalInfo => {
 // eslint-disable-next-line sonarjs/cognitive-complexity, complexity
 export const parseGeneralInfo = (data: any): GeneralInfo => {
   const dataT: GeneralInfo = {
-    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
     familyUnitComposition: undefined,
     beneficiaryKnown: 'false',
     rankingEnabled: 'false',
@@ -222,7 +219,7 @@ export const parseGeneralInfo = (data: any): GeneralInfo => {
     if (data.beneficiaryType !== undefined) {
       // eslint-disable-next-line functional/immutable-data
       dataT.beneficiaryType =
-        data.beneficiaryType === 'PF' ? BeneficiaryTypeEnum.PF : BeneficiaryTypeEnum.NF;
+        data.beneficiaryType === 'PF' ? InitiativeGeneralDtoBeneficiaryTypeEnum.PF : InitiativeGeneralDtoBeneficiaryTypeEnum.NF;
     }
 
     if (data.familyUnitComposition !== undefined) {
@@ -484,7 +481,7 @@ export const parseRewardLimits = (response: InitiativeDTO, dispatch: AppDispatch
       });
     } else {
       // eslint-disable-next-line functional/immutable-data
-      rewardLimits.push({ frequency: FrequencyEnum.DAILY, rewardLimit: undefined });
+      rewardLimits.push({ frequency: RewardLimitsDtoFrequencyEnum.DAILY, rewardLimit: undefined });
     }
 
     dispatch(saveRewardLimits(rewardLimits));
@@ -497,7 +494,7 @@ export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppD
     response.trxRule.daysOfWeek &&
     response.trxRule.daysOfWeek !== undefined
   ) {
-    const daysOfWeek = [...response.trxRule.daysOfWeek];
+    const daysOfWeek = [...response.trxRule.daysOfWeek as any];
     // const daysOfWeekIntervals = [...parseDaysOfWeekIntervals(daysOfWeek)];
     const daysOfWeekIntervals: Array<{
       daysOfWeek: string;
@@ -516,11 +513,11 @@ export const parseDaysOfWeekIntervals = (response: InitiativeDTO, dispatch: AppD
         d.intervals &&
         d.intervals !== undefined
       ) {
-        d.daysOfWeek.forEach((dd) => {
+        d.daysOfWeek.forEach((dd: any) => {
           // eslint-disable-next-line functional/immutable-data
           days.push(dd);
         });
-        d.intervals.forEach((i) => {
+        d.intervals.forEach((i: any) => {
           const interval = {
             startTime: i.startTime || '',
             endTime: i.endTime || '',

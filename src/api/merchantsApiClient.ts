@@ -1,9 +1,5 @@
-import { AxiosError } from 'axios';
-import { appStateActions } from '@pagopa/selfcare-common-frontend/lib/redux/slices/appStateSlice';
-import i18n from '@pagopa/selfcare-common-frontend/lib/locale/locale-utils';
 import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { ENV } from '../utils/env';
-import { store } from '../redux/store';
 import {
   Api,
   HttpClient,
@@ -31,9 +27,11 @@ import {
   RewardBatchStatus,
   ReportRequestReportTypeEnum,
 } from './generated/merchants/apiClient';
+import { handleUnauthorizedError } from './swaggerApiClientUtils';
 
 const merchantsSwaggerHttpClient = new HttpClient<{ token: string }>({
   baseURL: ENV.URL_API.MERCHANTS,
+  timeout: ENV.API_TIMEOUT_MS.MERCHANTS,
   securityWorker: (securityData) => ({
     headers: {
       Authorization: `Bearer ${securityData?.token ?? ''}`,
@@ -42,24 +40,6 @@ const merchantsSwaggerHttpClient = new HttpClient<{ token: string }>({
 });
 
 const api = new Api(merchantsSwaggerHttpClient);
-
-const isUnauthorizedError = (error: unknown): boolean => {
-  const axiosError = error as AxiosError | undefined;
-  return axiosError?.response?.status === 401;
-};
-
-const onRedirectToLogin = () =>
-  store.dispatch(
-    appStateActions.addError({
-      id: 'tokenNotValid',
-      error: new Error(),
-      techDescription: 'token expired or not valid',
-      toNotify: false,
-      blocking: false,
-      displayableTitle: i18n.t('session.expired.title'),
-      displayableDescription: i18n.t('session.expired.message'),
-    })
-  );
 
 const withAuth = () =>
   merchantsSwaggerHttpClient.setSecurityData({
@@ -72,10 +52,7 @@ const execute = async <T>(operation: () => Promise<{ data: T }>): Promise<T> => 
     const response = await operation();
     return response.data;
   } catch (error) {
-    if (isUnauthorizedError(error)) {
-      onRedirectToLogin();
-    }
-    throw error;
+    return handleUnauthorizedError<T>(error);
   }
 };
 

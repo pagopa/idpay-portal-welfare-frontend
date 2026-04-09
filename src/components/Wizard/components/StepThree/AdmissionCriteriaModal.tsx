@@ -23,10 +23,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 
 type Props = {
   openModal: boolean;
@@ -36,8 +33,8 @@ type Props = {
   setCriteriaToRender: Dispatch<Array<AvailableCriteria>>;
   searchCriteria: string;
   setSearchCriteria: Dispatch<SetStateAction<string>>;
-  beneficiaryType: BeneficiaryTypeEnum | undefined;
-  familyUnitComposition: FamilyUnitCompositionEnum | undefined;
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined;
+  familyUnitComposition: InitiativeGeneralDtoFamilyUnitCompositionEnum | undefined;
 };
 
 const AdmissionCriteriaModal = ({
@@ -81,7 +78,7 @@ const AdmissionCriteriaModal = ({
     list: Array<AvailableCriteria>,
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler,
-    beneficiaryType: BeneficiaryTypeEnum | undefined
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     if (!searchKey.length) {
@@ -89,8 +86,8 @@ const AdmissionCriteriaModal = ({
         const displayType =
           a.code === 'ISEE' &&
           beneficiaryType !== undefined &&
-          familyUnitComposition === FamilyUnitCompositionEnum.INPS &&
-          beneficiaryType === BeneficiaryTypeEnum.NF
+          familyUnitComposition === InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS &&
+          beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF
             ? 'none'
             : 'flex';
 

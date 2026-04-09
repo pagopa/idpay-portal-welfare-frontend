@@ -14,9 +14,9 @@ import { useFormik } from 'formik';
 import { Dispatch, SetStateAction, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
 import { useAppSelector } from '../../../../redux/hooks';
 import { generalInfoSelector } from '../../../../redux/slices/initiativeSlice';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { boxItemStyle, handleShopRulesToSubmit, setError, setErrorText } from './helpers';
 
@@ -31,7 +31,7 @@ interface Props {
     | {
         _type: string;
         rewardValue: number | undefined;
-        rewardValueType: RewardValueTypeEnum;
+        rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum;
       }
     | undefined;
   setData: Dispatch<SetStateAction<any>>;
@@ -60,7 +60,7 @@ const PercentageRecognizedItem = ({
   const validationSchema = Yup.object().shape({
     rewardValueType: Yup.string().required(t('validation.required')),
     percentageRecognized: Yup.number().when('rewardValueType', (rewardValueType, schema) => {
-      if (rewardValueType === RewardValueTypeEnum.PERCENTAGE) {
+      if (rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE) {
         return Yup.number()
           .typeError(t('validation.numeric'))
           .required(t('validation.required'))
@@ -71,7 +71,7 @@ const PercentageRecognizedItem = ({
     }),
 
     fixedPremiumValue: Yup.number().when('rewardValueType', (rewardValueType, schema) => {
-      if (rewardValueType === RewardValueTypeEnum.ABSOLUTE) {
+      if (rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE) {
         return Yup.number()
           .typeError(t('validation.numeric'))
           .required(t('validation.required'))
@@ -85,11 +85,11 @@ const PercentageRecognizedItem = ({
   const formik = useFormik({
     initialValues: {
       percentageRecognized:
-        data?.rewardValueType === RewardValueTypeEnum.PERCENTAGE && data?.rewardValue
+        data?.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE && data?.rewardValue
           ? data?.rewardValue
           : undefined,
       fixedPremiumValue:
-        data?.rewardValueType === RewardValueTypeEnum.ABSOLUTE && data?.rewardValue
+        data?.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE && data?.rewardValue
           ? data?.rewardValue
           : undefined,
       rewardValueType: data?.rewardValueType,
@@ -156,10 +156,10 @@ const PercentageRecognizedItem = ({
               'data-testid': 'rewardValueType-test',
             }}
           >
-            <MenuItem value={RewardValueTypeEnum.ABSOLUTE} data-testid="select-reward-type">
+            <MenuItem value={InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE} data-testid="select-reward-type">
               {t('components.wizard.stepFour.form.select.selectedAccumulatedAmount.fixedPremium')}
             </MenuItem>
-            <MenuItem value={RewardValueTypeEnum.PERCENTAGE} data-testid="absolute">
+            <MenuItem value={InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE} data-testid="absolute">
               {t('components.wizard.stepFour.form.select.selectedAccumulatedAmount.percentage')}
             </MenuItem>
           </Select>
@@ -171,7 +171,7 @@ const PercentageRecognizedItem = ({
           </FormHelperText>
         </FormControl>
 
-        {formik.values.rewardValueType === RewardValueTypeEnum.PERCENTAGE ? (
+        {formik.values.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE ? (
           <FormControl sx={{ gridColumn: 'span 1', gridArea: 'input' }}>
             <TextField
               inputProps={{
@@ -199,7 +199,7 @@ const PercentageRecognizedItem = ({
               size="small"
             />
           </FormControl>
-        ) : formik.values.rewardValueType === RewardValueTypeEnum.ABSOLUTE ? (
+        ) : formik.values.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE ? (
           <FormControl sx={{ gridColumn: 'span 1', gridArea: 'input' }}>
             <TextField
               inputProps={{
