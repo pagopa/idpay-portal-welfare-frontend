@@ -108,7 +108,7 @@ export const useSelectedParty = (): (() => Promise<Party>) => {
 
       if (party) {
         if (party.status !== 'ACTIVE') {
-          throw new Error(`INVALID_PARTY_STATE_${party.status}`);
+          console.error(new Error(`INVALID_PARTY_STATE_${party.status}`));
         }
         const partyToSave = {
           ...party,
@@ -118,7 +118,9 @@ export const useSelectedParty = (): (() => Promise<Party>) => {
         return partyToSave;
       } else {
         if (!partyJwtConfig) {
-          throw new Error(`Cannot find partyId ${partyId}`);
+          const error = new Error(`Cannot find partyId ${partyId}`);
+          console.error(error);
+          throw error;
         }
         trackEvent('PARTY_ID_NOT_FOUND', { partyId });
         const partyToSave: Party = {

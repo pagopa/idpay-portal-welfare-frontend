@@ -244,7 +244,8 @@ export const useRefundTransactionsPage = () => {
 
   const fetchTransactionsTableData = useCallback(async (initiativeId: string) => {
     if (!batch?.merchantId) {
-      throw new Error('Invalid Merchant ID');
+      console.error(new Error('Invalid Merchant ID'));
+      return;
     }
 
     setLoadingRef.current(true);
