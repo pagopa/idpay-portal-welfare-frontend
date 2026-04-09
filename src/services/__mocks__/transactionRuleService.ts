@@ -1,5 +1,5 @@
-import { ConfigTrxRuleArrayDTO } from '../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { ConfigTrxRuleArrayDTO } from '../../api/generated/initiative/apiClient';
 
 export const mockedTransactionRules = [
   {
