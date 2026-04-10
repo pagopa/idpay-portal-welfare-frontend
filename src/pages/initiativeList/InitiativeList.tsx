@@ -27,12 +27,12 @@ import MoreIcon from '@mui/icons-material/MoreVert';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { ButtonNaked } from '@pagopa/mui-italia';
+import { InitiativeSummaryArrayDTO, InitiativeSummaryDTO } from '../../api/generated/initiative/apiClient';
 import { getInitativeSummary } from '../../services/intitativeService';
 import routes, { BASE_ROUTE } from '../../routes';
 import { resetInitiative } from '../../redux/slices/initiativeSlice';
 import { setInitiativeSummaryList } from '../../redux/slices/initiativeSummarySlice';
 import { useAppDispatch } from '../../redux/hooks';
-import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { usePermissions } from '../../hooks/usePermissions';
 import { USER_PERMISSIONS } from '../../utils/constants';
 import DeleteInitiativeModal from '../components/DeleteInitiativeModal';
@@ -296,10 +296,13 @@ const InitiativeList = () => {
     setLoading(true);
     getInitativeSummary()
       .then((response: InitiativeSummaryArrayDTO) => {
-        const data = response.map((r: any, i: any) => ({
+        const data = response.map((r: InitiativeSummaryDTO, i: any) => ({
           ...r,
-          creationDate: r.creationDate.toLocaleDateString('fr-BE'),
-          updateDate: r.updateDate.toLocaleDateString('fr-BE'),
+          initiativeId: r.initiativeId ?? "",
+          initiativeName: r.initiativeName ?? "",
+          status: r.status ?? "",
+          creationDate: r.creationDate ? new Date(r.creationDate).toLocaleDateString("fr-BE") : "",
+          updateDate: r.updateDate ? new Date(r.updateDate).toLocaleDateString("fr-BE") : "",
           id: i,
         }));
         dispatch(setInitiativeSummaryList(response));

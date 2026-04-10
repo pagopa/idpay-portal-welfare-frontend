@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { MerchantDTO } from '../../api/generated/merchants/MerchantDTO';
+import { MerchantDTO } from '../../api/generated/merchants/apiClient';
 import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,

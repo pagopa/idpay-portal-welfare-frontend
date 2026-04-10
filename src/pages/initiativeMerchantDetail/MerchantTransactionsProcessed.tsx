@@ -4,10 +4,7 @@ import { useTranslation } from 'react-i18next';
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
-import {
-  MerchantTransactionProcessedDTO,
-  StatusEnum as TransactionProcessedStatusEnum,
-} from '../../api/generated/merchants/MerchantTransactionProcessedDTO';
+import { MerchantTransactionProcessedDTO, MerchantTransactionProcessedDtoStatusEnum, RewardBatchTrxStatus } from '../../api/generated/merchants/apiClient';
 import { getMerchantTransactionsProcessed } from '../../services/merchantsService';
 import { formatedCurrency, formatedDate } from '../../helpers';
 import EmptyList from '../components/EmptyList';
@@ -40,7 +37,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
     status: string | undefined
   ) => {
     setLoading(true);
-    getMerchantTransactionsProcessed(merchantId, initiativeId, page, 10, status, fiscalCode)
+    getMerchantTransactionsProcessed(merchantId, initiativeId, page, 10, status as RewardBatchTrxStatus, fiscalCode)
       .then((response) => {
         setPageValue(response.pageNo);
         setRowsPerPageValue(response.pageSize);
@@ -101,9 +98,9 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [merchantId, initiativeId, pageValue]);
 
-  const renderTrasactionProcessedStatus = (status: TransactionProcessedStatusEnum) => {
+  const renderTrasactionProcessedStatus = (status: MerchantTransactionProcessedDtoStatusEnum) => {
     switch (status) {
-      case TransactionProcessedStatusEnum.REWARDED:
+      case MerchantTransactionProcessedDtoStatusEnum.REWARDED:
         return (
           // eslint-disable-next-line react/jsx-no-undef
           <Chip
@@ -112,7 +109,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
             color="success"
           />
         );
-      case TransactionProcessedStatusEnum.CANCELLED:
+      case MerchantTransactionProcessedDtoStatusEnum.CANCELLED:
         return (
           <Chip
             sx={{ fontSize: '14px' }}
@@ -151,7 +148,7 @@ const MerchantTransactionsProcessed = ({ initiativeId, merchantId }: Props) => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rowsData.map((r, i) => (
                     <TableRow key={i}>
-                      <TableCell>{formatedDate(r.updateDate)}</TableCell>
+                      <TableCell>{formatedDate(r.updateDate as unknown as Date)}</TableCell>
                       <TableCell>{r.fiscalCode}</TableCell>
                       <TableCell>{formatedCurrency(r.effectiveAmountCents, '-', true)}</TableCell>
                       <TableCell>{formatedCurrency(r.rewardAmountCents, '-', true)}</TableCell>

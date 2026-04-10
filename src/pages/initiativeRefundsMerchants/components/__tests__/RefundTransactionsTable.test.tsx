@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { ComponentProps } from 'react';
-import { PointOfSaleDTO, TypeEnum } from '../../../../api/generated/merchants/PointOfSaleDTO';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import {
+  PointOfSaleDTO,
+  PointOfSaleDtoTypeEnum as TypeEnum,
+  RewardBatchTrxStatus as RewardBatchTrxStatusEnum,
+} from '../../../../api/generated/merchants/apiClient';
 import RefundTransactionsTable from '../RefundTransactionsTable';
 
 jest.mock('../../model/constants', () => ({

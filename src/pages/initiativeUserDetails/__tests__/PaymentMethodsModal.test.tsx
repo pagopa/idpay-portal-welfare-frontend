@@ -1,10 +1,8 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
-// import { StatusEnum as WalletStatusEnum } from '../../../api/generated/initiative/WalletDTO';
-import { InstrumentTypeEnum, StatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
+import { InstrumentDtoInstrumentTypeEnum as InstrumentTypeEnum, InstrumentDtoStatusEnum as StatusEnum } from '../../../api/generated/initiative/apiClient';
 import { renderWithContext } from '../../../utils/test-utils';
 import PaymentMethodsModal from '../PaymentMethodsModal';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../api/generated/initiative/apiClient';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -21,7 +19,7 @@ const walletInstrument = [
     channel: 'channel',
     brandLogo: undefined,
     status: StatusEnum.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.CARD,
   },
   {
@@ -32,7 +30,7 @@ const walletInstrument = [
     brandLogo:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
     status: StatusEnum.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.CARD,
   },
   {
@@ -43,7 +41,7 @@ const walletInstrument = [
     brandLogo:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
     status: StatusEnum.PENDING_DEACTIVATION_REQUEST,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.CARD,
   },
   {
@@ -54,7 +52,7 @@ const walletInstrument = [
     brandLogo:
       'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
     status: StatusEnum.PENDING_ENROLLMENT_REQUEST,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.CARD,
   },
 ];
@@ -66,7 +64,7 @@ const instrumentsList = [
     maskedPan: '1111 2222 3333 4444',
     channel: 'IDPAYCODE',
     status: StatusEnum.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.IDPAYCODE,
   },
   {
@@ -75,7 +73,7 @@ const instrumentsList = [
     maskedPan: '5555 6666 7777 8888',
     channel: 'BARCODE',
     status: StatusEnum.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.APP_IO_PAYMENT,
   },
   {
@@ -84,7 +82,7 @@ const instrumentsList = [
     maskedPan: '1111 2222 3333 4444',
     channel: 'channel',
     status: StatusEnum.ACTIVE,
-    activationDate: new Date('2023-01-04T16:38:43.590Z'),
+    activationDate: '2023-01-04T16:38:43.590Z',
     instrumentType: InstrumentTypeEnum.CARD,
   },
 ];

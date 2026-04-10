@@ -41,11 +41,11 @@ import {
   initiativePagesBreadcrumbsContainerStyle,
 } from '../../helpers';
 import { getExportsPaged } from '../../services/intitativeService';
-import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import TablePaginator from '../components/TablePaginator';
+import { RewardExportsDTO } from '../../api/generated/initiative/apiClient';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -96,7 +96,7 @@ const InitiativeRefunds = () => {
             id: r.id,
             notificationDate:
               typeof r.notificationDate === 'object'
-                ? r.notificationDate.toLocaleString('fr-BE').split(' ')[0]
+                ? (r.notificationDate as any).toString().split(' ')[0]
                 : '',
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsNotified)}`,

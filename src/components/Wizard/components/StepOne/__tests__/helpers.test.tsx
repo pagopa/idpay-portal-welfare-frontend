@@ -1,5 +1,4 @@
-import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { ChannelDtoTypeEnum as TypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum } from '../../../../../api/generated/initiative/apiClient';
 import { mockedServiceInfoData } from '../../../../../services/__mocks__/intitativeService';
 import { parseDataToSend } from '../helpers';
 const mockedDataToSendChannelsUndefined = {
@@ -37,7 +36,7 @@ const mockedServiceInfoDataUndefined = {
   serviceDescription: undefined,
   privacyPolicyUrl: undefined,
   termsAndConditions: undefined,
-  channels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+  channels: [{ type: TypeEnum.Web, contact: 'http://test.it' }],
   assistanceChannels: [
     { type: '', contact: '' },
     { type: '', contact: '' },

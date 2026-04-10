@@ -1,6 +1,4 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import { GroupUpdateDTO } from '../../../../../api/generated/groups/GroupUpdateDTO';
-import { StatusGroupDTO } from '../../../../../api/generated/groups/StatusGroupDTO';
 import { groupsApiMocked } from '../../../../../api/__mocks__/groupsApiClient';
 import { resetInitiative, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
@@ -11,6 +9,7 @@ import {
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithProviders } from '../../../../../utils/test-utils';
 import FileUpload from '../FileUpload';
+import { GroupUpdateDTO, StatusGroupDTO } from '../../../../../api/generated/groups/apiClient';
 
 jest.mock('../../../../../services/groupsService');
 const mockAddError = jest.fn();
@@ -29,7 +28,7 @@ beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
   mockAddError.mockClear();
-  store.dispatch(resetInitiative());
+  store.dispatch(resetInitiative(undefined as any));
 });
 
 afterEach(() => {
@@ -41,50 +40,50 @@ afterEach(() => {
 describe('<FileUpload />', () => {
   window.scrollTo = jest.fn();
 
-  const mockedUploadGroupOfBeneficiaryStatusKOFormat = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOFormat: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.format',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOEmpty = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOEmpty: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.empty',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOSize = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOSize: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.size',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOFileAndBudget = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOFileAndBudget: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.fiIe',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOWrong = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOWrong: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.cf.wrong',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOBudget = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOBudget: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.beneficiary.number.budget',
     errorRow: 0,
     status: 'KO',
   };
 
-  const mockedUploadGroupOfBeneficiaryStatusKOUnknown = {
-    elabTimeStamp: new Date('2018-10-13T00:00:00.000Z'),
+  const mockedUploadGroupOfBeneficiaryStatusKOUnknown: GroupUpdateDTO = {
+    elabTimeStamp: '2018-10-13T00:00:00.000Z',
     errorKey: 'group.groups.invalid.file.unknown',
     errorRow: 0,
     status: 'KO',

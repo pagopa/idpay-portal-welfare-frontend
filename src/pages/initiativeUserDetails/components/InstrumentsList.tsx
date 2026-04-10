@@ -3,8 +3,9 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 import PaymentMethodsModal from '../PaymentMethodsModal';
-import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { InstrumentDTO } from '../../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../../../services/intitativeService';
+
 
 interface Props {
   paymentMethodList: Array<InstrumentDTO>;

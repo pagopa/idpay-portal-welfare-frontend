@@ -1,9 +1,9 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { addDays } from 'date-fns';
 import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
+  InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum,
+  InitiativeGeneralDtoFamilyUnitCompositionEnum as FamilyUnitCompositionEnum,
+} from '../../../../../api/generated/initiative/apiClient';
 import { GeneralInfo } from '../../../../../model/Initiative';
 import {
   setAdditionalInfo,
@@ -132,7 +132,7 @@ describe('<Genaralnfo />', () => {
     beneficiaryType: BeneficiaryTypeEnum.NF,
     beneficiaryKnown: 'false',
     rankingEnabled: 'false',
-    familyUnitComposition: FamilyUnitCompositionEnum.INPS,
+    familyUnitComposition: FamilyUnitCompositionEnum.INPS as any,
   };
 
   const mockedAdditionalInfo = {

@@ -21,7 +21,7 @@ import { Dispatch, MouseEventHandler, SetStateAction, useEffect, useState } from
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../utils/constants';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import {
   IseeTypologyEnum,
   boxItemStyle,
@@ -42,7 +42,7 @@ type Props = {
     SetStateAction<Array<{ code: string | undefined; dispatched: boolean }>>
   >;
   rankingEnabled: string | undefined;
-  beneficiaryType: BeneficiaryTypeEnum | undefined;
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined;
 };
 
 const IseeCriteriaItem = ({
@@ -219,7 +219,7 @@ const IseeCriteriaItem = ({
         </Box>
       )}
       <Box sx={{ gridColumn: 'span 1', justifySelf: 'end' }}>
-        {beneficiaryType !== undefined && beneficiaryType !== BeneficiaryTypeEnum.NF && (
+        {beneficiaryType !== undefined && beneficiaryType !== InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
           <IconButton
             data-id={formData.code}
             onClick={(event: any) => handleCriteriaRemoved(event)}

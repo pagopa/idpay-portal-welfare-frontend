@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { PageOnboardingRankingsDTO } from '../../../api/generated/initiative/PageOnboardingRankingsDTO';
+import { PageOnboardingRankingsDTO } from '../../../api/generated/initiative/apiClient';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRanking from '../initiativeRanking';
@@ -45,7 +44,7 @@ describe('<InitiativeRanking />', () => {
     content: [
       {
         beneficiary: 'string',
-        criteriaConsensusTimestamp: new Date(),
+        criteriaConsensusTimestamp: '2026-03-01T00:00:00.000Z',
         rankingValue: 0,
         ranking: 0,
         beneficiaryRankingStatus: 'ELIGIBLE_OK',
@@ -56,8 +55,8 @@ describe('<InitiativeRanking />', () => {
     totalElements: 1,
     totalPages: 1,
     rankingStatus: 'READY',
-    rankingPublishedTimestamp: new Date(),
-    rankingGeneratedTimestamp: new Date(),
+    rankingPublishedTimestamp: '2026-03-01T00:00:00.000Z',
+    rankingGeneratedTimestamp: '2026-03-01T00:00:00.000Z',
     totalEligibleOk: 1,
     totalEligibleKo: 0,
     totalOnboardingKo: 0,
@@ -71,8 +70,8 @@ describe('<InitiativeRanking />', () => {
     totalElements: 0,
     totalPages: 0,
     rankingStatus: 'READY',
-    rankingPublishedTimestamp: new Date(),
-    rankingGeneratedTimestamp: new Date(),
+    rankingPublishedTimestamp: '2026-03-01T00:00:00.000Z',
+    rankingGeneratedTimestamp: '2026-03-01T00:00:00.000Z',
     totalEligibleOk: 0,
     totalEligibleKo: 0,
     totalOnboardingKo: 0,
@@ -90,8 +89,8 @@ describe('<InitiativeRanking />', () => {
       },
     ],
     rankingStatus: 'COMPLETED',
-    rankingPublishedTimestamp: new Date(),
-    rankingGeneratedTimestamp: new Date(),
+    rankingPublishedTimestamp: '2026-03-01T00:00:00.000Z',
+    rankingGeneratedTimestamp: '2026-03-01T00:00:00.000Z',
     rankingFilePath: 'string',
   };
 
@@ -162,7 +161,7 @@ describe('<InitiativeRanking />', () => {
             content: [
               {
                 beneficiary: 'string',
-                criteriaConsensusTimestamp: new Date(),
+                criteriaConsensusTimestamp: '2026-03-01T00:00:00.000Z',
                 rankingValue: 0,
                 ranking: 0,
                 beneficiaryRankingStatus: item,
@@ -173,8 +172,8 @@ describe('<InitiativeRanking />', () => {
             totalElements: 0,
             totalPages: 0,
             rankingStatus: 'READY',
-            rankingPublishedTimestamp: new Date(),
-            rankingGeneratedTimestamp: new Date(),
+            rankingPublishedTimestamp: '2026-03-01T00:00:00.000Z',
+            rankingGeneratedTimestamp: '2026-03-01T00:00:00.000Z',
             totalEligibleOk: 0,
             totalEligibleKo: 0,
             totalOnboardingKo: 0,

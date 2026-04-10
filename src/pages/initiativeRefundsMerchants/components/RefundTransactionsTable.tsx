@@ -17,8 +17,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { PointOfSaleDTO } from '../../../api/generated/merchants/PointOfSaleDTO';
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
+import { PointOfSaleDTO, RewardBatchTrxStatus } from '../../../api/generated/merchants/apiClient';
 import { PAGE_SIZE_OPTIONS } from '../model/constants';
 import { formatCurrencyFromCents } from '../model/formatters';
 import { TrxItem } from '../model/types';
@@ -27,7 +26,7 @@ type Props = {
   t: (key: string) => string;
   rows: Array<TrxItem>;
   totalElements: number;
-  lockedStatus: RewardBatchTrxStatusEnum | null;
+  lockedStatus: RewardBatchTrxStatus | null;
   sameStatusRowsLength: number;
   disabled: boolean;
   allSameStatusSelected: boolean;
@@ -35,7 +34,7 @@ type Props = {
   dateSort: '' | 'asc' | 'desc';
   toggleDateSort: () => void;
   selectedRows: Set<string>;
-  handleRowCheckbox: (rowId: string, rowStatus?: RewardBatchTrxStatusEnum) => void;
+  handleRowCheckbox: (rowId: string, rowStatus?: RewardBatchTrxStatus) => void;
   downloadInvoice: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any) => void;
   posList: Array<PointOfSaleDTO>;
   handleOpenDrawer: (row: TrxItem) => void;

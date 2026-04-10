@@ -1,5 +1,4 @@
-import { GroupUpdateDTO } from '../api/generated/groups/GroupUpdateDTO';
-import { StatusGroupDTO } from '../api/generated/groups/StatusGroupDTO';
+import { GroupUpdateDTO, StatusGroupDTO } from '../api/generated/groups/apiClient';
 import { groupsApi } from '../api/groupsApiClient';
 
 export const getGroupOfBeneficiaryStatusAndDetail = (id: string): Promise<StatusGroupDTO> => groupsApi.getGroupOfBeneficiaryStatusAndDetails(id).then((res) => res);

@@ -1,23 +1,14 @@
 import { RolePermissionApiMocked } from '../../api/__mocks__/rolePermissionApiClient';
 
-export const mockedPermission = [
+export const mockedPermission = 
   {
-    permission: {
-      name: '',
-      description: '',
-      mode: '',
-    },
     role: '',
-  },
-  {
-    permission: {
+    permissions: [{
+      id: '',
       name: '',
-      description: '',
       mode: '',
-    },
-    role: '',
-  },
-];
+    },]
+  };
 
 export const mockedPortalConsent = {
   firstAcceptance: true,
@@ -28,5 +19,5 @@ export const mockedVersionId = "234d31";
 
 export const getUserPermission = () => RolePermissionApiMocked.userPermission();
 export const getPortalConsent = () => RolePermissionApiMocked.getPortalConsent();
-export const savePortalConsent= () => RolePermissionApiMocked.savePortalConsent(mockedVersionId);
+export const savePortalConsent = () => RolePermissionApiMocked.savePortalConsent(mockedVersionId);
 

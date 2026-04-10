@@ -1,9 +1,11 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
+import {
+  InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum,
+  OnboardingStatusDtoStatusEnum as OnboardingStatusEnum,
+} from '../../../api/generated/initiative/apiClient';
 import { renderWithContext } from '../../../utils/test-utils';
 import SuspensionModal from '../SuspensionModal';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
 
 beforeEach(() => {
   jest.spyOn(console, 'warn').mockImplementation(() => {});
@@ -20,7 +22,7 @@ describe('test suite for suspension modal', () => {
         statusOnb={undefined}
         buttonType={''}
         setStatusOnb={function (
-          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+          _value: React.SetStateAction<OnboardingStatusEnum | undefined>
         ): void {
           throw new Error('Function not implemented.');
         }}
@@ -39,7 +41,7 @@ describe('test suite for suspension modal', () => {
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         buttonType={'SUSPEND'}
         setStatusOnb={function (
-          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+          _value: React.SetStateAction<OnboardingStatusEnum | undefined>
         ): void {
           throw new Error('Function not implemented.');
         }}
@@ -64,7 +66,7 @@ describe('test suite for suspension modal', () => {
         statusOnb={OnboardingStatusEnum.SUSPENDED}
         buttonType={'READMIT'}
         setStatusOnb={function (
-          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+          _value: React.SetStateAction<OnboardingStatusEnum | undefined>
         ): void {
           throw new Error('Function not implemented.');
         }}
@@ -97,7 +99,7 @@ describe('test suite for suspension modal', () => {
         statusOnb={OnboardingStatusEnum.SUSPENDED}
         buttonType={'EXCLUDE'}
         setStatusOnb={function (
-          value: React.SetStateAction<OnboardingStatusEnum | undefined>
+          _value: React.SetStateAction<OnboardingStatusEnum | undefined>
         ): void {
           throw new Error('Function not implemented.');
         }}

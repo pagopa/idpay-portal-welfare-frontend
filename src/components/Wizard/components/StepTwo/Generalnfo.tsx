@@ -49,11 +49,8 @@ import {
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
@@ -93,7 +90,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       dispatch(setGeneralInfo(formik.values));
       if (initiativeIdSel) {
         setLoading(true);
-        updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed)
+        updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed as any)
           .then((_res) => {
             setOpenDraftSavedToast(true);
           })
@@ -122,7 +119,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     familyUnitComposition: Yup.string()
       .default(undefined)
       .when('beneficiaryType', {
-        is: BeneficiaryTypeEnum.NF,
+        is: InitiativeGeneralDtoBeneficiaryTypeEnum.NF,
         then: Yup.string().required(t('validation.required')),
         otherwise: Yup.string().default(undefined),
       }),
@@ -131,7 +128,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       .default(undefined)
       .required(t('validation.required'))
       .when('beneficiaryType', {
-        is: BeneficiaryTypeEnum.PF,
+        is: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
         then: Yup.string().required(t('validation.required')),
         otherwise: Yup.string().default(undefined),
       }),
@@ -317,7 +314,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       dispatch(setGeneralInfo(values));
       if (initiativeIdSel) {
         setLoading(true);
-        updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed)
+        updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed as any)
           .then((_res) => {
             setCurrentStep(currentStep + 1);
           })
@@ -432,12 +429,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             defaultValue={formik.values.beneficiaryType || ''}
             onChange={async (e) => {
               await formik.setFieldValue('beneficiaryType', e.target.value, false);
-              if (e.target.value === BeneficiaryTypeEnum.NF) {
+              if (e.target.value === InitiativeGeneralDtoBeneficiaryTypeEnum.NF) {
                 await formik.setFieldValue('rankingEnabled', 'false', false);
                 await formik.setFieldValue('beneficiaryKnown', 'false', false);
                 await formik.setFieldValue(
                   'familyUnitComposition',
-                  FamilyUnitCompositionEnum.INPS,
+                  InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS,
                   false
                 );
               } else {
@@ -447,14 +444,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             data-testid="beneficiary-type-test"
           >
             <FormControlLabel
-              value={BeneficiaryTypeEnum.PF}
+              value={InitiativeGeneralDtoBeneficiaryTypeEnum.PF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.person')}
               data-testid="beneficiary-radio-test"
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value={BeneficiaryTypeEnum.NF}
+              value={InitiativeGeneralDtoBeneficiaryTypeEnum.NF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.family')}
             />
@@ -467,7 +464,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormHelperText>
         </FormControl>
 
-        {formik.values.beneficiaryType === BeneficiaryTypeEnum.NF && (
+        {formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
           <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
             <Typography
               sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
@@ -486,7 +483,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               onChange={(e) => formik.setFieldValue('familyUnitComposition', e.target.value, false)}
             >
               <FormControlLabel
-                value={FamilyUnitCompositionEnum.INPS}
+                value={InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS}
                 control={<Radio />}
                 label={
                   <div>
@@ -503,7 +500,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               <FormControl>
                 <FormControlLabel
                   sx={{ ml: 2 }}
-                  value={FamilyUnitCompositionEnum.ANPR}
+                  value={InitiativeGeneralDtoFamilyUnitCompositionEnum.ANPR}
                   control={<Radio />}
                   label={
                     <div>
@@ -553,7 +550,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value="true"
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.taxCodeList')}
-              disabled={formik.values.beneficiaryType === BeneficiaryTypeEnum.NF}
+              disabled={formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
@@ -662,17 +659,17 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               type: 'number',
             }}
             label={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
             placeholder={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
             aria-labelledby={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
@@ -714,7 +711,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 component="span"
                 sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
               >
-                {formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                {formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                   ? t('components.wizard.stepTwo.form.reachedUsers')
                   : t('components.wizard.stepTwo.form.reachedFamilies')}
               </Typography>
@@ -729,7 +726,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               </Typography>
               <Tooltip
                 title={
-                  formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                  formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                     ? t('components.wizard.stepTwo.form.reachedUsersTooltip')
                     : t('components.wizard.stepTwo.form.reachedFamiliesTooltip')
                 }

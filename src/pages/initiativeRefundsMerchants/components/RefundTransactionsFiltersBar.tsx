@@ -1,7 +1,6 @@
 import { Box, Button, Chip, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { PointOfSaleDTO } from '../../../api/generated/merchants/PointOfSaleDTO';
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
+import { PointOfSaleDTO, RewardBatchTrxStatus } from '../../../api/generated/merchants/apiClient';
 import { TRANSACTION_SEARCH_TYPE_OPTIONS, TRANSACTION_STATUS_FILTER_OPTIONS } from '../model/constants';
 
 type SearchType = 'fiscalCode' | 'trxCode' | '';
@@ -13,7 +12,7 @@ type Props = {
   setDraftPosFilter: (value: string) => void;
   draftStatusFilter: string;
   setDraftStatusFilter: (value: string) => void;
-  mapTransactionStatus: (status?: RewardBatchTrxStatusEnum) => { label: string; color: string };
+  mapTransactionStatus: (status?: RewardBatchTrxStatus) => { label: string; color: string };
   draftSearchType: SearchType;
   setDraftSearchType: (value: SearchType) => void;
   setDraftSearchValue: (value: string) => void;

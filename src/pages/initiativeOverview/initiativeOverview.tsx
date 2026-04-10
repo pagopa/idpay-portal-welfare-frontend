@@ -109,7 +109,7 @@ const InitiativeOverview = () => {
         handleCloseSnackBar();
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     // eslint-disable-next-line react-hooks/exhaustive-deps
     JSON.stringify(match),
@@ -140,13 +140,19 @@ const InitiativeOverview = () => {
               if (typeof res.onboardedCitizenCount === 'number') {
                 setOnboardedCitizenCount(res.onboardedCitizenCount);
               }
-              if (typeof res.lastUpdatedDateTime === 'object') {
-                const lastUpdateDateTimeStr = res.lastUpdatedDateTime.toLocaleString('fr-BE');
-                const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
-                  0,
-                  lastUpdateDateTimeStr.length - 3
-                );
-                setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+              if (res.lastUpdatedDateTime) {
+                const parsedDate = new Date(res.lastUpdatedDateTime);
+
+                if (!Number.isNaN(parsedDate.getTime())) {
+                  const lastUpdateDateTimeStr = parsedDate.toLocaleString('fr-BE');
+                  const lastUpdateDateTimeNoSec = lastUpdateDateTimeStr.substring(
+                    0,
+                    lastUpdateDateTimeStr.length - 3
+                  );
+                  setLastUpdatedDateTime(lastUpdateDateTimeNoSec);
+                } else {
+                  setLastUpdatedDateTime('-');
+                }
               }
             } // TO CHECK FOR REMOVE
             else {
@@ -174,7 +180,7 @@ const InitiativeOverview = () => {
           .finally(() => setLoading(false));
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match), initiativeSel.initiativeId, initiativeSel.status]);
 
   useEffect(() => {
@@ -498,9 +504,9 @@ const InitiativeOverview = () => {
       ) : null}
 
       {userCanDeleteInitiative &&
-      status !== 'PUBLISHED' &&
-      status !== 'CLOSED' &&
-      status !== 'IN_REVISION' ? (
+        status !== 'PUBLISHED' &&
+        status !== 'CLOSED' &&
+        status !== 'IN_REVISION' ? (
         <Box sx={{ gridColumn: status === 'APPROVED' ? 'span 1' : 'span 2', textAlign: 'end' }}>
           <ButtonNaked
             size="small"
@@ -686,7 +692,7 @@ const InitiativeOverview = () => {
             <Typography variant="body2" sx={{ fontWeight: 600 }}>
               {initiativeSel.updateDate
                 ? typeof initiativeSel.updateDate === 'object' &&
-                  initiativeSel.updateDate.toLocaleDateString('fr-BE')
+                initiativeSel.updateDate.toLocaleDateString('fr-BE')
                 : '-'}
             </Typography>
           </Box>
@@ -728,9 +734,9 @@ const InitiativeOverview = () => {
             )}
           </Box>
           {initiativeSel.status === 'DRAFT' ||
-          initiativeSel.status === 'IN_REVISION' ||
-          initiativeSel.status === 'TO_CHECK' ||
-          initiativeSel.status === 'APPROVED'
+            initiativeSel.status === 'IN_REVISION' ||
+            initiativeSel.status === 'TO_CHECK' ||
+            initiativeSel.status === 'APPROVED'
             ? renderNextStatus(initiativeSel.status, beneficiaryReached)
             : renderConditionalStatusPublished(initiativeSel, beneficiaryReached)}
         </Paper>

@@ -1,12 +1,11 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { IbanDTO, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../api/generated/initiative/apiClient';
 import {
-  OnboardingStatusDTO,
-  StatusEnum as OnboardingStatusEnum,
-} from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+  GetBeneficiaryOnboardingStatusData as OnboardingStatusDTO,
+  OnboardingStatusDtoStatusEnum as OnboardingStatusEnum,
+} from '../../../api/generated/initiative/apiClient';
+import { WalletDTO } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
@@ -296,7 +295,7 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           status: OnboardingStatusEnum.SUSPENDED,
-          statusDate: new Date(),
+          statusDate: new Date().toString(),
         })
       );
     renderWithContext(<InitiativeUserDetails />);
@@ -336,7 +335,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.SUSPENDED,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
 
     InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
@@ -376,7 +375,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.ONBOARDING_OK,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
 
     renderWithContext(<InitiativeUserDetails />);
@@ -398,7 +397,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.ONBOARDING_OK,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
     InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
       Promise.resolve({
@@ -484,7 +483,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.ONBOARDING_OK,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
     InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
       Promise.resolve({
@@ -515,7 +514,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.ONBOARDING_OK,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
     InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
       Promise.resolve({
@@ -567,7 +566,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.DEMANDED,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
     InitiativeApiMocked.getTimeLine = getTimeLineSpy;
 
@@ -588,7 +587,7 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
       Promise.resolve({
         status: OnboardingStatusEnum.UNSUBSCRIBED,
-        statusDate: new Date(),
+        statusDate: new Date().toString(),
       });
 
     const getTimeLineSpy = jest.fn(async (): Promise<any> =>

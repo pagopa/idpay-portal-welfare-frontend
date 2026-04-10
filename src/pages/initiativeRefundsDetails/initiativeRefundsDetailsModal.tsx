@@ -4,8 +4,8 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useEr
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { RefundDetailDTO } from '../../api/generated/initiative/RefundDetailDTO';
 import { formatedCurrency, formatedDate, formatIban } from '../../helpers';
+import { RefundDetailDTO } from '../../api/generated/initiative/apiClient';
 import { getRefundDetail } from '../../services/intitativeService';
 import { getRefundStatus } from './helpers';
 
@@ -156,8 +156,8 @@ const InitiativeRefundsDetailsModal = ({
           </Box>
           <Box sx={{ gridColumn: 'span 12' }}>
             <Typography variant="body2" fontWeight={600}>
-              {`${formatedDate(refundEventDetails?.startDate)} - ${formatedDate(
-                refundEventDetails?.endDate
+              {`${formatedDate(refundEventDetails?.startDate as any)} - ${formatedDate(
+                refundEventDetails?.endDate as any
               )}`}
             </Typography>
           </Box>
@@ -211,7 +211,7 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDate(refundEventDetails?.transferDate)}
+                  {formatedDate(refundEventDetails?.transferDate as any)}
                 </Typography>
               </Box>
             </>
@@ -226,7 +226,7 @@ const InitiativeRefundsDetailsModal = ({
               </Box>
               <Box sx={{ gridColumn: 'span 12' }}>
                 <Typography variant="body2" fontWeight={600}>
-                  {formatedDate(refundEventDetails?.userNotificationDate)}
+                  {formatedDate(refundEventDetails?.userNotificationDate as any)}
                 </Typography>
               </Box>
             </>

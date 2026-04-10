@@ -1,6 +1,6 @@
 ﻿import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import ReportTableCard from '../ReportTableCard';
-import { ReportTypeEnum } from '../../../api/generated/merchants/ReportDTO';
+import { ReportTypeEnum } from '../../../api/generated/merchants/apiClient';
 
 const tMock = (key: string) => key;
 const mockSetLoading = jest.fn();

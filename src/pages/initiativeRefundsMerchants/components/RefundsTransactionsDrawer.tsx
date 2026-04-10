@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
-import { RewardBatchTrxStatus, RewardBatchTrxStatusEnum } from "../../../api/generated/merchants/RewardBatchTrxStatus";
-import { ReasonDTO } from "../../../api/generated/merchants/ReasonDTO";
+import { ReasonDTO, RewardBatchTrxStatus } from "../../../api/generated/merchants/apiClient";
 import { RefundsDrawerData } from "../model/types";
 import { RefundActionButtons } from "./RefundActionButtons";
 import RefundReasonModal from "./RefundReasonModal";
@@ -307,10 +306,10 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                 </Box>
                             ))}
                         </Box>
-                        {data && data?.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED && (
+                        {data && data?.rewardBatchTrxStatus === RewardBatchTrxStatus.SUSPENDED && (
                             <ButtonNaked onClick={() => {
                                 if (data) {
-                                    const type = data.rewardBatchTrxStatus === RewardBatchTrxStatusEnum.SUSPENDED ? "suspend" : "reject";
+                                    const type = data.rewardBatchTrxStatus === RewardBatchTrxStatus.SUSPENDED ? "suspend" : "reject";
                                     openReasonModal(type, data.trxId, true);
                                 }
                             }}
@@ -366,7 +365,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                                                     mb: 0.5
                                                 }}
                                             >
-                                                {reasonObj.date ? formatDate(reasonObj.date.toISOString()) : '-'}
+                                                {reasonObj.date ? formatDate(reasonObj.date.toString()) : '-'}
                                             </Typography>
 
                                             <Typography

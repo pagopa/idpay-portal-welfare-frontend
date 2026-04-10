@@ -3,7 +3,7 @@ import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation } from 'react-i18next';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import { getFamilyComposition } from '../../../services/intitativeService';
-import { FamilyUnitCompositionDTO } from '../../../api/generated/initiative/FamilyUnitCompositionDTO';
+import { FamilyUnitCompositionDTO } from '../../../api/generated/initiative/apiClient';
 
 type Props = {
   id: string;

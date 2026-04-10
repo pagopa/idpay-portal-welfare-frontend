@@ -1,9 +1,9 @@
-import { BeneficiaryTypeEnum } from '../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum } from "../api/generated/initiative/apiClient";
 
 export type SaveInitiativeGeneralDTO = {
   beneficiaryBudget: number;
   beneficiaryKnown: boolean;
-  beneficiaryType: BeneficiaryTypeEnum;
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum;
   budget: number;
   endDate: Date;
   name: string;

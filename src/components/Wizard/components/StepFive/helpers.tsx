@@ -1,6 +1,4 @@
-import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { InitiativeRefundRuleDTO } from '../../../../api/generated/initiative/InitiativeRefundRuleDTO';
-import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
+import { AccumulatedAmountDtoAccumulatedTypeEnum, InitiativeRefundRuleDTO, TimeParameterDtoTimeTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { RefundRule } from '../../../../model/Initiative';
 
 export const setError = (touched: boolean | undefined, errorText: string | undefined) =>
@@ -10,18 +8,18 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (values: RefundRule): InitiativeRefundRuleDTO => {
-  const accumulatedTypeBudget = values.accumulatedAmount as AccumulatedTypeEnum.BUDGET_EXHAUSTED;
+  const accumulatedTypeBudget = values.accumulatedAmount as AccumulatedAmountDtoAccumulatedTypeEnum.BUDGET_EXHAUSTED;
   const accumulatedTypeThreshold =
-    values.accumulatedAmount as AccumulatedTypeEnum.THRESHOLD_REACHED;
+    values.accumulatedAmount as AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED;
   const refundThreshold =
     typeof values.reimbursementThreshold === 'string'
       ? parseFloat(values.reimbursementThreshold)
       : undefined;
   const identificationCode = values.additionalInfo;
-  const timeType = values.timeParameter as TimeTypeEnum;
+  const timeType = values.timeParameter as TimeParameterDtoTimeTypeEnum;
   if (
     values.reimbursmentQuestionGroup === 'true' &&
-    values.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+    values.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED
   ) {
     return {
       accumulatedAmount: { accumulatedType: accumulatedTypeThreshold, refundThreshold },
@@ -29,7 +27,7 @@ export const mapDataToSend = (values: RefundRule): InitiativeRefundRuleDTO => {
     };
   } else if (
     values.reimbursmentQuestionGroup === 'true' &&
-    values.accumulatedAmount === AccumulatedTypeEnum.BUDGET_EXHAUSTED
+    values.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.BUDGET_EXHAUSTED
   ) {
     return {
       accumulatedAmount: { accumulatedType: accumulatedTypeBudget },

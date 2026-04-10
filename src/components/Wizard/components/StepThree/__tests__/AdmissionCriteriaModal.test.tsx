@@ -1,12 +1,11 @@
-import React from 'react';
-import { findByTestId, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { AvailableCriteria } from '../../../../../model/AdmissionCriteria';
 import AdmissionCriteriaModal from '../AdmissionCriteriaModal';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
+  InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum,
+  InitiativeGeneralDtoFamilyUnitCompositionEnum as FamilyUnitCompositionEnum,
+} from '../../../../../api/generated/initiative/apiClient';
 
 beforeEach(() => {
   jest.mock('@mui/material');

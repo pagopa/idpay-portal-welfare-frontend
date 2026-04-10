@@ -8,7 +8,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { TrxCount } from '../../../../model/Initiative';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { InitiativeRewardTypeEnum } from '../../../../services/intitativeService';
 import {
   renderShopRuleIcon,
   handleShopRulesToSubmit,

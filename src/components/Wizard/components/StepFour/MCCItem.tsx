@@ -19,8 +19,8 @@ import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useEr
 import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { fetchMccCodes } from '../../../../services/mccCodesService';
 import { MccCodesModel } from '../../../../model/MccCodes';
+import { MccFilterDTO } from '../../../../api/generated/initiative/apiClient';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
-import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
 import {
   boxItemStyle,
   handleShopRulesToSubmit,

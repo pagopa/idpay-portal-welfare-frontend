@@ -1,9 +1,13 @@
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
-import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
-import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
+import {
+  ChannelDtoTypeEnum,
+  InitiativeAdditionalDTO,
+  InitiativeAdditionalDtoServiceScopeEnum,
+  InitiativeBeneficiaryRuleDTO,
+  InitiativeDtoInitiativeRewardTypeEnum,
+  RewardGroupsDTO,
+  RewardValueDTO,
+} from '../../api/generated/initiative/apiClient';
 import { InitiativeApi } from '../../api/InitiativeApiClient';
-import { decode } from '../../utils/io-utils';
 import { mockedFile } from '../__mocks__/groupsService';
 import {
   mockedBeneficaryStatus,
@@ -19,6 +23,7 @@ import {
   mockedIbanInfo,
   mockedInitiativeDetail,
   mockedInitiativeGeneralBody,
+  mockedInitiativeBeneficiaryRuleBody,
   mockedInitiativeId,
   mockedInitiativeStatistics,
   mockedInitiativeSummary,
@@ -129,12 +134,13 @@ jest.mock('../../api/InitiativeApiClient', () => ({
   },
 }));
 
-jest.mock('../../utils/io-utils', () => ({
-  decode: jest.fn(),
-}));
-
 const api = InitiativeApi as jest.Mocked<typeof InitiativeApi>;
-const decodeMock = decode as jest.MockedFunction<typeof decode>;
+const mockedServiceInfoDataDTO: InitiativeAdditionalDTO = {
+  ...mockedServiceInfoData,
+  serviceScope: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
+  channels: [{ type: ChannelDtoTypeEnum.Mobile, contact: 'http://test.it' }],
+};
+const mockedBeneficiaryRuleData: InitiativeBeneficiaryRuleDTO = mockedInitiativeBeneficiaryRuleBody;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -159,17 +165,17 @@ describe('intitativeService', () => {
       },
       {
         label: 'createInitiativeServiceInfo',
-        invoke: () => createInitiativeServiceInfo(mockedServiceInfoData),
+        invoke: () => createInitiativeServiceInfo(mockedServiceInfoDataDTO),
         mock: api.saveInitiativeServiceInfo,
         response: mockedInitiativeDetail,
-        args: [mockedServiceInfoData],
+        args: [mockedServiceInfoDataDTO],
       },
       {
         label: 'updateInitiativeServiceInfo',
-        invoke: () => updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData),
+        invoke: () => updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoDataDTO),
         mock: api.updateInitiativeServiceInfo,
         response: undefined,
-        args: [mockedInitiativeId, mockedServiceInfoData],
+        args: [mockedInitiativeId, mockedServiceInfoDataDTO],
       },
       {
         label: 'updateInitiativeGeneralInfo',
@@ -188,18 +194,17 @@ describe('intitativeService', () => {
       },
       {
         label: 'putBeneficiaryRuleService',
-        invoke: () => putBeneficiaryRuleService(mockedInitiativeId, mockedServiceInfoData as any),
+        invoke: () => putBeneficiaryRuleService(mockedInitiativeId, mockedBeneficiaryRuleData),
         mock: api.initiativeBeneficiaryRulePut,
         response: undefined,
-        args: [mockedInitiativeId, mockedServiceInfoData],
+        args: [mockedInitiativeId, mockedBeneficiaryRuleData],
       },
       {
         label: 'putBeneficiaryRuleDraftService',
-        invoke: () =>
-          putBeneficiaryRuleDraftService(mockedInitiativeId, mockedServiceInfoData as any),
+        invoke: () => putBeneficiaryRuleDraftService(mockedInitiativeId, mockedBeneficiaryRuleData),
         mock: api.initiativeBeneficiaryRulePutDraft,
         response: undefined,
-        args: [mockedInitiativeId, mockedServiceInfoData],
+        args: [mockedInitiativeId, mockedBeneficiaryRuleData],
       },
       {
         label: 'getEligibilityCriteriaForSidebar',
@@ -500,75 +505,61 @@ describe('intitativeService', () => {
     await expect(getInitativeSummary()).rejects.toThrow('initiative unavailable');
   });
 
-  it('transcodes reward groups and reward value rules through decode', () => {
+  it('returns reward groups and reward value rules unchanged', () => {
     const rewardGroupsRule = {
       _type: 'rewardGroups',
       rewardGroups: [{ from: 0, to: 5, rewardValue: 10 }],
-    } as InitiativeRewardAndTrxRulesDTORewardRule;
-    const rewardGroupsDecoded = { kind: 'reward-groups' };
-    decodeMock.mockReturnValueOnce(rewardGroupsDecoded as any);
+    } as RewardGroupsDTO;
 
-    expect(trascodeRewardRule(rewardGroupsRule)).toBe(rewardGroupsDecoded);
-    expect(decodeMock).toHaveBeenCalledWith(rewardGroupsRule, RewardGroupDTO);
+    expect(trascodeRewardRule(rewardGroupsRule)).toBe(rewardGroupsRule);
 
     const rewardValueRule = {
       _type: 'rewardValue',
       rewardValue: 0.23,
-    } as InitiativeRewardAndTrxRulesDTORewardRule;
-    const rewardValueDecoded = { kind: 'reward-value' };
-    decodeMock.mockReturnValueOnce(rewardValueDecoded as any);
+    } as RewardValueDTO;
 
-    expect(trascodeRewardRule(rewardValueRule)).toBe(rewardValueDecoded);
-    expect(decodeMock).toHaveBeenCalledWith(rewardValueRule, RewardValueDTO);
+    expect(trascodeRewardRule(rewardValueRule)).toBe(rewardValueRule);
   });
 
-  it('returns falsy reward rules unchanged and throws on unknown types', () => {
-    expect(
-      trascodeRewardRule(null as unknown as InitiativeRewardAndTrxRulesDTORewardRule)
-    ).toBeNull();
-    expect(decodeMock).not.toHaveBeenCalled();
+  it('returns undefined for falsy reward rules and throws on unknown types', () => {
+    expect(trascodeRewardRule(null as unknown as RewardGroupsDTO)).toBeUndefined();
 
-    expect(
-      trascodeRewardRule(undefined as unknown as InitiativeRewardAndTrxRulesDTORewardRule)
-    ).toBeUndefined();
-    expect(decodeMock).not.toHaveBeenCalled();
+    expect(trascodeRewardRule(undefined as unknown as RewardGroupsDTO)).toBeUndefined();
 
     expect(() =>
       trascodeRewardRule({
         _type: 'unknown',
-      } as InitiativeRewardAndTrxRulesDTORewardRule)
+      } as RewardGroupsDTO)
     ).toThrow('Unknown type');
 
-    expect(() =>
-      trascodeRewardRule({} as InitiativeRewardAndTrxRulesDTORewardRule)
-    ).toThrow('Unknown type');
+    expect(() => trascodeRewardRule({} as RewardGroupsDTO)).toThrow('Unknown type');
   });
 
   it('routes suspend and readmit calls based on the reward type', async () => {
     api.suspendUserRefund.mockResolvedValueOnce(undefined);
     await expect(
-      suspendUser(mockedInitiativeId, mockedFiscalCode, InitiativeRewardTypeEnum.REFUND)
+      suspendUser(mockedInitiativeId, mockedFiscalCode, InitiativeDtoInitiativeRewardTypeEnum.REFUND)
     ).resolves.toBeUndefined();
     expect(api.suspendUserRefund).toHaveBeenCalledWith(mockedInitiativeId, mockedFiscalCode);
     expect(api.suspendUserDiscount).not.toHaveBeenCalled();
 
     api.suspendUserDiscount.mockResolvedValueOnce(undefined);
     await expect(
-      suspendUser(mockedInitiativeId, mockedFiscalCode, InitiativeRewardTypeEnum.DISCOUNT)
+      suspendUser(mockedInitiativeId, mockedFiscalCode, InitiativeDtoInitiativeRewardTypeEnum.DISCOUNT)
     ).resolves.toBeUndefined();
     expect(api.suspendUserDiscount).toHaveBeenCalledWith(mockedInitiativeId, mockedFiscalCode);
     expect(api.suspendUserRefund).toHaveBeenCalledTimes(1);
 
     api.readmitUserRefund.mockResolvedValueOnce(undefined);
     await expect(
-      readmitUser(mockedInitiativeId, mockedFiscalCode, InitiativeRewardTypeEnum.REFUND)
+      readmitUser(mockedInitiativeId, mockedFiscalCode, InitiativeDtoInitiativeRewardTypeEnum.REFUND)
     ).resolves.toBeUndefined();
     expect(api.readmitUserRefund).toHaveBeenCalledWith(mockedInitiativeId, mockedFiscalCode);
     expect(api.readmitUserDiscount).not.toHaveBeenCalled();
 
     api.readmitUserDiscount.mockResolvedValueOnce(undefined);
     await expect(
-      readmitUser(mockedInitiativeId, mockedFiscalCode, InitiativeRewardTypeEnum.DISCOUNT)
+      readmitUser(mockedInitiativeId, mockedFiscalCode, InitiativeDtoInitiativeRewardTypeEnum.DISCOUNT)
     ).resolves.toBeUndefined();
     expect(api.readmitUserDiscount).toHaveBeenCalledWith(mockedInitiativeId, mockedFiscalCode);
     expect(api.readmitUserRefund).toHaveBeenCalledTimes(1);

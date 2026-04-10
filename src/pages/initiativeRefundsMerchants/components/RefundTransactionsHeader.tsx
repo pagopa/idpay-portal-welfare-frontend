@@ -1,6 +1,6 @@
 import { Download, Sync } from '@mui/icons-material';
 import { Alert, Box, Button, Typography } from '@mui/material';
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus } from '../../../api/generated/merchants/apiClient';
 import { RefundActionButtons } from './RefundActionButtons';
 import { RoleActionButton } from './RoleActionButton';
 
@@ -13,7 +13,7 @@ type Props = {
   };
   role: string;
   selectedRowsSize: number;
-  lockedStatus: RewardBatchTrxStatusEnum | null;
+  lockedStatus: RewardBatchTrxStatus | null;
   onOpenApproveModal: () => void;
   onOpenSuspendModal: () => void;
   onOpenRejectModal: () => void;
@@ -62,7 +62,7 @@ const RefundTransactionsHeader = ({
             <Box sx={{ width: '50%' }}>
               <RefundActionButtons
                 direction="row"
-                status={lockedStatus as RewardBatchTrxStatusEnum}
+                status={lockedStatus as RewardBatchTrxStatus}
                 onApprove={onOpenApproveModal}
                 onSuspend={onOpenSuspendModal}
                 onReject={onOpenRejectModal}

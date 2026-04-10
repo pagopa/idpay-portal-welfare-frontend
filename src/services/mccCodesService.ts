@@ -1,4 +1,4 @@
-import { ConfigMccArrayDTO } from '../api/generated/initiative/ConfigMccArrayDTO';
+import { ConfigMccArrayDTO } from '../api/generated/initiative/apiClient';
 import { InitiativeApi } from '../api/InitiativeApiClient';
 // import { InitiativeApiMocked } from '../api/__mocks__/InitiativeApiClient';
 

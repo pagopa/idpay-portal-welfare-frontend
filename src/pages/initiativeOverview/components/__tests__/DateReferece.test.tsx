@@ -3,12 +3,9 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import DateReference from '../DateReference';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
-import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TypeEnum } from '../../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { AccumulatedAmountDtoAccumulatedTypeEnum as AccumulatedTypeEnum, ChannelDtoTypeEnum as TypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { Initiative } from '../../../../model/Initiative';
 
 beforeEach(() => {
@@ -144,7 +141,7 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
         serviceDescription: 'newStepOneTest',
         privacyPolicyUrl: 'http://test.it',
         termsAndConditions: 'http://test.it',
-        assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+        assistanceChannels: [{ type: TypeEnum.Web, contact: 'http://test.it' }],
         logoFileName: 'logo file name',
         logoUploadDate: 'logo date',
         logoURL: 'logo url',
@@ -237,7 +234,7 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
         serviceDescription: 'newStepOneTest',
         privacyPolicyUrl: 'http://test.it',
         termsAndConditions: 'http://test.it',
-        assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+        assistanceChannels: [{ type: TypeEnum.Web, contact: 'http://test.it' }],
         logoFileName: 'logo file name',
         logoUploadDate: 'logo date',
         logoURL: 'logo url',

@@ -6,7 +6,7 @@ import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import TransactionNumberItem from '../TransactionNumberItem';
 import { shopRulesToSubmit, trxCount } from './ShopRules.test';
-import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
+import { InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/apiClient';
 
 jest.mock('../../../../../services/intitativeService');
 
