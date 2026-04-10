@@ -1,8 +1,7 @@
 /* eslint-disable functional/immutable-data */
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { ExportListDTO } from '../../../api/generated/initiative/ExportListDTO';
-import { SasToken } from '../../../api/generated/initiative/SasToken';
+import { ExportListDTO, SasToken } from '../../../api/generated/initiative/apiClient';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
 import { mockedGetRewardFileDownload } from '../../../services/__mocks__/intitativeService';

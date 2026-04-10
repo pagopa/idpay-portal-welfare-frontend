@@ -1,6 +1,7 @@
 import { useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { matchPath, useHistory } from 'react-router-dom';
+import { AssigneeLevelEnum, RewardBatchStatus } from '../../../api/generated/merchants/apiClient';
 import { setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useAlert } from '../../../hooks/useAlert';
 import {
@@ -133,10 +134,10 @@ export const useRefundBatchesPage = ({ t }: UseRefundBatchesPageArgs) => {
       initiativeId,
       page,
       pageSize,
-      assigneeFilter || undefined,
+      assigneeFilter as AssigneeLevelEnum || undefined,
       nameFilter || undefined,
       periodFilter || undefined,
-      statusFilter || undefined,
+      statusFilter as RewardBatchStatus || undefined,
       sort || undefined
     )
       .then((response) => {

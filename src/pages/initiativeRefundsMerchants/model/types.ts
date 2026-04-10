@@ -1,6 +1,4 @@
-import { MerchantTransactionProcessedDTO } from '../../../api/generated/merchants/MerchantTransactionProcessedDTO';
-import { ReasonDTO } from '../../../api/generated/merchants/ReasonDTO';
-import { RewardBatchTrxStatusEnum } from '../../../api/generated/merchants/RewardBatchTrxStatus';
+import { MerchantTransactionProcessedDTO, ReasonDTO, RewardBatchTrxStatus } from "../../../api/generated/merchants/apiClient";
 
 export interface RefundItem {
   id: string;
@@ -66,7 +64,7 @@ export interface TrxItem {
   invoiceFileName?: string;
   pointOfSaleId?: string;
   transactionId?: string;
-  status?: RewardBatchTrxStatusEnum;
+  status?: RewardBatchTrxStatus;
 }
 
 export interface RefundsDrawerData {

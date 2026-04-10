@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 import RefundsTransactionsDrawer from '../RefundsTransactionsDrawer';
 
 const mockOnClose = jest.fn();

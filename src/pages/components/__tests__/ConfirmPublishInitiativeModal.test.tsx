@@ -1,13 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
 import { Provider } from 'react-redux';
-import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
-import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { AccumulatedAmountDtoAccumulatedTypeEnum as AccumulatedTypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum } from '../../../api/generated/initiative/apiClient';
 import { createStore } from '../../../redux/store';
 import ConfirmPublishInitiativeModal from '../ConfirmPublishInitiativeModal';
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../api/generated/initiative/apiClient';
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
@@ -46,6 +42,7 @@ describe('<ConfirmPublishInitiativeModal />', (injectedStore?: ReturnType<typeof
     },
     additionalInfo: {
       initiativeOnIO: true,
+      serviceId: undefined,
       serviceName: 'prova313',
       serviceArea: ServiceScopeEnum.NATIONAL,
       serviceDescription: 'newStepOneTest',

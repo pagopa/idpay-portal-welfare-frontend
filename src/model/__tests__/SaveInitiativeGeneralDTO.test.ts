@@ -1,4 +1,4 @@
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum } from '../../api/generated/initiative/apiClient';
 import { saveInitiativeGeneral2SaveInitiativeGeneralDTO } from '../saveInitiativeGeneralDTO';
 
 const mockedSaveInitiativeGeneral = {

@@ -4,12 +4,13 @@ import { act } from 'react-dom/test-utils';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import ShopRulesContentBody from '../StepFour/ShopRuleContentBody';
-import React from 'react';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
 import { Initiative } from '../../../../model/Initiative';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import {
+  InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum,
+  InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum,
+  InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum,
+} from '../../../../api/generated/initiative/apiClient';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -19,8 +20,6 @@ jest.mock('react-i18next', () => ({
 describe('<ShopRulesContentBody />', (injectedStore?: ReturnType<typeof createStore>) => {
   const store = injectedStore ? injectedStore : createStore();
   const initiative = store.getState().initiative;
-  const printRewardRuleAsString = jest.fn();
-  // const printMccFilterAsString = jest.fn();
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
@@ -72,6 +71,7 @@ describe('<ShopRulesContentBody />', (injectedStore?: ReturnType<typeof createSt
       },
       additionalInfo: {
         initiativeOnIO: true,
+        serviceId: undefined,
         serviceName: 'prova313',
         serviceArea: 'NATIONAL',
         serviceDescription: 'newStepOneTest',

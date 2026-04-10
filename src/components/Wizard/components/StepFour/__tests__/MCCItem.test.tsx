@@ -1,16 +1,13 @@
 /* eslint-disable react/jsx-no-bind */
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
 import { Provider } from 'react-redux';
-import { ConfigMccArrayDTO } from '../../../../../api/generated/initiative/ConfigMccArrayDTO';
+import { ConfigMccArrayDTO } from '../../../../../api/generated/initiative/apiClient';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import MCCItem from '../MCCItem';
 import { mccFilter, shopRulesToSubmit } from './ShopRules.test';
-import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
-import { mockedMccCodes } from '../../../../../services/__mocks__/mccCodesService';
 
 jest.mock('../../../../../services/intitativeService');
 

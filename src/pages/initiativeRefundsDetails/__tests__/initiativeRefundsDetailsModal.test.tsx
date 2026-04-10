@@ -1,6 +1,6 @@
 import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { RefundDetailDTO } from '../../../api/generated/initiative/RefundDetailDTO';
+import { RefundDetailDTO } from '../../../api/generated/initiative/apiClient';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetailsModal';
 
@@ -24,15 +24,15 @@ describe('initiativeRefundsDetailsModal', () => {
 
     // test refund type REMEDIAL from response
 
-    const mockedResponse = {
-      amount: 10,
-      endDate: new Date(),
+    const mockedResponse: RefundDetailDTO = {
+      amountCents: 10,
+      endDate: '2026-03-31',
       fiscalCode: 'RSSMRA94C31F205K',
       iban: 'IT60X0542811101000000123456',
-      userNotificationDate: new Date(),
+      userNotificationDate: '2026-04-01',
       refundType: 'REMEDIAL',
-      transferDate: new Date(),
-      startDate: new Date(),
+      transferDate: '2026-04-01',
+      startDate: '2026-03-01',
       status: 'COMPLETED_OK',
       cro: '12345678901',
     };

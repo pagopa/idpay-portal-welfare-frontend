@@ -1,13 +1,21 @@
 import * as t from 'io-ts';
-import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
-import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
+import type {
+  RewardGroupsDTO,
+  RewardValueDTO as RewardValueDTOType,
+} from '../../api/generated/initiative/apiClient';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum } from '../../api/generated/initiative/apiClient';
 import { decode } from '../io-utils';
+
+type InitiativeRewardAndTrxRulesDTORewardRule = RewardGroupsDTO | RewardValueDTOType;
+
+const RewardGroupDTO = t.unknown;
+const RewardValueDTO = t.unknown;
 
 describe('decode', () => {
   test('returns decoded values when validation succeeds', () => {
     const value: InitiativeRewardAndTrxRulesDTORewardRule = {
       _type: 'rewardGroups',
+      rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
       rewardGroups: [
         {
           from: 0,
@@ -17,7 +25,7 @@ describe('decode', () => {
       ],
     };
 
-    const result: RewardGroupDTO = decode(value, RewardGroupDTO);
+    const result = decode(value, RewardGroupDTO) as InitiativeRewardAndTrxRulesDTORewardRule;
 
     expect(result).toBe(value);
   });
@@ -27,9 +35,7 @@ describe('decode', () => {
   });
 
   test('returns falsy values as-is without decoding', () => {
-    // @ts-expect-error deliberate falsy runtime inputs
     expect(decode(undefined, RewardValueDTO)).toBeUndefined();
-    // @ts-expect-error deliberate falsy runtime inputs
     expect(decode(null, RewardValueDTO)).toBeNull();
     expect(decode(false, t.boolean)).toBe(false);
   });

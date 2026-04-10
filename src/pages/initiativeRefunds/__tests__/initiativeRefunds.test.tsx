@@ -1,9 +1,8 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { isDate, parse } from 'date-fns';
-import React from 'react';
 import { date } from 'yup';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { PageRewardExportsDTO } from '../../../api/generated/initiative/PageRewardExportsDTO';
+import { PageRewardExportsDTO } from '../../../api/generated/initiative/apiClient';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefunds from '../initiativeRefunds';
@@ -147,12 +146,12 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
         resolve({
           content: [
             {
-              feedbackDate: new Date(),
+              feedbackDate: '2026-03-01T00:00:00.000Z',
               filePath: 'string',
               id: 'string',
               initiativeId: 'string',
               initiativeName: 'string',
-              notificationDate: new Date(),
+              notificationDate: '2026-03-01',
               organizationId: 'string',
               percentageResulted: 'string',
               percentageResultedOk: 'string',
@@ -191,12 +190,12 @@ describe('<InitiativeRefunds />', (/* injectedHistory?: ReturnType<typeof create
         resolve({
           content: [
             {
-              feedbackDate: new Date(),
+              feedbackDate: '2026-03-01T00:00:00.000Z',
               filePath: 'string',
               id: 'string',
               initiativeId: 'string',
               initiativeName: 'string',
-              notificationDate: new Date(),
+              notificationDate: '2026-03-01',
               organizationId: 'string',
               percentageResulted: 'string',
               percentageResultedOk: 'string',

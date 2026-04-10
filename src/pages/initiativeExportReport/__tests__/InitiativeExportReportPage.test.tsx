@@ -2,7 +2,10 @@
 import { Provider } from 'react-redux';
 import { createStore } from '../../../redux/store';
 import InitiativeExportReportPage from '../InitiativeExportReportPage';
-import { ReportStatusEnum, ReportTypeEnum } from '../../../api/generated/merchants/ReportDTO';
+import {
+  ReportDtoReportStatusEnum as ReportStatusEnum,
+  ReportTypeEnum,
+} from '../../../api/generated/merchants/apiClient';
 
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
@@ -146,14 +149,15 @@ describe('<InitiativeExportReportPage />', () => {
     fireEvent.click(await screen.findByTestId('generate-report-btn'));
 
     await waitFor(() => {
-      expect(mockGenerateReport).toHaveBeenCalledWith(
-        'initiative-1',
-        new Date('2026-01-01'),
-        new Date('2026-01-31'),
-        ReportTypeEnum.MERCHANT_TRANSACTIONS,
-        ''
-      );
+      expect(mockGenerateReport).toHaveBeenCalledTimes(1);
     });
+
+    const [initiativeId, startDate, endDate, reportType, merchantId] = mockGenerateReport.mock.calls[0];
+    expect(initiativeId).toBe('initiative-1');
+    expect(new Date(startDate).toISOString()).toBe(new Date('2026-01-01').toISOString());
+    expect(new Date(endDate).toISOString()).toBe(new Date('2026-01-31').toISOString());
+    expect(reportType).toBe(ReportTypeEnum.MERCHANT_TRANSACTIONS);
+    expect(merchantId).toBe('');
   });
 
   test('does not show a status alert when the generate report response has no status', async () => {

@@ -1,6 +1,6 @@
 ﻿import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
-import { RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/RewardBatchTrxStatus';
+import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 import { useRefundTransactionsPage } from '../useRefundTransactionsPage';
 
 const mockReplace = jest.fn();
@@ -432,7 +432,7 @@ describe('useRefundTransactionsPage', () => {
 
     mockApproveTrx.mockRejectedValueOnce({
       status: 400,
-      body: { code: 'REWARD_BATCH_INVALID_REQUEST' },
+      response: { data: { code: 'REWARD_BATCH_INVALID_REQUEST' } },
     });
     await hookResult.handleRefundAction('approve', ['trx-1']);
     expect(mockSetAlert).toHaveBeenCalledWith(
@@ -441,7 +441,7 @@ describe('useRefundTransactionsPage', () => {
 
     mockApproveTrx.mockRejectedValueOnce({
       status: 400,
-      body: { code: 'BATCH_NOT_ELABORATED_15_PERCENT' },
+      response: { data: { code: 'BATCH_NOT_ELABORATED_15_PERCENT' } },
     });
     await hookResult.handleRefundAction('approve', ['trx-1']);
     await waitFor(() => expect(hookResult.batchErrorOpen).toBe(true));

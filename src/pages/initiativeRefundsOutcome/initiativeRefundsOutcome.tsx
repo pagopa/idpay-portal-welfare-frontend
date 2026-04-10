@@ -186,15 +186,15 @@ const InitiativeRefundsOutcome = () => {
           const rowsData = res.content.map((r) => ({
             status: r.status,
             filePath: r.filePath,
-            feedbackDate: r.feedbackDate?.toLocaleDateString('fr-BE'),
+            feedbackDate: r.feedbackDate?.toString(),
             rewardsResulted: t('pages.initiativeRefundsOutcome.uploadPaper.rewardsResulted', {
               x: r.rewardsResulted,
             }),
             rewardsAdded: t('pages.initiativeRefundsOutcome.uploadPaper.rewardsAdded', {
-              x: r.rewardsResulted - r.rewardsResultedError,
+              x: r.rewardsResulted !== undefined && r.rewardsResultedError !== undefined ? r.rewardsResulted - r.rewardsResultedError : 0,
             }),
             downloadFileInfo: { initiativeId: r.initiativeId, filePath: r.filePath },
-            errorsSize: r.errorsSize,
+            errorsSize: r.errorsSize ?? 0,
           }));
           setRows(rowsData);
         }

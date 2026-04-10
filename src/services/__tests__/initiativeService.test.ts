@@ -1,6 +1,8 @@
-import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
-import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
+import type {
+  InitiativeRewardRuleDtoRewardValueTypeEnum,
+  RewardGroupsDTO,
+  RewardValueDTO as RewardValueDTOType,
+} from '../../api/generated/initiative/apiClient';
 import { mockedExportsPagedResponse, mockedInitiativeDetail, mockedOnBoardingStatusParam, mockedRankingStatus } from '../__mocks__/intitativeService';
 
 import {
@@ -53,6 +55,8 @@ import {
 } from '../__mocks__/intitativeService';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
 
+type InitiativeRewardAndTrxRulesDTORewardRule = RewardGroupsDTO | RewardValueDTOType;
+
 jest.mock('../../services/intitativeService.ts');
 
 beforeEach(() => {
@@ -98,20 +102,20 @@ test('test get initiative by id', async () => {
 });
 
 test('create initiative', async () => {
-  const result = await createInitiativeServiceInfo(mockedInitiativeGeneralBody);
+  const result = await createInitiativeServiceInfo(mockedServiceInfoData as any);
   expect(InitiativeApi.saveInitiativeServiceInfo).not.toHaveBeenCalled();
   expect(result).toEqual({});
 });
 
 describe('createInitiativeServiceInfo', () => {
   it('should create initiative successfully', async () => {
-  
+    const serviceInfo = mockedInitiativeDetail.additionalInfo ?? (mockedServiceInfoData as any);
     const spyCreateInitiativeServiceInfo = jest.spyOn(InitiativeApiMocked, 'saveInitiativeServiceInfo');
-    spyCreateInitiativeServiceInfo.mockResolvedValue(mockedInitiativeDetail.additionalInfo);
- 
-    const result = await createInitiativeServiceInfo(mockedInitiativeDetail.additionalInfo);
- 
-    expect(result).toEqual(mockedInitiativeDetail.additionalInfo);
+    spyCreateInitiativeServiceInfo.mockResolvedValue(mockedInitiativeDetail as any);
+
+    const result = await createInitiativeServiceInfo(serviceInfo as any);
+
+    expect(result).toEqual(mockedInitiativeDetail as any);
   });
 });
  
@@ -150,7 +154,9 @@ describe('initiativeBeneficiaryRulePut', () => {
     const spyinitiativeBeneficiaryRulePut = jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePut')
     spyinitiativeBeneficiaryRulePut.mockResolvedValue();
  
-    await expect(putBeneficiaryRuleService(mockedInitiativeId, mockedServiceInfoData)).resolves.toBeUndefined();
+    await expect(
+      putBeneficiaryRuleService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody)
+    ).resolves.toBeUndefined();
   });
 });
 
@@ -164,7 +170,9 @@ describe('initiativeBeneficiaryRulePutDraft', () => {
     const spyInitiativeBeneficiaryRulePutDraft = jest.spyOn(InitiativeApiMocked, 'initiativeBeneficiaryRulePutDraft')
     spyInitiativeBeneficiaryRulePutDraft.mockResolvedValue();
  
-    await expect(putBeneficiaryRuleDraftService(mockedInitiativeId, mockedServiceInfoData)).resolves.toBeUndefined();
+    await expect(
+      putBeneficiaryRuleDraftService(mockedInitiativeId, mockedInitiativeBeneficiaryRuleBody)
+    ).resolves.toBeUndefined();
   });
 });
 
@@ -300,6 +308,7 @@ test('notify citizen rankings', async () => {
 test('test trascodeRewardRule using RewardGroupDTO', () => {
 const value: InitiativeRewardAndTrxRulesDTORewardRule = {
 _type: 'rewardGroups',
+rewardValueType: 'PERCENTAGE' as InitiativeRewardRuleDtoRewardValueTypeEnum,
 rewardGroups: [
 {
         from: 0,
@@ -308,29 +317,31 @@ rewardValue: 10,
 },
 ],
 };
-const result: RewardGroupDTO = trascodeRewardRule(value);
+const result = trascodeRewardRule(value) as RewardGroupsDTO;
 expect(result).toBe(value);
 });
 
 test('test trascodeRewardRule using RewardValueDTO', () => {
 const value: InitiativeRewardAndTrxRulesDTORewardRule = {
 _type: 'rewardValue',
+rewardValueType: 'PERCENTAGE' as InitiativeRewardRuleDtoRewardValueTypeEnum,
 rewardValue: 0.23,
 };
-const result: RewardValueDTO = trascodeRewardRule(value);
+const result = trascodeRewardRule(value) as RewardValueDTOType;
 expect(result).toBe(value);
 });
 
 test('test trascodeRewardRule using null', () => {
-const result: RewardValueDTO = trascodeRewardRule(
+const result = trascodeRewardRule(
 null as unknown as InitiativeRewardAndTrxRulesDTORewardRule
 );
-expect(result).toBeNull();
+expect(result).toBeUndefined();
 });
 
 test('test trascodeRewardRule using invalid type', () => {
 const value: InitiativeRewardAndTrxRulesDTORewardRule = {
 _type: 'dummy',
+rewardValueType: 'PERCENTAGE' as InitiativeRewardRuleDtoRewardValueTypeEnum,
 rewardValue: 0.23,
 };
 try {

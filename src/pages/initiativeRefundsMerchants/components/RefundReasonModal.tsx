@@ -2,7 +2,7 @@ import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, T
 import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { ChecksErrorDTO } from "../../../api/generated/merchants/ChecksErrorDTO";
+import { ChecksErrorDTO } from "../../../api/generated/merchants/apiClient";
 
 interface Props {
     open: boolean;
@@ -47,7 +47,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
     }, [open, editMode, activeErrors]);
 
     const handleCheckboxChange = (field: keyof ChecksErrorDTO) => {
-        setChecksError(prev => ({
+        setChecksError((prev: any) => ({
             ...prev,
             [field]: !prev[field]
         }));

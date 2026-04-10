@@ -9,7 +9,6 @@ import PinDropIcon from '@mui/icons-material/PinDrop';
 import { Dispatch, SetStateAction } from 'react';
 import { grey } from '@mui/material/colors';
 import { t } from '../../../../locale';
-import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import {
   DaysOfWeekInterval,
@@ -18,12 +17,7 @@ import {
   Threshold,
   TrxCount,
 } from '../../../../model/Initiative';
-import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
-import {
-  InitiativeRewardAndTrxRulesDTO,
-  InitiativeRewardTypeEnum,
-} from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { FrequencyEnum } from '../../../../api/generated/initiative/RewardLimitsDTO';
+import { MccFilterDTO, ConfigTrxRuleArrayDTO, InitiativeRewardAndTrxRulesDTO, RewardLimitsDtoFrequencyEnum, InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum } from '../../../../api/generated/initiative/apiClient';
 
 export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
   if (thresold !== undefined) {
@@ -210,7 +204,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
-  rewardType: InitiativeRewardTypeEnum,
+  rewardType: InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,
@@ -222,7 +216,7 @@ export const mapDataToSend = (
   // eslint-disable-next-line functional/no-let, prefer-const
   let body: InitiativeRewardAndTrxRulesDTO = {
     initiativeRewardType: rewardType,
-    rewardRule: { ...rewardRuleData },
+    rewardRule: { ...rewardRuleData } as any,
     trxRule: {},
   };
   const trxRule: any = {
@@ -238,7 +232,7 @@ export const mapDataToSend = (
   }
   if (checkRewardLimitsChecked(rewardLimitsData) && Array.isArray(rewardLimitsData)) {
     const rewardLimit = rewardLimitsData.map((r) => ({
-      frequency: r.frequency as FrequencyEnum,
+      frequency: r.frequency as RewardLimitsDtoFrequencyEnum,
       rewardLimit: r.rewardLimit as number,
     }));
     // eslint-disable-next-line functional/immutable-data

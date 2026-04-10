@@ -24,8 +24,8 @@ import DownloadIcon from "@mui/icons-material/Download";
 import SyncIcon from "@mui/icons-material/Sync";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useLoading } from '@pagopa/selfcare-common-frontend/lib';;
+import { ReportDtoReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/apiClient";
 import { getDownloadReport, getReportList } from "../../services/merchantsService";
-import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
 import { downloadCsv } from "../../utils/fileViewer-utils";
 import { useAlert } from "../../hooks/useAlert";
@@ -43,12 +43,12 @@ type ReportRow = {
 };
 
 const isInProgress = (s?: string) =>
-  (s ?? "").toUpperCase() === ReportStatusEnum.INSERTED || (s ?? "").toUpperCase() === ReportStatusEnum.IN_PROGRESS;
+  (s ?? "").toUpperCase() === ReportDtoReportStatusEnum.INSERTED || (s ?? "").toUpperCase() === ReportDtoReportStatusEnum.IN_PROGRESS;
 
-const StatusCell = ({ status }: { status?: ReportStatusEnum | string }) => {
+const StatusCell = ({ status }: { status?: ReportDtoReportStatusEnum | string }) => {
   const s = (status ?? "").toUpperCase();
 
-  if (s === ReportStatusEnum.FAILED) {
+  if (s === ReportDtoReportStatusEnum.FAILED) {
     return (
       <Box sx={{ display: "flex", alignItems: "center", pl: 1 }}>
         <ErrorIcon sx={{ fontSize: 22, color: "#FE6666" }} />
@@ -163,7 +163,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
           salesPoint: String(r.businessName ?? "-"),
           period: formatPeriod(r.startPeriod, r.endPeriod),
           operator: String(r.operatorLevel ?? "-"),
-          downloadable: (r.reportStatus ?? "").toUpperCase() === ReportStatusEnum.GENERATED,
+          downloadable: (r.reportStatus ?? "").toUpperCase() === ReportDtoReportStatusEnum.GENERATED,
           reportStatus: String(r.reportStatus),
         }));
 
@@ -388,7 +388,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
                   }
 
                   <TableCell sx={{ p: 0 }}>
-                    {row.reportStatus !== ReportStatusEnum.FAILED &&
+                    {row.reportStatus !== ReportDtoReportStatusEnum.FAILED &&
                       <DownloadCell disabled={!row.downloadable} status={row.reportStatus} onClick={() => handleDownload(row)} />
                     }
                   </TableCell>

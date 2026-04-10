@@ -9,7 +9,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
 
   return (
     <>
-      {transactionDetail?.status === 'CANCELLED' && (
+      {(transactionDetail as any)?.status === 'CANCELLED' && (
         <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
           <Alert severity="info">
             <Typography variant="body2">
@@ -25,7 +25,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {transactionDetail?.businessName}
+          {(transactionDetail as any)?.businessName}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -35,7 +35,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {formatedCurrency(transactionDetail?.amountCents, '-', true)}
+          {formatedCurrency((transactionDetail as any)?.amountCents, '-', true)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -45,7 +45,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {formatedCurrency(transactionDetail?.accruedCents, '-', true)}
+          {formatedCurrency((transactionDetail as any)?.accruedCents, '-', true)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -55,7 +55,7 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {formatChannel(transactionDetail?.channel)}
+          {formatChannel((transactionDetail as any)?.channel)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
@@ -84,12 +84,12 @@ const TransactionContent = ({ transactionDetail }: OperationProps) => {
             whiteSpace: 'nowrap',
           }}
         >
-          {transactionDetail?.eventId}
+          {(transactionDetail as any)?.eventId}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 2' }}>
         <ContentCopyIcon
-          onClick={() => copyTextToClipboard(transactionDetail?.eventId)}
+          onClick={() => copyTextToClipboard((transactionDetail as any)?.eventId)}
           color="primary"
           sx={{ cursor: 'pointer', transform: 'scale(-1) rotate(270deg)' }}
           data-testid="transaction-modal-copy"

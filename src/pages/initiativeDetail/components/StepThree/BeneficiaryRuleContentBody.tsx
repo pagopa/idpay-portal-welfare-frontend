@@ -2,7 +2,6 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { OrderDirectionEnum } from '../../../../api/generated/initiative/AutomatedCriteriaDTO';
 import {
   AutomatedCriteriaItem,
   Initiative,
@@ -10,6 +9,7 @@ import {
 } from '../../../../model/Initiative';
 import { FilterOperator } from '../../../../utils/constants';
 import { IseeTypologyEnum } from '../../../../components/Wizard/components/StepThree/helpers';
+import { AutomatedCriteriaDtoOrderDirectionEnum } from '../../../../api/generated/initiative/apiClient';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -110,11 +110,11 @@ const BeneficiaryRuleContentBody = ({ initiativeDetail }: Props) => {
           )} ${automatedCriteria.value2} €`;
         }
         if (typeof automatedCriteria.orderDirection !== 'undefined') {
-          if (automatedCriteria.orderDirection === OrderDirectionEnum.ASC) {
+          if (automatedCriteria.orderDirection === AutomatedCriteriaDtoOrderDirectionEnum.ASC) {
             rankingOrderDirectionAsString = t(
               'pages.initiativeDetail.accordion.step3.content.rankingAsc'
             );
-          } else if (automatedCriteria.orderDirection === OrderDirectionEnum.DESC) {
+          } else if (automatedCriteria.orderDirection === AutomatedCriteriaDtoOrderDirectionEnum.DESC) {
             rankingOrderDirectionAsString = t(
               'pages.initiativeDetail.accordion.step3.content.rankingDesc'
             );

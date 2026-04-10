@@ -26,10 +26,7 @@ import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
-import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+
 import {
   cleanDate,
   formatStringToDate,
@@ -48,7 +45,8 @@ import {
   stepTwoBeneficiaryTypeSelector,
 } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
+import { getBeneficiaryOnboardingStatus, getTimeLine, InitiativeRewardTypeEnum } from '../../services/intitativeService';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, OnboardingStatusDtoStatusEnum, OperationDTO } from '../../api/generated/initiative/apiClient';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
@@ -73,7 +71,7 @@ const InitiativeUserDetails = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
+  const [statusOnb, setStatusOnb] = useState<OnboardingStatusDtoStatusEnum | undefined>();
   const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
   const [buttonType, setButtonType] = useState<string>('');
   const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
@@ -180,9 +178,9 @@ const InitiativeUserDetails = () => {
       if (
         typeof id === 'string' &&
         typeof cf === 'string' &&
-        (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-          statusOnb === OnboardingStatusEnum.SUSPENDED)
+        (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+          statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+          statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
       ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
@@ -211,9 +209,9 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
@@ -259,13 +257,13 @@ const InitiativeUserDetails = () => {
       case 'ADD_INSTRUMENT':
         const addMessage = t('pages.initiativeUserDetails.operationTypes.addInstrument');
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-          return `${addMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+          return `${addMessage} ${getTimeLineMaskedPan(id, (event as any).maskedPan)}`;
         }
         return addMessage;
       case 'DELETE_INSTRUMENT':
         const deleteMessage = t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-          return `${deleteMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+          return `${deleteMessage} ${getTimeLineMaskedPan(id, (event as any).maskedPan)}`;
         }
         return deleteMessage;
       case 'ONBOARDING':
@@ -273,7 +271,7 @@ const InitiativeUserDetails = () => {
       case 'PAID_REFUND':
         return `${t(
           'pages.initiativeUserDetails.operationTypes.paidRefund'
-        )} di ${formatedTimeLineCurrency(id, event.amountCents)}`;
+        )} di ${formatedTimeLineCurrency(id, (event as any).amountCents)}`;
       case 'REJECTED_ADD_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
       case 'REJECTED_DELETE_INSTRUMENT':
@@ -287,9 +285,9 @@ const InitiativeUserDetails = () => {
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
           return t('pages.initiativeUserDetails.operationTypes.transaction');
         } else if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
-          if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
+          if ((event as any).status === 'AUTHORIZED' || (event as any).status === 'REWARDED') {
             return t('pages.initiativeUserDetails.operationTypes.payment');
-          } else if (event.status === 'CANCELLED') {
+          } else if ((event as any).status === 'CANCELLED') {
             return t('pages.initiativeUserDetails.operationTypes.paymentCancelled');
           }
         }
@@ -305,9 +303,9 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
@@ -464,7 +462,7 @@ const InitiativeUserDetails = () => {
                 {cf?.toUpperCase()}
               </Typography>
 
-              {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+              {statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED && (
                 <Chip
                   label={t('pages.initiativeUserDetails.suspended')}
                   sx={{ fontSize: '14px' }}
@@ -476,7 +474,7 @@ const InitiativeUserDetails = () => {
           </Box>
         </Box>
 
-        {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
+        {statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK && (
           <Box sx={{ display: 'grid', gridColumn: 'span 4', justifyContent: 'end' }}>
             <Button
               variant="outlined"
@@ -490,7 +488,7 @@ const InitiativeUserDetails = () => {
           </Box>
         )}
 
-        {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+        {statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED && (
           <Box sx={{ display: 'flex', gridColumn: 'span 4', justifyContent: 'end', gap: 1 }}>
             <Button
               variant="contained"
@@ -522,7 +520,7 @@ const InitiativeUserDetails = () => {
         setHolderBank={setHolderBank}
       />
 
-      {beneficiaryType === BeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
+      {beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>

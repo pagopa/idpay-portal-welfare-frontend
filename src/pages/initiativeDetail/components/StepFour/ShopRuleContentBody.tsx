@@ -1,14 +1,14 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
 import {
   DaysOfWeekInterval,
   Initiative,
   RewardLimit,
   RewardRule,
 } from '../../../../model/Initiative';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeDTO';
+import { MccFilterDTO } from '../../../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../../../../services/intitativeService';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -18,7 +18,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
   const { t } = useTranslation();
 
   const printRewardRuleAsString = (rewardRule: RewardRule): string => {
-    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+    if (rewardRule && (rewardRule.rewardValueType as any) === 'ABSOLUTE') {
       return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${
         rewardRule.rewardValue
       } €`;
@@ -30,7 +30,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
   };
 
   const printRewardRuleLabel = (rewardRule: RewardRule): string => {
-    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+    if (rewardRule && (rewardRule.rewardValueType as any) === 'ABSOLUTE') {
       return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremiumLabel')}`;
     } else {
       return `${t('pages.initiativeDetail.accordion.step4.content.percentageRecognized')}`;

@@ -15,14 +15,19 @@ import {
   parseRewardLimits,
   parseDaysOfWeekIntervals,
 } from '../useInitiative';
-import { InitiativeDTO } from '../../api/generated/initiative/InitiativeDTO';
+import { InitiativeDTO } from '../../api/generated/initiative/apiClient';
 import { useAppDispatch } from '../../redux/hooks';
-import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/InitiativeRefundRuleDTO';
-import { OrderDirectionEnum } from '../../api/generated/initiative/AutomatedCriteriaDTO';
-import { FrequencyEnum } from '../../api/generated/initiative/RewardLimitsDTO';
-import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
-import { TimeTypeEnum } from '../../api/generated/initiative/TimeParameterDTO';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeRefundRuleDTO } from '../../api/generated/initiative/apiClient';
+import {
+  AutomatedCriteriaDtoOrderDirectionEnum as OrderDirectionEnum,
+  InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum,
+  AccumulatedAmountDtoAccumulatedTypeEnum as AccumulatedTypeEnum,
+  RewardLimitsDtoFrequencyEnum as FrequencyEnum,
+  SelfCriteriaBoolDtoTypeEnum,
+  SelfCriteriaMultiDtoTypeEnum,
+  SelfCriteriaTextDtoTypeEnum,
+  TimeParameterDtoTimeTypeEnum as TimeTypeEnum,
+} from '../../api/generated/initiative/apiClient';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -132,26 +137,34 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
         rewardLimits: [{ frequency: FrequencyEnum.WEEKLY, rewardLimit: 2 }],
         threshold: undefined,
         trxCount: { from: 2, to: 3 },
-        daysOfWeek: ['MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY', 'SUNDAY'],
+        daysOfWeek: [
+          'MONDAY',
+          'TUESDAY',
+          'WEDNESDAY',
+          'THURSDAY',
+          'FRIDAY',
+          'SATURDAY',
+          'SUNDAY',
+        ] as any,
       },
     };
     const mockedParseAutomatedCriteriaWithBeneficary: InitiativeDTO = {
       beneficiaryRule: {
         selfDeclarationCriteria: [
           {
-            _type: 'boolean',
+            _type: SelfCriteriaBoolDtoTypeEnum.Boolean,
             description: 'string',
             value: true,
             code: 'string',
           },
           {
-            _type: 'multi',
+            _type: SelfCriteriaMultiDtoTypeEnum.Multi,
             description: 'string',
             value: ['value1', 'value2', 'value3'],
             code: 'string',
           },
           {
-            _type: 'text',
+            _type: SelfCriteriaTextDtoTypeEnum.Text,
             description: 'string',
             value: '',
             code: 'string',
@@ -179,19 +192,19 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
       beneficiaryRule: {
         selfDeclarationCriteria: [
           {
-            _type: 'boolean',
+            _type: SelfCriteriaBoolDtoTypeEnum.Boolean,
             description: 'string',
             value: true,
             code: 'string',
           },
           {
-            _type: 'multi',
+            _type: SelfCriteriaMultiDtoTypeEnum.Multi,
             description: 'string',
             value: ['value1', 'value2', 'value3'],
             code: 'string',
           },
           {
-            _type: 'text',
+            _type: SelfCriteriaTextDtoTypeEnum.Text,
             description: 'string',
             value: '',
             code: 'string',
@@ -242,7 +255,7 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
                 'SUNDAY',
               ],
             },
-          ],
+          ] as any,
         },
       };
     };
@@ -273,7 +286,7 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
               'SUNDAY',
             ],
           },
-        ],
+        ] as any,
       },
     };
     const dispatch = useAppDispatch();
@@ -300,7 +313,7 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
                 'SUNDAY',
               ],
             },
-          ],
+          ] as any,
         },
       };
     };
@@ -353,7 +366,7 @@ describe('<useInitiaitive />', (injectedStore?: ReturnType<typeof createStore>) 
               },
             ],
           },
-        ],
+        ] as any,
       },
     };
     const dispatch = useAppDispatch();

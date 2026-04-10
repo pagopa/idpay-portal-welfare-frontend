@@ -27,10 +27,7 @@ import {
 } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 import AdmissionCriteriaModal from './AdmissionCriteriaModal';
 import IseeCriteriaItem from './IseeCriteriaItem';
 import {
@@ -100,7 +97,7 @@ const AdmissionCriteria = ({
         // eslint-disable-next-line functional/no-let
         let responseT = [...response];
 
-        if (beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF) {
+        if (beneficiaryType !== undefined && beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF) {
           responseT = response.map((r) => {
             if (r.code !== 'ISEE') {
               return { ...r };
@@ -112,8 +109,8 @@ const AdmissionCriteria = ({
 
         if (
           beneficiaryType !== undefined &&
-          beneficiaryType === BeneficiaryTypeEnum.NF &&
-          generalInfo.familyUnitComposition === FamilyUnitCompositionEnum.INPS
+          beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF &&
+          generalInfo.familyUnitComposition === InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS as any
         ) {
           responseT = responseT.map((r) => {
             if (r.code !== 'ISEE') {
@@ -133,7 +130,7 @@ const AdmissionCriteria = ({
         const newCriteriaToSubmit: Array<{ code: string; dispatched: boolean }> = [];
         if (
           automatedCriteria.length > 0 ||
-          (beneficiaryType !== undefined && beneficiaryType === BeneficiaryTypeEnum.NF)
+          (beneficiaryType !== undefined && beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF)
         ) {
           const updatedResponseData: Array<AvailableCriteria> =
             updateInitialAutomatedCriteriaOnSelector(
@@ -360,7 +357,7 @@ const AdmissionCriteria = ({
 
       if ((rankingEnabled === 'true' && iseeCriteriaPopulated) || rankingEnabled === 'false') {
         setLoading(true);
-        putBeneficiaryRuleService(initiativeId, body)
+        putBeneficiaryRuleService(initiativeId, body as any)
           .then((_response) => {
             // dispatch(saveApiKeyClientId(body.apiKeyClientId));
             // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
@@ -398,7 +395,7 @@ const AdmissionCriteria = ({
 
       const body = mapCriteriaToSend(criteriaToRender, manualCriteriaToRender, rankingEnabled);
       setLoading(true);
-      putBeneficiaryRuleDraftService(initiativeId, body)
+      putBeneficiaryRuleDraftService(initiativeId, body as any)
         .then((_response) => {
           // dispatch(saveApiKeyClientId(body.apiKeyClientId));
           // dispatch(saveApiKeyClientAssertion(body.apiKeyClientAssertion));
@@ -467,7 +464,7 @@ const AdmissionCriteria = ({
             setSearchCriteria={setSearchCriteria}
             data-testid="modal-test"
             beneficiaryType={beneficiaryType}
-            familyUnitComposition={generalInfo.familyUnitComposition}
+            familyUnitComposition={generalInfo.familyUnitComposition as any}
           />
 
           <Button

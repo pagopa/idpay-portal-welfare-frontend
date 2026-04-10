@@ -1,10 +1,9 @@
-import React from 'react';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import RewardType from '../RewardType';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { shopRulesToSubmit } from './ShopRules.test';
-import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/apiClient';
+import { fireEvent, screen } from '@testing-library/react';
 
 jest.mock('../../../../../services/intitativeService');
 

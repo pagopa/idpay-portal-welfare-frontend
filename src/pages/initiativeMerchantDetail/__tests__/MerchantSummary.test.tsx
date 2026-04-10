@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderWithContext } from '../../../utils/test-utils';
 import MerchantSummary from '../MerchantSummary';
 import {
@@ -6,8 +5,7 @@ import {
   mockedMerchantStatistics,
 } from '../../../services/__mocks__/merchantsService';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
-import { MerchantDetailDTO } from '../../../api/generated/merchants/MerchantDetailDTO';
-import { MerchantStatisticsDTO } from '../../../api/generated/merchants/MerchantStatisticsDTO';
+import { MerchantDetailDTO, MerchantStatisticsDTO } from '../../../api/generated/merchants/apiClient';
 import { merchantsApi } from '../../../api/merchantsApiClient';
 
 jest.mock('../../../services/merchantsService');

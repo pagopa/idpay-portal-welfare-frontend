@@ -26,11 +26,11 @@ import { PeopleAlt, Receipt } from '@mui/icons-material';
 import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useAppSelector } from '../../redux/hooks';
+import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/apiClient';
 import {
   initiativeSummarySelector,
   setInitiativeSummaryList,
 } from '../../redux/slices/initiativeSummarySlice';
-import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { getInitativeSummary } from '../../services/intitativeService';
 import { parseJwt } from '../../utils/jwt-utils';
 import { JWTUser } from '../../model/JwtUser';
@@ -139,7 +139,7 @@ export default function SideMenu() {
             level={0}
             data-testid="initiativeList-click-test"
           />
-          {initiativeSummaryList?.map((item) => (
+          {initiativeSummaryList?.map((item: any) => (
             <Accordion
               key={item.initiativeId}
               expanded={expanded === `panel-${item.initiativeId}`}

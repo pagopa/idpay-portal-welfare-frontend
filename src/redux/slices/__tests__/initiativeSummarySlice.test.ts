@@ -1,4 +1,4 @@
-import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/apiClient';
 import { createStore } from '../../store';
 import {
   initiativeSummaryReducer,

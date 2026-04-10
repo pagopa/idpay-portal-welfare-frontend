@@ -1,5 +1,5 @@
-import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/apiClient';
 import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [

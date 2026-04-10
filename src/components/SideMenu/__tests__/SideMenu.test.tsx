@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/InitiativeSummaryArrayDTO';
+import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeSummaryList } from '../../../redux/slices/initiativeSummarySlice';
 import { createStore } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
@@ -78,57 +78,57 @@ describe('<SideMenu />', () => {
 
   const mockedSummary: InitiativeSummaryArrayDTO = [
     {
-      creationDate: new Date('2022-12-16T11:24:23.96'),
+      creationDate: new Date('2022-12-16T11:24:23.96').toString(),
       initiativeId: '639c4757f9904d5a4e5a3c2e',
       initiativeName: 'Test Graduatoria 16/12',
       rankingEnabled: true,
       status: 'PUBLISHED',
-      updateDate: new Date('2022-12-16T11:46:26.335'),
+      updateDate: new Date('2022-12-16T11:46:26.335').toString(),
       initiativeRewardType: 'REFUND',
     },
     {
-      creationDate: new Date('2022-12-16T15:46:05.37'),
+      creationDate: new Date('2022-12-16T15:46:05.37').toString(),
       initiativeId: '639c84ad9a8280046cc04a7c',
       initiativeName: 'Skin care',
       rankingEnabled: false,
       status: 'PUBLISHED',
-      updateDate: new Date('2022-12-16T15:52:27.644'),
+      updateDate: new Date('2022-12-16T15:52:27.644').toString(),
       initiativeRewardType: 'DISCOUNT',
     },
     {
-      creationDate: new Date('2022-12-16T16:20:18.877'),
+      creationDate: new Date('2022-12-16T16:20:18.877').toString(),
       initiativeId: '639c8cb29a8280046cc04a7d',
       initiativeName: 'Prova123',
       rankingEnabled: false,
       status: 'PUBLISHED',
-      updateDate: new Date('2022-12-19T18:07:34.364'),
+      updateDate: new Date('2022-12-19T18:07:34.364').toString(),
       initiativeRewardType: 'REFUND',
     },
     {
-      creationDate: new Date('2022-12-19T11:19:41.23'),
+      creationDate: new Date('2022-12-19T11:19:41.23').toString(),
       initiativeId: '63a03abd70d330297c486a44',
       initiativeName: 'Soap',
       rankingEnabled: true,
       status: 'IN_REVISION',
-      updateDate: new Date('2022-12-19T16:19:39.483'),
+      updateDate: new Date('2022-12-19T16:19:39.483').toString(),
       initiativeRewardType: 'REFUND',
     },
     {
-      creationDate: new Date('2022-12-19T11:19:45.113'),
+      creationDate: new Date('2022-12-19T11:19:45.113').toString(),
       initiativeId: '63a03ac170d330297c486a45',
       initiativeName: 'Keyboard',
       rankingEnabled: false,
       status: 'DRAFT',
-      updateDate: new Date('2022-12-23T17:12:15.819'),
+      updateDate: new Date('2022-12-23T17:12:15.819').toString(),
       initiativeRewardType: 'DISCOUNT',
     },
     {
-      creationDate: new Date('2022-12-19T11:22:45.797'),
+      creationDate: new Date('2022-12-19T11:22:45.797').toString(),
       initiativeId: '63a03b7570d330297c486a46',
       initiativeName: 'Mouse',
       rankingEnabled: true,
       status: 'DRAFT',
-      updateDate: new Date('2022-12-20T10:41:37.537'),
+      updateDate: new Date('2022-12-20T10:41:37.537').toString(),
     },
   ];
 

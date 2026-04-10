@@ -1,5 +1,5 @@
-import { ConfigMccArrayDTO } from '../../api/generated/initiative/ConfigMccArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { ConfigMccArrayDTO } from '../../api/generated/initiative/apiClient';
 
 export const mockedMccCodes = [
   { code: '0742', description: 'Veterinary services' },

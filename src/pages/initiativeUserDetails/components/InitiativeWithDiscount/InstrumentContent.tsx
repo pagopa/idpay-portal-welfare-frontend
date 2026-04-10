@@ -28,7 +28,7 @@ const InstrumentContent = ({ transactionDetail }: OperationProps) => {
       </Box>
       <Box sx={{ gridColumn: 'span 12' }}>
         <Typography variant="body2" fontWeight={600}>
-          {getInstrumentTypeLabel(transactionDetail?.instrumentType)}
+          {getInstrumentTypeLabel((transactionDetail as any)?.instrumentType)}
         </Typography>
       </Box>
       <Box sx={{ gridColumn: 'span 12', mt: 3 }}>
