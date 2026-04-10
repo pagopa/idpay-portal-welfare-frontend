@@ -1,10 +1,6 @@
 ﻿import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentListDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { StatusEnum as WalletStatusEnum, WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+import { IbanDTO, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum, InstrumentListDTO, OnboardingStatusDtoStatusEnum as OnboardingStatusEnum, WalletDTO, WalletDtoStatusEnum as WalletStatusEnum } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { renderWithContext } from '../../../utils/test-utils';
 import UserDetailsSummary from '../components/UserDetailsSummary';

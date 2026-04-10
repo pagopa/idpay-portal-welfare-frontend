@@ -1,6 +1,4 @@
-import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { MccFilterDTO } from '../../../../../api/generated/initiative/MccFilterDTO';
+import { InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum, MccFilterDTO } from '../../../../../api/generated/initiative/apiClient';
 import { RewardLimit, TrxCount } from '../../../../../model/Initiative';
 import {
   checkThresholdChecked,
@@ -35,17 +33,6 @@ const switchOptions = [
   'DAYHOURSWEEK',
   'GIS',
 ];
-type Colors =
-  | 'inherit'
-  | 'disabled'
-  | 'action'
-  | 'primary'
-  | 'secondary'
-  | 'error'
-  | 'info'
-  | 'success'
-  | 'warning'
-  | undefined;
 
 const threshhold = { from: 2, fromIncluded: false };
 describe('testing helper of step four', () => {

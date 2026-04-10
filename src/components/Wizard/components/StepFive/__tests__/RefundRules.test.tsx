@@ -1,12 +1,13 @@
 import { ThemeProvider } from '@mui/system';
 import { theme } from '@pagopa/mui-italia';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { AccumulatedTypeEnum } from '../../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { InitiativeRefundRuleDTO } from '../../../../../api/generated/initiative/InitiativeRefundRuleDTO';
+import {
+  AccumulatedAmountDtoAccumulatedTypeEnum,
+  InitiativeRefundRuleDTO,
+} from '../../../../../api/generated/initiative/apiClient';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
 import { saveRefundRule, setInitiativeId } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
@@ -14,7 +15,6 @@ import { mockedInitiativeId } from '../../../../../services/__mocks__/groupsServ
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import RefundRules from '../RefundRules';
-import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -35,7 +35,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   const setCurrentStep = jest.fn();
   const setDisableNext = jest.fn();
   const refundRules = {
-    reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
+    reimbursementThreshold: AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED,
     reimbursmentQuestionGroup: 'true',
     additionalInfo: 'aaaaaa',
     timeParameter: '',

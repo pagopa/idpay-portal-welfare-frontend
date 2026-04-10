@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-no-bind */
 import { fireEvent, screen } from '@testing-library/react';
-import React from 'react';
-import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../../../api/generated/initiative/apiClient';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import PercentageRecognizedItem from '../PercentageRecognizedItem';

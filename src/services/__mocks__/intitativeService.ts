@@ -1,9 +1,77 @@
-import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
-import { InitiativeSummaryArrayDTO, OrganizationListDTO, InitiativeDTO, InitiativeAdditionalDTO, InitiativeGeneralDTO, InitiativeBeneficiaryRuleDTO, InitiativeRefundRuleDTO, InitiativeRewardAndTrxRulesDTO, InitiativeStatisticsDTO, PageRewardExportsDTO, SasToken, OnboardingDTO, ConfigBeneficiaryRuleArrayDTO, PageRewardImportsDTO, LogoDTO, CsvDTO, PageOnboardingRankingsDTO, ExportSummaryDTO, ExportListDTO, RefundDetailDTO, OnboardingStatusDTO, IbanDTO, TimelineDTO, InstrumentListDTO, OperationDTO, WalletDTO, FamilyUnitCompositionDTO, InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeAdditionalDtoServiceScopeEnum, WalletDtoStatusEnum, InitiativeRewardRuleDTO, RewardGroupsDTO, RewardValueDTO, ChannelDtoTypeEnum, InstrumentDtoStatusEnum, InstrumentDtoInstrumentTypeEnum, InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum, AccumulatedAmountDtoAccumulatedTypeEnum, TimeParameterDtoTimeTypeEnum, RewardImportsDtoStatusEnum, StatusOnboardingDtosBeneficiaryStateEnum, OnboardingStatusDtoStatusEnum, OnboardingDetailDtoStatusEnum, TransactionOperationDtoOperationTypeEnum, TransactionOperationDtoStatusEnum, InstrumentOperationDtoOperationTypeEnum, InstrumentOperationDtoInstrumentTypeEnum, RejectedInstrumentOperationDtoOperationTypeEnum, RejectedInstrumentOperationDtoInstrumentTypeEnum, IbanOperationDtoOperationTypeEnum, OnboardingOperationDtoOperationTypeEnum, RefundOperationDtoOperationTypeEnum, AutomatedCriteriaDtoIseeTypesEnum } from '../../api/generated/initiative/apiClient';
-import { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
-import { InitiativeUsersResponse } from '../../model/InitiativeUsers';
-import { InitiativeRewardTypeEnum } from '../intitativeService';
-import { mockedFile } from './groupsService';
+import type {
+  InitiativeSummaryArrayDTO,
+  OrganizationListDTO,
+  InitiativeDTO,
+  InitiativeAdditionalDTO,
+  InitiativeGeneralDTO,
+  InitiativeBeneficiaryRuleDTO,
+  InitiativeRefundRuleDTO,
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeStatisticsDTO,
+  PageRewardExportsDTO,
+  SasToken,
+  OnboardingDTO,
+  ConfigBeneficiaryRuleArrayDTO,
+  PageRewardImportsDTO,
+  LogoDTO,
+  CsvDTO,
+  PageOnboardingRankingsDTO,
+  ExportSummaryDTO,
+  ExportListDTO,
+  RefundDetailDTO,
+  OnboardingStatusDTO,
+  IbanDTO,
+  TimelineDTO,
+  InstrumentListDTO,
+  OperationDTO,
+  WalletDTO,
+  FamilyUnitCompositionDTO,
+  InitiativeRewardRuleDTO,
+  RewardGroupsDTO,
+  RewardValueDTO,
+} from '../../api/generated/initiative/apiClient';
+import {
+  AccumulatedAmountDtoAccumulatedTypeEnum as ApiAccumulatedAmountDtoAccumulatedTypeEnum,
+  AutomatedCriteriaDtoIseeTypesEnum as ApiAutomatedCriteriaDtoIseeTypesEnum,
+  ChannelDtoTypeEnum as ApiChannelDtoTypeEnum,
+  InitiativeAdditionalDtoServiceScopeEnum as ApiInitiativeAdditionalDtoServiceScopeEnum,
+  InitiativeGeneralDtoBeneficiaryTypeEnum as ApiInitiativeGeneralDtoBeneficiaryTypeEnum,
+  InitiativeDtoInitiativeRewardTypeEnum as ApiInitiativeRewardTypeEnum,
+  InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum as ApiInitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum,
+  InitiativeRewardRuleDtoRewardValueTypeEnum as ApiInitiativeRewardRuleDtoRewardValueTypeEnum,
+  IbanOperationDtoOperationTypeEnum as ApiIbanOperationDtoOperationTypeEnum,
+  InstrumentDtoInstrumentTypeEnum as ApiInstrumentDtoInstrumentTypeEnum,
+  InstrumentDtoStatusEnum as ApiInstrumentDtoStatusEnum,
+  InstrumentOperationDtoInstrumentTypeEnum as ApiInstrumentOperationDtoInstrumentTypeEnum,
+  InstrumentOperationDtoOperationTypeEnum as ApiInstrumentOperationDtoOperationTypeEnum,
+  OnboardingOperationDtoOperationTypeEnum as ApiOnboardingOperationDtoOperationTypeEnum,
+  OnboardingDetailDtoStatusEnum as ApiOnboardingDetailDtoStatusEnum,
+  OnboardingStatusDtoStatusEnum as ApiOnboardingStatusDtoStatusEnum,
+  RejectedInstrumentOperationDtoInstrumentTypeEnum as ApiRejectedInstrumentOperationDtoInstrumentTypeEnum,
+  RejectedInstrumentOperationDtoOperationTypeEnum as ApiRejectedInstrumentOperationDtoOperationTypeEnum,
+  RefundOperationDtoOperationTypeEnum as ApiRefundOperationDtoOperationTypeEnum,
+  RewardImportsDtoStatusEnum as ApiRewardImportsDtoStatusEnum,
+  TransactionOperationDtoOperationTypeEnum as ApiTransactionOperationDtoOperationTypeEnum,
+  TransactionOperationDtoStatusEnum as ApiTransactionOperationDtoStatusEnum,
+  TimeParameterDtoTimeTypeEnum as ApiTimeParameterDtoTimeTypeEnum,
+  StatusOnboardingDtosBeneficiaryStateEnum as ApiStatusOnboardingDtosBeneficiaryStateEnum,
+  WalletDtoStatusEnum as ApiWalletDtoStatusEnum,
+} from '../../api/generated/initiative/apiClient';
+import type { InitiativeRefundsResponse } from '../../model/InitiativeRefunds';
+import type { InitiativeUsersResponse } from '../../model/InitiativeUsers';
+
+export const InitiativeRewardTypeEnum = ApiInitiativeRewardTypeEnum;
+const WalletDtoStatusEnum = ApiWalletDtoStatusEnum;
+const InstrumentDtoStatusEnum = ApiInstrumentDtoStatusEnum;
+const InstrumentDtoInstrumentTypeEnum = ApiInstrumentDtoInstrumentTypeEnum;
+const RewardImportsDtoStatusEnum = ApiRewardImportsDtoStatusEnum;
+const StatusOnboardingDtosBeneficiaryStateEnum = ApiStatusOnboardingDtosBeneficiaryStateEnum;
+const OnboardingStatusDtoStatusEnum = ApiOnboardingStatusDtoStatusEnum;
+const OnboardingDetailDtoStatusEnum = ApiOnboardingDetailDtoStatusEnum;
+
+const getInitiativeApiMocked = (): any =>
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  require('../../api/__mocks__/InitiativeApiClient').InitiativeApiMocked;
 
 export const verifyGetInitiativeSummaryMockExecution = (
   initiativeSummary: InitiativeSummaryArrayDTO
@@ -14,118 +82,107 @@ export const verifyGetInitiativeSummaryMockExecution = (
 };
 
 export const getOrganizationsList = (): Promise<OrganizationListDTO> =>
-  InitiativeApiMocked.getOrganizationsList();
+  getInitiativeApiMocked().getOrganizationsList();
 
 export const getInitativeSummary = (): Promise<InitiativeSummaryArrayDTO> =>
-  InitiativeApiMocked.getInitativeSummary();
+  getInitiativeApiMocked().getInitativeSummary();
 
-export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: InitiativeDTO) =>
-{
+export const verifyGetInitiativeDetailMockExecution = (initiativeDetail: InitiativeDTO) => {
   if (JSON.stringify(initiativeDetail) !== JSON.stringify(mockedInitiativeDetail)) {
     throw new Error('initiativeDetail mock verification failed');
   }
 };
 
-export const getInitiativeDetail = (_id: string): Promise<InitiativeDTO> =>
-  InitiativeApiMocked.getInitiativeById(mockedInitiativeId);
+export const getInitiativeDetail = (id: string): Promise<InitiativeDTO> =>
+  getInitiativeApiMocked().getInitiativeById(id);
 
-export const createInitiativeServiceInfo = (_data: InitiativeAdditionalDTO) =>
-  InitiativeApiMocked.saveInitiativeServiceInfo({});
+export const createInitiativeServiceInfo = (data: InitiativeAdditionalDTO) =>
+  getInitiativeApiMocked().saveInitiativeServiceInfo(data);
 
-export const updateInitiativeGeneralInfo = (_id: string, _data: InitiativeGeneralDTO) =>
-  InitiativeApiMocked.updateInitiativeGeneralInfo(mockedInitiativeId, mockedInitiativeGeneralBody);
+export const updateInitiativeGeneralInfo = (id: string, data: InitiativeGeneralDTO) =>
+  getInitiativeApiMocked().updateInitiativeGeneralInfo(id, data);
 
-export const updateInitiativeGeneralInfoDraft = (_id: string, _data: InitiativeGeneralDTO) =>
-  InitiativeApiMocked.updateInitiativeGeneralInfoDraft(
-    mockedInitiativeId,
-    mockedInitiativeGeneralBody
-  );
+export const updateInitiativeGeneralInfoDraft = (id: string, data: InitiativeGeneralDTO) =>
+  getInitiativeApiMocked().updateInitiativeGeneralInfoDraft(id, data);
 
 export const updateInitiativeServiceInfo = (
-  _id: string,
-  _data: InitiativeAdditionalDTO
-): Promise<void> =>
-  InitiativeApiMocked.updateInitiativeServiceInfo(mockedInitiativeId, mockedServiceInfoData);
+  id: string,
+  data: InitiativeAdditionalDTO
+): Promise<void> => getInitiativeApiMocked().updateInitiativeServiceInfo(id, data);
 
-export const putBeneficiaryRuleService = (_id: string, _data: InitiativeBeneficiaryRuleDTO) =>
-  InitiativeApiMocked.initiativeBeneficiaryRulePut(
-    mockedInitiativeId,
-    mockedInitiativeBeneficiaryRuleBody
-  );
+export const putBeneficiaryRuleService = (id: string, data: InitiativeBeneficiaryRuleDTO) =>
+  getInitiativeApiMocked().initiativeBeneficiaryRulePut(id, data);
 
-export const putBeneficiaryRuleDraftService = (_id: string, _data: InitiativeBeneficiaryRuleDTO) =>
-  InitiativeApiMocked.initiativeBeneficiaryRulePutDraft(
-    mockedInitiativeId,
-    mockedInitiativeBeneficiaryRuleBody
-  );
+export const putBeneficiaryRuleDraftService = (
+  id: string,
+  data: InitiativeBeneficiaryRuleDTO
+) => getInitiativeApiMocked().initiativeBeneficiaryRulePutDraft(id, data);
 
-export const putRefundRule = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
-  InitiativeApiMocked.updateInitiativeRefundRulePut(mockedInitiativeId, mockedRefundRules);
+export const putRefundRule = (id: string, data: InitiativeRefundRuleDTO): Promise<void> =>
+  getInitiativeApiMocked().updateInitiativeRefundRulePut(id, data);
 
-export const putRefundRuleDraft = (_id: string, _data: InitiativeRefundRuleDTO): Promise<void> =>
-  InitiativeApiMocked.updateInitiativeRefundRuleDraftPut(mockedInitiativeId, mockedRefundRules);
+export const putRefundRuleDraft = (id: string, data: InitiativeRefundRuleDTO): Promise<void> =>
+  getInitiativeApiMocked().updateInitiativeRefundRuleDraftPut(id, data);
 
-export const putTrxAndRewardRules = (_id: string, _data: InitiativeRewardAndTrxRulesDTO) =>
-  InitiativeApiMocked.initiativeTrxAndRewardRulesPut(mockedInitiativeId, mockedTrxAndRewardRules);
+export const putTrxAndRewardRules = (id: string, data: InitiativeRewardAndTrxRulesDTO) =>
+  getInitiativeApiMocked().initiativeTrxAndRewardRulesPut(id, data);
 
-export const putTrxAndRewardRulesDraft = (_id: string, _data: InitiativeRewardAndTrxRulesDTO) =>
-  InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft(
-    mockedInitiativeId,
-    mockedTrxAndRewardRules
-  );
+export const putTrxAndRewardRulesDraft = (id: string, data: InitiativeRewardAndTrxRulesDTO) =>
+  getInitiativeApiMocked().initiativeTrxAndRewardRulesPutDraft(id, data);
 
-export const updateInitiativeApprovedStatus = (_id: string) =>
-  InitiativeApiMocked.updateInitiativeApprovedStatus(mockedInitiativeId);
+export const updateInitiativeApprovedStatus = (id: string) =>
+  getInitiativeApiMocked().updateInitiativeApprovedStatus(id);
 
-export const updateInitiativeToCheckStatus = (_id: string) =>
-  InitiativeApiMocked.updateInitiativeToCheckStatus(mockedInitiativeId);
+export const updateInitiativeToCheckStatus = (id: string) =>
+  getInitiativeApiMocked().updateInitiativeToCheckStatus(id);
 
-export const updateInitiativePublishedStatus = (_id: string) =>
-  InitiativeApiMocked.updateInitiativePublishedStatus(mockedInitiativeId);
+export const updateInitiativePublishedStatus = (id: string) =>
+  getInitiativeApiMocked().updateInitiativePublishedStatus(id);
 
-export const logicallyDeleteInitiative = (_id: string) =>
-  InitiativeApiMocked.logicallyDeleteInitiative(mockedInitiativeId);
+export const logicallyDeleteInitiative = (id: string) =>
+  getInitiativeApiMocked().logicallyDeleteInitiative(id);
 
-export const initiativeStatistics = (): Promise<InitiativeStatisticsDTO> =>
-  InitiativeApiMocked.initiativeStatistics(mockedInitiativeId);
+export const initiativeStatistics = (id: string): Promise<InitiativeStatisticsDTO> =>
+  getInitiativeApiMocked().initiativeStatistics(id);
 
 export const getExportsPaged = (
-  _id: string,
-  _page: number,
-  _notificationDateFrom: string | undefined,
-  _notificationDateTo: string | undefined,
-  _status: string | undefined
+  id: string,
+  page: number,
+  notificationDateFrom: string | undefined,
+  notificationDateTo: string | undefined,
+  status: string | undefined
 ): Promise<PageRewardExportsDTO> =>
-  InitiativeApiMocked.getExportsPaged(
-    mockedExportsPagedParam.id,
-    mockedExportsPagedParam.page,
-    mockedExportsPagedParam.notificationDateFrom,
-    mockedExportsPagedParam.notificationDateTo,
-    mockedExportsPagedParam.status,
+  getInitiativeApiMocked().getExportsPaged(
+    id,
+    page,
+    notificationDateFrom,
+    notificationDateTo,
+    status,
     mockedExportsPagedParam.sort
   );
 
-export const getRewardFileDownload = (_id: string, _filePath: string): Promise<SasToken> =>
-  InitiativeApiMocked.getRewardFileDownload(mockedInitiativeId, mockedFilePath);
+export const getRewardFileDownload = (id: string, filePath: string): Promise<SasToken> =>
+  getInitiativeApiMocked().getRewardFileDownload(id, filePath);
 
 export const getOnboardingStatus = (
-  _id: string,
-  _page: number,
-  _notificationDateFrom: string | undefined,
-  _notificationDateTo: string | undefined,
-  _status: string | undefined,
-  _beneficiary: string | undefined
+  id: string,
+  page: number,
+  beneficiary: string | undefined,
+  dateFrom: string | undefined,
+  dateTo: string | undefined,
+  status: string | undefined
 ): Promise<OnboardingDTO> =>
-  InitiativeApiMocked.getOnboardingStatus(
-    mockedOnBoardingStatusParam.id,
-    mockedOnBoardingStatusParam.page,
-    mockedOnBoardingStatusParam.dateFrom,
-    mockedOnBoardingStatusParam.dateTo,
-    mockedOnBoardingStatusParam.status
+  getInitiativeApiMocked().getOnboardingStatus(
+    id,
+    page,
+    beneficiary,
+    dateFrom,
+    dateTo,
+    status
   );
 
-export const putDispFileUpload = (_id: string, _filename: string, _file: File): Promise<void> =>
-  InitiativeApiMocked.putDispFileUpload(mockedInitiativeId, mockedFileName, mockedFile);
+export const putDispFileUpload = (id: string, filename: string, file: File): Promise<void> =>
+  getInitiativeApiMocked().putDispFileUpload(id, filename, file);
 
 export const fetchInitiativeRefunds = (page: number) => {
   if (page === 0) {
@@ -140,37 +197,28 @@ export const fetchInitiativeRefunds = (page: number) => {
 };
 
 export const getEligibilityCriteriaForSidebar = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
-  InitiativeApiMocked.getEligibilityCriteriaForSidebar();
+  getInitiativeApiMocked().getEligibilityCriteriaForSidebar();
 
 export const getRewardNotificationImportsPaged = (
-  _id: string,
-  _page: number,
-  _sort: string
+  id: string,
+  page: number,
+  sort: string
 ): Promise<PageRewardImportsDTO> =>
-  InitiativeApiMocked.getRewardNotificationImportsPaged(
-    mockedExportsPagedParam.id,
-    mockedExportsPagedParam.page,
-    mockedExportsPagedParam.sort
-  );
+  getInitiativeApiMocked().getRewardNotificationImportsPaged(id, page, sort);
 
-export const uploadAndUpdateLogo = (_id: string, _file: File): Promise<LogoDTO> =>
-  InitiativeApiMocked.uploadAndUpdateLogo(mockedInitiativeId, mockedFile);
+export const uploadAndUpdateLogo = (id: string, file: File): Promise<LogoDTO> =>
+  getInitiativeApiMocked().uploadAndUpdateLogo(id, file);
 
-export const getDispFileErrors = (_id: string, _name: string): Promise<CsvDTO> =>
-  InitiativeApiMocked.getDispFileErrors(mockedInitiativeId, mockedFilePath);
+export const getDispFileErrors = (id: string, name: string): Promise<CsvDTO> =>
+  getInitiativeApiMocked().getDispFileErrors(id, name);
 
 export const getInitiativeOnboardingRankingStatusPaged = (
-  _id: string,
-  _page: number,
-  _beneficiary: string | undefined,
-  _state: string | undefined
+  id: string,
+  page: number,
+  beneficiary: string | undefined,
+  state: string | undefined
 ): Promise<PageOnboardingRankingsDTO> =>
-  InitiativeApiMocked.getInitiativeOnboardingRankingStatusPaged(
-    mockedRankingStatus.id,
-    mockedRankingStatus.page,
-    mockedRankingStatus.beneficiary,
-    mockedRankingStatus.state
-  );
+  getInitiativeApiMocked().getInitiativeOnboardingRankingStatusPaged(id, page, beneficiary, state);
 
 export const trascodeRewardRule = (rewardRule: InitiativeRewardRuleDTO) => {
   if (!rewardRule || typeof rewardRule !== 'object') {
@@ -193,7 +241,7 @@ export const trascodeRewardRule = (rewardRule: InitiativeRewardRuleDTO) => {
 export const getExportSummary = (
   initaitveId: string,
   exportId: string
-): Promise<ExportSummaryDTO> => InitiativeApiMocked.getExportSummary(initaitveId, exportId);
+): Promise<ExportSummaryDTO> => getInitiativeApiMocked().getExportSummary(initaitveId, exportId);
 
 export const getExportRefundsListPaged = (
   initaitveId: string,
@@ -202,45 +250,45 @@ export const getExportRefundsListPaged = (
   _cro?: string,
   _status?: string
 ): Promise<ExportListDTO> =>
-  InitiativeApiMocked.getExportRefundsListPaged(initaitveId, exportId, page);
+  getInitiativeApiMocked().getExportRefundsListPaged(initaitveId, exportId, page);
 
 export const getRefundDetail = (initiativeId: string, eventId: string): Promise<RefundDetailDTO> =>
-  InitiativeApiMocked.getRefundDetail(initiativeId, eventId);
+  getInitiativeApiMocked().getRefundDetail(initiativeId, eventId);
 
 export const getBeneficiaryOnboardingStatus = (
   _initiativeId: string,
   _fiscalCode: string
 ): Promise<OnboardingStatusDTO> =>
-  InitiativeApiMocked.getBeneficiaryOnboardingStatus(mockedInitiativeId, mockedFiscalCode);
+  getInitiativeApiMocked().getBeneficiaryOnboardingStatus(mockedInitiativeId, mockedFiscalCode);
 
 export const suspendUser = (
   initiativeId: string,
   fiscalCode: string,
-  rewardType: InitiativeRewardTypeEnum
+  rewardType: string
 ): Promise<void> => {
   if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-    return InitiativeApiMocked.suspendUserRefund(initiativeId, fiscalCode);
+    return getInitiativeApiMocked().suspendUserRefund(initiativeId, fiscalCode);
   } else {
-    return InitiativeApiMocked.suspendUserDiscount(initiativeId, fiscalCode);
+    return getInitiativeApiMocked().suspendUserDiscount(initiativeId, fiscalCode);
   }
 };
 
 export const readmitUser = (
   initiativeId: string,
   fiscalCode: string,
-  rewardType: InitiativeRewardTypeEnum
+  rewardType: string
 ): Promise<void> => {
   if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-    return InitiativeApiMocked.readmitUserRefund(initiativeId, fiscalCode);
+    return getInitiativeApiMocked().readmitUserRefund(initiativeId, fiscalCode);
   } else {
-    return InitiativeApiMocked.readmitUserDiscount(initiativeId, fiscalCode);
+    return getInitiativeApiMocked().readmitUserDiscount(initiativeId, fiscalCode);
   }
 };
 // export const getRankingFileDownload = (_id: string, _filename: string): Promise<SasToken> =>
 //   InitiativeApiMocked.getRankingFileDownload(mockedInitiativeId, mockedFileName);
 
-export const notifyCitizenRankings = (_id: string): Promise<void> =>
-  InitiativeApiMocked.notifyCitizenRankings(mockedInitiativeId);
+export const notifyCitizenRankings = (id: string): Promise<void> =>
+  getInitiativeApiMocked().notifyCitizenRankings(id);
 
 // export const verifySaveInitiativeGeneralBodyMockExecution = (generalBody: InitiativeInfoDTO) =>
 //   expect(generalBody).toStrictEqual(mockedInitiativeGeneralBody);
@@ -251,34 +299,32 @@ export const notifyCitizenRankings = (_id: string): Promise<void> =>
 // export const getWalletInfo = (_id: string, _cf: string): Promise<MockedWalletDTO> =>
 //   InitiativeApiMocked.getWalletInfo(mockedInitiativeId, mockedFiscalCode);
 
-export const getIban = (_iban: string): Promise<IbanDTO> => InitiativeApiMocked.getIban(mockedIban);
+export const getIban = (id: string, cf: string, iban: string): Promise<IbanDTO> =>
+  getInitiativeApiMocked().getIban(id, cf, iban);
 
 export const getTimeLine = (
-  _cf: string,
-  _id: string,
-  _opeType?: string,
-  _dateFrom?: string,
-  _dateTo?: string,
-  _page?: number,
-  _size?: number
-): Promise<TimelineDTO> => InitiativeApiMocked.getTimeLine(mockedFiscalCode, mockedInitiativeId);
+  cf: string,
+  id: string,
+  opeType?: string,
+  dateFrom?: string,
+  dateTo?: string,
+  page?: number,
+  size?: number
+): Promise<TimelineDTO> =>
+  getInitiativeApiMocked().getTimeLine(cf, id, opeType, dateFrom, dateTo, page, size);
 
-export const getInstrumentList = (_id: string, _cf: string): Promise<InstrumentListDTO> =>
-  InitiativeApiMocked.getInstrumentList(mockedInitiativeId, mockedFiscalCode);
+export const getInstrumentList = (id: string, cf: string): Promise<InstrumentListDTO> =>
+  getInitiativeApiMocked().getInstrumentList(id, cf);
 
 export const getTimelineDetail = (
-  _cf: string,
-  _id: string,
-  _operationId: string
+  cf: string,
+  id: string,
+  operationId: string
 ): Promise<OperationDTO> =>
-  InitiativeApiMocked.getTimelineDetail(
-    mockedOperationId,
-    mockedOperationType,
-    mockedOperationDate
-  );
+  getInitiativeApiMocked().getTimelineDetail(cf, id, operationId);
 
-export const getWalletDetail = (_id: string, _cf: string): Promise<WalletDTO> =>
-  InitiativeApiMocked.getWalletDetail(mockedInitiativeId, mockedFiscalCode);
+export const getWalletDetail = (id: string, cf: string): Promise<WalletDTO> =>
+  getInitiativeApiMocked().getWalletDetail(id, cf);
 
 export const mockedFiscalCode = 'TRNFNC96R02H501I';
 export const mockedIban = 'IT12T1234512345123456789012';
@@ -290,7 +336,7 @@ export const mockedRankingStatus = {
 };
 
 export const getFamilyComposition = (_id: string, _cf: string): Promise<FamilyUnitCompositionDTO> =>
-  InitiativeApiMocked.getFamilyComposition(mockedInitiativeId, mockedFiscalCode);
+  getInitiativeApiMocked().getFamilyComposition(_id, _cf);
 
 export const mockedInitiativeSummary: InitiativeSummaryArrayDTO = [
   {
@@ -401,68 +447,68 @@ export const mockedOperationList: TimelineDTO = {
   operationList: [
     {
       operationId: 'string',
-      operationType: TransactionOperationDtoOperationTypeEnum.TRANSACTION,
+      operationType: ApiTransactionOperationDtoOperationTypeEnum.TRANSACTION,
       operationDate: '2023-03-28T13:35:25.146Z',
       brandLogo: 'string',
       maskedPan: 'string',
       amountCents: 0,
       accruedCents: 0,
       circuitType: 'string',
-      status: TransactionOperationDtoStatusEnum.REWARDED,
+      status: ApiTransactionOperationDtoStatusEnum.REWARDED,
     },
     {
       operationId: 'string',
-      operationType: InstrumentOperationDtoOperationTypeEnum.ADD_INSTRUMENT,
+      operationType: ApiInstrumentOperationDtoOperationTypeEnum.ADD_INSTRUMENT,
       operationDate: '2023-03-28T13:35:25.146Z',
       brandLogo: 'string',
       maskedPan: 'string',
       channel: 'string',
-      instrumentType: InstrumentOperationDtoInstrumentTypeEnum.CARD,
+      instrumentType: ApiInstrumentOperationDtoInstrumentTypeEnum.CARD,
     },
     {
       operationId: 'string',
-      operationType: InstrumentOperationDtoOperationTypeEnum.DELETE_INSTRUMENT,
+      operationType: ApiInstrumentOperationDtoOperationTypeEnum.DELETE_INSTRUMENT,
       operationDate: '2023-03-28T13:35:25.146Z',
       brandLogo: 'string',
       maskedPan: 'string',
       channel: 'string',
-      instrumentType: InstrumentOperationDtoInstrumentTypeEnum.CARD,
+      instrumentType: ApiInstrumentOperationDtoInstrumentTypeEnum.CARD,
     },
     {
       operationId: 'string',
-      operationType: RejectedInstrumentOperationDtoOperationTypeEnum.REJECTED_DELETE_INSTRUMENT,
+      operationType: ApiRejectedInstrumentOperationDtoOperationTypeEnum.REJECTED_DELETE_INSTRUMENT,
       operationDate: '2023-03-28T13:35:25.146Z',
       brandLogo: 'string',
       maskedPan: 'string',
       channel: 'string',
-      instrumentType: RejectedInstrumentOperationDtoInstrumentTypeEnum.CARD,
+      instrumentType: ApiRejectedInstrumentOperationDtoInstrumentTypeEnum.CARD,
     },
     {
       operationId: 'string',
-      operationType: RejectedInstrumentOperationDtoOperationTypeEnum.REJECTED_ADD_INSTRUMENT,
+      operationType: ApiRejectedInstrumentOperationDtoOperationTypeEnum.REJECTED_ADD_INSTRUMENT,
       operationDate: '2023-03-28T13:35:25.146Z',
       brandLogo: 'string',
       instrumentId: 'string',
       maskedPan: 'string',
       channel: 'string',
-      instrumentType: RejectedInstrumentOperationDtoInstrumentTypeEnum.CARD,
+      instrumentType: ApiRejectedInstrumentOperationDtoInstrumentTypeEnum.CARD,
     },
     {
       operationId: 'string',
-      operationType: IbanOperationDtoOperationTypeEnum.ADD_IBAN,
+      operationType: ApiIbanOperationDtoOperationTypeEnum.ADD_IBAN,
       operationDate: '2023-03-28T13:35:25.146Z',
       iban: 'string',
       channel: 'string',
     },
     {
       operationId: 'string',
-      operationType: OnboardingOperationDtoOperationTypeEnum.ONBOARDING,
+      operationType: ApiOnboardingOperationDtoOperationTypeEnum.ONBOARDING,
       operationDate: '2023-03-28T13:35:25.146Z',
     },
     {
       operationId: 'string',
       eventId: 'string',
-      operationType: RefundOperationDtoOperationTypeEnum.PAID_REFUND,
+      operationType: ApiRefundOperationDtoOperationTypeEnum.PAID_REFUND,
       operationDate: '2023-03-28',
       amountCents: 0,
       accruedCents: 0,
@@ -477,13 +523,13 @@ export const mockedOperationList: TimelineDTO = {
 export const mockedOperationDetail: OperationDTO = {
   operationId: '1u1u1u1u1u1u1u',
   eventId: 'paid-refund-event-id',
-  operationType: RefundOperationDtoOperationTypeEnum.PAID_REFUND,
+  operationType: ApiRefundOperationDtoOperationTypeEnum.PAID_REFUND,
   operationDate: '2023-02-05',
   amountCents: 345,
   accruedCents: 10,
 };
 
-export const mockedOperationType = RefundOperationDtoOperationTypeEnum.PAID_REFUND;
+export const mockedOperationType = ApiRefundOperationDtoOperationTypeEnum.PAID_REFUND;
 export const mockedOperationId = '63ecc1eb10dc9d6cfb01371e';
 export const mockedOperationDate = '2023-02-15T12:28:42.949';
 
@@ -496,7 +542,7 @@ export const mockedInitiativeDetail: InitiativeDTO = {
   updateDate: new Date('2022-08-09T08:35:36.516').toISOString(),
   general: {
     budget: 8515,
-    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
+    beneficiaryType: ApiInitiativeGeneralDtoBeneficiaryTypeEnum.PF,
     beneficiaryKnown: false,
     beneficiaryBudget: 801,
     startDate: new Date('2022-10-01').toISOString(),
@@ -508,10 +554,10 @@ export const mockedInitiativeDetail: InitiativeDTO = {
     serviceIO: true,
     serviceId: 'provaaaaa316',
     serviceName: 'prova313',
-    serviceScope: InitiativeAdditionalDtoServiceScopeEnum.LOCAL,
+    serviceScope: ApiInitiativeAdditionalDtoServiceScopeEnum.LOCAL,
     description: 'culpa non sint',
     privacyLink: 'https://www.google.it',
-    tcLink: 'https://www.google.it'
+    tcLink: 'https://www.google.it',
   },
   beneficiaryRule: {
     selfDeclarationCriteria: [],
@@ -529,14 +575,17 @@ export const mockedInitiativeDetail: InitiativeDTO = {
         field: 'ISEE',
         operator: 'GT',
         value: '40000',
-        iseeTypes: [AutomatedCriteriaDtoIseeTypesEnum.ORDINARIO, AutomatedCriteriaDtoIseeTypesEnum.DOTTORATO],
+        iseeTypes: [
+          ApiAutomatedCriteriaDtoIseeTypesEnum.ORDINARIO,
+          ApiAutomatedCriteriaDtoIseeTypesEnum.DOTTORATO,
+        ],
       },
     ],
   },
 };
 
 export const mockedInitiativeGeneralBody = {
-  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
+  beneficiaryType: ApiInitiativeGeneralDtoBeneficiaryTypeEnum.PF,
   beneficiaryKnown: false,
   budget: 8515,
   beneficiaryBudget: 801,
@@ -571,27 +620,30 @@ export const mockedInitiativeBeneficiaryRuleBody = {
 export const mockedServiceInfoData = {
   initiativeOnIO: true,
   serviceName: 'newStepOneTest',
-  serviceScope: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
+  serviceScope: ApiInitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
   serviceDescription: 'newStepOneTest',
   privacyPolicyUrl: 'http://test.it',
   termsAndConditions: 'http://test.it',
-  channels: [{ type: ChannelDtoTypeEnum.Mobile, contact: 'http://test.it' }],
+  channels: [{ type: ApiChannelDtoTypeEnum.Mobile, contact: 'http://test.it' }],
   assistanceChannels: [{ type: 'mobile', contact: 'string' }],
 };
 
 export const mockedRefundRules = {
   accumulatedAmount: {
-    accumulatedType: AccumulatedAmountDtoAccumulatedTypeEnum.BUDGET_EXHAUSTED,
+    accumulatedType: ApiAccumulatedAmountDtoAccumulatedTypeEnum.BUDGET_EXHAUSTED,
     refundThreshold: 10000,
   },
-  additionalInfo: { identificationCode: 'test', timeParameter: TimeParameterDtoTimeTypeEnum.CLOSED },
+  additionalInfo: {
+    identificationCode: 'test',
+    timeParameter: ApiTimeParameterDtoTimeTypeEnum.CLOSED,
+  },
 };
 
 export const mockedTrxAndRewardRules: InitiativeRewardAndTrxRulesDTO = {
-  initiativeRewardType: InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum.REFUND,
+  initiativeRewardType: ApiInitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum.REFUND,
   rewardRule: {
     _type: 'rewardValue',
-    rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
+    rewardValueType: ApiInitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
     rewardValue: 1,
   },
 };

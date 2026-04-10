@@ -1,5 +1,4 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { Provider } from 'react-redux';
 import {
   saveApiKeyClientAssertion,
@@ -14,10 +13,7 @@ import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import AdmissionCriteria from '../AdmissionCriteria';
 import { IseeTypologyEnum, mapResponse } from '../helpers';
 import { mockedMapResponse } from './helpers.test';
-import { BeneficiaryTypeEnum } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
-import { OrderDirectionEnum } from '../../../../../api/generated/initiative/AutomatedCriteriaDTO';
-import { InitiativeApi } from '../../../../../api/InitiativeApiClient';
-import { mockedAdmissionCriteria } from '../../../../../services/__mocks__/admissionCriteriaService';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, AutomatedCriteriaDtoOrderDirectionEnum as OrderDirectionEnum } from '../../../../../api/generated/initiative/apiClient';
 
 jest.mock('../../../../../services/intitativeService');
 jest.mock('../../../../../services/admissionCriteriaService');

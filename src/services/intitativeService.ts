@@ -28,18 +28,10 @@ import {
   GetFamilyCompositionData as FamilyUnitCompositionDTO,
   RewardGroupsDTO,
   RewardValueDTO,
+  InitiativeDtoInitiativeRewardTypeEnum,
 } from '../api/generated/initiative/apiClient';
 import { InitiativeApi } from '../api/InitiativeApiClient';
-
-export enum InitiativeRewardTypeEnum {
-  REFUND = 'REFUND',
-  DISCOUNT = 'DISCOUNT',
-}
-
-/**
- * Accepts a reward rule and decodes it into RewardGroupsDTO or RewardValueDTO.
- * Using unknown here is safer because the old generated union type name no longer exists.
- */
+export { InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum };
 export const trascodeRewardRule = (
   rewardRule: unknown
 ): RewardGroupsDTO | RewardValueDTO | undefined => {
@@ -259,9 +251,9 @@ export const getBeneficiaryOnboardingStatus = (
 export const suspendUser = (
   initiativeId: string,
   fiscalCode: string,
-  rewardType: InitiativeRewardTypeEnum
+  rewardType: InitiativeDtoInitiativeRewardTypeEnum
 ): Promise<void> => {
-  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+  if (rewardType === InitiativeDtoInitiativeRewardTypeEnum.REFUND) {
     return InitiativeApi.suspendUserRefund(initiativeId, fiscalCode);
   }
 
@@ -271,9 +263,9 @@ export const suspendUser = (
 export const readmitUser = (
   initiativeId: string,
   fiscalCode: string,
-  rewardType: InitiativeRewardTypeEnum
+  rewardType: InitiativeDtoInitiativeRewardTypeEnum
 ): Promise<void> => {
-  if (rewardType === InitiativeRewardTypeEnum.REFUND) {
+  if (rewardType === InitiativeDtoInitiativeRewardTypeEnum.REFUND) {
     return InitiativeApi.readmitUserRefund(initiativeId, fiscalCode);
   }
 

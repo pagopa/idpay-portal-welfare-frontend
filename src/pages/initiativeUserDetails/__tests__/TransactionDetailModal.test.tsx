@@ -1,7 +1,11 @@
 import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { OperationDTO } from '../../../api/generated/initiative/OperationDTO';
+import {
+  OperationDTO,
+  TransactionDetailDtoChannelEnum,
+  TransactionDetailDtoOperationTypeEnum,
+  TransactionDetailDtoStatusEnum,
+} from '../../../api/generated/initiative/apiClient';
 import { renderWithContext } from '../../../utils/test-utils';
 import TransactionDetailModal from '../TransactionDetailModal';
 
@@ -110,18 +114,17 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
+          operationType: TransactionDetailDtoOperationTypeEnum.TRANSACTION,
           operationDate: 'aaaaa',
           maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
+          amountCents: 345,
+          accruedCents: 10,
           brand: 'brandName',
-          iban: '',
-          channel: 'App IO',
+          channel: TransactionDetailDtoChannelEnum.BARCODE,
           idTrxAcquirer: '349589304999',
           idTrxIssuer: '0001923192038',
           businessName: 'FakeBusinessName',
-          status: 'AUTHORIZED',
+          status: TransactionDetailDtoStatusEnum.AUTHORIZED,
         })
       );
 
@@ -150,18 +153,17 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           operationId: '1u1u1u1u1u1u1u',
-          operationType: 'TRANSACTION',
+          operationType: TransactionDetailDtoOperationTypeEnum.TRANSACTION,
           operationDate: 'aaaaa',
           maskedPan: '1234123412341234',
-          amount: 345,
-          accrued: 10,
+          amountCents: 345,
+          accruedCents: 10,
           brand: 'brandName',
-          iban: '',
-          channel: 'App IO',
+          channel: TransactionDetailDtoChannelEnum.BARCODE,
           idTrxAcquirer: '349589304999',
           idTrxIssuer: '0001923192038',
           businessName: 'FakeBusinessName',
-          status: 'CANCELLED',
+          status: TransactionDetailDtoStatusEnum.CANCELLED,
         })
       );
 

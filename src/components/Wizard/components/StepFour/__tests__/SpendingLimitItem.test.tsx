@@ -2,7 +2,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { Provider } from 'react-redux';
-import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../../../api/generated/initiative/apiClient';
 import { createStore } from '../../../../../redux/store';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import SpendingLimitItem from '../SpendingLimitItem';

@@ -54,9 +54,7 @@ import {
   stepTwoRankingEnabledSelector,
 } from '../initiativeSlice';
 
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, MccFilterDTO, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../api/generated/initiative/apiClient';
 import { GeneralInfo } from '../../../model/Initiative';
 import { createStore } from '../../store';
 
@@ -184,7 +182,9 @@ describe('use Initiative slice', () => {
   };
   const store = createStore();
   test('actions initiative slice', () => {
-    expect(initiativeReducer(mockedInitialState, resetInitiative())).toEqual(mockedInitialState);
+    expect(initiativeReducer(mockedInitialState, resetInitiative(undefined as any))).toEqual(
+      mockedInitialState
+    );
     expect(initiativeReducer(mockedInitialState, setInitiative(mockedInitialState))).toEqual(
       mockedInitialState
     );

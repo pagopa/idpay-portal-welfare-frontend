@@ -14,8 +14,13 @@ import {
   RewardRule,
   RefundRule,
 } from '../../model/Initiative';
-import { InitiativeGeneralDtoBeneficiaryTypeEnum, LogoDTO, MccFilterDTO } from '../../api/generated/initiative/apiClient';
-import { InitiativeRewardTypeEnum } from '../../services/intitativeService';
+import {
+  InitiativeDtoInitiativeRewardTypeEnum,
+  InitiativeGeneralDtoBeneficiaryTypeEnum,
+  InitiativeRewardRuleDtoRewardValueTypeEnum,
+  LogoDTO,
+  MccFilterDTO,
+} from '../../api/generated/initiative/apiClient';
 
 const initialState: Initiative = {
   initiativeId: undefined,
@@ -66,7 +71,7 @@ const initialState: Initiative = {
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: undefined,
-    rewardValueType: InitiativeRewardTypeEnum.DISCOUNT,
+    rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
   },
   trxRule: {
     mccFilter: {
@@ -212,7 +217,10 @@ export const initiativeSlice = createSlice({
         state.beneficiaryRule.selfDeclarationCriteria.push(action.payload);
       }
     },
-    setInitiativeRewardType: (state, action: PayloadAction<InitiativeRewardTypeEnum>) => ({
+    setInitiativeRewardType: (
+      state,
+      action: PayloadAction<InitiativeDtoInitiativeRewardTypeEnum>
+    ) => ({
       ...state,
       initiativeRewardType: action.payload,
     }),
@@ -221,7 +229,7 @@ export const initiativeSlice = createSlice({
       action: PayloadAction<{
         _type: string;
         rewardValue: number | undefined;
-        rewardValueType: InitiativeRewardTypeEnum;
+        rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum;
       }>
     ) => ({
       ...state,
@@ -345,7 +353,7 @@ export const beneficiaryRuleSelector = (
 } => state.initiative.beneficiaryRule;
 export const initiativeRewardTypeSelector = (
   state: RootState
-): InitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
+): InitiativeDtoInitiativeRewardTypeEnum | undefined => state.initiative.initiativeRewardType;
 export const initiativeIdSelector = (state: RootState): string | undefined =>
   state.initiative.initiativeId;
 export const initiativeRewardRuleSelector = (state: RootState): RewardRule =>

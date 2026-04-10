@@ -1,9 +1,9 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import React, { SetStateAction } from 'react';
 import { Provider } from 'react-redux';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum } from '../../../../../api/generated/initiative/apiClient';
 import { createStore } from '../../../../../redux/store';
 import { FilterOperator, WIZARD_ACTIONS } from '../../../../../utils/constants';
-import { BeneficiaryTypeEnum } from '../../../../../api/generated/initiative/InitiativeGeneralDTO';
 import IseeCriteriaItem from '../IseeCriteriaItem';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -48,7 +48,7 @@ describe('<IseeCriteriaItem />', (injectedStore?: ReturnType<typeof createStore>
           // eslint-disable-next-line react/jsx-no-bind
           setCriteriaToSubmit={setCriteriaToSubmit}
           rankingEnabled={'true'}
-          beneficiaryType={BeneficiaryTypeEnum.PF}
+          beneficiaryType={InitiativeGeneralDtoBeneficiaryTypeEnum.PF}
         />
       </Provider>
     );

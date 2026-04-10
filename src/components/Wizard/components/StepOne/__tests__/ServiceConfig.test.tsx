@@ -1,7 +1,5 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
-import { TypeEnum } from '../../../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { ChannelDtoTypeEnum as TypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum } from '../../../../../api/generated/initiative/apiClient';
 import { AdditionalInfo } from '../../../../../model/Initiative';
 import { setAdditionalInfo } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
@@ -46,9 +44,9 @@ describe('<ServiceConfig />', () => {
       privacyPolicyUrl: 'http://test.it',
       termsAndConditions: 'http://test.it',
       assistanceChannels: [
-        { type: TypeEnum.web, contact: 'http://test.it' },
-        { type: TypeEnum.email, contact: 'http://test.it' },
-        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: TypeEnum.Web, contact: 'http://test.it' },
+        { type: TypeEnum.Email, contact: 'http://test.it' },
+        { type: TypeEnum.Mobile, contact: 'http://test.it' },
         { type: '', contact: '' },
       ],
       logoFileName: 'logo file name',

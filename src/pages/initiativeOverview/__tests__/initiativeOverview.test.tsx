@@ -4,7 +4,7 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/re
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum } from '../../../api/generated/initiative/apiClient';
 import {
   resetInitiative,
   setAdditionalInfo,
@@ -100,7 +100,7 @@ beforeEach(() => {
 });
 
 const buildGeneralInfo = (beneficiaryKnown: 'true' | 'false') => ({
-  beneficiaryType: BeneficiaryTypeEnum.PF,
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
   beneficiaryKnown,
   rankingEnabled: undefined,
   budget: '1500',
@@ -135,7 +135,7 @@ const renderOverview = (params: {
   const store = createStore();
   const history = createMemoryHistory();
 
-  store.dispatch(resetInitiative());
+  store.dispatch(resetInitiative(undefined as any));
   store.dispatch(setInitiativeId(initiativeId));
   store.dispatch(setInitiativeName(params.initiativeName ?? 'initiative name'));
   store.dispatch(setStatus(params.status));

@@ -1,5 +1,4 @@
-import { AutomatedCriteriaDtoOrderDirectionEnum, FamilyUnitCompositionDTO, InitiativeAdditionalDtoServiceScopeEnum, InitiativeGeneralDtoBeneficiaryTypeEnum, MccFilterDTO } from '../api/generated/initiative/apiClient';
-import { InitiativeRewardTypeEnum } from '../services/intitativeService';
+import { AutomatedCriteriaDtoOrderDirectionEnum, FamilyUnitCompositionDTO, InitiativeAdditionalDtoServiceScopeEnum, InitiativeDtoInitiativeRewardTypeEnum, InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum, MccFilterDTO } from '../api/generated/initiative/apiClient';
 import { FilterOperator } from '../utils/constants';
 
 export interface GeneralInfo {
@@ -101,7 +100,7 @@ export interface DaysOfWeekInterval {
 export interface RewardRule {
   _type: string;
   rewardValue: number | undefined;
-  rewardValueType: InitiativeRewardTypeEnum;
+  rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum;
 }
 
 export interface RefundRule {
@@ -211,7 +210,7 @@ export interface Initiative {
     selfDeclarationCriteria: Array<ManualCriteriaItem>;
     automatedCriteria: Array<AutomatedCriteriaItem>;
   };
-  initiativeRewardType: InitiativeRewardTypeEnum | undefined;
+  initiativeRewardType: InitiativeDtoInitiativeRewardTypeEnum | undefined;
   rewardRule: RewardRule;
   trxRule: {
     mccFilter?: MccFilterDTO;
