@@ -17,9 +17,9 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import PhoneIphoneIcon from '@mui/icons-material/PhoneIphone';
-import { InstrumentDTO, InstrumentTypeEnum } from '../../api/generated/initiative/InstrumentDTO';
 import { getMaskedPan } from '../../helpers';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { InstrumentDTO, InstrumentDtoInstrumentTypeEnum } from '../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../../services/intitativeService';
 
 type Props = {
   openPaymentMethodModal: boolean;
@@ -38,14 +38,14 @@ const PaymentMethodsModal = ({
 
   const getPaymentMethodAvatar = (
     brandLogo: string | undefined,
-    instrumentType: InstrumentTypeEnum,
+    instrumentType: InstrumentDtoInstrumentTypeEnum,
     rewardType: InitiativeRewardTypeEnum
   ) => {
     switch (rewardType) {
       case InitiativeRewardTypeEnum.REFUND:
-        return brandLogo ? <img src={brandLogo} width="32px" /> : <CreditCardIcon />;
+        return brandLogo ? <img alt='' src={brandLogo} width="32px" /> : <CreditCardIcon />;
       case InitiativeRewardTypeEnum.DISCOUNT:
-        if (instrumentType === InstrumentTypeEnum.IDPAYCODE) {
+        if (instrumentType === InstrumentDtoInstrumentTypeEnum.IDPAYCODE) {
           return <CreditCardIcon />;
         } else {
           return <PhoneIphoneIcon />;
@@ -55,18 +55,18 @@ const PaymentMethodsModal = ({
 
   const getPaymentMethodLabel = (
     rewardType: InitiativeRewardTypeEnum,
-    instrumentType: InstrumentTypeEnum,
+    instrumentType: InstrumentDtoInstrumentTypeEnum,
     maskedPan: string | undefined
   ) => {
     switch (rewardType) {
       case InitiativeRewardTypeEnum.REFUND:
         return getMaskedPan(maskedPan);
       case InitiativeRewardTypeEnum.DISCOUNT:
-        if (instrumentType === InstrumentTypeEnum.CARD) {
+        if (instrumentType === InstrumentDtoInstrumentTypeEnum.CARD) {
           return getMaskedPan(maskedPan);
-        } else if (instrumentType === InstrumentTypeEnum.IDPAYCODE) {
+        } else if (instrumentType === InstrumentDtoInstrumentTypeEnum.IDPAYCODE) {
           return t('pages.initiativeUserDetails.transactionDetail.idPayCode');
-        } else if (instrumentType === InstrumentTypeEnum.APP_IO_PAYMENT) {
+        } else if (instrumentType === InstrumentDtoInstrumentTypeEnum.APP_IO_PAYMENT) {
           return t('pages.initiativeUserDetails.appIo');
         }
         return '-';
@@ -144,8 +144,8 @@ const PaymentMethodsModal = ({
                         p.maskedPan
                       )}
                       secondary={p.activationDate
-                        ?.toLocaleString('fr-BE')
-                        .substring(0, p.activationDate?.toLocaleString('fr-BE').length - 3)}
+                        ?.toString()
+                        .substring(0, p.activationDate?.toString().length - 3)}
                     />
                   </ListItem>
                   <Divider component="li" />

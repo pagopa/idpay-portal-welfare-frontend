@@ -1,15 +1,14 @@
 import { matchPath } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { Box, Tab, Tabs, Typography } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { ButtonNaked } from '@pagopa/mui-italia';
+import { MerchantDetailDTO, MerchantStatisticsDTO } from '../../api/generated/merchants/apiClient';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { MerchantDetailDTO } from '../../api/generated/merchants/MerchantDetailDTO';
 import { initiativePagesBreadcrumbsContainerStyle } from '../../helpers';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
-import { MerchantStatisticsDTO } from '../../api/generated/merchants/MerchantStatisticsDTO';
 import MerchantSummary from './MerchantSummary';
 import MerchantTransactions from './MerchantTransactions';
 import MerchantTransactionsProcessed from './MerchantTransactionsProcessed';

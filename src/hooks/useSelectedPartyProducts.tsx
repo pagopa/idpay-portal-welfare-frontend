@@ -1,4 +1,4 @@
-import useReduxCachedValue from '@pagopa/selfcare-common-frontend/hooks/useReduxCachedValue';
+import useReduxCachedValue from '@pagopa/selfcare-common-frontend/lib/hooks/useReduxCachedValue';
 import { Product } from '../model/Product';
 import { useAppSelector } from '../redux/hooks';
 import { partiesActions, partiesSelectors } from '../redux/slices/partiesSlice';
@@ -7,13 +7,15 @@ import { fetchProducts } from '../services/productService';
 /** A custom hook to fetch current party's products and caching them into redux */
 export const useSelectedPartyProducts = (): (() => Promise<Array<Product>>) => {
   const selectedParty = useAppSelector(partiesSelectors.selectPartySelected);
-  if (!selectedParty) {
-    throw new Error('No party selected!');
-  }
-
   return useReduxCachedValue(
     'PARTIES',
-    () => fetchProducts(selectedParty?.partyId),
+    () => {
+      if (!selectedParty?.partyId) {
+        console.error(new Error('No party selected!'));
+        return Promise.resolve([]);
+      }
+      return fetchProducts(selectedParty.partyId);
+    },
     partiesSelectors.selectPartySelectedProducts,
     partiesActions.setPartySelectedProducts
   );

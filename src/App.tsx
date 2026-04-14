@@ -3,7 +3,7 @@ import {
   LoadingOverlay,
   UnloadEventHandler,
   UserNotifyHandle,
-} from '@pagopa/selfcare-common-frontend';
+} from '@pagopa/selfcare-common-frontend/lib';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import withLogin from './decorators/withLogin';
 import Layout from './components/Layout/Layout';
@@ -32,8 +32,8 @@ import InitiativeRefundsDetails from './pages/initiativeRefundsDetails/initiativ
 import InitiativeMerchant from './pages/initiativeMerchant/initiativeMerchant';
 import InitiativeUploadMerchants from './pages/initiativeUploadMerchants/initiativeUploadMerchants';
 import InitiativeMerchantDetail from './pages/initiativeMerchantDetail/initiativeMerchantDetail';
-import InitiativeRefundsMerchants from './pages/initiativeRefundsMerchants/initiativeRefundsMerchants';
-import InitiativeRefundsTransactions from './pages/initiativeRefundsMerchants/initiativeRefundsTransactions';
+import InitiativeRefundsMerchants from './pages/initiativeRefundsMerchants/pages/InitiativeRefundsMerchantsPage';
+import InitiativeRefundsTransactions from './pages/initiativeRefundsMerchants/pages/InitiativeRefundsTransactionsPage';
 import { AlertProvider } from './contexts/AlertContext';
 import InitiativeExportReportPage from './pages/initiativeExportReport/InitiativeExportReportPage';
 import InitiativeExportReportUsersPage from './pages/initiativeExportReportUsers/initiativeExportReportUsersPage';

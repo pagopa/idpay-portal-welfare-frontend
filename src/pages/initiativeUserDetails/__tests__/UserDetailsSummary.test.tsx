@@ -1,12 +1,6 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
+﻿import { cleanup, fireEvent, screen } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { StatusEnum as InstrumentStatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
-import { InstrumentListDTO } from '../../../api/generated/initiative/InstrumentListDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+import { IbanDTO, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum, InstrumentListDTO, OnboardingStatusDtoStatusEnum as OnboardingStatusEnum, WalletDTO, WalletDtoStatusEnum as WalletStatusEnum } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { renderWithContext } from '../../../utils/test-utils';
 import UserDetailsSummary from '../components/UserDetailsSummary';
@@ -38,48 +32,7 @@ afterAll(() => {
 
 describe('test suite initiative user details', () => {
   window.scrollTo = jest.fn();
-
-  const walletInstrument = [
-    {
-      idWallet: '12345',
-      instrumentId: '1122334455',
-      maskedPan: '1111 2222 3333 4444',
-      channel: 'channel',
-      brandLog: undefined,
-      status: InstrumentStatusEnum.ACTIVE,
-      activationDate: new Date('2023-01-04T16:38:43.590Z'),
-    },
-    {
-      idWallet: '678910',
-      instrumentId: '667788991010',
-      maskedPan: '5555 6666 7777 8888',
-      channel: 'channel',
-      brandLog:
-        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-      status: InstrumentStatusEnum.ACTIVE,
-      activationDate: new Date('2023-01-04T16:38:43.590Z'),
-    },
-    {
-      idWallet: '678910',
-      instrumentId: '667788991010',
-      maskedPan: '5555 6666 7777 8888',
-      channel: 'channel',
-      brandLog:
-        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-      status: InstrumentStatusEnum.PENDING_DEACTIVATION_REQUEST,
-      activationDate: new Date('2023-01-04T16:38:43.590Z'),
-    },
-    {
-      idWallet: '678910',
-      instrumentId: '667788991010',
-      maskedPan: '5555 6666 7777 8888',
-      channel: 'channel',
-      brandLog:
-        'https://1.bp.blogspot.com/-lDThkIcKtNo/YK0b3BnZXUI/AAAAAAAATd4/KEEdfYwFw1cuzSYfOyDBK9rUP0X0a5DjACLcBGAsYHQ/s0/Mastercard%2BMaestro%2BLogo%2B-%2BDownload%2BFree%2BPNG.png',
-      status: InstrumentStatusEnum.PENDING_ENROLLMENT_REQUEST,
-      activationDate: new Date('2023-01-04T16:38:43.590Z'),
-    },
-  ];
+  const setHolderBank = jest.fn();
 
   test('test render of component with UserDetailsSummary status ONBOARDING_OK', async () => {
     renderWithContext(
@@ -88,9 +41,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
   });
@@ -102,9 +53,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ELIGIBLE_KO}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
 
@@ -125,9 +74,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ONBOARDING_KO}
         holderBank={undefined}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
 
@@ -148,9 +95,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.SUSPENDED}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
   });
@@ -162,9 +107,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
     store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
@@ -187,9 +130,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
     store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.DISCOUNT));
@@ -199,13 +140,62 @@ describe('test suite initiative user details', () => {
     );
   });
 
+  test('shows refund fallbacks when the wallet is not refundable and payment methods are missing', async () => {
+    InitiativeApiMocked.getWalletDetail = async (): Promise<WalletDTO> =>
+      Promise.resolve({
+        amountCents: 1250,
+        accruedCents: 300,
+        refundedCents: 150,
+        iban: undefined,
+        status: WalletStatusEnum.NOT_REFUNDABLE,
+        lastCounterUpdate: undefined,
+      } as WalletDTO);
+
+    InitiativeApiMocked.getInstrumentList = async (): Promise<InstrumentListDTO> =>
+      Promise.resolve({
+        instrumentList: [],
+      } as InstrumentListDTO);
+
+    const { store } = renderWithContext(
+      <UserDetailsSummary
+        id={'id2132121iniziativa'}
+        cf={'fakecf12212'}
+        statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
+        holderBank={undefined}
+        setHolderBank={setHolderBank}
+      />
+    );
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+
+    expect(await screen.findByText('pages.initiativeUserDetails.missingIban')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUserDetails.missingPaymentMethod')).toBeInTheDocument();
+  });
+
+  test('does not show onboarding alerts when the status is undefined', () => {
+    renderWithContext(
+      <UserDetailsSummary
+        id={'id2132121iniziativa'}
+        cf={'fakecf12212'}
+        statusOnb={undefined}
+        holderBank={undefined}
+        setHolderBank={setHolderBank}
+      />
+    );
+
+    expect(screen.queryByTestId('onboarding-ko-snackbar-test')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('eligible-ko-snackbar-test')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('pages.initiativeUserDetails.onboardingSuspendedDescription')
+    ).not.toBeInTheDocument();
+  });
+
   test('test addError of getIban, getInstrumentList, getWalletDetail in case of error response', async () => {
     InitiativeApiMocked.getWalletDetail = async (_id: string, _cf: string): Promise<WalletDTO> =>
       await Promise.reject('test reject getWalletDetail addError');
 
     InitiativeApiMocked.getInstrumentList = async (
       _id: string,
-      cf: string
+      _cf: string
     ): Promise<InstrumentListDTO> => await Promise.reject('test reject getInstrumentList addError');
 
     InitiativeApiMocked.getIban = async (_iban: string): Promise<IbanDTO> =>
@@ -217,9 +207,7 @@ describe('test suite initiative user details', () => {
         cf={'fakecf12212'}
         statusOnb={OnboardingStatusEnum.ONBOARDING_OK}
         holderBank={'bank name'}
-        setHolderBank={function (value: React.SetStateAction<string | undefined>): void {
-          throw new Error('Function not implemented.');
-        }}
+        setHolderBank={setHolderBank}
       />
     );
   });

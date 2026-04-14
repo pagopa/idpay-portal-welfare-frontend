@@ -25,16 +25,17 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CloseIcon from '@mui/icons-material/Close';
 import { matchPath } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import TitleBox from '@pagopa/selfcare-common-frontend/components/TitleBox';
+import TitleBox from '@pagopa/selfcare-common-frontend/lib/components/TitleBox';
 import { useEffect, useState, useMemo } from 'react';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useFormik } from 'formik';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
 import { initiativeSelector } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, OnboardingRankingsDTO } from '../../api/generated/initiative/apiClient';
 import {
   getInitiativeOnboardingRankingStatusPaged,
   notifyCitizenRankings,
@@ -48,11 +49,9 @@ import {
   initiativePagesTableContainerStyle,
   numberWithCommas,
 } from '../../helpers';
-import { OnboardingRankingsDTO } from '../../api/generated/initiative/OnboardingRankingsDTO';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import { ENV } from '../../utils/env';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
 import TablePaginator from '../components/TablePaginator';
 import PublishInitiativeRankingModal from './PublishInitiativeRankingModal';
 
@@ -119,8 +118,8 @@ const InitiativeRanking = () => {
           if (res.rankingStatus === 'COMPLETED') {
             setOpenPublishedInitiativeRankingAlert(true);
             if (typeof res.rankingPublishedTimestamp === 'object') {
-              const publishedDateTime = res.rankingPublishedTimestamp
-                .toLocaleString('fr-BE')
+              const publishedDateTime = (res.rankingPublishedTimestamp as any)
+                .toString()
                 .split(' ');
               setPublishedDate(publishedDateTime[0]);
               setPublishedHour(publishedDateTime[1]);
@@ -157,7 +156,7 @@ const InitiativeRanking = () => {
                 : '-',
             criteriaConsensusTimeStamp:
               typeof r.criteriaConsensusTimestamp === 'object'
-                ? r.criteriaConsensusTimestamp.toLocaleString('fr-BE')
+                ? (r.criteriaConsensusTimestamp as any).toString('fr-BE')
                 : new Date().toLocaleString('fr-BE'),
           }));
           setRows(rowsData);
@@ -275,6 +274,7 @@ const InitiativeRanking = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -282,6 +282,7 @@ const InitiativeRanking = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByStatus);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   const getBeneficiaryStatus = (status: string | undefined) => {
@@ -480,7 +481,6 @@ const InitiativeRanking = () => {
               id="filterStatus"
               name="filterStatus"
               label={t('pages.initiativeUsers.form.status')}
-              placeholder={t('pages.initiativeUsers.form.status')}
               onChange={(e) => formik.handleChange(e)}
               value={formik.values.filterStatus}
               inputProps={{
@@ -539,13 +539,13 @@ const InitiativeRanking = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                    {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
                       <TableCell width="35%">
                         {t('pages.initiativeRanking.table.familyId')}
                       </TableCell>
                     )}
                     <TableCell width="20%">
-                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+                      {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                         ? t('pages.initiativeRanking.table.beneficiary')
                         : t('pages.initiativeRanking.table.familyBeneficiary')}
                     </TableCell>
@@ -561,13 +561,13 @@ const InitiativeRanking = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r, i) => (
                     <TableRow key={i}>
-                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                      {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
                         <TableCell>
                           {getBeneficiaryStatus(r.beneficiaryRankingStatus)} {r.familyId}
                         </TableCell>
                       )}
                       <TableCell>
-                        {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF &&
+                        {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF &&
                           getBeneficiaryStatus(r.beneficiaryRankingStatus)}{' '}
                         {r.beneficiary}
                       </TableCell>

@@ -1,11 +1,8 @@
-import React from 'react';
 import { render } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import RefundRuleContentBody from '../StepFive/RefundRuleContentBody';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/apiClient';
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -85,6 +82,7 @@ describe('<RefundRuleContentBody />', (injectedStore?: ReturnType<typeof createS
       updateDate: undefined,
       additionalInfo: {
         initiativeOnIO: true,
+        serviceId: undefined,
         serviceName: '',
         serviceArea: '',
         serviceDescription: '',

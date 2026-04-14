@@ -2,14 +2,13 @@
 /* eslint-disable complexity */
 import CloseIcon from '@mui/icons-material/Close';
 import { Backdrop, Box, Fade, IconButton, Modal, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { MouseEventHandler, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
-import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
 import { formatIban, formatedCurrency, getMaskedPan, mappedChannel } from '../../helpers';
-import { getTimelineDetail } from '../../services/intitativeService';
+import { OperationDTO } from '../../api/generated/initiative/apiClient';
+import { getTimelineDetail, InitiativeRewardTypeEnum } from '../../services/intitativeService';
 import { formatDate, transactionResult } from './helpers';
 import OnboardingContent from './components/InitiativeWithDiscount/OnboardingContent';
 import TransactionContent from './components/InitiativeWithDiscount/TransactionContent';
@@ -63,6 +62,7 @@ const TransactionDetailModal = ({
         )
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operationId, openModal, initiativeId]);
 
   const operationTypeLabel = (
@@ -93,12 +93,12 @@ const TransactionDetailModal = ({
       case 'TRANSACTION':
         if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
           if (
-            transactionDetail?.status === 'AUTHORIZED' ||
-            transactionDetail?.status === 'REWARDED'
+            (transactionDetail as any)?.status === 'AUTHORIZED' ||
+            (transactionDetail as any)?.status === 'REWARDED'
           ) {
             return t('pages.initiativeUserDetails.operationTypes.discountAuthorized');
           }
-          if (transactionDetail?.status === 'CANCELLED') {
+          if ((transactionDetail as any)?.status === 'CANCELLED') {
             return t('pages.initiativeUserDetails.operationTypes.discountCancelled');
           }
         } else if (rewardType === InitiativeRewardTypeEnum.REFUND) {
@@ -185,7 +185,7 @@ const TransactionDetailModal = ({
                   </Box>
                   <Box sx={{ gridColumn: 'span 12' }}>
                     <Typography variant="body2" fontWeight={600}>
-                      {getMaskedPan(transactionDetail?.maskedPan)}
+                      {getMaskedPan((transactionDetail as any)?.maskedPan)}
                     </Typography>
                   </Box>
                 </>
@@ -236,8 +236,8 @@ const TransactionDetailModal = ({
                   </Box>
                   <Box sx={{ gridColumn: 'span 12' }}>
                     <Typography variant="body2" fontWeight={600}>
-                      {typeof transactionDetail?.brand !== 'undefined'
-                        ? transactionDetail?.brand
+                      {typeof (transactionDetail as any)?.brand !== 'undefined'
+                        ? (transactionDetail as any)?.brand
                         : '-'}
                     </Typography>
                   </Box>
@@ -369,8 +369,8 @@ const TransactionDetailModal = ({
               )}
               {(transactionDetail?.operationType === 'ADD_INSTRUMENT' ||
                 transactionDetail?.operationType === 'DELETE_INSTRUMENT' ||
-                transactionDetail?.operationType === 'REJECTED_ADD_INSTRUMENT' ||
-                transactionDetail?.operationType === 'REJECTED_DELETE_INSTRUMENT') && (
+                (transactionDetail as any)?.operationType === 'REJECTED_ADD_INSTRUMENT' ||
+                (transactionDetail as any)?.operationType === 'REJECTED_DELETE_INSTRUMENT') && transactionDetail && (
                 <InstrumentContent transactionDetail={transactionDetail} />
               )}
             </Box>

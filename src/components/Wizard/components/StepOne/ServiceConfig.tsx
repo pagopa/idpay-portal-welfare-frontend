@@ -23,14 +23,15 @@ import { useFormik } from 'formik';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import * as Yup from 'yup';
 import { CallMade } from '@mui/icons-material';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import {
   createInitiativeServiceInfo,
   updateInitiativeServiceInfo,
   uploadAndUpdateLogo,
 } from '../../../../services/intitativeService';
+import { InitiativeAdditionalDtoServiceScopeEnum } from '../../../../api/generated/initiative/apiClient';
 import {
   initiativeIdSelector,
   additionalInfoSelector,
@@ -39,7 +40,6 @@ import {
   setInitiativeLogo,
 } from '../../../../redux/slices/initiativeSlice';
 import { useAppSelector, useAppDispatch } from '../../../../redux/hooks';
-import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
 import { parseDataToSend } from './helpers';
 import InitiativeNotOnIOModal from './InitiativeNotOnIOModal';
@@ -103,6 +103,7 @@ const ServiceConfig = ({
       formik.handleSubmit();
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   useEffect(() => {
@@ -111,22 +112,72 @@ const ServiceConfig = ({
       setUploadDate(additionalInfo.logoUploadDate);
       setFileUploadedOk(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(additionalInfo)]);
 
   const validateUrl = (value: string | undefined): boolean => {
-    const regex = new RegExp(/^(https):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-/]))?/);
-    if (typeof value === 'string') {
-      return regex.test(value);
+    if (typeof value !== 'string') {
+      return false;
     }
-    return false;
+
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+      return false;
+    }
+
+    try {
+      const parsedUrl = new URL(trimmedValue);
+      return parsedUrl.protocol === 'https:' && parsedUrl.hostname.length > 0;
+    } catch {
+      return false;
+    }
   };
 
   const validatePhoneNumber = (value: string | undefined): boolean => {
-    const regex = new RegExp(/^\s*[0-9]{2,4}-?\/?\s?[0-9]{1,10}\s*$/);
-    if (typeof value === 'string') {
-      return regex.test(value);
+    if (typeof value !== 'string') {
+      return false;
     }
-    return false;
+
+    const trimmedValue = value.trim();
+    if (trimmedValue.length === 0) {
+      return false;
+    }
+
+    let index = 0;
+    let prefixDigits = 0;
+
+    while (index < trimmedValue.length && trimmedValue[index] >= '0' && trimmedValue[index] <= '9') {
+      prefixDigits += 1;
+      index += 1;
+    }
+
+    if (prefixDigits < 2 || prefixDigits > 4) {
+      return false;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === '-') {
+      index += 1;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === '/') {
+      index += 1;
+    }
+
+    if (index < trimmedValue.length && trimmedValue[index] === ' ') {
+      index += 1;
+    }
+
+    let localDigits = 0;
+    while (index < trimmedValue.length && trimmedValue[index] >= '0' && trimmedValue[index] <= '9') {
+      localDigits += 1;
+      index += 1;
+    }
+
+    if (localDigits < 1 || localDigits > 10) {
+      return false;
+    }
+
+    return index === trimmedValue.length;
   };
 
   const validationSchema = Yup.object().shape({
@@ -196,6 +247,7 @@ const ServiceConfig = ({
     } else {
       setDisabledNext(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik]);
 
   const waitUpload = () => setCurrentStep(currentStep + 1);
@@ -433,17 +485,20 @@ const ServiceConfig = ({
               name="serviceArea"
               aria-labelledby="serviceArea"
               label={t('components.wizard.stepOne.form.serviceArea')}
-              placeholder={t('components.wizard.stepOne.form.serviceArea')}
+              displayEmpty
               onChange={async (e) => {
                 await formik.setFieldValue('serviceArea', e.target.value);
               }}
               error={formik.touched.serviceArea && Boolean(formik.errors.serviceArea)}
               value={formik.values.serviceArea}
             >
-              <MenuItem value={ServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
+              <MenuItem value="" disabled>
+                {t('components.wizard.stepOne.form.serviceArea')}
+              </MenuItem>
+              <MenuItem value={InitiativeAdditionalDtoServiceScopeEnum.LOCAL} data-testid="serviceScope-local-test">
                 {t('components.wizard.stepOne.form.serviceScopeLocal')}
               </MenuItem>
-              <MenuItem value={ServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
+              <MenuItem value={InitiativeAdditionalDtoServiceScopeEnum.NATIONAL} data-testid="serviceScope-national-test">
                 {t('components.wizard.stepOne.form.serviceScopeNational')}
               </MenuItem>
             </Select>

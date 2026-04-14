@@ -20,10 +20,10 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Yup from 'yup';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { useHistory } from 'react-router-dom';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   initiativeIdSelector,
@@ -32,12 +32,10 @@ import {
   saveRefundRule,
   generalInfoSelector,
 } from '../../../../redux/slices/initiativeSlice';
-import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TimeTypeEnum } from '../../../../api/generated/initiative/TimeParameterDTO';
-import { putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
+import { AccumulatedAmountDtoAccumulatedTypeEnum, TimeParameterDtoTimeTypeEnum } from '../../../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum, putRefundRule, putRefundRuleDraft } from '../../../../services/intitativeService';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import ROUTES from '../../../../routes';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
 import { mapDataToSend, setError, setErrorText } from './helpers';
 
 interface Props {
@@ -97,6 +95,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       }
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -119,7 +118,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       .test('reimbursement-threshold-number', t('validation.required'), function (val) {
         if (
           this.parent.reimbursmentQuestionGroup === 'true' &&
-          this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+          this.parent.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED
         ) {
           return typeof val === 'number';
         }
@@ -128,7 +127,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
       .test('reimbursement-threshold-min-one', t('validation.positive'), function (val) {
         if (
           this.parent.reimbursmentQuestionGroup === 'true' &&
-          this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+          this.parent.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED
         ) {
           return typeof val === 'number' && val >= 1;
         }
@@ -140,7 +139,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
         function (val) {
           if (
             this.parent.reimbursmentQuestionGroup === 'true' &&
-            this.parent.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED
+            this.parent.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED
           ) {
             return typeof val === 'number' && val <= parseFloat(budgetPerPerson);
           }
@@ -208,6 +207,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
     } else {
       setDisableNext(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(formik.values)]);
 
   const handleResetField = (value: string) => {
@@ -301,13 +301,13 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                 }}
               >
                 <MenuItem
-                  value={AccumulatedTypeEnum.BUDGET_EXHAUSTED}
+                  value={AccumulatedAmountDtoAccumulatedTypeEnum.BUDGET_EXHAUSTED}
                   data-testid="balance-exhausted"
                 >
                   {t('components.wizard.stepFive.select.accumulatedAmount.balanceExhausted')}
                 </MenuItem>
                 <MenuItem
-                  value={AccumulatedTypeEnum.THRESHOLD_REACHED}
+                  value={AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED}
                   data-testid="certain-threshold"
                 >
                   {t('components.wizard.stepFive.select.accumulatedAmount.certainThreshold')}
@@ -321,7 +321,7 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
               </FormHelperText>
             </FormControl>
 
-            {formik.values.accumulatedAmount === AccumulatedTypeEnum.THRESHOLD_REACHED ? (
+            {formik.values.accumulatedAmount === AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED ? (
               <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', mb: 4 }}>
                 <TextField
                   inputProps={{
@@ -378,19 +378,19 @@ const RefundRules = ({ action, setAction, setDisableNext }: Props) => {
                   'data-testid': 'selectTimeParam-test',
                 }}
               >
-                <MenuItem value={TimeTypeEnum.CLOSED} data-testid="initiative-done">
+                <MenuItem value={TimeParameterDtoTimeTypeEnum.CLOSED} data-testid="initiative-done">
                   {t('components.wizard.stepFive.select.timerParameter.initiativeDone')}
                 </MenuItem>
-                <MenuItem value={TimeTypeEnum.DAILY} data-testid="every-day">
+                <MenuItem value={TimeParameterDtoTimeTypeEnum.DAILY} data-testid="every-day">
                   {t('components.wizard.stepFive.select.timerParameter.everyDay')}
                 </MenuItem>
-                <MenuItem value={TimeTypeEnum.WEEKLY} data-testid="every-week">
+                <MenuItem value={TimeParameterDtoTimeTypeEnum.WEEKLY} data-testid="every-week">
                   {t('components.wizard.stepFive.select.timerParameter.everyWeek')}
                 </MenuItem>
-                <MenuItem value={TimeTypeEnum.MONTHLY} data-testid="every-month">
+                <MenuItem value={TimeParameterDtoTimeTypeEnum.MONTHLY} data-testid="every-month">
                   {t('components.wizard.stepFive.select.timerParameter.everyMonth')}
                 </MenuItem>
-                <MenuItem value={TimeTypeEnum.QUARTERLY} data-testid="every-three-months">
+                <MenuItem value={TimeParameterDtoTimeTypeEnum.QUARTERLY} data-testid="every-three-months">
                   {t('components.wizard.stepFive.select.timerParameter.everyThreeMonths')}
                 </MenuItem>
               </Select>

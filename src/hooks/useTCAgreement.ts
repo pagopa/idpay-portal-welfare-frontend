@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import { getPortalConsent, savePortalConsent } from '../services/rolePermissionService';
 
 const useTCAgreement = () => {
@@ -34,6 +34,7 @@ const useTCAgreement = () => {
           showCloseIcon: true,
         });
       });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const acceptTOS = () => {

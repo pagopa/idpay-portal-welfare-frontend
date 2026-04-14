@@ -1,16 +1,11 @@
 /* eslint-disable react/jsx-no-bind */
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore } from '../../../../redux/store';
 import DateReference from '../DateReference';
-import React from 'react';
-import { BeneficiaryTypeEnum } from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { mockedInitiative } from '../../../../model/__tests__/Initiative.test';
-import { setInitiative } from '../../../../redux/slices/initiativeSlice';
-import { AccumulatedTypeEnum } from '../../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TypeEnum } from '../../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../../api/generated/initiative/InitiativeAdditionalDTO';
+import { AccumulatedAmountDtoAccumulatedTypeEnum as AccumulatedTypeEnum, ChannelDtoTypeEnum as TypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import { Initiative } from '../../../../model/Initiative';
 
 beforeEach(() => {
@@ -32,34 +27,23 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
   window.scrollTo = jest.fn();
 
   test('should display the DateReference component with his functions', async () => {
-    await act(async () => {
-      render(
-        <Provider store={store}>
-          <DateReference initiative={mockedInitiative} handleViewDetails={undefined} />
-        </Provider>
-      );
-    });
+    render(
+      <Provider store={store}>
+        <DateReference initiative={mockedInitiative} handleViewDetails={undefined} />
+      </Provider>
+    );
   });
 
   it('test handleViewDetails', async () => {
     const clonedMockedInitiative = { ...initiative, status: 'APPROVED' };
-    await act(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <DateReference
-            initiative={clonedMockedInitiative}
-            handleViewDetails={handleViewDetails}
-          />
-        </Provider>
-      );
-
-      await waitFor(async () => {
-        const details = queryByTestId('view-datails-test') as HTMLButtonElement;
-        fireEvent.click(details);
-        handleViewDetails(initiative.initiativeId);
-        expect(handleViewDetails).toHaveBeenCalled();
-      });
-    });
+    render(
+      <Provider store={store}>
+        <DateReference initiative={clonedMockedInitiative} handleViewDetails={handleViewDetails} />
+      </Provider>
+    );
+    const details = (await screen.findByTestId('view-datails-test')) as HTMLButtonElement;
+    fireEvent.click(details);
+    expect(handleViewDetails).toHaveBeenCalled();
   });
 
   test('status message date case Approved', async () => {
@@ -87,16 +71,14 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
       },
     };
 
-    await act(async () => {
-      const { queryByTestId } = render(
-        <Provider store={store}>
-          <DateReference initiative={clonedMockedInitiative2} handleViewDetails={undefined} />
-        </Provider>
-      );
+    render(
+      <Provider store={store}>
+        <DateReference initiative={clonedMockedInitiative2} handleViewDetails={undefined} />
+      </Provider>
+    );
 
-      const message = queryByTestId('date-message-status');
-      expect(message).toBeInTheDocument();
-    });
+    const message = screen.getByTestId('date-message-status');
+    expect(message).toBeInTheDocument();
   });
 
   test('status message date case empty string', async () => {
@@ -153,12 +135,13 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
       },
       additionalInfo: {
         initiativeOnIO: true,
+        serviceId: 'service-id',
         serviceName: 'prova313',
         serviceArea: ServiceScopeEnum.NATIONAL,
         serviceDescription: 'newStepOneTest',
         privacyPolicyUrl: 'http://test.it',
         termsAndConditions: 'http://test.it',
-        assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+        assistanceChannels: [{ type: TypeEnum.Web, contact: 'http://test.it' }],
         logoFileName: 'logo file name',
         logoUploadDate: 'logo date',
         logoURL: 'logo url',
@@ -189,7 +172,8 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
           },
         ],
       },
-      rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+      rewardRule: { _type: 'rewardValue', rewardValue: 1, rewardValueType: RewardValueTypeEnum.PERCENTAGE },
+      initiativeRewardType: undefined,
       trxRule: {
         mccFilter: { allowedList: true, values: ['string', ''] },
         rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
@@ -244,12 +228,13 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
       },
       additionalInfo: {
         initiativeOnIO: true,
+        serviceId: 'service-id',
         serviceName: 'prova313',
         serviceArea: ServiceScopeEnum.NATIONAL,
         serviceDescription: 'newStepOneTest',
         privacyPolicyUrl: 'http://test.it',
         termsAndConditions: 'http://test.it',
-        assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+        assistanceChannels: [{ type: TypeEnum.Web, contact: 'http://test.it' }],
         logoFileName: 'logo file name',
         logoUploadDate: 'logo date',
         logoURL: 'logo url',
@@ -286,7 +271,8 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
           },
         ],
       },
-      rewardRule: { _type: 'rewardValue', rewardValue: 1 },
+      rewardRule: { _type: 'rewardValue', rewardValue: 1, rewardValueType: RewardValueTypeEnum.PERCENTAGE },
+      initiativeRewardType: undefined,
       trxRule: {
         mccFilter: { allowedList: true, values: ['string', ''] },
         rewardLimits: [{ frequency: 'string', rewardLimit: 2 }],
@@ -312,6 +298,34 @@ describe('<DataReference />', (injectedStore?: ReturnType<typeof createStore>) =
       <Provider store={store}>
         <DateReference initiative={mockedInitiative} handleViewDetails={undefined} />
       </Provider>
+    );
+  });
+
+  test('status message date case start in future', () => {
+    const startFuture = new Date();
+    startFuture.setDate(startFuture.getDate() + 10);
+    const endFuture = new Date(startFuture);
+    endFuture.setDate(endFuture.getDate() + 10);
+
+    const initiativeWithFutureDates: Initiative = {
+      ...mockedInitiative,
+      generalInfo: {
+        ...mockedInitiative.generalInfo,
+        rankingStartDate: undefined,
+        rankingEndDate: undefined,
+        startDate: startFuture,
+        endDate: endFuture,
+      },
+    };
+
+    render(
+      <Provider store={store}>
+        <DateReference initiative={initiativeWithFutureDates} handleViewDetails={undefined} />
+      </Provider>
+    );
+
+    expect(screen.getByTestId('date-message-status')).toHaveTextContent(
+      'pages.initiativeOverview.info.otherInfo.start'
     );
   });
 });

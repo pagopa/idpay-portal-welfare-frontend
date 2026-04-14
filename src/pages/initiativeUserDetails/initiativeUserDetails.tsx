@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 /* eslint-disable functional/no-let */
-import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import {
   Button,
   Chip,
@@ -13,23 +12,21 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
   Typography,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useFormik } from 'formik';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router-dom';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
-import { OperationDTO } from '../../api/generated/initiative/OperationDTO';
+
 import {
   cleanDate,
   formatStringToDate,
@@ -48,7 +45,8 @@ import {
   stepTwoBeneficiaryTypeSelector,
 } from '../../redux/slices/initiativeSlice';
 import ROUTES, { BASE_ROUTE } from '../../routes';
-import { getBeneficiaryOnboardingStatus, getTimeLine } from '../../services/intitativeService';
+import { getBeneficiaryOnboardingStatus, getTimeLine, InitiativeRewardTypeEnum } from '../../services/intitativeService';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, OnboardingStatusDtoStatusEnum, OperationDTO } from '../../api/generated/initiative/apiClient';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import EmptyList from '../components/EmptyList';
 import InitiativeRefundsDetailsModal from '../initiativeRefundsDetails/initiativeRefundsDetailsModal';
@@ -73,7 +71,7 @@ const InitiativeUserDetails = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(0);
   const [totalElements, setTotalElements] = useState<number>(0);
-  const [statusOnb, setStatusOnb] = useState<OnboardingStatusEnum | undefined>();
+  const [statusOnb, setStatusOnb] = useState<OnboardingStatusDtoStatusEnum | undefined>();
   const [suspensionModalOpen, setSuspensionModalOpen] = useState(false);
   const [buttonType, setButtonType] = useState<string>('');
   const [holderBank, setHolderBank] = useState<string | undefined>(undefined);
@@ -118,6 +116,7 @@ const InitiativeUserDetails = () => {
           });
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf]);
 
   const getTableData = (
@@ -179,9 +178,9 @@ const InitiativeUserDetails = () => {
       if (
         typeof id === 'string' &&
         typeof cf === 'string' &&
-        (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-          statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-          statusOnb === OnboardingStatusEnum.SUSPENDED)
+        (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+          statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+          statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
       ) {
         if (values.searchFrom) {
           const searchFrom = values.searchFrom as unknown as Date;
@@ -210,9 +209,9 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, undefined, undefined, undefined, 0);
     }
@@ -258,13 +257,13 @@ const InitiativeUserDetails = () => {
       case 'ADD_INSTRUMENT':
         const addMessage = t('pages.initiativeUserDetails.operationTypes.addInstrument');
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-          return `${addMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+          return `${addMessage} ${getTimeLineMaskedPan(id, (event as any).maskedPan)}`;
         }
         return addMessage;
       case 'DELETE_INSTRUMENT':
         const deleteMessage = t('pages.initiativeUserDetails.operationTypes.deleteInstrument');
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
-          return `${deleteMessage} ${getTimeLineMaskedPan(id, event.maskedPan)}`;
+          return `${deleteMessage} ${getTimeLineMaskedPan(id, (event as any).maskedPan)}`;
         }
         return deleteMessage;
       case 'ONBOARDING':
@@ -272,7 +271,7 @@ const InitiativeUserDetails = () => {
       case 'PAID_REFUND':
         return `${t(
           'pages.initiativeUserDetails.operationTypes.paidRefund'
-        )} di ${formatedTimeLineCurrency(id, event.amountCents)}`;
+        )} di ${formatedTimeLineCurrency(id, (event as any).amountCents)}`;
       case 'REJECTED_ADD_INSTRUMENT':
         return t('pages.initiativeUserDetails.operationTypes.rejectedAddInstrument');
       case 'REJECTED_DELETE_INSTRUMENT':
@@ -286,9 +285,9 @@ const InitiativeUserDetails = () => {
         if (rewardType === InitiativeRewardTypeEnum.REFUND) {
           return t('pages.initiativeUserDetails.operationTypes.transaction');
         } else if (rewardType === InitiativeRewardTypeEnum.DISCOUNT) {
-          if (event.status === 'AUTHORIZED' || event.status === 'REWARDED') {
+          if ((event as any).status === 'AUTHORIZED' || (event as any).status === 'REWARDED') {
             return t('pages.initiativeUserDetails.operationTypes.payment');
-          } else if (event.status === 'CANCELLED') {
+          } else if ((event as any).status === 'CANCELLED') {
             return t('pages.initiativeUserDetails.operationTypes.paymentCancelled');
           }
         }
@@ -304,12 +303,13 @@ const InitiativeUserDetails = () => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getTableData(cf, id, filterByEvent, filterByDateFrom, filterByDateTo, page);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, page, statusOnb]);
 
   const handleSuspension = (buttonType: string) => {
@@ -462,7 +462,7 @@ const InitiativeUserDetails = () => {
                 {cf?.toUpperCase()}
               </Typography>
 
-              {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+              {statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED && (
                 <Chip
                   label={t('pages.initiativeUserDetails.suspended')}
                   sx={{ fontSize: '14px' }}
@@ -474,7 +474,7 @@ const InitiativeUserDetails = () => {
           </Box>
         </Box>
 
-        {statusOnb === OnboardingStatusEnum.ONBOARDING_OK && (
+        {statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK && (
           <Box sx={{ display: 'grid', gridColumn: 'span 4', justifyContent: 'end' }}>
             <Button
               variant="outlined"
@@ -488,7 +488,7 @@ const InitiativeUserDetails = () => {
           </Box>
         )}
 
-        {statusOnb === OnboardingStatusEnum.SUSPENDED && (
+        {statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED && (
           <Box sx={{ display: 'flex', gridColumn: 'span 4', justifyContent: 'end', gap: 1 }}>
             <Button
               variant="contained"
@@ -520,7 +520,7 @@ const InitiativeUserDetails = () => {
         setHolderBank={setHolderBank}
       />
 
-      {beneficiaryType === BeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
+      {beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && <FamilyUnitSummary id={id} cf={cf} />}
 
       <Box sx={{ display: 'inline-flex', mt: 5, mb: 3 }}>
         <Typography variant="h6">{t('pages.initiativeUserDetails.historyState')}</Typography>
@@ -536,10 +536,13 @@ const InitiativeUserDetails = () => {
             }}
             name="filterEvent"
             label={t('pages.initiativeUserDetails.filterEvent')}
-            placeholder={t('pages.initiativeUserDetails.filterEvent')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterEvent}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeUserDetails.filterEvent')}
+            </MenuItem>
             {getFilterOptionList(rewardType).map((opt, index) => (
               <MenuItem key={index} value={opt.value}>
                 {t(opt.label)}
@@ -549,45 +552,39 @@ const InitiativeUserDetails = () => {
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
               onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props: any) => (
-                <TextField
-                  {...props}
-                  id="searchFrom"
-                  data-testid="searchFrom-test"
-                  name="searchFrom"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'searchFrom',
+                  name: 'searchFrom',
+                  size: 'small',
+                  error: formik.touched.searchFrom && Boolean(formik.errors.searchFrom),
+                  helperText: formik.touched.searchFrom && formik.errors.searchFrom,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
               onChange={(value: any) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props: any) => (
-                <TextField
-                  {...props}
-                  id="searchTo"
-                  data-testid="searchTo-test"
-                  name="searchTo"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                  helperText={formik.touched.searchTo && formik.errors.searchTo}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'searchTo',
+                  name: 'searchTo',
+                  size: 'small',
+                  error: formik.touched.searchTo && Boolean(formik.errors.searchTo),
+                  helperText: formik.touched.searchTo && formik.errors.searchTo,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>

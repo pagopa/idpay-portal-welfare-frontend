@@ -22,12 +22,11 @@ import { useEffect, useState } from 'react';
 import { PartyAccountItem } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
-import { OrganizationListDTO } from '../../api/generated/initiative/OrganizationListDTO';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { getOrganizationsList } from '../../services/intitativeService';
-import { OrganizationDTO } from '../../api/generated/initiative/OrganizationDTO';
 import ROUTES from '../../routes';
 import { ENV } from '../../utils/env';
+import { OrganizationListDTO, OrganizationDTO } from '../../api/generated/initiative/apiClient';
 
 const ChooseOrganization = () => {
   const theme = useTheme();

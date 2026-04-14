@@ -8,15 +8,17 @@ import {
   Initiative2Initiative,
   Initiative,
 } from '../Initiative';
-import { TypeEnum } from '../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../api/generated/initiative/InitiativeAdditionalDTO';
-import { AccumulatedTypeEnum } from '../../api/generated/initiative/AccumulatedAmountDTO';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import {
+  ChannelDtoTypeEnum,
+  InitiativeAdditionalDtoServiceScopeEnum,
+  AccumulatedAmountDtoAccumulatedTypeEnum,
+  InitiativeGeneralDtoBeneficiaryTypeEnum,
+  InitiativeRewardRuleDtoRewardValueTypeEnum,
+  InitiativeDtoInitiativeRewardTypeEnum,
+} from '../../api/generated/initiative/apiClient';
 
 const mockedGeneralBody: GeneralInfo = {
-  beneficiaryType: BeneficiaryTypeEnum.PF,
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
   beneficiaryKnown: 'false',
   budget: '8515',
   beneficiaryBudget: '801',
@@ -35,14 +37,15 @@ const mockedGeneralBody: GeneralInfo = {
 const mockedAdditionalInfo: AdditionalInfo = {
   initiativeOnIO: true,
   serviceName: 'newStepOneTest',
-  serviceArea: ServiceScopeEnum.NATIONAL,
+  serviceArea: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
   serviceDescription: 'newStepOneTest',
   privacyPolicyUrl: 'http://test.it',
   termsAndConditions: 'http://test.it',
-  assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+  assistanceChannels: [{ type: ChannelDtoTypeEnum.Web, contact: 'http://test.it' }],
   logoFileName: 'logo file name',
   logoUploadDate: 'logo date',
   logoURL: 'logo url',
+  serviceId: undefined
 };
 
 const mockedAutomatedCriteria: AutomatedCriteriaItem = {
@@ -62,7 +65,7 @@ export const mockedInitiative: Initiative = {
   creationDate: new Date('2022-07-28T13:32:50.002'),
   updateDate: new Date('2022-08-09T08:35:36.516'),
   generalInfo: {
-    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
     budget: '8515',
     beneficiaryBudget: '801',
@@ -80,19 +83,20 @@ export const mockedInitiative: Initiative = {
   additionalInfo: {
     initiativeOnIO: true,
     serviceName: 'prova313',
-    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceArea: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
     serviceDescription: 'newStepOneTest',
     privacyPolicyUrl: 'http://test.it',
     termsAndConditions: 'http://test.it',
     assistanceChannels: [
-      { type: TypeEnum.web, contact: 'http://test.it' },
-      { type: TypeEnum.email, contact: 'http://test.it' },
-      { type: TypeEnum.mobile, contact: 'http://test.it' },
+      { type: ChannelDtoTypeEnum.Web, contact: 'http://test.it' },
+      { type: ChannelDtoTypeEnum.Email, contact: 'http://test.it' },
+      { type: ChannelDtoTypeEnum.Mobile, contact: 'http://test.it' },
       { type: '', contact: '' },
     ],
     logoFileName: 'logo file name',
     logoUploadDate: 'logo date',
     logoURL: 'logo url',
+    serviceId: undefined
   },
   beneficiaryRule: {
     apiKeyClientId: 'string',
@@ -231,11 +235,11 @@ export const mockedInitiative: Initiative = {
       },
     ],
   },
-  initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+  initiativeRewardType: InitiativeDtoInitiativeRewardTypeEnum.REFUND,
   rewardRule: {
     _type: 'rewardValue',
     rewardValue: 1,
-    rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+    rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
   },
   trxRule: {
     mccFilter: { allowedList: true, values: ['string', ''] },
@@ -251,7 +255,7 @@ export const mockedInitiative: Initiative = {
     ],
   },
   refundRule: {
-    reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
+    reimbursementThreshold: AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED,
     reimbursmentQuestionGroup: 'true',
     additionalInfo: 'aaaaaa',
     timeParameter: '',
@@ -262,7 +266,7 @@ export const mockedInitiative: Initiative = {
 test('Test initiativeGeneral2GeneralInfo', () => {
   const generalInfo = initiativeGeneral2GeneralInfo(mockedGeneralBody);
   expect(generalInfo).toStrictEqual({
-    beneficiaryType: BeneficiaryTypeEnum.PF,
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
     beneficiaryKnown: 'false',
     budget: '8515',
     beneficiaryBudget: '801',
@@ -278,11 +282,11 @@ test('Test InitiativeAdditional2AdditionalInfo', () => {
   expect(additionalInfo).toStrictEqual({
     initiativeOnIO: true,
     serviceName: 'newStepOneTest',
-    serviceArea: ServiceScopeEnum.NATIONAL,
+    serviceArea: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
     serviceDescription: 'newStepOneTest',
     privacyPolicyUrl: 'http://test.it',
     termsAndConditions: 'http://test.it',
-    assistanceChannels: [{ type: TypeEnum.web, contact: 'http://test.it' }],
+    assistanceChannels: [{ type: ChannelDtoTypeEnum.Web, contact: 'http://test.it' }],
     logoFileName: 'logo file name',
     logoUploadDate: 'logo date',
     logoURL: 'logo url',
@@ -311,7 +315,7 @@ test('Test initiative2Initiative', () => {
     creationDate: new Date('2022-07-28T13:32:50.002'),
     updateDate: new Date('2022-08-09T08:35:36.516'),
     generalInfo: {
-      beneficiaryType: BeneficiaryTypeEnum.PF,
+      beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
       beneficiaryKnown: 'false',
       budget: '8515',
       beneficiaryBudget: '801',
@@ -329,14 +333,15 @@ test('Test initiative2Initiative', () => {
     additionalInfo: {
       initiativeOnIO: true,
       serviceName: 'prova313',
-      serviceArea: ServiceScopeEnum.NATIONAL,
+      serviceId: undefined,
+      serviceArea: InitiativeAdditionalDtoServiceScopeEnum.NATIONAL,
       serviceDescription: 'newStepOneTest',
       privacyPolicyUrl: 'http://test.it',
       termsAndConditions: 'http://test.it',
       assistanceChannels: [
-        { type: TypeEnum.web, contact: 'http://test.it' },
-        { type: TypeEnum.email, contact: 'http://test.it' },
-        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: ChannelDtoTypeEnum.Web, contact: 'http://test.it' },
+        { type: ChannelDtoTypeEnum.Email, contact: 'http://test.it' },
+        { type: ChannelDtoTypeEnum.Mobile, contact: 'http://test.it' },
         { type: '', contact: '' },
       ],
       logoFileName: 'logo file name',
@@ -480,11 +485,11 @@ test('Test initiative2Initiative', () => {
         },
       ],
     },
-    initiativeRewardType: InitiativeRewardTypeEnum.REFUND,
+    initiativeRewardType: InitiativeDtoInitiativeRewardTypeEnum.REFUND,
     rewardRule: {
       _type: 'rewardValue',
       rewardValue: 1,
-      rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+      rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
     },
     trxRule: {
       mccFilter: { allowedList: true, values: ['string', ''] },
@@ -500,7 +505,7 @@ test('Test initiative2Initiative', () => {
       ],
     },
     refundRule: {
-      reimbursementThreshold: AccumulatedTypeEnum.THRESHOLD_REACHED,
+      reimbursementThreshold: AccumulatedAmountDtoAccumulatedTypeEnum.THRESHOLD_REACHED,
       reimbursmentQuestionGroup: 'true',
       additionalInfo: 'aaaaaa',
       timeParameter: '',

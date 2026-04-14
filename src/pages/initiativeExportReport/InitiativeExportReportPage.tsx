@@ -1,8 +1,9 @@
 import { Box } from "@mui/material";
-import { TitleBox, useLoading } from "@pagopa/selfcare-common-frontend";
+import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
+import { ReportDtoReportStatusEnum, ReportRequestReportTypeEnum } from "../../api/generated/merchants/apiClient";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import ROUTES from "../../routes";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
@@ -11,10 +12,9 @@ import { useAppSelector } from "../../redux/hooks";
 import { useInitiative } from "../../hooks/useInitiative";
 import ExportFiltersCard from "../../components/ExportFiltersCard/ExportFiltersCard";
 import { generateReport, getMerchantList } from "../../services/merchantsService";
-import { MerchantItem } from "../initiativeRefundsMerchants/initiativeRefundsMerchants";
+import { MerchantItem } from "../initiativeRefundsMerchants/model/types";
 import { useAlert } from "../../hooks/useAlert";
 import ReportTableCard from "../../components/ReportTable/ReportTableCard";
-import { ReportStatusEnum, ReportTypeEnum } from "../../api/generated/merchants/ReportDTO";
 import { LOADING_TASK_INITIATIVE_EXPORT_REPORT } from "../../utils/constants";
 
 const InitiativeExportReportPage = () => {
@@ -26,19 +26,19 @@ const InitiativeExportReportPage = () => {
     id: string;
   }
   const reportStatusAlertConfig = {
-    [ReportStatusEnum.GENERATED]: {
+    [ReportDtoReportStatusEnum.GENERATED]: {
       severity: 'success' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.generated')
     },
-    [ReportStatusEnum.FAILED]: {
+    [ReportDtoReportStatusEnum.FAILED]: {
       severity: 'error' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.failed')
     },
-    [ReportStatusEnum.INSERTED]: {
+    [ReportDtoReportStatusEnum.INSERTED]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     },
-    [ReportStatusEnum.IN_PROGRESS]: {
+    [ReportDtoReportStatusEnum.IN_PROGRESS]: {
       severity: 'info' as const,
       text: t('pages.initiativeExportReport.reportAlertMessage.processing')
     }
@@ -56,6 +56,7 @@ const InitiativeExportReportPage = () => {
 
   useEffect(() => {
     getMerchantsList();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getMerchantsList = () => {
@@ -73,10 +74,10 @@ const InitiativeExportReportPage = () => {
       (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
     );
     setLoading(true);
-    generateReport(id, data.startDate, data.endDate, ReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId ?? "",)
+    generateReport(id, data.startDate.toString(), data.endDate.toString(), ReportRequestReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId ?? "",)
       .then((res) => {
         if (res?.reportStatus) {
-          const alertConfig = reportStatusAlertConfig[res.reportStatus];
+          const alertConfig = reportStatusAlertConfig[res.reportStatus as ReportDtoReportStatusEnum];
           setAlert({ text: alertConfig.text, isOpen: true, severity: alertConfig.severity });
           setRefreshToken((x) => x + 1);
         }

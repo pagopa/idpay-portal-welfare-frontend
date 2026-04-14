@@ -1,43 +1,42 @@
-import { InitiativeRewardAndTrxRulesDTORewardRule } from '../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardGroupDTO } from '../../api/generated/initiative/RewardGroupDTO';
-import { RewardValueDTO } from '../../api/generated/initiative/RewardValueDTO';
+import * as t from 'io-ts';
+import type {
+  RewardGroupsDTO,
+  RewardValueDTO as RewardValueDTOType,
+} from '../../api/generated/initiative/apiClient';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum } from '../../api/generated/initiative/apiClient';
 import { decode } from '../io-utils';
 
-test('test decode successful', () => {
-  const value: InitiativeRewardAndTrxRulesDTORewardRule = {
-    _type: 'rewardGroups',
-    rewardGroups: [
-      {
-        from: 0,
-        to: 5,
-        rewardValue: 10,
-      },
-    ],
-  };
-  const result: RewardGroupDTO = decode(value, RewardGroupDTO);
-  expect(result).toBe(value);
-});
+type InitiativeRewardAndTrxRulesDTORewardRule = RewardGroupsDTO | RewardValueDTOType;
 
-test('test decode with error', () => {
-  const value: InitiativeRewardAndTrxRulesDTORewardRule = {
-    _type: 'rewardGroups',
-    rewardGroupsDummy: [
-      {
-        from: 0,
-        to: 5,
-        rewardValue: 10,
-      },
-    ],
-  };
-  try {
-    decode(value, RewardGroupDTO);
-    fail('Expected an error');
-  } catch (error) {
-    //  do nothing
-  }
-});
+const RewardGroupDTO = t.unknown;
+const RewardValueDTO = t.unknown;
 
-test('decode with empty object', () => {
-  // @ts-expect-error
-  expect(decode(undefined, RewardValueDTO)).toBeUndefined();;
+describe('decode', () => {
+  test('returns decoded values when validation succeeds', () => {
+    const value: InitiativeRewardAndTrxRulesDTORewardRule = {
+      _type: 'rewardGroups',
+      rewardValueType: InitiativeRewardRuleDtoRewardValueTypeEnum.PERCENTAGE,
+      rewardGroups: [
+        {
+          from: 0,
+          to: 5,
+          rewardValue: 10,
+        },
+      ],
+    };
+
+    const result = decode(value, RewardGroupDTO) as InitiativeRewardAndTrxRulesDTORewardRule;
+
+    expect(result).toBe(value);
+  });
+
+  test('throws when validation fails', () => {
+    expect(() => decode('not-a-number' as unknown as number, t.number)).toThrow();
+  });
+
+  test('returns falsy values as-is without decoding', () => {
+    expect(decode(undefined, RewardValueDTO)).toBeUndefined();
+    expect(decode(null, RewardValueDTO)).toBeNull();
+    expect(decode(false, t.boolean)).toBe(false);
+  });
 });

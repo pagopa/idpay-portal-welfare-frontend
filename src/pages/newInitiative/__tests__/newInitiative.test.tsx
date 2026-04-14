@@ -1,11 +1,7 @@
-import { Provider } from 'react-redux';
-import { createStore } from '../../../redux/store';
-import React from 'react';
 import NewInitiative from '../newInitiative';
-import { fireEvent, render } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
-jest.mock('react-i18next', () => Function());
+const mockUseInitiative = jest.fn();
 
 // eslint-disable-next-line @typescript-eslint/no-floating-promises
 jest.mock('react-i18next', () => ({
@@ -13,74 +9,72 @@ jest.mock('react-i18next', () => ({
   withTranslation: () => jest.fn(),
 }));
 
-function mockFunction() {
-  const original = jest.requireActual('react-router-dom');
-  return {
-    ...original,
-    useLocation: jest.fn().mockReturnValue({
-      pathname: '/localhost:3000/portale-enti',
-      search: '',
-      hash: '',
-      state: null,
-      key: '5nvxpbdafa',
-    }),
-  };
-}
-
-jest.mock('react-router-dom', () => mockFunction());
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => ({
-    pathname: 'localhost:3000/portale-enti',
-  }),
+jest.mock('@pagopa/mui-italia', () => ({
+  ButtonNaked: ({ children, onClick, ...props }: any) => (
+    <button type="button" onClick={onClick} data-testid={props['data-testid']}>
+      {children}
+    </button>
+  ),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
-  TitleBox: () => <div>Test</div>,
+jest.mock('@pagopa/selfcare-common-frontend/lib', () => ({
+  TitleBox: () => <div data-testid="title-box-mock" />,
 }));
 
-jest.mock('react-redux', () => ({
-  ...jest.requireActual('react-redux'),
-  useInitiative: jest.fn(),
-  length: '',
+jest.mock('../../../components/ExitModal/ExitModal', () => ({
+  __esModule: true,
+  default: ({ openExitModal, handleCloseExitModal }: any) => (
+    <div data-testid="exit-modal-state">
+      <span>{openExitModal ? 'open' : 'closed'}</span>
+      {openExitModal ? (
+        <button type="button" data-testid="exit-modal-close" onClick={handleCloseExitModal}>
+          close
+        </button>
+      ) : null}
+    </div>
+  ),
 }));
 
-describe('<NewInitiative />', (injectedStore?: ReturnType<typeof createStore>) => {
-  const store = injectedStore ? injectedStore : createStore();
+jest.mock('../../../components/Wizard/Wizard', () => ({
+  __esModule: true,
+  default: ({ handleOpenExitModal }: any) => (
+    <button type="button" data-testid="wizard-mock" onClick={handleOpenExitModal}>
+      wizard
+    </button>
+  ),
+}));
+
+jest.mock('../../../hooks/useInitiative', () => ({
+  useInitiative: (...args: Array<any>) => mockUseInitiative(...args),
+}));
+
+describe('<NewInitiative />', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
 
   it('renders without crashing', () => {
     // eslint-disable-next-line functional/immutable-data
     window.scrollTo = jest.fn();
   });
 
-  test('Should render the New Initiative component', async () => {
-    const handleCloseExitModal = jest.fn();
-    const handleOpenExitModal = jest.fn();
-    const { getByTestId } = render(
-      <Provider store={store}>
-        <NewInitiative />
-      </Provider>
-    );
+  it('toggles the exit modal when the breadcrumb button and modal controls are used', async () => {
+    render(<NewInitiative />);
 
-    const setOpenExitModal = jest.fn();
-    const useStateMock: any = (openExitModal: boolean) => [openExitModal, setOpenExitModal];
-    jest.spyOn(React, 'useState').mockImplementation(useStateMock);
+    expect(screen.getByTestId('title-box-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('wizard-mock')).toBeInTheDocument();
+    expect(screen.getByTestId('exit-modal-state')).toHaveTextContent('closed');
 
-    expect(setOpenExitModal).toBeDefined();
-    expect(handleCloseExitModal).toBeDefined();
-    expect(handleOpenExitModal).toBeDefined();
-  });
+    fireEvent.click(screen.getByTestId('exit-button-test'));
 
-  it('modal should be open', async () => {
-    await act(async () => {
-      const { getByTestId } = render(
-        <Provider store={store}>
-          <NewInitiative />
-        </Provider>
-      );
-      const button = getByTestId('exit-button-test');
-      fireEvent.click(button);
+    await waitFor(() => {
+      expect(screen.getByTestId('exit-modal-state')).toHaveTextContent('open');
+    });
+
+    fireEvent.click(screen.getByTestId('exit-modal-close'));
+
+    await waitFor(() => {
+      expect(screen.getByTestId('exit-modal-state')).toHaveTextContent('closed');
     });
   });
 });

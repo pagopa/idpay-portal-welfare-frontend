@@ -1,5 +1,5 @@
-import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/ConfigBeneficiaryRuleArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { ConfigBeneficiaryRuleArrayDTO } from '../../api/generated/initiative/apiClient';
 import { AdmissionCriteriaModel } from '../../model/AdmissionCriteria';
 
 export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
@@ -28,7 +28,9 @@ export const mockedAdmissionCriteria: ConfigBeneficiaryRuleArrayDTO = [
 export const verifyFetchAdmissionCriteriasMockExecution = (
   admissionCriteria: Array<AdmissionCriteriaModel>
 ) => {
-  expect(admissionCriteria).toStrictEqual(mockedAdmissionCriteria);
+  if (JSON.stringify(admissionCriteria) !== JSON.stringify(mockedAdmissionCriteria)) {
+    throw new Error('admissionCriteria mock verification failed');
+  }
 };
 
 export const fetchAdmissionCriteria = (): Promise<ConfigBeneficiaryRuleArrayDTO> =>

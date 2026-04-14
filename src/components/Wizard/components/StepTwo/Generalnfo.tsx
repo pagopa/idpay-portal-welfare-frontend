@@ -16,13 +16,12 @@ import {
   InputAdornment,
   Tabs,
   Tab,
-  TextFieldProps,
 } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import EuroSymbolIcon from '@mui/icons-material/EuroSymbol';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
 import { SyntheticEvent, useEffect, useState } from 'react';
@@ -31,11 +30,11 @@ import { Dispatch, SetStateAction } from 'react';
 import * as Yup from 'yup';
 import _ from 'lodash';
 import { shallowEqual } from 'react-redux';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { parse } from 'date-fns';
 import itLocale from 'date-fns/locale/it';
-import Toast from '@pagopa/selfcare-common-frontend/components/Toast';
+import Toast from '@pagopa/selfcare-common-frontend/lib/components/Toast';
 import { useAppDispatch, useAppSelector } from '../../../../redux/hooks';
 import {
   generalInfoSelector,
@@ -50,11 +49,8 @@ import {
 } from '../../../../services/intitativeService';
 import { peopleReached } from '../../../../helpers';
 import { partiesSelectors } from '../../../../redux/slices/partiesSlice';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 import TitleBoxWithHelpLink from '../../../TitleBoxWithHelpLink/TitleBoxWithHelpLink';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
 import { getMinDate, parseValuesFormToInitiativeGeneralDTO, getYesterday } from './helpers';
 import IntroductionTabPanel from './IntroductionTabPanel';
 import IntroductionMarkdown from './IntroductionMarkdown';
@@ -94,7 +90,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       dispatch(setGeneralInfo(formik.values));
       if (initiativeIdSel) {
         setLoading(true);
-        updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed)
+        updateInitiativeGeneralInfoDraft(initiativeIdSel, formValuesParsed as any)
           .then((_res) => {
             setOpenDraftSavedToast(true);
           })
@@ -115,6 +111,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       }
     }
     setAction('');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -122,7 +119,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     familyUnitComposition: Yup.string()
       .default(undefined)
       .when('beneficiaryType', {
-        is: BeneficiaryTypeEnum.NF,
+        is: InitiativeGeneralDtoBeneficiaryTypeEnum.NF,
         then: Yup.string().required(t('validation.required')),
         otherwise: Yup.string().default(undefined),
       }),
@@ -131,7 +128,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       .default(undefined)
       .required(t('validation.required'))
       .when('beneficiaryType', {
-        is: BeneficiaryTypeEnum.PF,
+        is: InitiativeGeneralDtoBeneficiaryTypeEnum.PF,
         then: Yup.string().required(t('validation.required')),
         otherwise: Yup.string().default(undefined),
       }),
@@ -317,7 +314,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
       dispatch(setGeneralInfo(values));
       if (initiativeIdSel) {
         setLoading(true);
-        updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed)
+        updateInitiativeGeneralInfo(initiativeIdSel, formValuesParsed as any)
           .then((_res) => {
             setCurrentStep(currentStep + 1);
           })
@@ -353,6 +350,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
     } else {
       setDisabledNext(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formik]);
 
   const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
@@ -431,12 +429,12 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             defaultValue={formik.values.beneficiaryType || ''}
             onChange={async (e) => {
               await formik.setFieldValue('beneficiaryType', e.target.value, false);
-              if (e.target.value === BeneficiaryTypeEnum.NF) {
+              if (e.target.value === InitiativeGeneralDtoBeneficiaryTypeEnum.NF) {
                 await formik.setFieldValue('rankingEnabled', 'false', false);
                 await formik.setFieldValue('beneficiaryKnown', 'false', false);
                 await formik.setFieldValue(
                   'familyUnitComposition',
-                  FamilyUnitCompositionEnum.INPS,
+                  InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS,
                   false
                 );
               } else {
@@ -446,14 +444,14 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             data-testid="beneficiary-type-test"
           >
             <FormControlLabel
-              value={BeneficiaryTypeEnum.PF}
+              value={InitiativeGeneralDtoBeneficiaryTypeEnum.PF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.person')}
               data-testid="beneficiary-radio-test"
             />
             <FormControlLabel
               sx={{ ml: 2 }}
-              value={BeneficiaryTypeEnum.NF}
+              value={InitiativeGeneralDtoBeneficiaryTypeEnum.NF}
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.family')}
             />
@@ -466,7 +464,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormHelperText>
         </FormControl>
 
-        {formik.values.beneficiaryType === BeneficiaryTypeEnum.NF && (
+        {formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
           <FormControl sx={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', py: 2 }}>
             <Typography
               sx={{ gridColumn: 'span 12', pb: 1, fontSize: '16px', fontWeight: '600' }}
@@ -485,7 +483,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               onChange={(e) => formik.setFieldValue('familyUnitComposition', e.target.value, false)}
             >
               <FormControlLabel
-                value={FamilyUnitCompositionEnum.INPS}
+                value={InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS}
                 control={<Radio />}
                 label={
                   <div>
@@ -502,7 +500,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               <FormControl>
                 <FormControlLabel
                   sx={{ ml: 2 }}
-                  value={FamilyUnitCompositionEnum.ANPR}
+                  value={InitiativeGeneralDtoFamilyUnitCompositionEnum.ANPR}
                   control={<Radio />}
                   label={
                     <div>
@@ -552,7 +550,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               value="true"
               control={<Radio />}
               label={t('components.wizard.stepTwo.form.taxCodeList')}
-              disabled={formik.values.beneficiaryType === BeneficiaryTypeEnum.NF}
+              disabled={formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF}
             />
             <FormControlLabel
               sx={{ ml: 2 }}
@@ -661,17 +659,17 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               type: 'number',
             }}
             label={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
             placeholder={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
             aria-labelledby={
-              formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+              formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                 ? t('components.wizard.stepTwo.form.beneficiaryBudgetPerson')
                 : t('components.wizard.stepTwo.form.beneficiaryBudgetFamily')
             }
@@ -713,7 +711,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
                 component="span"
                 sx={{ display: 'flex', alignSelf: 'center', pr: 2 }}
               >
-                {formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                {formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                   ? t('components.wizard.stepTwo.form.reachedUsers')
                   : t('components.wizard.stepTwo.form.reachedFamilies')}
               </Typography>
@@ -728,7 +726,7 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
               </Typography>
               <Tooltip
                 title={
-                  formik.values.beneficiaryType === BeneficiaryTypeEnum.PF
+                  formik.values.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                     ? t('components.wizard.stepTwo.form.reachedUsersTooltip')
                     : t('components.wizard.stepTwo.form.reachedFamiliesTooltip')
                 }
@@ -758,47 +756,42 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
           </FormLabel>
 
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.rankingStartDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.rankingStartDate}
-              onChange={(value) => formik.setFieldValue('rankingStartDate', value)}
+              onChange={(value: any) => formik.setFieldValue('rankingStartDate', value)}
               minDate={new Date()}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="rankingStartDate"
-                  data-testid="ranking-start-date-test"
-                  name="rankingStartDate"
-                  type="date"
-                  sx={{ gridArea: 'rankingStartDate' }}
-                  error={formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate)}
-                  helperText={formik.touched.rankingStartDate && formik.errors.rankingStartDate}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'rankingStartDate',
+                  name: 'rankingStartDate',
+                  sx: { gridArea: 'rankingStartDate' },
+                  error:
+                    formik.touched.rankingStartDate && Boolean(formik.errors.rankingStartDate),
+                  helperText: formik.touched.rankingStartDate && formik.errors.rankingStartDate,
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.rankingEndDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.rankingEndDate}
-              onChange={(value) => formik.setFieldValue('rankingEndDate', value)}
+              onChange={(value: any) => formik.setFieldValue('rankingEndDate', value)}
               minDate={getMinDate(formik.values.rankingStartDate, 1)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="rankingEndDate"
-                  data-testid="ranking-end-date-test"
-                  name="rankingEndDate"
-                  type="date"
-                  sx={{ gridArea: 'rankingEndDate' }}
-                  error={formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate)}
-                  helperText={formik.touched.rankingEndDate && formik.errors.rankingEndDate}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'rankingEndDate',
+                  name: 'rankingEndDate',
+                  sx: { gridArea: 'rankingEndDate' },
+                  error: formik.touched.rankingEndDate && Boolean(formik.errors.rankingEndDate),
+                  helperText: formik.touched.rankingEndDate && formik.errors.rankingEndDate,
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
@@ -817,51 +810,45 @@ const Generalnfo = ({ action, setAction, currentStep, setCurrentStep, setDisable
             {t('components.wizard.stepTwo.form.timeRangeTitle')}
           </FormLabel>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.startDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.startDate}
-              onChange={(value) => formik.setFieldValue('startDate', value)}
+              onChange={(value: any) => formik.setFieldValue('startDate', value)}
               minDate={getMinDate(formik.values.rankingEndDate, dateOffset)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="startDate"
-                  data-testid="start-date-test"
-                  name="startDate"
-                  type="date"
-                  sx={{ gridArea: 'startDate' }}
-                  error={formik.touched.startDate && Boolean(formik.errors.startDate)}
-                  helperText={formik.touched.startDate && formik.errors.startDate}
-                  required
-                  InputLabelProps={{ required: false }}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'startDate',
+                  name: 'startDate',
+                  sx: { gridArea: 'startDate' },
+                  error: formik.touched.startDate && Boolean(formik.errors.startDate),
+                  helperText: formik.touched.startDate && formik.errors.startDate,
+                  required: true,
+                  InputLabelProps: { required: false },
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
-            <DesktopDatePicker
+            <DatePicker
               label={t('components.wizard.stepTwo.form.endDate')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.endDate}
-              onChange={(value) => formik.setFieldValue('endDate', value)}
+              onChange={(value: any) => formik.setFieldValue('endDate', value)}
               minDate={getMinDate(formik.values.startDate, 1)}
-              renderInput={(params: TextFieldProps) => (
-                <TextField
-                  {...params}
-                  id="endDate"
-                  data-testid="end-date-test"
-                  name="endDate"
-                  type="date"
-                  sx={{ gridArea: 'endDate' }}
-                  error={formik.touched.endDate && Boolean(formik.errors.endDate)}
-                  helperText={formik.touched.endDate && formik.errors.endDate}
-                  required
-                  InputLabelProps={{ required: false }}
-                  size="small"
-                  inputProps={{ ...params.inputProps, placeholder: 'dd/mm/aaaa' }}
-                />
-              )}
+              slotProps={{
+                textField: {
+                  id: 'endDate',
+                  name: 'endDate',
+                  sx: { gridArea: 'endDate' },
+                  error: formik.touched.endDate && Boolean(formik.errors.endDate),
+                  helperText: formik.touched.endDate && formik.errors.endDate,
+                  required: true,
+                  InputLabelProps: { required: false },
+                  size: 'small',
+                  inputProps: { placeholder: 'dd/mm/aaaa' },
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>

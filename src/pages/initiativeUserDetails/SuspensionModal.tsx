@@ -1,17 +1,16 @@
 import { Backdrop, Box, Button, Fade, Modal, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StatusEnum as OnboardingStatusEnum } from '../../api/generated/initiative/OnboardingStatusDTO';
-import { readmitUser, suspendUser } from '../../services/intitativeService';
-import { InitiativeRewardTypeEnum } from '../../api/generated/initiative/InitiativeDTO';
+import { InitiativeRewardTypeEnum, readmitUser, suspendUser } from '../../services/intitativeService';
+import { OnboardingStatusDtoStatusEnum } from '../../api/generated/initiative/apiClient';
 
 type Props = {
   suspensionModalOpen: boolean;
   setSuspensionModalOpen: Dispatch<SetStateAction<boolean>>;
-  statusOnb: OnboardingStatusEnum | undefined;
-  setStatusOnb: Dispatch<SetStateAction<OnboardingStatusEnum | undefined>>;
+  statusOnb: OnboardingStatusDtoStatusEnum | undefined;
+  setStatusOnb: Dispatch<SetStateAction<OnboardingStatusDtoStatusEnum | undefined>>;
   buttonType: string;
   id: string;
   cf: string;
@@ -33,11 +32,11 @@ const SuspensionModal = ({
   const addError = useErrorDispatcher();
 
   const handleSuspendUser = () => {
-    if (statusOnb !== OnboardingStatusEnum.SUSPENDED && rewardType) {
+    if (statusOnb !== OnboardingStatusDtoStatusEnum.SUSPENDED && rewardType) {
       setLoading(true);
       suspendUser(id, cf, rewardType)
         .then((_res) => {
-          setStatusOnb(OnboardingStatusEnum.SUSPENDED);
+          setStatusOnb(OnboardingStatusDtoStatusEnum.SUSPENDED);
         })
         .catch((error) =>
           addError({
@@ -58,11 +57,11 @@ const SuspensionModal = ({
         });
     }
 
-    if (statusOnb === OnboardingStatusEnum.SUSPENDED && rewardType) {
+    if (statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED && rewardType) {
       setLoading(true);
       readmitUser(id, cf, rewardType)
         .then((_res) => {
-          setStatusOnb(OnboardingStatusEnum.ONBOARDING_OK);
+          setStatusOnb(OnboardingStatusDtoStatusEnum.ONBOARDING_OK);
         })
         .catch((error) =>
           addError({

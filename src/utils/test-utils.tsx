@@ -30,13 +30,15 @@ export const renderWithContext = (
 ) => {
   const store = injectedStore ? injectedStore : createStore();
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
-  render(
+  const Wrapper: FC<{ children: React.ReactNode }> = ({ children }) => (
     <ThemeProvider theme={theme}>
       <Router history={history}>
-        <Provider store={store}>{element}</Provider>
+        <Provider store={store}>{children}</Provider>
       </Router>
     </ThemeProvider>
   );
-  return { store, history };
+
+  const renderResult = render(element as ReactElement, { wrapper: Wrapper });
+  return { store, history, ...renderResult };
 };
 

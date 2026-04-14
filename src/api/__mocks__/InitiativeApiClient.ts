@@ -1,15 +1,9 @@
-import { InitiativeDTO } from '../generated/initiative/InitiativeDTO';
-import { InitiativeSummaryArrayDTO } from '../generated/initiative/InitiativeSummaryArrayDTO';
-// import { InitiativeInfoDTO } from '../generated/initiative/InitiativeInfoDTO';
-import { mockedAdmissionCriteria } from '../../services/__mocks__/admissionCriteriaService';
-import { mockedFile } from '../../services/__mocks__/groupsService';
 import {
   mockedBeneficaryStatus,
   mockedExportsPagedResponse,
   mockedFamilyUnitComposition,
   mockedGetDispFileError,
   mockedGetIniOnboardingRankingStatusPaged,
-  // mockedGetRankingFileDownload,
   mockedGetRewardFileDownload,
   mockedIbanInfo,
   mockedInitiativeDetail,
@@ -28,34 +22,7 @@ import {
 } from '../../services/__mocks__/intitativeService';
 import { mockedMccCodes } from '../../services/__mocks__/mccCodesService';
 import { mockedTransactionRules } from '../../services/__mocks__/transactionRuleService';
-import { ConfigBeneficiaryRuleArrayDTO } from '../generated/initiative/ConfigBeneficiaryRuleArrayDTO';
-import { ConfigMccArrayDTO } from '../generated/initiative/ConfigMccArrayDTO';
-
-import { CsvDTO } from '../generated/initiative/CsvDTO';
-import { InitiativeAdditionalDTO } from '../generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeBeneficiaryRuleDTO } from '../generated/initiative/InitiativeBeneficiaryRuleDTO';
-import { InitiativeGeneralDTO } from '../generated/initiative/InitiativeGeneralDTO';
-import { InitiativeRefundRuleDTO } from '../generated/initiative/InitiativeRefundRuleDTO';
-import { InitiativeRewardAndTrxRulesDTO } from '../generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { InitiativeStatisticsDTO } from '../generated/initiative/InitiativeStatisticsDTO';
-import { LogoDTO } from '../generated/initiative/LogoDTO';
-import { OnboardingDTO } from '../generated/initiative/OnboardingDTO';
-import { PageOnboardingRankingsDTO } from '../generated/initiative/PageOnboardingRankingsDTO';
-import { PageRewardExportsDTO } from '../generated/initiative/PageRewardExportsDTO';
-import { PageRewardImportsDTO } from '../generated/initiative/PageRewardImportsDTO';
-import { SasToken } from '../generated/initiative/SasToken';
-import { WalletDTO } from '../generated/initiative/WalletDTO';
-import { IbanDTO } from '../generated/initiative/IbanDTO';
-import { InstrumentListDTO } from '../generated/initiative/InstrumentListDTO';
-import { TimelineDTO } from '../generated/initiative/TimelineDTO';
-import { OperationDTO } from '../generated/initiative/OperationDTO';
-import { ExportListDTO } from '../generated/initiative/ExportListDTO';
-import { ExportSummaryDTO } from '../generated/initiative/ExportSummaryDTO';
-import { RefundDetailDTO } from '../generated/initiative/RefundDetailDTO';
-import { OnboardingStatusDTO } from '../generated/initiative/OnboardingStatusDTO';
-import { FamilyUnitCompositionDTO } from '../generated/initiative/FamilyUnitCompositionDTO';
-import { ConfigTrxRuleArrayDTO } from '../generated/initiative/ConfigTrxRuleArrayDTO';
-import { OrganizationListDTO } from '../generated/initiative/OrganizationListDTO';
+import { InitiativeSummaryArrayDTO, InitiativeDTO, InitiativeAdditionalDTO, InitiativeBeneficiaryRuleDTO, InitiativeRefundRuleDTO, ConfigBeneficiaryRuleArrayDTO, InitiativeRewardAndTrxRulesDTO, InitiativeGeneralDTO, InitiativeStatisticsDTO, ConfigTrxRuleArrayDTO, PageRewardExportsDTO, OnboardingDTO, ExportSummaryDTO, ExportListDTO, RefundDetailDTO, SasToken, PageRewardImportsDTO, LogoDTO, CsvDTO, PageOnboardingRankingsDTO, ConfigMccArrayDTO, WalletDTO, IbanDTO, TimelineDTO, OperationDTO, InstrumentListDTO, OrganizationListDTO, OnboardingStatusDTO, FamilyUnitCompositionDTO } from '../generated/initiative/apiClient';
 
 export const InitiativeApiMocked = {
   getInitativeSummary: async (): Promise<InitiativeSummaryArrayDTO> =>
@@ -91,7 +58,7 @@ export const InitiativeApiMocked = {
   ): Promise<void> => new Promise((resolve) => resolve()),
 
   getEligibilityCriteriaForSidebar: async (): Promise<ConfigBeneficiaryRuleArrayDTO> =>
-    new Promise((resolve) => resolve(mockedAdmissionCriteria)),
+    new Promise((resolve) => resolve({} as any)),
 
   initiativeTrxAndRewardRulesPut: async (
     _id: string,
@@ -178,7 +145,13 @@ export const InitiativeApiMocked = {
   ): Promise<PageRewardImportsDTO> => new Promise((resolve) => resolve(mockedNotificationReward)),
 
   uploadAndUpdateLogo: async (_id: string, _file: File): Promise<LogoDTO> =>
-    new Promise((resolve) => resolve(mockedFile)),
+    new Promise((resolve) =>
+      resolve({
+        logoFileName: 'filename',
+        logoURL: 'https://example.com/logo.png',
+        logoUploadDate: new Date().toISOString(),
+      })
+    ),
 
   getDispFileErrors: async (_id: string, _name: string): Promise<CsvDTO> =>
     new Promise((resolve) => resolve(mockedGetDispFileError)),

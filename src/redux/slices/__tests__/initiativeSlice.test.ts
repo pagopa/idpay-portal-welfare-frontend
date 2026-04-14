@@ -24,7 +24,10 @@ import {
   initiativeStatusSelector,
   initiativeThresholdSelector,
   initiativeTrxCountSelector,
+  initiativeBeneficiaryTypeSelector,
   resetInitiative,
+  saveApiKeyClientAssertion,
+  saveApiKeyClientId,
   saveAutomatedCriteria,
   saveDaysOfWeekIntervals,
   saveManualCriteria,
@@ -41,16 +44,17 @@ import {
   setInitiativeCreationDate,
   setInitiativeId,
   setInitiativeName,
+  setInitiativeLogo,
   setInitiativeUpdateDate,
   setManualCriteria,
   setOrganizationId,
   setStatus,
   stepTwoBeneficiaryKnownSelector,
+  stepTwoBeneficiaryTypeSelector,
+  stepTwoRankingEnabledSelector,
 } from '../initiativeSlice';
 
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { MccFilterDTO } from '../../../api/generated/initiative/MccFilterDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, MccFilterDTO, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../api/generated/initiative/apiClient';
 import { GeneralInfo } from '../../../model/Initiative';
 import { createStore } from '../../store';
 
@@ -178,7 +182,9 @@ describe('use Initiative slice', () => {
   };
   const store = createStore();
   test('actions initiative slice', () => {
-    expect(initiativeReducer(mockedInitialState, resetInitiative())).toEqual(mockedInitialState);
+    expect(initiativeReducer(mockedInitialState, resetInitiative(undefined as any))).toEqual(
+      mockedInitialState
+    );
     expect(initiativeReducer(mockedInitialState, setInitiative(mockedInitialState))).toEqual(
       mockedInitialState
     );
@@ -214,19 +220,75 @@ describe('use Initiative slice', () => {
       ...mockedInitialState,
       additionalInfo: mockedAdditionalInfo,
     });
+    expect(
+      initiativeReducer(
+        mockedInitialState,
+        setInitiativeLogo({
+          logoFileName: 'logo.png',
+          logoURL: 'https://example.test/logo.png',
+          logoUploadDate: '2024-01-01',
+        })
+      )
+    ).toEqual({
+      ...mockedInitialState,
+      additionalInfo: {
+        ...mockedInitialState.additionalInfo,
+        logoFileName: 'logo.png',
+        logoURL: 'https://example.test/logo.png',
+        logoUploadDate: '2024-01-01',
+      },
+    });
+    expect(initiativeReducer(mockedInitialState, saveApiKeyClientId('client-id'))).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        apiKeyClientId: 'client-id',
+      },
+    });
+    expect(initiativeReducer(mockedInitialState, saveApiKeyClientAssertion('client-assertion'))).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        apiKeyClientAssertion: 'client-assertion',
+      },
+    });
 
     expect(
       initiativeReducer(mockedInitialState, setAutomatedCriteria(mockedAutomatedCriteriaItem))
-    ).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        automatedCriteria: [mockedAutomatedCriteriaItem],
+      },
+    });
     expect(
       initiativeReducer(mockedInitialState, saveAutomatedCriteria([mockedAutomatedCriteriaItem]))
-    ).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        automatedCriteria: [mockedAutomatedCriteriaItem],
+      },
+    });
     expect(
       initiativeReducer(mockedInitialState, setManualCriteria(mockedManualCriteriaItem))
-    ).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        selfDeclarationCriteria: [mockedManualCriteriaItem],
+      },
+    });
     expect(
       initiativeReducer(mockedInitialState, saveManualCriteria([mockedManualCriteriaItem]))
-    ).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        selfDeclarationCriteria: [mockedManualCriteriaItem],
+      },
+    });
     expect(
       initiativeReducer(
         mockedInitialState,
@@ -236,35 +298,289 @@ describe('use Initiative slice', () => {
           rewardValueType: RewardValueTypeEnum.PERCENTAGE,
         })
       )
-    ).toBeDefined();
-    expect(initiativeReducer(mockedInitialState, saveMccFilter(mockedMccFilterDTO))).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      rewardRule: {
+        _type: 'string',
+        rewardValue: 2,
+        rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+      },
+    });
+    expect(
+      initiativeReducer(
+        mockedInitialState,
+        saveRewardRule({
+          _type: 'string',
+          rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+        } as any)
+      )
+    ).toEqual({
+      ...mockedInitialState,
+      rewardRule: {
+        _type: 'string',
+        rewardValue: undefined,
+        rewardValueType: RewardValueTypeEnum.PERCENTAGE,
+      },
+    });
+    expect(initiativeReducer(mockedInitialState, saveMccFilter(mockedMccFilterDTO))).toEqual({
+      ...mockedInitialState,
+      trxRule: {
+        ...mockedInitialState.trxRule,
+        mccFilter: {
+          allowedList: mockedMccFilterDTO.allowedList,
+          values: mockedMccFilterDTO.values,
+        },
+      },
+    });
     expect(
       initiativeReducer(mockedInitialState, saveRewardLimits([mockedRewardLimit]))
-    ).toBeDefined();
-    expect(initiativeReducer(mockedInitialState, saveThreshold(mockedThreshHold))).toBeDefined();
-    expect(initiativeReducer(mockedInitialState, saveTrxCount(mockedTrxCount))).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      trxRule: {
+        ...mockedInitialState.trxRule,
+        rewardLimits: [mockedRewardLimit],
+      },
+    });
+    expect(initiativeReducer(mockedInitialState, saveThreshold(mockedThreshHold))).toEqual({
+      ...mockedInitialState,
+      trxRule: {
+        ...mockedInitialState.trxRule,
+        threshold: {
+          from: mockedThreshHold.from,
+          fromIncluded: mockedThreshHold.fromIncluded,
+          to: mockedThreshHold.to,
+          toIncluded: mockedThreshHold.toIncluded,
+        },
+      },
+    });
+    expect(initiativeReducer(mockedInitialState, saveTrxCount(mockedTrxCount))).toEqual({
+      ...mockedInitialState,
+      trxRule: {
+        ...mockedInitialState.trxRule,
+        trxCount: {
+          from: mockedTrxCount.from,
+          fromIncluded: mockedTrxCount.fromIncluded,
+          to: mockedTrxCount.to,
+          toIncluded: mockedTrxCount.toIncluded,
+        },
+      },
+    });
     expect(
       initiativeReducer(mockedInitialState, saveDaysOfWeekIntervals([mockedDaysOfWeekInterval]))
-    ).toBeDefined();
+    ).toEqual({
+      ...mockedInitialState,
+      trxRule: {
+        ...mockedInitialState.trxRule,
+        daysOfWeekIntervals: [mockedDaysOfWeekInterval],
+      },
+    });
     expect(initiativeReducer(mockedInitialState, saveRefundRule(mockedRefundRule))).toEqual({
       ...mockedInitialState,
       refundRule: mockedRefundRule,
     });
   });
+
+  test('setGeneralInfo normalizes optional fields to empty strings when omitted', () => {
+    const result = initiativeReducer(
+      mockedInitialState,
+      setGeneralInfo({
+        beneficiaryType: BeneficiaryTypeEnum.PF,
+        beneficiaryKnown: undefined,
+        rankingEnabled: undefined,
+        budget: '1000',
+        beneficiaryBudget: '500',
+        startDate: undefined,
+        endDate: undefined,
+        rankingStartDate: undefined,
+        rankingEndDate: undefined,
+        introductionTextIT: undefined,
+        introductionTextEN: undefined,
+        introductionTextFR: undefined,
+        introductionTextDE: undefined,
+        introductionTextSL: undefined,
+      })
+    );
+
+    expect(result.generalInfo).toEqual({
+      beneficiaryType: BeneficiaryTypeEnum.PF,
+      familyUnitComposition: undefined,
+      beneficiaryKnown: undefined,
+      rankingEnabled: undefined,
+      budget: '1000',
+      beneficiaryBudget: '500',
+      startDate: '',
+      endDate: '',
+      rankingStartDate: '',
+      rankingEndDate: '',
+      introductionTextIT: '',
+      introductionTextEN: '',
+      introductionTextFR: '',
+      introductionTextDE: '',
+      introductionTextSL: '',
+    });
+  });
+
+  test('setInitiative keeps only the fields it owns', () => {
+    const result = initiativeReducer(
+      {
+        ...mockedInitialState,
+        initiativeId: 'old-id',
+        organizationId: 'old-org',
+        status: 'old-status',
+        initiativeName: 'existing-name',
+      },
+      setInitiative({
+        ...mockedInitialState,
+        initiativeId: 'new-id',
+        organizationId: 'new-org',
+        status: 'new-status',
+        generalInfo: {
+          ...mockedGeneralInfo,
+          budget: '777',
+        },
+      })
+    );
+
+    expect(result).toEqual({
+      ...mockedInitialState,
+      initiativeId: 'new-id',
+      organizationId: 'new-org',
+      status: 'new-status',
+      initiativeName: 'existing-name',
+      generalInfo: {
+        ...mockedGeneralInfo,
+        budget: '777',
+      },
+    });
+  });
+
+  test('setAutomatedCriteria replaces an existing item with the same field', () => {
+    const initialState = {
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        automatedCriteria: [
+          { field: 'age', operator: 'gte', value: '18' },
+          { field: 'isee', operator: 'lte', value: '15000' },
+        ],
+      },
+    };
+
+    const result = initiativeReducer(
+      initialState,
+      setAutomatedCriteria({
+        field: 'isee',
+        operator: 'lte',
+        value: '20000',
+      })
+    );
+
+    expect(result.beneficiaryRule.automatedCriteria).toEqual([
+      {
+        field: 'isee',
+        operator: 'lte',
+        value: '20000',
+      },
+    ]);
+  });
+
+  test('setAutomatedCriteria appends when no matching field exists', () => {
+    const initialState = {
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        automatedCriteria: [{ field: 'age', operator: 'gte', value: '18' }],
+      },
+    };
+
+    const result = initiativeReducer(
+      initialState,
+      setAutomatedCriteria({
+        field: 'isee',
+        operator: 'lte',
+        value: '15000',
+      })
+    );
+
+    expect(result.beneficiaryRule.automatedCriteria).toEqual([
+      { field: 'age', operator: 'gte', value: '18' },
+      { field: 'isee', operator: 'lte', value: '15000' },
+    ]);
+  });
+
+  test('setManualCriteria replaces an existing item with the same code', () => {
+    const initialState = {
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        selfDeclarationCriteria: [
+          { code: 'age', description: 'Age' },
+          { code: 'isee', description: 'ISEE old' },
+        ],
+      },
+    };
+
+    const result = initiativeReducer(
+      initialState,
+      setManualCriteria({
+        code: 'isee',
+        description: 'ISEE new',
+      })
+    );
+
+    expect(result.beneficiaryRule.selfDeclarationCriteria).toEqual([
+      {
+        code: 'isee',
+        description: 'ISEE new',
+      },
+    ]);
+  });
+
+  test('setManualCriteria appends when no matching code exists', () => {
+    const initialState = {
+      ...mockedInitialState,
+      beneficiaryRule: {
+        ...mockedInitialState.beneficiaryRule,
+        selfDeclarationCriteria: [{ code: 'age', description: 'Age' }],
+      },
+    };
+
+    const result = initiativeReducer(
+      initialState,
+      setManualCriteria({
+        code: 'isee',
+        description: 'ISEE',
+      })
+    );
+
+    expect(result.beneficiaryRule.selfDeclarationCriteria).toEqual([
+      { code: 'age', description: 'Age' },
+      { code: 'isee', description: 'ISEE' },
+    ]);
+  });
   test('selectors initiative slice', () => {
     expect(initiativeSelector(store.getState())).toEqual(mockedInitialState);
     expect(generalInfoSelector(store.getState())).not.toBeNull();
     expect(additionalInfoSelector(store.getState())).not.toBeNull();
-    expect(stepTwoBeneficiaryKnownSelector(store.getState())).not.toBeNull();
-    expect(beneficiaryRuleSelector(store.getState())).not.toBeNull();
+    expect(stepTwoBeneficiaryKnownSelector(store.getState())).toBe('false');
+    expect(stepTwoRankingEnabledSelector(store.getState())).toBe('false');
+    expect(stepTwoBeneficiaryTypeSelector(store.getState())).toBe(BeneficiaryTypeEnum.PF);
+    expect(beneficiaryRuleSelector(store.getState())).toEqual(mockedInitialState.beneficiaryRule);
     expect(initiativeIdSelector(store.getState())).not.toBeNull();
-    expect(initiativeRewardRuleSelector(store.getState())).not.toBeNull();
-    expect(initiativeMccFilterSelector(store.getState())).not.toBeNull();
-    expect(initiativeRewardLimitsSelector(store.getState())).not.toBeNull();
-    expect(initiativeThresholdSelector(store.getState())).not.toBeNull();
-    expect(initiativeTrxCountSelector(store.getState())).not.toBeNull();
-    expect(initiativeDaysOfWeekIntervalsSelector(store.getState())).not.toBeNull();
-    expect(initiativeRefundRulesSelector(store.getState())).not.toBeNull();
-    expect(initiativeStatusSelector(store.getState())).not.toBeNull();
+    expect(initiativeRewardRuleSelector(store.getState())).toEqual(mockedInitialState.rewardRule);
+    expect(initiativeMccFilterSelector(store.getState())).toEqual(
+      mockedInitialState.trxRule.mccFilter
+    );
+    expect(initiativeRewardLimitsSelector(store.getState())).toEqual(
+      mockedInitialState.trxRule.rewardLimits
+    );
+    expect(initiativeThresholdSelector(store.getState())).toEqual(mockedInitialState.trxRule.threshold);
+    expect(initiativeTrxCountSelector(store.getState())).toEqual(mockedInitialState.trxRule.trxCount);
+    expect(initiativeDaysOfWeekIntervalsSelector(store.getState())).toEqual(
+      mockedInitialState.trxRule.daysOfWeekIntervals
+    );
+    expect(initiativeRefundRulesSelector(store.getState())).toEqual(mockedInitialState.refundRule);
+    expect(initiativeStatusSelector(store.getState())).toBeUndefined();
+    expect(initiativeBeneficiaryTypeSelector(store.getState())).toBe(BeneficiaryTypeEnum.PF);
   });
 });

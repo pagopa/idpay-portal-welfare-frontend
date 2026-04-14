@@ -1,5 +1,5 @@
-import { ConfigTrxRuleArrayDTO } from '../../api/generated/initiative/ConfigTrxRuleArrayDTO';
 import { InitiativeApiMocked } from '../../api/__mocks__/InitiativeApiClient';
+import { ConfigTrxRuleArrayDTO } from '../../api/generated/initiative/apiClient';
 
 export const mockedTransactionRules = [
   {
@@ -63,7 +63,9 @@ export const mockedTransactionRules = [
 export const verifyFetchShopRulesMockExecution = (
 transactionRules: Array<ConfigTrxRuleArrayDTO>
 ) => {
-expect(transactionRules).toStrictEqual(mockedTransactionRules);
+  if (JSON.stringify(transactionRules) !== JSON.stringify(mockedTransactionRules)) {
+    throw new Error('transactionRules mock verification failed');
+  }
 };
 
 export const fetchTransactionRules = (): Promise<ConfigTrxRuleArrayDTO> =>

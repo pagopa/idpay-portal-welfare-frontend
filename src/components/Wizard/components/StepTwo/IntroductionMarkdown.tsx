@@ -151,7 +151,7 @@ const IntroductionMarkdown = ({
             {moreThanOneTextAreaCompiled() ? (
               fiteredForEmptyString().map((item, index) => (
                 <IntrudoctionTabPanel key={index} value={value} index={index} {...a11yProps(index)}>
-                  <ReactMarkdown>{`${item?.formikValue}` ?? ''}</ReactMarkdown>
+                  <ReactMarkdown>{item?.formikValue ?? ''}</ReactMarkdown>
                 </IntrudoctionTabPanel>
               ))
             ) : (

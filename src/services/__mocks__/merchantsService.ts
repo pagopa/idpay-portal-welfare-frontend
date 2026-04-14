@@ -1,12 +1,5 @@
 import { merchantsApiMocked } from '../../api/__mocks__/merchantsApiClient';
-import { MerchantUpdateDTO } from '../../api/generated/merchants/MerchantUpdateDTO';
-import { MerchantListDTO } from '../../api/generated/merchants/MerchantListDTO';
-import { MerchantStatusEnum } from '../../api/generated/merchants/MerchantDTO';
-import { StatusEnum } from '../../api/generated/merchants/MerchantDetailDTO';
-import { StatusEnum as TransactionStatusEnum } from '../../api/generated/merchants/MerchantTransactionDTO';
-import { StatusEnum as TransactionProcessedStatusEnum } from '../../api/generated/merchants/MerchantTransactionProcessedDTO';
-import { MerchantTransactionsListDTO } from '../../api/generated/merchants/MerchantTransactionsListDTO';
-import { MerchantTransactionsProcessedListDTO } from '../../api/generated/merchants/MerchantTransactionsProcessedListDTO';
+import { MerchantUpdateDTO, MerchantListDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantDtoMerchantStatusEnum, MerchantTransactionDtoStatusEnum, MerchantTransactionProcessedDtoStatusEnum, MerchantDetailDtoStatusEnum } from '../../api/generated/merchants/apiClient';
 
 export const mockedInitiativeId = '62e29002aac2e94cfa3763dd';
 export const mockedMerchantId = '1234';
@@ -16,7 +9,7 @@ export const mockedPage = 0;
 export const mockedFile = new File([''], 'filename', { type: 'text/html' });
 
 export const mockedMerchantUdatedStatus: MerchantUpdateDTO = {
-  elabTimeStamp: new Date(),
+  elabTimeStamp: new Date().toDateString(),
   status: 'VALIDATED',
 };
 
@@ -25,79 +18,79 @@ export const mockedMerchantsOnboardingList: MerchantListDTO = {
     {
       merchantId: 'aaaa',
       businessName: 'aaaa',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'bbbb',
       businessName: 'bbbb',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'cccc',
       businessName: 'cccc',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'dddd',
       businessName: 'dddd',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'eeee',
       businessName: 'eeee',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'ffff',
       businessName: 'ffff',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'gggg',
       businessName: 'gggg',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'hhhh',
       businessName: 'hhhh',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'iiii',
       businessName: 'iiii',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'llll',
       businessName: 'llll',
-      merchantStatus: MerchantStatusEnum.UPLOADED,
+      merchantStatus: MerchantDtoMerchantStatusEnum.UPLOADED,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
     {
       merchantId: 'llll',
       businessName: 'llll',
       merchantStatus: undefined,
       fiscalCode: '12345678901',
-      updateStatusDate: new Date(),
+      updateStatusDate: new Date().toDateString(),
     },
   ],
   pageNo: 0,
@@ -106,8 +99,8 @@ export const mockedMerchantsOnboardingList: MerchantListDTO = {
   totalPages: 1,
 };
 
-const startDate = new Date();
-const endDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000);
+const startDate = new Date().toDateString();
+const endDate = new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toDateString();
 
 export const mockedMerchantDetail = {
   businessName: 'Aaronne Travel',
@@ -120,7 +113,7 @@ export const mockedMerchantDetail = {
   legalOfficeMunicipality: 'Roma',
   legalOfficeProvince: 'Lazio',
   legalOfficeZipCode: '123456',
-  status: StatusEnum.UPLOADED,
+  status: MerchantDetailDtoStatusEnum.UPLOADED,
   updateDate: endDate,
   vatNumber: '123456787',
 };
@@ -138,8 +131,8 @@ export const mockedMerchantTransactionList = {
       fiscalCode: 'string',
       effectiveAmountCents: 1000,
       updateDate: startDate,
-      status: TransactionStatusEnum.CREATED,
-      trxDate: new Date(),
+      status: MerchantTransactionDtoStatusEnum.CREATED,
+      trxDate: new Date().toDateString(),
       trxExpirationSeconds: 300,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -150,8 +143,8 @@ export const mockedMerchantTransactionList = {
       fiscalCode: 'string',
       effectiveAmountCents: 1303,
       updateDate: startDate,
-      status: TransactionStatusEnum.AUTHORIZED,
-      trxDate: new Date(),
+      status: MerchantTransactionDtoStatusEnum.AUTHORIZED,
+      trxDate: new Date().toDateString(),
       trxExpirationSeconds: 300,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -162,8 +155,8 @@ export const mockedMerchantTransactionList = {
       fiscalCode: 'string',
       effectiveAmountCents: 2372,
       updateDate: startDate,
-      status: TransactionStatusEnum.AUTHORIZATION_REQUESTED,
-      trxDate: new Date(),
+      status: MerchantTransactionDtoStatusEnum.AUTHORIZATION_REQUESTED,
+      trxDate: new Date().toDateString(),
       trxExpirationSeconds: 300,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -174,8 +167,8 @@ export const mockedMerchantTransactionList = {
       fiscalCode: 'string',
       effectiveAmountCents: 2322,
       updateDate: startDate,
-      status: TransactionStatusEnum.IDENTIFIED,
-      trxDate: new Date(),
+      status: MerchantTransactionDtoStatusEnum.IDENTIFIED,
+      trxDate: new Date().toDateString(),
       trxExpirationSeconds: 300,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -186,8 +179,8 @@ export const mockedMerchantTransactionList = {
       fiscalCode: 'string',
       effectiveAmountCents: 5000,
       updateDate: startDate,
-      status: TransactionStatusEnum.REJECTED,
-      trxDate: new Date(),
+      status: MerchantTransactionDtoStatusEnum.REJECTED,
+      trxDate: new Date().toDateString(),
       trxExpirationSeconds: 300,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -207,8 +200,8 @@ export const mockedMerchantTransactionProcessedList = {
       fiscalCode: 'string',
       effectiveAmountCents: Number(5000),
       updateDate: startDate,
-      status: TransactionProcessedStatusEnum.REWARDED,
-      trxDate: new Date(),
+      status: MerchantTransactionProcessedDtoStatusEnum.REWARDED,
+      trxDate: new Date().toDateString(),
       trxExpirationMinutes: 4320,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',
@@ -219,8 +212,8 @@ export const mockedMerchantTransactionProcessedList = {
       fiscalCode: 'string',
       effectiveAmountCents: Number(5000),
       updateDate: startDate,
-      status: TransactionProcessedStatusEnum.CANCELLED,
-      trxDate: new Date(),
+      status: MerchantTransactionProcessedDtoStatusEnum.CANCELLED,
+      trxDate: new Date().toDateString(),
       trxExpirationMinutes: 4320,
       qrcodePngUrl: 'example.com/image',
       qrcodeTxtUrl: 'example.com/image',

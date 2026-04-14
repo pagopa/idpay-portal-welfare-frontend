@@ -1,22 +1,18 @@
 import { Alert, Box, Card, CardContent, Snackbar, Typography } from '@mui/material';
-import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend';
+import { useErrorDispatcher } from '@pagopa/selfcare-common-frontend/lib';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { InstrumentDTO } from '../../../api/generated/initiative/InstrumentDTO';
-import { StatusEnum as OnboardingStatusEnum } from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { StatusEnum } from '../../../api/generated/initiative/WalletDTO';
 import { formatIban, formatedCurrency, mappedChannel } from '../../../helpers';
+import { InstrumentDTO, InstrumentDtoStatusEnum, OnboardingStatusDtoStatusEnum, WalletDtoStatusEnum } from '../../../api/generated/initiative/apiClient';
 import { useAppSelector } from '../../../redux/hooks';
 import { initiativeRewardTypeSelector } from '../../../redux/slices/initiativeSlice';
-import { getIban, getInstrumentList, getWalletDetail } from '../../../services/intitativeService';
-import { StatusEnum as InstrumentStatusEnum } from '../../../api/generated/initiative/InstrumentDTO';
+import { getIban, getInstrumentList, getWalletDetail, InitiativeRewardTypeEnum } from '../../../services/intitativeService';
 import InstrumentsList from './InstrumentsList';
 
 type Props = {
   id: string;
   cf: string;
-  statusOnb: OnboardingStatusEnum | undefined;
+  statusOnb: OnboardingStatusDtoStatusEnum | undefined;
   holderBank: string | undefined;
   setHolderBank: Dispatch<SetStateAction<string | undefined>>;
 };
@@ -27,7 +23,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
   const [accrued, setAccrued] = useState<number | undefined>(undefined);
   const [refunded, setRefunded] = useState<number | undefined>(undefined);
   const [iban, setIban] = useState<string | undefined>(undefined);
-  const [walletStatus, setWalletStatus] = useState<StatusEnum | undefined>(undefined);
+  const [walletStatus, setWalletStatus] = useState<WalletDtoStatusEnum | undefined>(undefined);
   const [lastCounterUpdate, setLastCounterUpdate] = useState<Date | undefined>(undefined);
   const [checkIbanResponseDate, setCheckIbanResponseDate] = useState<Date | undefined>(undefined);
   const [channel, setChannel] = useState<string | undefined>(undefined);
@@ -40,20 +36,20 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getWalletDetail(id, cf)
         .then((res) => {
-          setAmount(res.amountCents);
-          setAccrued(res.accruedCents);
-          setRefunded(res.refundedCents);
-          if (typeof res.lastCounterUpdate === 'object') {
-            setLastCounterUpdate(res.lastCounterUpdate);
+          setAmount((res as any).amountCents);
+          setAccrued((res as any).accruedCents);
+          setRefunded((res as any).refundedCents);
+          if (typeof (res as any).lastCounterUpdate === 'object') {
+            setLastCounterUpdate((res as any).lastCounterUpdate);
           }
-          setIban(res.iban);
-          setWalletStatus(res.status);
+          setIban((res as any).iban);
+          setWalletStatus((res as any).status);
         })
         .catch((error) =>
           addError({
@@ -70,20 +66,21 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
         );
     }
     HandleOpenSnackBarOnBoardingStatus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, statusOnb]);
 
   useEffect(() => {
     if (
       typeof id === 'string' &&
       typeof cf === 'string' &&
-      (statusOnb === OnboardingStatusEnum.ONBOARDING_OK ||
-        statusOnb === OnboardingStatusEnum.UNSUBSCRIBED ||
-        statusOnb === OnboardingStatusEnum.SUSPENDED)
+      (statusOnb === OnboardingStatusDtoStatusEnum.ONBOARDING_OK ||
+        statusOnb === OnboardingStatusDtoStatusEnum.UNSUBSCRIBED ||
+        statusOnb === OnboardingStatusDtoStatusEnum.SUSPENDED)
     ) {
       getInstrumentList(id, cf)
         .then((res) => {
           const walletInst = res.instrumentList.filter(
-            (r: any) => r.status === InstrumentStatusEnum.ACTIVE
+            (r: any) => r.status === InstrumentDtoStatusEnum.ACTIVE
           );
           setPaymentMethodList([...walletInst]);
         })
@@ -101,6 +98,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
           })
         );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, cf, statusOnb, initiativeRewardType]);
 
   useEffect(() => {
@@ -134,6 +132,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
           });
         });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iban, initiativeRewardType]);
 
   const HandleOpenSnackBarOnBoardingStatus = () => {
@@ -144,9 +143,9 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
     setOpenSnackBarOnBoardingStatus(false);
   };
 
-  const renderUserStatusAlert = (status: OnboardingStatusEnum | undefined) => {
+  const renderUserStatusAlert = (status: OnboardingStatusDtoStatusEnum | undefined) => {
     switch (status) {
-      case OnboardingStatusEnum.ONBOARDING_KO:
+      case OnboardingStatusDtoStatusEnum.ONBOARDING_KO:
         return (
           <>
             <Snackbar
@@ -177,7 +176,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
             </Snackbar>
           </>
         );
-      case OnboardingStatusEnum.ELIGIBLE_KO:
+      case OnboardingStatusDtoStatusEnum.ELIGIBLE_KO:
         return (
           <>
             <Snackbar
@@ -208,7 +207,7 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
             </Snackbar>
           </>
         );
-      case OnboardingStatusEnum.SUSPENDED:
+      case OnboardingStatusDtoStatusEnum.SUSPENDED:
         return (
           <>
             <Alert
@@ -365,14 +364,14 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                   color={
-                    walletStatus === StatusEnum.NOT_REFUNDABLE ||
-                    walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
+                    walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE ||
+                    walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                       ? 'error'
                       : undefined
                   }
                 >
-                  {walletStatus === StatusEnum.NOT_REFUNDABLE ||
-                  walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
+                  {walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE ||
+                  walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                     ? t('pages.initiativeUserDetails.missingIban')
                     : formatIban(iban)}
                 </Typography>
@@ -387,8 +386,8 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {walletStatus === StatusEnum.NOT_REFUNDABLE ||
-                  walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT ||
+                  {walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE ||
+                  walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT ||
                   holderBank === undefined
                     ? '-'
                     : holderBank}
@@ -404,8 +403,8 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {walletStatus === StatusEnum.NOT_REFUNDABLE ||
-                  walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
+                  {walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE ||
+                  walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                     ? '-'
                     : checkIbanResponseDate
                         ?.toLocaleString('fr-BE')
@@ -422,8 +421,8 @@ const UserDetailsSummary = ({ id, cf, statusOnb, holderBank, setHolderBank }: Pr
                   sx={{ fontWeight: 700, display: 'grid', gridColumn: 'span 5' }}
                   variant="body2"
                 >
-                  {walletStatus === StatusEnum.NOT_REFUNDABLE ||
-                  walletStatus === StatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
+                  {walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE ||
+                  walletStatus === WalletDtoStatusEnum.NOT_REFUNDABLE_ONLY_INSTRUMENT
                     ? '-'
                     : mappedChannel(channel)}
                 </Typography>

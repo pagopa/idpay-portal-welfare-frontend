@@ -8,8 +8,7 @@ import WatchLaterIcon from '@mui/icons-material/WatchLater';
 import PinDropIcon from '@mui/icons-material/PinDrop';
 import { Dispatch, SetStateAction } from 'react';
 import { grey } from '@mui/material/colors';
-import i18n from '@pagopa/selfcare-common-frontend/locale/locale-utils';
-import { ConfigTrxRuleArrayDTO } from '../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
+import { t } from '../../../../locale';
 import { ShopRulesModel } from '../../../../model/ShopRules';
 import {
   DaysOfWeekInterval,
@@ -18,22 +17,17 @@ import {
   Threshold,
   TrxCount,
 } from '../../../../model/Initiative';
-import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
-import {
-  InitiativeRewardAndTrxRulesDTO,
-  InitiativeRewardTypeEnum,
-} from '../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { FrequencyEnum } from '../../../../api/generated/initiative/RewardLimitsDTO';
+import { MccFilterDTO, ConfigTrxRuleArrayDTO, InitiativeRewardAndTrxRulesDTO, RewardLimitsDtoFrequencyEnum, InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum } from '../../../../api/generated/initiative/apiClient';
 
 export const checkThresholdChecked = (thresold: Threshold | undefined): boolean => {
-  if (typeof thresold !== undefined) {
+  if (thresold !== undefined) {
     return typeof thresold?.from === 'number' || typeof thresold?.to === 'number';
   }
   return false;
 };
 
 export const checkMccFilterChecked = (mccFilter: MccFilterDTO | undefined): boolean => {
-  if (typeof mccFilter !== undefined && typeof mccFilter?.values !== undefined) {
+  if (mccFilter !== undefined && mccFilter?.values !== undefined) {
     const values = mccFilter?.values || '';
     return values.length > 0;
   }
@@ -41,14 +35,14 @@ export const checkMccFilterChecked = (mccFilter: MccFilterDTO | undefined): bool
 };
 
 export const checkTrxCountChecked = (trxCount: TrxCount | undefined): boolean => {
-  if (typeof trxCount !== undefined) {
+  if (trxCount !== undefined) {
     return typeof trxCount?.from === 'number' || typeof trxCount?.to === 'number';
   }
   return false;
 };
 
 export const checkRewardLimitsChecked = (rewardLimits: Array<RewardLimit> | undefined): boolean => {
-  if (typeof rewardLimits !== undefined) {
+  if (rewardLimits !== undefined) {
     // eslint-disable-next-line functional/no-let
     let checked = false;
     rewardLimits?.forEach((r) => {
@@ -62,7 +56,7 @@ export const checkRewardLimitsChecked = (rewardLimits: Array<RewardLimit> | unde
 export const checkDaysOfWeekIntervalsChecked = (
   daysOfWeekIntervals: Array<DaysOfWeekInterval> | undefined
 ): boolean => {
-  if (typeof daysOfWeekIntervals !== undefined) {
+  if (daysOfWeekIntervals !== undefined) {
     // eslint-disable-next-line functional/no-let
     let checked = false;
     daysOfWeekIntervals?.forEach((d) => {
@@ -94,55 +88,55 @@ const makeDefaultObject = () => ({
 export const mapResponse = (response: ConfigTrxRuleArrayDTO): Array<ShopRulesModel> =>
   response.map((r) => {
     // eslint-disable-next-line no-prototype-builtins
-    if (r.hasOwnProperty('code') && typeof r.code !== undefined) {
+    if (r.hasOwnProperty('code') && r.code !== undefined) {
       switch (r.code) {
         case 'THRESHOLD':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.threshold.title'),
-            i18n.t('components.wizard.stepFour.modal.threshold.description'),
+            t('components.wizard.stepFour.modal.threshold.title'),
+            t('components.wizard.stepFour.modal.threshold.description'),
             true
           );
         case 'MCC':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.mcc.title'),
-            i18n.t('components.wizard.stepFour.modal.mcc.description'),
+            t('components.wizard.stepFour.modal.mcc.title'),
+            t('components.wizard.stepFour.modal.mcc.description'),
             true
           );
         case 'ATECO':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.ateco.title'),
-            i18n.t('components.wizard.stepFour.modal.ateco.desctiption'),
+            t('components.wizard.stepFour.modal.ateco.title'),
+            t('components.wizard.stepFour.modal.ateco.desctiption'),
             false
           );
         case 'TRXCOUNT':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.trxCount.title'),
-            i18n.t('components.wizard.stepFour.modal.trxCount.description'),
+            t('components.wizard.stepFour.modal.trxCount.title'),
+            t('components.wizard.stepFour.modal.trxCount.description'),
             true
           );
         case 'REWARDLIMIT':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.rewardLimit.title'),
-            i18n.t('components.wizard.stepFour.modal.rewardLimit.description'),
+            t('components.wizard.stepFour.modal.rewardLimit.title'),
+            t('components.wizard.stepFour.modal.rewardLimit.description'),
             true
           );
         case 'DAYHOURSWEEK':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.title'),
-            i18n.t('components.wizard.stepFour.modal.daysHoursWeek.description'),
+            t('components.wizard.stepFour.modal.daysHoursWeek.title'),
+            t('components.wizard.stepFour.modal.daysHoursWeek.description'),
             true
           );
         case 'GIS':
           return makeObject(
             r,
-            i18n.t('components.wizard.stepFour.modal.gis.title'),
-            i18n.t('components.wizard.stepFour.modal.gis.description'),
+            t('components.wizard.stepFour.modal.gis.title'),
+            t('components.wizard.stepFour.modal.gis.description'),
             false
           );
         default:
@@ -210,7 +204,7 @@ export const setErrorText = (touched: boolean | undefined, errorText: string | u
   touched && errorText;
 
 export const mapDataToSend = (
-  rewardType: InitiativeRewardTypeEnum,
+  rewardType: InitiativeRewardAndTrxRulesDtoInitiativeRewardTypeEnum,
   rewardRuleData: RewardRule,
   mccFilterData: MccFilterDTO | undefined,
   rewardLimitsData: Array<RewardLimit> | undefined,
@@ -222,7 +216,7 @@ export const mapDataToSend = (
   // eslint-disable-next-line functional/no-let, prefer-const
   let body: InitiativeRewardAndTrxRulesDTO = {
     initiativeRewardType: rewardType,
-    rewardRule: { ...rewardRuleData },
+    rewardRule: { ...rewardRuleData } as any,
     trxRule: {},
   };
   const trxRule: any = {
@@ -238,7 +232,7 @@ export const mapDataToSend = (
   }
   if (checkRewardLimitsChecked(rewardLimitsData) && Array.isArray(rewardLimitsData)) {
     const rewardLimit = rewardLimitsData.map((r) => ({
-      frequency: r.frequency as FrequencyEnum,
+      frequency: r.frequency as RewardLimitsDtoFrequencyEnum,
       rewardLimit: r.rewardLimit as number,
     }));
     // eslint-disable-next-line functional/immutable-data

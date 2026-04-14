@@ -1,6 +1,5 @@
 import { mockedPermission, mockedPortalConsent } from '../../services/__mocks__/rolePermissionService';
-import { PortalConsentDTO } from '../generated/role-permission/PortalConsentDTO';
-import { UserPermissionDTO } from '../generated/role-permission/UserPermissionDTO';
+import { PortalConsentDTO, UserPermissionDTO } from '../generated/role-permission/apiClient';
 
 export const RolePermissionApiMocked = {
   userPermission: async (): Promise<UserPermissionDTO> =>

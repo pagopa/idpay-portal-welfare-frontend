@@ -1,30 +1,25 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
-import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { AccumulatedTypeEnum } from '../../../api/generated/initiative/AccumulatedAmountDTO';
-import { TypeEnum } from '../../../api/generated/initiative/ChannelDTO';
-import { ServiceScopeEnum } from '../../../api/generated/initiative/InitiativeAdditionalDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
-import { BeneficiaryTypeEnum } from '../../../api/generated/initiative/InitiativeGeneralDTO';
-import { RewardValueTypeEnum } from '../../../api/generated/initiative/InitiativeRewardRuleDTO';
-import { OnboardingDTO } from '../../../api/generated/initiative/OnboardingDTO';
-import { BeneficiaryStateEnum } from '../../../api/generated/initiative/StatusOnboardingDTOS';
+import { AccumulatedAmountDtoAccumulatedTypeEnum as AccumulatedTypeEnum, ChannelDtoTypeEnum as TypeEnum, InitiativeAdditionalDtoServiceScopeEnum as ServiceScopeEnum, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum, InitiativeGeneralDtoBeneficiaryTypeEnum as BeneficiaryTypeEnum, InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum } from '../../../api/generated/initiative/apiClient';
+import { OnboardingDTO } from '../../../api/generated/initiative/apiClient';
+import { StatusOnboardingDtosBeneficiaryStateEnum as BeneficiaryStateEnum } from '../../../api/generated/initiative/apiClient';
 import { Initiative } from '../../../model/Initiative';
 import { setInitiative } from '../../../redux/slices/initiativeSlice';
-import { store } from '../../../redux/store';
+import { createStore, store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
+import * as initiativeService from '../../../services/intitativeService';
 import { renderWithContext, renderWithProviders } from '../../../utils/test-utils';
 import InitiativeUsers from '../initiativeUsers';
-import { InitiativeApi } from '../../../api/InitiativeApiClient';
-import { mockedOnBoardingStatusResponse } from '../../../services/__mocks__/intitativeService';
 
 jest.mock('../../../services/intitativeService');
+jest.mock('../../../hooks/useInitiative', () => ({
+  useInitiative: jest.fn(),
+}));
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
+jest.mock('@pagopa/selfcare-common-frontend/lib/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
@@ -49,7 +44,10 @@ afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  jest.restoreAllMocks();
+});
 
 describe('<InitiativeUsers />', () => {
   window.scrollTo = jest.fn();
@@ -58,7 +56,7 @@ describe('<InitiativeUsers />', () => {
       {
         beneficiary: 'string',
         beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
-        updateStatusDate: new Date(),
+        updateStatusDate: '2026-03-01T00:00:00.000Z',
       },
     ],
     pageNo: 0,
@@ -99,9 +97,9 @@ describe('<InitiativeUsers />', () => {
       privacyPolicyUrl: 'http://test.it',
       termsAndConditions: 'http://test.it',
       assistanceChannels: [
-        { type: TypeEnum.web, contact: 'http://test.it' },
-        { type: TypeEnum.email, contact: 'http://test.it' },
-        { type: TypeEnum.mobile, contact: 'http://test.it' },
+        { type: TypeEnum.Web, contact: 'http://test.it' },
+        { type: TypeEnum.Email, contact: 'http://test.it' },
+        { type: TypeEnum.Mobile, contact: 'http://test.it' },
         { type: '', contact: '' },
       ],
       logoFileName: 'logo file name',
@@ -258,7 +256,6 @@ describe('<InitiativeUsers />', () => {
   test('render with different Onboarding user Status', async () => {
     const onbUserStatusArr = [
       BeneficiaryStateEnum.ACCEPTED_TC,
-      BeneficiaryStateEnum.ELIGIBLE,
       BeneficiaryStateEnum.ELIGIBLE_KO,
       BeneficiaryStateEnum.INACTIVE,
       BeneficiaryStateEnum.INVITED,
@@ -268,44 +265,52 @@ describe('<InitiativeUsers />', () => {
       BeneficiaryStateEnum.SUSPENDED,
       BeneficiaryStateEnum.UNSUBSCRIBED,
     ];
-    onbUserStatusArr.forEach((item) => {
-      (InitiativeApiMocked.getOnboardingStatus = async (
-        _id: string,
-        _page: number,
-        _notificationDateFrom: string | undefined,
-        _notificationDateTo: string | undefined,
-        _status: string | undefined
-      ): Promise<OnboardingDTO> =>
-        new Promise((resolve) =>
-          resolve({
-            content: [
-              {
-                beneficiary: 'string',
-                beneficiaryState: item,
-                updateStatusDate: new Date(),
-              },
-            ],
-            pageNo: 0,
-            pageSize: 0,
-            totalElements: 0,
-            totalPages: 0,
-          })
-        )),
-        renderWithContext(<InitiativeUsers />);
-    });
+    const expectedStatusLabelByState: Record<string, string> = {
+      [BeneficiaryStateEnum.ACCEPTED_TC]: 'pages.initiativeUsers.status.onEvaluation',
+      [BeneficiaryStateEnum.ELIGIBLE_KO]: 'pages.initiativeUsers.status.eligible',
+      [BeneficiaryStateEnum.INACTIVE]: 'pages.initiativeUsers.status.inactive',
+      [BeneficiaryStateEnum.INVITED]: 'pages.initiativeUsers.status.onEvaluation',
+      [BeneficiaryStateEnum.ONBOARDING_KO]: 'pages.initiativeUsers.status.onboardingKo',
+      [BeneficiaryStateEnum.ONBOARDING_OK]: 'pages.initiativeUsers.status.assignee',
+      [BeneficiaryStateEnum.ON_EVALUATION]: 'pages.initiativeUsers.status.onEvaluation',
+      [BeneficiaryStateEnum.SUSPENDED]: 'pages.initiativeUsers.status.suspended',
+      [BeneficiaryStateEnum.UNSUBSCRIBED]: 'pages.initiativeUsers.status.inactive',
+    };
+    const onboardingStatusSpy = jest.spyOn(initiativeService, 'getOnboardingStatus');
+
+    for (const item of onbUserStatusArr) {
+      const injectedStore = createStore();
+      injectedStore.dispatch(setInitiative(mockedInitiative));
+      onboardingStatusSpy.mockResolvedValue({
+        content: [
+          {
+            beneficiary: 'string',
+            beneficiaryState: item,
+            updateStatusDate: new Date().toString(),
+          },
+        ],
+        pageNo: 0,
+        pageSize: 0,
+        totalElements: 0,
+        totalPages: 0,
+      } as OnboardingDTO);
+
+      renderWithContext(<InitiativeUsers />, injectedStore);
+
+      expect(await screen.findByText('STRING')).toBeInTheDocument();
+      expect(await screen.findByText(expectedStatusLabelByState[item])).toBeInTheDocument();
+      cleanup();
+    }
   });
 
-  test('Render InitiativeUser with status ONBOARDING_OK and rankingEnabled true', () => {
-    store.dispatch(setInitiative(mockedInitiative));
-    InitiativeApiMocked.getOnboardingStatus = async (
-      _id: string,
-      _page: number,
-      _notificationDateFrom: string | undefined,
-      _notificationDateTo: string | undefined,
-      _status: string | undefined
-    ): Promise<OnboardingDTO> => new Promise((resolve) => resolve(mockedResponde));
+  test('Render InitiativeUser with status ONBOARDING_OK and rankingEnabled true', async () => {
+    const injectedStore = createStore();
+    injectedStore.dispatch(setInitiative(mockedInitiative));
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockResolvedValue(mockedResponde);
 
-    renderWithContext(<InitiativeUsers />);
+    renderWithContext(<InitiativeUsers />, injectedStore);
+    expect(await screen.findByText('STRING')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeUsers.status.assignee')).toBeInTheDocument();
   });
 
   test('render component without id in header', () => {
@@ -322,8 +327,174 @@ describe('<InitiativeUsers />', () => {
     renderWithContext(<InitiativeUsers />);
   });
 
+  test('renders empty state when onboarding response omits content', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    store.dispatch(setInitiative(mockedInitiative));
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockResolvedValue({
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 0,
+      totalPages: 0,
+    } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('pages.initiativeUsers.noData')).toBeInTheDocument();
+  });
+
+  test('renders onboardingOk label when ranking is disabled and keeps malformed dates empty', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    const mockedInitiativeWithoutRanking = {
+      ...mockedInitiative,
+      generalInfo: {
+        ...mockedInitiative.generalInfo,
+        rankingEnabled: 'false',
+      },
+    };
+
+    store.dispatch(setInitiative(mockedInitiativeWithoutRanking));
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockResolvedValue({
+      content: [
+        {
+          beneficiary: 'string',
+          beneficiaryState: BeneficiaryStateEnum.ONBOARDING_OK,
+          updateStatusDate: 'invalid-date' as any,
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 1,
+      totalPages: 1,
+    } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('STRING')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeUsers.status.onboardingOk')).toBeInTheDocument();
+  });
+
   test('test catch case of onboarding api call', () => {
-    InitiativeApiMocked.getOnboardingStatus = async (): Promise<any> => Promise.reject('reason');
-    renderWithContext(<InitiativeUsers />);
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockRejectedValue('reason');
+    renderWithProviders(<InitiativeUsers />);
+  });
+
+  test('render NF table with familyId and demanded status', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/utenti-iniziativa/23232333`,
+      },
+    });
+
+    const nfInitiative = {
+      ...mockedInitiative,
+      generalInfo: {
+        ...mockedInitiative.generalInfo,
+        beneficiaryType: BeneficiaryTypeEnum.NF,
+      },
+    };
+    store.dispatch(setInitiative(nfInitiative));
+
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockResolvedValue({
+      content: [
+        {
+          beneficiary: 'aaaaaa00a00a000a',
+          beneficiaryState: BeneficiaryStateEnum.DEMANDED,
+          familyId: 'FAM-01',
+          updateStatusDate: new Date().toString(),
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 1,
+      totalPages: 1,
+    } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('FAM-01')).toBeInTheDocument();
+    expect(await screen.findByText('AAAAAA00A00A000A')).toBeInTheDocument();
+  });
+
+  test('apply filters with date range', async () => {
+    store.dispatch(setInitiative(mockedInitiative));
+    renderWithProviders(<InitiativeUsers />);
+
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.from/), {
+      target: { value: '10/01/2025' },
+    });
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.to/), {
+      target: { value: '20/01/2025' },
+    });
+    fireEvent.click(screen.getByTestId('apply-filters-test'));
+  });
+
+  test('renders all beneficiary status branches in the table', async () => {
+    Object.defineProperty(window, 'location', { value: mockedLocation });
+    store.dispatch(setInitiative(mockedInitiative));
+
+    jest.spyOn(initiativeService, 'getOnboardingStatus').mockResolvedValue({
+      content: [
+        {
+          beneficiary: 'invited',
+          beneficiaryState: BeneficiaryStateEnum.INVITED,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'accepted',
+          beneficiaryState: BeneficiaryStateEnum.ACCEPTED_TC,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'evaluation',
+          beneficiaryState: BeneficiaryStateEnum.ON_EVALUATION,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'onboarding-ko',
+          beneficiaryState: BeneficiaryStateEnum.ONBOARDING_KO,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'eligible-ko',
+          beneficiaryState: BeneficiaryStateEnum.ELIGIBLE_KO,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'inactive',
+          beneficiaryState: BeneficiaryStateEnum.INACTIVE,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'unsubscribed',
+          beneficiaryState: BeneficiaryStateEnum.UNSUBSCRIBED,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'suspended',
+          beneficiaryState: BeneficiaryStateEnum.SUSPENDED,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+        {
+          beneficiary: 'no-status',
+          beneficiaryState: undefined,
+          updateStatusDate: '2026-03-01T00:00:00.000Z',
+        },
+      ],
+      pageNo: 0,
+      pageSize: 10,
+      totalElements: 9,
+      totalPages: 1,
+    } as OnboardingDTO);
+
+    renderWithProviders(<InitiativeUsers />);
+
+    expect(await screen.findByText('INVITED')).toBeInTheDocument();
+    expect(await screen.findByText('NO-STATUS')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeUsers.status.onboardingKo')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeUsers.status.eligible')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeUsers.status.suspended')).toBeInTheDocument();
+    expect((await screen.findAllByText('pages.initiativeUsers.status.onEvaluation')).length).toBeGreaterThan(0);
+    expect((await screen.findAllByText('pages.initiativeUsers.status.inactive')).length).toBeGreaterThan(0);
   });
 });

@@ -13,13 +13,13 @@ import {
   IconButton,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
-import { TitleBox, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend';
+import { TitleBox, useErrorDispatcher, useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { useFormik } from 'formik';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import { MerchantDTO } from '../../api/generated/merchants/MerchantDTO';
+import { MerchantDTO } from '../../api/generated/merchants/apiClient';
 import {
   initiativePagesBreadcrumbsContainerStyle,
   initiativePagesFiltersFormContainerStyle,
@@ -125,6 +125,7 @@ const InitativeMerchant = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -132,6 +133,7 @@ const InitativeMerchant = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByMerchant);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (

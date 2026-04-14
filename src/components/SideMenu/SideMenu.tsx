@@ -9,8 +9,8 @@ import {
   ListItemText,
 } from '@mui/material';
 import { useHistory } from 'react-router-dom';
-import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/hooks/useUnloadEventInterceptor';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import { useUnloadEventOnExit } from '@pagopa/selfcare-common-frontend/lib/hooks/useUnloadEventInterceptor';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import { useTranslation } from 'react-i18next';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -21,19 +21,20 @@ import RuleIcon from '@mui/icons-material/Rule';
 import { useEffect, useState } from 'react';
 // import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
 import { matchPath } from 'react-router';
-import { storageTokenOps } from '@pagopa/selfcare-common-frontend/utils/storage';
+import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/storage';
 import { PeopleAlt, Receipt } from '@mui/icons-material';
 import { useAppDispatch } from '../../redux/hooks';
 import ROUTES, { BASE_ROUTE } from '../../routes';
 import { useAppSelector } from '../../redux/hooks';
+import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/apiClient';
 import {
   initiativeSummarySelector,
   setInitiativeSummaryList,
 } from '../../redux/slices/initiativeSummarySlice';
-import { InitiativeSummaryArrayDTO } from '../../api/generated/initiative/InitiativeSummaryArrayDTO';
 import { getInitativeSummary } from '../../services/intitativeService';
 import { parseJwt } from '../../utils/jwt-utils';
 import { JWTUser } from '../../model/JwtUser';
+import { useAlert } from '../../hooks/useAlert';
 import SidenavItem from './SidenavItem';
 
 interface MatchParams {
@@ -46,6 +47,7 @@ export default function SideMenu() {
   const history = useHistory();
   const onExit = useUnloadEventOnExit();
   const dispatch = useAppDispatch();
+  const { setAlert } = useAlert();
   // const addError = useErrorDispatcher();
   const setLoading = useLoading('GET_SIDE_MENU');
   const initiativeSummaryList = useAppSelector(initiativeSummarySelector);
@@ -93,20 +95,16 @@ export default function SideMenu() {
           dispatch(setInitiativeSummaryList(response));
         })
         .catch((_error: any) => {
-          // addError({
-          //   id: 'GET_INITIATIVE_SUMMARY_LIST_ERROR',
-          //   blocking: false,
-          //   error,
-          //   techDescription: 'An error occurred getting initiative summary list',
-          //   displayableTitle: t('errors.title'),
-          //   displayableDescription: t('errors.getDataDescription'),
-          //   toNotify: true,
-          //   component: 'Toast',
-          //   showCloseIcon: true,
-          // });
+          setAlert({
+            title: t('errors.title'),
+            text: t('errors.getDataDescription'),
+            isOpen: true,
+            severity: 'error',
+          });
         })
         .finally(() => setLoading(false));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -122,6 +120,7 @@ export default function SideMenu() {
           : false;
       setExpanded(firstItemExpanded);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match), initiativeSummaryList]);
 
   const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
@@ -140,7 +139,7 @@ export default function SideMenu() {
             level={0}
             data-testid="initiativeList-click-test"
           />
-          {initiativeSummaryList?.map((item) => (
+          {initiativeSummaryList?.map((item: any) => (
             <Accordion
               key={item.initiativeId}
               expanded={expanded === `panel-${item.initiativeId}`}

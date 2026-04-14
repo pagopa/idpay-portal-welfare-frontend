@@ -1,10 +1,9 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { merchantsApiMocked } from '../../../api/__mocks__/merchantsApiClient';
 import ROUTES from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeMerchant from '../initiativeMerchant';
-import { MerchantListDTO } from '../../../api/generated/merchants/MerchantListDTO';
+import { MerchantListDTO } from '../../../api/generated/merchants/apiClient';
 import userEvent from '@testing-library/user-event';
 
 window.scrollTo = jest.fn();

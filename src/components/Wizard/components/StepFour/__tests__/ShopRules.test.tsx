@@ -1,40 +1,141 @@
 /* eslint-disable react/jsx-no-bind */
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import React from 'react';
 import { Provider } from 'react-redux';
 import { Router } from 'react-router';
 import { InitiativeApiMocked } from '../../../../../api/__mocks__/InitiativeApiClient';
-import { ConfigTrxRuleArrayDTO } from '../../../../../api/generated/initiative/ConfigTrxRuleArrayDTO';
-import { InitiativeRewardTypeEnum } from '../../../../../api/generated/initiative/InitiativeDTO';
-import { InitiativeRewardAndTrxRulesDTO } from '../../../../../api/generated/initiative/InitiativeRewardAndTrxRulesDTO';
-import { RewardValueTypeEnum } from '../../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import {
+  ConfigTrxRuleArrayDTO,
+  InitiativeRewardAndTrxRulesDTO,
+  InitiativeRewardRuleDtoRewardValueTypeEnum as RewardValueTypeEnum,
+} from '../../../../../api/generated/initiative/apiClient';
 import Layout from '../../../../../components/Layout/Layout';
 import {
-  saveDaysOfWeekIntervals,
-  saveMccFilter,
-  saveRewardLimits,
   saveRewardRule,
-  saveThreshold,
-  saveTrxCount,
   setInitiativeId,
   setInitiativeRewardType,
 } from '../../../../../redux/slices/initiativeSlice';
 import { store } from '../../../../../redux/store';
 import { mockedInitiativeId } from '../../../../../services/__mocks__/groupsService';
+import * as initiativeService from '../../../../../services/intitativeService';
+import { fetchTransactionRules } from '../../../../../services/transactionRuleService';
 import { WIZARD_ACTIONS } from '../../../../../utils/constants';
 import { renderWithContext } from '../../../../../utils/test-utils';
 import ShopRules from '../ShopRules';
 
-
 jest.mock('../../../../../services/intitativeService');
+jest.mock('../../../../../services/transactionRuleService', () => ({
+  fetchTransactionRules: jest.fn(),
+}));
+
+jest.mock('../ShopRulesModal', () => {
+  return function MockShopRulesModal(props: any) {
+    if (!props.openModal) {
+      return null;
+    }
+
+    return (
+      <div data-testid="shop-rules-modal">
+        <button
+          data-testid="add-threshold-rule"
+          onClick={() => props.handleShopListItemAdded('THRESHOLD')}
+        >
+          add threshold
+        </button>
+        <button data-testid="add-mcc-rule" onClick={() => props.handleShopListItemAdded('MCC')}>
+          add mcc
+        </button>
+      </div>
+    );
+  };
+});
+
+jest.mock('../RewardType', () => {
+  const React = require('react');
+  return function MockRewardType(props: any) {
+    React.useEffect(() => {
+      if (props.action === 'SUBMIT' || props.action === 'DRAFT') {
+        props.setShopRulesToSubmit((prev: Array<{ code: string; dispatched: boolean }>) =>
+          prev.map((item) => (item.code === props.code ? { ...item, dispatched: true } : item))
+        );
+      }
+    }, [props.action, props.code, props.setShopRulesToSubmit]);
+
+    return <div data-testid="reward-type-mock">{props.code}</div>;
+  };
+});
+
+jest.mock('../PercentageRecognizedItem', () => {
+  const React = require('react');
+  return function MockPercentageRecognizedItem(props: any) {
+    React.useEffect(() => {
+      if (props.action === 'SUBMIT' || props.action === 'DRAFT') {
+        props.setShopRulesToSubmit((prev: Array<{ code: string; dispatched: boolean }>) =>
+          prev.map((item) => (item.code === props.code ? { ...item, dispatched: true } : item))
+        );
+      }
+    }, [props.action, props.code, props.setShopRulesToSubmit]);
+
+    return (
+      <input
+        data-testid="percentage-recognized-value"
+        value={props.data?.rewardValue ?? ''}
+        onChange={(e) =>
+          props.setData({
+            ...props.data,
+            rewardValue: Number(e.target.value),
+          })
+        }
+      />
+    );
+  };
+});
+
+jest.mock('../SpendingLimitItem', () => {
+  const React = require('react');
+  return function MockSpendingLimitItem(props: any) {
+    React.useEffect(() => {
+      if (props.action === 'SUBMIT' || props.action === 'DRAFT') {
+        props.setShopRulesToSubmit((prev: Array<{ code: string; dispatched: boolean }>) =>
+          prev.map((item) => (item.code === props.code ? { ...item, dispatched: true } : item))
+        );
+      }
+    }, [props.action, props.code, props.setShopRulesToSubmit]);
+
+    return (
+      <div data-testid={`rule-${props.code}`}>
+        <span>{props.title ?? props.code}</span>
+        <button
+          data-testid={`remove-${props.code}`}
+          onClick={() => props.handleShopListItemRemoved(props.code)}
+        >
+          remove
+        </button>
+      </div>
+    );
+  };
+});
+
+jest.mock('../MCCItem', () => (props: any) => <div data-testid={`rule-${props.code}`}>{props.code}</div>);
+
+jest.mock('../TransactionNumberItem', () => (props: any) => (
+  <div data-testid={`rule-${props.code}`}>{props.code}</div>
+));
+
+jest.mock('../TimeLimitItem', () => (props: any) => (
+  <div data-testid={`rule-${props.code}`}>{props.code}</div>
+));
+
+jest.mock('../TransactionTimeItem', () => (props: any) => (
+  <div data-testid={`rule-${props.code}`}>{props.code}</div>
+));
 
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
 });
 
-afterEach(() => cleanup);
+afterEach(cleanup);
 window.scrollTo = jest.fn();
 
 export const shopRulesToSubmit = [
@@ -72,58 +173,19 @@ export const perRec = {
   rewardValueType: RewardValueTypeEnum.PERCENTAGE,
 };
 
+const mockedTransactionRules = [
+  { code: 'THRESHOLD', description: 'threshold', enabled: true, checked: false },
+  { code: 'MCC', description: 'mcc', enabled: true, checked: false },
+  { code: 'TRXCOUNT', description: 'trx count', enabled: true, checked: false },
+  { code: 'REWARDLIMIT', description: 'reward limit', enabled: true, checked: false },
+  { code: 'DAYHOURSWEEK', description: 'days/hours', enabled: true, checked: false },
+];
+
 describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
   const history = injectedHistory ? injectedHistory : createMemoryHistory();
   const setAction = jest.fn();
   const setCurrentStep = jest.fn();
   const setDisabledNext = jest.fn();
-
-  // test('should render correctly the ShopRules component action SUMBIT and delete mcc btn', async () => {
-  //   store.dispatch(setInitiativeId(mockedInitiativeId));
-  //   store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
-  //   store.dispatch(saveRewardRule(perRec));
-  //   store.dispatch(saveTrxCount(trxCount));
-  //   store.dispatch(saveThreshold(threshold));
-  //   store.dispatch(saveMccFilter(mccFilter));
-  //   store.dispatch(saveRewardLimits(rewardLimits));
-  //   store.dispatch(saveDaysOfWeekIntervals(daysOfWeekIntervals));
-
-  //   render(
-  //     <Provider store={store}>
-  //       <Router history={history}>
-  //         <ShopRules
-  //           action={WIZARD_ACTIONS.SUBMIT}
-  //           setAction={setAction}
-  //           currentStep={3}
-  //           setCurrentStep={setCurrentStep(3)}
-  //           setDisabledNext={setDisabledNext}
-  //         />
-  //       </Router>
-  //     </Provider>
-  //   );
-
-  //   // delete btns tests
-
-  //   const deleteMccBtn = await screen.findByTestId('delete-button-mcc-test');
-  //   fireEvent.click(deleteMccBtn);
-
-  //   const deleteSpendingLimitBtn = await screen.findByTestId('delete-button-spending-limit-test');
-  //   fireEvent.click(deleteSpendingLimitBtn);
-
-  //   // add new Criteria
-
-  //   const addNewCriteria = await screen.findByTestId('criteria-button-test');
-  //   fireEvent.click(addNewCriteria);
-
-  //   const shopRulesModalTitle = await screen.findByText('components.wizard.stepFour.modal.title');
-  //   expect(shopRulesModalTitle).toBeInTheDocument();
-
-  //   fireEvent.click(
-  //     await screen.findByText('components.wizard.stepFour.form.addTransactionTimeItem')
-  //   );
-  //   fireEvent.click(await screen.findByTestId('add-shopList-MCC-btn'));
-  //   // screen.debug(undefined, 99999);
-  // });
 
   test('should render correctly the ShopRules component action DRAFT', async () => {
     store.dispatch(setInitiativeId(mockedInitiativeId));
@@ -131,6 +193,9 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
       _id: string,
       _data: InitiativeRewardAndTrxRulesDTO
     ): Promise<void> => new Promise((resolve) => resolve());
+
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -138,7 +203,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
             action={WIZARD_ACTIONS.DRAFT}
             setAction={setAction}
             currentStep={3}
-            setCurrentStep={setCurrentStep(3)}
+            setCurrentStep={setCurrentStep}
             setDisabledNext={setDisabledNext}
           />
         </Router>
@@ -202,6 +267,8 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
         ])
       );
 
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
     render(
       <Provider store={store}>
         <Router history={history}>
@@ -209,7 +276,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
             action={WIZARD_ACTIONS.SUBMIT}
             setAction={setAction}
             currentStep={3}
-            setCurrentStep={setCurrentStep(3)}
+            setCurrentStep={setCurrentStep}
             setDisabledNext={setDisabledNext}
           />
         </Router>
@@ -217,9 +284,11 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     );
   });
 
-  test('test getTransactionConfigRules', () => {
+  test('test getTransactionConfigRules empty response', () => {
     InitiativeApiMocked.getTransactionConfigRules = async (): Promise<ConfigTrxRuleArrayDTO> =>
       new Promise((resolve) => resolve([]));
+
+    (fetchTransactionRules as jest.Mock).mockResolvedValue([]);
 
     render(
       <Provider store={store}>
@@ -228,7 +297,7 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
             action={WIZARD_ACTIONS.SUBMIT}
             setAction={setAction}
             currentStep={3}
-            setCurrentStep={setCurrentStep(3)}
+            setCurrentStep={setCurrentStep}
             setDisabledNext={setDisabledNext}
           />
         </Router>
@@ -237,13 +306,15 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
   });
 
   test('test percentage-recognized-value input', async () => {
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
     renderWithContext(
       <Layout>
         <ShopRules
           action={WIZARD_ACTIONS.SUBMIT}
           setAction={setAction}
           currentStep={3}
-          setCurrentStep={setCurrentStep(3)}
+          setCurrentStep={setCurrentStep}
           setDisabledNext={setDisabledNext}
         />
       </Layout>
@@ -260,18 +331,170 @@ describe('<RefundRules />', (injectedHistory?: ReturnType<typeof createMemoryHis
     InitiativeApiMocked.getTransactionConfigRules = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
 
+    (fetchTransactionRules as jest.Mock).mockRejectedValue('mocked error response for tests');
+
     store.dispatch(setInitiativeId(mockedInitiativeId));
     InitiativeApiMocked.initiativeTrxAndRewardRulesPutDraft = async (): Promise<void> =>
       Promise.reject('mocked error response for tests');
 
     renderWithContext(
       <ShopRules
-        action={''}
+        action=""
         setAction={setAction}
         currentStep={3}
-        setCurrentStep={setCurrentStep(3)}
+        setCurrentStep={setCurrentStep}
         setDisabledNext={setDisabledNext}
       />
     );
+  });
+
+  test('opens modal, adds THRESHOLD rule, then removes it', async () => {
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action=""
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
+
+    const addCriteriaButton = await screen.findByTestId('criteria-button-test');
+    fireEvent.click(addCriteriaButton);
+
+    expect(screen.getByTestId('shop-rules-modal')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('add-threshold-rule'));
+
+    expect(await screen.findByTestId('rule-THRESHOLD')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId('remove-THRESHOLD'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('rule-THRESHOLD')).not.toBeInTheDocument();
+    });
+  });
+
+  test('shows mandatory trx count toast on submit when reward type is ABSOLUTE and THRESHOLD is not present', async () => {
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
+    store.dispatch(
+      saveRewardRule({
+        _type: 'rewardValue',
+        rewardValue: 10,
+        rewardValueType: RewardValueTypeEnum.ABSOLUTE,
+      } as any)
+    );
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.SUBMIT}
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
+
+    expect(
+      await screen.findByText(
+        /components\.wizard\.stepFour\.form\.trxCountNotPopulatedErrorTitle/
+      )
+    ).toBeInTheDocument();
+  });
+
+  test('submits successfully when THRESHOLD is present', async () => {
+    (fetchTransactionRules as jest.Mock).mockResolvedValue(mockedTransactionRules);
+
+    jest.spyOn(initiativeService, 'putTrxAndRewardRules').mockResolvedValue(undefined as never);
+
+    store.dispatch(
+      saveRewardRule({
+        _type: 'rewardValue',
+        rewardValue: 10,
+        rewardValueType: RewardValueTypeEnum.ABSOLUTE,
+      } as any)
+    );
+    store.dispatch(setInitiativeRewardType('REFUND' as any));
+    store.dispatch(setInitiativeId(mockedInitiativeId));
+
+    const { rerender } = render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action=""
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
+
+    fireEvent.click(await screen.findByTestId('criteria-button-test'));
+    fireEvent.click(screen.getByTestId('add-threshold-rule'));
+
+    expect(await screen.findByTestId('rule-THRESHOLD')).toBeInTheDocument();
+
+    rerender(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action={WIZARD_ACTIONS.SUBMIT}
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(initiativeService.putTrxAndRewardRules).toHaveBeenCalled();
+      expect(setCurrentStep).toHaveBeenCalledWith(4);
+    });
+  });
+
+  test('disables modal button when all optional rules are already checked', async () => {
+    (fetchTransactionRules as jest.Mock).mockResolvedValue([
+      { code: 'THRESHOLD', description: 'threshold', enabled: true, checked: false },
+      { code: 'MCC', description: 'mcc', enabled: true, checked: false },
+    ]);
+
+    render(
+      <Provider store={store}>
+        <Router history={history}>
+          <ShopRules
+            action=""
+            setAction={setAction}
+            currentStep={3}
+            setCurrentStep={setCurrentStep}
+            setDisabledNext={setDisabledNext}
+          />
+        </Router>
+      </Provider>
+    );
+
+    fireEvent.click(await screen.findByTestId('criteria-button-test'));
+    fireEvent.click(screen.getByTestId('add-threshold-rule'));
+
+    fireEvent.click(screen.getByTestId('criteria-button-test'));
+    fireEvent.click(screen.getByTestId('add-mcc-rule'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('criteria-button-test')).not.toBeInTheDocument();
+    });
   });
 });

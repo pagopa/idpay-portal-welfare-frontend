@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { WIZARD_ACTIONS } from '../../../../utils/constants';
 import { RewardRule, Threshold } from '../../../../model/Initiative';
-import { RewardValueTypeEnum } from '../../../../api/generated/initiative/InitiativeRewardRuleDTO';
+import { InitiativeRewardRuleDtoRewardValueTypeEnum } from '../../../../api/generated/initiative/apiClient';
 import {
   renderShopRuleIcon,
   handleShopRulesToSubmit,
@@ -52,6 +52,7 @@ const SpendingLimitItem = ({
     } else if (action === WIZARD_ACTIONS.DRAFT) {
       return;
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [action]);
 
   const validationSchema = Yup.object().shape({
@@ -64,7 +65,7 @@ const SpendingLimitItem = ({
         t('validation.trxCountMinCap', { x: rewardRuleData.rewardValue }),
         function (val) {
           if (
-            rewardRuleData.rewardValueType === RewardValueTypeEnum.ABSOLUTE &&
+            rewardRuleData.rewardValueType === InitiativeRewardRuleDtoRewardValueTypeEnum.ABSOLUTE as any &&
             rewardRuleData.rewardValue
           ) {
             return typeof val === 'number' && val >= rewardRuleData.rewardValue;

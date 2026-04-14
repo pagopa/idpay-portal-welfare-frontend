@@ -1,7 +1,7 @@
 /* eslint-disable functional/no-let */
 import { useEffect, useState, useMemo } from 'react';
 import { matchPath } from 'react-router';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
 import {
   Box,
   Button,
@@ -18,14 +18,14 @@ import {
   TextField,
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useHistory } from 'react-router-dom';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { useInitiative } from '../../hooks/useInitiative';
 import { useAppSelector } from '../../redux/hooks';
@@ -43,9 +43,8 @@ import {
 } from '../../helpers';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
-import { BeneficiaryStateEnum } from '../../api/generated/initiative/StatusOnboardingDTOS';
 import TablePaginator from '../components/TablePaginator';
-import { BeneficiaryTypeEnum } from '../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, StatusOnboardingDtosBeneficiaryStateEnum } from '../../api/generated/initiative/apiClient';
 
 const InitiativeUsers = () => {
   const { t } = useTranslation();
@@ -83,11 +82,11 @@ const InitiativeUsers = () => {
           beneficiary: row.beneficiary,
           updateStatusDate:
             typeof row.updateStatusDate === 'object'
-              ? row.updateStatusDate
-                  .toLocaleString('fr-BE')
-                  .substring(0, row.updateStatusDate.toLocaleString('fr-BE').length - 3)
+              ? (row.updateStatusDate as any)
+                  .toString()
+                  .substring(0, (row.updateStatusDate as any).toString().length - 3)
               : '',
-          beneficiaryState: row.beneficiaryState,
+          beneficiaryState: row.beneficiaryState as string as InitiativeGeneralDtoBeneficiaryTypeEnum,
           familyId: row.familyId,
         }));
         if (Array.isArray(rowsData)) {
@@ -128,28 +127,28 @@ const InitiativeUsers = () => {
 
   const { id } = (match?.params as MatchParams) || {};
 
-  const renderUserStatus = (status: BeneficiaryStateEnum | undefined, initiative: Initiative) => {
+  const renderUserStatus = (status: any | undefined, initiative: Initiative) => {
     switch (status) {
-      case BeneficiaryStateEnum.INVITED:
-      case BeneficiaryStateEnum.ACCEPTED_TC:
-      case BeneficiaryStateEnum.ON_EVALUATION:
+      case StatusOnboardingDtosBeneficiaryStateEnum.INVITED:
+      case StatusOnboardingDtosBeneficiaryStateEnum.ACCEPTED_TC:
+      case StatusOnboardingDtosBeneficiaryStateEnum.ON_EVALUATION:
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
-      case BeneficiaryStateEnum.ONBOARDING_OK:
+      case StatusOnboardingDtosBeneficiaryStateEnum.ONBOARDING_OK:
         if (initiative.generalInfo.rankingEnabled === 'true') {
           return <Chip label={t('pages.initiativeUsers.status.assignee')} color="success" />;
         } else {
           return <Chip label={t('pages.initiativeUsers.status.onboardingOk')} color="success" />;
         }
-      case BeneficiaryStateEnum.ONBOARDING_KO:
+      case StatusOnboardingDtosBeneficiaryStateEnum.ONBOARDING_KO:
         return <Chip label={t('pages.initiativeUsers.status.onboardingKo')} color="error" />;
-      case BeneficiaryStateEnum.ELIGIBLE_KO:
+      case StatusOnboardingDtosBeneficiaryStateEnum.ELIGIBLE_KO:
         return <Chip label={t('pages.initiativeUsers.status.eligible')} color="warning" />;
-      case BeneficiaryStateEnum.INACTIVE:
-      case BeneficiaryStateEnum.UNSUBSCRIBED:
+      case StatusOnboardingDtosBeneficiaryStateEnum.INACTIVE:
+      case StatusOnboardingDtosBeneficiaryStateEnum.UNSUBSCRIBED:
         return <Chip label={t('pages.initiativeUsers.status.inactive')} color="error" />;
-      case BeneficiaryStateEnum.SUSPENDED:
+      case StatusOnboardingDtosBeneficiaryStateEnum.SUSPENDED:
         return <Chip label={t('pages.initiativeUsers.status.suspended')} color="warning" />;
-      case BeneficiaryStateEnum.DEMANDED:
+      case StatusOnboardingDtosBeneficiaryStateEnum.DEMANDED:
         return <Chip label={t('pages.initiativeUsers.status.onEvaluation')} color="default" />;
       default:
         return null;
@@ -205,6 +204,7 @@ const InitiativeUsers = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -212,6 +212,7 @@ const InitiativeUsers = () => {
     if (typeof id === 'string') {
       getTableData(id, page, filterByBeneficiary, filterByDateFrom, filterByDateTo, filterByStatus);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (
@@ -253,45 +254,39 @@ const InitiativeUsers = () => {
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchFrom"
-                  data-testid="searchFrom-test"
-                  name="searchFrom"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchFrom',
+                  name: 'searchFrom',
+                  size: 'small',
+                  error: formik.touched.searchFrom && Boolean(formik.errors.searchFrom),
+                  helperText: formik.touched.searchFrom && formik.errors.searchFrom,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeUsers.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchTo"
-                  data-testid="searchTo-test"
-                  name="searchTo"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                  helperText={formik.touched.searchTo && formik.errors.searchTo}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchTo',
+                  name: 'searchTo',
+                  size: 'small',
+                  error: formik.touched.searchTo && Boolean(formik.errors.searchTo),
+                  helperText: formik.touched.searchTo && formik.errors.searchTo,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
@@ -304,18 +299,21 @@ const InitiativeUsers = () => {
             }}
             name="filterStatus"
             label={t('pages.initiativeUsers.form.status')}
-            placeholder={t('pages.initiativeUsers.form.status')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeUsers.form.status')}
+            </MenuItem>
             <MenuItem
-              value={BeneficiaryStateEnum.ON_EVALUATION}
+              value={StatusOnboardingDtosBeneficiaryStateEnum.ON_EVALUATION}
               data-testid="filterStatusOnEvaluation-test"
             >
               {t('pages.initiativeUsers.status.onEvaluation')}
             </MenuItem>
             <MenuItem
-              value={BeneficiaryStateEnum.ONBOARDING_OK}
+              value={StatusOnboardingDtosBeneficiaryStateEnum.ONBOARDING_OK}
               data-testid="filterStatusOnboardingOk-test"
             >
               {initiativeSel.generalInfo.rankingEnabled === 'true'
@@ -323,22 +321,22 @@ const InitiativeUsers = () => {
                 : t('pages.initiativeUsers.status.onboardingOk')}
             </MenuItem>
             <MenuItem
-              value={BeneficiaryStateEnum.ELIGIBLE_KO}
+              value={StatusOnboardingDtosBeneficiaryStateEnum.ELIGIBLE_KO}
               data-testid="filterStatusEligible-test"
             >
               {t('pages.initiativeUsers.status.eligible')}
             </MenuItem>
             <MenuItem
-              value={BeneficiaryStateEnum.ONBOARDING_KO}
+              value={StatusOnboardingDtosBeneficiaryStateEnum.ONBOARDING_KO}
               data-testid="filterStatusOnboardingKo-test"
             >
               {t('pages.initiativeUsers.status.onboardingKo')}
             </MenuItem>
-            <MenuItem value={BeneficiaryStateEnum.INACTIVE} data-testid="filterStatusInactive-test">
+            <MenuItem value={StatusOnboardingDtosBeneficiaryStateEnum.INACTIVE} data-testid="filterStatusInactive-test">
               {t('pages.initiativeUsers.status.inactive')}
             </MenuItem>
             <MenuItem
-              value={BeneficiaryStateEnum.SUSPENDED}
+              value={StatusOnboardingDtosBeneficiaryStateEnum.SUSPENDED}
               data-testid="filterStatusSuspended-test"
             >
               {t('pages.initiativeUsers.status.suspended')}
@@ -374,13 +372,13 @@ const InitiativeUsers = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                    {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
                       <TableCell width="30%">
                         {t('pages.initiativeRanking.table.familyId')}
                       </TableCell>
                     )}
                     <TableCell width="30%">
-                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.PF
+                      {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.PF
                         ? t('pages.initiativeUsers.table.beneficiary')
                         : t('pages.initiativeRanking.table.familyBeneficiary')}
                     </TableCell>
@@ -395,7 +393,7 @@ const InitiativeUsers = () => {
                 <TableBody sx={{ backgroundColor: 'white' }}>
                   {rows.map((r) => (
                     <TableRow key={r.id}>
-                      {initiativeSel.generalInfo.beneficiaryType === BeneficiaryTypeEnum.NF && (
+                      {initiativeSel.generalInfo.beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF && (
                         <TableCell>{r.familyId}</TableCell>
                       )}
                       <TableCell>

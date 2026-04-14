@@ -1,13 +1,11 @@
-import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { IbanDTO } from '../../../api/generated/initiative/IbanDTO';
-import { InitiativeRewardTypeEnum } from '../../../api/generated/initiative/InitiativeDTO';
+import { IbanDTO, InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum } from '../../../api/generated/initiative/apiClient';
 import {
-  OnboardingStatusDTO,
-  StatusEnum as OnboardingStatusEnum,
-} from '../../../api/generated/initiative/OnboardingStatusDTO';
-import { WalletDTO } from '../../../api/generated/initiative/WalletDTO';
+  GetBeneficiaryOnboardingStatusData as OnboardingStatusDTO,
+  OnboardingStatusDtoStatusEnum as OnboardingStatusEnum,
+} from '../../../api/generated/initiative/apiClient';
+import { WalletDTO } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeRewardType } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
@@ -40,6 +38,38 @@ afterAll(() => {
 
 afterEach(cleanup);
 
+const buildInstrumentOperation = (
+  operationId: string,
+  operationType: 'ADD_INSTRUMENT' | 'DELETE_INSTRUMENT',
+  maskedPan: string
+) => ({
+  operationId,
+  operationType,
+  operationDate: '2026-03-01T10:00:00.000Z',
+  amountCents: 100,
+  accruedCents: 10,
+  maskedPan,
+});
+
+const buildTransactionOperation = (operationId: string, status: string) => ({
+  operationId,
+  operationType: 'TRANSACTION',
+  operationDate: '2026-03-01T10:00:00.000Z',
+  amountCents: 345,
+  accruedCents: 10,
+  brand: 'brandName',
+  iban: '',
+  channel: 'App IO',
+  idTrxAcquirer: '349589304999',
+  idTrxIssuer: '0001923192038',
+  businessName: 'FakeBusinessName',
+  status,
+});
+
+const openFilterEventSelect = () => {
+  fireEvent.mouseDown(screen.getByRole('combobox'));
+};
+
 describe('test suite initiative user details', () => {
   window.scrollTo = jest.fn();
 
@@ -57,24 +87,6 @@ describe('test suite initiative user details', () => {
     fireEvent.change(eventsFilterSelect, { target: { value: 'ONBOARDING' } });
     expect(eventsFilterSelect).toBeInTheDocument();
 
-    // test filter of date from
-    // const fromDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.from');
-    // fireEvent.click(fromDatePickerFilter);
-    // fireEvent.change(fromDatePickerFilter, {
-    //   target: {
-    //     value: new Date('2023-01-05T10:22:28.012Z'),
-    //   },
-    // });
-
-    // test filter of date to
-    // const toDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.to');
-    // fireEvent.click(toDatePickerFilter);
-    // fireEvent.change(toDatePickerFilter, {
-    //   target: {
-    //     value: new Date('2023-02-05T10:22:28.012Z'),
-    //   },
-    // });
-
     // test sumbit filter btn
     const filterBtn = screen.getByText('pages.initiativeUsers.form.filterBtn') as HTMLButtonElement;
     fireEvent.click(filterBtn);
@@ -88,24 +100,6 @@ describe('test suite initiative user details', () => {
     const eventsFilterSelect = screen.getByTestId('filterEvent-select');
     fireEvent.change(eventsFilterSelect, { target: { value: 'ONBOARDING' } });
     expect(eventsFilterSelect).toBeInTheDocument();
-
-    // test filter of date from
-    // const fromDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.from');
-    // fireEvent.click(fromDatePickerFilter);
-    // fireEvent.change(fromDatePickerFilter, {
-    //   target: {
-    //     value: new Date('2023-01-05T10:22:28.012Z'),
-    //   },
-    // });
-
-    // test filter of date to
-    // const toDatePickerFilter = screen.getByLabelText('pages.initiativeUsers.form.to');
-    // fireEvent.click(toDatePickerFilter);
-    // fireEvent.change(toDatePickerFilter, {
-    //   target: {
-    //     value: new Date('2023-02-05T10:22:28.012Z'),
-    //   },
-    // });
 
     // test reset form btn
     const resetFilterBtn = (await screen.findByText(
@@ -176,7 +170,7 @@ describe('test suite initiative user details', () => {
     const fullTimeline: any = [];
     operationTypes.forEach((operation) => {
       fullTimeline.push({
-        operationId: '1u1u1u1u1u1u1u',
+        operationId: `op-${operation ?? 'unknown'}`,
         operationType: operation,
         operationDate: '2023-02-05T10:22:28.012Z',
         maskedPan: '1234123412341234',
@@ -188,6 +182,8 @@ describe('test suite initiative user details', () => {
         brandLogo: '',
         idTrxAcquirer: '349589304999',
         idTrxIssuer: '0001923192038',
+        ...(operation === 'PAID_REFUND' ? { eventId: 'paid-refund-event' } : {}),
+        ...(operation === 'REJECTED_REFUND' ? { eventId: 'rejected-refund-event' } : {}),
       });
     });
 
@@ -216,12 +212,14 @@ describe('test suite initiative user details', () => {
       'operationTypeBtn'
     )) as HTMLButtonElement[];
 
-    // click ADD_IBAN
     fireEvent.click(operationTypeButtons[0]);
-    // click PAID_REFUND
+    expect(screen.getByTestId('transaction-detail-modal')).toBeInTheDocument();
+
     fireEvent.click(operationTypeButtons[4]);
-    // click REJECTED_REFUND
+    expect(screen.getByTestId('initiative-refund-detail-modal')).toBeInTheDocument();
+
     fireEvent.click(operationTypeButtons[8]);
+    expect(screen.getByTestId('initiative-refund-detail-modal')).toBeInTheDocument();
   });
 
   test('initative with discount, transaction in status AUTHORIZED on click of timeline event ', async () => {
@@ -239,34 +237,34 @@ describe('test suite initiative user details', () => {
         resolve({
           lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
           operationList: [
-            {
-              operationId: '1u1u1u1u1u1u1u',
-              operationType: 'TRANSACTION',
-              operationDate: 'aaaaa',
-              maskedPan: '1234123412341234',
-              amount: 345,
-              accrued: 10,
-              brand: 'brandName',
-              iban: '',
-              channel: 'App IO',
-              idTrxAcquirer: '349589304999',
-              idTrxIssuer: '0001923192038',
-              businessName: 'FakeBusinessName',
-              status: 'AUTHORIZED',
-            },
+            buildTransactionOperation('op-transaction-authorized', 'AUTHORIZED'),
+            buildTransactionOperation('op-transaction-rewarded', 'REWARDED'),
+            buildTransactionOperation('op-transaction-cancelled', 'CANCELLED'),
+            buildTransactionOperation('op-transaction-unknown', 'PENDING'),
           ],
           pageNo: 0,
           pageSize: 10,
-          totalElements: 11,
-          totalPages: 2,
+          totalElements: 4,
+          totalPages: 1,
         })
       );
     renderWithContext(<InitiativeUserDetails />, store);
-    const operationTypeButtons = (await screen.findAllByTestId(
+    const transactionButtons = (await screen.findAllByTestId(
       'operationTypeBtn'
     )) as HTMLButtonElement[];
 
-    fireEvent.click(operationTypeButtons[0]);
+    expect(transactionButtons[0]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.payment'
+    );
+    expect(transactionButtons[1]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.payment'
+    );
+    expect(transactionButtons[2]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.paymentCancelled'
+    );
+    expect(transactionButtons[3]).toHaveTextContent(/^\s*$/);
+
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
   });
 
   test('test getIban ', () => {
@@ -297,7 +295,7 @@ describe('test suite initiative user details', () => {
       new Promise((resolve) =>
         resolve({
           status: OnboardingStatusEnum.SUSPENDED,
-          statusDate: new Date(),
+          statusDate: new Date().toString(),
         })
       );
     renderWithContext(<InitiativeUserDetails />);
@@ -331,5 +329,284 @@ describe('test suite initiative user details', () => {
     InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<any> =>
       Promise.reject('reason');
     renderWithContext(<InitiativeUserDetails />);
+  });
+
+  test('renders non clickable timeline events and suspended actions', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.SUSPENDED,
+        statusDate: new Date().toString(),
+      });
+
+    InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2023-01-05T10:22:28.012Z'),
+        operationList: [
+          {
+            operationId: 'op-1',
+            operationType: 'READMITTED',
+            operationDate: '2023-02-05T10:22:28.012Z',
+            amountCents: 10,
+            accruedCents: 5,
+          },
+          {
+            operationId: 'op-2',
+            operationType: 'UNSUBSCRIBED',
+            operationDate: '2023-02-05T10:22:28.012Z',
+            amountCents: 10,
+            accruedCents: 5,
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 2,
+        totalPages: 1,
+      });
+
+    renderWithContext(<InitiativeUserDetails />);
+
+    expect(await screen.findByText('pages.initiativeUserDetails.operationTypes.readmitted')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUserDetails.operationTypes.unsubscribed')).toBeInTheDocument();
+    expect(screen.getByTestId('exclude-forever')).toBeDisabled();
+    expect(screen.queryByTestId('operationTypeBtn')).not.toBeInTheDocument();
+  });
+
+  test('apply timeline filters with dates and event', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.ONBOARDING_OK,
+        statusDate: new Date().toString(),
+      });
+
+    renderWithContext(<InitiativeUserDetails />);
+
+    fireEvent.change(screen.getByTestId('filterEvent-select'), {
+      target: { value: 'ONBOARDING' },
+    });
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.from/), {
+      target: { value: '01/02/2025' },
+    });
+    fireEvent.change(screen.getByLabelText(/pages.initiativeUsers.form.to/), {
+      target: { value: '20/02/2025' },
+    });
+    fireEvent.click(screen.getByTestId('apply-filters-test'));
+  });
+
+  test('shows refund and discount filter options and instrument labels per reward type', async () => {
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.ONBOARDING_OK,
+        statusDate: new Date().toString(),
+      });
+    InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [
+          buildInstrumentOperation('op-add-instrument', 'ADD_INSTRUMENT', '5678'),
+          buildInstrumentOperation('op-delete-instrument', 'DELETE_INSTRUMENT', '9876'),
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 2,
+        totalPages: 1,
+      });
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    openFilterEventSelect();
+    expect(await screen.findByText('pages.initiativeUserDetails.operationTypes.paidRefund')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeUserDetails.operationTypes.reversal')).toBeInTheDocument();
+    expect(
+      screen.queryByText('pages.initiativeUserDetails.operationTypes.discountAuthorized')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('pages.initiativeUserDetails.operationTypes.discountCancelled')
+    ).not.toBeInTheDocument();
+
+    const refundButtons = (await screen.findAllByTestId('operationTypeBtn')) as HTMLButtonElement[];
+    expect(refundButtons[0]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.addInstrument'
+    );
+    expect(refundButtons[0]).toHaveTextContent('**** 5678');
+    expect(refundButtons[1]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.deleteInstrument'
+    );
+    expect(refundButtons[1]).toHaveTextContent('**** 9876');
+
+    cleanup();
+
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.DISCOUNT));
+    InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [
+          buildInstrumentOperation('op-add-instrument', 'ADD_INSTRUMENT', '5678'),
+          buildInstrumentOperation('op-delete-instrument', 'DELETE_INSTRUMENT', '9876'),
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 2,
+        totalPages: 1,
+      });
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    openFilterEventSelect();
+    expect(
+      await screen.findByText('pages.initiativeUserDetails.operationTypes.discountAuthorized')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('pages.initiativeUserDetails.operationTypes.discountCancelled')
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByText('pages.initiativeUserDetails.operationTypes.paidRefund')
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('pages.initiativeUserDetails.operationTypes.reversal')
+    ).not.toBeInTheDocument();
+
+    const discountButtons = (await screen.findAllByTestId('operationTypeBtn')) as HTMLButtonElement[];
+    expect(discountButtons[0]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.addInstrument'
+    );
+    expect(discountButtons[0]).not.toHaveTextContent('**** 5678');
+    expect(discountButtons[1]).toHaveTextContent(
+      'pages.initiativeUserDetails.operationTypes.deleteInstrument'
+    );
+    expect(discountButtons[1]).not.toHaveTextContent('**** 9876');
+
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+  });
+
+  test('renders unknown operation types with an empty label fallback', async () => {
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.ONBOARDING_OK,
+        statusDate: new Date().toString(),
+      });
+    InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [
+          {
+            operationId: 'op-unknown',
+            operationType: 'SOME_NEW_OPERATION',
+            operationDate: '2026-03-01T10:00:00.000Z',
+            amountCents: 0,
+            accruedCents: 0,
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      });
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    const [unknownOperationButton] = await screen.findAllByTestId('operationTypeBtn');
+    expect(unknownOperationButton).toHaveTextContent(/^\s*$/);
+  });
+
+  test('does not open refund details when refund operations miss the event id', async () => {
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.ONBOARDING_OK,
+        statusDate: new Date().toString(),
+      });
+    InitiativeApiMocked.getTimeLine = async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [
+          {
+            operationId: 'op-paid-no-event',
+            operationType: 'PAID_REFUND',
+            operationDate: '2026-03-01T10:00:00.000Z',
+            amountCents: 200,
+            accruedCents: 20,
+          },
+          {
+            operationId: 'op-rejected-no-event',
+            operationType: 'REJECTED_REFUND',
+            operationDate: '2026-03-01T10:00:00.000Z',
+            amountCents: 300,
+            accruedCents: 30,
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 2,
+        totalPages: 1,
+      });
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    const operationButtons = (await screen.findAllByTestId('operationTypeBtn')) as HTMLButtonElement[];
+    fireEvent.click(operationButtons[0]);
+    fireEvent.click(operationButtons[1]);
+
+    expect(screen.queryByTestId('initiative-refund-detail-modal')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('transaction-detail-modal')).not.toBeInTheDocument();
+  });
+
+  test('skips timeline fetch when onboarding status is not allowed and keeps filters inert', async () => {
+    store.dispatch(setInitiativeRewardType(InitiativeRewardTypeEnum.REFUND));
+    const getTimeLineSpy = jest.fn(async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+      })
+    );
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.DEMANDED,
+        statusDate: new Date().toString(),
+      });
+    InitiativeApiMocked.getTimeLine = getTimeLineSpy;
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    expect(await screen.findByText('pages.initiativeUserDetails.noData')).toBeInTheDocument();
+    expect(getTimeLineSpy).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByTestId('apply-filters-test'));
+    fireEvent.click(screen.getByText('pages.initiativeUsers.form.resetFiltersBtn'));
+
+    expect(getTimeLineSpy).not.toHaveBeenCalled();
+  });
+
+  test('loads the timeline for unsubscribed beneficiaries without showing suspension actions', async () => {
+    mockedLocation.pathname = `${BASE_ROUTE}/dettagli-utente/2333333/55fiscal`;
+
+    InitiativeApiMocked.getBeneficiaryOnboardingStatus = async (): Promise<OnboardingStatusDTO> =>
+      Promise.resolve({
+        status: OnboardingStatusEnum.UNSUBSCRIBED,
+        statusDate: new Date().toString(),
+      });
+
+    const getTimeLineSpy = jest.fn(async (): Promise<any> =>
+      Promise.resolve({
+        lastUpdate: new Date('2026-03-01T10:00:00.000Z'),
+        operationList: [],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+      })
+    );
+    InitiativeApiMocked.getTimeLine = getTimeLineSpy;
+
+    renderWithContext(<InitiativeUserDetails />, store);
+
+    expect(await screen.findByText('pages.initiativeUserDetails.noData')).toBeInTheDocument();
+    await waitFor(() => expect(getTimeLineSpy).toHaveBeenCalled());
+    expect(screen.queryByTestId('suspended')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('readmit')).not.toBeInTheDocument();
   });
 });

@@ -23,10 +23,7 @@ import {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AvailableCriteria } from '../../../../model/AdmissionCriteria';
-import {
-  BeneficiaryTypeEnum,
-  FamilyUnitCompositionEnum,
-} from '../../../../api/generated/initiative/InitiativeGeneralDTO';
+import { InitiativeGeneralDtoBeneficiaryTypeEnum, InitiativeGeneralDtoFamilyUnitCompositionEnum } from '../../../../api/generated/initiative/apiClient';
 
 type Props = {
   openModal: boolean;
@@ -36,8 +33,8 @@ type Props = {
   setCriteriaToRender: Dispatch<Array<AvailableCriteria>>;
   searchCriteria: string;
   setSearchCriteria: Dispatch<SetStateAction<string>>;
-  beneficiaryType: BeneficiaryTypeEnum | undefined;
-  familyUnitComposition: FamilyUnitCompositionEnum | undefined;
+  beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined;
+  familyUnitComposition: InitiativeGeneralDtoFamilyUnitCompositionEnum | undefined;
 };
 
 const AdmissionCriteriaModal = ({
@@ -54,7 +51,7 @@ const AdmissionCriteriaModal = ({
   const { t } = useTranslation();
   const [headingHeight, setHeadingHeight] = useState('');
 
-  const elementRef = useCallback((node) => {
+  const elementRef = useCallback((node: { getBoundingClientRect: () => { (): any; new(): any; height: number; }; } | null) => {
     if (node !== null) {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       const h = (node.getBoundingClientRect().height + 150).toString() + 'px';
@@ -81,16 +78,16 @@ const AdmissionCriteriaModal = ({
     list: Array<AvailableCriteria>,
     searchKey: string,
     handleCriteriaChange: ChangeEventHandler,
-    beneficiaryType: BeneficiaryTypeEnum | undefined
+    beneficiaryType: InitiativeGeneralDtoBeneficiaryTypeEnum | undefined
     // eslint-disable-next-line sonarjs/cognitive-complexity
   ) => {
     if (!searchKey.length) {
       return list.map((a) => {
         const displayType =
           a.code === 'ISEE' &&
-          typeof beneficiaryType !== undefined &&
-          familyUnitComposition === FamilyUnitCompositionEnum.INPS &&
-          beneficiaryType === BeneficiaryTypeEnum.NF
+          beneficiaryType !== undefined &&
+          familyUnitComposition === InitiativeGeneralDtoFamilyUnitCompositionEnum.INPS &&
+          beneficiaryType === InitiativeGeneralDtoBeneficiaryTypeEnum.NF
             ? 'none'
             : 'flex';
 

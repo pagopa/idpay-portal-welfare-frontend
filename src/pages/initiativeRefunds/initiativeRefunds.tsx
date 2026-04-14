@@ -13,20 +13,19 @@ import {
   TableCell,
   TableHead,
   TableRow,
-  TextField,
 } from '@mui/material';
 import { ButtonNaked } from '@pagopa/mui-italia';
 import { useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { TitleBox } from '@pagopa/selfcare-common-frontend';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { useFormik } from 'formik';
-import useErrorDispatcher from '@pagopa/selfcare-common-frontend/hooks/useErrorDispatcher';
-import useLoading from '@pagopa/selfcare-common-frontend/hooks/useLoading';
+import useErrorDispatcher from '@pagopa/selfcare-common-frontend/lib/hooks/useErrorDispatcher';
+import useLoading from '@pagopa/selfcare-common-frontend/lib/hooks/useLoading';
 import itLocale from 'date-fns/locale/it';
 import { ArrowForwardIos } from '@mui/icons-material';
 import { useInitiative } from '../../hooks/useInitiative';
@@ -42,11 +41,11 @@ import {
   initiativePagesBreadcrumbsContainerStyle,
 } from '../../helpers';
 import { getExportsPaged } from '../../services/intitativeService';
-import { RewardExportsDTO } from '../../api/generated/initiative/RewardExportsDTO';
 import { InitiativeRefundToDisplay } from '../../model/InitiativeRefunds';
 import EmptyList from '../components/EmptyList';
 import BreadcrumbsBox from '../components/BreadcrumbsBox';
 import TablePaginator from '../components/TablePaginator';
+import { RewardExportsDTO } from '../../api/generated/initiative/apiClient';
 
 const InitiativeRefunds = () => {
   const { t } = useTranslation();
@@ -97,7 +96,7 @@ const InitiativeRefunds = () => {
             id: r.id,
             notificationDate:
               typeof r.notificationDate === 'object'
-                ? r.notificationDate.toLocaleString('fr-BE').split(' ')[0]
+                ? (r.notificationDate as any).toString().split(' ')[0]
                 : '',
             rewardsExported: `${numberWithCommas(r.rewardsExported)} €`,
             rewardsResults: `${numberWithCommas(r.rewardsNotified)}`,
@@ -186,6 +185,7 @@ const InitiativeRefunds = () => {
 
   useMemo(() => {
     setPage(0);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -199,6 +199,7 @@ const InitiativeRefunds = () => {
         filterByStatus
       );
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, page]);
 
   return (
@@ -237,45 +238,39 @@ const InitiativeRefunds = () => {
       <Box sx={initiativePagesFiltersFormContainerStyle}>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeRefunds.form.from')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchFrom}
-              onChange={(value) => formik.setFieldValue('searchFrom', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchFrom"
-                  data-testid="searchFrom-test"
-                  name="searchFrom"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchFrom && Boolean(formik.errors.searchFrom)}
-                  helperText={formik.touched.searchFrom && formik.errors.searchFrom}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchFrom', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchFrom',
+                  name: 'searchFrom',
+                  size: 'small',
+                  error: formik.touched.searchFrom && Boolean(formik.errors.searchFrom),
+                  helperText: formik.touched.searchFrom && formik.errors.searchFrom,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
         <FormControl sx={{ gridColumn: 'span 2' }}>
           <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={itLocale}>
-            <DesktopDatePicker
+            <DatePicker
               label={t('pages.initiativeRefunds.form.to')}
-              inputFormat="dd/MM/yyyy"
+              format="dd/MM/yyyy"
               value={formik.values.searchTo}
-              onChange={(value) => formik.setFieldValue('searchTo', value)}
-              renderInput={(props) => (
-                <TextField
-                  {...props}
-                  id="searchTo"
-                  data-testid="searchTo-test"
-                  name="searchTo"
-                  type="date"
-                  size="small"
-                  error={formik.touched.searchTo && Boolean(formik.errors.searchTo)}
-                  helperText={formik.touched.searchTo && formik.errors.searchTo}
-                />
-              )}
+              onChange={(value: any) => formik.setFieldValue('searchTo', value)}
+              slotProps={{
+                textField: {
+                  id: 'searchTo',
+                  name: 'searchTo',
+                  size: 'small',
+                  error: formik.touched.searchTo && Boolean(formik.errors.searchTo),
+                  helperText: formik.touched.searchTo && formik.errors.searchTo,
+                },
+              }}
             />
           </LocalizationProvider>
         </FormControl>
@@ -288,10 +283,13 @@ const InitiativeRefunds = () => {
             }}
             name="filterStatus"
             label={t('pages.initiativeRefunds.form.status')}
-            placeholder={t('pages.initiativeRefunds.form.status')}
+            displayEmpty
             onChange={(e) => formik.handleChange(e)}
             value={formik.values.filterStatus}
           >
+            <MenuItem value="" disabled>
+              {t('pages.initiativeRefunds.form.status')}
+            </MenuItem>
             <MenuItem value="EXPORTED" data-testid="filterStatusRegistered-test">
               {t('pages.initiativeRefunds.form.toLoad')}
             </MenuItem>

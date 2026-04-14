@@ -1,8 +1,6 @@
 import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
-import React from 'react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { PageRewardImportsDTO } from '../../../api/generated/initiative/PageRewardImportsDTO';
-import { StatusEnum } from '../../../api/generated/initiative/RewardImportsDTO';
+import { PageRewardImportsDTO, RewardImportsDtoStatusEnum as StatusEnum } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeId } from '../../../redux/slices/initiativeSlice';
 import { store } from '../../../redux/store';
 import { BASE_ROUTE } from '../../../routes';
@@ -38,7 +36,7 @@ jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: any) => key }),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend/index', () => ({
+jest.mock('@pagopa/selfcare-common-frontend/lib/index', () => ({
   TitleBox: () => <div>Test</div>,
 }));
 
@@ -85,10 +83,10 @@ describe('<InitiativeRefundsOutcome />', () => {
               {
                 contentLength: 0,
                 eTag: 'string',
-                elabDate: new Date(),
+                elabDate: new Date().toString(),
                 errorsSize: 1,
                 exportIds: ['string'],
-                feedbackDate: new Date(),
+                feedbackDate: new Date().toString(),
                 filePath: 'string',
                 initiativeId: 'string',
                 organizationId: 'string',

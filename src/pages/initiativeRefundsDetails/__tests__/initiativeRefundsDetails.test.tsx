@@ -1,19 +1,24 @@
 /* eslint-disable functional/immutable-data */
-import { cleanup, fireEvent, screen } from '@testing-library/react';
-import React from 'react';
+import { cleanup, fireEvent, screen, waitFor } from '@testing-library/react';
 import { InitiativeApiMocked } from '../../../api/__mocks__/InitiativeApiClient';
-import { ExportListDTO } from '../../../api/generated/initiative/ExportListDTO';
-import { SasToken } from '../../../api/generated/initiative/SasToken';
+import { ExportListDTO, SasToken } from '../../../api/generated/initiative/apiClient';
 import { BASE_ROUTE } from '../../../routes';
 import { mockedInitiativeId } from '../../../services/__mocks__/groupsService';
 import { mockedGetRewardFileDownload } from '../../../services/__mocks__/intitativeService';
+import * as initiativeService from '../../../services/intitativeService';
 import { renderWithContext } from '../../../utils/test-utils';
 import InitiativeRefundsDetails from '../initiativeRefundsDetails';
 import userEvent from '@testing-library/user-event';
 
+jest.mock('../../../services/intitativeService');
+
 beforeEach(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   jest.spyOn(console, 'warn').mockImplementation(() => {});
+  jest.spyOn(global, 'fetch' as any).mockResolvedValue({
+    status: 500,
+    statusText: 'ERR',
+  } as Response);
 });
 
 const oldWindowLocation = global.window.location;
@@ -32,7 +37,10 @@ afterAll(() => {
   Object.defineProperty(window, 'location', { value: oldWindowLocation });
 });
 
-afterEach(() => cleanup);
+afterEach(() => {
+  cleanup();
+  jest.restoreAllMocks();
+});
 
 describe('test suite for refund details', () => {
   test('test render of component InitiativeRefundsDetails ', async () => {
@@ -87,13 +95,9 @@ describe('test suite for refund details', () => {
 
     expect(filterByCro.value).toEqual('cro');
 
-    const selectByStatus = screen.getByPlaceholderText(
-      'pages.initiativeRefundsDetails.form.outcome'
-    ) as HTMLSelectElement;
-
-    fireEvent.click(selectByStatus);
-
-    fireEvent.change(selectByStatus, { target: { value: 'COMPLETED_OK' } });
+    const selectByStatus = screen.getByRole('combobox') as HTMLElement;
+    fireEvent.mouseDown(selectByStatus);
+    fireEvent.click(screen.getByTestId('filterStatusOnboardingOk-test'));
 
     const filterBtn = screen.getByText(
       'pages.initiativeRefundsDetails.form.filterBtn'
@@ -107,26 +111,6 @@ describe('test suite for refund details', () => {
 
     fireEvent.click(resetFiltersBtn);
   });
-
-  // test('test open modal and close modal', async () => {
-  //   renderWithContext(<InitiativeRefundsDetails />);
-
-  //   // click on arrow icon to open modal
-  //   const openModalArrowBtn = (await screen.findAllByTestId(
-  //     'open-modal-refunds-arrow'
-  //   )) as Array<HTMLButtonElement>;
-
-  //   fireEvent.click(openModalArrowBtn[0]);
-
-  //   const modalTitle = await screen.findByText('pages.initiativeRefundsDetails.modal.title');
-
-  //   expect(modalTitle).toBeInTheDocument();
-
-  //   // click on x icon to close modal
-  //   const closeModalXBTn = (await screen.findByTestId('close-modal-test')) as HTMLButtonElement;
-
-  //   fireEvent.click(closeModalXBTn);
-  // });
 
   test('test getExportRefundsListPaged with empty response', async () => {
     const mockedRefundsDetailsListItem = {
@@ -193,5 +177,147 @@ describe('test suite for refund details', () => {
     InitiativeApiMocked.getExportRefundsListPaged = async (): Promise<any> =>
       Promise.reject('mocked error response for tests');
     renderWithContext(<InitiativeRefundsDetails />);
+  });
+
+  test('handle download file with non-200 response', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      },
+    });
+
+    renderWithContext(<InitiativeRefundsDetails />);
+    fireEvent.click(screen.getByTestId('download-btn-test'));
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+  });
+
+  test('open refund details modal from table row', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      },
+    });
+
+    const exportPagedSpy = jest
+      .spyOn(initiativeService, 'getExportRefundsListPaged')
+      .mockResolvedValue({
+        content: [
+          {
+            amountCents: 100,
+            eventId: 'evt-1',
+            iban: 'IT12T1234512345123456789012',
+            status: 'COMPLETED_OK',
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      } as ExportListDTO);
+
+    renderWithContext(<InitiativeRefundsDetails />);
+
+    const openModalArrowBtn = (await screen.findAllByTestId(
+      'open-modal-refunds-arrow'
+    ))[0] as HTMLButtonElement;
+    fireEvent.click(openModalArrowBtn);
+
+    expect(await screen.findByText('pages.initiativeRefundsDetails.modal.title')).toBeInTheDocument();
+    exportPagedSpy.mockRestore();
+  });
+
+  test('renders summary truthy branches and applies status filter value', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      },
+    });
+
+    const summarySpy = jest.spyOn(initiativeService, 'getExportSummary').mockResolvedValue({
+      createDate: new Date('2026-03-30T10:00:00.000Z'),
+      totalAmountCents: 10000,
+      totalRefundedAmountCents: 8000,
+      totalRefunds: 3,
+      successPercentage: 75,
+      status: 'COMPLETE',
+    } as any);
+
+    const pagedSpy = jest
+      .spyOn(initiativeService, 'getExportRefundsListPaged')
+      .mockResolvedValue({
+        content: [
+          {
+            amountCents: 100,
+            eventId: 'evt-1',
+            iban: 'IT12T1234512345123456789012',
+            status: 'COMPLETED_OK',
+          },
+        ],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 1,
+        totalPages: 1,
+      } as ExportListDTO);
+
+    renderWithContext(<InitiativeRefundsDetails />);
+
+    expect(await screen.findByText('75%')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(document.querySelector('.MuiChip-root')).toBeInTheDocument();
+
+    fireEvent.mouseDown(screen.getByRole('combobox'));
+    fireEvent.click(await screen.findByTestId('filterStatusOnboardingOk-test'));
+    fireEvent.click(screen.getByTestId('apply-filters-test'));
+
+    await waitFor(() => {
+      expect(pagedSpy).toHaveBeenCalledWith(
+        mockedInitiativeId,
+        '1234567890',
+        0,
+        undefined,
+        'COMPLETED_OK'
+      );
+    });
+
+    summarySpy.mockRestore();
+    pagedSpy.mockRestore();
+  });
+
+  test('applies filters with empty values using undefined CRO and status', async () => {
+    Object.defineProperty(window, 'location', {
+      value: {
+        ...window.location,
+        pathname: `${BASE_ROUTE}/dettaglio-rimborsi-iniziativa/${mockedInitiativeId}/1234567890/filePath`,
+      },
+    });
+
+    const pagedSpy = jest
+      .spyOn(initiativeService, 'getExportRefundsListPaged')
+      .mockResolvedValue({
+        content: [],
+        pageNo: 0,
+        pageSize: 10,
+        totalElements: 0,
+        totalPages: 0,
+      } as ExportListDTO);
+
+    renderWithContext(<InitiativeRefundsDetails />);
+    fireEvent.click(await screen.findByTestId('apply-filters-test'));
+
+    await waitFor(() => {
+      expect(pagedSpy).toHaveBeenCalledWith(
+        mockedInitiativeId,
+        '1234567890',
+        0,
+        undefined,
+        undefined
+      );
+    });
+
+    pagedSpy.mockRestore();
   });
 });

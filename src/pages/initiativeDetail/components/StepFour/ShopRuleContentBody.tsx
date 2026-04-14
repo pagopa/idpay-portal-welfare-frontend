@@ -1,14 +1,14 @@
 import { Box, Divider, Typography } from '@mui/material';
 import { Fragment } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MccFilterDTO } from '../../../../api/generated/initiative/MccFilterDTO';
 import {
   DaysOfWeekInterval,
   Initiative,
   RewardLimit,
   RewardRule,
 } from '../../../../model/Initiative';
-import { InitiativeRewardTypeEnum } from '../../../../api/generated/initiative/InitiativeDTO';
+import { MccFilterDTO } from '../../../../api/generated/initiative/apiClient';
+import { InitiativeRewardTypeEnum } from '../../../../services/intitativeService';
 
 type Props = {
   initiativeDetail: Initiative;
@@ -18,7 +18,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
   const { t } = useTranslation();
 
   const printRewardRuleAsString = (rewardRule: RewardRule): string => {
-    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+    if (rewardRule && (rewardRule.rewardValueType as any) === 'ABSOLUTE') {
       return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremium')} ${
         rewardRule.rewardValue
       } €`;
@@ -30,7 +30,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
   };
 
   const printRewardRuleLabel = (rewardRule: RewardRule): string => {
-    if (rewardRule && rewardRule.rewardValueType === 'ABSOLUTE') {
+    if (rewardRule && (rewardRule.rewardValueType as any) === 'ABSOLUTE') {
       return `${t('pages.initiativeDetail.accordion.step4.content.fixedPremiumLabel')}`;
     } else {
       return `${t('pages.initiativeDetail.accordion.step4.content.percentageRecognized')}`;
@@ -116,7 +116,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
         )}
 
       {initiativeDetail.trxRule.mccFilter &&
-        typeof initiativeDetail.trxRule.mccFilter !== undefined &&
+        initiativeDetail.trxRule.mccFilter !== undefined &&
         Array.isArray(initiativeDetail.trxRule.mccFilter.values) &&
         initiativeDetail.trxRule.mccFilter.values.length > 0 && (
           <Fragment>
@@ -143,7 +143,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
           </Typography>
         </Fragment>
       ) : typeof initiativeDetail.trxRule.trxCount?.from === 'number' &&
-        typeof initiativeDetail.trxRule.trxCount?.to === 'undefined' ? (
+        initiativeDetail.trxRule.trxCount?.to === undefined ? (
         <Fragment>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>
             {t('pages.initiativeDetail.accordion.step4.content.transactionNumber')}
@@ -152,7 +152,7 @@ const ShopRuleContentBody = ({ initiativeDetail }: Props) => {
             {initiativeDetail.trxRule.trxCount?.from}
           </Typography>
         </Fragment>
-      ) : typeof initiativeDetail.trxRule.trxCount?.from === 'undefined' &&
+      ) : initiativeDetail.trxRule.trxCount?.from === undefined &&
         typeof initiativeDetail.trxRule.trxCount?.to === 'number' ? (
         <Fragment>
           <Typography variant="body2" sx={{ gridColumn: 'span 3' }}>

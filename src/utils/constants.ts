@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/semi */
-
 const IS_DEVELOP = process.env.NODE_ENV === 'development';
 
 export const testToken =
