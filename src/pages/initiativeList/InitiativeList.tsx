@@ -17,6 +17,7 @@ import {
   MenuItem,
 } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { format, parseISO } from 'date-fns';
 import { visuallyHidden } from '@mui/utils';
 import { TitleBox } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation } from 'react-i18next';
@@ -54,34 +55,22 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       label: t('pages.initiativeList.tableColumns.initiativeName'),
     },
     {
-      id: 'creationDate',
+      id: 'organizationName',
       numeric: false,
       disablePadding: false,
-      label: t('pages.initiativeList.tableColumns.creationDate'),
+      label: t('pages.initiativeList.tableColumns.organizationName'),
     },
     {
-      id: 'updateDate',
+      id: 'startDate',
       numeric: false,
       disablePadding: false,
-      label: t('pages.initiativeList.tableColumns.updateDate'),
-    },
-    {
-      id: 'initiativeId',
-      numeric: false,
-      disablePadding: true,
-      label: t('pages.initiativeList.tableColumns.initiativeId'),
+      label: t('pages.initiativeList.tableColumns.enrollmentDate'),
     },
     {
       id: 'status',
       numeric: false,
       disablePadding: false,
       label: t('pages.initiativeList.tableColumns.initiativeStatus'),
-    },
-    {
-      id: 'id',
-      numeric: true,
-      disablePadding: false,
-      label: '',
     },
   ];
 
@@ -93,6 +82,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             key={headCell.id}
             align="left"
             padding="normal"
+            sx={{ width: '25%' }}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel
@@ -301,8 +291,9 @@ const InitiativeList = () => {
           initiativeId: r.initiativeId ?? "",
           initiativeName: r.initiativeName ?? "",
           status: r.status ?? "",
-          creationDate: r.creationDate ? new Date(r.creationDate).toLocaleDateString("fr-BE") : "",
-          updateDate: r.updateDate ? new Date(r.updateDate).toLocaleDateString("fr-BE") : "",
+          organizationName: r.organizationName ?? '',
+          startDate: r.startDate ?? '',
+          endDate: r.endDate ?? '',
           id: i,
         }));
         dispatch(setInitiativeSummaryList(response));
@@ -504,14 +495,15 @@ const InitiativeList = () => {
                             {row.initiativeName}
                           </ButtonNaked>
                         </TableCell>
-                        <TableCell>{row.creationDate}</TableCell>
-                        <TableCell>{row.updateDate}</TableCell>
-                        <TableCell>{row.initiativeId}</TableCell>
+                        <TableCell>{row.organizationName}</TableCell>
+                        <TableCell>
+                          {row.startDate ? format(parseISO(row.startDate), 'dd/MM/yyyy') : '—'}
+                          {' - '}
+                          {row.endDate ? format(parseISO(row.endDate), 'dd/MM/yyyy') : '—'}
+                        </TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
-                        {showActionMenu(row.status) ? (
+                        {showActionMenu(row.status) && (
                           <ActionMenu id={row.initiativeId} status={row.status} />
-                        ) : (
-                          <TableCell></TableCell>
                         )}
                       </TableRow>
                     );

@@ -3172,6 +3172,14 @@ components:
     InitiativeSummaryDTO:
       type: object
       properties:
+        organizationName:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
         initiativeId:
           type: string
         initiativeName:
