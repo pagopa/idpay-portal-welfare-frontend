@@ -63,7 +63,7 @@ export default function SideMenu() {
     return history.location.pathname;
   });
 
-  const match = matchPath(location.pathname, {
+  const match = matchPath(pathname, {
     path: [
       ROUTES.INITIATIVE_OVERVIEW,
       ROUTES.INITIATIVE_RANKING,
@@ -114,17 +114,19 @@ export default function SideMenu() {
       const itemExpanded = `panel-${id}`;
       setExpanded(itemExpanded);
     } else {
-      const firstItemExpanded =
-        Array.isArray(initiativeSummaryList) && initiativeSummaryList.length > 0
-          ? `panel-${initiativeSummaryList[0].initiativeId}`
-          : false;
-      setExpanded(firstItemExpanded);
+      setExpanded(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [JSON.stringify(match), initiativeSummaryList]);
 
-  const handleChange = (panel: string) => (_event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded ? panel : false);
+  const handleChange = (initiativeId: string) => () => {
+    onExit(() => {
+      setExpanded(`panel-${initiativeId}`);
+      const refundsPath = `${BASE_ROUTE}/rimborsi-iniziativa/${initiativeId}`;
+      if (pathname !== refundsPath) {
+        history.replace(refundsPath);
+      }
+    });
   };
 
   return (
@@ -143,7 +145,7 @@ export default function SideMenu() {
             <Accordion
               key={item.initiativeId}
               expanded={expanded === `panel-${item.initiativeId}`}
-              onChange={handleChange(`panel-${item.initiativeId}`)}
+              onChange={handleChange(item.initiativeId)}
               disableGutters
               elevation={0}
               sx={{
