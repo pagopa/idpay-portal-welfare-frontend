@@ -774,6 +774,8 @@
       },
       "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
       "tableColumns": {
+        "organizationName": "Creata da",
+        "enrollmentDate": "Data di adesione",
         "creationDate": "Creata il",
         "initiativeId": "Codice identificativo",
         "initiativeName": "Nome",
