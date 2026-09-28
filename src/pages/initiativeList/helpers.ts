@@ -3,8 +3,9 @@ import { t } from '../../locale';
 export interface Data {
   initiativeId: string;
   initiativeName: string;
-  creationDate: string;
-  updateDate: string;
+  organizationName: string;
+  startDate: string;
+  endDate: string;
   status: string;
   id: number;
 }
