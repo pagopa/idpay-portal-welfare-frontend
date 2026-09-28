@@ -3,7 +3,7 @@ import { createMemoryHistory } from 'history';
 import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeSummaryList } from '../../../redux/slices/initiativeSummarySlice';
 import { createStore } from '../../../redux/store';
-import { BASE_ROUTE } from '../../../routes';
+import ROUTES, { BASE_ROUTE } from '../../../routes';
 import { renderWithContext } from '../../../utils/test-utils';
 import SideMenu from '../SideMenu';
 
@@ -186,6 +186,10 @@ describe('<SideMenu />', () => {
     const secondHeader = screen.getByRole('button', { name: merchantItem!.initiativeName });
 
     await waitFor(() => expect(secondHeader).toHaveAttribute('aria-expanded', 'true'));
+    expect(firstHeader).toHaveAttribute('aria-expanded', 'false');
+    expect(history.location.pathname).toBe(
+      `${BASE_ROUTE}/rimborsi-iniziativa/${merchantItem!.initiativeId}`
+    );
 
     const secondAccordion = secondHeader.closest('.MuiAccordion-root') as HTMLElement;
     expect(
@@ -273,18 +277,25 @@ describe('<SideMenu />', () => {
     ).not.toBeInTheDocument();
   });
 
-  test('expands the first initiative when no route matches', async () => {
+  test('keeps initiatives collapsed on the list page, including after returning from refunds', async () => {
     const store = createStore();
     store.dispatch(setInitiativeSummaryList(mockedSummary));
-    mockedLocation.pathname = `${BASE_ROUTE}/not-found`;
+    const history = createMemoryHistory({ initialEntries: [ROUTES.HOME] });
+    renderWithContext(<SideMenu />, store, history);
 
-    renderWithContext(<SideMenu />, store);
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole('button', { name: mockedSummary[0].initiativeName })
-      ).toHaveAttribute('aria-expanded', 'true');
+    mockedSummary.forEach((item) => {
+      expect(screen.getByRole('button', { name: item.initiativeName })).toHaveAttribute(
+        'aria-expanded', 'false'
+      );
     });
+
+    const firstHeader = screen.getByRole('button', { name: mockedSummary[0].initiativeName });
+    fireEvent.click(firstHeader);
+    expect(firstHeader).toHaveAttribute('aria-expanded', 'true');
+
+    fireEvent.click(screen.getByRole('button', { name: 'sideMenu.initiativeList.title' }));
+    expect(history.location.pathname).toBe(ROUTES.HOME);
+    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'false'));
   });
 
   test('renders menu entries and navigates when items are clicked', async () => {
@@ -295,6 +306,7 @@ describe('<SideMenu />', () => {
 
     const firstHeader = screen.getByRole('button', { name: mockedSummary[0].initiativeName });
 
+    fireEvent.click(firstHeader);
     await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'true'));
 
     const firstAccordion = firstHeader.closest('.MuiAccordion-root');
@@ -322,19 +334,28 @@ describe('<SideMenu />', () => {
     expect(history.location.pathname).toContain('/esporta-report-dati-utenti/');
   });
 
-  test('collapses the first accordion when its header is clicked twice', async () => {
+  test('navigates to refunds and keeps the initiative expanded when its header is clicked again', async () => {
     const store = createStore();
     store.dispatch(setInitiativeSummaryList(mockedSummary));
     mockedLocation.pathname = `${BASE_ROUTE}/not-found`;
-    renderWithContext(<SideMenu />, store);
+    const { history } = renderWithContext(<SideMenu />, store);
 
     const firstHeader = screen.getByRole('button', { name: mockedSummary[0].initiativeName });
 
-    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'true'));
+    expect(firstHeader).toHaveAttribute('aria-expanded', 'false');
 
     fireEvent.click(firstHeader);
 
-    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'false'));
+    expect(history.location.pathname).toBe(
+      `${BASE_ROUTE}/rimborsi-iniziativa/${mockedSummary[0].initiativeId}`
+    );
+    expect(firstHeader).toHaveAttribute('aria-expanded', 'true');
+
+    const replaceSpy = jest.spyOn(history, 'replace');
+    fireEvent.click(firstHeader);
+
+    expect(firstHeader).toHaveAttribute('aria-expanded', 'true');
+    expect(replaceSpy).not.toHaveBeenCalled();
   });
 
   test('does not navigate again when clicking the active export report item', async () => {
