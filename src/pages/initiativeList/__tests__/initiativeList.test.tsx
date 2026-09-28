@@ -1,175 +1,178 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import InitiativeList from '../InitiativeList';
-import React from 'react';
-import { store } from '../../../redux/store';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/apiClient';
+import { getInitativeSummary } from '../../../services/intitativeService';
+import { createStore } from '../../../redux/store';
 import { setPermissionsList } from '../../../redux/slices/permissionsSlice';
-import { Provider } from 'react-redux';
-import { theme } from '@pagopa/mui-italia';
-import { Router } from 'react-router';
-import { createMemoryHistory } from 'history';
-import { ThemeProvider } from '@mui/system';
+import { setInitiativeId, setInitiativeName } from '../../../redux/slices/initiativeSlice';
+import { initiativeSummarySelector } from '../../../redux/slices/initiativeSummarySlice';
+import routes, { BASE_ROUTE } from '../../../routes';
+import { renderWithContext } from '../../../utils/test-utils';
+import InitiativeList from '../InitiativeList';
 
-jest.mock('../../../services/intitativeService');
+const mockSetLoading = jest.fn();
 
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: any) => key }),
+jest.mock('../../../services/intitativeService', () => ({
+  getInitativeSummary: jest.fn(),
 }));
 
-jest.mock('@pagopa/selfcare-common-frontend/lib/index', () => ({
-  TitleBox: () => <div></div>,
+jest.mock('@pagopa/selfcare-common-frontend/lib/hooks/useLoading', () => ({
+  __esModule: true,
+  default: () => mockSetLoading,
 }));
 
-beforeEach(() => {
-  jest.spyOn(console, 'error').mockImplementation(() => {});
-  jest.spyOn(console, 'warn').mockImplementation(() => {});
-});
+jest.mock('@pagopa/selfcare-common-frontend/lib', () => ({
+  TitleBox: () => <div />,
+}));
 
-window.scrollTo = jest.fn();
+const mockGetSummary = getInitativeSummary as jest.MockedFunction<typeof getInitativeSummary>;
 
-describe('<InitiativeList />', (injectedHistory?: ReturnType<typeof createMemoryHistory>) => {
-  const history = injectedHistory ? injectedHistory : createMemoryHistory();
+const makeSummary = (): InitiativeSummaryArrayDTO => [
+  {
+    initiativeId: 'beta-id',
+    initiativeName: 'Beta benefit',
+    organizationName: 'Alpha organization',
+    status: 'PUBLISHED',
+    startDate: '2026-02-01',
+    endDate: '2026-12-31',
+  },
+  {
+    initiativeId: 'alpha-id',
+    initiativeName: 'Alpha benefit',
+    organizationName: 'Zulu organization',
+    status: 'DRAFT',
+  },
+];
 
-  // test('Test render InitiativeList component with update permission', async () => {
-  //   store.dispatch(
-  //     setPermissionsList([
-  //       { name: 'updateInitiative', description: 'description', mode: 'enabled' },
-  //     ])
-  //   );
+const renderList = (canCreate = false) => {
+  const store = createStore();
+  store.dispatch(
+    setPermissionsList([
+      { name: 'createInitiative', description: '', mode: canCreate ? 'enabled' : 'disabled' },
+    ])
+  );
+  return renderWithContext(<InitiativeList />, store);
+};
 
-  //   render(
-  //     <Provider store={store}>
-  //       <ThemeProvider theme={theme}>
-  //         <Router history={history}>
-  //           <InitiativeList />
-  //         </Router>
-  //       </ThemeProvider>
-  //     </Provider>
-  //   );
+const displayedNames = () =>
+  screen.getAllByTestId('initiative-btn-test').map((button) => button.textContent);
 
-  //   const searchInitiative = screen.getByTestId(
-  //     'search-initiative-no-permission-test'
-  //   ) as HTMLInputElement;
+describe('<InitiativeList />', () => {
+  beforeEach(() => {
+    mockGetSummary.mockResolvedValue(makeSummary());
+    jest.spyOn(window, 'scrollTo').mockImplementation(() => {});
+  });
 
-  //   fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
-  //   expect(searchInitiative.value).toBe('Fish');
+  test('loads and stores initiatives, sorts by name, and formats enrollment dates', async () => {
+    const { store } = renderList();
 
-  //   const menuButton = await waitFor(() => {
-  //     return screen.getAllByTestId('menu-open-test');
-  //   });
+    expect(mockSetLoading).toHaveBeenCalledWith(true);
+    await screen.findByRole('button', { name: 'Alpha benefit' });
+    await waitFor(() => expect(mockSetLoading).toHaveBeenLastCalledWith(false));
 
-  //   fireEvent.click(menuButton[2]);
-
-  //   const updateBtn = screen.getByText('pages.initiativeList.actions.update');
-  //   fireEvent.click(updateBtn);
-
-  //   fireEvent.change(searchInitiative, { target: { value: '' } });
-  //   expect(searchInitiative.value).toBe('');
-  // });
-
-  // test('Test render InitiativeList component with delete permission', async () => {
-  //   store.dispatch(
-  //     setPermissionsList([
-  //       { name: 'deleteInitiative', description: 'description', mode: 'enabled' },
-  //     ])
-  //   );
-
-  //   render(
-  //     <Provider store={store}>
-  //       <ThemeProvider theme={theme}>
-  //         <Router history={history}>
-  //           <InitiativeList />
-  //         </Router>
-  //       </ThemeProvider>
-  //     </Provider>
-  //   );
-
-  //   const searchInitiative = screen.getByTestId(
-  //     'search-initiative-no-permission-test'
-  //   ) as HTMLInputElement;
-
-  //   fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
-  //   expect(searchInitiative.value).toBe('Fish');
-
-  //   const menuButton = await waitFor(() => {
-  //     return screen.getAllByTestId('menu-open-test');
-  //   });
-
-  //   fireEvent.click(menuButton[2]);
-
-  //   const deleteBtn = screen.getByText('pages.initiativeList.actions.delete');
-  //   fireEvent.click(deleteBtn);
-  // });
-
-  // test('Test InitiativeList with create permission and open/close menu action', async () => {
-  //   store.dispatch(
-  //     setPermissionsList([
-  //       { name: 'createInitiative', description: 'description', mode: 'enabled' },
-  //     ])
-  //   );
-
-  //   render(
-  //     <Provider store={store}>
-  //       <ThemeProvider theme={theme}>
-  //         <Router history={history}>
-  //           <InitiativeList />
-  //         </Router>
-  //       </ThemeProvider>
-  //     </Provider>
-  //   );
-
-  //   const createNewFullList = screen.getByTestId('create-full-onclick-test') as HTMLButtonElement;
-  //   fireEvent.click(createNewFullList);
-
-  //   const createNewEmptyList = screen.getByTestId('create-empty-onclick-test') as HTMLButtonElement;
-  //   fireEvent.click(createNewEmptyList);
-
-  //   const searchInitiative = screen.getByTestId('search-initiative-test') as HTMLInputElement;
-  //   fireEvent.change(searchInitiative, { target: { value: 'Fish' } });
-  //   expect(searchInitiative.value).toBe('Fish');
-
-  //   const menuButton = await waitFor(() => {
-  //     return screen.getAllByTestId('menu-open-test');
-  //   });
-  //   fireEvent.click(menuButton[0]);
-
-  //   const detailBtn = screen.getByText('pages.initiativeList.actions.details');
-  //   fireEvent.click(detailBtn);
-
-  //   const menuOnClose = await waitFor(() => {
-  //     return screen.getAllByTestId('menu-close-test');
-  //   });
-  //   fireEvent.keyDown(menuOnClose[0], {
-  //     key: 'Escape',
-  //     code: 'Escape',
-  //     keyCode: 27,
-  //     charCode: 27,
-  //   });
-
-  //   const sortByName = screen.getByText('pages.initiativeList.tableColumns.initiativeName');
-  //   fireEvent.click(sortByName);
-
-  //   const initiativeBtn = screen.getAllByTestId('initiative-btn-test');
-  //   fireEvent.click(initiativeBtn[0]);
-
-  //   fireEvent.change(searchInitiative, { target: { value: '' } });
-  //   expect(searchInitiative.value).toBe('');
-  // });
-
-  test('Test render InitiativeList component with review permission', async () => {
-    store.dispatch(
-      setPermissionsList([
-        { name: 'reviewInitiative', description: 'description', mode: 'enabled' },
-      ])
+    expect(mockGetSummary).toHaveBeenCalledTimes(1);
+    expect(initiativeSummarySelector(store.getState())).toEqual(
+      expect.arrayContaining(makeSummary())
     );
+    expect(displayedNames()).toEqual(['Alpha benefit', 'Beta benefit']);
+    expect(screen.getByText('01/02/2026 - 31/12/2026')).toBeInTheDocument();
+    expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
+    expect(screen.queryByTestId('menu-open-test')).not.toBeInTheDocument();
+  });
 
-    render(
-      <Provider store={store}>
-        <ThemeProvider theme={theme}>
-          <Router history={history}>
-            <InitiativeList />
-          </Router>
-        </ThemeProvider>
-      </Provider>
+  test.each([true, false])(
+    'filters case-insensitively and restores results (create permission: %s)',
+    async (canCreate) => {
+      renderList(canCreate);
+      await screen.findByRole('button', { name: 'Alpha benefit' });
+      const search = screen.getByRole('textbox');
+
+      fireEvent.change(search, { target: { value: 'BETA' } });
+      expect(displayedNames()).toEqual(['Beta benefit']);
+
+      fireEvent.change(search, { target: { value: 'unmatched' } });
+      expect(screen.queryByRole('table')).not.toBeInTheDocument();
+      expect(screen.getByText('pages.initiativeList.emptyList')).toBeInTheDocument();
+
+      fireEvent.change(search, { target: { value: '' } });
+      expect(displayedNames()).toEqual(['Alpha benefit', 'Beta benefit']);
+    }
+  );
+
+  test('toggles name sorting and switches the sort column', async () => {
+    renderList();
+    await screen.findByRole('button', { name: 'Alpha benefit' });
+    const nameHeading = screen.getByText('pages.initiativeList.tableColumns.initiativeName');
+
+    fireEvent.click(nameHeading);
+    expect(displayedNames()).toEqual(['Beta benefit', 'Alpha benefit']);
+    expect(nameHeading.closest('th')).toHaveAttribute('aria-sort', 'descending');
+
+    fireEvent.click(nameHeading);
+    expect(displayedNames()).toEqual(['Alpha benefit', 'Beta benefit']);
+    expect(nameHeading.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+
+    const organizationHeading = screen.getByText(
+      'pages.initiativeList.tableColumns.organizationName'
     );
+    fireEvent.click(organizationHeading);
+    expect(displayedNames()).toEqual(['Beta benefit', 'Alpha benefit']);
+    expect(organizationHeading.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+  });
+
+  test('opens the selected initiative refunds page', async () => {
+    const { history } = renderList();
+    fireEvent.click(await screen.findByRole('button', { name: 'Beta benefit' }));
+    expect(history.location.pathname).toBe(`${BASE_ROUTE}/rimborsi-iniziativa/beta-id`);
+  });
+
+  test.each(['create-full-onclick-test', 'create-empty-onclick-test'])(
+    'resets the previous initiative and opens creation from %s',
+    async (buttonId) => {
+      if (buttonId === 'create-empty-onclick-test') {
+        mockGetSummary.mockResolvedValue([]);
+      }
+      const { store, history } = renderList(true);
+      await waitFor(() => expect(mockSetLoading).toHaveBeenLastCalledWith(false));
+      const initialInitiative = store.getState().initiative;
+      store.dispatch(setInitiativeId('previous-id'));
+      store.dispatch(setInitiativeName('Previous initiative'));
+
+      fireEvent.click(screen.getByTestId(buttonId));
+
+      expect(history.location.pathname).toBe(routes.NEW_INITIATIVE);
+      expect(store.getState().initiative).toEqual(initialInitiative);
+    }
+  );
+
+  test('shows an empty list without creation actions when creation is denied', async () => {
+    mockGetSummary.mockResolvedValue([]);
+    const { store } = renderList();
+    await waitFor(() => expect(mockSetLoading).toHaveBeenLastCalledWith(false));
+
+    expect(screen.getByText('pages.initiativeList.emptyList')).toBeInTheDocument();
+    expect(screen.queryByText('pages.initiativeList.createNew')).not.toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(initiativeSummarySelector(store.getState())).toEqual([]);
+  });
+
+  test('stops loading and keeps the list empty when the request fails', async () => {
+    mockGetSummary.mockRejectedValue(new Error('Request failed'));
+    const { store } = renderList();
+    await waitFor(() => expect(mockSetLoading).toHaveBeenLastCalledWith(false));
+
+    expect(screen.getByText('pages.initiativeList.emptyList')).toBeInTheDocument();
+    expect(screen.queryByRole('table')).not.toBeInTheDocument();
+    expect(initiativeSummarySelector(store.getState())).toBeUndefined();
+  });
+
+  test('renders incomplete summaries with empty fields and missing-date placeholders', async () => {
+    mockGetSummary.mockResolvedValue([{}]);
+    renderList();
+    const button = await screen.findByTestId('initiative-btn-test');
+    const cells = within(button.closest('tr') as HTMLElement).getAllByRole('cell');
+
+    expect(button).toBeEmptyDOMElement();
+    expect(cells[1]).toBeEmptyDOMElement();
+    expect(cells[2]).toHaveTextContent('— - —');
   });
 });
