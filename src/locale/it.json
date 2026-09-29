@@ -399,7 +399,7 @@
       "title": "Seleziona l’ente"
     },
     "home": {
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa.",
       "title": "Iniziative"
     },
     "initiativeMerchantUpload": {
@@ -750,7 +750,7 @@
       "alert": {
         "approved": "Operazione completata!"
       },
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa."
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa."
     },
     "initiativeList": {
       "actions": {
@@ -772,7 +772,7 @@
         "suspended": "Sospesa",
         "toCheck": "Modifiche richieste"
       },
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa.",
       "tableColumns": {
         "organizationName": "Creata da",
         "enrollmentDate": "Data di adesione",

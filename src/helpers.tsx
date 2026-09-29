@@ -43,7 +43,7 @@ export const renderInitiativeStatus = (status: string | undefined) => {
         <Chip
           sx={{ fontSize: '14px' }}
           label={t('pages.initiativeList.status.published')}
-          color="indigo"
+          color="success"
         />
       );
     case 'CLOSED':
