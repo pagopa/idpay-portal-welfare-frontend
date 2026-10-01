@@ -14,6 +14,7 @@ import ApproveConfirmModal from "./ApproveConfirmModal";
 
 interface Props {
     open: boolean;
+    isApplianceInitiative?: boolean;
     onClose: () => void;
     data: RefundsDrawerData | null;
     download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
@@ -55,7 +56,7 @@ const CHECK_ERROR_LABELS: Record<keyof ChecksErrorDTO, string> = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function RefundsTransactionsDrawer({ open, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
+export default function RefundsTransactionsDrawer({ open, isApplianceInitiative = false, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
     const { t } = useTranslation();
 
     const [reasonModalOpen, setReasonModalOpen] = useState(false);
@@ -90,6 +91,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
     const activeErrors: Array<string> = checksError
         ? (Object.keys(checksError) as Array<keyof ChecksErrorDTO>)
             .filter((k) => checksError[k] === true)
+            .filter((k) => k !== "disposalRaeeError" || isApplianceInitiative)
             .map((k) => CHECK_ERROR_LABELS[k])
         : [];
 
@@ -151,7 +153,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
-                    {t('pages.initiativeMerchantsTransactions.drawer.appliance')}
+                    {t(`pages.initiativeMerchantsTransactions.drawer.${isApplianceInitiative ? 'appliance' : 'product'}`)}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
                     <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
@@ -405,6 +407,7 @@ export default function RefundsTransactionsDrawer({ open, onClose, data, downloa
                 }
             </Box>
             <RefundReasonModal
+                isApplianceInitiative={isApplianceInitiative}
                 open={reasonModalOpen}
                 type={reasonModalType ?? 'reject'}
                 editMode={editMode}

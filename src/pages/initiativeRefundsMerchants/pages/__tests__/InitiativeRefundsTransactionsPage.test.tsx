@@ -3,9 +3,13 @@ import InitiativeRefundsTransactionsPage from '../InitiativeRefundsTransactionsP
 
 const mockedUseRefundTransactionsPage = jest.fn();
 let mockedInitiativeName: string | undefined = 'initiative-x';
+let mockedInitiativeId: string | undefined = 'initiative-x-id';
 
 jest.mock('../../../../redux/hooks', () => ({
-  useAppSelector: () => ({ initiativeName: mockedInitiativeName }),
+  useAppSelector: () => ({
+    initiativeName: mockedInitiativeName,
+    initiativeId: mockedInitiativeId,
+  }),
 }));
 
 jest.mock('../../hooks/useRefundTransactionsPage', () => ({
@@ -53,8 +57,10 @@ jest.mock('../../components/RefundTransactionsTable', () => ({
 
 jest.mock('../../components/RefundTransactionsOverlays', () => ({
   __esModule: true,
-  default: ({ approveModal, batchModalOpen, batchErrorOpen }: any) => (
-    <div data-testid="overlays">{`${approveModal}|${batchModalOpen}|${batchErrorOpen}`}</div>
+  default: ({ approveModal, batchModalOpen, batchErrorOpen, isApplianceInitiative }: any) => (
+    <div data-testid="overlays" data-appliance={String(isApplianceInitiative)}>
+      {`${approveModal}|${batchModalOpen}|${batchErrorOpen}`}
+    </div>
   ),
 }));
 
@@ -143,6 +149,7 @@ const createVm = () => ({
 describe('InitiativeRefundsTransactionsPage', () => {
   beforeEach(() => {
     mockedInitiativeName = 'initiative-x';
+    mockedInitiativeId = 'initiative-x-id';
     jest.clearAllMocks();
   });
 
@@ -196,5 +203,15 @@ describe('InitiativeRefundsTransactionsPage', () => {
 
     expect(screen.getByTestId('breadcrumbs')).toHaveTextContent('|Business Name');
     expect(screen.getByTestId('filters')).toHaveTextContent('filters-on');
+  });
+
+  test('enables the appliance profile when both selected initiative name and ID match', () => {
+    mockedInitiativeName = 'Bonus Elettrodomestici';
+    mockedInitiativeId = '68dd003ccce8c534d1da22bc';
+    mockedUseRefundTransactionsPage.mockReturnValue(createVm());
+
+    render(<InitiativeRefundsTransactionsPage />);
+
+    expect(screen.getByTestId('overlays')).toHaveAttribute('data-appliance', 'true');
   });
 });

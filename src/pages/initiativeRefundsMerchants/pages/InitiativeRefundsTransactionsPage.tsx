@@ -32,7 +32,8 @@ const InitiativeRefundsTransactionsPage = () => {
     overlaysProps,
   } = buildRefundTransactionsBindings(
     readyRefundTransactionsPage,
-    initiativeSelected.initiativeName ?? ''
+    initiativeSelected.initiativeName ?? '',
+    initiativeSelected.initiativeId
   );
 
   return (

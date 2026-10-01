@@ -161,9 +161,32 @@ describe('viewModel bindings', () => {
     expect(result.tableProps.sameStatusRowsLength).toBe(0);
     expect(result.tableProps.disabled).toBe(false);
     expect(result.overlaysProps.openDrawer).toBe(false);
+    expect(result.overlaysProps.isApplianceInitiative).toBe(false);
     expect(result.overlaysProps.approveModal).toBe(false);
     expect(result.overlaysProps.batchModalOpen).toBe(false);
     expect(result.overlaysProps.batchAssigneeLevel).toBe('L2');
+  });
+
+  test('profiles overlays only when both appliance initiative name and ID match', () => {
+    const nameOnlyResult = buildRefundTransactionsBindings(
+      getTransactionsVm() as any,
+      '  Bonus Elettrodomestici  ',
+      'other-initiative-id'
+    );
+    const idOnlyResult = buildRefundTransactionsBindings(
+      getTransactionsVm() as any,
+      'initiative-name',
+      '68dd003ccce8c534d1da22bc'
+    );
+    const matchingResult = buildRefundTransactionsBindings(
+      getTransactionsVm() as any,
+      '  Bonus Elettrodomestici  ',
+      '68dd003ccce8c534d1da22bc'
+    );
+
+    expect(nameOnlyResult.overlaysProps.isApplianceInitiative).toBe(false);
+    expect(idOnlyResult.overlaysProps.isApplianceInitiative).toBe(false);
+    expect(matchingResult.overlaysProps.isApplianceInitiative).toBe(true);
   });
 
   test('buildRefundTransactionsBindings callbacks and hasAppliedFilters true', () => {
