@@ -8,6 +8,7 @@ import { RoleConfirmModal } from './RoleConfirmModal';
 import { RoleErrorModal } from './RoleErrorModal';
 
 type Props = {
+  isApplianceInitiative?: boolean;
   openDrawer: boolean;
   handleCloseDrawer: () => void;
   selectedTransaction: RefundsDrawerData | null;
@@ -42,6 +43,7 @@ type Props = {
 };
 
 const RefundTransactionsOverlays = ({
+  isApplianceInitiative = false,
   openDrawer,
   handleCloseDrawer,
   selectedTransaction,
@@ -66,6 +68,7 @@ const RefundTransactionsOverlays = ({
 }: Props) => (
   <>
     <RefundsTransactionsDrawer
+      isApplianceInitiative={isApplianceInitiative}
       open={openDrawer}
       onClose={handleCloseDrawer}
       data={selectedTransaction}
@@ -78,6 +81,7 @@ const RefundTransactionsOverlays = ({
     />
 
     <RefundReasonModal
+      isApplianceInitiative={isApplianceInitiative}
       open={reasonModal.open}
       type={(reasonModal.type ?? 'reject') as 'reject' | 'suspend'}
       count={selectedRowsSize}
