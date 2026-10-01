@@ -1054,6 +1054,7 @@
       "drawer": {
         "trxDetail": "Dettaglio transazione",
         "appliance": "Elettrodomestico",
+        "product": "Prodotto",
         "fiscalCode": "Codice Fiscale Beneficiario",
         "idTrx": "ID transazione",
         "trxCode": "Codice sconto",

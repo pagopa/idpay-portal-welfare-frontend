@@ -38,6 +38,9 @@ describe('RefundReasonModal', () => {
     expect(
       screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.disposalRaeeError/i })
+    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.cancel/i }));
     expect(onClose).toHaveBeenCalled();
@@ -75,7 +78,6 @@ describe('RefundReasonModal', () => {
         activeErrors={{
           cfError: false,
           productEligibilityError: false,
-          disposalRaeeError: false,
           priceError: false,
           bonusError: false,
           sellerReferenceError: false,
@@ -116,7 +118,6 @@ describe('RefundReasonModal', () => {
         activeErrors={{
           cfError: true,
           productEligibilityError: false,
-          disposalRaeeError: false,
           priceError: false,
           bonusError: false,
           sellerReferenceError: false,
@@ -158,6 +159,9 @@ describe('RefundReasonModal', () => {
     expect(
       screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.reject \(2\)/i })
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.disposalRaeeError/i })
+    ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i }));
     fireEvent.change(screen.getByRole('textbox'), { target: { value: 'reject reason' } });
@@ -166,6 +170,74 @@ describe('RefundReasonModal', () => {
     expect(onConfirm).toHaveBeenCalledWith(
       'reject reason',
       expect.objectContaining({ genericError: true })
+    );
+  });
+
+  test('shows and submits the RAEE error for the appliance initiative', () => {
+    const onConfirm = jest.fn();
+
+    render(
+      <RefundReasonModal
+        open={true}
+        onClose={jest.fn()}
+        type="suspend"
+        count={1}
+        isApplianceInitiative={true}
+        onConfirm={onConfirm}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.disposalRaeeError/i }));
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'RAEE reason' } });
+    fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i }));
+
+    expect(onConfirm).toHaveBeenCalledWith(
+      'RAEE reason',
+      expect.objectContaining({ disposalRaeeError: true })
+    );
+  });
+
+  test('ignores a previously selected RAEE error for other initiatives', () => {
+    const onConfirm = jest.fn();
+
+    render(
+      <RefundReasonModal
+        open={true}
+        onClose={jest.fn()}
+        type="reject"
+        count={1}
+        editMode={true}
+        activeErrors={{
+          cfError: false,
+          productEligibilityError: false,
+          disposalRaeeError: true,
+          priceError: false,
+          bonusError: false,
+          sellerReferenceError: false,
+          accountingDocumentError: false,
+          genericError: false,
+        }}
+        onConfirm={onConfirm}
+      />
+    );
+
+    expect(
+      screen.queryByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.disposalRaeeError/i })
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i })
+    ).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i }));
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'other initiative reason' } });
+    fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i }));
+
+    expect(onConfirm).toHaveBeenCalledWith(
+      'other initiative reason',
+      expect.objectContaining({
+        genericError: true,
+        disposalRaeeError: false,
+      })
     );
   });
 
@@ -212,7 +284,6 @@ describe('RefundReasonModal', () => {
         activeErrors={{
           cfError: true,
           productEligibilityError: false,
-          disposalRaeeError: false,
           priceError: false,
           bonusError: false,
           sellerReferenceError: false,
@@ -236,7 +307,6 @@ describe('RefundReasonModal', () => {
         activeErrors={{
           cfError: true,
           productEligibilityError: false,
-          disposalRaeeError: false,
           priceError: false,
           bonusError: false,
           sellerReferenceError: false,
@@ -257,7 +327,6 @@ describe('RefundReasonModal', () => {
         activeErrors={{
           cfError: false,
           productEligibilityError: false,
-          disposalRaeeError: false,
           priceError: false,
           bonusError: false,
           sellerReferenceError: false,
