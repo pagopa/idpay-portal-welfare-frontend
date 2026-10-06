@@ -4,62 +4,55 @@ import * as Yup from 'yup';
 import { parse } from 'date-fns';
 import { t } from './locale';
 
+export const getInitiativeStatusLabel = (status: string | undefined): string => {
+  const statusKeys: Record<string, string> = {
+    DRAFT: 'draft',
+    IN_REVISION: 'inRevision',
+    TO_CHECK: 'toCheck',
+    APPROVED: 'approved',
+    PUBLISHED: 'published',
+    CLOSED: 'closed',
+    SUSPENDED: 'suspended',
+  };
+  const key = statusKeys[status ?? ''];
+  return key ? t(`pages.initiativeList.status.${key}`) : '';
+};
+
 export const renderInitiativeStatus = (status: string | undefined) => {
   switch (status) {
     case 'DRAFT':
+    case 'CLOSED':
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.draft')}
+          label={getInitiativeStatusLabel(status)}
           color="default"
         />
       );
     case 'IN_REVISION':
       return (
         <Chip
-          label={t('pages.initiativeList.status.inRevision')}
+          label={getInitiativeStatusLabel(status)}
           sx={{ fontSize: '14px' }}
           color="warning"
         />
       );
     case 'TO_CHECK':
-      return (
-        <Chip
-          sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.toCheck')}
-          color="error"
-        />
-      );
-    case 'APPROVED':
-      return (
-        <Chip
-          sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.approved')}
-          color="success"
-        />
-      );
-    case 'PUBLISHED':
-      return (
-        <Chip
-          sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.published')}
-          color="indigo"
-        />
-      );
-    case 'CLOSED':
-      return (
-        <Chip
-          sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.closed')}
-          color="default"
-        />
-      );
     case 'SUSPENDED':
       return (
         <Chip
           sx={{ fontSize: '14px' }}
-          label={t('pages.initiativeList.status.suspended')}
+          label={getInitiativeStatusLabel(status)}
           color="error"
+        />
+      );
+    case 'APPROVED':
+    case 'PUBLISHED':
+      return (
+        <Chip
+          sx={{ fontSize: '14px' }}
+          label={getInitiativeStatusLabel(status)}
+          color="success"
         />
       );
     default:

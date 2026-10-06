@@ -9,6 +9,7 @@ interface Props {
     onClose: () => void;
     type: "suspend" | "reject";
     editMode?: boolean;
+    isApplianceInitiative?: boolean;
     activeErrors?: ChecksErrorDTO | undefined;
     count: number;
     onConfirm: (reason: string, checksError: ChecksErrorDTO) => void;
@@ -25,7 +26,7 @@ const defaultChecksError: ChecksErrorDTO = {
     genericError: false
 };
 
-export default function RefundReasonModal({ open, onClose, type, count, onConfirm, activeErrors, editMode }: Props) {
+export default function RefundReasonModal({ open, onClose, type, count, onConfirm, activeErrors, editMode, isApplianceInitiative = false }: Props) {
     const [operatorReason, setOperatorReason] = useState("");
     const [error, setError] = useState(false);
     const [checkboxErrorMessage, setCheckboxErrorMessage] = useState(false);
@@ -39,12 +40,15 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
             setCheckboxErrorMessage(false);
 
             if (editMode && activeErrors) {
-                setChecksError(activeErrors);
+                setChecksError({
+                    ...activeErrors,
+                    disposalRaeeError: isApplianceInitiative && activeErrors.disposalRaeeError === true,
+                });
             } else {
                 setChecksError(defaultChecksError);
             }
         }
-    }, [open, editMode, activeErrors]);
+    }, [open, editMode, activeErrors, isApplianceInitiative]);
 
     const handleCheckboxChange = (field: keyof ChecksErrorDTO) => {
         setChecksError((prev: any) => ({
@@ -138,7 +142,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                             label={t("pages.initiativeMerchantsTransactions.checksError.sellerReferenceError")}
                             sx={{ margin: 0 }}
                         />
-                        <FormControlLabel
+                        {isApplianceInitiative && <FormControlLabel
                             control={
                                 <Checkbox
                                     checked={checksError.disposalRaeeError}
@@ -147,7 +151,7 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                             }
                             label={t("pages.initiativeMerchantsTransactions.checksError.disposalRaeeError")}
                             sx={{ margin: 0 }}
-                        />
+                        />}
                         <FormControlLabel
                             control={
                                 <Checkbox

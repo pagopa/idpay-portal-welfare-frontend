@@ -1,10 +1,12 @@
 import { t } from '../../locale';
+import { getInitiativeStatusLabel } from '../../helpers';
 
 export interface Data {
   initiativeId: string;
   initiativeName: string;
-  creationDate: string;
-  updateDate: string;
+  organizationName: string;
+  startDate: string;
+  endDate: string;
   status: string;
   id: number;
 }
@@ -12,6 +14,11 @@ export interface Data {
 export function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   const dA = a[orderBy] as unknown as string;
   const dB = b[orderBy] as unknown as string;
+  if (orderBy === 'status') {
+    return getInitiativeStatusLabel(dB).localeCompare(getInitiativeStatusLabel(dA), 'it', {
+      sensitivity: 'base',
+    });
+  }
   if (orderBy === 'creationDate' || orderBy === 'updateDate') {
     const dAArr = dA.split('/');
     const dBArr = dB.split('/');

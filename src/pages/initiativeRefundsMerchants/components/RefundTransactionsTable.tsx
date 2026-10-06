@@ -22,6 +22,18 @@ import { PAGE_SIZE_OPTIONS } from '../model/constants';
 import { formatCurrencyFromCents } from '../model/formatters';
 import { TrxItem } from '../model/types';
 
+const twoLineCellSx = {
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  overflowWrap: 'anywhere',
+  whiteSpace: 'normal',
+  maxWidth: '100%',
+  minWidth: 0,
+  textAlign: 'left',
+} as const;
+
 type Props = {
   t: (key: string) => string;
   rows: Array<TrxItem>;
@@ -93,18 +105,16 @@ const RefundTransactionsTable = ({
 
       return (
         <Tooltip title={value.website}>
-          <Box style={{ display: "inline-block", maxWidth: 150 }}>
+          <Box sx={{ minWidth: 0, width: '100%' }}>
             <ButtonNaked
               href={url}
               target="_blank"
               rel="noopener noreferrer"
               color="primary"
               sx={{
+                ...twoLineCellSx,
                 textDecoration: "underline",
                 fontWeight: 600,
-                display: "inline-block",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
                 pt: 0.5,
                 "&:hover": {
                   textDecoration: "underline",
@@ -126,11 +136,7 @@ const RefundTransactionsTable = ({
         <Tooltip title={text}>
           <Box
             sx={{
-              display: "inline-block",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              maxWidth: 150,
-              whiteSpace: "nowrap",
+              ...twoLineCellSx,
               pt: 0.5,
             }}
           >
@@ -159,24 +165,25 @@ const RefundTransactionsTable = ({
 
   return (
     <>
-      <Table sx={{ mt: 2, width: '100%', tableLayout: 'fixed' }}>
+      <Box sx={{ width: '100%', minWidth: 0 }}>
+      <Table sx={{ mt: 2, width: '100%', tableLayout: 'fixed', '& .MuiTableCell-root': { px: 1, overflowWrap: 'anywhere' } }}>
         <TableHead>
           <TableRow>
-            <TableCell width={'4.5%'}>
+            <TableCell sx={{ width: 64, p: 1 }}>
               {lockedStatus && sameStatusRowsLength > 0 && (
                 <Checkbox disabled={disabled} checked={allSameStatusSelected} onChange={handleHeaderCheckbox} />
               )}
             </TableCell>
-            <TableCell sx={{ whiteSpace: { lg: 'nowrap', md: 'none' } }}>{t('pages.initiativeMerchantsTransactions.table.invoice')}</TableCell>
-            <TableCell sx={{ whiteSpace: { lg: 'nowrap', md: 'none' } }}>{t('pages.initiativeMerchantsTransactions.table.pos')}</TableCell>
-            <TableCell sx={{ whiteSpace: { lg: 'nowrap', md: 'none' } }}>{t('pages.initiativeMerchantsTransactions.table.address')}</TableCell>
+            <TableCell>{t('pages.initiativeMerchantsTransactions.table.invoice')}</TableCell>
+            <TableCell>{t('pages.initiativeMerchantsTransactions.table.pos')}</TableCell>
+            <TableCell>{t('pages.initiativeMerchantsTransactions.table.address')}</TableCell>
             <TableCell sortDirection={dateSort === '' ? false : dateSort}>
               <TableSortLabel active={dateSort !== ''} direction={dateSort === '' ? 'asc' : dateSort} onClick={toggleDateSort}>
                 {t('pages.initiativeMerchantsTransactions.table.dateTime')}
               </TableSortLabel>
             </TableCell>
-            <TableCell sx={{ whiteSpace: { lg: 'nowrap', md: 'none' } }}>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
-            <TableCell sx={{ whiteSpace: { lg: 'nowrap', md: 'none' } }}>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
+            <TableCell>{t('pages.initiativeMerchantsTransactions.table.requestedRefund')}</TableCell>
+            <TableCell>{t('pages.initiativeMerchantsTransactions.table.status')}</TableCell>
             <TableCell sx={{ width: 55, maxWidth: 55, minWidth: 44, p: 0, pr: 1, textAlign: 'right' }} />
           </TableRow>
         </TableHead>
@@ -188,7 +195,7 @@ const RefundTransactionsTable = ({
 
             return (
               <TableRow key={row.id} hover>
-                <TableCell>
+                <TableCell sx={{ p: 1 }}>
                   <Checkbox
                     checked={isChecked}
                     disabled={isRowSelectionDisabled || disabled}
@@ -198,11 +205,11 @@ const RefundTransactionsTable = ({
 
                 <TableCell>
                   <Tooltip title={row.invoiceFileName}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 170 }}>
+                    <Box sx={{ minWidth: 0, width: '100%' }}>
                       <ButtonNaked
                         color="primary"
                         onClick={() => downloadInvoice(row.pointOfSaleId, row.transactionId, row.invoiceFileName)}
-                        sx={{ maxWidth: { lg: 220, md: 150, sm: 130, xs: 110 }, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'inline-block', wordBreak: 'break-all' }}
+                        sx={twoLineCellSx}
                       >
                         {row.invoiceFileName}
                       </ButtonNaked>
@@ -212,7 +219,7 @@ const RefundTransactionsTable = ({
 
                 <TableCell>
                   <Tooltip title={row.shop}>
-                    <Box sx={{ pt: 0.5, display: 'inline-block', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 175, whiteSpace: 'nowrap' }}>
+                    <Box sx={{ ...twoLineCellSx, pt: 0.5 }}>
                       {row.shop}
                     </Box>
                   </Tooltip>
@@ -222,13 +229,13 @@ const RefundTransactionsTable = ({
 
                 <TableCell>
                   <Tooltip title={row.date}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 150 }}>{row.date}</Box>
+                    <Box sx={twoLineCellSx}>{row.date}</Box>
                   </Tooltip>
                 </TableCell>
 
                 <TableCell>
                   <Tooltip title={formatCurrencyFromCents(row.amountCents)}>
-                    <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 120 }}>
+                    <Box sx={twoLineCellSx}>
                       {formatCurrencyFromCents(row.amountCents)}
                     </Box>
                   </Tooltip>
@@ -240,7 +247,11 @@ const RefundTransactionsTable = ({
                     color={row.statusColor as any}
                     sx={{
                       fontSize: '14px',
-                      '& .MuiChip-label': { whiteSpace: 'nowrap' },
+                      maxWidth: '100%',
+                      height: 'auto',
+                      minHeight: 32,
+                      py: 0.5,
+                      '& .MuiChip-label': { ...twoLineCellSx, textAlign: 'center' },
                       backgroundColor: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? '#C4DCF5' : '',
                       color: row.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? '#17324D' : '',
                     }}
@@ -257,6 +268,7 @@ const RefundTransactionsTable = ({
           })}
         </TableBody>
       </Table>
+      </Box>
 
       <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', alignItems: 'center', gap: 3, color: '#33485C', fontSize: '14px', fontWeight: 500 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>

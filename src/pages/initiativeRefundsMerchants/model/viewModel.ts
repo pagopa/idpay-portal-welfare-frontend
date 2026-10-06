@@ -7,6 +7,13 @@ import type {
 
 type Translate = (key: string) => string;
 
+const APPLIANCE_BONUS_INITIATIVE_NAME = 'bonus elettrodomestici';
+const APPLIANCE_BONUS_INITIATIVE_ID = '68dd003ccce8c534d1da22bc';
+
+const isApplianceBonusInitiative = (initiativeName: string, initiativeId?: string) =>
+  initiativeName.trim().toLowerCase() === APPLIANCE_BONUS_INITIATIVE_NAME &&
+  initiativeId === APPLIANCE_BONUS_INITIATIVE_ID;
+
 export const buildRefundBatchesBindings = (
   viewModel: RefundBatchesPageViewModel,
   t: Translate
@@ -51,7 +58,8 @@ export const buildRefundBatchesBindings = (
 
 export const buildRefundTransactionsBindings = (
   viewModel: RefundTransactionsReadyViewModel,
-  initiativeName: string
+  initiativeName: string,
+  initiativeId?: string
 ) => ({
   breadcrumbsProps: {
     t: viewModel.t,
@@ -131,6 +139,7 @@ export const buildRefundTransactionsBindings = (
     totalPages: viewModel.totalPages,
   },
   overlaysProps: {
+    isApplianceInitiative: isApplianceBonusInitiative(initiativeName, initiativeId),
     openDrawer: viewModel.openDrawer,
     handleCloseDrawer: viewModel.handleCloseDrawer,
     selectedTransaction: viewModel.selectedTransaction,

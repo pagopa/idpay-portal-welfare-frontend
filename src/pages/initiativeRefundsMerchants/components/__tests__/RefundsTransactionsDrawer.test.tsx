@@ -102,6 +102,7 @@ describe('<RefundsTransactionsDrawer />', () => {
     );
 
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.trxDetail')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.product')).toBeInTheDocument();
     expect(document.body.style.overflow).toBe('hidden');
 
     fireEvent.click(screen.getByTestId('CloseIcon'));
@@ -112,6 +113,26 @@ describe('<RefundsTransactionsDrawer />', () => {
 
     fireEvent.click(screen.getByTestId('DownloadIcon'));
     expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', 'invoice.pdf', true);
+  });
+
+  test('uses the appliance label and shows RAEE errors only for the appliance initiative', () => {
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        isApplianceInitiative={true}
+        onClose={mockOnClose}
+        data={{ ...baseData, checksError: { disposalRaeeError: true } } as any}
+        download={mockDownload}
+        formatDate={() => '10/03/2026'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={true}
+      />
+    );
+
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.appliance')).toBeInTheDocument();
+    expect(screen.getByText('Smaltimento RAEE')).toBeInTheDocument();
   });
 
   test('handles reason modal and approve modal flows', async () => {

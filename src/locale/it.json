@@ -399,7 +399,7 @@
       "title": "Seleziona l’ente"
     },
     "home": {
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa.",
       "title": "Iniziative"
     },
     "initiativeMerchantUpload": {
@@ -750,7 +750,7 @@
       "alert": {
         "approved": "Operazione completata!"
       },
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa."
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa."
     },
     "initiativeList": {
       "actions": {
@@ -772,8 +772,10 @@
         "suspended": "Sospesa",
         "toCheck": "Modifiche richieste"
       },
-      "subtitle": "Crea, visualizza e gestisci le iniziative di supporto alla spesa.",
+      "subtitle": "Visualizza e gestisci le iniziative di supporto alla spesa.",
       "tableColumns": {
+        "organizationName": "Creata da",
+        "enrollmentDate": "Data di adesione",
         "creationDate": "Creata il",
         "initiativeId": "Codice identificativo",
         "initiativeName": "Nome",
@@ -1052,6 +1054,7 @@
       "drawer": {
         "trxDetail": "Dettaglio transazione",
         "appliance": "Elettrodomestico",
+        "product": "Prodotto",
         "fiscalCode": "Codice Fiscale Beneficiario",
         "idTrx": "ID transazione",
         "trxCode": "Codice sconto",
@@ -1179,7 +1182,7 @@
       "subtitle": "Esporta i dati dei cittadini che hanno utilizzato il Bonus Elettrodomestici in base ai criteri selezionati.",
       "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
-        "subtitle": "Imposta i criteri di ricerca per generare il report contenente i codici fiscali dei cittadini e l’importo del voucher utilizzato. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
+        "subtitle": "Imposta i criteri di ricerca per generare il report contenente i codici fiscali dei cittadini e l’importo del voucher utilizzato. Puoi selezionare le date a partire da ieri.",
         "buttonExport": "Genera report"
       },
       "reportAlertMessage": {

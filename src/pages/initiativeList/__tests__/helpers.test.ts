@@ -50,6 +50,26 @@ describe('initiativeList helpers', () => {
     expect(ascComparator(rowA, rowB)).toBe(1);
   });
 
+  test('sorts all initiative statuses by their Italian labels in both directions', () => {
+    const input = ['CLOSED', 'TO_CHECK', 'DRAFT', 'SUSPENDED', 'PUBLISHED', 'IN_REVISION', 'APPROVED']
+      .map((status) => ({ status }));
+    const ascending = ['APPROVED', 'DRAFT', 'PUBLISHED', 'IN_REVISION', 'TO_CHECK', 'SUSPENDED', 'CLOSED'];
+
+    expect(stableSort(input, getComparator('asc', 'status')).map((row) => row.status))
+      .toEqual(ascending);
+    expect(stableSort(input, getComparator('desc', 'status')).map((row) => row.status))
+      .toEqual([...ascending].reverse());
+  });
+
+  test('keeps equal and unrecognized statuses stable', () => {
+    const input = [
+      { id: 'first', status: 'PUBLISHED' },
+      { id: 'second', status: 'PUBLISHED' },
+    ];
+    expect(stableSort(input, getComparator('asc', 'status'))).toEqual(input);
+    expect(descendingComparator({ status: '' }, { status: 'UNKNOWN' }, 'status')).toBe(0);
+  });
+
   test('stableSort keeps stable order when comparator returns 0', () => {
     const input = [{ id: 'first' }, { id: 'second' }, { id: 'third' }];
     const sorted = stableSort(input, () => 0);
