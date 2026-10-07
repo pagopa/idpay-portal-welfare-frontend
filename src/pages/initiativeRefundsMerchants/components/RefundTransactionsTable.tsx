@@ -130,7 +130,7 @@ const RefundTransactionsTable = ({
     }
 
     if (value.address && value.province) {
-      const text = `${value.address} ${value.province}`;
+      const text = `${value.address}, ${value.streetNumber} ${value.province}`;
 
       return (
         <Tooltip title={text}>
