@@ -119,14 +119,14 @@ describe('<RefundTransactionsTable />', () => {
       ],
       posList: [
         { id: 'online-no-website', type: TypeEnum.ONLINE, website: '' },
-        { id: 'physical', type: TypeEnum.PHYSICAL, address: 'Via Libertà', province: 'PA' },
+        { id: 'physical', type: TypeEnum.PHYSICAL, address: 'Via Libertà', streetNumber: 15, province: 'PA' },
       ],
       disabled: true,
     };
     render(<RefundTransactionsTable {...props} />);
 
     expect(screen.getAllByText('-').length).toBeGreaterThan(0);
-    expect(screen.getByText('Via Libertà PA')).toBeInTheDocument();
+    expect(screen.getByText('Via Libertà, 15 PA')).toBeInTheDocument();
 
     const checkboxes = screen.getAllByRole('checkbox');
     expect(checkboxes[0]).toBeDisabled();
