@@ -16,6 +16,23 @@ type RefundRowProps = {
   onClick: () => void;
 };
 
+const twoLineValueSx = {
+  display: '-webkit-box',
+  WebkitLineClamp: 2,
+  WebkitBoxOrient: 'vertical',
+  overflow: 'hidden',
+  whiteSpace: 'normal',
+  maxWidth: '100%',
+} as const;
+
+const singleLineValueSx = {
+  display: 'block',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+  maxWidth: '100%',
+} as const;
+
 const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
   const status = row.status?.toUpperCase?.() ?? '';
   const isDisabled = isBatchRowDisabled(status);
@@ -37,14 +54,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
       <TableCell>
         <Tooltip title={row.businessName}>
           <Box
-            sx={{
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              maxWidth: 300,
-            }}
+            sx={twoLineValueSx}
           >
             {row.businessName}
           </Box>
@@ -53,7 +63,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={row.name}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={twoLineValueSx}>
             {row.name}
           </Box>
         </Tooltip>
@@ -61,7 +71,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={formatRefundDate}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {formatRefundDate}
           </Box>
         </Tooltip>
@@ -69,7 +79,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={requestedRefund}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {requestedRefund}
           </Box>
         </Tooltip>
@@ -77,7 +87,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={approvedRefund}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {approvedRefund}
           </Box>
         </Tooltip>
@@ -85,7 +95,7 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={suspendedRefund}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {suspendedRefund}
           </Box>
         </Tooltip>
@@ -93,28 +103,34 @@ const RefundRow = ({ row, t, onClick }: RefundRowProps) => {
 
       <TableCell>
         <Tooltip title={checksPercentage}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {checksPercentage}
           </Box>
         </Tooltip>
       </TableCell>
 
-      <TableCell sx={{ pr: 0 }}>
+      <TableCell>
         <Tooltip title={row.assigneeLevel}>
-          <Box sx={{ display: 'inline-flex', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <Box sx={singleLineValueSx}>
             {row.assigneeLevel}
           </Box>
         </Tooltip>
       </TableCell>
 
       <TableCell>
-        <Chip label={statusChipData.label} color={statusChipData.color} size="small" sx={statusChipData.sx} />
-      </TableCell>
-
-      <TableCell sx={{ textAlign: 'right' }}>
-        <ButtonNaked disabled={isDisabled} onClick={handleClick}>
-          <ChevronRightIcon color={isDisabled ? 'disabled' : 'primary'} />
-        </ButtonNaked>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 0 }}>
+          <Tooltip title={statusChipData.label}>
+            <Chip
+              label={statusChipData.label}
+              color={statusChipData.color}
+              size="small"
+              sx={{ ...statusChipData.sx, minWidth: 0, maxWidth: 'calc(100% - 32px)', '& .MuiChip-label': singleLineValueSx }}
+            />
+          </Tooltip>
+          <ButtonNaked disabled={isDisabled} onClick={handleClick} sx={{ ml: 'auto', flexShrink: 0, minWidth: 0, p: 0 }}>
+            <ChevronRightIcon color={isDisabled ? 'disabled' : 'primary'} />
+          </ButtonNaked>
+        </Box>
       </TableCell>
     </TableRow>
   );
