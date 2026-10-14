@@ -1152,7 +1152,7 @@
     },
     "initiativeExportReport": {
       "title": "Esporta transazioni",
-      "subtitle": "Esporta le transazioni del Bonus Elettrodomestici in base ai criteri selezionati.",
+      "subtitle": "Esporta le transazioni del {{x}} in base ai criteri selezionati.",
       "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
         "subtitle": "Imposta i criteri di ricerca per generare il report delle transazioni. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
