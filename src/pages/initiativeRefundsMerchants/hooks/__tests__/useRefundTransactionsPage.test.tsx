@@ -267,6 +267,22 @@ describe('useRefundTransactionsPage', () => {
     expect(mockValidateBatch).not.toHaveBeenCalled();
   });
 
+  test.each([
+    ['L2', 'batch.check'],
+    ['L3', 'batch.approve'],
+  ])('marks batch actions disabled for %s batches when the role is read only', async (level, permission) => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === permission,
+    });
+    mockGetBatchTrx.mockReturnValue({ ...batchMock, assigneeLevel: level as 'L2' | 'L3' });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(hookResult.restored).toBe(true));
+
+    expect(hookResult.batchActionDisabled).toBe(true);
+    expect(hookResult.transactionActionsDisabled).toBe(false);
+  });
+
   test('skips refund actions when the current role is read only', async () => {
     mockUseUserPermissions.mockReturnValue({
       isActionDisabled: (action: string) =>
