@@ -281,10 +281,10 @@ describe('useRefundTransactionsPage', () => {
     render(<HookWrapper />);
     await waitFor(() => expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalled());
 
-    await act(async () => {
-      await hookResult.handleRefundAction('approve', ['trx-1']);
-      await hookResult.handleRefundAction('suspend', ['trx-1'], 'reason');
-      await hookResult.handleRefundAction('reject', ['trx-1'], 'reason');
+    act(() => {
+      void hookResult.handleRefundAction('approve', ['trx-1']);
+      void hookResult.handleRefundAction('suspend', ['trx-1'], 'reason');
+      void hookResult.handleRefundAction('reject', ['trx-1'], 'reason');
     });
 
     expect(hookResult.transactionActionsDisabled).toBe(true);
