@@ -5,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { subDays, startOfDay, endOfDay, format } from 'date-fns';
 import it from 'date-fns/locale/it';
+import { PERMISSION_KEYS, useUserPermissions } from '../../hooks/useUserPermissions';
 import { MerchantItem } from '../../pages/initiativeRefundsMerchants/model/types';
 import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
 import DateRangePicker from '../DateRangePicker/DateRangePicker';
@@ -17,6 +18,7 @@ interface ExportFiltersCardProps {
 
 const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }: ExportFiltersCardProps) => {
   const { t } = useTranslation();
+  const { isActionDisabled } = useUserPermissions();
 
   const [selectedMerchant, setSelectedMerchant] = useState('');
   const [dateFrom, setDateFrom] = useState<Date | null>(null);
@@ -28,6 +30,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
 
   const yesterday = endOfDay(subDays(new Date(), 1));
   const minDateFrom = startOfDay(new Date(2025, 10, 18));
+  const isReportGenerationDisabled = isActionDisabled(PERMISSION_KEYS.REPORT_GENERATE);
 
   const merchantNames = useMemo(() => {
     const names = businessList
@@ -49,6 +52,8 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
   const handleGenerateReport = () => {
     // eslint-disable-next-line functional/no-let
     let hasErrors = false;
+
+    if (isReportGenerationDisabled) { return; }
 
     if (!isUsers) {
       if (!selectedMerchant.trim()) {
@@ -147,6 +152,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
             <Box sx={{ flex: 1 }} />
             <Button
               variant="contained"
+              disabled={isReportGenerationDisabled}
               sx={{
                 flexShrink: 0,
                 whiteSpace: 'nowrap',

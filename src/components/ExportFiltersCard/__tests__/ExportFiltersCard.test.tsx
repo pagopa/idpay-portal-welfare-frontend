@@ -3,6 +3,7 @@ import ExportFiltersCard from '../ExportFiltersCard';
 
 const mockMerchantAutocomplete = jest.fn();
 const mockDateRangePicker = jest.fn();
+const mockUseUserPermissions = jest.fn();
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -55,9 +56,19 @@ jest.mock('../../DateRangePicker/DateRangePicker', () => ({
   },
 }));
 
+jest.mock('../../../hooks/useUserPermissions', () => ({
+  PERMISSION_KEYS: {
+    REPORT_GENERATE: 'report.generate',
+  },
+  useUserPermissions: () => mockUseUserPermissions(),
+}));
+
 describe('ExportFiltersCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: () => false,
+    });
   });
 
   test('does not generate report when mandatory fields are missing', () => {
@@ -155,5 +166,23 @@ describe('ExportFiltersCard', () => {
       })
     );
   });
-});
 
+  test('disables report generation for support users', () => {
+    const onGenerateReport = jest.fn();
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === 'report.generate',
+    });
+
+    render(
+      <ExportFiltersCard
+        onGenerateReport={onGenerateReport}
+        businessList={[{ businessName: 'Esercente test' } as any]}
+      />
+    );
+
+    const exportButton = screen.getByRole('button', { name: 'pages.initiativeExportReport.exportFiltersCard.buttonExport' });
+    expect(exportButton).toBeDisabled();
+    fireEvent.click(exportButton);
+    expect(onGenerateReport).not.toHaveBeenCalled();
+  });
+});

@@ -12,6 +12,7 @@ type Props = {
     assigneeLevel: 'L1' | 'L2' | 'L3';
   };
   role: string;
+  actionsDisabled: boolean;
   selectedRowsSize: number;
   lockedStatus: RewardBatchTrxStatus | null;
   onOpenApproveModal: () => void;
@@ -25,6 +26,7 @@ const RefundTransactionsHeader = ({
   t,
   batch,
   role,
+  actionsDisabled,
   selectedRowsSize,
   lockedStatus,
   onOpenApproveModal,
@@ -58,7 +60,7 @@ const RefundTransactionsHeader = ({
         </Box>
 
         {batch.status === 'EVALUATING' ? (
-          selectedRowsSize > 0 ? (
+          actionsDisabled ? null : selectedRowsSize > 0 ? (
             <Box sx={{ width: '50%' }}>
               <RefundActionButtons
                 direction="row"

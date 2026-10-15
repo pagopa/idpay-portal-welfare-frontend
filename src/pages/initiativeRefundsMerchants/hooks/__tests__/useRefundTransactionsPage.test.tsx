@@ -23,6 +23,7 @@ const mockGetDownloadInvoice = jest.fn();
 const mockDownloadCsv = jest.fn();
 const mockOpenInvoiceInNewTab = jest.fn();
 const mockParseJwt = jest.fn();
+const mockUseUserPermissions = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -71,6 +72,19 @@ jest.mock('../../../../utils/fileViewer-utils', () => ({
 
 jest.mock('../../../../utils/jwt-utils', () => ({
   parseJwt: (...args: Array<any>) => mockParseJwt(...args),
+}));
+
+jest.mock('../../../../hooks/useUserPermissions', () => ({
+  PERMISSION_KEYS: {
+    BATCH_VALIDATE: 'batch.validate',
+    BATCH_CHECK: 'batch.check',
+    BATCH_APPROVE: 'batch.approve',
+    TRANSACTION_EDIT_CHECKS: 'transaction.editChecks',
+    TRANSACTION_APPROVE: 'transaction.approve',
+    TRANSACTION_SUSPEND: 'transaction.suspend',
+    TRANSACTION_REJECT: 'transaction.reject',
+  },
+  useUserPermissions: () => mockUseUserPermissions(),
 }));
 
 jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
@@ -147,6 +161,9 @@ describe('useRefundTransactionsPage', () => {
     mockRejectTrx.mockResolvedValue(batchMock);
     mockGetDownloadCsv.mockResolvedValue({ approvedBatchUrl: 'https://test/file.csv' });
     mockGetDownloadInvoice.mockResolvedValue({ invoiceUrl: 'https://test/invoice.pdf' });
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: () => false,
+    });
   });
 
   test('loads pos list and transactions on mount', async () => {
@@ -232,6 +249,48 @@ describe('useRefundTransactionsPage', () => {
 
     expect(mockValidateBatch).not.toHaveBeenCalled();
     expect(mockApproveBatch).not.toHaveBeenCalled();
+  });
+
+  test('skips batch status action when the current role cannot validate the batch', async () => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === 'batch.validate',
+    });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(hookResult.restored).toBe(true));
+
+    act(() => {
+      hookResult.handleBatchStatus();
+    });
+
+    expect(hookResult.batchActionDisabled).toBe(true);
+    expect(mockValidateBatch).not.toHaveBeenCalled();
+  });
+
+  test('skips refund actions when the current role is read only', async () => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) =>
+        [
+          'transaction.editChecks',
+          'transaction.approve',
+          'transaction.suspend',
+          'transaction.reject',
+        ].includes(action),
+    });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalled());
+
+    await act(async () => {
+      await hookResult.handleRefundAction('approve', ['trx-1']);
+      await hookResult.handleRefundAction('suspend', ['trx-1'], 'reason');
+      await hookResult.handleRefundAction('reject', ['trx-1'], 'reason');
+    });
+
+    expect(hookResult.transactionActionsDisabled).toBe(true);
+    expect(mockApproveTrx).not.toHaveBeenCalled();
+    expect(mockSuspendTrx).not.toHaveBeenCalled();
+    expect(mockRejectTrx).not.toHaveBeenCalled();
   });
 
   test('redirects to batches list when rehydrate fails', async () => {
