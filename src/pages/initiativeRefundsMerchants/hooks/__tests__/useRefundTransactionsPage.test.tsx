@@ -170,7 +170,7 @@ describe('useRefundTransactionsPage', () => {
     render(<HookWrapper />);
 
     await waitFor(() => {
-      expect(mockGetPOS).toHaveBeenCalledWith('merchant-1', 200);
+      expect(mockGetPOS).toHaveBeenCalledWith('merchant-1', 'initiative-1', 200);
       expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalled();
       expect(mockGetMerchantDetail).toHaveBeenCalledWith('initiative-1', 'merchant-1');
     });
