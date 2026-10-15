@@ -124,10 +124,12 @@ export const rejectTrx = (
 
 export const getPOS = (
   merchantId: string,
+  initiativeId: string,
   size: number | undefined
 ): Promise<ListPointOfSaleDTO> =>
   merchantsApi.getPos(
     merchantId,
+    initiativeId,
     size
   );
 

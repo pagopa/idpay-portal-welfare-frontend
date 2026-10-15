@@ -176,13 +176,13 @@ export const useRefundTransactionsPage = () => {
   }, [id, batchId, history]);
 
   useEffect(() => {
-    if (!batch?.merchantId) {
+    if (!batch?.merchantId || !id) {
       return;
     }
-    getPOS(batch.merchantId, 200)
+    getPOS(batch.merchantId, id, 200)
       .then((response) => setPosList([...(response.content ?? [])]))
       .catch(console.error);
-  }, [batch?.merchantId]);
+  }, [batch?.merchantId, id]);
 
   useEffect(() => {
     setPage(0);
