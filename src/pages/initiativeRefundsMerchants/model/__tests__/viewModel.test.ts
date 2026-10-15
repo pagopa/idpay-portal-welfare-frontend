@@ -46,6 +46,8 @@ const getTransactionsVm = (overrides?: Record<string, unknown>) => ({
     assigneeLevel: 'L2',
   },
   role: 'operator_l2',
+  batchActionDisabled: false,
+  transactionActionsDisabled: false,
   selectedRows: new Set<string>(['trx-1']),
   lockedStatus: null,
   setApproveModal: jest.fn(),
@@ -150,6 +152,7 @@ describe('viewModel bindings', () => {
     expect(result.breadcrumbsProps.initiativeId).toBe('initiative-id');
     expect(result.breadcrumbsProps.businessName).toBe('Biz');
     expect(result.headerProps.role).toBe('operator_l2');
+    expect(result.headerProps.actionsDisabled).toBe(false);
     expect(result.headerProps.selectedRowsSize).toBe(1);
     expect(result.headerProps.lockedStatus).toBe(null);
     expect(result.summaryProps.formattedPeriod).toBe('period');
@@ -165,6 +168,7 @@ describe('viewModel bindings', () => {
     expect(result.overlaysProps.approveModal).toBe(false);
     expect(result.overlaysProps.batchModalOpen).toBe(false);
     expect(result.overlaysProps.batchAssigneeLevel).toBe('L2');
+    expect(result.overlaysProps.disabled).toBe(false);
   });
 
   test('profiles overlays only when both appliance initiative name and ID match', () => {
@@ -209,5 +213,18 @@ describe('viewModel bindings', () => {
     expect(vm.setReasonModal).toHaveBeenCalledWith({ open: true, type: 'suspend' });
     expect(vm.setReasonModal).toHaveBeenCalledWith({ open: true, type: 'reject' });
     expect(vm.setBatchModalOpen).toHaveBeenCalledWith(true);
+  });
+
+  test('marks header and drawer as read only when support actions are disabled', () => {
+    const result = buildRefundTransactionsBindings(
+      getTransactionsVm({
+        batchActionDisabled: true,
+        transactionActionsDisabled: true,
+      }) as any,
+      'initiative-name'
+    );
+
+    expect(result.headerProps.actionsDisabled).toBe(true);
+    expect(result.overlaysProps.disabled).toBe(true);
   });
 });
