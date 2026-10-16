@@ -3,7 +3,6 @@ import { ENV } from '../utils/env';
 import {
   Api,
   HttpClient,
-  RequestParams,
   TransactionActionRequest as SwaggerTransactionActionRequest,
   ReportTypeEnum,
   AssigneeLevelEnum,
@@ -181,26 +180,20 @@ export const merchantsApi = {
     ),
 
   getDownloadInvoice: async (
+    initiativeId: string,
     pointOfSaleId: string,
     transactionId: string,
     xMerchantId: string
-  ): Promise<DownloadInvoiceResponseDTO> => {
-    const requestParams: RequestParams = {
-      headers: {
-        'x-merchant-id': xMerchantId,
-      },
-    };
-
-    return execute(() =>
-      api.pointOfSaleId.downloadInvoiceFile(
-        {
-          pointOfSaleId,
-          transactionId,
-        },
-        requestParams
-      )
-    );
-  },
+  ): Promise<DownloadInvoiceResponseDTO> =>
+    execute(() =>
+      merchantsSwaggerHttpClient.request<DownloadInvoiceResponseDTO>({
+        path: `/initiatives/${encodeURIComponent(initiativeId)}/point-of-sales/${encodeURIComponent(pointOfSaleId)}/transactions/${encodeURIComponent(transactionId)}/download`,
+        method: 'GET',
+        headers: { 'x-merchant-id': xMerchantId },
+        secure: true,
+        format: 'json',
+      })
+    ),
 
   approveTrx: async (
     initiativeId: string,
