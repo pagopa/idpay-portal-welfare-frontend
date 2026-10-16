@@ -23,6 +23,7 @@ interface Props {
     onSuspend: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
     onReject: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
     disabled: boolean;
+    editChecksDisabled: boolean;
 }
 
 const formatCurrency = (value?: number) => {
@@ -56,7 +57,19 @@ const CHECK_ERROR_LABELS: Record<keyof ChecksErrorDTO, string> = {
 };
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
-export default function RefundsTransactionsDrawer({ open, isApplianceInitiative = false, onClose, data, download, formatDate, onApprove, onSuspend, onReject, disabled }: Props) {
+export default function RefundsTransactionsDrawer({
+    open,
+    isApplianceInitiative = false,
+    onClose,
+    data,
+    download,
+    formatDate,
+    onApprove,
+    onSuspend,
+    onReject,
+    disabled,
+    editChecksDisabled,
+}: Props) {
     const { t } = useTranslation();
 
     const [reasonModalOpen, setReasonModalOpen] = useState(false);
@@ -315,6 +328,7 @@ export default function RefundsTransactionsDrawer({ open, isApplianceInitiative 
                                     openReasonModal(type, data.trxId, true);
                                 }
                             }}
+                                disabled={editChecksDisabled}
                                 sx={{
                                     display: "inline-block",
                                     mt: 1,

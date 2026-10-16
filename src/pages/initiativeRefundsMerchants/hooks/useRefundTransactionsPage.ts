@@ -97,6 +97,10 @@ export const useRefundTransactionsPage = () => {
       isActionDisabled(PERMISSION_KEYS.TRANSACTION_REJECT),
     [isActionDisabled]
   );
+  const editChecksDisabled = useMemo(
+    () => isActionDisabled(PERMISSION_KEYS.TRANSACTION_EDIT_CHECKS),
+    [isActionDisabled]
+  );
 
   const [draftStatusFilter, setDraftStatusFilter] = useState<string | ''>('');
   const [statusFilter, setStatusFilter] = useState<string | ''>('');
@@ -590,6 +594,7 @@ export const useRefundTransactionsPage = () => {
     disabled,
     batchActionDisabled,
     transactionActionsDisabled,
+    editChecksDisabled,
     page,
     setPage,
     pageSize,
