@@ -3,7 +3,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/stor
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
-import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest } from '../../../api/generated/merchants/apiClient';
+import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionDecisionRequest } from '../../../api/generated/merchants/apiClient';
 import { useAlert } from '../../../hooks/useAlert';
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useInitiative } from '../../../hooks/useInitiative';
@@ -28,7 +28,7 @@ import { parseJwt } from '../../../utils/jwt-utils';
 import { RefundSearchType, SortDirection } from '../model/constants';
 import { formatDate, getFileNameFromAzureUrl } from '../model/formatters';
 import { buildStatusChipSx, getStatusColor, getStatusLabel, refundRequestDate } from '../model/status';
-import { RefundItem, RefundsDrawerData, TrxItem } from '../model/types';
+import { ReasonsObject, RefundItem, RefundsDrawerData, TrxItem } from '../model/types';
 
 const mapRefundsDrawerData = (
   transactionDto: MerchantTransactionProcessedDTO,
@@ -53,6 +53,8 @@ const mapRefundsDrawerData = (
   statusColor: mappedTransaction.statusColor,
   rewardBatchRejectionReason:
     transactionDto?.rewardBatchRejectionReason as RefundsDrawerData['rewardBatchRejectionReason'],
+  rewardBatchOfficialNotes:
+    transactionDto?.rewardBatchOfficialNotes as RefundsDrawerData['rewardBatchOfficialNotes'],
 });
 
 export const useRefundTransactionsPage = () => {
@@ -473,7 +475,7 @@ export const useRefundTransactionsPage = () => {
   const handleRefundAction = async (
     action: 'approve' | 'suspend' | 'reject',
     trxIds: Array<string>,
-    reason?: string,
+    reasons?: ReasonsObject,
     checksError?: ChecksErrorDTO
   ) => {
     const isDisabledAction =
@@ -487,9 +489,10 @@ export const useRefundTransactionsPage = () => {
       return Promise.resolve();
     }
 
-    const request: TransactionActionRequest = {
+    const request: TransactionActionRequest | TransactionDecisionRequest = {
       transactionIds: trxIds,
-      reason,
+      internalNote: reasons?.internalNote || '',
+      officialNote: reasons?.officialNote || '',
       checksError,
     };
 
