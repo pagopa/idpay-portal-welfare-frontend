@@ -149,6 +149,7 @@ export const buildRefundTransactionsBindings = (
     closeAfter: viewModel.closeAfter,
     handleRefundAction: viewModel.handleRefundAction,
     disabled: viewModel.disabled || viewModel.transactionActionsDisabled,
+    editChecksDisabled: viewModel.editChecksDisabled,
     reasonModal: viewModel.reasonModal,
     setReasonModal: viewModel.setReasonModal,
     selectedRowsSize: viewModel.selectedRows.size,

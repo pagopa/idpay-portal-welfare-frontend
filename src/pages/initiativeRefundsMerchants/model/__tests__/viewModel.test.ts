@@ -48,6 +48,7 @@ const getTransactionsVm = (overrides?: Record<string, unknown>) => ({
   role: 'operator_l2',
   batchActionDisabled: false,
   transactionActionsDisabled: false,
+  editChecksDisabled: false,
   selectedRows: new Set<string>(['trx-1']),
   lockedStatus: null,
   setApproveModal: jest.fn(),
@@ -169,6 +170,7 @@ describe('viewModel bindings', () => {
     expect(result.overlaysProps.batchModalOpen).toBe(false);
     expect(result.overlaysProps.batchAssigneeLevel).toBe('L2');
     expect(result.overlaysProps.disabled).toBe(false);
+    expect(result.overlaysProps.editChecksDisabled).toBe(false);
   });
 
   test('profiles overlays only when both appliance initiative name and ID match', () => {
