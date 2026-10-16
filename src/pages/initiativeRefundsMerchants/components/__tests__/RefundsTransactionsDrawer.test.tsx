@@ -318,6 +318,11 @@ describe('<RefundsTransactionsDrawer />', () => {
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
+            rewardBatchOfficialNotes: [
+              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
+            ],
           } as any
         }
         download={mockDownload}
@@ -329,7 +334,8 @@ describe('<RefundsTransactionsDrawer />', () => {
       />
     );
 
-    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.note')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.internalNote')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.officialNote')).toBeInTheDocument();
     expect(screen.getAllByText('Valid reason').length).toBeGreaterThan(0);
     expect(screen.queryByText('123')).not.toBeInTheDocument();
   });
