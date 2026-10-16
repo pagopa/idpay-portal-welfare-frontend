@@ -251,11 +251,13 @@ export const merchantsApi = {
 
   getPos: async (
     merchantId: string,
+    initiativeId: string,
     size: number | undefined
   ): Promise<ListPointOfSaleDTO> =>
     execute(() =>
       api.merchantId.getPointOfSales({
         merchantId,
+        initiativeId,
         size,
         sort: 'franchiseName,asc',
       })

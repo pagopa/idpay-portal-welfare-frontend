@@ -1253,7 +1253,8 @@
     "referente-legale": "Rappresentante legale",
     "operator1": "Amministratore",
     "operator2": "Amministratore",
-    "operator3": "Amministratore"
+    "operator3": "Amministratore",
+    "support": "Assistenza"
   },
   "session": {
     "expired": {

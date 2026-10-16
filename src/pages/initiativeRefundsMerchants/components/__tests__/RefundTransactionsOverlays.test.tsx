@@ -87,6 +87,7 @@ const getBaseProps = () => ({
   closeAfter: jest.fn((p: Promise<any>) => p),
   handleRefundAction: jest.fn(() => Promise.resolve()),
   disabled: false,
+  editChecksDisabled: false,
   reasonModal: { open: true, type: 'suspend' as 'reject' | 'suspend' | null },
   setReasonModal: jest.fn(),
   selectedRowsSize: 2,

@@ -27,6 +27,7 @@ type Props = {
     checksError?: ChecksErrorDTO
   ) => Promise<any>;
   disabled: boolean;
+  editChecksDisabled: boolean;
   reasonModal: { open: boolean; type: 'reject' | 'suspend' | null };
   setReasonModal: (value: { open: boolean; type: 'reject' | 'suspend' | null }) => void;
   selectedRowsSize: number;
@@ -52,6 +53,7 @@ const RefundTransactionsOverlays = ({
   closeAfter,
   handleRefundAction,
   disabled,
+  editChecksDisabled,
   reasonModal,
   setReasonModal,
   selectedRowsSize,
@@ -78,6 +80,7 @@ const RefundTransactionsOverlays = ({
       onSuspend={(trxId, reasons, checksError) => closeAfter(handleRefundAction('suspend', [trxId], reasons, checksError))}
       onReject={(trxId, reasons, checksError) => closeAfter(handleRefundAction('reject', [trxId], reasons, checksError))}
       disabled={disabled}
+      editChecksDisabled={editChecksDisabled}
     />
 
     <RefundReasonModal
