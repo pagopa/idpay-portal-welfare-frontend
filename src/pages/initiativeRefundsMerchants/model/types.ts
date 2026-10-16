@@ -86,4 +86,10 @@ export interface RefundsDrawerData {
   pointOfSaleId?: string;
   transactionId?: string;
   rewardBatchRejectionReason?: Array<ReasonDTO>;
+  rewardBatchOfficialNotes?: Array<ReasonDTO>;
+}
+
+export interface ReasonsObject {
+  internalNote: string,
+  officialNote?: string
 }

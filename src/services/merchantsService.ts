@@ -1,4 +1,4 @@
-import { DownloadInvoiceResponseDTO, DownloadReportResponseDTO, DownloadRewardBatchResponseDTO, ListPointOfSaleDTO, MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO, ReportDTO, ReportListDTO, RewardBatchDTO, RewardBatchListDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionActionResponse, AssigneeLevelEnum, ReportTypeEnum, RewardBatchStatus, ReportRequestReportTypeEnum } from "../api/generated/merchants/apiClient";
+import { DownloadInvoiceResponseDTO, DownloadReportResponseDTO, DownloadRewardBatchResponseDTO, ListPointOfSaleDTO, MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO, ReportDTO, ReportListDTO, RewardBatchDTO, RewardBatchListDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionActionResponse, AssigneeLevelEnum, ReportTypeEnum, RewardBatchStatus, ReportRequestReportTypeEnum, TransactionDecisionRequest } from "../api/generated/merchants/apiClient";
 import { merchantsApi } from "../api/merchantsApiClient";
 
 export const uploadMerchantList = async (id: string, file: File): Promise<MerchantUpdateDTO> => merchantsApi.uploadMerchantList(id, file);
@@ -103,7 +103,7 @@ export const approveTrx = (
 export const suspendTrx = (
   initiativeId: string,
   rewardBatchId: string,
-  trxs: TransactionActionRequest,
+  trxs: TransactionDecisionRequest,
 ): Promise<TransactionActionResponse> =>
   merchantsApi.suspendTrx(
     initiativeId,
@@ -114,7 +114,7 @@ export const suspendTrx = (
 export const rejectTrx = (
   initiativeId: string,
   rewardBatchId: string,
-  trxs: TransactionActionRequest,
+  trxs: TransactionDecisionRequest,
 ): Promise<TransactionActionResponse> =>
   merchantsApi.rejectTrx(
     initiativeId,

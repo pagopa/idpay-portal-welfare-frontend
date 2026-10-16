@@ -4,6 +4,7 @@ import {
   Api,
   HttpClient,
   TransactionActionRequest as SwaggerTransactionActionRequest,
+  TransactionDecisionRequest as SwaggerTransactionDecisionRequest,
   ReportTypeEnum,
   AssigneeLevelEnum,
   DownloadInvoiceResponseDTO,
@@ -23,6 +24,7 @@ import {
   RewardBatchTrxStatus,
   TransactionActionRequest,
   TransactionActionResponse,
+  TransactionDecisionRequest,
   RewardBatchStatus,
   ReportRequestReportTypeEnum,
 } from './generated/merchants/apiClient';
@@ -58,6 +60,13 @@ const execute = async <T>(operation: () => Promise<{ data: T }>): Promise<T> => 
 const toSwaggerTransactionActionRequest = (
   body: TransactionActionRequest
 ): SwaggerTransactionActionRequest => ({
+  ...body,
+  transactionIds: [...body.transactionIds],
+});
+
+const toSwaggerTransactionDecisionRequest = (
+  body: TransactionDecisionRequest
+): SwaggerTransactionDecisionRequest => ({
   ...body,
   transactionIds: [...body.transactionIds],
 });
@@ -213,7 +222,7 @@ export const merchantsApi = {
   suspendTrx: async (
     initiativeId: string,
     rewardBatchId: string,
-    body: TransactionActionRequest
+    body: TransactionDecisionRequest
   ): Promise<TransactionActionResponse> =>
     execute(() =>
       api.initiatives.suspendTransactions(
@@ -221,14 +230,14 @@ export const merchantsApi = {
           initiativeId,
           rewardBatchId,
         },
-        toSwaggerTransactionActionRequest(body)
+        toSwaggerTransactionDecisionRequest(body)
       )
     ),
 
   rejectTrx: async (
     initiativeId: string,
     rewardBatchId: string,
-    body: TransactionActionRequest
+    body: TransactionDecisionRequest
   ): Promise<TransactionActionResponse> =>
     execute(() =>
       api.initiatives.rejectTransactions(
@@ -236,7 +245,7 @@ export const merchantsApi = {
           initiativeId,
           rewardBatchId,
         },
-        toSwaggerTransactionActionRequest(body)
+        toSwaggerTransactionDecisionRequest(body)
       )
     ),
 
