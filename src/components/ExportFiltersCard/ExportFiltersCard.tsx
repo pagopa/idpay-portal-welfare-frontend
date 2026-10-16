@@ -117,6 +117,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
                 merchantNames={merchantNames}
                 selectedMerchant={selectedMerchant}
                 merchantError={merchantError}
+                isActionDisabled={isReportGenerationDisabled}
                 onMerchantChange={(value) => {
                   setSelectedMerchant(value);
                   setMerchantError(null);
@@ -148,6 +149,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, isUsers = false, }:
                 setDateToError(false);
               }}
               isUsers={isUsers}
+              isDisabled={isReportGenerationDisabled}
             />
             <Box sx={{ flex: 1 }} />
             <Button
