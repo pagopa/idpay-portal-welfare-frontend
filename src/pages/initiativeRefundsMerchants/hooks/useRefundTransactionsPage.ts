@@ -504,12 +504,12 @@ export const useRefundTransactionsPage = () => {
     invoiceFileName: string | any,
     isDownload: boolean = false
   ) => {
-    if (!pointOfSaleId || !transactionId || !invoiceFileName || !batch?.merchantId) {
+    if (!batch?.merchantId || !id || !pointOfSaleId || !transactionId || !invoiceFileName) {
       return;
     }
 
     setLoadingRef.current(true);
-    getDownloadInvoice(pointOfSaleId, transactionId, batch.merchantId)
+    getDownloadInvoice(id, pointOfSaleId, transactionId, batch.merchantId)
       .then(async (response) => {
         if (response?.invoiceUrl) {
           if (isDownload) {

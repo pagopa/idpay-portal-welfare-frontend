@@ -522,7 +522,7 @@ describe('useRefundTransactionsPage', () => {
       hookResult.downloadInvoice('pos-1', 'trx-1', 'invoice.pdf', true);
     });
     await waitFor(() => {
-      expect(mockGetDownloadInvoice).toHaveBeenCalledWith('pos-1', 'trx-1', 'merchant-1');
+      expect(mockGetDownloadInvoice).toHaveBeenCalledWith('initiative-1', 'pos-1', 'trx-1', 'merchant-1');
       expect(mockDownloadCsv).toHaveBeenCalledWith('https://test/invoice.pdf', 'invoice.pdf');
     });
 
@@ -565,7 +565,7 @@ describe('useRefundTransactionsPage', () => {
     });
 
     await waitFor(() => {
-      expect(mockGetDownloadInvoice).toHaveBeenCalledWith('pos-1', 'trx-1', 'merchant-1');
+      expect(mockGetDownloadInvoice).toHaveBeenCalledWith('initiative-1', 'pos-1', 'trx-1', 'merchant-1');
     });
 
     expect(mockDownloadCsv).not.toHaveBeenCalled();

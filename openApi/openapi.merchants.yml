@@ -942,34 +942,69 @@ paths:
           $ref: "#/components/responses/GET_download_reward_batch_file_429_Response"
         "500":
           $ref: "#/components/responses/GET_download_reward_batch_file_500_Response"
-  /{pointOfSaleId}/transactions/{transactionId}/download:
+  /initiatives/{initiativeId}/point-of-sales/{pointOfSaleId}/transactions/{transactionId}/download:
     get:
       tags:
-        - merchant-transactions
+        - transaction
       summary: "ENG: Download invoice file - IT: Scarica il file della fattura"
       description: "ENG: Download the invoice file of the transaction<br>
         IT: Scarica il file della fattura della transazione"
       operationId: downloadInvoiceFile
       parameters:
-        - $ref: "#/components/parameters/pointOfSaleId_path"
-        - $ref: "#/components/parameters/transactionId_path"
-        - name: x-merchant-id
-          in: header
-          description: Merchant ID
+        - name: initiativeId
+          in: path
+          description: The initiative ID
+          required: true
+          schema:
+            type: string
+        - name: pointOfSaleId
+          in: path
+          description: "ENG: Point of sale ID - IT: ID del punto vendita"
+          required: true
+          schema:
+            type: string
+        - name: transactionId
+          in: path
+          description: "ENG: Transaction ID - IT: ID della transazione"
           required: true
           schema:
             type: string
       responses:
         "200":
-          $ref: "#/components/responses/GET_download_invoice_file_200_Response"
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DownloadInvoiceResponseDTO"
         "400":
-          $ref: "#/components/responses/GET_download_invoice_file_400_Response"
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorDTO"
+              example:
+                code: INVALID_REQUEST
+                message: Something went wrong handling request
         "401":
-          $ref: "#/components/responses/GET_download_invoice_file_401_Response"
+          description: Authentication failed
         "429":
-          $ref: "#/components/responses/GET_download_invoice_file_429_Response"
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorDTO"
+              example:
+                code: TOO_MANY_REQUESTS
+                message: Too many requests
         "500":
-          $ref: "#/components/responses/GET_download_invoice_file_500_Response"
+          description: Generic error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionErrorDTO"
+              example:
+                code: GENERIC_ERROR
+                message: An error occurred during file reading
   /{merchantId}/point-of-sales:
     get:
       tags:

@@ -81,7 +81,7 @@ const RefundTransactionsFiltersBar = ({
               title={
                 pointOfSale.type === 'ONLINE'
                   ? `${pointOfSale.franchiseName} - ${pointOfSale.website}`
-                  : `${pointOfSale.franchiseName} - ${pointOfSale.province} - ${pointOfSale.address}`
+                  : `${pointOfSale.franchiseName} - ${pointOfSale.province} - ${pointOfSale.address}, ${pointOfSale.streetNumber}`
               }
               placement="left"
               arrow
@@ -89,7 +89,7 @@ const RefundTransactionsFiltersBar = ({
               <Box sx={{ maxWidth: 248, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                 {pointOfSale.type === 'ONLINE'
                   ? `${pointOfSale.franchiseName} - ${pointOfSale.website}`
-                  : `${pointOfSale.franchiseName} - ${pointOfSale.province} - ${pointOfSale.address}`}
+                  : `${pointOfSale.franchiseName} - ${pointOfSale.province} - ${pointOfSale.address}, ${pointOfSale.streetNumber}`}
               </Box>
             </Tooltip>
           </MenuItem>

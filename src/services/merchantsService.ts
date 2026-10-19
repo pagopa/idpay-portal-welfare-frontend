@@ -77,11 +77,13 @@ export const getRewardBatches = (
   );
 
 export const getDownloadInvoice = (
+  initiativeId: string,
   pointOfSaleId: string,
   transactionId: string,
   xMerchantId: string
 ): Promise<DownloadInvoiceResponseDTO> =>
   merchantsApi.getDownloadInvoice(
+    initiativeId,
     pointOfSaleId,
     transactionId,
     xMerchantId
