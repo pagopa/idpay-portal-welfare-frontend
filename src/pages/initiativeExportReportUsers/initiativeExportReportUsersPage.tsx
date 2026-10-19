@@ -81,7 +81,9 @@ const InitiativeExportReportUsersPage = () => {
         <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeExportReportUsers.title')}
-            subTitle={t('pages.initiativeExportReportUsers.subtitle')}
+            subTitle={t('pages.initiativeExportReportUsers.subtitle', {
+              initiativeName: initiativeSel.initiativeName,
+            })}
             mbTitle={2}
             mtTitle={2}
             mbSubTitle={5}
