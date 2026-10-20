@@ -23,6 +23,7 @@ const mockGetDownloadInvoice = jest.fn();
 const mockDownloadCsv = jest.fn();
 const mockOpenInvoiceInNewTab = jest.fn();
 const mockParseJwt = jest.fn();
+const mockUseUserPermissions = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -71,6 +72,19 @@ jest.mock('../../../../utils/fileViewer-utils', () => ({
 
 jest.mock('../../../../utils/jwt-utils', () => ({
   parseJwt: (...args: Array<any>) => mockParseJwt(...args),
+}));
+
+jest.mock('../../../../hooks/useUserPermissions', () => ({
+  PERMISSION_KEYS: {
+    BATCH_VALIDATE: 'batch.validate',
+    BATCH_CHECK: 'batch.check',
+    BATCH_APPROVE: 'batch.approve',
+    TRANSACTION_EDIT_CHECKS: 'transaction.editChecks',
+    TRANSACTION_APPROVE: 'transaction.approve',
+    TRANSACTION_SUSPEND: 'transaction.suspend',
+    TRANSACTION_REJECT: 'transaction.reject',
+  },
+  useUserPermissions: () => mockUseUserPermissions(),
 }));
 
 jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
@@ -147,13 +161,16 @@ describe('useRefundTransactionsPage', () => {
     mockRejectTrx.mockResolvedValue(batchMock);
     mockGetDownloadCsv.mockResolvedValue({ approvedBatchUrl: 'https://test/file.csv' });
     mockGetDownloadInvoice.mockResolvedValue({ invoiceUrl: 'https://test/invoice.pdf' });
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: () => false,
+    });
   });
 
   test('loads pos list and transactions on mount', async () => {
     render(<HookWrapper />);
 
     await waitFor(() => {
-      expect(mockGetPOS).toHaveBeenCalledWith('merchant-1', 200);
+      expect(mockGetPOS).toHaveBeenCalledWith('merchant-1', 'initiative-1', 200);
       expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalled();
       expect(mockGetMerchantDetail).toHaveBeenCalledWith('initiative-1', 'merchant-1');
     });
@@ -232,6 +249,64 @@ describe('useRefundTransactionsPage', () => {
 
     expect(mockValidateBatch).not.toHaveBeenCalled();
     expect(mockApproveBatch).not.toHaveBeenCalled();
+  });
+
+  test('skips batch status action when the current role cannot validate the batch', async () => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === 'batch.validate',
+    });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(hookResult.restored).toBe(true));
+
+    act(() => {
+      hookResult.handleBatchStatus();
+    });
+
+    expect(hookResult.batchActionDisabled).toBe(true);
+    expect(mockValidateBatch).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['L2', 'batch.check'],
+    ['L3', 'batch.approve'],
+  ])('marks batch actions disabled for %s batches when the role is read only', async (level, permission) => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === permission,
+    });
+    mockGetBatchTrx.mockReturnValue({ ...batchMock, assigneeLevel: level as 'L2' | 'L3' });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(hookResult.restored).toBe(true));
+
+    expect(hookResult.batchActionDisabled).toBe(true);
+    expect(hookResult.transactionActionsDisabled).toBe(false);
+  });
+
+  test('skips refund actions when the current role is read only', async () => {
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) =>
+        [
+          'transaction.editChecks',
+          'transaction.approve',
+          'transaction.suspend',
+          'transaction.reject',
+        ].includes(action),
+    });
+
+    render(<HookWrapper />);
+    await waitFor(() => expect(mockGetMerchantTransactionsProcessed).toHaveBeenCalled());
+
+    act(() => {
+      void hookResult.handleRefundAction('approve', ['trx-1']);
+      void hookResult.handleRefundAction('suspend', ['trx-1'], 'reason');
+      void hookResult.handleRefundAction('reject', ['trx-1'], 'reason');
+    });
+
+    expect(hookResult.transactionActionsDisabled).toBe(true);
+    expect(mockApproveTrx).not.toHaveBeenCalled();
+    expect(mockSuspendTrx).not.toHaveBeenCalled();
+    expect(mockRejectTrx).not.toHaveBeenCalled();
   });
 
   test('redirects to batches list when rehydrate fails', async () => {

@@ -16,6 +16,7 @@ interface DateRangePickerProps {
   onDateFromChange: (date: Date | null) => void;
   onDateToChange: (date: Date | null) => void;
   isUsers?: boolean;
+  isDisabled?: boolean;
 }
 
 const fieldSx = {
@@ -101,6 +102,7 @@ const DateRangePicker = ({
   onDateFromChange,
   onDateToChange,
   isUsers = false,
+  isDisabled = false,
 }: DateRangePickerProps) => {
   const { t } = useTranslation();
   const [openFrom, setOpenFrom] = useState(false);
@@ -155,6 +157,7 @@ const DateRangePicker = ({
       <DatePicker
         label={t('pages.initiativeUsers.form.from')}
         value={dateFrom}
+        disabled={isDisabled}
         onChange={onDateFromChange}
         minDate={minDateFrom}
         maxDate={yesterday}
@@ -174,6 +177,7 @@ const DateRangePicker = ({
         label={t('pages.initiativeUsers.form.to')}
         value={dateTo}
         onChange={onDateToChange}
+        disabled={isDisabled}
         minDate={getMinDateTo()}
         maxDate={getMaxDateTo()}
         {...commonPickerProps}

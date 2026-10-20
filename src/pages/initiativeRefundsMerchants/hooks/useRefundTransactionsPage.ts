@@ -7,6 +7,7 @@ import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, Reward
 import { useAlert } from '../../../hooks/useAlert';
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useInitiative } from '../../../hooks/useInitiative';
+import { PERMISSION_KEYS, useUserPermissions } from '../../../hooks/useUserPermissions';
 import { JWTUser } from '../../../model/JwtUser';
 import ROUTES from '../../../routes';
 import {
@@ -75,6 +76,31 @@ export const useRefundTransactionsPage = () => {
   const user = parseJwt(storageTokenOps.read()) as JWTUser;
   const role = user.org_role;
   const disabled = useMemo(() => batch?.status !== 'EVALUATING', [batch]);
+  const { isActionDisabled } = useUserPermissions();
+  const batchActionDisabled = useMemo(() => {
+    switch (batch?.assigneeLevel) {
+      case 'L1':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_VALIDATE);
+      case 'L2':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_CHECK);
+      case 'L3':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_APPROVE);
+      default:
+        return false;
+    }
+  }, [batch?.assigneeLevel, isActionDisabled]);
+  const transactionActionsDisabled = useMemo(
+    () =>
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_EDIT_CHECKS) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_APPROVE) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_SUSPEND) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_REJECT),
+    [isActionDisabled]
+  );
+  const editChecksDisabled = useMemo(
+    () => isActionDisabled(PERMISSION_KEYS.TRANSACTION_EDIT_CHECKS),
+    [isActionDisabled]
+  );
 
   const [draftStatusFilter, setDraftStatusFilter] = useState<string | ''>('');
   const [statusFilter, setStatusFilter] = useState<string | ''>('');
@@ -176,13 +202,13 @@ export const useRefundTransactionsPage = () => {
   }, [id, batchId, history]);
 
   useEffect(() => {
-    if (!batch?.merchantId) {
+    if (!batch?.merchantId || !id) {
       return;
     }
-    getPOS(batch.merchantId, 200)
+    getPOS(batch.merchantId, id, 200)
       .then((response) => setPosList([...(response.content ?? [])]))
       .catch(console.error);
-  }, [batch?.merchantId]);
+  }, [batch?.merchantId, id]);
 
   useEffect(() => {
     setPage(0);
@@ -369,7 +395,7 @@ export const useRefundTransactionsPage = () => {
   };
 
   const handleBatchStatus = () => {
-    if (!batch?.id) {
+    if (!batch?.id || batchActionDisabled) {
       return;
     }
 
@@ -450,7 +476,14 @@ export const useRefundTransactionsPage = () => {
     reason?: string,
     checksError?: ChecksErrorDTO
   ) => {
-    if (!batch?.id || !id) {
+    const isDisabledAction =
+      action === 'approve'
+        ? isActionDisabled(PERMISSION_KEYS.TRANSACTION_APPROVE)
+        : action === 'suspend'
+          ? isActionDisabled(PERMISSION_KEYS.TRANSACTION_SUSPEND)
+          : isActionDisabled(PERMISSION_KEYS.TRANSACTION_REJECT);
+
+    if (!batch?.id || !id || isDisabledAction) {
       return Promise.resolve();
     }
 
@@ -559,6 +592,9 @@ export const useRefundTransactionsPage = () => {
     role,
     restored,
     disabled,
+    batchActionDisabled,
+    transactionActionsDisabled,
+    editChecksDisabled,
     page,
     setPage,
     pageSize,
