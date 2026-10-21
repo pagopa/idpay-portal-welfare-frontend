@@ -6,15 +6,22 @@ import {
 } from '../../../api/generated/merchants/apiClient';
 import InitiativeExportReportUsersPage from '../initiativeExportReportUsersPage';
 import { createStore } from '../../../redux/store';
+import { setInitiativeName } from '../../../redux/slices/initiativeSlice';
 
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
 const mockGenerateReport = jest.fn();
 const mockExportFiltersProps = jest.fn();
 const mockReportTableProps = jest.fn();
+const mockT = jest.fn();
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: { initiativeName?: string }) => {
+      mockT(key, options);
+      return key;
+    },
+  }),
 }));
 
 jest.mock('../../../hooks/useInitiative', () => ({
@@ -71,6 +78,8 @@ describe('<InitiativeExportReportUsersPage />', () => {
 
   test('renders page and passes user mode props to child components', async () => {
     const store = createStore();
+    store.dispatch(setInitiativeName('Bonus Decorer'));
+
     render(
       <Provider store={store}>
         <InitiativeExportReportUsersPage />
@@ -79,6 +88,9 @@ describe('<InitiativeExportReportUsersPage />', () => {
 
     expect(screen.getByTestId('title-box')).toBeInTheDocument();
     expect(screen.getByTestId('report-table-card')).toBeInTheDocument();
+    expect(mockT).toHaveBeenCalledWith('pages.initiativeExportReportUsers.subtitle', {
+      initiativeName: 'Bonus Decorer',
+    });
 
     expect(mockExportFiltersProps).toHaveBeenCalledWith(
       expect.objectContaining({

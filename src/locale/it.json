@@ -1184,7 +1184,7 @@
     },
     "initiativeExportReportUsers": {
       "title": "Esporta dati utenti",
-      "subtitle": "Esporta i dati dei cittadini che hanno utilizzato il Bonus Elettrodomestici in base ai criteri selezionati.",
+      "subtitle": "Esporta i dati dei cittadini che hanno utilizzato il {{initiativeName}} in base ai criteri selezionati.",
       "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
         "subtitle": "Imposta i criteri di ricerca per generare il report contenente i codici fiscali dei cittadini e l’importo del voucher utilizzato. Puoi selezionare le date a partire da ieri.",
