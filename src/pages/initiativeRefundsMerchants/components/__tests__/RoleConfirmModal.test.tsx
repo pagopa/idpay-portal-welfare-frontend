@@ -6,6 +6,15 @@ jest.mock('react-i18next', () => ({
 }));
 
 describe('<RoleConfirmModal />', () => {
+  test.each(['L1', 'L2', 'L3'])('shows the empty batch confirmation for %s', (role) => {
+    const onConfirm = jest.fn();
+    render(<RoleConfirmModal open role={role} isEmptyBatch onClose={jest.fn()} onConfirm={onConfirm} />);
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.batchModal.empty.title')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.batchModal.empty.description')).toBeInTheDocument();
+    fireEvent.click(screen.getByText('pages.initiativeMerchantsTransactions.batchModal.confirm'));
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
   test('renders translated labels for L1 and triggers callbacks', () => {
     const onClose = jest.fn();
     const onConfirm = jest.fn();

@@ -37,6 +37,7 @@ type Props = {
   approve: () => Promise<any>;
   batchModalOpen: boolean;
   batchAssigneeLevel: 'L1' | 'L2' | 'L3';
+  isEmptyBatch?: boolean;
   setBatchModalOpen: (value: boolean) => void;
   handleBatchStatus: () => void;
   batchErrorOpen: boolean;
@@ -63,6 +64,7 @@ const RefundTransactionsOverlays = ({
   approve,
   batchModalOpen,
   batchAssigneeLevel,
+  isEmptyBatch = false,
   setBatchModalOpen,
   handleBatchStatus,
   batchErrorOpen,
@@ -111,6 +113,7 @@ const RefundTransactionsOverlays = ({
     <RoleConfirmModal
       open={batchModalOpen}
       role={batchAssigneeLevel}
+      isEmptyBatch={isEmptyBatch}
       onClose={() => setBatchModalOpen(false)}
       onConfirm={handleBatchStatus}
     />

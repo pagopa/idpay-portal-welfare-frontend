@@ -1124,6 +1124,10 @@
         }
       },
       "batchModal": {
+        "empty": {
+          "title": "Stai per validare un lotto vuoto. Vuoi procedere?",
+          "description": "Confermando, il lotto risulterà controllato e non genererà rimborsi."
+        },
         "errorTitle": "Controlla le transazioni mancanti",
         "errorDescription": "Devi verificare almeno il 15% delle transazioni prima di validare il lotto.\nCompleta i controlli mancanti per procedere.",
         "confirm": "Conferma",
