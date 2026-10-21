@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 interface Props {
     open: boolean;
     role: string | "L1" | "L2" | "L3";
+    isEmptyBatch?: boolean;
     onClose: () => void;
     onConfirm: () => void;
 }
@@ -18,14 +19,15 @@ interface Props {
 export const RoleConfirmModal = ({
     open,
     role,
+    isEmptyBatch = false,
     onClose,
     onConfirm
 }: Props) => {
     const { t } = useTranslation();
 
     const getLabels = () => ({
-        title: t(`pages.initiativeMerchantsTransactions.batchModal.${role}.title`),
-        description: t(`pages.initiativeMerchantsTransactions.batchModal.${role}.description`),
+        title: t(`pages.initiativeMerchantsTransactions.batchModal.${isEmptyBatch ? 'empty' : role}.title`),
+        description: t(`pages.initiativeMerchantsTransactions.batchModal.${isEmptyBatch ? 'empty' : role}.description`),
     });
 
     const { title, description } = getLabels();

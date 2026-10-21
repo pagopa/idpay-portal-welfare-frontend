@@ -35,6 +35,20 @@ const baseBatch = {
 };
 
 describe('<RefundTransactionsHeader />', () => {
+  test('keeps CSV disabled for an approved empty batch', () => {
+    const onGetCsv = jest.fn();
+    render(<RefundTransactionsHeader
+      t={t} batch={{ ...baseBatch, status: 'APPROVED', numberOfTransactions: 0 }}
+      role="operator3" actionsDisabled={false} selectedRowsSize={0} lockedStatus={null}
+      onOpenApproveModal={jest.fn()} onOpenSuspendModal={jest.fn()}
+      onOpenRejectModal={jest.fn()} onOpenBatchModal={jest.fn()} onGetCsv={onGetCsv}
+    />);
+    const button = screen.getByRole('button', { name: 'pages.initiativeMerchantsTransactions.csv.button' });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(onGetCsv).not.toHaveBeenCalled();
+  });
+
   test('renders row action buttons when rows are selected', () => {
     const onOpenApproveModal = jest.fn();
     const onOpenSuspendModal = jest.fn();

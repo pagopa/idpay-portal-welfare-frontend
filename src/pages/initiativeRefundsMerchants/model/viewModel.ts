@@ -159,6 +159,7 @@ export const buildRefundTransactionsBindings = (
     approve: viewModel.approve,
     batchModalOpen: viewModel.batchModalOpen,
     batchAssigneeLevel: viewModel.batch.assigneeLevel,
+    isEmptyBatch: viewModel.batch.numberOfTransactions === 0,
     setBatchModalOpen: viewModel.setBatchModalOpen,
     handleBatchStatus: viewModel.handleBatchStatus,
     batchErrorOpen: viewModel.batchErrorOpen,

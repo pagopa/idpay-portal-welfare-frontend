@@ -10,6 +10,7 @@ type Props = {
     businessName: string;
     status: string;
     assigneeLevel: 'L1' | 'L2' | 'L3';
+    numberOfTransactions?: number;
   };
   role: string;
   actionsDisabled: boolean;
@@ -79,7 +80,7 @@ const RefundTransactionsHeader = ({
             <Button
               onClick={onGetCsv}
               variant="contained"
-              disabled={batch.status === 'APPROVING'}
+              disabled={batch.status === 'APPROVING' || batch.numberOfTransactions === 0}
               startIcon={<Download />}
               sx={{ whiteSpace: 'nowrap' }}
             >

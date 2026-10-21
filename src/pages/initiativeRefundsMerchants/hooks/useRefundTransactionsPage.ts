@@ -518,7 +518,7 @@ export const useRefundTransactionsPage = () => {
   const approve = () => handleRefundAction('approve', [...selectedRows]);
 
   const getCsv = () => {
-    if (!batch?.id || !id) {
+    if (!batch?.id || !id || batch.numberOfTransactions === 0) {
       return;
     }
     setLoadingRef.current(true);
