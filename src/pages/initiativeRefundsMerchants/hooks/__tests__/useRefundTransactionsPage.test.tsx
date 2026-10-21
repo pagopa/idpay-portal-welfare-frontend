@@ -166,6 +166,28 @@ describe('useRefundTransactionsPage', () => {
     });
   });
 
+  test.each(['L1', 'L2', 'L3'])('submits an empty batch with zero checks for %s', async (assigneeLevel) => {
+    const emptyBatch = { ...batchMock, assigneeLevel, numberOfTransactions: 0, numberOfTransactionsElaborated: 0 };
+    mockGetBatchTrx.mockReturnValue(emptyBatch);
+    mockGetMerchantTransactionsProcessed.mockResolvedValue({ totalElements: 0, totalPages: 0, content: [] });
+    mockValidateBatch.mockResolvedValue(emptyBatch);
+    mockApproveBatch.mockResolvedValue(emptyBatch);
+    render(<HookWrapper />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+    act(() => { hookResult.handleBatchStatus(); });
+    await waitFor(() => expect(mockSetBatchTrx).toHaveBeenCalled());
+    expect(assigneeLevel === 'L3' ? mockApproveBatch : mockValidateBatch).toHaveBeenCalledWith('initiative-1', 'batch-1');
+    expect(mockSetAlert).not.toHaveBeenCalled();
+  });
+
+  test('does not request a CSV for an approved empty batch', async () => {
+    mockGetBatchTrx.mockReturnValue({ ...batchMock, status: 'APPROVED', numberOfTransactions: 0 });
+    render(<HookWrapper />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+    act(() => hookResult.getCsv());
+    expect(mockGetDownloadCsv).not.toHaveBeenCalled();
+  });
+
   test('loads pos list and transactions on mount', async () => {
     render(<HookWrapper />);
 
