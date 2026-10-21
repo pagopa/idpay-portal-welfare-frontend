@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import { ButtonNaked, CopyToClipboardButton } from "@pagopa/mui-italia";
 import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
 import { Download } from "@mui/icons-material";
-import { ReasonDTO, RewardBatchTrxStatus } from "../../../api/generated/merchants/apiClient";
-import { RefundsDrawerData } from "../model/types";
+import { RewardBatchTrxStatus } from "../../../api/generated/merchants/apiClient";
+import { ReasonsObject, RefundsDrawerData } from "../model/types";
 import { RefundActionButtons } from "./RefundActionButtons";
 import RefundReasonModal from "./RefundReasonModal";
 import ApproveConfirmModal from "./ApproveConfirmModal";
+import { ReasonNotesField } from "./ReasonNotesField";
 
 interface Props {
     open: boolean;
@@ -20,8 +21,8 @@ interface Props {
     download: (pointOfSaleId: string | any, transactionId: string | any, invoiceFileName: string | any, isDownload?: boolean) => void;
     formatDate: (d?: string) => string;
     onApprove: (trxId: string) => void;
-    onSuspend: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
-    onReject: (trxId: string, reasons: string, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onSuspend: (trxId: string, reasons: ReasonsObject, checksError: ChecksErrorDTO) => Promise<void> | void;
+    onReject: (trxId: string, reasons: ReasonsObject, checksError: ChecksErrorDTO) => Promise<void> | void;
     disabled: boolean;
     editChecksDisabled: boolean;
 }
@@ -343,72 +344,28 @@ export default function RefundsTransactionsDrawer({
                         )}
                     </Box>
                 )}
-                {data?.rewardBatchRejectionReason && data.rewardBatchRejectionReason.length > 0 && data.rewardBatchTrxStatus !== "APPROVED" && (
-                    <Box sx={{ mb: 3 }}>
-                        <Typography
-                            sx={{
-                                fontSize: "14px",
-                                fontWeight: 700,
-                                color: "#17324D",
-                                textTransform: "uppercase",
-                                mb: 3,
-                                letterSpacing: "0.5px"
-                            }}
-                        >
-                            {t("pages.initiativeMerchantsTransactions.drawer.note")}
-                        </Typography>
-
-                        {data.rewardBatchRejectionReason.map((reasonObj: ReasonDTO, i: number) => {
-                            if (
-                                typeof reasonObj.reason === "string" &&
-                                reasonObj.reason !== "-" &&
-                                data?.rewardBatchTrxStatus !== "APPROVED"
-                            ) {
-                                return (
-                                    <Box
-                                        key={i}
-                                        sx={{
-                                            display: "flex",
-                                            alignItems: "flex-start",
-                                            mb: 2
-                                        }}
-                                    >
-                                        <Box sx={{ flex: 1 }}>
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "14px",
-                                                    color: "#6B7280",
-                                                    mb: 0.5
-                                                }}
-                                            >
-                                                {reasonObj.date ? formatDate(reasonObj.date.toString()) : '-'}
-                                            </Typography>
-
-                                            <Typography
-                                                sx={{
-                                                    fontSize: "18px",
-                                                    fontWeight: 600,
-                                                    color: "#17324D",
-                                                    lineHeight: "22px",
-                                                    whiteSpace: "pre-line",
-                                                    wordBreak: "break-word"
-                                                }}
-                                            >
-                                                {reasonObj.reason}
-                                            </Typography>
-                                        </Box>
-
-                                        <CopyToClipboardButton
-                                            value={reasonObj.reason}
-                                            sx={{ ml: 2, p: 1 }}
-                                        />
-                                    </Box>
-                                );
-                            }
-                            return null;
-                        })}
-                    </Box>
-                )}
+                {data?.rewardBatchRejectionReason &&
+                    !!data.rewardBatchRejectionReason.length &&
+                    data.rewardBatchTrxStatus !== "APPROVED" && (
+                        <Box sx={{ mb: 3 }}>
+                            <ReasonNotesField
+                                title="pages.initiativeMerchantsTransactions.drawer.internalNote"
+                                notesList={data?.rewardBatchRejectionReason}
+                                formatDate={formatDate}
+                            />
+                        </Box>
+                    )}
+                {data?.rewardBatchOfficialNotes &&
+                    !!data.rewardBatchOfficialNotes.length &&
+                    data.rewardBatchTrxStatus !== "APPROVED" && (
+                        <Box sx={{ mb: 3 }}>
+                            <ReasonNotesField
+                                title="pages.initiativeMerchantsTransactions.drawer.officialNote"
+                                notesList={data?.rewardBatchOfficialNotes}
+                                formatDate={formatDate}
+                            />
+                        </Box>
+                    )}
 
                 {!disabled &&
                     <RefundActionButtons
@@ -428,16 +385,16 @@ export default function RefundsTransactionsDrawer({
                 activeErrors={checksError}
                 count={1}
                 onClose={closeReasonModal}
-                onConfirm={async (newReason: string, checksError: ChecksErrorDTO) => {
+                onConfirm={async (newReasons: ReasonsObject, checksError: ChecksErrorDTO) => {
                     if (!reasonModalType || !pendingTrxId) {
                         closeReasonModal();
                         return;
                     }
 
                     if (reasonModalType === "suspend") {
-                        await onSuspend(pendingTrxId, newReason, checksError);
+                        await onSuspend(pendingTrxId, newReasons, checksError);
                     } else {
-                        await onReject(pendingTrxId, newReason, checksError);
+                        await onReject(pendingTrxId, newReasons, checksError);
                     }
 
                     closeReasonModal();
