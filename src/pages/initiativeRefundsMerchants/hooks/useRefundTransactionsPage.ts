@@ -555,7 +555,14 @@ export const useRefundTransactionsPage = () => {
           }
         }
       })
-      .catch(showGenericFetchError)
+      .catch(() => {
+        setAlertRef.current({
+          title: 'Errore download file',
+          text: 'Non è stato possibile scaricare il documento. Riprova più tardi.',
+          isOpen: true,
+          severity: 'error',
+        });
+      })
       .finally(() => setLoadingRef.current(false));
   };
 
