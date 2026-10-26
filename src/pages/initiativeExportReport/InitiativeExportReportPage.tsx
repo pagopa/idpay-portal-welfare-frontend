@@ -110,10 +110,13 @@ const InitiativeExportReportPage = () => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
-        <ExportFiltersCard
-          onGenerateReport={handleGenerateReport}
-          businessList={businessNameList}
-        />
+        {initiativeSel.generalInfo.startDate && (
+          <ExportFiltersCard
+            onGenerateReport={handleGenerateReport}
+            businessList={businessNameList}
+            startDate={initiativeSel.generalInfo.startDate}
+          />
+        )}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
         <ReportTableCard initiativeId={id} refreshToken={refreshToken} />
