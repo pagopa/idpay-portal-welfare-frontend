@@ -1,12 +1,12 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import {
   ReportDtoReportStatusEnum as ReportStatusEnum,
   ReportRequestReportTypeEnum,
 } from '../../../api/generated/merchants/apiClient';
 import InitiativeExportReportUsersPage from '../initiativeExportReportUsersPage';
-import { createStore } from '../../../redux/store';
-import { setInitiativeName } from '../../../redux/slices/initiativeSlice';
+import { createStore as createReduxStore } from '../../../redux/store';
+import { setGeneralInfo, setInitiativeName } from '../../../redux/slices/initiativeSlice';
 
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
@@ -14,6 +14,15 @@ const mockGenerateReport = jest.fn();
 const mockExportFiltersProps = jest.fn();
 const mockReportTableProps = jest.fn();
 const mockT = jest.fn();
+
+const createStore = () => {
+  const store = createReduxStore();
+  store.dispatch(setGeneralInfo({
+    ...store.getState().initiative.generalInfo,
+    startDate: '2024-06-15',
+  }));
+  return store;
+};
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -96,6 +105,7 @@ describe('<InitiativeExportReportUsersPage />', () => {
       expect.objectContaining({
         isUsers: true,
         businessList: [],
+        startDate: '2024-06-15',
       })
     );
     expect(mockReportTableProps).toHaveBeenCalledWith(
@@ -104,6 +114,29 @@ describe('<InitiativeExportReportUsersPage />', () => {
         refreshToken: 0,
         isUsers: true,
       })
+    );
+  });
+
+  test('waits for the initiative start date before rendering export filters', async () => {
+    const store = createReduxStore();
+    render(
+      <Provider store={store}>
+        <InitiativeExportReportUsersPage />
+      </Provider>
+    );
+
+    expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
+
+    await act(async () => {
+      store.dispatch(setGeneralInfo({
+        ...store.getState().initiative.generalInfo,
+        startDate: '2024-06-15',
+      }));
+    });
+
+    expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();
+    expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ startDate: '2024-06-15' })
     );
   });
 
