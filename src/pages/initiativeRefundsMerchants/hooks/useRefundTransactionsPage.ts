@@ -3,10 +3,11 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/stor
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
-import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest } from '../../../api/generated/merchants/apiClient';
+import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionDecisionRequest } from '../../../api/generated/merchants/apiClient';
 import { useAlert } from '../../../hooks/useAlert';
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useInitiative } from '../../../hooks/useInitiative';
+import { PERMISSION_KEYS, useUserPermissions } from '../../../hooks/useUserPermissions';
 import { JWTUser } from '../../../model/JwtUser';
 import ROUTES from '../../../routes';
 import {
@@ -27,7 +28,7 @@ import { parseJwt } from '../../../utils/jwt-utils';
 import { RefundSearchType, SortDirection } from '../model/constants';
 import { formatDate, getFileNameFromAzureUrl } from '../model/formatters';
 import { buildStatusChipSx, getStatusColor, getStatusLabel, refundRequestDate } from '../model/status';
-import { RefundItem, RefundsDrawerData, TrxItem } from '../model/types';
+import { ReasonsObject, RefundItem, RefundsDrawerData, TrxItem } from '../model/types';
 
 const mapRefundsDrawerData = (
   transactionDto: MerchantTransactionProcessedDTO,
@@ -52,6 +53,8 @@ const mapRefundsDrawerData = (
   statusColor: mappedTransaction.statusColor,
   rewardBatchRejectionReason:
     transactionDto?.rewardBatchRejectionReason as RefundsDrawerData['rewardBatchRejectionReason'],
+  rewardBatchOfficialNotes:
+    transactionDto?.rewardBatchOfficialNotes as RefundsDrawerData['rewardBatchOfficialNotes'],
 });
 
 export const useRefundTransactionsPage = () => {
@@ -75,6 +78,31 @@ export const useRefundTransactionsPage = () => {
   const user = parseJwt(storageTokenOps.read()) as JWTUser;
   const role = user.org_role;
   const disabled = useMemo(() => batch?.status !== 'EVALUATING', [batch]);
+  const { isActionDisabled } = useUserPermissions();
+  const batchActionDisabled = useMemo(() => {
+    switch (batch?.assigneeLevel) {
+      case 'L1':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_VALIDATE);
+      case 'L2':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_CHECK);
+      case 'L3':
+        return isActionDisabled(PERMISSION_KEYS.BATCH_APPROVE);
+      default:
+        return false;
+    }
+  }, [batch?.assigneeLevel, isActionDisabled]);
+  const transactionActionsDisabled = useMemo(
+    () =>
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_EDIT_CHECKS) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_APPROVE) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_SUSPEND) ||
+      isActionDisabled(PERMISSION_KEYS.TRANSACTION_REJECT),
+    [isActionDisabled]
+  );
+  const editChecksDisabled = useMemo(
+    () => isActionDisabled(PERMISSION_KEYS.TRANSACTION_EDIT_CHECKS),
+    [isActionDisabled]
+  );
 
   const [draftStatusFilter, setDraftStatusFilter] = useState<string | ''>('');
   const [statusFilter, setStatusFilter] = useState<string | ''>('');
@@ -176,13 +204,13 @@ export const useRefundTransactionsPage = () => {
   }, [id, batchId, history]);
 
   useEffect(() => {
-    if (!batch?.merchantId) {
+    if (!batch?.merchantId || !id) {
       return;
     }
-    getPOS(batch.merchantId, 200)
+    getPOS(batch.merchantId, id, 200)
       .then((response) => setPosList([...(response.content ?? [])]))
       .catch(console.error);
-  }, [batch?.merchantId]);
+  }, [batch?.merchantId, id]);
 
   useEffect(() => {
     setPage(0);
@@ -369,7 +397,7 @@ export const useRefundTransactionsPage = () => {
   };
 
   const handleBatchStatus = () => {
-    if (!batch?.id) {
+    if (!batch?.id || batchActionDisabled) {
       return;
     }
 
@@ -447,16 +475,24 @@ export const useRefundTransactionsPage = () => {
   const handleRefundAction = async (
     action: 'approve' | 'suspend' | 'reject',
     trxIds: Array<string>,
-    reason?: string,
+    reasons?: ReasonsObject,
     checksError?: ChecksErrorDTO
   ) => {
-    if (!batch?.id || !id) {
+    const isDisabledAction =
+      action === 'approve'
+        ? isActionDisabled(PERMISSION_KEYS.TRANSACTION_APPROVE)
+        : action === 'suspend'
+          ? isActionDisabled(PERMISSION_KEYS.TRANSACTION_SUSPEND)
+          : isActionDisabled(PERMISSION_KEYS.TRANSACTION_REJECT);
+
+    if (!batch?.id || !id || isDisabledAction) {
       return Promise.resolve();
     }
 
-    const request: TransactionActionRequest = {
+    const request: TransactionActionRequest | TransactionDecisionRequest = {
       transactionIds: trxIds,
-      reason,
+      internalNote: reasons?.internalNote || '',
+      officialNote: reasons?.officialNote || '',
       checksError,
     };
 
@@ -485,7 +521,7 @@ export const useRefundTransactionsPage = () => {
   const approve = () => handleRefundAction('approve', [...selectedRows]);
 
   const getCsv = () => {
-    if (!batch?.id || !id) {
+    if (!batch?.id || !id || batch.numberOfTransactions === 0) {
       return;
     }
     setLoadingRef.current(true);
@@ -519,7 +555,14 @@ export const useRefundTransactionsPage = () => {
           }
         }
       })
-      .catch(showGenericFetchError)
+      .catch(() => {
+        setAlertRef.current({
+          title: 'Errore download file',
+          text: 'Non è stato possibile scaricare il documento. Riprova più tardi.',
+          isOpen: true,
+          severity: 'error',
+        });
+      })
       .finally(() => setLoadingRef.current(false));
   };
 
@@ -559,6 +602,9 @@ export const useRefundTransactionsPage = () => {
     role,
     restored,
     disabled,
+    batchActionDisabled,
+    transactionActionsDisabled,
+    editChecksDisabled,
     page,
     setPage,
     pageSize,

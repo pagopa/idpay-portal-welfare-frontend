@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';;
+import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
@@ -100,7 +100,7 @@ const InitiativeExportReportPage = () => {
         <Box sx={{ display: 'grid', gridColumn: 'span 10', mt: 2 }}>
           <TitleBox
             title={t('pages.initiativeExportReport.title')}
-            subTitle={t('pages.initiativeExportReport.subtitle')}
+            subTitle={t('pages.initiativeExportReport.subtitle', {x: initiativeSel.initiativeName})}
             mbTitle={2}
             mtTitle={2}
             mbSubTitle={5}
@@ -110,10 +110,13 @@ const InitiativeExportReportPage = () => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
-        <ExportFiltersCard
-          onGenerateReport={handleGenerateReport}
-          businessList={businessNameList}
-        />
+        {initiativeSel.generalInfo.startDate && (
+          <ExportFiltersCard
+            onGenerateReport={handleGenerateReport}
+            businessList={businessNameList}
+            startDate={initiativeSel.generalInfo.startDate}
+          />
+        )}
       </Box>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
         <ReportTableCard initiativeId={id} refreshToken={refreshToken} />

@@ -3,6 +3,7 @@ import ExportFiltersCard from '../ExportFiltersCard';
 
 const mockMerchantAutocomplete = jest.fn();
 const mockDateRangePicker = jest.fn();
+const mockUseUserPermissions = jest.fn();
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -55,9 +56,40 @@ jest.mock('../../DateRangePicker/DateRangePicker', () => ({
   },
 }));
 
+jest.mock('../../../hooks/useUserPermissions', () => ({
+  PERMISSION_KEYS: {
+    REPORT_GENERATE: 'report.generate',
+  },
+  useUserPermissions: () => mockUseUserPermissions(),
+}));
+
 describe('ExportFiltersCard', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: () => false,
+    });
+  });
+
+  test.each([
+    { startDate: '2024-06-15', isUsers: false },
+    { startDate: new Date(2024, 5, 15, 14, 30), isUsers: false },
+    { startDate: '2024-06-15', isUsers: true },
+    { startDate: new Date(2024, 5, 15, 14, 30), isUsers: true },
+  ])('uses initiative startDate $startDate as the minimum date (isUsers: $isUsers)', ({ startDate, isUsers }) => {
+    const { rerender } = render(
+      <ExportFiltersCard startDate={startDate} businessList={[]} isUsers={isUsers} />
+    );
+
+    expect(mockDateRangePicker).toHaveBeenLastCalledWith(
+      expect.objectContaining({ minDateFrom: new Date(2024, 5, 15) })
+    );
+
+    rerender(<ExportFiltersCard startDate="2024-07-20" businessList={[]} isUsers={isUsers} />);
+
+    expect(mockDateRangePicker).toHaveBeenLastCalledWith(
+      expect.objectContaining({ minDateFrom: new Date(2024, 6, 20) })
+    );
   });
 
   test('does not generate report when mandatory fields are missing', () => {
@@ -65,6 +97,7 @@ describe('ExportFiltersCard', () => {
 
     render(
       <ExportFiltersCard
+        startDate="2024-06-15"
         onGenerateReport={onGenerateReport}
         businessList={[{ businessName: 'Esercente test' } as any]}
       />
@@ -79,6 +112,7 @@ describe('ExportFiltersCard', () => {
 
     render(
       <ExportFiltersCard
+        startDate="2024-06-15"
         onGenerateReport={onGenerateReport}
         businessList={[{ businessName: 'Esercente test' } as any]}
       />
@@ -102,6 +136,7 @@ describe('ExportFiltersCard', () => {
 
     render(
       <ExportFiltersCard
+        startDate="2024-06-15"
         onGenerateReport={onGenerateReport}
         businessList={[{ businessName: 'Esercente test' } as any]}
       />
@@ -125,6 +160,7 @@ describe('ExportFiltersCard', () => {
   test('clears merchant error on blur when the value is valid', async () => {
     render(
       <ExportFiltersCard
+        startDate="2024-06-15"
         onGenerateReport={jest.fn()}
         businessList={[{ businessName: 'Esercente test' } as any]}
       />
@@ -142,7 +178,7 @@ describe('ExportFiltersCard', () => {
   test('for users report does not require merchant and sends empty businessName', async () => {
     const onGenerateReport = jest.fn();
 
-    render(<ExportFiltersCard onGenerateReport={onGenerateReport} businessList={[]} isUsers />);
+    render(<ExportFiltersCard startDate="2024-06-15" onGenerateReport={onGenerateReport} businessList={[]} isUsers />);
 
     fireEvent.click(screen.getByTestId('set-date-from'));
     fireEvent.click(screen.getByTestId('set-date-to'));
@@ -155,5 +191,24 @@ describe('ExportFiltersCard', () => {
       })
     );
   });
-});
 
+  test('disables report generation for support users', () => {
+    const onGenerateReport = jest.fn();
+    mockUseUserPermissions.mockReturnValue({
+      isActionDisabled: (action: string) => action === 'report.generate',
+    });
+
+    render(
+      <ExportFiltersCard
+        startDate="2024-06-15"
+        onGenerateReport={onGenerateReport}
+        businessList={[{ businessName: 'Esercente test' } as any]}
+      />
+    );
+
+    const exportButton = screen.getByRole('button', { name: 'pages.initiativeExportReport.exportFiltersCard.buttonExport' });
+    expect(exportButton).toBeDisabled();
+    fireEvent.click(exportButton);
+    expect(onGenerateReport).not.toHaveBeenCalled();
+  });
+});

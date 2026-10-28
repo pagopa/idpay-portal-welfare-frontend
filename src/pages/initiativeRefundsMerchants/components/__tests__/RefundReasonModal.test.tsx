@@ -46,21 +46,22 @@ describe('RefundReasonModal', () => {
     expect(onClose).toHaveBeenCalled();
 
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i }));
-    expect(screen.getByText('validation.required')).toBeInTheDocument();
+    expect(screen.getAllByText('validation.required')).toHaveLength(2);
     expect(screen.getByText('validation.selectAtLeastOne')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i }));
     expect(screen.queryByText('validation.selectAtLeastOne')).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i }));
-    expect(screen.getByText('validation.required')).toBeInTheDocument();
+    expect(screen.getAllByText('validation.required')).toHaveLength(2);
     expect(screen.queryByText('validation.selectAtLeastOne')).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'reason text' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'reason text' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'reason text' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'reason text',
+      {internalNote: 'reason text', officialNote: 'reason text'},
       expect.objectContaining({ cfError: true })
     );
   });
@@ -96,11 +97,12 @@ describe('RefundReasonModal', () => {
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i }));
     expect(screen.queryByText('pages.initiativeMerchantsTransactions.modal.alert')).not.toBeInTheDocument();
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'updated reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'updated reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'updated reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'updated reason',
+      {internalNote: 'updated reason', officialNote: 'updated reason'},
       expect.objectContaining({ genericError: true })
     );
   });
@@ -134,11 +136,12 @@ describe('RefundReasonModal', () => {
     expect(screen.queryByText('pages.initiativeMerchantsTransactions.modal.alert')).not.toBeInTheDocument();
     expect(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i })).toBeChecked();
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'edit reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'edit reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'edit reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'edit reason',
+      {internalNote: 'edit reason', officialNote: 'edit reason'},
       expect.objectContaining({ cfError: true })
     );
   });
@@ -164,11 +167,12 @@ describe('RefundReasonModal', () => {
     ).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i }));
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'reject reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'reject reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'reject reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.reject \(2\)/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'reject reason',
+      {internalNote: 'reject reason', officialNote: 'reject reason'},
       expect.objectContaining({ genericError: true })
     );
   });
@@ -188,11 +192,12 @@ describe('RefundReasonModal', () => {
     );
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.disposalRaeeError/i }));
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'RAEE reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'RAEE reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'RAEE reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.suspend/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'RAEE reason',
+      {internalNote: 'RAEE reason', officialNote: 'RAEE reason'},
       expect.objectContaining({ disposalRaeeError: true })
     );
   });
@@ -229,11 +234,12 @@ describe('RefundReasonModal', () => {
     ).toBeDisabled();
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i }));
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'other initiative reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'other initiative reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'other initiative reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'other initiative reason',
+      {internalNote: 'other initiative reason', officialNote: 'other initiative reason'},
       expect.objectContaining({
         genericError: true,
         disposalRaeeError: false,
@@ -263,11 +269,12 @@ describe('RefundReasonModal', () => {
     ).not.toBeChecked();
 
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i }));
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'fallback reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'fallback reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'fallback reason' } });
     fireEvent.click(screen.getByRole('button', { name: /pages.initiativeMerchantsTransactions.modal.update/i }));
 
     expect(onConfirm).toHaveBeenCalledWith(
-      'fallback reason',
+      {internalNote: 'fallback reason', officialNote: 'fallback reason'},
       expect.objectContaining({ cfError: true })
     );
   });
@@ -294,7 +301,8 @@ describe('RefundReasonModal', () => {
       />
     );
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'previous reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[0], { target: { value: 'previous reason' } });
+    fireEvent.change(screen.getAllByRole('textbox')[1], { target: { value: 'previous reason' } });
     fireEvent.click(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i }));
 
     rerender(
@@ -337,7 +345,8 @@ describe('RefundReasonModal', () => {
       />
     );
 
-    expect(screen.getByRole('textbox')).toHaveValue('');
+    expect(screen.getAllByRole('textbox')[0]).toHaveValue('');
+    expect(screen.getAllByRole('textbox')[1]).toHaveValue('');
     expect(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.cfError/i })).not.toBeChecked();
     expect(screen.getByRole('checkbox', { name: /pages.initiativeMerchantsTransactions.checksError.genericError/i })).toBeChecked();
   });
