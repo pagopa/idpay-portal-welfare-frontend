@@ -1,4 +1,3 @@
-import { ReportRequestReportTypeEnum } from '../../api/generated/merchants/apiClient';
 import { Box, Button, Card, CardContent, Typography, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -6,6 +5,7 @@ import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { subDays, startOfDay, endOfDay, format, parseISO } from 'date-fns';
 import it from 'date-fns/locale/it';
+import { ReportRequestReportTypeEnum } from '../../api/generated/merchants/apiClient';
 import { PERMISSION_KEYS, useUserPermissions } from '../../hooks/useUserPermissions';
 import { MerchantItem } from '../../pages/initiativeRefundsMerchants/model/types';
 import MerchantAutocomplete from '../MerchantAutocomplete/MerchantAutocomplete';
