@@ -89,6 +89,7 @@ type ReportTableCardProps = {
   initiativeId: string;
   refreshToken: number;
   isUsers?: boolean;
+  reportType?: ReportTypeEnum;
 };
 
 function formatDateTime(value?: string | null): string {
@@ -118,7 +119,7 @@ function formatPeriod(start?: string | null, end?: string | null): string {
     }`;
 }
 
-const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: ReportTableCardProps) => {
+const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false, reportType = ReportTypeEnum.MERCHANT_TRANSACTIONS }: ReportTableCardProps) => {
   const { t } = useTranslation();
   const { setAlert } = useAlert();
 
@@ -143,13 +144,14 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
 
       try {
 
-        const res = await getReportList(initiativeId, page, pageSize, isUsers ? ReportTypeEnum.USER_DETAILS : ReportTypeEnum.MERCHANT_TRANSACTIONS);
+        const res = await getReportList(initiativeId, page, pageSize, isUsers ? ReportTypeEnum.USER_DETAILS : reportType);
 
         const nextTotalElements =
           typeof (res as any)?.totalElements === "number" ? (res as any).totalElements : 0;
         const nextTotalPages =
           typeof (res as any)?.totalPages === "number" ? (res as any).totalPages : 1;
 
+        if (cancelled) { return; }
         setTotalElements(nextTotalElements);
         setTotalPages(Math.max(1, nextTotalPages));
 
@@ -191,7 +193,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
       cancelled = true;
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initiativeId, page, pageSize, t, refreshToken]);
+  }, [initiativeId, page, pageSize, t, refreshToken, reportType, isUsers]);
 
   const start = totalElements === 0 ? 0 : page * pageSize + 1;
   const end = Math.min((page + 1) * pageSize, totalElements);
@@ -232,7 +234,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
     <>
       <Card sx={{ p: 2, backgroundColor: "#FFFFFF" }}>
         <Typography variant="h6" component="h6" fontWeight={"bold"} my={3} mx={3} color={"#17324D"}>
-          {t("pages.initiativeExportReport.exportTable.title")}
+          {t(`pages.initiativeExportReport.exportTable.${isUsers ? "title" : reportType === ReportTypeEnum.MERCHANT_BATCH_CSV ? "batchesTitle" : "transactionsTitle"}`)}
         </Typography>
 
         {error && (
@@ -257,7 +259,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
                   }}
                 >
                   <Typography sx={{ color: "#17324D" }}>
-                    {t("pages.initiativeExportReport.exportTable.emptyState")}
+                    {t(`pages.initiativeExportReport.exportTable.${isUsers ? "emptyState" : reportType === ReportTypeEnum.MERCHANT_BATCH_CSV ? "batchesEmptyState" : "transactionsEmptyState"}`)}
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -404,6 +406,7 @@ const ReportTableCard = ({ initiativeId, refreshToken, isUsers = false }: Report
           sx={{
             display: "flex",
             justifyContent: "flex-end",
+            mt: isUsers ? 0 : 2,
             alignItems: "center",
             gap: 3,
             color: "#33485C",
