@@ -1,4 +1,5 @@
-import { Box, Button, Card, CardContent, Typography } from '@mui/material';
+import { ReportRequestReportTypeEnum } from '../../api/generated/merchants/apiClient';
+import { Box, Button, Card, CardContent, Typography, RadioGroup, FormControlLabel, Radio } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useMemo, useState } from 'react';
@@ -15,9 +16,12 @@ interface ExportFiltersCardProps {
   businessList: Array<MerchantItem>;
   startDate: Date | string;
   isUsers?: boolean;
+  reportType?: ReportRequestReportTypeEnum;
+  onReportTypeChange?: (value: ReportRequestReportTypeEnum) => void;
 }
 
-const ExportFiltersCard = ({ onGenerateReport, businessList, startDate, isUsers = false, }: ExportFiltersCardProps) => {
+const ExportFiltersCard = ({ onGenerateReport, businessList, startDate, isUsers = false, reportType = ReportRequestReportTypeEnum.MERCHANT_TRANSACTIONS, onReportTypeChange, }: ExportFiltersCardProps) => {
+  const isBatches = reportType === ReportRequestReportTypeEnum.MERCHANT_BATCH_CSV;
   const { t } = useTranslation();
   const { isActionDisabled } = useUserPermissions();
 
@@ -57,10 +61,10 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, startDate, isUsers 
     if (isReportGenerationDisabled) { return; }
 
     if (!isUsers) {
-      if (!selectedMerchant.trim()) {
+      if (!selectedMerchant.trim() && !isBatches) {
         setMerchantError('required');
         hasErrors = true;
-      } else if (!merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
+      } else if (selectedMerchant.trim() && !merchantNames.some((m) => m.trim().toLowerCase() === selectedMerchant.trim().toLowerCase())) {
         setMerchantError('invalid');
         hasErrors = true;
       } else {
@@ -104,6 +108,10 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, startDate, isUsers 
             {t(`pages.initiativeExportReport${isUsers ? 'Users' : ""}.exportFiltersCard.subtitle`)}
           </Typography>
 
+          {!isUsers && <RadioGroup row value={reportType} onChange={(_, value) => { onReportTypeChange?.(value as ReportRequestReportTypeEnum); setMerchantError(null); }} sx={{ mb: 2 }}>
+            <FormControlLabel value={ReportRequestReportTypeEnum.MERCHANT_TRANSACTIONS} control={<Radio />} label={t('pages.initiativeExportReport.exportFiltersCard.transactions')} />
+            <FormControlLabel value={ReportRequestReportTypeEnum.MERCHANT_BATCH_CSV} control={<Radio />} label={t('pages.initiativeExportReport.exportFiltersCard.batches')} />
+          </RadioGroup>}
           <Box
             sx={{
               display: 'flex',
@@ -115,6 +123,7 @@ const ExportFiltersCard = ({ onGenerateReport, businessList, startDate, isUsers 
           >
             {!isUsers &&
               <MerchantAutocomplete
+                optional={isBatches}
                 merchantNames={merchantNames}
                 selectedMerchant={selectedMerchant}
                 merchantError={merchantError}
