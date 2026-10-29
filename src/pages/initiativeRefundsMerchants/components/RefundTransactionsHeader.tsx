@@ -90,7 +90,7 @@ const RefundTransactionsHeader = ({
         )}
       </Box>
 
-      {batch.status === 'APPROVING' && (
+      {batch.status === 'APPROVING' && !!batch.numberOfTransactions && (
         <Alert sx={{ mb: 3 }} variant="outlined" color="info" icon={<Sync sx={{ color: '#6BCFFB' }} />}>
           {t('pages.initiativeMerchantsTransactions.csv.alert')}
         </Alert>
