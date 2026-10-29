@@ -8,7 +8,7 @@
     "initiativeMerchants": "Esercenti",
     "initiativeRanking": "Graduatoria",
     "initiativeRefunds": "Rimborsi",
-    "exportReport": "Esporta transazioni",
+    "exportReport": "Esporta dati",
     "exportReportUsers": "Esporta dati utenti",
     "initiativeRefundsDetails": "Dettaglio rimborso",
     "initiativeRefundsOutcome": "Esiti",
@@ -1161,15 +1161,23 @@
       }
     },
     "initiativeExportReport": {
-      "title": "Esporta transazioni",
-      "subtitle": "Esporta le transazioni del {{x}} in base ai criteri selezionati.",
+      "title": "Esporta dati",
+      "subtitle": "Esporta le transazioni e i lotti del {{x}} in base ai criteri selezionati.",
       "exportFiltersCard": {
         "title": "Seleziona i parametri di esportazione",
-        "subtitle": "Imposta i criteri di ricerca per generare il report delle transazioni. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
+        "subtitle": "Imposta i criteri di ricerca per generare il report. Puoi selezionare le date a partire da ieri, con un range massimo consentito di 90 giorni.",
         "merchant": "Insegna",
+        "merchantOptional": "Insegna (opzionale)",
+        "allMerchants": "Se non indicata, il report includerà tutte le insegne.",
+        "transactions": "Esporta transazioni",
+        "batches": "Esporta lotti",
         "buttonExport": "Genera report"
       },
       "exportTable": {
+        "transactionsTitle": "Report transazioni",
+        "batchesTitle": "Report lotti",
+        "transactionsEmptyState": "Non sono ancora stati generati report delle transazioni.",
+        "batchesEmptyState": "Non sono ancora stati generati report dei lotti.",
         "title": "I tuoi report",
         "emptyState": "Non hai ancora generato report.",
         "columns": {
@@ -1287,7 +1295,7 @@
       "title": "Rimborsi"
     },
     "exportReport": {
-      "title": "Esporta transazioni"
+      "title": "Esporta dati"
     },
     "exportReportUsers": {
       "title": "Esporta dati utenti"
