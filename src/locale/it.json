@@ -1148,6 +1148,7 @@
         "button": "Esporta csv",
         "alert": "Stiamo elaborando il lotto. Quando sarà pronto, potrai esportare il file .csv"
       },
+      "emptyBatchSuccessAlert": "Elaborazione completata. Il lotto non contiene transazioni.",
       "checksError": {
         "cfError": "Codice fiscale",
         "productEligibilityError": "Idoneità prodotto",

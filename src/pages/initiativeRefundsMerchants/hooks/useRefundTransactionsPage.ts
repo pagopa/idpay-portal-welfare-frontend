@@ -374,6 +374,13 @@ export const useRefundTransactionsPage = () => {
     const refundItem = mapRewardBatchToRefund(rewardBatchResponse);
     setBatchTrx(refundItem);
     setBatch(getBatchTrx());
+    if (!batch?.numberOfTransactions) {
+      setAlert({
+        text: t("pages.initiativeMerchantsTransactions.emptyBatchSuccessAlert"),
+        severity: "success",
+        isOpen: true
+      });
+    }
   };
 
   const handleApiError = (error: any) => {
