@@ -298,7 +298,7 @@ export const useRefundTransactionsPage = () => {
       .then(([transactionsResponse, merchantDetailsResponse]) => {
         setTotalElements(transactionsResponse.totalElements);
         setTotalPages(transactionsResponse.totalPages);
-        setRows(transactionsResponse.content.map((transaction: any) => mapTransactionToRow(transaction)));
+        setRows(transactionsResponse.content.map((transaction) => mapTransactionToRow(transaction)));
         if (merchantDetailsResponse.iban) {
           setIban(merchantDetailsResponse.iban);
         }
