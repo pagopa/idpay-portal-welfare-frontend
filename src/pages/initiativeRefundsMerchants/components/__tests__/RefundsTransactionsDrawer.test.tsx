@@ -116,6 +116,35 @@ describe('<RefundsTransactionsDrawer />', () => {
     expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', 'invoice.pdf', true);
   });
 
+  test('truncates long values to one line and exposes the full value in a tooltip', async () => {
+    const longProductName = 'Piano cottura MarcaEsempio00000000'.repeat(8);
+
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={{ ...baseData, productName: longProductName } as any}
+        download={mockDownload}
+        formatDate={(d?: string) => d ?? '-'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+        editChecksDisabled={false}
+      />
+    );
+
+    const productValue = screen.getByText(longProductName);
+    expect(productValue).toHaveStyle({
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    });
+
+    fireEvent.mouseOver(productValue);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(longProductName);
+  });
+
   test('uses the appliance label and shows RAEE errors only for the appliance initiative', () => {
     render(
       <RefundsTransactionsDrawer

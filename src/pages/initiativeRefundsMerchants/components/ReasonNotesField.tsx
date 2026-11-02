@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CopyToClipboardButton } from "@pagopa/mui-italia";
 import { ReasonDTO } from "../../../api/generated/merchants/apiClient";
@@ -8,6 +8,15 @@ type Props = {
     formatDate: (d?: string) => string;
     title: string
 };
+
+const ellipsisSx = {
+    display: "block",
+    maxWidth: "100%",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+} as const;
 
 export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
     const { t } = useTranslation();
@@ -33,28 +42,32 @@ export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
                     mb: 2
                 }}
             >
-                <Box sx={{ flex: 1 }}>
-                    <Typography
-                        sx={{
+                <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Tooltip title={date ? formatDate(date.toString()) : '-'}>
+                        <Typography
+                            sx={{
+                                ...ellipsisSx,
                             fontSize: "14px",
                             color: "#6B7280",
                             mb: 0.5
-                        }}
-                    >
-                        {date ? formatDate(date.toString()) : '-'}
-                    </Typography>
-                    <Typography
-                        sx={{
+                            }}
+                        >
+                            {date ? formatDate(date.toString()) : '-'}
+                        </Typography>
+                    </Tooltip>
+                    <Tooltip title={reason}>
+                        <Typography
+                            sx={{
+                                ...ellipsisSx,
                             fontSize: "18px",
                             fontWeight: 600,
                             color: "#17324D",
                             lineHeight: "22px",
-                            whiteSpace: "pre-line",
-                            wordBreak: "break-word"
-                        }}
-                    >
-                        {reason}
-                    </Typography>
+                            }}
+                        >
+                            {reason}
+                        </Typography>
+                    </Tooltip>
                 </Box>
                 <CopyToClipboardButton
                     value={reason}
