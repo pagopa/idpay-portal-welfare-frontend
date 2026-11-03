@@ -113,11 +113,13 @@ export default function SideMenu() {
       const { id } = match.params as MatchParams;
       const itemExpanded = `panel-${id}`;
       setExpanded(itemExpanded);
+    } else if (pathname === ROUTES.HOME && initiativeSummaryList?.length) {
+      setExpanded(`panel-${initiativeSummaryList[0].initiativeId}`);
     } else {
       setExpanded(false);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(match), initiativeSummaryList]);
+  }, [JSON.stringify(match), initiativeSummaryList, pathname]);
 
   const handleChange = (initiativeId: string) => () => {
     onExit(() => {
