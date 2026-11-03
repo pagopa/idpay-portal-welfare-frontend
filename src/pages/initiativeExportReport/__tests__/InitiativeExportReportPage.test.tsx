@@ -168,7 +168,7 @@ describe('<InitiativeExportReportPage />', () => {
       expect(mockSetAlert).toHaveBeenCalledWith(
         expect.objectContaining({
           title: 'errors.title',
-          text: 'errors.getDataDescription',
+          text: 'pages.initiativeExportReport.reportAlertMessage.failed',
           severity: 'error',
         })
       );

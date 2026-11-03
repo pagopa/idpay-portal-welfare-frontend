@@ -177,7 +177,7 @@ describe('useRefundTransactionsPage', () => {
     act(() => { hookResult.handleBatchStatus(); });
     await waitFor(() => expect(mockSetBatchTrx).toHaveBeenCalled());
     expect(assigneeLevel === 'L3' ? mockApproveBatch : mockValidateBatch).toHaveBeenCalledWith('initiative-1', 'batch-1');
-    expect(mockSetAlert).not.toHaveBeenCalled();
+    expect(mockSetAlert).toHaveBeenCalledWith({isOpen: true, severity: "success", text: "pages.initiativeMerchantsTransactions.emptyBatchSuccessAlert"});
   });
 
   test('does not request a CSV for an approved empty batch', async () => {

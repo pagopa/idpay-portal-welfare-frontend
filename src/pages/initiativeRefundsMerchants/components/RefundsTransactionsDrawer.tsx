@@ -1,5 +1,5 @@
 /* eslint-disable complexity */
-import { Drawer, Box, Typography, Chip } from "@mui/material";
+import { Drawer, Box, Typography, Chip, Tooltip } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
@@ -57,6 +57,35 @@ const CHECK_ERROR_LABELS: Record<keyof ChecksErrorDTO, string> = {
     genericError: "Altro"
 };
 
+const ellipsisSx = {
+    display: "block",
+    maxWidth: "100%",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+} as const;
+
+const getDisplayValue = (value?: string | number | null) =>
+    value === undefined || value === null || value === "" ? "-" : String(value);
+
+const DrawerValue = ({ value, fontSize = 18, fontWeight = 600, color = "#17324D" }: {
+    value?: string | number | null;
+    fontSize?: number;
+    fontWeight?: number;
+    color?: string;
+}) => {
+    const displayValue = getDisplayValue(value);
+
+    return (
+        <Tooltip title={displayValue}>
+            <Typography sx={{ ...ellipsisSx, flex: 1, fontSize, fontWeight, color }}>
+                {displayValue}
+            </Typography>
+        </Tooltip>
+    );
+};
+
 // eslint-disable-next-line sonarjs/cognitive-complexity
 export default function RefundsTransactionsDrawer({
     open,
@@ -108,6 +137,11 @@ export default function RefundsTransactionsDrawer({
             .filter((k) => k !== "disposalRaeeError" || isApplianceInitiative)
             .map((k) => CHECK_ERROR_LABELS[k])
         : [];
+    const dateValue = formatDate(data?.trxChargeDate ?? "");
+    const productName = getDisplayValue(data?.productName);
+    const productGtin = getDisplayValue(data?.productGtin);
+    const invoiceFileName = getDisplayValue(data?.invoiceFileName);
+    const statusLabel = getDisplayValue(data?.statusLabel);
 
     return (
         <Drawer
@@ -160,20 +194,18 @@ export default function RefundsTransactionsDrawer({
                     {t('pages.initiativeMerchantsTransactions.table.dateTime')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {formatDate(data?.trxChargeDate ?? "")}
-                    </Typography>
-                    <CopyToClipboardButton value={formatDate(data?.trxChargeDate ?? "")} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                    <DrawerValue value={dateValue} />
+                    <CopyToClipboardButton value={dateValue} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t(`pages.initiativeMerchantsTransactions.drawer.${isApplianceInitiative ? 'appliance' : 'product'}`)}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {data?.productName ?? "-"} <br />
-                        {data?.productGtin ?? "-"}
-                    </Typography>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <DrawerValue value={productName} />
+                        <DrawerValue value={productGtin} />
+                    </Box>
                     <CopyToClipboardButton value={`${data?.productName} ${data?.productGtin}`} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
@@ -181,39 +213,31 @@ export default function RefundsTransactionsDrawer({
                     {t('pages.initiativeMerchantsTransactions.drawer.fiscalCode')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {data?.fiscalCode ?? "-"}
-                    </Typography>
-                    <CopyToClipboardButton value={data?.fiscalCode ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                    <DrawerValue value={data?.fiscalCode} />
+                    <CopyToClipboardButton value={getDisplayValue(data?.fiscalCode)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.idTrx')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {data?.trxId ?? "-"}
-                    </Typography>
-                    <CopyToClipboardButton value={data?.trxId ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                    <DrawerValue value={data?.trxId} />
+                    <CopyToClipboardButton value={getDisplayValue(data?.trxId)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.trxCode')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {data?.trxCode ?? "-"}
-                    </Typography>
-                    <CopyToClipboardButton value={data?.trxCode ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                    <DrawerValue value={data?.trxCode} />
+                    <CopyToClipboardButton value={getDisplayValue(data?.trxCode)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.effectiveAmountCents')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {formatCurrency(data?.effectiveAmountCents)}
-                    </Typography>
+                    <DrawerValue value={formatCurrency(data?.effectiveAmountCents)} />
                     <CopyToClipboardButton value={formatCurrency(data?.effectiveAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
@@ -221,9 +245,7 @@ export default function RefundsTransactionsDrawer({
                     {t('pages.initiativeMerchantsTransactions.drawer.rewardedAmountCents')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {formatCurrency(data?.rewardAmountCents)}
-                    </Typography>
+                    <DrawerValue value={formatCurrency(data?.rewardAmountCents)} />
                     <CopyToClipboardButton value={formatCurrency(data?.rewardAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
@@ -231,9 +253,7 @@ export default function RefundsTransactionsDrawer({
                     {t('pages.initiativeMerchantsTransactions.drawer.authorizedAmountCents')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {formatCurrency(data?.authorizedAmountCents)}
-                    </Typography>
+                    <DrawerValue value={formatCurrency(data?.authorizedAmountCents)} />
                     <CopyToClipboardButton value={formatCurrency(data?.authorizedAmountCents)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
@@ -241,18 +261,16 @@ export default function RefundsTransactionsDrawer({
                     {t('pages.initiativeMerchantsTransactions.drawer.docNumber')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600, color: "#17324D", flex: 1, wordBreak: "break-all" }}>
-                        {data?.invoiceDocNumber ?? "-"}
-                    </Typography>
-                    <CopyToClipboardButton value={data?.invoiceDocNumber ?? "-"} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                    <DrawerValue value={data?.invoiceDocNumber} />
+                    <CopyToClipboardButton value={getDisplayValue(data?.invoiceDocNumber)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
                 </Box>
 
                 <Typography sx={{ fontSize: 16, fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.invoice')}
                 </Typography>
 
-                <Box sx={{ display: "flex", alignItems: "center", justifyContent: 'space-between', gap: 1, mb: 3 }}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: 'space-between', gap: 1, mb: 3, minWidth: 0 }}>
+                    <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flex: 1, overflow: "hidden" }}>
                         <DescriptionOutlinedIcon
                             sx={{
                                 height: 24,
@@ -261,13 +279,15 @@ export default function RefundsTransactionsDrawer({
                             }}
                         />
 
-                        <ButtonNaked
-                            sx={{ fontSize: 18, ml: 1, wordBreak: "break-word", textAlign: "left" }}
-                            color="primary"
-                            onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
-                        >
-                            {data?.invoiceFileName ?? "-"}
-                        </ButtonNaked>
+                        <Tooltip title={invoiceFileName}>
+                            <ButtonNaked
+                                sx={{ ...ellipsisSx, fontSize: 18, ml: 1, textAlign: "left", justifyContent: "flex-start" }}
+                                color="primary"
+                                onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
+                            >
+                                {invoiceFileName}
+                            </ButtonNaked>
+                        </Tooltip>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", p: 0.5 }} onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName, true)}>
                         <Download sx={{ alignSelf: 'flex-end', color: "#0073E6", height: 24, cursor: 'pointer' }} />
@@ -277,19 +297,22 @@ export default function RefundsTransactionsDrawer({
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.table.status')}
                 </Typography>
-                <Chip
-                    label={data?.statusLabel}
-                    color={data?.statusColor as any}
-                    sx={{
+                <Tooltip title={statusLabel}>
+                    <Chip
+                        label={statusLabel}
+                        color={data?.statusColor as any}
+                        sx={{
                         mb: 3,
                         mt: 1,
+                        maxWidth: "100%",
                         fontWeight: 600,
                         fontSize: "14px",
-                        "& .MuiChip-label": { whiteSpace: "nowrap" },
+                        "& .MuiChip-label": { ...ellipsisSx },
                         backgroundColor: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#C4DCF5" : "",
                         color: data?.statusLabel === t('pages.initiativeMerchantsTransactions.table.toCheck') ? "#17324D" : ""
-                    }}
-                />
+                        }}
+                    />
+                </Tooltip>
 
                 {activeErrors.length > 0 && (
                     <Box sx={{ mb: 3 }}>

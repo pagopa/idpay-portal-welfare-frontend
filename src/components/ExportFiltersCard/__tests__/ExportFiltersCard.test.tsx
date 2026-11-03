@@ -1,3 +1,4 @@
+import { ReportRequestReportTypeEnum } from '../../../api/generated/merchants/apiClient';
 ﻿import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import ExportFiltersCard from '../ExportFiltersCard';
 
@@ -212,3 +213,19 @@ describe('ExportFiltersCard', () => {
     expect(onGenerateReport).not.toHaveBeenCalled();
   });
 });
+
+ test('batch reports allow all merchants and still reject invalid selections', () => {
+    mockUseUserPermissions.mockReturnValue({ isActionDisabled: () => false });
+    const onGenerateReport = jest.fn();
+    render(<ExportFiltersCard startDate="2024-06-15" businessList={[]} reportType={ReportRequestReportTypeEnum.MERCHANT_BATCH_CSV} onGenerateReport={onGenerateReport} />);
+    fireEvent.click(screen.getByTestId('set-date-from'));
+    fireEvent.click(screen.getByTestId('set-date-to'));
+    fireEvent.click(screen.getByText('pages.initiativeExportReport.exportFiltersCard.buttonExport'));
+    expect(onGenerateReport).toHaveBeenCalledWith(expect.objectContaining({ businessName: '' }));
+    onGenerateReport.mockClear();
+    fireEvent.click(screen.getByTestId('merchant-invalid'));
+    fireEvent.click(screen.getByTestId('set-date-from'));
+    fireEvent.click(screen.getByTestId('set-date-to'));
+    fireEvent.click(screen.getByText('pages.initiativeExportReport.exportFiltersCard.buttonExport'));
+    expect(onGenerateReport).not.toHaveBeenCalled();
+ });

@@ -1,9 +1,9 @@
-import { Box } from "@mui/material";
+import { Box, Tabs, Tab } from "@mui/material";
 import { TitleBox, useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { useTranslation } from 'react-i18next';
 import { useEffect, useState } from "react";
 import { matchPath } from "react-router-dom";
-import { ReportDtoReportStatusEnum, ReportRequestReportTypeEnum } from "../../api/generated/merchants/apiClient";
+import { ReportDtoReportStatusEnum, ReportRequestReportTypeEnum, ReportTypeEnum } from "../../api/generated/merchants/apiClient";
 import { initiativePagesBreadcrumbsContainerStyle } from "../../helpers";
 import ROUTES from "../../routes";
 import BreadcrumbsBox from "../components/BreadcrumbsBox";
@@ -52,6 +52,8 @@ const InitiativeExportReportPage = () => {
     strict: false,
   });
   const { id } = (match?.params as MatchParams) || {};
+  const [reportType, setReportType] = useState(ReportRequestReportTypeEnum.MERCHANT_TRANSACTIONS);
+  const [activeTab, setActiveTab] = useState(ReportTypeEnum.MERCHANT_TRANSACTIONS);
   const [refreshToken, setRefreshToken] = useState(0);
 
   useEffect(() => {
@@ -73,8 +75,9 @@ const InitiativeExportReportPage = () => {
     const merchant = businessNameList.find(
       (m) => (m.businessName)?.trim().toLowerCase() === data.businessName.trim().toLowerCase()
     );
+    setActiveTab(reportType as unknown as ReportTypeEnum);
     setLoading(true);
-    generateReport(id, data.startDate.toString(), data.endDate.toString(), ReportRequestReportTypeEnum.MERCHANT_TRANSACTIONS, merchant?.merchantId ?? "",)
+    generateReport(id, data.startDate.toString(), data.endDate.toString(), reportType, merchant?.merchantId ?? (reportType === ReportRequestReportTypeEnum.MERCHANT_BATCH_CSV ? undefined : ""),)
       .then((res) => {
         if (res?.reportStatus) {
           const alertConfig = reportStatusAlertConfig[res.reportStatus as ReportDtoReportStatusEnum];
@@ -83,7 +86,7 @@ const InitiativeExportReportPage = () => {
         }
       })
       .catch(() => {
-        setAlert({ title: t('errors.title'), text: t('errors.getDataDescription'), isOpen: true, severity: 'error' });
+        setAlert({ title: t('errors.title'), text: t('pages.initiativeExportReport.reportAlertMessage.failed'), isOpen: true, severity: 'error' });
       })
       .finally(() => setLoading(false));
   };
@@ -112,14 +115,20 @@ const InitiativeExportReportPage = () => {
       <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
         {initiativeSel.generalInfo.startDate && (
           <ExportFiltersCard
+            reportType={reportType}
+            onReportTypeChange={setReportType}
             onGenerateReport={handleGenerateReport}
             businessList={businessNameList}
             startDate={initiativeSel.generalInfo.startDate}
           />
         )}
       </Box>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, mt: 1, mb: 3 }}>
-        <ReportTableCard initiativeId={id} refreshToken={refreshToken} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, mt: 1, mb: 3 }}>
+        <Tabs value={activeTab} onChange={(_, value) => setActiveTab(value)} variant="fullWidth" aria-label={t('pages.initiativeExportReport.title')}>
+          <Tab value={ReportTypeEnum.MERCHANT_TRANSACTIONS} label={t('pages.initiativeExportReport.exportTable.transactionsTitle')} />
+          <Tab value={ReportTypeEnum.MERCHANT_BATCH_CSV} label={t('pages.initiativeExportReport.exportTable.batchesTitle')} />
+        </Tabs>
+        <ReportTableCard key={activeTab} initiativeId={id} refreshToken={refreshToken} reportType={activeTab} />
       </Box>
     </Box>
   );
