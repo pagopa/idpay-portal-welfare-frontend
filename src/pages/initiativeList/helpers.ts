@@ -7,6 +7,7 @@ export interface Data {
   organizationName: string;
   startDate: string;
   endDate: string;
+  creationDate: string;
   status: string;
   id: number;
 }
