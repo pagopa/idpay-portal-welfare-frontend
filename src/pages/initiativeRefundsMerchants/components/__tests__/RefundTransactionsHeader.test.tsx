@@ -35,6 +35,20 @@ const baseBatch = {
 };
 
 describe('<RefundTransactionsHeader />', () => {
+  test('keeps CSV disabled for an approved empty batch', () => {
+    const onGetCsv = jest.fn();
+    render(<RefundTransactionsHeader
+      t={t} batch={{ ...baseBatch, status: 'APPROVED', numberOfTransactions: 0 }}
+      role="operator3" actionsDisabled={false} selectedRowsSize={0} lockedStatus={null}
+      onOpenApproveModal={jest.fn()} onOpenSuspendModal={jest.fn()}
+      onOpenRejectModal={jest.fn()} onOpenBatchModal={jest.fn()} onGetCsv={onGetCsv}
+    />);
+    const button = screen.getByRole('button', { name: 'pages.initiativeMerchantsTransactions.csv.button' });
+    expect(button).toBeDisabled();
+    fireEvent.click(button);
+    expect(onGetCsv).not.toHaveBeenCalled();
+  });
+
   test('renders row action buttons when rows are selected', () => {
     const onOpenApproveModal = jest.fn();
     const onOpenSuspendModal = jest.fn();
@@ -45,6 +59,7 @@ describe('<RefundTransactionsHeader />', () => {
         t={t}
         batch={baseBatch}
         role="operator1"
+        actionsDisabled={false}
         selectedRowsSize={2}
         lockedStatus={RewardBatchTrxStatusEnum.SUSPENDED}
         onOpenApproveModal={onOpenApproveModal}
@@ -76,6 +91,7 @@ describe('<RefundTransactionsHeader />', () => {
         t={t}
         batch={baseBatch}
         role="operator1"
+        actionsDisabled={false}
         selectedRowsSize={0}
         lockedStatus={null}
         onOpenApproveModal={jest.fn()}
@@ -98,6 +114,7 @@ describe('<RefundTransactionsHeader />', () => {
         t={t}
         batch={baseBatch}
         role="operator2"
+        actionsDisabled={false}
         selectedRowsSize={0}
         lockedStatus={null}
         onOpenApproveModal={jest.fn()}
@@ -120,6 +137,7 @@ describe('<RefundTransactionsHeader />', () => {
         t={t}
         batch={{ ...baseBatch, status: 'APPROVED' }}
         role="operator1"
+        actionsDisabled={false}
         selectedRowsSize={0}
         lockedStatus={null}
         onOpenApproveModal={jest.fn()}
@@ -141,6 +159,7 @@ describe('<RefundTransactionsHeader />', () => {
         t={t}
         batch={{ ...baseBatch, status: 'APPROVING' }}
         role="operator1"
+        actionsDisabled={false}
         selectedRowsSize={0}
         lockedStatus={null}
         onOpenApproveModal={jest.fn()}
@@ -153,5 +172,26 @@ describe('<RefundTransactionsHeader />', () => {
 
     expect(screen.getByRole('button', { name: 'pages.initiativeMerchantsTransactions.csv.button' })).toBeDisabled();
     expect(screen.getByText('pages.initiativeMerchantsTransactions.csv.alert')).toBeInTheDocument();
+  });
+
+  test('hides dispositive actions when the user is read only', () => {
+    render(
+      <RefundTransactionsHeader
+        t={t}
+        batch={baseBatch}
+        role="support"
+        actionsDisabled={true}
+        selectedRowsSize={2}
+        lockedStatus={RewardBatchTrxStatusEnum.SUSPENDED}
+        onOpenApproveModal={jest.fn()}
+        onOpenSuspendModal={jest.fn()}
+        onOpenRejectModal={jest.fn()}
+        onOpenBatchModal={jest.fn()}
+        onGetCsv={jest.fn()}
+      />
+    );
+
+    expect(screen.queryByTestId('refund-action-buttons')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('role-action-button')).not.toBeInTheDocument();
   });
 });

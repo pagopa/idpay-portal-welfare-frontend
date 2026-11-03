@@ -84,7 +84,7 @@ export default function SideMenu() {
   });
 
   const userRole = parseJwt(storageTokenOps.read()) as JWTUser;
-  const blockedRole = ['operator1', 'operator2', 'operator3'];
+  const blockedRole = ['operator1', 'operator2', 'operator3', 'support'];
   const showMenuItem = !blockedRole.includes(userRole.org_role);
 
   useEffect(() => {

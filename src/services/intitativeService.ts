@@ -31,7 +31,9 @@ import {
   InitiativeDtoInitiativeRewardTypeEnum,
 } from '../api/generated/initiative/apiClient';
 import { InitiativeApi } from '../api/InitiativeApiClient';
+
 export { InitiativeDtoInitiativeRewardTypeEnum as InitiativeRewardTypeEnum };
+
 export const trascodeRewardRule = (
   rewardRule: unknown
 ): RewardGroupsDTO | RewardValueDTO | undefined => {

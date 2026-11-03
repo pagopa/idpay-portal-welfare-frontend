@@ -1,6 +1,7 @@
-﻿import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+﻿import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { createStore } from '../../../redux/store';
+import { createStore as createReduxStore } from '../../../redux/store';
+import { setGeneralInfo } from '../../../redux/slices/initiativeSlice';
 import InitiativeExportReportPage from '../InitiativeExportReportPage';
 import {
   ReportDtoReportStatusEnum as ReportStatusEnum,
@@ -12,6 +13,16 @@ const mockSetLoading = jest.fn();
 const mockGenerateReport = jest.fn();
 const mockGetMerchantList = jest.fn();
 const mockReportTableProps = jest.fn();
+const mockExportFiltersProps = jest.fn();
+
+const createStore = () => {
+  const store = createReduxStore();
+  store.dispatch(setGeneralInfo({
+    ...store.getState().initiative.generalInfo,
+    startDate: '2024-06-15',
+  }));
+  return store;
+};
 
 jest.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
@@ -37,20 +48,23 @@ jest.mock('../../../services/merchantsService', () => ({
 
 jest.mock('../../../components/ExportFiltersCard/ExportFiltersCard', () => ({
   __esModule: true,
-  default: (props: any) => (
-    <button
-      data-testid="generate-report-btn"
-      onClick={() =>
-        props.onGenerateReport({
-          startDate: new Date('2026-01-01'),
-          endDate: new Date('2026-01-31'),
-          businessName: 'Esercente One',
-        })
-      }
-    >
-      generate
-    </button>
-  ),
+  default: (props: any) => {
+    mockExportFiltersProps(props);
+    return (
+      <button
+        data-testid="generate-report-btn"
+        onClick={() =>
+          props.onGenerateReport({
+            startDate: new Date('2026-01-01'),
+            endDate: new Date('2026-01-31'),
+            businessName: 'Esercente One',
+          })
+        }
+      >
+        generate
+      </button>
+    );
+  },
 }));
 
 jest.mock('../../../components/ReportTable/ReportTableCard', () => ({
@@ -84,6 +98,32 @@ describe('<InitiativeExportReportPage />', () => {
     });
 
     expect(screen.getByTestId('report-table-card')).toBeInTheDocument();
+    expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ startDate: '2024-06-15' })
+    );
+  });
+
+  test('waits for the initiative start date before rendering export filters', async () => {
+    const store = createReduxStore();
+    render(
+      <Provider store={store}>
+        <InitiativeExportReportPage />
+      </Provider>
+    );
+
+    expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
+
+    await act(async () => {
+      store.dispatch(setGeneralInfo({
+        ...store.getState().initiative.generalInfo,
+        startDate: '2024-06-15',
+      }));
+    });
+
+    expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();
+    expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ startDate: '2024-06-15' })
+    );
   });
 
   test('handles generate report success and refreshes table', async () => {

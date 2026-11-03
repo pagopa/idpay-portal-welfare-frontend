@@ -3,6 +3,7 @@ import FlagIcon from "@mui/icons-material/Flag";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { ChecksErrorDTO } from "../../../api/generated/merchants/apiClient";
+import { ReasonsObject } from "../model/types";
 
 interface Props {
     open: boolean;
@@ -12,7 +13,7 @@ interface Props {
     isApplianceInitiative?: boolean;
     activeErrors?: ChecksErrorDTO | undefined;
     count: number;
-    onConfirm: (reason: string, checksError: ChecksErrorDTO) => void;
+    onConfirm: (reasons: ReasonsObject, checksError: ChecksErrorDTO) => void;
 }
 
 const defaultChecksError: ChecksErrorDTO = {
@@ -26,17 +27,26 @@ const defaultChecksError: ChecksErrorDTO = {
     genericError: false
 };
 
+const initialOperatorReasons: ReasonsObject = {
+    internalNote: '',
+    officialNote: ''
+};
+const initialErrors = {
+    internal: false,
+    official: false
+};
+
 export default function RefundReasonModal({ open, onClose, type, count, onConfirm, activeErrors, editMode, isApplianceInitiative = false }: Props) {
-    const [operatorReason, setOperatorReason] = useState("");
-    const [error, setError] = useState(false);
+    const [operatorReasons, setOperatorReasons] = useState<ReasonsObject>(initialOperatorReasons);
+    const [errors, setErrors] = useState(initialErrors);
     const [checkboxErrorMessage, setCheckboxErrorMessage] = useState(false);
     const { t } = useTranslation();
     const [checksError, setChecksError] = useState<ChecksErrorDTO>(defaultChecksError);
 
     useEffect(() => {
         if (open) {
-            setOperatorReason("");
-            setError(false);
+            setOperatorReasons(initialOperatorReasons);
+            setErrors(initialErrors);
             setCheckboxErrorMessage(false);
 
             if (editMode && activeErrors) {
@@ -63,16 +73,22 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
     const isAnyCheckboxSelected = Object.values(checksError).some(value => value === true);
 
     const handleSubmit = () => {
-        const hasError = !operatorReason.trim();
+        const errorsObj = {
+            internal: !operatorReasons.internalNote.trim(),
+            official: (!editMode && !operatorReasons?.officialNote?.trim())
+        };
         const hasCheckboxError = !isAnyCheckboxSelected;
 
-        if (hasError || hasCheckboxError) {
-            setError(hasError);
+        if (errorsObj.internal || errorsObj.official || hasCheckboxError) {
+            setErrors(errorsObj);
             setCheckboxErrorMessage(hasCheckboxError);
             return;
         }
-
-        onConfirm(operatorReason, checksError);
+        const cleanedReasons = {
+            internalNote: operatorReasons.internalNote,
+            officialNote: operatorReasons.officialNote
+        };
+        onConfirm(cleanedReasons, checksError);
     };
 
     const isSingle = count === 1 ? "single" : "plural";
@@ -193,23 +209,43 @@ export default function RefundReasonModal({ open, onClose, type, count, onConfir
                 <Typography sx={{ fontWeight: 600, mb: 2, color: "#17324D" }}>
                     {subDesc}
                 </Typography>
-
+                <Typography sx={{ mb: 2, color: "#17324D" }}>
+                    {t(`pages.initiativeMerchantsTransactions.modal.noteDescription`)}
+                </Typography>
                 <TextField
-                    label={t(`pages.initiativeMerchantsTransactions.drawer.note`)}
+                    label={t(`pages.initiativeMerchantsTransactions.modal.internalNote`)}
                     multiline
                     fullWidth
-                    value={operatorReason}
+                    value={operatorReasons.internalNote}
                     onChange={(e) => {
-                        setOperatorReason(e.target.value);
-                        if (error) { setError(false); };
+                        setOperatorReasons(prev => ({ ...prev, internalNote: e.target.value }));
+                        if (errors.internal) { setErrors(prev => ({ ...prev, internal: false })); };
                     }}
-                    error={error && operatorReason.trim().length === 0}
-                    helperText={error ? t('validation.required') : ""}
+                    error={errors.internal && operatorReasons.internalNote.trim().length === 0}
+                    helperText={errors.internal ? t('validation.required') : ""}
                     inputProps={{ maxLength: 200 }}
                 />
 
                 <Typography sx={{ mt: 1, textAlign: "right", fontSize: 12, color: "#888" }}>
-                    {operatorReason.length}/200
+                    {operatorReasons.internalNote.length}/200
+                </Typography>
+
+                <TextField
+                    label={t(`pages.initiativeMerchantsTransactions.modal.${editMode ? "notRequiredOfficialNote" : "requiredOfficialNote"}`)}
+                    multiline
+                    fullWidth
+                    value={operatorReasons.officialNote}
+                    onChange={(e) => {
+                        setOperatorReasons(prev => ({ ...prev, officialNote: e.target.value }));
+                        if (errors.official) { setErrors(prev => ({ ...prev, official: false })); };
+                    }}
+                    error={errors.official && operatorReasons?.officialNote?.trim().length === 0}
+                    helperText={errors.official ? t('validation.required') : ""}
+                    inputProps={{ maxLength: 200 }}
+                />
+
+                <Typography sx={{ mt: 1, textAlign: "right", fontSize: 12, color: "#888" }}>
+                    {operatorReasons?.officialNote?.length}/200
                 </Typography>
             </DialogContent>
 

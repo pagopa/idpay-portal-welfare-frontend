@@ -1,20 +1,36 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import {
   ReportDtoReportStatusEnum as ReportStatusEnum,
   ReportRequestReportTypeEnum,
 } from '../../../api/generated/merchants/apiClient';
 import InitiativeExportReportUsersPage from '../initiativeExportReportUsersPage';
-import { createStore } from '../../../redux/store';
+import { createStore as createReduxStore } from '../../../redux/store';
+import { setGeneralInfo, setInitiativeName } from '../../../redux/slices/initiativeSlice';
 
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
 const mockGenerateReport = jest.fn();
 const mockExportFiltersProps = jest.fn();
 const mockReportTableProps = jest.fn();
+const mockT = jest.fn();
+
+const createStore = () => {
+  const store = createReduxStore();
+  store.dispatch(setGeneralInfo({
+    ...store.getState().initiative.generalInfo,
+    startDate: '2024-06-15',
+  }));
+  return store;
+};
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({
+    t: (key: string, options?: { initiativeName?: string }) => {
+      mockT(key, options);
+      return key;
+    },
+  }),
 }));
 
 jest.mock('../../../hooks/useInitiative', () => ({
@@ -71,6 +87,8 @@ describe('<InitiativeExportReportUsersPage />', () => {
 
   test('renders page and passes user mode props to child components', async () => {
     const store = createStore();
+    store.dispatch(setInitiativeName('Bonus Decorer'));
+
     render(
       <Provider store={store}>
         <InitiativeExportReportUsersPage />
@@ -79,11 +97,15 @@ describe('<InitiativeExportReportUsersPage />', () => {
 
     expect(screen.getByTestId('title-box')).toBeInTheDocument();
     expect(screen.getByTestId('report-table-card')).toBeInTheDocument();
+    expect(mockT).toHaveBeenCalledWith('pages.initiativeExportReportUsers.subtitle', {
+      initiativeName: 'Bonus Decorer',
+    });
 
     expect(mockExportFiltersProps).toHaveBeenCalledWith(
       expect.objectContaining({
         isUsers: true,
         businessList: [],
+        startDate: '2024-06-15',
       })
     );
     expect(mockReportTableProps).toHaveBeenCalledWith(
@@ -92,6 +114,29 @@ describe('<InitiativeExportReportUsersPage />', () => {
         refreshToken: 0,
         isUsers: true,
       })
+    );
+  });
+
+  test('waits for the initiative start date before rendering export filters', async () => {
+    const store = createReduxStore();
+    render(
+      <Provider store={store}>
+        <InitiativeExportReportUsersPage />
+      </Provider>
+    );
+
+    expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
+
+    await act(async () => {
+      store.dispatch(setGeneralInfo({
+        ...store.getState().initiative.generalInfo,
+        startDate: '2024-06-15',
+      }));
+    });
+
+    expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();
+    expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
+      expect.objectContaining({ startDate: '2024-06-15' })
     );
   });
 

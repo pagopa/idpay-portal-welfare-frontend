@@ -8,6 +8,7 @@ interface MerchantAutocompleteProps {
   merchantError: 'required' | 'invalid' | null;
   onMerchantChange: (value: string) => void;
   onBlurValidation: () => void;
+  isActionDisabled: boolean;
 }
 
 const MerchantAutocomplete = ({
@@ -16,6 +17,7 @@ const MerchantAutocomplete = ({
   merchantError,
   onMerchantChange,
   onBlurValidation,
+  isActionDisabled,
 }: MerchantAutocompleteProps) => {
   const { t } = useTranslation();
   const [searchFocused, setSearchFocused] = useState(false);
@@ -60,6 +62,7 @@ const MerchantAutocomplete = ({
       <Autocomplete
         freeSolo
         options={merchantNames}
+        disabled={isActionDisabled}
         noOptionsText=""
         filterOptions={(options, { inputValue }) => {
           const normalizedInput = normalizeString(inputValue);

@@ -1,6 +1,6 @@
 
 import { ChecksErrorDTO } from '../../../api/generated/merchants/apiClient';
-import { RefundsDrawerData } from '../model/types';
+import { ReasonsObject, RefundsDrawerData } from '../model/types';
 import ApproveConfirmModal from './ApproveConfirmModal';
 import RefundReasonModal from './RefundReasonModal';
 import RefundsTransactionsDrawer from './RefundsTransactionsDrawer';
@@ -23,10 +23,11 @@ type Props = {
   handleRefundAction: (
     action: 'approve' | 'suspend' | 'reject',
     trxIds: Array<string>,
-    reason?: string,
+    reasons?: ReasonsObject,
     checksError?: ChecksErrorDTO
   ) => Promise<any>;
   disabled: boolean;
+  editChecksDisabled: boolean;
   reasonModal: { open: boolean; type: 'reject' | 'suspend' | null };
   setReasonModal: (value: { open: boolean; type: 'reject' | 'suspend' | null }) => void;
   selectedRowsSize: number;
@@ -36,6 +37,7 @@ type Props = {
   approve: () => Promise<any>;
   batchModalOpen: boolean;
   batchAssigneeLevel: 'L1' | 'L2' | 'L3';
+  isEmptyBatch?: boolean;
   setBatchModalOpen: (value: boolean) => void;
   handleBatchStatus: () => void;
   batchErrorOpen: boolean;
@@ -52,6 +54,7 @@ const RefundTransactionsOverlays = ({
   closeAfter,
   handleRefundAction,
   disabled,
+  editChecksDisabled,
   reasonModal,
   setReasonModal,
   selectedRowsSize,
@@ -61,6 +64,7 @@ const RefundTransactionsOverlays = ({
   approve,
   batchModalOpen,
   batchAssigneeLevel,
+  isEmptyBatch = false,
   setBatchModalOpen,
   handleBatchStatus,
   batchErrorOpen,
@@ -75,9 +79,10 @@ const RefundTransactionsOverlays = ({
       download={downloadInvoice}
       formatDate={formatDate}
       onApprove={(trxId) => closeAfter(handleRefundAction('approve', [trxId]))}
-      onSuspend={(trxId, reason, checksError) => closeAfter(handleRefundAction('suspend', [trxId], reason, checksError))}
-      onReject={(trxId, reason, checksError) => closeAfter(handleRefundAction('reject', [trxId], reason, checksError))}
+      onSuspend={(trxId, reasons, checksError) => closeAfter(handleRefundAction('suspend', [trxId], reasons, checksError))}
+      onReject={(trxId, reasons, checksError) => closeAfter(handleRefundAction('reject', [trxId], reasons, checksError))}
       disabled={disabled}
+      editChecksDisabled={editChecksDisabled}
     />
 
     <RefundReasonModal
@@ -86,11 +91,11 @@ const RefundTransactionsOverlays = ({
       type={(reasonModal.type ?? 'reject') as 'reject' | 'suspend'}
       count={selectedRowsSize}
       onClose={() => setReasonModal({ open: false, type: null })}
-      onConfirm={async (reason, checksError) => {
+      onConfirm={async (reasons, checksError) => {
         if (!reasonModal.type) {
           return;
         }
-        await handleRefundAction(reasonModal.type, [...selectedRows], reason, checksError);
+        await handleRefundAction(reasonModal.type, [...selectedRows], reasons, checksError);
         setReasonModal({ open: false, type: null });
       }}
     />
@@ -108,6 +113,7 @@ const RefundTransactionsOverlays = ({
     <RoleConfirmModal
       open={batchModalOpen}
       role={batchAssigneeLevel}
+      isEmptyBatch={isEmptyBatch}
       onClose={() => setBatchModalOpen(false)}
       onConfirm={handleBatchStatus}
     />

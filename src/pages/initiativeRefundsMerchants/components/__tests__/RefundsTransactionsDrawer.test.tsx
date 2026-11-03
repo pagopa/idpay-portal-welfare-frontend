@@ -14,7 +14,7 @@ jest.mock('react-i18next', () => ({
 
 jest.mock('@pagopa/mui-italia', () => ({
   ButtonNaked: (props: any) => (
-    <button onClick={props.onClick} data-testid="button-naked-test">
+    <button onClick={props.onClick} data-testid="button-naked-test" disabled={props.disabled}>
       {props.children}
     </button>
   ),
@@ -98,6 +98,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -128,6 +129,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={true}
+        editChecksDisabled={false}
       />
     );
 
@@ -147,6 +149,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -172,6 +175,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -200,6 +204,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -227,6 +232,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -252,6 +258,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -276,6 +283,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={true}
+        editChecksDisabled={false}
       />
     );
 
@@ -295,6 +303,7 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
@@ -318,6 +327,11 @@ describe('<RefundsTransactionsDrawer />', () => {
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
+            rewardBatchOfficialNotes: [
+              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
+            ],
           } as any
         }
         download={mockDownload}
@@ -326,10 +340,12 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
-    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.note')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.internalNote')).toBeInTheDocument();
+    expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.officialNote')).toBeInTheDocument();
     expect(screen.getAllByText('Valid reason').length).toBeGreaterThan(0);
     expect(screen.queryByText('123')).not.toBeInTheDocument();
   });
@@ -353,9 +369,35 @@ describe('<RefundsTransactionsDrawer />', () => {
         onSuspend={mockOnSuspend}
         onReject={mockOnReject}
         disabled={false}
+        editChecksDisabled={false}
       />
     );
 
     expect(screen.getAllByText((content) => content.includes('0,00')).length).toBeGreaterThan(0);
+  });
+
+  test('disables edit checks when transaction checks cannot be edited', () => {
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={baseData as any}
+        download={mockDownload}
+        formatDate={() => '10/03/2026'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+        editChecksDisabled={true}
+      />
+    );
+
+    const editChecksButton = screen.getByText(
+      'pages.initiativeMerchantsTransactions.drawer.editChecks'
+    );
+
+    expect(editChecksButton).toBeDisabled();
+    fireEvent.click(editChecksButton);
+    expect(mockOnSuspend).not.toHaveBeenCalled();
   });
 });
