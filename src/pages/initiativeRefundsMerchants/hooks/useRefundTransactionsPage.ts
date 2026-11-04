@@ -374,7 +374,7 @@ export const useRefundTransactionsPage = () => {
     const refundItem = mapRewardBatchToRefund(rewardBatchResponse);
     setBatchTrx(refundItem);
     setBatch(getBatchTrx());
-    if (!batch?.numberOfTransactions) {
+    if (!batch?.numberOfTransactions && batch?.assigneeLevel === 'L3') {
       setAlert({
         text: t("pages.initiativeMerchantsTransactions.emptyBatchSuccessAlert"),
         severity: "success",
