@@ -1,7 +1,7 @@
-﻿import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { act, render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { createStore as createReduxStore } from '../../../redux/store';
-import { setGeneralInfo } from '../../../redux/slices/initiativeSlice';
+import { setGeneralInfo, setInitiativeCreationDate } from '../../../redux/slices/initiativeSlice';
 import InitiativeExportReportPage from '../InitiativeExportReportPage';
 import {
   ReportDtoReportStatusEnum as ReportStatusEnum,
@@ -21,6 +21,7 @@ const createStore = () => {
     ...store.getState().initiative.generalInfo,
     startDate: '2024-06-15',
   }));
+  store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
   return store;
 };
 
@@ -99,12 +100,13 @@ describe('<InitiativeExportReportPage />', () => {
 
     expect(screen.getByTestId('report-table-card')).toBeInTheDocument();
     expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
-      expect.objectContaining({ startDate: '2024-06-15' })
+      expect.objectContaining({ startDate: new Date(2024, 5, 16) })
     );
   });
 
-  test('waits for the initiative start date before rendering export filters', async () => {
+  test('waits for the initiative creation date before rendering export filters', async () => {
     const store = createReduxStore();
+    store.dispatch(setGeneralInfo({ ...store.getState().initiative.generalInfo, startDate: '2024-06-15' }));
     render(
       <Provider store={store}>
         <InitiativeExportReportPage />
@@ -114,15 +116,12 @@ describe('<InitiativeExportReportPage />', () => {
     expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
 
     await act(async () => {
-      store.dispatch(setGeneralInfo({
-        ...store.getState().initiative.generalInfo,
-        startDate: '2024-06-15',
-      }));
+      store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
     });
 
     expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();
     expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
-      expect.objectContaining({ startDate: '2024-06-15' })
+      expect.objectContaining({ startDate: new Date(2024, 5, 16) })
     );
   });
 

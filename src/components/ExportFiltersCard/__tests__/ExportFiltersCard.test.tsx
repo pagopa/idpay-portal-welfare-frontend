@@ -77,7 +77,7 @@ describe('ExportFiltersCard', () => {
     { startDate: new Date(2024, 5, 15, 14, 30), isUsers: false },
     { startDate: '2024-06-15', isUsers: true },
     { startDate: new Date(2024, 5, 15, 14, 30), isUsers: true },
-  ])('uses initiative startDate $startDate as the minimum date (isUsers: $isUsers)', ({ startDate, isUsers }) => {
+  ])('uses the supplied export lower bound $startDate as the minimum date (isUsers: $isUsers)', ({ startDate, isUsers }) => {
     const { rerender } = render(
       <ExportFiltersCard startDate={startDate} businessList={[]} isUsers={isUsers} />
     );
