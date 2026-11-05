@@ -198,6 +198,7 @@ describe('<RefundsTransactionsDrawer />', () => {
 
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.appliance')).toBeInTheDocument();
     expect(screen.getByText('Smaltimento RAEE')).toBeInTheDocument();
+    expect(screen.getByRole('listitem')).toHaveStyle({ overflowWrap: 'anywhere' });
   });
 
   test('handles reason modal and approve modal flows', async () => {
@@ -377,6 +378,7 @@ describe('<RefundsTransactionsDrawer />', () => {
   });
 
   test('skips invalid rejection reasons and keeps note section visible for valid ones', () => {
+    const longReason = 'ReasonWithoutSpaces'.repeat(8);
     render(
       <RefundsTransactionsDrawer
         open={true}
@@ -386,12 +388,12 @@ describe('<RefundsTransactionsDrawer />', () => {
             ...baseData,
             rewardBatchTrxStatus: RewardBatchTrxStatusEnum.REJECTED,
             rewardBatchRejectionReason: [
-              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: longReason, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
             rewardBatchOfficialNotes: [
-              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: longReason, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
@@ -409,7 +411,9 @@ describe('<RefundsTransactionsDrawer />', () => {
 
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.internalNote')).toBeInTheDocument();
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.officialNote')).toBeInTheDocument();
-    expect(screen.getAllByText('Valid reason').length).toBeGreaterThan(0);
+    const note = screen.getAllByText(longReason)[0];
+    expect(note).toHaveStyle({ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' });
+    expect(note).not.toHaveAttribute('aria-label');
     expect(screen.queryByText('123')).not.toBeInTheDocument();
   });
 
