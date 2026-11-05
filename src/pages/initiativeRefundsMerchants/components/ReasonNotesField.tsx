@@ -1,4 +1,4 @@
-import { Box, Tooltip, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { CopyToClipboardButton } from "@pagopa/mui-italia";
 import { ReasonDTO } from "../../../api/generated/merchants/apiClient";
@@ -43,33 +43,30 @@ export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
                     mb: 2
                 }}
             >
-                <Box sx={{ flex: 1, minWidth: 0 }}>
-                    <Tooltip title={date ? formatDate(date.toString()) : '-'}>
-                        <Typography
-                            sx={{
-                                ...ellipsisSx,
-                            fontSize: "14px",
-                            color: "#6B7280",
-                            mb: 0.5
-                            }}
-                        >
-                            {date ? formatDate(date.toString()) : '-'}
-                        </Typography>
-                    </Tooltip>
-                    <Tooltip title={reason}>
-                        <Typography
-                            sx={{
-                                ...ellipsisSx,
-                            fontSize: "18px",
-                            fontWeight: 600,
-                            color: "#17324D",
-                            lineHeight: "22px",
-                            }}
-                        >
-                            {reason}
-                        </Typography>
-                    </Tooltip>
-                </Box>
+                <Typography
+                    sx={{
+                        ...ellipsisSx,
+                        gridColumn: 1,
+                        fontSize: "14px",
+                        color: "#6B7280",
+                        mb: 0.5
+                    }}
+                >
+                    {date ? formatDate(date.toString()) : '-'}
+                </Typography>
+                <Typography
+                    sx={{
+                        gridColumn: 1,
+                        whiteSpace: "pre-wrap",
+                        overflowWrap: "anywhere",
+                        fontSize: "18px",
+                        fontWeight: 600,
+                        color: "#17324D",
+                        lineHeight: "22px",
+                    }}
+                >
+                    {reason}
+                </Typography>
                 <CopyToClipboardButton
                     value={reason}
                     sx={{ gridColumn: 2, gridRow: 2, ml: 2, p: 1 }}

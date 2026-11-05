@@ -342,6 +342,7 @@ export default function RefundsTransactionsDrawer({
                                         color: "#17324D",
                                         lineHeight: "21px",
                                         mb: 1,
+                                        overflowWrap: "anywhere",
                                     }}
                                 >
                                     {label}
