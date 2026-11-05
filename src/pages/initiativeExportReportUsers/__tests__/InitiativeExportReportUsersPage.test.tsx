@@ -106,7 +106,7 @@ describe('<InitiativeExportReportUsersPage />', () => {
       expect.objectContaining({
         isUsers: true,
         businessList: [],
-        startDate: new Date(2024, 5, 16),
+        startDate: '2024-06-15',
       })
     );
     expect(mockReportTableProps).toHaveBeenCalledWith(
@@ -118,9 +118,9 @@ describe('<InitiativeExportReportUsersPage />', () => {
     );
   });
 
-  test('waits for the initiative creation date before rendering export filters', async () => {
+  test('waits for the initiative start date before rendering export filters', async () => {
     const store = createReduxStore();
-    store.dispatch(setGeneralInfo({ ...store.getState().initiative.generalInfo, startDate: '2024-06-15' }));
+    store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
     render(
       <Provider store={store}>
         <InitiativeExportReportUsersPage />
@@ -130,12 +130,12 @@ describe('<InitiativeExportReportUsersPage />', () => {
     expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
 
     await act(async () => {
-      store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
+      store.dispatch(setGeneralInfo({ ...store.getState().initiative.generalInfo, startDate: '2024-06-15' }));
     });
 
     expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();
     expect(mockExportFiltersProps).toHaveBeenLastCalledWith(
-      expect.objectContaining({ startDate: new Date(2024, 5, 16) })
+      expect.objectContaining({ startDate: '2024-06-15' })
     );
   });
 
