@@ -152,7 +152,8 @@ export default function RefundsTransactionsDrawer({
             transitionDuration={300}
             PaperProps={{
                 sx: {
-                    width: "30%",
+                    width: "375px",
+                    maxWidth: "100vw",
                     bgcolor: "#FFFFFF",
                     transform: open ? "translateX(0)" : "translateX(30%)",
                     transition: "transform 0.3s ease-out",
@@ -280,13 +281,15 @@ export default function RefundsTransactionsDrawer({
                         />
 
                         <Tooltip title={invoiceFileName}>
-                            <ButtonNaked
-                                sx={{ ...ellipsisSx, fontSize: 18, ml: 1, textAlign: "left", justifyContent: "flex-start" }}
-                                color="primary"
-                                onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
-                            >
-                                {invoiceFileName}
-                            </ButtonNaked>
+                            <Box sx={{ minWidth: 0, maxWidth: "100%" }}>
+                                <ButtonNaked
+                                    sx={{ ...ellipsisSx, fontSize: 18, ml: 1, textAlign: "left", justifyContent: "flex-start" }}
+                                    color="primary"
+                                    onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName)}
+                                >
+                                    {invoiceFileName}
+                                </ButtonNaked>
+                            </Box>
                         </Tooltip>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", p: 0.5 }} onClick={() => download(data?.pointOfSaleId, data?.transactionId, data?.invoiceFileName, true)}>

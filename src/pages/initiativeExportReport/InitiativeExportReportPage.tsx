@@ -113,13 +113,13 @@ const InitiativeExportReportPage = () => {
         </Box>
       </Box>
       <Box sx={{ display: 'flex', gap: 3, mt: 1, mb: 3, alignItems: 'center' }}>
-        {initiativeSel.creationDate && (
+        {initiativeSel.generalInfo.startDate && (
           <ExportFiltersCard
             reportType={reportType}
             onReportTypeChange={setReportType}
             onGenerateReport={handleGenerateReport}
             businessList={businessNameList}
-            startDate={initiativeSel.creationDate}
+            startDate={initiativeSel.generalInfo.startDate}
           />
         )}
       </Box>
