@@ -153,6 +153,7 @@ export default function RefundsTransactionsDrawer({
             PaperProps={{
                 sx: {
                     width: "375px",
+                    maxWidth: "100vw",
                     bgcolor: "#FFFFFF",
                     transform: open ? "translateX(0)" : "translateX(30%)",
                     transition: "transform 0.3s ease-out",
