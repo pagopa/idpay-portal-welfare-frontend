@@ -92,6 +92,9 @@ const Header = ({ withSecondHeader, onExit, loggedUser }: /* , parties */ Props)
       }
       assistanceEmail={ENV.ASSISTANCE.EMAIL}
       enableLogin={true}
+      onDocumentationClick={() =>
+        window.open('https://developer.pagopa.it/it/pari/guides', '_blank', 'noopener,noreferrer')
+      }
       onSelectedProduct={(p) =>
         onExit(() => console.log(`TODO: perform token exchange to change Product and set ${p}`))
       }

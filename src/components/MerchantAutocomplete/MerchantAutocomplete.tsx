@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface MerchantAutocompleteProps {
+  optional?: boolean;
   merchantNames: Array<string>;
   selectedMerchant: string;
   merchantError: 'required' | 'invalid' | null;
@@ -12,6 +13,7 @@ interface MerchantAutocompleteProps {
 }
 
 const MerchantAutocomplete = ({
+  optional = false,
   merchantNames,
   selectedMerchant,
   merchantError,
@@ -139,16 +141,16 @@ const MerchantAutocomplete = ({
           >
             <TextField
               {...params}
-              required
+              required={!optional}
               fullWidth
-              label={t('pages.initiativeExportReport.exportFiltersCard.merchant')}
+              label={t(`pages.initiativeExportReport.exportFiltersCard.${optional ? 'merchantOptional' : 'merchant'}`)}
               error={!!merchantError}
               helperText={
                 merchantError === 'required'
                   ? t('validation.required')
                   : merchantError === 'invalid'
                     ? t('validation.invalidSelection')
-                    : ''
+                    : optional ? t('pages.initiativeExportReport.exportFiltersCard.allMerchants') : ''
               }
               onFocus={handleFocus}
               onBlur={handleBlur}
