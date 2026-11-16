@@ -27,6 +27,7 @@ const getBaseProps = (): ComponentProps<typeof RefundBatchesFiltersBar> => ({
   setDraftName: jest.fn(),
   draftPeriod: '',
   setDraftPeriod: jest.fn(),
+  periodList: [{label: 'Marzo 2026', value: '2026-03'}],
   draftStatus: '',
   setDraftStatus: jest.fn(),
   draftAssignee: '',
@@ -90,7 +91,7 @@ describe('<RefundBatchesFiltersBar />', () => {
     expect(props.setDraftName).toHaveBeenCalledWith('m2');
 
     fireEvent.mouseDown(combos[1]);
-    fireEvent.click(screen.getByText('period.march'));
+    fireEvent.click(screen.getByText('Marzo 2026'));
     expect(props.setDraftPeriod).toHaveBeenCalledWith('2026-03');
 
     fireEvent.mouseDown(combos[2]);

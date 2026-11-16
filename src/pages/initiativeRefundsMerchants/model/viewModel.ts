@@ -24,6 +24,7 @@ export const buildRefundBatchesBindings = (
     setDraftName: viewModel.setDraftName,
     draftPeriod: viewModel.draftPeriod,
     setDraftPeriod: viewModel.setDraftPeriod,
+    periodList: viewModel.periodList,
     draftStatus: viewModel.draftStatus,
     setDraftStatus: viewModel.setDraftStatus,
     draftAssignee: viewModel.draftAssignee,

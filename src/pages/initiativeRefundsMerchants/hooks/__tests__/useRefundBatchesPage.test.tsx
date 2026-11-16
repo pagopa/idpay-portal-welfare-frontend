@@ -10,6 +10,7 @@ const mockResetMerchantsFilters = jest.fn();
 const mockGetMerchantsFilters = jest.fn();
 const mockGetMerchantList = jest.fn();
 const mockGetRewardBatches = jest.fn();
+const mockGetAvailableRewardBatchMonths = jest.fn();
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -37,6 +38,7 @@ jest.mock('../../../../hooks/useMerchantsFilters', () => ({
 jest.mock('../../../../services/merchantsService', () => ({
   getMerchantList: (...args: Array<any>) => mockGetMerchantList(...args),
   getRewardBatches: (...args: Array<any>) => mockGetRewardBatches(...args),
+  getAvailableRewardBatchMonths: ( ...args: Array<any>) => mockGetAvailableRewardBatchMonths(...args)
 }));
 
 const hookResult: Record<string, any> = {};
@@ -67,6 +69,10 @@ describe('useRefundBatchesPage', () => {
     mockGetMerchantList.mockResolvedValue({
       content: [{ merchantId: 'm1', businessName: 'Esercente 1' }],
     });
+
+    mockGetAvailableRewardBatchMonths.mockResolvedValue({
+      months: [{label: 'Gennaio 2025', value: '01/2026'}]
+    })
 
     mockGetRewardBatches.mockResolvedValue({
       totalElements: 1,
@@ -103,6 +109,7 @@ describe('useRefundBatchesPage', () => {
 
     await waitFor(() => {
       expect(mockGetMerchantList).toHaveBeenCalledWith('initiative-1', 0);
+      expect(mockGetAvailableRewardBatchMonths).toHaveBeenCalledWith('initiative-1');
       expect(mockGetRewardBatches).toHaveBeenCalledWith(
         'initiative-1',
         0,
@@ -117,6 +124,7 @@ describe('useRefundBatchesPage', () => {
 
     expect(hookResult.rows).toHaveLength(1);
     expect(hookResult.businessNameList).toHaveLength(1);
+    expect(hookResult.periodList).toHaveLength(1);
     expect(mockSetLoading).toHaveBeenCalled();
     expect(mockResetMerchantsFilters).toHaveBeenCalled();
   });
@@ -128,11 +136,13 @@ describe('useRefundBatchesPage', () => {
       totalPages: 0,
       content: [],
     });
+    mockGetAvailableRewardBatchMonths.mockResolvedValueOnce({months: []});
 
     render(<HookWrapper />);
 
     await waitFor(() => {
       expect(mockGetMerchantList).toHaveBeenCalledWith('initiative-1', 0);
+      expect(mockGetAvailableRewardBatchMonths).toHaveBeenCalledWith('initiative-1');
       expect(mockGetRewardBatches).toHaveBeenCalledWith(
         'initiative-1',
         0,
@@ -147,6 +157,7 @@ describe('useRefundBatchesPage', () => {
 
     expect(hookResult.rows).toHaveLength(0);
     expect(hookResult.businessNameList).toHaveLength(0);
+    expect(hookResult.periodList).toHaveLength(0);
   });
 
   test('applies draft filters and requests filtered data', async () => {
@@ -266,6 +277,7 @@ describe('useRefundBatchesPage', () => {
   test('shows alert on merchant list and batches fetch error', async () => {
     mockGetMerchantList.mockRejectedValueOnce(new Error('merchant fail'));
     mockGetRewardBatches.mockRejectedValueOnce(new Error('batches fail'));
+    mockGetAvailableRewardBatchMonths.mockRejectedValueOnce(new Error('batches fail'));
 
     render(<HookWrapper />);
 

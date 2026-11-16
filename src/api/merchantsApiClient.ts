@@ -27,6 +27,7 @@ import {
   TransactionDecisionRequest,
   RewardBatchStatus,
   ReportRequestReportTypeEnum,
+  GetAvailableRewardBatchMonthsData,
 } from './generated/merchants/apiClient';
 import { handleUnauthorizedError } from './swaggerApiClientUtils';
 
@@ -342,4 +343,11 @@ export const merchantsApi = {
         reportId,
       })
     ),
+
+  getAvailableRewardBatchMonths: async (
+    initiativeId: string
+  ): Promise<GetAvailableRewardBatchMonthsData> =>
+    execute(() =>
+      api.initiatives.getAvailableRewardBatchMonths({ initiativeId })
+    )
 };
