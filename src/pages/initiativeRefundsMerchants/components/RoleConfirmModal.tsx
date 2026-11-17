@@ -7,8 +7,10 @@ import {
     Typography
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 
 interface Props {
+    minimumChecksPercentage?: number;
     open: boolean;
     role: string | "L1" | "L2" | "L3";
     isEmptyBatch?: boolean;
@@ -18,6 +20,7 @@ interface Props {
 
 export const RoleConfirmModal = ({
     open,
+    minimumChecksPercentage = getMinimumChecksPercentage(''),
     role,
     isEmptyBatch = false,
     onClose,
@@ -27,7 +30,7 @@ export const RoleConfirmModal = ({
 
     const getLabels = () => ({
         title: t(`pages.initiativeMerchantsTransactions.batchModal.${isEmptyBatch ? 'empty' : role}.title`),
-        description: t(`pages.initiativeMerchantsTransactions.batchModal.${isEmptyBatch ? 'empty' : role}.description`),
+        description: t(`pages.initiativeMerchantsTransactions.batchModal.${isEmptyBatch ? 'empty' : role}.description`, { percentage: minimumChecksPercentage }),
     });
 
     const { title, description } = getLabels();

@@ -232,3 +232,7 @@ describe('viewModel bindings', () => {
     expect(result.overlaysProps.disabled).toBe(true);
   });
 });
+ test.each([['Bonus Decoder', 50], ['  BONUS DECODER  ', 50], ['Bonus Elettrodomestici', 15], ['Other', 15]])('uses the correct checks threshold for %s', (name, percentage) => {
+  const result = buildRefundTransactionsBindings(getTransactionsVm() as any, name as string);
+  expect(result.overlaysProps.minimumChecksPercentage).toBe(percentage);
+});

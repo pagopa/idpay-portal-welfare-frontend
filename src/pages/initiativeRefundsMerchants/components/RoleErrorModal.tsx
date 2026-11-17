@@ -1,3 +1,4 @@
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 import {
     Dialog,
     DialogTitle,
@@ -9,19 +10,21 @@ import {
 import { useTranslation } from "react-i18next";
 
 interface Props {
+    minimumChecksPercentage?: number;
     open: boolean;
     onClose: () => void;
 }
 
 export const RoleErrorModal = ({
     open,
+    minimumChecksPercentage = getMinimumChecksPercentage(''),
     onClose,
 }: Props) => {
     const { t } = useTranslation();
 
     const getLabels = () => ({
         title: t("pages.initiativeMerchantsTransactions.batchModal.errorTitle"),
-        description: t("pages.initiativeMerchantsTransactions.batchModal.errorDescription")
+        description: t("pages.initiativeMerchantsTransactions.batchModal.errorDescription", { percentage: minimumChecksPercentage })
     });
 
     const { title, description } = getLabels();
