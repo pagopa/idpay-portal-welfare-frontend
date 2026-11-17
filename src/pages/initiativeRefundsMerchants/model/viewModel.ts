@@ -1,10 +1,10 @@
-import { getMinimumChecksPercentage } from './refundChecks';
 import type {
   RefundBatchesPageViewModel,
 } from '../hooks/useRefundBatchesPage';
 import type {
   RefundTransactionsPageViewModel,
 } from '../hooks/useRefundTransactionsPage';
+import { getMinimumChecksPercentage } from './refundChecks';
 
 type Translate = (key: string) => string;
 

@@ -1,4 +1,3 @@
-import { getMinimumChecksPercentage } from '../model/refundChecks';
 import {
     Dialog,
     DialogTitle,
@@ -8,6 +7,7 @@ import {
     Typography
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 
 interface Props {
     minimumChecksPercentage?: number;
