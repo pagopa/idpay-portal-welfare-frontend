@@ -1,4 +1,3 @@
-import { getMinimumChecksPercentage } from '../model/refundChecks';
 import { Box } from '@mui/material';
 import { getMinimumChecksPercentage } from '../model/refundChecks';
 import { useAppSelector } from '../../../redux/hooks';

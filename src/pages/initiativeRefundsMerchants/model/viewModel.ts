@@ -1,4 +1,3 @@
-import { getMinimumChecksPercentage } from './refundChecks';
 import type {
   RefundBatchesPageViewModel,
 } from '../hooks/useRefundBatchesPage';
