@@ -1,3 +1,4 @@
+import { getMinimumChecksPercentage } from './refundChecks';
 import type {
   RefundBatchesPageViewModel,
 } from '../hooks/useRefundBatchesPage';
@@ -141,6 +142,7 @@ export const buildRefundTransactionsBindings = (
     totalPages: viewModel.totalPages,
   },
   overlaysProps: {
+    minimumChecksPercentage: getMinimumChecksPercentage(initiativeName),
     isApplianceInitiative: isApplianceBonusInitiative(initiativeName, initiativeId),
     openDrawer: viewModel.openDrawer,
     handleCloseDrawer: viewModel.handleCloseDrawer,
