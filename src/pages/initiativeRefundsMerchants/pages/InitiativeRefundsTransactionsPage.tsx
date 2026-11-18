@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 import { useAppSelector } from '../../../redux/hooks';
 import { initiativeSelector } from '../../../redux/slices/initiativeSlice';
 import RefundBatchSummary from '../components/RefundBatchSummary';
@@ -15,7 +16,10 @@ import {
 
 const InitiativeRefundsTransactionsPage = () => {
   const initiativeSelected = useAppSelector(initiativeSelector);
-  const refundTransactionsPage = useRefundTransactionsPage();
+  const refundTransactionsPage = useRefundTransactionsPage(
+    getMinimumChecksPercentage(initiativeSelected.initiativeName ?? ''),
+    initiativeSelected.initiativeName?.trim().toLowerCase() === 'bonus decoder'
+  );
 
   if (!refundTransactionsPage.batch || !refundTransactionsPage.restored) {
     return null;

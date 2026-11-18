@@ -3,6 +3,7 @@ import React from 'react';
 import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 import { useRefundTransactionsPage } from '../useRefundTransactionsPage';
 
+const mockTranslate = (key: string) => key;
 const mockReplace = jest.fn();
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
@@ -31,7 +32,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 jest.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key }),
+  useTranslation: () => ({ t: mockTranslate }),
 }));
 
 jest.mock('../../../../hooks/useAlert', () => ({
@@ -95,8 +96,8 @@ jest.mock('@pagopa/selfcare-common-frontend/lib/utils/storage', () => ({
 
 const hookResult: Record<string, any> = {};
 
-const HookWrapper = () => {
-  Object.assign(hookResult, useRefundTransactionsPage());
+const HookWrapper = ({ minimumChecksPercentage, isDecoderInitiative = false }: { minimumChecksPercentage?: number; isDecoderInitiative?: boolean }) => {
+  Object.assign(hookResult, useRefundTransactionsPage(minimumChecksPercentage, isDecoderInitiative));
   return null;
 };
 
@@ -164,6 +165,35 @@ describe('useRefundTransactionsPage', () => {
     mockUseUserPermissions.mockReturnValue({
       isActionDisabled: () => false,
     });
+  });
+
+  test.each(['L1', 'L2', 'L3'])('checks the current percentage again after it decreases for %s', async (assigneeLevel) => {
+    const initialBatch = { ...batchMock, assigneeLevel, numberOfTransactionsElaborated: 5 };
+    mockGetBatchTrx.mockReturnValue(initialBatch);
+    const { rerender } = render(<HookWrapper minimumChecksPercentage={50} />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+
+    const decreasedBatch = { ...initialBatch, numberOfTransactionsElaborated: 4 };
+    mockSuspendTrx.mockResolvedValueOnce(decreasedBatch);
+    mockGetBatchTrx.mockReturnValue(decreasedBatch);
+    await act(async () => { await hookResult.handleRefundAction('suspend', ['trx-1']); });
+    rerender(<HookWrapper minimumChecksPercentage={50} />);
+    expect(hookResult.checksPercentage).toBe('40% / 100%');
+    act(() => { hookResult.handleBatchStatus(); });
+    expect(hookResult.batchErrorOpen).toBe(true);
+    expect(mockValidateBatch).not.toHaveBeenCalled();
+    expect(mockApproveBatch).not.toHaveBeenCalled();
+  });
+
+  test.each([
+    ['L1', 50], ['L2', 50], ['L3', 50],
+    ['L1', 15], ['L2', 15], ['L3', 15],
+  ])('allows %s at the configured threshold %s', async (assigneeLevel, percentage) => {
+    mockGetBatchTrx.mockReturnValue({ ...batchMock, assigneeLevel, numberOfTransactions: 100, numberOfTransactionsElaborated: percentage });
+    render(<HookWrapper minimumChecksPercentage={percentage as number} />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+    act(() => { hookResult.handleBatchStatus(); });
+    expect(assigneeLevel === 'L3' ? mockApproveBatch : mockValidateBatch).toHaveBeenCalledWith('initiative-1', 'batch-1');
   });
 
   test.each(['L1', 'L2', 'L3'])('submits an empty batch with zero checks for %s', async (assigneeLevel) => {
@@ -544,6 +574,27 @@ describe('useRefundTransactionsPage', () => {
     });
     await hookResult.handleRefundAction('approve', ['trx-1']);
     await waitFor(() => expect(hookResult.batchErrorOpen).toBe(true));
+  });
+
+  test.each(['L1', 'L2', 'L3'])('shows the Decoder threshold modal for %s API rejection', async (assigneeLevel) => {
+    mockGetBatchTrx.mockReturnValue({ ...batchMock, assigneeLevel });
+    const error = { response: { status: 400, data: { code: 'BATCH_CONTROL_THRESHOLD_NOT_MET' } } };
+    (assigneeLevel === 'L3' ? mockApproveBatch : mockValidateBatch).mockRejectedValueOnce(error);
+    render(<HookWrapper minimumChecksPercentage={50} isDecoderInitiative />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+    act(() => { hookResult.handleBatchStatus(); });
+    await waitFor(() => expect(hookResult.batchErrorOpen).toBe(true));
+    expect(hookResult.batchModalOpen).toBe(false);
+    expect(mockSetAlert).not.toHaveBeenCalled();
+  });
+
+  test('keeps the new threshold error scoped to Decoder', async () => {
+    mockValidateBatch.mockRejectedValueOnce({ response: { status: 400, data: { code: 'BATCH_CONTROL_THRESHOLD_NOT_MET' } } });
+    render(<HookWrapper />);
+    await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
+    act(() => { hookResult.handleBatchStatus(); });
+    await waitFor(() => expect(mockSetAlert).toHaveBeenCalledWith(expect.objectContaining({ text: 'errors.getDataDescription' })));
+    expect(hookResult.batchErrorOpen).toBe(false);
   });
 
   test('shows a generic alert when batch validation fails with an unexpected error', async () => {

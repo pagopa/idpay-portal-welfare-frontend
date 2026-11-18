@@ -1,3 +1,4 @@
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 
 import { ChecksErrorDTO } from '../../../api/generated/merchants/apiClient';
 import { ReasonsObject, RefundsDrawerData } from '../model/types';
@@ -8,6 +9,7 @@ import { RoleConfirmModal } from './RoleConfirmModal';
 import { RoleErrorModal } from './RoleErrorModal';
 
 type Props = {
+  minimumChecksPercentage?: number;
   isApplianceInitiative?: boolean;
   openDrawer: boolean;
   handleCloseDrawer: () => void;
@@ -45,6 +47,7 @@ type Props = {
 };
 
 const RefundTransactionsOverlays = ({
+  minimumChecksPercentage = getMinimumChecksPercentage(''),
   isApplianceInitiative = false,
   openDrawer,
   handleCloseDrawer,
@@ -113,12 +116,13 @@ const RefundTransactionsOverlays = ({
     <RoleConfirmModal
       open={batchModalOpen}
       role={batchAssigneeLevel}
+      minimumChecksPercentage={minimumChecksPercentage}
       isEmptyBatch={isEmptyBatch}
       onClose={() => setBatchModalOpen(false)}
       onConfirm={handleBatchStatus}
     />
 
-    <RoleErrorModal open={batchErrorOpen} onClose={() => setBatchErrorOpen(false)} />
+    <RoleErrorModal minimumChecksPercentage={minimumChecksPercentage} open={batchErrorOpen} onClose={() => setBatchErrorOpen(false)} />
   </>
 );
 

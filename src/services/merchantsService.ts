@@ -1,4 +1,4 @@
-import { DownloadInvoiceResponseDTO, DownloadReportResponseDTO, DownloadRewardBatchResponseDTO, ListPointOfSaleDTO, MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO, ReportDTO, ReportListDTO, RewardBatchDTO, RewardBatchListDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionActionResponse, AssigneeLevelEnum, ReportTypeEnum, RewardBatchStatus, ReportRequestReportTypeEnum, TransactionDecisionRequest } from "../api/generated/merchants/apiClient";
+import { DownloadInvoiceResponseDTO, DownloadReportResponseDTO, DownloadRewardBatchResponseDTO, ListPointOfSaleDTO, MerchantDetailDTO, MerchantListDTO, MerchantStatisticsDTO, MerchantTransactionsListDTO, MerchantTransactionsProcessedListDTO, MerchantUpdateDTO, ReportDTO, ReportListDTO, RewardBatchDTO, RewardBatchListDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionActionResponse, AssigneeLevelEnum, ReportTypeEnum, RewardBatchStatus, ReportRequestReportTypeEnum, TransactionDecisionRequest, GetAvailableRewardBatchMonthsData } from "../api/generated/merchants/apiClient";
 import { merchantsApi } from "../api/merchantsApiClient";
 
 export const uploadMerchantList = async (id: string, file: File): Promise<MerchantUpdateDTO> => merchantsApi.uploadMerchantList(id, file);
@@ -195,4 +195,11 @@ export const getDownloadReport = (
   merchantsApi.getDownloadReport(
     initiativeId,
     reportId
+  );
+
+export const getAvailableRewardBatchMonths = (
+  initiativeId: string
+): Promise<GetAvailableRewardBatchMonthsData> =>
+  merchantsApi.getAvailableRewardBatchMonths(
+    initiativeId
   );

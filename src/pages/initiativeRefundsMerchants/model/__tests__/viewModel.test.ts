@@ -15,6 +15,7 @@ const getBatchesVm = (overrides?: Record<string, unknown>) => ({
   draftAssignee: '',
   setDraftAssignee: jest.fn(),
   businessNameList: [],
+  periodList: [],
   isFilterDisabled: false,
   applyFilters: jest.fn(),
   clearFilters: jest.fn(),
@@ -126,6 +127,7 @@ describe('viewModel bindings', () => {
     expect(result.filtersBarProps.draftStatus).toBe(vm.draftStatus);
     expect(result.filtersBarProps.draftAssignee).toBe(vm.draftAssignee);
     expect(result.filtersBarProps.businessNameList).toBe(vm.businessNameList);
+    expect(result.filtersBarProps.periodList).toBe(vm.periodList);
     expect(result.filtersBarProps.hasAppliedFilters).toBe(false);
     expect(result.filtersBarProps.applyFilters).toBe(vm.applyFilters);
     expect(result.tableProps.rows).toBe(vm.rows);
@@ -229,4 +231,8 @@ describe('viewModel bindings', () => {
     expect(result.headerProps.actionsDisabled).toBe(true);
     expect(result.overlaysProps.disabled).toBe(true);
   });
+});
+ test.each([['Bonus Decoder', 50], ['  BONUS DECODER  ', 50], ['Bonus Elettrodomestici', 15], ['Other', 15]])('uses the correct checks threshold for %s', (name, percentage) => {
+  const result = buildRefundTransactionsBindings(getTransactionsVm() as any, name as string);
+  expect(result.overlaysProps.minimumChecksPercentage).toBe(percentage);
 });

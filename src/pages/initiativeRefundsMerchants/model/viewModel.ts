@@ -4,6 +4,7 @@ import type {
 import type {
   RefundTransactionsPageViewModel,
 } from '../hooks/useRefundTransactionsPage';
+import { getMinimumChecksPercentage } from './refundChecks';
 
 type Translate = (key: string) => string;
 
@@ -24,6 +25,7 @@ export const buildRefundBatchesBindings = (
     setDraftName: viewModel.setDraftName,
     draftPeriod: viewModel.draftPeriod,
     setDraftPeriod: viewModel.setDraftPeriod,
+    periodList: viewModel.periodList,
     draftStatus: viewModel.draftStatus,
     setDraftStatus: viewModel.setDraftStatus,
     draftAssignee: viewModel.draftAssignee,
@@ -140,6 +142,7 @@ export const buildRefundTransactionsBindings = (
     totalPages: viewModel.totalPages,
   },
   overlaysProps: {
+    minimumChecksPercentage: getMinimumChecksPercentage(initiativeName),
     isApplianceInitiative: isApplianceBonusInitiative(initiativeName, initiativeId),
     openDrawer: viewModel.openDrawer,
     handleCloseDrawer: viewModel.handleCloseDrawer,

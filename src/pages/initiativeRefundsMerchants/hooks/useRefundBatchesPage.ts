@@ -1,7 +1,7 @@
 import { useLoading } from '@pagopa/selfcare-common-frontend/lib';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { matchPath, useHistory } from 'react-router-dom';
-import { AssigneeLevelEnum, RewardBatchStatus } from '../../../api/generated/merchants/apiClient';
+import { AssigneeLevelEnum, RewardBatchMonthDTO, RewardBatchStatus } from '../../../api/generated/merchants/apiClient';
 import { setBatchTrx } from '../../../hooks/useBatchTrx';
 import { useAlert } from '../../../hooks/useAlert';
 import {
@@ -10,7 +10,7 @@ import {
   setMerchantsFilters,
 } from '../../../hooks/useMerchantsFilters';
 import ROUTES from '../../../routes';
-import { getMerchantList, getRewardBatches } from '../../../services/merchantsService';
+import { getAvailableRewardBatchMonths, getMerchantList, getRewardBatches } from '../../../services/merchantsService';
 import { LOADING_TASK_INITIATIVE_REFUNDS_MERCHANTS } from '../../../utils/constants';
 import { SortDirection } from '../model/constants';
 import { MerchantItem, RefundItem } from '../model/types';
@@ -83,6 +83,7 @@ export const useRefundBatchesPage = ({ t }: UseRefundBatchesPageArgs) => {
   const [pageSize, setPageSize] = useState(savedFilters.pageSize ?? 10);
   const [dateSort, setDateSort] = useState<SortDirection>(savedFilters.dateSort ?? '');
   const [businessNameList, setBusinessNameList] = useState<Array<MerchantItem>>([]);
+  const [periodList, setPeriodList] = useState<Array<RewardBatchMonthDTO>>([]);
   const [rows, setRows] = useState<Array<RefundItem>>([]);
 
   const start = page * pageSize + 1;
@@ -123,6 +124,14 @@ export const useRefundBatchesPage = ({ t }: UseRefundBatchesPageArgs) => {
         if (response?.content?.length) {
           setBusinessNameList(response.content as Array<MerchantItem>);
         }
+      })
+      .catch(showGenericFetchError);
+  }, [id, showGenericFetchError]);
+
+  const fetchPeriodList = useCallback(() => {
+    getAvailableRewardBatchMonths(id)
+      .then((response) => {
+        setPeriodList(response?.months ?? []);
       })
       .catch(showGenericFetchError);
   }, [id, showGenericFetchError]);
@@ -173,8 +182,9 @@ export const useRefundBatchesPage = ({ t }: UseRefundBatchesPageArgs) => {
     if (typeof id === 'string') {
       fetchMerchantsList();
       fetchBatchesTableData(id);
+      fetchPeriodList();
     }
-  }, [id, fetchMerchantsList, fetchBatchesTableData]);
+  }, [id, fetchMerchantsList, fetchBatchesTableData, fetchPeriodList]);
 
   useEffect(() => {
     if (shouldResetPage) {
@@ -263,6 +273,7 @@ export const useRefundBatchesPage = ({ t }: UseRefundBatchesPageArgs) => {
     periodFilter,
     draftPeriod,
     setDraftPeriod,
+    periodList,
     statusFilter,
     draftStatus,
     setDraftStatus,
