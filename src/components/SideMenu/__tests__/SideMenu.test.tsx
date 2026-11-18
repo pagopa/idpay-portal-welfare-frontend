@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { act, cleanup, fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { InitiativeSummaryArrayDTO } from '../../../api/generated/initiative/apiClient';
 import { setInitiativeSummaryList } from '../../../redux/slices/initiativeSummarySlice';
@@ -131,6 +131,31 @@ describe('<SideMenu />', () => {
       updateDate: new Date('2022-12-20T10:41:37.537').toString(),
     },
   ];
+
+  test('opens the first initiative on landing without navigating when summaries arrive', async () => {
+    const store = createStore();
+    const history = createMemoryHistory({ initialEntries: [ROUTES.HOME] });
+    const replace = jest.spyOn(history, 'replace');
+    const push = jest.spyOn(history, 'push');
+    mockGetInitiativeSummary.mockResolvedValueOnce(mockedSummary);
+
+    renderWithContext(<SideMenu />, store, history);
+    act(() => {
+      store.dispatch(setInitiativeSummaryList(mockedSummary));
+    });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: mockedSummary[0].initiativeName })).toHaveAttribute(
+        'aria-expanded', 'true'
+      );
+    });
+    expect(screen.getByRole('button', { name: mockedSummary[1].initiativeName })).toHaveAttribute(
+      'aria-expanded', 'false'
+    );
+    expect(history.location.pathname).toBe(ROUTES.HOME);
+    expect(replace).not.toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+  });
 
   test('fetches summary list and dispatches it when the menu is empty', async () => {
     const store = createStore();
@@ -277,15 +302,15 @@ describe('<SideMenu />', () => {
     ).not.toBeInTheDocument();
   });
 
-  test('keeps initiatives collapsed on the list page, including after returning from refunds', async () => {
+  test('opens the first initiative on the list page, including after returning from refunds', async () => {
     const store = createStore();
     store.dispatch(setInitiativeSummaryList(mockedSummary));
     const history = createMemoryHistory({ initialEntries: [ROUTES.HOME] });
     renderWithContext(<SideMenu />, store, history);
 
-    mockedSummary.forEach((item) => {
+    mockedSummary.forEach((item, index) => {
       expect(screen.getByRole('button', { name: item.initiativeName })).toHaveAttribute(
-        'aria-expanded', 'false'
+        'aria-expanded', index === 0 ? 'true' : 'false'
       );
     });
 
@@ -295,7 +320,7 @@ describe('<SideMenu />', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'sideMenu.initiativeList.title' }));
     expect(history.location.pathname).toBe(ROUTES.HOME);
-    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'false'));
+    await waitFor(() => expect(firstHeader).toHaveAttribute('aria-expanded', 'true'));
   });
 
   test('renders menu entries and navigates when items are clicked', async () => {

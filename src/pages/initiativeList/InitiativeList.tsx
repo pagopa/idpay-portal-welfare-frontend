@@ -61,7 +61,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       label: t('pages.initiativeList.tableColumns.organizationName'),
     },
     {
-      id: 'startDate',
+      id: 'creationDate',
       numeric: false,
       disablePadding: false,
       label: t('pages.initiativeList.tableColumns.enrollmentDate'),
@@ -294,6 +294,7 @@ const InitiativeList = () => {
           organizationName: r.organizationName ?? '',
           startDate: r.startDate ?? '',
           endDate: r.endDate ?? '',
+          creationDate: r.creationDate ? format(parseISO(r.creationDate), 'dd/MM/yyyy') : '',
           id: i,
         }));
         dispatch(setInitiativeSummaryList(response));
@@ -497,9 +498,7 @@ const InitiativeList = () => {
                         </TableCell>
                         <TableCell>{row.organizationName}</TableCell>
                         <TableCell>
-                          {row.startDate ? format(parseISO(row.startDate), 'dd/MM/yyyy') : '—'}
-                          {' - '}
-                          {row.endDate ? format(parseISO(row.endDate), 'dd/MM/yyyy') : '—'}
+                          {row.creationDate || '—'}
                         </TableCell>
                         <TableCell>{renderInitiativeStatus(row.status)}</TableCell>
                         {showActionMenu(row.status) && (

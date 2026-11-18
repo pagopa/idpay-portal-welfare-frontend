@@ -6,7 +6,7 @@ import {
 } from '../../../api/generated/merchants/apiClient';
 import InitiativeExportReportUsersPage from '../initiativeExportReportUsersPage';
 import { createStore as createReduxStore } from '../../../redux/store';
-import { setGeneralInfo, setInitiativeName } from '../../../redux/slices/initiativeSlice';
+import { setGeneralInfo, setInitiativeCreationDate, setInitiativeName } from '../../../redux/slices/initiativeSlice';
 
 const mockSetAlert = jest.fn();
 const mockSetLoading = jest.fn();
@@ -21,6 +21,7 @@ const createStore = () => {
     ...store.getState().initiative.generalInfo,
     startDate: '2024-06-15',
   }));
+  store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
   return store;
 };
 
@@ -119,6 +120,7 @@ describe('<InitiativeExportReportUsersPage />', () => {
 
   test('waits for the initiative start date before rendering export filters', async () => {
     const store = createReduxStore();
+    store.dispatch(setInitiativeCreationDate(new Date(2024, 5, 16)));
     render(
       <Provider store={store}>
         <InitiativeExportReportUsersPage />
@@ -128,10 +130,7 @@ describe('<InitiativeExportReportUsersPage />', () => {
     expect(screen.queryByTestId('generate-report-btn')).not.toBeInTheDocument();
 
     await act(async () => {
-      store.dispatch(setGeneralInfo({
-        ...store.getState().initiative.generalInfo,
-        startDate: '2024-06-15',
-      }));
+      store.dispatch(setGeneralInfo({ ...store.getState().initiative.generalInfo, startDate: '2024-06-15' }));
     });
 
     expect(screen.getByTestId('generate-report-btn')).toBeInTheDocument();

@@ -32,6 +32,7 @@ const baseBatch = {
   businessName: 'Merchant one',
   status: 'EVALUATING',
   assigneeLevel: 'L1' as const,
+  numberOfTransactions: 3
 };
 
 describe('<RefundTransactionsHeader />', () => {

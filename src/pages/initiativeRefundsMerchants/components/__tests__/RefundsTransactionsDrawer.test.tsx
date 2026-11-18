@@ -86,12 +86,13 @@ describe('<RefundsTransactionsDrawer />', () => {
     jest.clearAllMocks();
   });
 
-  test('renders details and handles close/download actions', () => {
+  test('renders details and handles close/download actions', async () => {
+    const longInvoiceFileName = `${'invoice-'.repeat(12)}.pdf`;
     render(
       <RefundsTransactionsDrawer
         open={true}
         onClose={mockOnClose}
-        data={baseData as any}
+        data={{ ...baseData, invoiceFileName: longInvoiceFileName } as any}
         download={mockDownload}
         formatDate={(d?: string) => d ?? '-'}
         onApprove={mockOnApprove}
@@ -109,11 +110,73 @@ describe('<RefundsTransactionsDrawer />', () => {
     fireEvent.click(screen.getByTestId('CloseIcon'));
     expect(mockOnClose).toHaveBeenCalled();
 
-    fireEvent.click(screen.getByText('invoice.pdf'));
-    expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', 'invoice.pdf');
+    const invoiceFile = screen.getByText(longInvoiceFileName);
+    fireEvent.mouseOver(invoiceFile);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(longInvoiceFileName);
+
+    fireEvent.click(invoiceFile);
+    expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', longInvoiceFileName);
 
     fireEvent.click(screen.getByTestId('DownloadIcon'));
-    expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', 'invoice.pdf', true);
+    expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', longInvoiceFileName, true);
+  });
+
+  test('truncates long values to one line and exposes the full value in a tooltip', async () => {
+    const longProductName = 'Piano cottura MarcaEsempio00000000'.repeat(8);
+
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={{ ...baseData, productName: longProductName } as any}
+        download={mockDownload}
+        formatDate={(d?: string) => d ?? '-'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+        editChecksDisabled={false}
+      />
+    );
+
+    const productValue = screen.getByText(longProductName);
+    expect(productValue).toHaveStyle({
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    });
+
+    fireEvent.mouseOver(productValue);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(longProductName);
+  });
+
+  test('truncates long values to one line and exposes the full value in a tooltip', async () => {
+    const longProductName = 'Piano cottura MarcaEsempio00000000'.repeat(8);
+
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={{ ...baseData, productName: longProductName } as any}
+        download={mockDownload}
+        formatDate={(d?: string) => d ?? '-'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+        editChecksDisabled={false}
+      />
+    );
+
+    const productValue = screen.getByText(longProductName);
+    expect(productValue).toHaveStyle({
+      whiteSpace: 'nowrap',
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+    });
+
+    fireEvent.mouseOver(productValue);
+    expect(await screen.findByRole('tooltip')).toHaveTextContent(longProductName);
   });
 
   test('uses the appliance label and shows RAEE errors only for the appliance initiative', () => {
@@ -135,6 +198,7 @@ describe('<RefundsTransactionsDrawer />', () => {
 
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.appliance')).toBeInTheDocument();
     expect(screen.getByText('Smaltimento RAEE')).toBeInTheDocument();
+    expect(screen.getByRole('listitem')).toHaveStyle({ overflowWrap: 'anywhere' });
   });
 
   test('handles reason modal and approve modal flows', async () => {
@@ -314,6 +378,7 @@ describe('<RefundsTransactionsDrawer />', () => {
   });
 
   test('skips invalid rejection reasons and keeps note section visible for valid ones', () => {
+    const longReason = 'ReasonWithoutSpaces'.repeat(8);
     render(
       <RefundsTransactionsDrawer
         open={true}
@@ -323,12 +388,12 @@ describe('<RefundsTransactionsDrawer />', () => {
             ...baseData,
             rewardBatchTrxStatus: RewardBatchTrxStatusEnum.REJECTED,
             rewardBatchRejectionReason: [
-              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: longReason, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
             rewardBatchOfficialNotes: [
-              { reason: 'Valid reason', date: new Date('2026-03-10T10:00:00.000Z') },
+              { reason: longReason, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: 123 as any, date: new Date('2026-03-10T10:00:00.000Z') },
               { reason: '-', date: new Date('2026-03-10T10:00:00.000Z') },
             ],
@@ -346,7 +411,9 @@ describe('<RefundsTransactionsDrawer />', () => {
 
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.internalNote')).toBeInTheDocument();
     expect(screen.getByText('pages.initiativeMerchantsTransactions.drawer.officialNote')).toBeInTheDocument();
-    expect(screen.getAllByText('Valid reason').length).toBeGreaterThan(0);
+    const note = screen.getAllByText(longReason)[0];
+    expect(note).toHaveStyle({ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' });
+    expect(note).not.toHaveAttribute('aria-label');
     expect(screen.queryByText('123')).not.toBeInTheDocument();
   });
 

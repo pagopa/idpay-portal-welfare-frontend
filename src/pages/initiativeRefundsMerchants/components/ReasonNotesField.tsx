@@ -9,6 +9,15 @@ type Props = {
     title: string
 };
 
+const ellipsisSx = {
+    display: "block",
+    maxWidth: "100%",
+    minWidth: 0,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+} as const;
+
 export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
     const { t } = useTranslation();
     return <>
@@ -18,7 +27,7 @@ export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
                 fontWeight: 700,
                 color: "#17324D",
                 textTransform: "uppercase",
-                mb: 3,
+                mb: 1,
                 letterSpacing: "0.5px"
             }}
         >
@@ -28,37 +37,39 @@ export const ReasonNotesField = ({ notesList, formatDate, title }: Props) => {
             <Box
                 key={`${i}-${date}`}
                 sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
+                    display: "grid",
+                    gridTemplateColumns: "minmax(0, 1fr) auto",
+                    alignItems: "center",
                     mb: 2
                 }}
             >
-                <Box sx={{ flex: 1 }}>
-                    <Typography
-                        sx={{
-                            fontSize: "14px",
-                            color: "#6B7280",
-                            mb: 0.5
-                        }}
-                    >
-                        {date ? formatDate(date.toString()) : '-'}
-                    </Typography>
-                    <Typography
-                        sx={{
-                            fontSize: "18px",
-                            fontWeight: 600,
-                            color: "#17324D",
-                            lineHeight: "22px",
-                            whiteSpace: "pre-line",
-                            wordBreak: "break-word"
-                        }}
-                    >
-                        {reason}
-                    </Typography>
-                </Box>
+                <Typography
+                    sx={{
+                        ...ellipsisSx,
+                        gridColumn: 1,
+                        fontSize: "14px",
+                        color: "#6B7280",
+                        mb: 0.5
+                    }}
+                >
+                    {date ? formatDate(date.toString()) : '-'}
+                </Typography>
+                <Typography
+                    sx={{
+                        gridColumn: 1,
+                        whiteSpace: "pre-wrap",
+                        overflowWrap: "anywhere",
+                        fontSize: "18px",
+                        fontWeight: 600,
+                        color: "#17324D",
+                        lineHeight: "22px",
+                    }}
+                >
+                    {reason}
+                </Typography>
                 <CopyToClipboardButton
                     value={reason}
-                    sx={{ ml: 2, p: 1 }}
+                    sx={{ gridColumn: 2, gridRow: 2, ml: 2, p: 1 }}
                 />
             </Box>
         )}

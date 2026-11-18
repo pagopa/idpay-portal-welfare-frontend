@@ -45,7 +45,7 @@ describe('ReportTableCard', () => {
 
     render(<ReportTableCard initiativeId="initiative-1" refreshToken={0} />);
 
-    expect(await screen.findByText('pages.initiativeExportReport.exportTable.emptyState')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeExportReport.exportTable.transactionsEmptyState')).toBeInTheDocument();
   });
 
   test('loads the next page when the pagination chevron is clicked', async () => {
@@ -407,7 +407,7 @@ describe('ReportTableCard', () => {
 
     render(<ReportTableCard initiativeId="initiative-1" refreshToken={0} />);
 
-    expect(await screen.findByText('pages.initiativeExportReport.exportTable.emptyState')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeExportReport.exportTable.transactionsEmptyState')).toBeInTheDocument();
   });
 
   test('normalizes a zero totalPages response to keep pagination stable', async () => {
@@ -615,7 +615,7 @@ describe('ReportTableCard', () => {
       );
     });
 
-    expect(await screen.findByText('pages.initiativeExportReport.exportTable.emptyState')).toBeInTheDocument();
+    expect(await screen.findByText('pages.initiativeExportReport.exportTable.transactionsEmptyState')).toBeInTheDocument();
   });
 
   test('skips download requests when a row id is missing', async () => {

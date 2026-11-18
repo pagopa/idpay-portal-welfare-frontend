@@ -33,6 +33,7 @@ const makeSummary = (): InitiativeSummaryArrayDTO => [
     organizationName: 'Alpha organization',
     status: 'PUBLISHED',
     startDate: '2026-02-01',
+    creationDate: '2026-01-15T10:00:00Z',
     endDate: '2026-12-31',
   },
   {
@@ -74,7 +75,7 @@ describe('<InitiativeList />', () => {
       expect.arrayContaining(makeSummary())
     );
     expect(displayedNames()).toEqual(['Alpha benefit', 'Beta benefit']);
-    expect(screen.getByText('01/02/2026 - 31/12/2026')).toBeInTheDocument();
+    expect(screen.getByText('15/01/2026')).toBeInTheDocument();
     expect(window.scrollTo).toHaveBeenCalledWith(0, 0);
     expect(screen.queryByTestId('menu-open-test')).not.toBeInTheDocument();
   });
@@ -173,6 +174,6 @@ describe('<InitiativeList />', () => {
 
     expect(button).toBeEmptyDOMElement();
     expect(cells[1]).toBeEmptyDOMElement();
-    expect(cells[2]).toHaveTextContent('— - —');
+    expect(cells[2]).toHaveTextContent('—');
   });
 });

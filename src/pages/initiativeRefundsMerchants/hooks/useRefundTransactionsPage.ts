@@ -298,7 +298,7 @@ export const useRefundTransactionsPage = () => {
       .then(([transactionsResponse, merchantDetailsResponse]) => {
         setTotalElements(transactionsResponse.totalElements);
         setTotalPages(transactionsResponse.totalPages);
-        setRows(transactionsResponse.content.map((transaction: any) => mapTransactionToRow(transaction)));
+        setRows(transactionsResponse.content.map((transaction) => mapTransactionToRow(transaction)));
         if (merchantDetailsResponse.iban) {
           setIban(merchantDetailsResponse.iban);
         }
@@ -374,6 +374,13 @@ export const useRefundTransactionsPage = () => {
     const refundItem = mapRewardBatchToRefund(rewardBatchResponse);
     setBatchTrx(refundItem);
     setBatch(getBatchTrx());
+    if (!batch?.numberOfTransactions && batch?.assigneeLevel === 'L3') {
+      setAlert({
+        text: t("pages.initiativeMerchantsTransactions.emptyBatchSuccessAlert"),
+        severity: "success",
+        isOpen: true
+      });
+    }
   };
 
   const handleApiError = (error: any) => {

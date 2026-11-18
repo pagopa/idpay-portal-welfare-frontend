@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import { renderWithContext } from '../../../utils/test-utils';
 import Header from '../Header';
 import { mockedUser } from '../../../decorators/__mocks__/withLogin';
@@ -69,6 +70,22 @@ describe('test suite for Header', () => {
         withSecondHeader={false}
         onExit={jest.fn()}
       />
+    );
+  });
+
+  test('opens the operational manual when its header button is clicked', () => {
+    const openWindow = jest.spyOn(window, 'open').mockImplementation(() => null);
+
+    renderWithContext(
+      <Header parties={[]} loggedUser={mockedUser} withSecondHeader={false} onExit={jest.fn()} />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Manuale operativo' }));
+
+    expect(openWindow).toHaveBeenCalledWith(
+      'https://developer.pagopa.it/it/pari/guides',
+      '_blank',
+      'noopener,noreferrer'
     );
   });
 });
