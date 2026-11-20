@@ -370,7 +370,7 @@ export const useRefundTransactionsPage = (
       rewardBatch.numberOfTransactionsRejected ?? batch?.numberOfTransactionsRejected ?? 0,
     numberOfTransactionsElaborated:
       rewardBatch.numberOfTransactionsElaborated ?? batch?.numberOfTransactionsElaborated ?? 0,
-    assigneeLevel: rewardBatch.assigneeLevel ?? 'L1',
+    assigneeLevel: rewardBatch.assigneeLevel ?? batch?.assigneeLevel ?? 'L1',
     refundErrorMessage: (rewardBatch as any).refundErrorMessage ?? batch?.refundErrorMessage,
   });
 
