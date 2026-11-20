@@ -1,4 +1,4 @@
-﻿import { act, render, waitFor } from '@testing-library/react';
+import { act, render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { RewardBatchTrxStatus as RewardBatchTrxStatusEnum } from '../../../../api/generated/merchants/apiClient';
 import { useRefundTransactionsPage } from '../useRefundTransactionsPage';
@@ -167,17 +167,22 @@ describe('useRefundTransactionsPage', () => {
     });
   });
 
-  test.each(['L1', 'L2', 'L3'])('checks the current percentage again after it decreases for %s', async (assigneeLevel) => {
+  test.each(['L1', 'L2', 'L3'].flatMap((level) =>
+    ['approve', 'suspend', 'reject'].map((action) => [level, action])
+  ))('rechecks after %s %s reduces the percentage', async (assigneeLevel, action) => {
     const initialBatch = { ...batchMock, assigneeLevel, numberOfTransactionsElaborated: 5 };
     mockGetBatchTrx.mockReturnValue(initialBatch);
-    const { rerender } = render(<HookWrapper minimumChecksPercentage={50} />);
+    mockParseJwt.mockReturnValue({ org_role: 'operator' + assigneeLevel.slice(1) });
+    render(<HookWrapper minimumChecksPercentage={50} isDecoderInitiative />);
     await waitFor(() => expect(mockGetMerchantDetail).toHaveBeenCalled());
 
     const decreasedBatch = { ...initialBatch, numberOfTransactionsElaborated: 4 };
-    mockSuspendTrx.mockResolvedValueOnce(decreasedBatch);
-    mockGetBatchTrx.mockReturnValue(decreasedBatch);
-    await act(async () => { await hookResult.handleRefundAction('suspend', ['trx-1']); });
-    rerender(<HookWrapper minimumChecksPercentage={50} />);
+    const actionMock = action === 'approve' ? mockApproveTrx : action === 'suspend' ? mockSuspendTrx : mockRejectTrx;
+    actionMock.mockResolvedValueOnce({ ...decreasedBatch, assigneeLevel: undefined });
+    mockSetBatchTrx.mockImplementationOnce((updatedBatch) => mockGetBatchTrx.mockReturnValue(updatedBatch));
+    act(() => { hookResult.setBatchModalOpen(true); });
+    await act(async () => { await hookResult.handleRefundAction(action, ['trx-1']); });
+    expect(hookResult.batch.assigneeLevel).toBe(assigneeLevel);
     expect(hookResult.checksPercentage).toBe('40% / 100%');
     act(() => { hookResult.handleBatchStatus(); });
     expect(hookResult.batchErrorOpen).toBe(true);
