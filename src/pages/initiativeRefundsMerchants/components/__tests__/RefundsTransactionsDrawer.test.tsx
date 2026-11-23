@@ -121,6 +121,30 @@ describe('<RefundsTransactionsDrawer />', () => {
     expect(mockDownload).toHaveBeenCalledWith('pos-1', 'trx-1', longInvoiceFileName, true);
   });
 
+  test('renders the GTIN in the product and dedicated fields with the corresponding copy values', () => {
+    render(
+      <RefundsTransactionsDrawer
+        open={true}
+        onClose={mockOnClose}
+        data={baseData as any}
+        download={mockDownload}
+        formatDate={(d?: string) => d ?? '-'}
+        onApprove={mockOnApprove}
+        onSuspend={mockOnSuspend}
+        onReject={mockOnReject}
+        disabled={false}
+        editChecksDisabled={false}
+      />
+    );
+
+    expect(
+      screen.getByText('pages.initiativeMerchantsTransactions.drawer.productGtin')
+    ).toBeInTheDocument();
+    expect(screen.getAllByText('GTIN-1', { selector: 'p' })).toHaveLength(2);
+    expect(screen.getByRole('button', { name: 'Product GTIN-1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'GTIN-1' })).toBeInTheDocument();
+  });
+
   test('truncates long values to one line and exposes the full value in a tooltip', async () => {
     const longProductName = 'Piano cottura MarcaEsempio00000000'.repeat(8);
 
