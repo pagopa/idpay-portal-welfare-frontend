@@ -4,7 +4,7 @@ import type {
 import type {
   RefundTransactionsPageViewModel,
 } from '../hooks/useRefundTransactionsPage';
-import { getMinimumChecksPercentage } from './refundChecks';
+import { getMinimumChecksPercentage, hasMinimumBatchChecks } from './refundChecks';
 
 type Translate = (key: string) => string;
 
@@ -79,7 +79,17 @@ export const buildRefundTransactionsBindings = (
     onOpenApproveModal: () => viewModel.setApproveModal(true),
     onOpenSuspendModal: () => viewModel.setReasonModal({ open: true, type: 'suspend' }),
     onOpenRejectModal: () => viewModel.setReasonModal({ open: true, type: 'reject' }),
-    onOpenBatchModal: () => viewModel.setBatchModalOpen(true),
+    onOpenBatchModal: () => {
+      if (viewModel.batchActionDisabled) {
+        return;
+      }
+      if (!hasMinimumBatchChecks(viewModel.batch, getMinimumChecksPercentage(initiativeName))) {
+        viewModel.setBatchModalOpen(false);
+        viewModel.setBatchErrorOpen(true);
+        return;
+      }
+      viewModel.setBatchModalOpen(true);
+    },
     onGetCsv: viewModel.getCsv,
   },
   summaryProps: {
