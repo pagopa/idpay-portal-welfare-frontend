@@ -211,6 +211,16 @@ export default function RefundsTransactionsDrawer({
                 </Box>
 
                 <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
+                    {t('pages.initiativeMerchantsTransactions.drawer.productGtin')}
+                </Typography>
+                <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>
+                    <Box sx={{ minWidth: 0, flex: 1 }}>
+                        <DrawerValue value={productGtin} />
+                    </Box>
+                    <CopyToClipboardButton value={getDisplayValue(data?.productGtin)} sx={{ ml: 2, mr: 0, my: 0, p: 1 }} />
+                </Box>
+
+                <Typography sx={{ fontSize: "16px", fontWeight: 400, color: "#5C6F82" }}>
                     {t('pages.initiativeMerchantsTransactions.drawer.fiscalCode')}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "flex-start", mb: 3 }}>

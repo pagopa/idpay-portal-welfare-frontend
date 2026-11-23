@@ -1066,7 +1066,8 @@
         "criticity": "CRITICITÀ",
         "editChecks": "Modifica controlli",
         "internalNote": "Nota interna",
-        "officialNote": "Nota ufficiale"
+        "officialNote": "Nota ufficiale",
+        "productGtin": "Codice GTIN/EAN"
       },
       "modal": {
         "internalNote": "Nota interna*",
