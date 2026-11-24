@@ -4,6 +4,7 @@ import type {
 import type {
   RefundTransactionsPageViewModel,
 } from '../hooks/useRefundTransactionsPage';
+import { getMinimumChecksPercentage, hasMinimumBatchChecks } from './refundChecks';
 
 type Translate = (key: string) => string;
 
@@ -24,6 +25,7 @@ export const buildRefundBatchesBindings = (
     setDraftName: viewModel.setDraftName,
     draftPeriod: viewModel.draftPeriod,
     setDraftPeriod: viewModel.setDraftPeriod,
+    periodList: viewModel.periodList,
     draftStatus: viewModel.draftStatus,
     setDraftStatus: viewModel.setDraftStatus,
     draftAssignee: viewModel.draftAssignee,
@@ -77,7 +79,17 @@ export const buildRefundTransactionsBindings = (
     onOpenApproveModal: () => viewModel.setApproveModal(true),
     onOpenSuspendModal: () => viewModel.setReasonModal({ open: true, type: 'suspend' }),
     onOpenRejectModal: () => viewModel.setReasonModal({ open: true, type: 'reject' }),
-    onOpenBatchModal: () => viewModel.setBatchModalOpen(true),
+    onOpenBatchModal: () => {
+      if (viewModel.batchActionDisabled) {
+        return;
+      }
+      if (!hasMinimumBatchChecks(viewModel.batch, getMinimumChecksPercentage(initiativeName))) {
+        viewModel.setBatchModalOpen(false);
+        viewModel.setBatchErrorOpen(true);
+        return;
+      }
+      viewModel.setBatchModalOpen(true);
+    },
     onGetCsv: viewModel.getCsv,
   },
   summaryProps: {
@@ -140,6 +152,7 @@ export const buildRefundTransactionsBindings = (
     totalPages: viewModel.totalPages,
   },
   overlaysProps: {
+    minimumChecksPercentage: getMinimumChecksPercentage(initiativeName),
     isApplianceInitiative: isApplianceBonusInitiative(initiativeName, initiativeId),
     openDrawer: viewModel.openDrawer,
     handleCloseDrawer: viewModel.handleCloseDrawer,

@@ -1066,7 +1066,8 @@
         "criticity": "CRITICITÀ",
         "editChecks": "Modifica controlli",
         "internalNote": "Nota interna",
-        "officialNote": "Nota ufficiale"
+        "officialNote": "Nota ufficiale",
+        "productGtin": "Codice GTIN/EAN"
       },
       "modal": {
         "internalNote": "Nota interna*",
@@ -1129,11 +1130,11 @@
           "description": "Confermando, il lotto risulterà controllato e non genererà rimborsi."
         },
         "errorTitle": "Controlla le transazioni mancanti",
-        "errorDescription": "Devi verificare almeno il 15% delle transazioni prima di validare il lotto.\nCompleta i controlli mancanti per procedere.",
+        "errorDescription": "Devi verificare almeno il {{percentage}}% delle transazioni prima di validare il lotto.\nCompleta i controlli mancanti per procedere.",
         "confirm": "Conferma",
         "L1": {
           "title": "Hai completato i controlli?",
-          "description": "Confermando, l’incarico passerà al livello L2 se hai verificato almeno il 15% delle transazioni."
+          "description": "Confermando, l’incarico passerà al livello L2 se hai verificato almeno il {{percentage}}% delle transazioni."
         },
         "L2": {
           "title": "Sei sicuro di aver completato i controlli?",

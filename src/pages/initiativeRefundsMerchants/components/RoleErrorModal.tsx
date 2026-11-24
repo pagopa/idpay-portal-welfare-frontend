@@ -7,21 +7,24 @@ import {
     Typography
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { getMinimumChecksPercentage } from '../model/refundChecks';
 
 interface Props {
+    minimumChecksPercentage?: number;
     open: boolean;
     onClose: () => void;
 }
 
 export const RoleErrorModal = ({
     open,
+    minimumChecksPercentage = getMinimumChecksPercentage(''),
     onClose,
 }: Props) => {
     const { t } = useTranslation();
 
     const getLabels = () => ({
         title: t("pages.initiativeMerchantsTransactions.batchModal.errorTitle"),
-        description: t("pages.initiativeMerchantsTransactions.batchModal.errorDescription")
+        description: t("pages.initiativeMerchantsTransactions.batchModal.errorDescription", { percentage: minimumChecksPercentage })
     });
 
     const { title, description } = getLabels();

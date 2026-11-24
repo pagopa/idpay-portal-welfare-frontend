@@ -15,6 +15,7 @@ const getBatchesVm = (overrides?: Record<string, unknown>) => ({
   draftAssignee: '',
   setDraftAssignee: jest.fn(),
   businessNameList: [],
+  periodList: [],
   isFilterDisabled: false,
   applyFilters: jest.fn(),
   clearFilters: jest.fn(),
@@ -44,6 +45,8 @@ const getTransactionsVm = (overrides?: Record<string, unknown>) => ({
     id: 'batch-id',
     businessName: 'Biz',
     assigneeLevel: 'L2',
+    numberOfTransactions: 100,
+    numberOfTransactionsElaborated: 50,
   },
   role: 'operator_l2',
   batchActionDisabled: false,
@@ -126,6 +129,7 @@ describe('viewModel bindings', () => {
     expect(result.filtersBarProps.draftStatus).toBe(vm.draftStatus);
     expect(result.filtersBarProps.draftAssignee).toBe(vm.draftAssignee);
     expect(result.filtersBarProps.businessNameList).toBe(vm.businessNameList);
+    expect(result.filtersBarProps.periodList).toBe(vm.periodList);
     expect(result.filtersBarProps.hasAppliedFilters).toBe(false);
     expect(result.filtersBarProps.applyFilters).toBe(vm.applyFilters);
     expect(result.tableProps.rows).toBe(vm.rows);
@@ -217,6 +221,57 @@ describe('viewModel bindings', () => {
     expect(vm.setBatchModalOpen).toHaveBeenCalledWith(true);
   });
 
+  test.each(['L1', 'L2', 'L3'].flatMap((level) => [
+    { level, name: 'Bonus Decoder', checked: 49 },
+    { level, name: 'Bonus Elettrodomestici', checked: 14 },
+  ]))('shows the error directly for $level on $name below its threshold', ({ level, name, checked }) => {
+    const vm = getTransactionsVm({
+      role: `operator${level.slice(1)}`,
+      batch: { ...getTransactionsVm().batch, assigneeLevel: level, numberOfTransactionsElaborated: checked },
+    });
+    const result = buildRefundTransactionsBindings(vm as any, name as string);
+
+    result.headerProps.onOpenBatchModal();
+
+    expect(vm.setBatchErrorOpen).toHaveBeenCalledWith(true);
+    expect(vm.setBatchModalOpen).toHaveBeenCalledWith(false);
+    expect(vm.setBatchModalOpen).not.toHaveBeenCalledWith(true);
+    expect(vm.handleBatchStatus).not.toHaveBeenCalled();
+  });
+
+  test.each(['L1', 'L2', 'L3'].flatMap((level) => [
+    { level, name: 'Bonus Decoder', checked: 50 },
+    { level, name: 'Bonus Elettrodomestici', checked: 15 },
+    { level, name: 'Bonus Decoder', checked: 100 },
+    { level, name: 'Bonus Elettrodomestici', checked: 100 },
+  ]))('opens confirmation for $level on $name at $checked percent', ({ level, name, checked }) => {
+    const vm = getTransactionsVm({
+      role: `operator${level.slice(1)}`,
+      batch: { ...getTransactionsVm().batch, assigneeLevel: level, numberOfTransactionsElaborated: checked },
+    });
+    buildRefundTransactionsBindings(vm as any, name as string).headerProps.onOpenBatchModal();
+
+    expect(vm.setBatchModalOpen).toHaveBeenCalledWith(true);
+    expect(vm.setBatchErrorOpen).not.toHaveBeenCalled();
+    expect(vm.handleBatchStatus).not.toHaveBeenCalled();
+  });
+
+  test('opens confirmation for an empty batch', () => {
+    const vm = getTransactionsVm({
+      batch: { ...getTransactionsVm().batch, numberOfTransactions: 0, numberOfTransactionsElaborated: 0 },
+    });
+    buildRefundTransactionsBindings(vm as any, 'Bonus Decoder').headerProps.onOpenBatchModal();
+    expect(vm.setBatchModalOpen).toHaveBeenCalledWith(true);
+    expect(vm.setBatchErrorOpen).not.toHaveBeenCalled();
+  });
+
+  test('does not open feedback or confirmation when validation is disabled', () => {
+    const vm = getTransactionsVm({ batchActionDisabled: true });
+    buildRefundTransactionsBindings(vm as any, 'Bonus Decoder').headerProps.onOpenBatchModal();
+    expect(vm.setBatchModalOpen).not.toHaveBeenCalled();
+    expect(vm.setBatchErrorOpen).not.toHaveBeenCalled();
+  });
+
   test('marks header and drawer as read only when support actions are disabled', () => {
     const result = buildRefundTransactionsBindings(
       getTransactionsVm({
@@ -229,4 +284,8 @@ describe('viewModel bindings', () => {
     expect(result.headerProps.actionsDisabled).toBe(true);
     expect(result.overlaysProps.disabled).toBe(true);
   });
+});
+ test.each([['Bonus Decoder', 50], ['  BONUS DECODER  ', 50], ['Bonus Decoder Test Open', 50], ['Bonus Decoder Test Closed', 50], ['Bonus Elettrodomestici', 15], ['Other', 15]])('uses the correct checks threshold for %s', (name, percentage) => {
+  const result = buildRefundTransactionsBindings(getTransactionsVm() as any, name as string);
+  expect(result.overlaysProps.minimumChecksPercentage).toBe(percentage);
 });

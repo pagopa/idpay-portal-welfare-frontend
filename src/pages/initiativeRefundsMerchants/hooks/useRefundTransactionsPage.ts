@@ -3,6 +3,7 @@ import { storageTokenOps } from '@pagopa/selfcare-common-frontend/lib/utils/stor
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useHistory } from 'react-router-dom';
+import { getMinimumChecksPercentage, hasMinimumBatchChecks } from '../model/refundChecks';
 import { ChecksErrorDTO, MerchantTransactionProcessedDTO, PointOfSaleDTO, RewardBatchDTO, RewardBatchTrxStatus, TransactionActionRequest, TransactionDecisionRequest } from '../../../api/generated/merchants/apiClient';
 import { useAlert } from '../../../hooks/useAlert';
 import { getBatchTrx, rehydrateBatchTrx, setBatchTrx } from '../../../hooks/useBatchTrx';
@@ -57,7 +58,10 @@ const mapRefundsDrawerData = (
     transactionDto?.rewardBatchOfficialNotes as RefundsDrawerData['rewardBatchOfficialNotes'],
 });
 
-export const useRefundTransactionsPage = () => {
+export const useRefundTransactionsPage = (
+  minimumChecksPercentage = getMinimumChecksPercentage(''),
+  isDecoderInitiative = false
+) => {
   const { t } = useTranslation();
   const history = useHistory();
   const { setAlert } = useAlert();
@@ -366,7 +370,7 @@ export const useRefundTransactionsPage = () => {
       rewardBatch.numberOfTransactionsRejected ?? batch?.numberOfTransactionsRejected ?? 0,
     numberOfTransactionsElaborated:
       rewardBatch.numberOfTransactionsElaborated ?? batch?.numberOfTransactionsElaborated ?? 0,
-    assigneeLevel: rewardBatch.assigneeLevel ?? 'L1',
+    assigneeLevel: rewardBatch.assigneeLevel ?? batch?.assigneeLevel ?? 'L1',
     refundErrorMessage: (rewardBatch as any).refundErrorMessage ?? batch?.refundErrorMessage,
   });
 
@@ -384,9 +388,14 @@ export const useRefundTransactionsPage = () => {
   };
 
   const handleApiError = (error: any) => {
-    if (error?.status === 400 && error?.response?.data?.code === 'BATCH_NOT_ELABORATED_15_PERCENT') {
+    const status = error?.response?.status ?? error?.status;
+    const code = error?.response?.data?.code;
+    const isThresholdError =
+      /^BATCH_NOT_ELABORATED_\d+_PERCENT$/.test(code ?? '') ||
+      (isDecoderInitiative && code === 'BATCH_CONTROL_THRESHOLD_NOT_MET');
+    if (status === 400 && isThresholdError) {
       setBatchErrorOpen(true);
-    } else if (error?.status === 400 && error?.response?.data?.code === 'REWARD_BATCH_INVALID_REQUEST') {
+    } else if (status === 400 && code === 'REWARD_BATCH_INVALID_REQUEST') {
       setAlert({
         title: t('errors.title'),
         text: t('errors.batchInvalidRequest'),
@@ -405,6 +414,12 @@ export const useRefundTransactionsPage = () => {
 
   const handleBatchStatus = () => {
     if (!batch?.id || batchActionDisabled) {
+      return;
+    }
+
+    if (!hasMinimumBatchChecks(batch, minimumChecksPercentage)) {
+      setBatchModalOpen(false);
+      setBatchErrorOpen(true);
       return;
     }
 

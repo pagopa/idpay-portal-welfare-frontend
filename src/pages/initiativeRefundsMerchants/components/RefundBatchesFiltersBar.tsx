@@ -3,10 +3,10 @@ import { ButtonNaked } from '@pagopa/mui-italia';
 import {
   BATCH_STATUS_FILTER_OPTIONS,
   MERCHANT_ASSIGNEE_OPTIONS,
-  MERCHANT_REFUND_PERIOD_OPTIONS,
 } from '../model/constants';
 import { getStatusChipData } from '../model/status';
 import { MerchantItem } from '../model/types';
+import { RewardBatchMonthDTO } from '../../../api/generated/merchants/apiClient';
 
 type Props = {
   t: (key: string) => string;
@@ -14,6 +14,7 @@ type Props = {
   setDraftName: (value: string) => void;
   draftPeriod: string;
   setDraftPeriod: (value: string) => void;
+  periodList: Array<RewardBatchMonthDTO>;
   draftStatus: string;
   setDraftStatus: (value: string) => void;
   draftAssignee: string;
@@ -31,6 +32,7 @@ const RefundBatchesFiltersBar = ({
   setDraftName,
   draftPeriod,
   setDraftPeriod,
+  periodList,
   draftStatus,
   setDraftStatus,
   draftAssignee,
@@ -88,9 +90,9 @@ const RefundBatchesFiltersBar = ({
         onChange={(event) => setDraftPeriod(event.target.value)}
         sx={{ height: 40, display: 'flex', alignItems: 'center' }}
       >
-        {MERCHANT_REFUND_PERIOD_OPTIONS.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {t(option.labelKey)}
+        {periodList.map(({label, value}) => (
+          <MenuItem key={value} value={value}>
+            {label}
           </MenuItem>
         ))}
       </Select>
